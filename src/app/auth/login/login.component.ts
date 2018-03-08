@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit {
           } else {
             console.log('this would be a new Jarvis user');
           }
+          localStorage.setItem('jarvisToken', res.token);
           this.showMessage = true;
           this.loginSuccess = true;
           this.iconClass = 'fa-check-circle';
