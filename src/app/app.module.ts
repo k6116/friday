@@ -8,6 +8,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 
+// DIRECTIVES
+import { AutofocusDirective } from './_shared/directives/autofocus.directive';
+
+
 // SERVICES
 import { ApiDataService } from './_shared/services/api-data.service';
 import { AppDataService } from './_shared/services/app-data.service';
@@ -19,10 +23,14 @@ import { LoginComponent } from './auth/login/login.component';
 
 
 
+
+
+
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    AutofocusDirective
   ],
   imports: [
     AppRoutingModule,

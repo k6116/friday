@@ -11,7 +11,7 @@
       <div class="form-group form-group-login">
 
         <label>User Name</label>
-        <input [(ngModel)]="userName" type="text" class="form-control login-user-name" (keyup.enter)="onLoginClick()">
+        <input [(ngModel)]="userName" type="text" class="form-control login-user-name" (keyup.enter)="onLoginClick()" appAutofocus>
         
       </div>
 
