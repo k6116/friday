@@ -15,7 +15,7 @@ export class ApiDataService {
     private http: Http
   ) {
 
-    this.timeout = 7000;
+    this.timeout = 15000;
 
   }
 

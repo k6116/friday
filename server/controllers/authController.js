@@ -38,12 +38,16 @@ function authenticate(req, res) {
         console.log('user email is: ' + user.mail);
         console.log('full user details:');
         console.log(user);
-        res.json('good');
+        res.json(user);
       }
     } else if (err) {
       console.log('error:');
       console.log('invalid user credentials');
-      res.json('bad');
+      // res.json('bad');
+      res.status(500).json({
+        title: 'invalid user credentials',
+        error: err
+      });
     }
   });
    
