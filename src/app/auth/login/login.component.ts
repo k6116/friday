@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiDataService } from '../../_shared/services/api-data.service';
-
+import { AuthService } from '../auth.service';
 
 
 @Component({
@@ -20,7 +21,9 @@ export class LoginComponent implements OnInit {
 
 
   constructor(
-    private apiDataService: ApiDataService
+    private router: Router,
+    private apiDataService: ApiDataService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -57,10 +60,12 @@ export class LoginComponent implements OnInit {
             console.log('this would be a new Jarvis user');
           }
           localStorage.setItem('jarvisToken', res.token);
-          this.showMessage = true;
-          this.loginSuccess = true;
-          this.iconClass = 'fa-check-circle';
-          this.loginMessage = `Login Successfull for ${res.ldap.givenName} ${res.ldap.sn}`;
+          // this.showMessage = true;
+          // this.loginSuccess = true;
+          // this.iconClass = 'fa-check-circle';
+          // this.loginMessage = `Login Successfull for ${res.ldap.givenName} ${res.ldap.sn}`;
+          this.authService.setLoggedIn(true);
+          this.router.navigateByUrl('/main');
         },
         err => {
           const t1 = performance.now();
