@@ -67,10 +67,22 @@ export class LoginComponent implements OnInit {
           console.log(`authentication took ${t1 - t0} milliseconds`);
           console.log('user login failed; errors:');
           console.log(err);
+
+          // check for no response (net::ERR_CONNECTION_REFUSED etc.)
+          if (err.status === 0) {
+            this.loginMessage = 'Server is not Responding';
+          // check for timeout error
+          } else if (err.hasOwnProperty('name')) {
+            if (err.name === 'TimeoutError') {
+              this.loginMessage = 'Server timed out';
+            }
+          // otherwise, this should be a failed login
+          } else {
+            this.loginMessage = 'Invalid User Name or Password';
+          }
           this.showMessage = true;
           this.loginSuccess = false;
           this.iconClass = 'fa-exclamation-triangle';
-          this.loginMessage = 'Invalid User Name or Password';
         }
       );
 

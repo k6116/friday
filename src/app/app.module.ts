@@ -20,6 +20,7 @@ import { AppDataService } from './_shared/services/app-data.service';
 // COMPONENTS
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
+import { MainComponent } from './main/main.component';
 
 
 
@@ -30,7 +31,8 @@ import { LoginComponent } from './auth/login/login.component';
   declarations: [
     AppComponent,
     LoginComponent,
-    AutofocusDirective
+    AutofocusDirective,
+    MainComponent
   ],
   imports: [
     AppRoutingModule,
