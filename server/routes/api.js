@@ -5,5 +5,8 @@ const app = express();
 var controllers = require('../controllers/_index.js');
 
 
+router.get('/users', controllers.auth.index);
+
+
 
 module.exports = router;

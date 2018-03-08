@@ -3,11 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
+import { LoginComponent } from './auth/login/login.component';
+
 
 const routes: Routes = [
-  { path: '', redirectTo: '/app', pathMatch: 'full' },
-  { path: 'app', component: AppComponent },
-  { path: '**', redirectTo: '/app' }
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  { path: '**', redirectTo: '/login' }
 ];
 
 @NgModule({
