@@ -1,8 +1,8 @@
 
 const models = require('../models/_index')
 const sequelize = require('../db/sequelize').sequelize;
-const LdapAuth = require('ldapauth-fork');
- 
+const ldapAuth = require('ldapAuth-fork');
+const jwt = require('jsonwebtoken');
 
 
 function authenticate(req, res) {
@@ -27,7 +27,7 @@ function authenticate(req, res) {
     searchFilter: '(cn={{username}})'
   };
    
-  const auth = new LdapAuth(options);
+  const auth = new ldapAuth(options);
   auth.on('error', (err) => {
     console.log('error on authentication:');
     console.error(err);
@@ -37,7 +37,18 @@ function authenticate(req, res) {
     if (user) {
       if (user.cn === userName) {
 	      const timeDiff = process.hrtime(startTime);
-	      console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
+        console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
+        
+        const token = jwt.sign(
+          {
+            userName: user.cn,
+            email: user.email, 
+            rememberMe: true
+          }, 
+          'superSecret', 
+          {expiresIn: 60 * 60 * 24 * 1}
+        );
+
         // console.log('user is authenticated!');
         // console.log('user email is: ' + user.mail);
         // console.log('full user details:');
@@ -48,7 +59,8 @@ function authenticate(req, res) {
 
           res.json({
             ldap: user,
-            jarvis: jarvisUser
+            jarvis: jarvisUser,
+            token: token
           });
 
         });
