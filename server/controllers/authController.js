@@ -42,7 +42,17 @@ function authenticate(req, res) {
         // console.log('user email is: ' + user.mail);
         // console.log('full user details:');
         // console.log(user);
-        res.json(user);
+        models.User.findOne({
+          where: {email: user.mail}
+        }).then(jarvisUser => {
+
+          res.json({
+            ldap: user,
+            jarvis: jarvisUser
+          });
+
+        });
+
       }
     } else if (err) {
       const timeDiff = process.hrtime(startTime);

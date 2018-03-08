@@ -26,18 +26,6 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
 
 
-    this.apiDataService.getUserData()
-      .subscribe(
-        res => {
-          console.log('users data:');
-          console.log(res);
-        },
-        err => {
-          console.log('error getting users data:');
-          console.log(err);
-        }
-      );
-
   }
 
 
@@ -61,11 +49,17 @@ export class LoginComponent implements OnInit {
           console.log(`authentication took ${t1 - t0} milliseconds`);
           console.log('authentication response:');
           console.log(res);
-          console.log(`user login successfull, email is ${res.mail}, name is ${res.givenName} ${res.sn}`);
+          console.log(`user login successfull, email is ${res.ldap.mail}, name is ${res.ldap.givenName} ${res.ldap.sn}`);
+          if (res.jarvis) {
+            console.log(`this is an existing Jarvis user:`);
+            console.log(res.jarvis);
+          } else {
+            console.log('this would be a new Jarvis user');
+          }
           this.showMessage = true;
           this.loginSuccess = true;
           this.iconClass = 'fa-check-circle';
-          this.loginMessage = `Login Successfull for ${res.givenName} ${res.sn}`;
+          this.loginMessage = `Login Successfull for ${res.ldap.givenName} ${res.ldap.sn}`;
         },
         err => {
           const t1 = performance.now();
