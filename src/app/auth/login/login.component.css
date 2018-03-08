@@ -1,0 +1,12 @@
+
+div.login-cont {
+  width: 300px;
+  height: 250px;
+  border: 1px solid lightgrey;
+  margin: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
