@@ -11,11 +11,13 @@ function authenticate(req, res) {
   // const password = req.params.password;
   console.log(req.params.user);
 
+  const startTime = process.hrtime();
+
   const user = JSON.parse(req.params.user);
   const userName = user.userName;
   const password = user.password;
 
-  console.log(`authenticating ${userName} with password ${password}`);
+  console.log(`authenticating ${userName}`);
 
   const options = {
     url: 'ldap://adldap.cos.is.keysight.com',
@@ -34,16 +36,18 @@ function authenticate(req, res) {
   auth.authenticate(userName, password, (err, user) => {
     if (user) {
       if (user.cn === userName) {
-        console.log('user is authenticated!');
-        console.log('user email is: ' + user.mail);
-        console.log('full user details:');
-        console.log(user);
+	      const timeDiff = process.hrtime(startTime);
+	      console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
+        // console.log('user is authenticated!');
+        // console.log('user email is: ' + user.mail);
+        // console.log('full user details:');
+        // console.log(user);
         res.json(user);
       }
     } else if (err) {
-      console.log('error:');
-      console.log('invalid user credentials');
-      // res.json('bad');
+      const timeDiff = process.hrtime(startTime);
+	    console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
+      // console.log('invalid user credentials');
       res.status(500).json({
         title: 'invalid user credentials',
         error: err
