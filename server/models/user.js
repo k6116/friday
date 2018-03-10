@@ -13,9 +13,9 @@ const User = sequelize.define('user',
     loginEnabled: { type: Sequelize.BOOLEAN, field: 'LoginEnabled' },
     forcePasswordReset: { type: Sequelize.BOOLEAN, field: 'ForcePasswordReset' },
     createdBy: { type: Sequelize.INTEGER, field: 'CreatedBy' },
-    createdAt: { type: Sequelize.DATEONLY, field: 'CreationDate' },
+    createdAt: { type: Sequelize.DATE, field: 'CreationDate' },
     updatedBy: { type: Sequelize.INTEGER, field: 'LastUpdatedBy' },
-    updatedAt: { type: Sequelize.DATEONLY, field: 'LastUpdateDate' }
+    updatedAt: { type: Sequelize.DATE, field: 'LastUpdateDate' }
   },
   {
     schema: 'accesscontrol',

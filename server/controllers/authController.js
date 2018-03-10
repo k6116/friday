@@ -73,7 +73,7 @@ function authenticate(req, res) {
               loginEnabled: true,
               forcePasswordReset: false,
               createdBy: 1,
-              createdAt: moment().format('YYYY-MM-DD'),
+              createdAt: moment().format('YYYY-MM-DDTHH:mm:ss'),
               updatedBy: 1,
               updatedAt: moment().format('YYYY-MM-DD')
             })

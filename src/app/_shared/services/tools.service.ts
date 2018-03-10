@@ -35,7 +35,8 @@ export class ToolsService {
   }
 
 
-  camelCaseToSentanceCase(camelCaseString: string): string {
+  // convert a word like camelCase to Camel Case
+  splitCamelCase(camelCaseString: string): string {
 
     // deal with cases like ID, IDE, etc. which we don't want to convert
     if (camelCaseString.length <= 3) {
@@ -50,6 +51,7 @@ export class ToolsService {
   }
 
 
+  // convert a word or sentance like peanut butter or PEANUT BUTTER to Peanut Butter
   toSentanceCase(str: string): string {
 
     return str.replace(/\w\S*/g, text => {
