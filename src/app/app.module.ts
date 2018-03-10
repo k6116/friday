@@ -15,6 +15,7 @@ import { ApiDataService } from './_shared/services/api-data.service';
 import { AppDataService } from './_shared/services/app-data.service';
 import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/auth-guard.service';
+import { ToolsService } from './_shared/services/tools.service';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -42,7 +43,8 @@ import { MainComponent } from './main/main.component';
     ApiDataService,
     AppDataService,
     AuthService,
-    AuthGuardService
+    AuthGuardService,
+    ToolsService
   ],
   bootstrap: [AppComponent]
 })
