@@ -3,13 +3,11 @@ const models = require('../models/_index')
 const sequelize = require('../db/sequelize').sequelize;
 const ldapAuth = require('ldapAuth-fork');
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
 
 
 function authenticate(req, res) {
 
-  // const userName = req.params.userName;
-  // const password = req.params.password;
-  console.log(req.params.user);
 
   const startTime = process.hrtime();
 
@@ -49,19 +47,51 @@ function authenticate(req, res) {
           {expiresIn: 60 * 60 * 24 * 1}
         );
 
-        // console.log('user is authenticated!');
-        // console.log('user email is: ' + user.mail);
-        // console.log('full user details:');
-        // console.log(user);
         models.User.findOne({
-          where: {email: user.mail}
+          where: {userName: user.cn}
         }).then(jarvisUser => {
+          
+          if (jarvisUser) {
+            res.json({
+              ldapUser: user,
+              jarvisUser: jarvisUser,
+              newUser: false,
+              token: token
+            });
+          } else {
 
-          res.json({
-            ldap: user,
-            jarvis: jarvisUser,
-            token: token
-          });
+            var fullName = user.givenName + ' ' + user.sn;
+            fullName = fullName.replace(/\w\S*/g, text => {
+              return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+            });
+
+            models.User.create({
+              fullName: fullName,
+              userName: user.cn,
+              email: user.mail,
+              roleID: 1,
+              loginEnabled: true,
+              forcePasswordReset: false,
+              createdBy: 1,
+              createdAt: moment().format('YYYY-MM-DD'),
+              updatedBy: 1,
+              updatedAt: moment().format('YYYY-MM-DD')
+            })
+            .then(savedUser => {
+
+              res.json({
+                ldapUser: user,
+                jarvisUser: savedUser,
+                newUser: true,
+                token: token
+              });
+
+            })
+            
+
+          }
+
+          
 
         });
 

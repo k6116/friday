@@ -35,6 +35,8 @@ button.btn-login {
 }
 
 i.login-message-icon {
-  margin-right: 10px;
+  margin-right: 15px;
   font-size: 22px;
+  position: relative;
+  top: 2px;
 }

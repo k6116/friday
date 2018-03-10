@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../auth.service';
+
+import * as moment from 'moment';
 
 
 @Component({
@@ -11,6 +13,8 @@ import { AuthService } from '../auth.service';
 })
 export class LoginComponent implements OnInit {
 
+  @ViewChild('userNameVC') userNameVC: ElementRef;
+  @ViewChild('passwordVC') passwordVC: ElementRef;
 
   userName: string;
   password: string;
@@ -28,7 +32,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
-
   }
 
 
@@ -38,6 +41,22 @@ export class LoginComponent implements OnInit {
 
     this.loginMessage = undefined;
     this.showMessage = false;
+
+    if (!this.userName || !this.password) {
+      if (!this.userName && !this.password) {
+        this.loginMessage = 'Please enter your user name and password';
+      } else if (!this.userName) {
+        this.loginMessage = 'Please enter your user name';
+        this.userNameVC.nativeElement.focus();
+      } else if (!this.password) {
+        this.loginMessage = 'Please enter your password';
+        this.passwordVC.nativeElement.focus();
+      }
+      this.showMessage = true;
+      this.loginSuccess = false;
+      this.iconClass = 'fa-exclamation-triangle';
+      return;
+    }
 
     const user = JSON.stringify({
       userName: this.userName,
@@ -52,12 +71,13 @@ export class LoginComponent implements OnInit {
           console.log(`authentication took ${t1 - t0} milliseconds`);
           console.log('authentication response:');
           console.log(res);
-          console.log(`user login successfull, email is ${res.ldap.mail}, name is ${res.ldap.givenName} ${res.ldap.sn}`);
-          if (res.jarvis) {
+          console.log(`user login successfull, email is ${res.ldapUser.mail}, name is ${res.ldapUser.givenName} ${res.ldapUser.sn}`);
+          if (!res.newUser) {
             console.log(`this is an existing Jarvis user:`);
-            console.log(res.jarvis);
+            console.log(res.jarvisUser);
           } else {
             console.log('this would be a new Jarvis user');
+            console.log(res.jarvisUser);
           }
           localStorage.setItem('jarvisToken', res.token);
           // this.showMessage = true;

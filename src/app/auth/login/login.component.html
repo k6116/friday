@@ -11,14 +11,14 @@
       <div class="form-group form-group-login">
 
         <label>User Name</label>
-        <input [(ngModel)]="userName" type="text" class="form-control login-user-name" (keyup.enter)="onLoginClick()" appAutofocus>
+        <input #userNameVC [(ngModel)]="userName" type="text" class="form-control login-user-name" (keyup.enter)="onLoginClick()" appAutofocus>
         
       </div>
 
       <div class="form-group form-group-login">
 
         <label>Password</label>
-        <input [(ngModel)]="password" type="password" class="form-control password" (keyup.enter)="onLoginClick()">
+        <input #passwordVC [(ngModel)]="password" type="password" class="form-control password" (keyup.enter)="onLoginClick()">
         
       </div>
 
@@ -32,9 +32,20 @@
 
 
     <div class="login-cont-inner-message">
-      <i *ngIf="showMessage" [class]="'fa fa-lg login-message-icon ' + iconClass" [style.color]="loginSuccess ? 'green' : 'darkred'" aria-hidden="true"></i>
-      {{ loginMessage }}
+
+      <table>
+        <tr>
+          <td>
+            <i *ngIf="showMessage" [class]="'fa fa-lg login-message-icon ' + iconClass" [style.color]="loginSuccess ? 'green' : 'darkred'" aria-hidden="true"></i>
+          </td>
+          <td>
+            {{ loginMessage }}
+          </td>
+        </tr>
+      </table>
+
     </div>
+
 
   </div>
 
