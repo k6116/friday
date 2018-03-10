@@ -4,6 +4,7 @@ const sequelize = require('../db/sequelize').sequelize;
 const ldapAuth = require('ldapAuth-fork');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
+const momentTz = require('moment-timezone');
 
 
 function authenticate(req, res) {
@@ -65,6 +66,7 @@ function authenticate(req, res) {
               return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
             });
 
+
             models.User.create({
               fullName: fullName,
               userName: user.cn,
@@ -73,9 +75,9 @@ function authenticate(req, res) {
               loginEnabled: true,
               forcePasswordReset: false,
               createdBy: 1,
-              createdAt: moment().format('YYYY-MM-DDTHH:mm:ss'),
+              createdAt: moment().subtract(8, 'hours'),
               updatedBy: 1,
-              updatedAt: moment().format('YYYY-MM-DD')
+              updatedAt: moment().subtract(8, 'hours')
             })
             .then(savedUser => {
 
