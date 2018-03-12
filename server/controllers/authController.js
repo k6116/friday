@@ -9,8 +9,8 @@ const momentTz = require('moment-timezone');
 
 function authenticate(req, res) {
 
-  // parse the user param into a user object
-  const user = JSON.parse(req.params.user);
+  // get the user object from the request payload/body (user name and password)
+  const user = req.body;
 
   // set the ldap object
   const options = {

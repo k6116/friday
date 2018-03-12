@@ -6,7 +6,7 @@ var controllers = require('../controllers/_index.js');
 
 
 router.get('/users', controllers.auth.index);
-router.get('/login/:user', controllers.auth.authenticate);
+router.post('/login', controllers.auth.authenticate);
 
 
 module.exports = router;

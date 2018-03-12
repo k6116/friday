@@ -73,11 +73,11 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // construct a stringified object that will be passed to the server for authentication, as a request parameter
-    const user = JSON.stringify({
+    // construct a user/login object that will be passed in the request body
+    const user = {
       userName: this.userName,
-      password: encodeURIComponent(this.password) // need to encode characters such as ?,=,/,&,: so that we can safely pass as a param
-    });
+      password: this.password
+    };
 
     // start timer for authentication time
     const t0 = performance.now();

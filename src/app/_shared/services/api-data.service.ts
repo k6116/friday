@@ -24,8 +24,9 @@ export class ApiDataService {
   // get a response indicating auth success or failure, with ldap object, user object, token on success
   authenticate(user: any) {
 
-    return this.http.get(`/api/login/${user}`)
-      .timeout(this.timeout)
+    const headers = new Headers({ 'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post('/api/login', JSON.stringify(user), options)
       .map((response: Response) => response.json());
 
   }

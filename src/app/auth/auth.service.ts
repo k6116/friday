@@ -18,7 +18,7 @@ export class AuthService {
     private router: Router
   ) {
 
-    // TEMP CODE to check if the user is logged on page refresh, on a route other than login
+    // TEMP CODE: to check if the user is logged on page refresh, on a route other than login
     // TO-DO: check the expriation date and validity of the token (need to send to server), not just whether the token is there
     this.loggedIn = !!localStorage.getItem('jarvisToken');
 
