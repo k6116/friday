@@ -30,6 +30,10 @@ export class LoginComponent implements OnInit {
   showMessage: boolean;
   iconClass: string;
 
+  // temp code for testing user model
+  loggedInUser: User;
+  users: User;
+
   constructor(
     private router: Router,
     private apiDataService: ApiDataService,
@@ -38,6 +42,22 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    // TEMP CODE testing the user model and object
+    this.apiDataService.getUserData()
+      .subscribe(
+        res => {
+          this.users = res.map(user => new User().deserialize(user));
+          console.log('all users:');
+          console.log(this.users);
+          console.log(`minutes since last update of first user record (${this.users[0].fullName}):`);
+          console.log(this.users[0].minutesSinceLastUpdate());
+        },
+        err => {
+          console.log('error getting users data:');
+          console.log(err);
+        }
+      );
 
   }
 
@@ -76,6 +96,7 @@ export class LoginComponent implements OnInit {
 
           // store logged in user object in memory, in the auth service
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
+          // this.authService.loggedInUser = new User(res.jarvisUser);
 
           // set logged in to true in the auth service
           this.authService.setLoggedIn(true);
@@ -88,6 +109,16 @@ export class LoginComponent implements OnInit {
 
           // route to the main page
           // this.router.navigateByUrl('/main');
+
+          // TEMP CODE testing the user model and object
+          this.loggedInUser = res.jarvisUser;
+          console.log('loggedInUser without proper construction:');
+          console.log(this.loggedInUser);
+          console.log('loggedInUser with proper construction:');
+          console.log(this.authService.loggedInUser);
+          console.log('minutes since last update of user record:');
+          console.log(this.authService.loggedInUser.minutesSinceLastUpdate());
+
         },
         err => {
 
@@ -117,7 +148,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  // displays error message and icon for missing username or password, also setting focus for the user for convenience
+  // display error message and icon for missing username or password, also set focus for the user for convenience
   displayFormEntryErrors() {
     if (!this.userName && !this.password) {
       this.displayMessage(false, 'Please enter your user name and password');
