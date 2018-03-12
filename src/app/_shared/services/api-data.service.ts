@@ -15,12 +15,13 @@ export class ApiDataService {
     private http: Http
   ) {
 
+    // set the timeout to 15 seconds
     this.timeout = 15000;
 
   }
 
 
-
+  // get a response indicating auth success or failure, with ldap object, user object, token on success
   authenticate(user: any) {
 
     return this.http.get(`/api/login/${user}`)
@@ -29,7 +30,7 @@ export class ApiDataService {
 
   }
 
-
+  // get all users (index function)
   getUserData() {
 
     return this.http.get(`/api/users`)
