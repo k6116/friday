@@ -3,12 +3,15 @@ import { Http, Headers } from '@angular/http';
 import { Router } from '@angular/router';
 import { User } from '../_shared/models/user.model';
 
+import * as moment from 'moment';
+
+
 @Injectable()
 export class AuthService {
 
   loggedIn: boolean;
   loggedInUser: User;
-  certificate: any;
+  token: any;
 
   constructor(
     private http: Http,
@@ -29,6 +32,27 @@ export class AuthService {
   // setter for the loggedIn property
   setLoggedIn(loggedIn: boolean) {
     this.loggedIn = loggedIn;
+  }
+
+  // check to see whether the token expiration date has passed
+  tokenIsExpired(): boolean {
+    const expiringAt = moment.unix(this.token.expiringAt);
+    const now = moment();
+    if (expiringAt.isAfter(now)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  // get token expiration date (timestamp)
+  tokenExpirationDate(): string {
+    return moment.unix(this.token.expiringAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
+  }
+
+  // get token issued date (timestamp)
+  tokenIssuedDate(): string {
+    return moment.unix(this.token.issuedAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
   }
 
 

@@ -50,12 +50,29 @@ function authenticate(req, res) {
         const token = jwt.sign(
           {
             userName: ldapUser.cn,
-            email: ldapUser.email, 
+            email: ldapUser.mail, 
             rememberMe: true
           }, 
           'superSecret', 
           {expiresIn: 60 * 60 * 24 * 1}
         );
+
+        // TEMP CODE: decode the token
+        const decodedToken = jwt.decode(token);
+        console.log('decoded token:')
+        console.log(decodedToken);
+
+        // TEMP CODE: anoter way to decode (preferred, since we can check for error)
+        var decodedToken2;
+        jwt.verify(token, 'superSecret', (err, decoded) => {
+          if (decoded) {
+            console.log('decoded token:');
+            console.log(decoded);
+            decodedToken2 = decoded;
+          } else {
+            console.log('token is invalid');
+          }
+        })
 
         // check the Employees table to determine if this is an existing Jarvis user or not
         // using the user name as the unique key (note could use email as alternative)
@@ -70,7 +87,11 @@ function authenticate(req, res) {
               ldapUser: ldapUser,
               jarvisUser: jarvisUser,
               newUser: false,
-              token: token
+              token: {
+                signedToken: token,
+                issuedAt: decodedToken2.iat,
+                expiringAt: decodedToken2.exp
+              }
             });
           // if this is not an existing jarvis user, add a record to the Employees table before sending the response
           } else {

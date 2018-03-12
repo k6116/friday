@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
-    // TEMP CODE testing the user model and object
+    // TEMP CODE: testing the user model and object
     this.apiDataService.getUserData()
       .subscribe(
         res => {
@@ -90,19 +90,17 @@ export class LoginComponent implements OnInit {
           // log the time it took to authenticate
           this.logAuthPerformance(t0);
 
-          // TEMP CODE to log the response
+          // TEMP CODE: to log the response
           console.log('successfull authentication response:');
           console.log(res);
 
-          // store logged in user object in memory, in the auth service
+          // store data in the auth service related to the logged in user
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
-          // this.authService.loggedInUser = new User(res.jarvisUser);
-
-          // set logged in to true in the auth service
+          this.authService.token = res.token;
           this.authService.setLoggedIn(true);
 
           // store the jwt token in local storage
-          localStorage.setItem('jarvisToken', res.token);
+          localStorage.setItem('jarvisToken', res.token.signedToken);
 
           // display the message (auth success or failure)
           this.displayMessage(true, `Login successfull for ${this.authService.loggedInUser.fullName}`);
@@ -110,7 +108,7 @@ export class LoginComponent implements OnInit {
           // route to the main page
           // this.router.navigateByUrl('/main');
 
-          // TEMP CODE testing the user model and object
+          // TEMP CODE: testing the user model and object
           this.loggedInUser = res.jarvisUser;
           console.log('loggedInUser without proper construction:');
           console.log(this.loggedInUser);
@@ -118,6 +116,11 @@ export class LoginComponent implements OnInit {
           console.log(this.authService.loggedInUser);
           console.log('minutes since last update of user record:');
           console.log(this.authService.loggedInUser.minutesSinceLastUpdate());
+
+          // TEMP CODE: testing the token
+          console.log(`token was issued at: ${this.authService.tokenIssuedDate()}`);
+          console.log(`token is expiring at: ${this.authService.tokenExpirationDate()}`);
+          console.log(`token is expired: ${this.authService.tokenIsExpired()}`);
 
         },
         err => {
