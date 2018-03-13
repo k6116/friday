@@ -16,6 +16,7 @@ export class User implements Deserializable<User> {
   createdAt: string;
   updatedBy: number;
   updatedAt: string;
+  expiringAt: number;
 
   // constructor(user: any) {
   //   this.id = user.id;
