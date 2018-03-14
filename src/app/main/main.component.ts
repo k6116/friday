@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../_shared/models/user.model';
@@ -10,7 +10,7 @@ import { AppDataService } from '../_shared/services/app-data.service';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
 
   loggedInUser: User;
   subscription1: Subscription;
@@ -35,6 +35,10 @@ export class MainComponent implements OnInit {
         this.loggedInUser = loggedInUser;
     });
 
+  }
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
   }
 
 }

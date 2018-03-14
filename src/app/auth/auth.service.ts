@@ -66,6 +66,21 @@ export class AuthService {
     return true;
   }
 
+  // method to compare the timestamps to see if the token will expire in 2 minutes or less
+  tokenIsAboutToExpire(): boolean {
+    if (this.token) {
+      const expiringAt = moment.unix(this.token.expiringAt);
+      const now = moment();
+      console.log(`time to expiration in minutes: ${expiringAt.diff(now, 'minutes')}`);
+      console.log(`time to expiration in seconds: ${expiringAt.diff(now, 'seconds')}`);
+      if (expiringAt.diff(now, 'minutes') < 2) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
   // get the token expiration datetime as a string (convert from unix epoch)
   tokenExpirationDate(): string {
     return moment.unix(this.token.expiringAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
@@ -163,11 +178,26 @@ export class AuthService {
   // store the token in local storage
   setToken(token: any) {
     localStorage.setItem('jarvisToken', token);
+    sessionStorage.setItem('jarvisToken', token);
   }
 
-  // route to the login component/page
+  // route to the login component/page (for auto-logout)
   routeToLogin() {
-    this.router.navigate(['/login']);
+
+    console.log(this.router.url);
+    if (this.router.url !== '/login' && this.router.url !== '/') {
+
+      console.log('routing to login form from auth service (auto logout)');
+      this.router.navigate(['/login']);
+
+      this.appDataService.autoLogout$ = {
+        message: 'For security you have been logged out',
+        iconClass: 'fa-info-circle',
+        iconColor: 'rgb(239, 108, 0)'
+      };
+
+    }
+
   }
 
   // TEMP CODE: to log the token status
@@ -194,6 +224,9 @@ export class AuthService {
     // TEMP CODE: to test the timer is working properly
     console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
     console.log(`minutes since last user activity: ${numInactivityMins}`);
+    if (this.tokenIsAboutToExpire()) {
+      console.log('the token is about to expire');
+    }
 
     // if the token is expired, log the user out and display a message on the login page
     if (this.tokenIsExpired()) {

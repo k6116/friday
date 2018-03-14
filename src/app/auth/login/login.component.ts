@@ -1,6 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 import { ApiDataService } from '../../_shared/services/api-data.service';
+import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { User } from '../../_shared/models/user.model';
@@ -13,7 +15,7 @@ import * as moment from 'moment';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   // view childs are set up for the user name and password inputs so the focus() method can be used
   // tied to #userNameVC and #passwordVC in the html
@@ -29,38 +31,30 @@ export class LoginComponent implements OnInit {
   loginSuccess: boolean;
   showMessage: boolean;
   iconClass: string;
+  iconColor: string;
 
-  // temp code for testing user model
-  loggedInUser: User;
-  users: User;
+  // subscriptions
+  subscription1: Subscription;
 
   constructor(
     private router: Router,
     private apiDataService: ApiDataService,
+    private appDataService: AppDataService,
     private authService: AuthService,
     private toolsService: ToolsService
   ) { }
 
   ngOnInit() {
 
-    // TEMP CODE: testing the user model and object
-    this.apiDataService.getUserData()
-      .subscribe(
-        res => {
-          this.users = res.map(user => new User().deserialize(user));
-          console.log('all users:');
-          console.log(this.users);
-          console.log(`minutes since last update of first user record (${this.users[0].fullName}):`);
-          console.log(this.users[0].minutesSinceLastUpdate());
-        },
-        err => {
-          console.log('error getting users data:');
-          console.log(err);
-        }
-      );
+    if (this.appDataService.autoLogout$) {
+      const autoLogout = this.appDataService.autoLogout$;
+      this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
+    }
 
   }
 
+  ngOnDestroy() {
+  }
 
   onLoginClick() {
 
@@ -102,9 +96,10 @@ export class LoginComponent implements OnInit {
 
           // store the jwt token in local storage
           localStorage.setItem('jarvisToken', res.token.signedToken);
+          sessionStorage.setItem('jarvisToken', res.token.signedToken);
 
-          // display the message (auth success or failure)
-          // this.displayMessage(true, `Login successfull for ${this.authService.loggedInUser.fullName}`);
+          // clear the autologout object
+          this.appDataService.autoLogout$ = undefined;
 
           // route to the main page
           this.router.navigateByUrl('/main');
@@ -142,13 +137,13 @@ export class LoginComponent implements OnInit {
   // display error message and icon for missing username or password, also set focus for the user for convenience
   displayFormEntryErrors() {
     if (!this.userName && !this.password) {
-      this.displayMessage(false, 'Please enter your user name and password');
+      this.displayMessage('Please enter your user name and password', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
       this.userNameVC.nativeElement.focus();
     } else if (!this.userName) {
-      this.displayMessage(false, 'Please enter your user name');
+      this.displayMessage('Please enter your user name', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
       this.userNameVC.nativeElement.focus();
     } else if (!this.password) {
-      this.displayMessage(false, 'Please enter your password');
+      this.displayMessage('Please enter your password', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
       this.passwordVC.nativeElement.focus();
     }
   }
@@ -160,11 +155,10 @@ export class LoginComponent implements OnInit {
   }
 
   // display authentication error or success message
-  // TO-DO: change this to just displayLoginErrorMessage, since we will route to the main page on success
-  displayMessage(success: boolean, message: string) {
-    this.loginSuccess = success;
+  displayMessage(message: string, iconClass: string, iconColor: string) {
     this.loginMessage = message;
-    this.iconClass = success ? 'fa-check-circle' : 'fa-exclamation-triangle';
+    this.iconClass = iconClass;
+    this.iconColor = iconColor;
     this.showMessage = true;
   }
 
@@ -172,15 +166,15 @@ export class LoginComponent implements OnInit {
   handleErrorMessage(err: any) {
     // check for no response (net::ERR_CONNECTION_REFUSED etc.)
     if (err.status === 0) {
-      this.displayMessage(false, 'Server is not responding');
+      this.displayMessage('Server is not responding', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
     // check for timeout error
     } else if (err.hasOwnProperty('name')) {
       if (err.name === 'TimeoutError') {
-        this.displayMessage(false, 'Server timed out');
+        this.displayMessage('Server timed out', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
       }
     // otherwise, this should be a failed login (invalid credentials)
     } else {
-      this.displayMessage(false, 'Invalid user name or password');
+      this.displayMessage('Invalid user name or password', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
     }
   }
 
