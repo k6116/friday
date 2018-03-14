@@ -14,30 +14,42 @@ export class ApiDataService {
   constructor(
     private http: Http
   ) {
-
     // set the timeout to 15 seconds
     this.timeout = 15000;
-
   }
 
 
-  // get a response indicating auth success or failure, with ldap object, user object, token on success
+  // attempt to authenticate the user credentials using windows login and ldap
   authenticate(user: any) {
-
-    const headers = new Headers({ 'Content-Type': 'application/json'});
-    const options = new RequestOptions({ headers: headers });
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
     return this.http.post('/api/login', JSON.stringify(user), options)
+      .timeout(this.timeout)
       .map((response: Response) => response.json());
-
   }
 
-  // get all users (index function)
-  getUserData() {
+  // decode the jwt token to get the user info, issued and expiration dates
+  getInfoFromToken(token) {
+    const queryString = '?token=' + token;
+    return this.http.get(`/api/getInfoFromToken${queryString}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
 
+  // reset / get a new token with pushed out expiration date
+  resetToken(user: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+    return this.http.post(`/api/resetToken`, JSON.stringify(user), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  // get all users (index)
+  getUserData() {
     return this.http.get(`/api/users`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
-
   }
 
 

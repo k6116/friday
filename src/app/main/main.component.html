@@ -1,3 +1,5 @@
-<p>
-  main works!
-</p>
+
+<div *ngIf="loggedInUser" class="main-cont">
+  <h3>Welcome, {{ loggedInUser?.fullName }}</h3>
+  <h3>{{ loggedInUser?.email }}</h3>
+</div>

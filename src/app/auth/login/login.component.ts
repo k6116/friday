@@ -96,6 +96,7 @@ export class LoginComponent implements OnInit {
 
           // store data in the auth service related to the logged in user
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
+          // this.authService.loggedInUser = new User(res.jarvisUser);
           this.authService.token = res.token;
           this.authService.setLoggedIn(true);
 
@@ -103,24 +104,10 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('jarvisToken', res.token.signedToken);
 
           // display the message (auth success or failure)
-          this.displayMessage(true, `Login successfull for ${this.authService.loggedInUser.fullName}`);
+          // this.displayMessage(true, `Login successfull for ${this.authService.loggedInUser.fullName}`);
 
           // route to the main page
-          // this.router.navigateByUrl('/main');
-
-          // TEMP CODE: testing the user model and object
-          this.loggedInUser = res.jarvisUser;
-          console.log('loggedInUser without proper construction:');
-          console.log(this.loggedInUser);
-          console.log('loggedInUser with proper construction:');
-          console.log(this.authService.loggedInUser);
-          console.log('minutes since last update of user record:');
-          console.log(this.authService.loggedInUser.minutesSinceLastUpdate());
-
-          // TEMP CODE: testing the token
-          console.log(`token was issued at: ${this.authService.tokenIssuedDate()}`);
-          console.log(`token is expiring at: ${this.authService.tokenExpirationDate()}`);
-          console.log(`token is expired: ${this.authService.tokenIsExpired()}`);
+          this.router.navigateByUrl('/main');
 
         },
         err => {
@@ -137,6 +124,7 @@ export class LoginComponent implements OnInit {
         }
       );
   }
+
 
   // reset and hide the error message
   resetErrorMessage() {

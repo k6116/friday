@@ -6,6 +6,9 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
 
+const tokenSecret = 'superSecret';  // set the secret code word for enconding and decoding the token with jwt
+const expirationTime = 60 * 5  // units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
+
 
 function authenticate(req, res) {
 
@@ -46,15 +49,15 @@ function authenticate(req, res) {
         console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
         
         // build an encrypted token using the jsonwebtoken module
-        // set it to expire in 1 day
+        // set it to expire in 1 hour
         const token = jwt.sign(
           {
             userName: ldapUser.cn,
             email: ldapUser.mail, 
             rememberMe: true
           }, 
-          'superSecret', 
-          {expiresIn: 60 * 60 * 24 * 1}
+          tokenSecret, 
+          {expiresIn: expirationTime}
         );
 
         // TEMP CODE: decode the token
@@ -64,7 +67,7 @@ function authenticate(req, res) {
 
         // TEMP CODE: anoter way to decode (preferred, since we can check for error)
         var decodedToken2;
-        jwt.verify(token, 'superSecret', (err, decoded) => {
+        jwt.verify(token, tokenSecret, (err, decoded) => {
           if (decoded) {
             console.log('decoded token:');
             console.log(decoded);
@@ -160,6 +163,121 @@ function authenticate(req, res) {
 }
 
 
+// verify and decode the token to get user info, issued at and expiring at data
+function getInfoFromToken(req, res) {
+
+  // extract the token from the query parameters/string (after the ? in the url)
+  const token = req.query.token;
+
+  jwt.verify(token, tokenSecret, (err, decoded) => {
+    // if the token was successfully decoded
+    if (decoded) {
+
+      // use the user name in the decoded token to get the employee record from the Jarvis database
+      models.User.findOne({
+        where: {userName: decoded.userName}
+      }).then(jarvisUser => {
+
+        // send back a response with the ldap user object, jarvis user object, new user (no), and jwt token
+        res.json({
+          jarvisUser: jarvisUser,
+          newUser: false,
+          token: {
+            signedToken: req.query.token,
+            issuedAt: decoded.iat,
+            expiringAt: decoded.exp
+          }
+        });
+
+      })
+    
+    // if the token was not successfully decoded this means either it is expired or was modified thus couldn't be decoded
+    } else if (err) {
+
+      // send back a response with an error status code
+      return res.status(401).json({
+        title: 'the token is not valid (is expired or was tampered with)',
+        error: err
+      });
+
+    }
+  })
+
+}
+
+
+// function to get a new token (currently, only needed to push out the expiration date)
+function resetToken(req, res) {
+
+  // get the user name from the request body
+  const userName = req.body.userName;
+
+  // get the employee record from the Jarvis database
+  models.User.findOne({
+    where: { userName: userName }
+  })
+  .then(jarvisUser => {
+
+    // if the database was able to find the user record and return an object
+    if (jarvisUser) {
+
+      // generate a new token and set the new expiration datetime
+      const token = jwt.sign(
+        {
+          userName: jarvisUser.userName,
+          email: jarvisUser.email, 
+          rememberMe: true
+        }, 
+        tokenSecret, 
+        {expiresIn: expirationTime}
+      );
+
+      // decode the token to get the issued at and expired at datetimes
+      jwt.verify(token, tokenSecret, (err, decoded) => {
+        // if the decode was successfull
+        if (decoded) {
+
+          // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
+          res.json({
+            jarvisUser: jarvisUser,
+            newUser: false,
+            token: {
+              signedToken: token,
+              issuedAt: decoded.iat,
+              expiringAt: decoded.exp
+            }
+          });
+
+        // if the decode failed (this should not happen, if it does there is probably a bug in the code)
+        } else if (err) {
+          console.log('token is invalid (weird because we just created it!)');
+        }
+      })
+
+    // if the database was not able to find the user (if this happens, there is probably a bug or some design flaw)
+    } else {
+
+      // send back a response with an error status code
+      res.status(401).json({
+        title: 'reset token failed',
+        error: {message: `invalid user name: ${userName}`}
+      });
+
+    }
+  })
+  .catch(error => {
+
+    // send back a response with an error status code
+    res.status(401).json({
+      title: 'reset token failed (in catch)',
+      error: {message: error}
+    });
+  })
+
+}
+
+
+// return all users in the Employees table
 function index(req, res) {
 
   models.User.findAll({
@@ -173,5 +291,7 @@ function index(req, res) {
 
 module.exports = {
   authenticate: authenticate,
+  getInfoFromToken: getInfoFromToken,
+  resetToken: resetToken,
   index: index
 }
