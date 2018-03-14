@@ -22,6 +22,8 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { MainComponent } from './main/main.component';
 
+// ANGULAR MATERIAL
+import {MatButtonModule, MatCheckboxModule, MatExpansionModule} from '@angular/material';
 
 
 @NgModule({
@@ -37,7 +39,10 @@ import { MainComponent } from './main/main.component';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule
+    HttpModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatExpansionModule
   ],
   providers: [
     ApiDataService,
