@@ -7,6 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
+// ANGULAR MATERIAL MODULES
+import { MatButtonModule, MatCheckboxModule, MatExpansionModule } from '@angular/material';
+
 // DIRECTIVES
 import { AutofocusDirective } from './_shared/directives/autofocus.directive';
 
@@ -21,9 +24,8 @@ import { ToolsService } from './_shared/services/tools.service';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { MainComponent } from './main/main.component';
-
-// ANGULAR MATERIAL
-import {MatButtonModule, MatCheckboxModule, MatExpansionModule} from '@angular/material';
+import { NoticeModalComponent } from './modals/notice-modal/notice-modal.component';
+import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
 
 
 @NgModule({
@@ -31,7 +33,9 @@ import {MatButtonModule, MatCheckboxModule, MatExpansionModule} from '@angular/m
     AppComponent,
     LoginComponent,
     AutofocusDirective,
-    MainComponent
+    MainComponent,
+    NoticeModalComponent,
+    ConfirmModalComponent
   ],
   imports: [
     AppRoutingModule,
