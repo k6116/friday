@@ -12,6 +12,8 @@ export class AppDataService {
   noticeModalData = new EventEmitter<any>();
   confirmModalData = new EventEmitter<any>();
 
+  resetTimer = new EventEmitter<boolean>();
+
   constructor() { }
 
 }

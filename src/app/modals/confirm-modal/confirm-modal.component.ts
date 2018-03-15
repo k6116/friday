@@ -30,8 +30,8 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
     this.subscription1 = this.appDataService.confirmModalData.subscribe(
       (object: any) => {
         this.modal = object;
-        console.log('confirm modal object:');
-        console.log(this.modal);
+        // console.log('confirm modal object:');
+        // console.log(this.modal);
         if (this.modal.hasOwnProperty('display')) {
           this.displayModal(this.modal.display);
         }
@@ -46,16 +46,18 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
   displayModal(display: boolean) {
     if (display) {
       $('#confirm-modal').modal();
+    } else {
+      $('#confirm-modal').modal('hide');
     }
   }
 
   onYesButtonClick() {
-    console.log('yes button clicked in confirm modal component');
+    // console.log('yes button clicked in confirm modal component');
     this.confirmYesClick.emit(null);
   }
 
   onCancelButtonClick() {
-    console.log('cancel button clicked in confirm modal component');
+    // console.log('cancel button clicked in confirm modal component');
     this.confirmCancelClick.emit(null);
   }
 

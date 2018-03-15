@@ -11,9 +11,7 @@
           </button>
         </div>
       </div>
-      <div class="modal-body">
-        {{ modal?.message }}
-      </div>
+      <div class="modal-body" [innerHTML]="modal?.message | safeHtml"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" id="yes" data-dismiss="modal" (click)="onYesButtonClick()">Yes</button>
         <button type="button" class="btn btn-secondary" id="no" data-dismiss="modal" (click)="onCancelButtonClick()">Cancel</button>

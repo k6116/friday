@@ -13,6 +13,9 @@ import { MatButtonModule, MatCheckboxModule, MatExpansionModule } from '@angular
 // DIRECTIVES
 import { AutofocusDirective } from './_shared/directives/autofocus.directive';
 
+// PIPES
+import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
+
 // SERVICES
 import { ApiDataService } from './_shared/services/api-data.service';
 import { AppDataService } from './_shared/services/app-data.service';
@@ -28,6 +31,7 @@ import { NoticeModalComponent } from './modals/notice-modal/notice-modal.compone
 import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +39,8 @@ import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.comp
     AutofocusDirective,
     MainComponent,
     NoticeModalComponent,
-    ConfirmModalComponent
+    ConfirmModalComponent,
+    SafeHtmlPipe
   ],
   imports: [
     AppRoutingModule,

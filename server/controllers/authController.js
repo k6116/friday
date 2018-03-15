@@ -212,6 +212,7 @@ function resetToken(req, res) {
   // get the user name from the request body
   const userName = req.body.userName;
 
+  // TO-DO: decide if this really necessary to get the user again
   // get the employee record from the Jarvis database
   models.User.findOne({
     where: { userName: userName }

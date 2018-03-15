@@ -41,4 +41,16 @@ export class MainComponent implements OnInit, OnDestroy {
     this.subscription1.unsubscribe();
   }
 
+  onConfirmYesClick() {
+    console.log('user clicked yes in the confirm modal');
+    this.authService.modalIsDisplayed = undefined;
+    this.authService.resetToken();
+  }
+
+  onConfirmCancelClick() {
+    console.log('user clicked cancel in the confirm modal');
+    this.authService.modalIsDisplayed = undefined;
+    this.authService.routeToLogin(false);
+  }
+
 }

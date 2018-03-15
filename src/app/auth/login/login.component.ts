@@ -46,6 +46,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+    // set the focus on the user name input
+    this.userNameVC.nativeElement.focus();
+
+    // check for the autoLogout object; if it exists display the message
     if (this.appDataService.autoLogout$) {
       const autoLogout = this.appDataService.autoLogout$;
       this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
@@ -85,7 +89,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.logAuthPerformance(t0);
 
           // TEMP CODE: to log the response
-          console.log('successfull authentication response:');
+          console.log('authentication was successfull:');
           console.log(res);
 
           // store data in the auth service related to the logged in user
@@ -96,7 +100,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
           // store the jwt token in local storage
           localStorage.setItem('jarvisToken', res.token.signedToken);
-          sessionStorage.setItem('jarvisToken', res.token.signedToken);
+          // sessionStorage.setItem('jarvisToken', res.token.signedToken);
+
+          // reset the timer so that it will be synched with the token expiration, at least within a second or two
+          this.appDataService.resetTimer.emit(true);
 
           // clear the autologout object
           this.appDataService.autoLogout$ = undefined;
@@ -111,11 +118,12 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.logAuthPerformance(t0);
 
           // TEMP CODE to log the response (error)
-          console.log('authentication response with errors:');
+          console.log('authentication failed:');
           console.log(err);
 
           // display the appropriate message depending on the type of error (timeout, invalid credentials, etc.)
           this.handleErrorMessage(err);
+
         }
       );
   }

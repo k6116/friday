@@ -11,8 +11,7 @@
           </button>
         </div>
       </div>
-      <div class="modal-body" [innerHTML]="modal?.message | safeHtml">
-      </div>
+      <div class="modal-body" [innerHTML]="modal?.message | safeHtml"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="yes" data-dismiss="modal" (click)="onOkButtonClick()">Ok</button>
       </div>
