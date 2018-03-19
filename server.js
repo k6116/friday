@@ -1,15 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const fs = require('fs');
 const http = require('http');
 const https = require('https');
-const app = express();
 const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
 
+// set the ssl options object, reading keys and certs from the filesystem
+// NOTE: for use on the web server uncomment this block
 // var sslOptions = {
-//   key: fs.readFileSync('./etc/ssl/wcos.key'),
-//   cert: fs.readFileSync('./etc/ssl/wcosofw2.cos.is.keysight.com.crt'),
+//   key: fs.readFileSync('./etc/ssl/jarvis.key'),
+//   cert: fs.readFileSync('./etc/ssl/jarvis.crt'),
 //   requestCert: true,
 //   ca: [
 //     fs.readFileSync('./etc/ssl/Keysight_Intermediate.crt'),
@@ -21,6 +23,9 @@ const sequelize = require('./server/db/sequelize');
 // connect to the database
 sequelize.connect();
 
+// create the express application
+const app = express();
+
 // set body parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,7 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static('public'));
 
-// send api requests to the server/routes/api.js file
+// middleware function to send any api requests to the server/routes/api.js file
 app.use('/api', api);
 
 // send all other requests to the Angular app
@@ -37,12 +42,22 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-// set the port
-const port = process.env.PORT || '3000';
-// const port = process.env.PORT || '443';
-app.set('port', port);
 
-// start the server
-const server = http.createServer(app);
-// const server = https.createServer(sslOptions, app);
-server.listen(port, () => console.log(`Running on localhost:${port}`));
+// create a node server for https on port 3000 (localhost) or 443 (server)
+// NOTE: for use on the web server change to https, add the sslOptions, and change to port 443:  https.createServer(sslOptions, app)
+const port1 = 3000;
+http.createServer(app)
+  .listen(port1, () => {
+    console.log(`node server listening on port: ${port1}`);
+  });
+
+// create a second node server for to forward http (port 80) requests to https (port 443)
+// NOTE: for use on the web server uncomment this block
+// const port2 = 80;
+// http.createServer((req, res) => {
+//   res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+//   res.end();
+// })
+// .listen(80, () => {
+//   console.log(`node server listening on port: ${port2}`);
+// });
