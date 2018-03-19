@@ -133,8 +133,8 @@ export class AuthService {
     const numInactivitySeconds = moment().diff(moment.unix(this.lastActivity), 'seconds');
 
     // TEMP CODE: to test the timer is working properly
-    // console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
-    // console.log(`time since last activity: ${numInactivityMins} (minutes); ${numInactivitySeconds} (seconds)`);
+    console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
+    console.log(`time since last activity: ${numInactivityMins} (minutes); ${numInactivitySeconds} (seconds)`);
     this.logTokenStatus();
 
     // if the token is expired, log the user out and display a message on the login page
@@ -151,7 +151,7 @@ export class AuthService {
       this.apiDataService.resetToken(this.loggedInUser)
         .subscribe(
           res => {
-            // console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
+            console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
             // console.log(res);
             // update the token info in memory
             this.token = res.token;
@@ -222,7 +222,7 @@ export class AuthService {
     if (this.token) {
       const expiringAt = moment.unix(this.token.expiringAt);
       const now = moment();
-      // console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
+      console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
       if (expiringAt.diff(now, 'seconds') <= 120) {
         return true;
       }
@@ -244,7 +244,10 @@ export class AuthService {
   // update the last activity property, which will be used to determine if the user should be auto-logged out after certain amount of time
   // NOTE: this is stored as unix epoch time (number) to be consistent with the expiringAt and issueAt times
   updateLastActivity() {
-    this.lastActivity = moment().unix();
+    // block the update if the extend user session modal is displayed
+    if (!this.modalIsDisplayed) {
+      this.lastActivity = moment().unix();
+    }
     // console.log(`last activity has been updated to: ${moment.unix(this.lastActivity).format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
   }
 
@@ -278,6 +281,7 @@ export class AuthService {
       // hide the extend session modal if it is displayed
       if (this.modalIsDisplayed) {
         this.hideExtendSessionModal();
+        this.modalIsDisplayed = undefined;
       }
 
       // re-route to the login page
@@ -300,7 +304,7 @@ export class AuthService {
   // TEMP CODE: to log the token status
   logTokenStatus() {
     if (this.token) {
-      // console.log(`token was issued at: ${this.tokenIssuedDate()}; expiring at: ${this.tokenExpirationDate()}`);
+      console.log(`token was issued at: ${this.tokenIssuedDate()}; expiring at: ${this.tokenExpirationDate()}`);
     }
   }
 
