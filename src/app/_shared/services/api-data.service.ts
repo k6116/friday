@@ -55,6 +55,11 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
-
+  // get FTE data
+  getFteData(userID: number) {
+    return this.http.get(`/api/ftedata/${userID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
 
 }
