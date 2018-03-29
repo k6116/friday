@@ -3,10 +3,12 @@
 <app-confirm-modal (confirmYesClick)="onConfirmYesClick()" (confirmCancelClick)="onConfirmCancelClick()"></app-confirm-modal>
 
 <!-- TEMP CODE: display the loggin in user's name and email -->
-<div class="main-cont">
+<div class="main-cont" *ngIf="loggedInUser">
   <h3>Welcome, {{ loggedInUser?.fullName }}</h3>
   <h3>{{ loggedInUser?.email }}</h3>
+
+  <!-- TEMP CODE: test angular material -->
+  <button class="test-mat-button" mat-raised-button color="warn" (click)="onLogoutClick()">Logout</button>
 </div>
 
-<!-- TEMP CODE: test angular material -->
-<button class="test-mat-button" mat-raised-button color="warn">Warn</button>
+

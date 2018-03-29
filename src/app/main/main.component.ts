@@ -22,23 +22,24 @@ export class MainComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    // if coming from the login page or any other page, this should be picked up instantly
-    this.loggedInUser = this.authService.loggedInUser;
-    console.log('logged in user on init from authService:');
-    console.log(this.loggedInUser);
-
-    // NOTE: this is really only needed when they refresh this page
-    // there will be a small delay to decode the token and get the user data to display
-    this.subscription1 = this.appDataService.loggedInUser.subscribe(
-      (loggedInUser: any) => {
-        console.log('subscription to loggedInUser receivevd in the main component');
-        this.loggedInUser = loggedInUser;
+    this.authService.getLoggedInUser((user, err) => {
+      if (err) {
+        console.log(`error getting logged in user: ${err}`);
+        return;
+      }
+      console.log('logged in user data received in main component:');
+      console.log(user);
+      this.loggedInUser = user;
     });
 
   }
 
   ngOnDestroy() {
-    this.subscription1.unsubscribe();
+  }
+
+  onLogoutClick() {
+    // log the user out, don't show auto-logout message
+    this.authService.routeToLogin(false);
   }
 
   onConfirmYesClick() {
