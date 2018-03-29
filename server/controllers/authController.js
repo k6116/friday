@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
 
-const tokenSecret = 'superSecret';  // set the secret code word for enconding and decoding the token with jwt
+const tokenSecret = 'rutabega';  // set the secret code word for enconding and decoding the token with jwt
 const expirationTime = 60 * 60 * 1  // units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
 
 
@@ -60,13 +60,8 @@ function authenticate(req, res) {
           {expiresIn: expirationTime}
         );
 
-        // TEMP CODE: decode the token
-        const decodedToken = jwt.decode(token);
-        console.log('decoded token:')
-        console.log(decodedToken);
-
-        // TEMP CODE: anoter way to decode (preferred, since we can check for error)
-        var decodedToken2;
+        // decode the token to get the issued at and expiring at timestamps
+        var decodedToken;
         jwt.verify(token, tokenSecret, (err, decoded) => {
           if (decoded) {
             console.log('decoded token:');

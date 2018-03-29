@@ -66,7 +66,7 @@ export class AuthService {
 
 
   // get user information for components that need the data, to deal with scenario where there may or may not be user info in the cache
-  getLoggedInUser(callback: (user: User, error?: string) => void) {
+  getLoggedInUser(callback: (user: User, error?: string) => void): void {
     console.log('getLoggedInUser method called');
     // if the data is already stored in memory, just return that
     if (this.loggedInUser) {
@@ -101,8 +101,6 @@ export class AuthService {
   getInfoFromToken() {
     // get the token from local storage
     const token = localStorage.getItem('jarvisToken');
-    // console.log('token:');
-    // console.log(token);
     // if the token exists (if is doesn't the token constant will be set to null)
     if (token) {
       this.apiDataService.getInfoFromToken(token)
@@ -181,7 +179,6 @@ export class AuthService {
         .subscribe(
           res => {
             console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
-            // console.log(res);
             // update the token info in memory
             this.token = res.token;
             // remove and reset the token in local storage
@@ -197,7 +194,6 @@ export class AuthService {
         );
     // if the token is about to expire, show a modal asking the user if they want to keep working/stay logged in
     } else if (this.tokenIsAboutToExpire()) {
-      // console.log('the token is about to expire');
       // only emit a message to the modal if it isn't already displayed
       if (!this.modalIsDisplayed) {
         this.displayExtendSessionModal();
@@ -213,8 +209,6 @@ export class AuthService {
     this.apiDataService.resetToken(this.loggedInUser)
       .subscribe(
         res => {
-          // console.log('reset token response:');
-          // console.log(res);
           // update the token info in memory
           this.token = res.token;
           // remove and reset the token in local storage
