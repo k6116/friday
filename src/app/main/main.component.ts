@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../_shared/models/user.model';
 import { AppDataService } from '../_shared/services/app-data.service';
+import { ApiDataService } from '../_shared/services/api-data.service';
 
 
 @Component({
@@ -15,31 +16,52 @@ export class MainComponent implements OnInit, OnDestroy {
   loggedInUser: User;
   subscription1: Subscription;
 
+
   constructor(
     private authService: AuthService,
-    private appDataService: AppDataService
+    private appDataService: AppDataService,
+    private apiDataService: ApiDataService
   ) { }
+
 
   ngOnInit() {
 
-    // if coming from the login page or any other page, this should be picked up instantly
-    this.loggedInUser = this.authService.loggedInUser;
-    console.log('logged in user on init from authService:');
-    console.log(this.loggedInUser);
-
-    // NOTE: this is really only needed when they refresh this page
-    // there will be a small delay to decode the token and get the user data to display
-    this.subscription1 = this.appDataService.loggedInUser.subscribe(
-      (loggedInUser: any) => {
-        console.log('subscription to loggedInUser receivevd in the main component');
-        this.loggedInUser = loggedInUser;
+    this.authService.getLoggedInUser((user, err) => {
+      if (err) {
+        console.log(`error getting logged in user: ${err}`);
+        return;
+      }
+      console.log('logged in user data received in main component:');
+      console.log(user);
+      this.loggedInUser = user;
     });
 
+
+    // TEMP CODE for testing api data guard
+    this.apiDataService.getUserData()
+      .subscribe(
+        res => {
+          console.log('get user data successfull:');
+          console.log(res);
+        },
+        err => {
+          console.log('get user data error:');
+          console.log(err);
+        }
+      );
+
   }
 
+
   ngOnDestroy() {
-    this.subscription1.unsubscribe();
   }
+
+
+  onLogoutClick() {
+    // log the user out, don't show auto-logout message
+    this.authService.routeToLogin(false);
+  }
+
 
   onConfirmYesClick() {
     console.log('user clicked yes in the confirm modal');
@@ -47,10 +69,12 @@ export class MainComponent implements OnInit, OnDestroy {
     this.authService.resetToken();
   }
 
+
   onConfirmCancelClick() {
     console.log('user clicked cancel in the confirm modal');
     this.authService.modalIsDisplayed = undefined;
     this.authService.routeToLogin(false);
   }
+
 
 }

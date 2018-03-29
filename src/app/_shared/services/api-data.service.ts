@@ -47,7 +47,10 @@ export class ApiDataService {
 
   // get all users (index)
   getUserData() {
-    return this.http.get(`/api/users`)
+    const token = localStorage.getItem('jarvisToken') ? '?token=' + localStorage.getItem('jarvisToken') : '';
+    // console.log('token query string is:');
+    // console.log(token);
+    return this.http.get(`/api/users${token}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
