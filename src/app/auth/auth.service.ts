@@ -16,13 +16,19 @@ export class AuthService {
   token: any;
   lastActivity: number;   // epoch time indicating last time there was any mouse click or keypress
   modalIsDisplayed: boolean;
+  warnBeforeExpiration: number; // time in minutes before auto logout to display the warning modal
 
   constructor(
     private http: Http,
     private router: Router,
     private apiDataService: ApiDataService,
     private appDataService: AppDataService
-  ) {}
+  ) {
+
+    // set the warning modal to appear 5 minutes before auto-logout
+    this.warnBeforeExpiration = 5;
+
+  }
 
 
   // method to check if user is logged in, used by the auth guard service
@@ -217,13 +223,13 @@ export class AuthService {
     return true;
   }
 
-  // method to compare the timestamps to see if the token will expire in 2 minutes or less
+  // method to compare the timestamps to see if the token will expire in X minutes or less
   tokenIsAboutToExpire(): boolean {
     if (this.token) {
       const expiringAt = moment.unix(this.token.expiringAt);
       const now = moment();
       console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
-      if (expiringAt.diff(now, 'seconds') <= 120) {
+      if (expiringAt.diff(now, 'seconds') <= this.warnBeforeExpiration * 60) {
         return true;
       }
       return false;
