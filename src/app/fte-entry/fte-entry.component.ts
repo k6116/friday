@@ -49,8 +49,16 @@ export class FteEntryComponent implements OnInit {
       console.log('logged in user data received in main component:');
       console.log(user);
       this.loggedInUser = user;
+      this.testMethod();
     });
 
+
+    // initialize the by-month FTE display with most recent 2 quarters visible
+    this.fteMonthVisible = this.fteMonthVisible.fill(true, 18, 24);
+  }
+
+
+  testMethod() {
     // get FTE data
     this.apiDataService.getFteData(this.loggedInUser.id)
     .subscribe(
@@ -64,8 +72,6 @@ export class FteEntryComponent implements OnInit {
         console.log(err);
       }
     );
-    // initialize the by-month FTE display with most recent 2 quarters visible
-    this.fteMonthVisible = this.fteMonthVisible.fill(true, 18, 24);
   }
 
   buildFteEntryForm = (): void => {
