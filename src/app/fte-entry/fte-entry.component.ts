@@ -3,6 +3,7 @@ import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@ang
 import { NouisliderModule } from 'ng2-nouislider';
 
 import { User } from '../_shared/models/user.model';
+import { AuthService } from '../auth/auth.service';
 import { ApiDataService } from '../_shared/services/api-data.service';
 import { UserFTEs, AllocationsArray} from './fte-model';
 
@@ -24,10 +25,12 @@ export class FteEntryComponent implements OnInit {
   sliderRange: number[] = [6, 8];
   userFTEs: any;  // initialize variable to store user FTE data
   display: boolean; // TODO: find a better solution to FTE display timing issue
+  loggedInUser: User;
 
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private apiDataService: ApiDataService
   ) {
     this.FTEFormGroup = this.fb.group({
@@ -36,8 +39,20 @@ export class FteEntryComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    // get logged in user's info
+    this.authService.getLoggedInUser((user, err) => {
+      if (err) {
+        console.log(`error getting logged in user: ${err}`);
+        return;
+      }
+      console.log('logged in user data received in main component:');
+      console.log(user);
+      this.loggedInUser = user;
+    });
+
     // get FTE data
-    this.apiDataService.getFteData(58)
+    this.apiDataService.getFteData(this.loggedInUser.id)
     .subscribe(
       res => {
         this.userFTEs = res;
