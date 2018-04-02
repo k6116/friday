@@ -1,0 +1,45 @@
+<div *ngIf="display" class="container-fluid">
+  <div class="row"> <!-- begin row for slider bar -->
+      <div class="col-lg-10 col-lg-offset-1">
+          <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
+      </div>
+  </div> <!-- end row -->
+
+
+  <div class="row top-margin"> <!-- begin row for FTE entry table -->
+      <div class="col-lg-10 col-lg-offset-1 table-scrollable"> <!-- using table-scrollable css -->
+          <form [formGroup]="FTEFormGroup">
+              <div formArrayName="FTEFormArray">
+                  <table>
+                      <tr> <!-- first row of table is month-name column-headers -->
+                          <th>Project</th>
+                          <!-- loop through each month in the userFTEs data object-->
+                          <ng-container *ngFor="let month of userFTEs[0].allocations; let k = index">
+                            <!-- only show the month column if the slider deems it visible -->
+                            <th *ngIf="fteMonthVisible[k]">{{month.month | date:'MMM-yyyy':'+0'}}</th>
+                          </ng-container>
+                      </tr>
+                      <tbody>
+                          <!-- loop through each project, one row per project -->
+                          <tr [formGroupName]="i" *ngFor="let project of projects; let i = index">
+                              <td>{{userFTEs[i].projectName}}</td>
+                              <!-- loop through each month's FTE allocation, 24 cells per project -->
+                              <ng-container *ngFor="let cell of project.controls; let j = index">
+                                <td [formGroupName]="j" *ngIf="fteMonthVisible[j]"> <!-- only show if slider deems it visible -->
+                                    <!-- TODO: setup to use formControlName only instead of ngModel for sending to db -->
+                                    <input type="text" formControlName="fte" [(ngModel)]="userFTEs[i].allocations[j].fte" class="form-control fte-table-row"/>
+                                </td>
+                            </ng-container>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </form>
+      </div> <!-- end FTE entry scrollable div -->
+  </div> <!-- end row -->
+
+</div> <!-- end FTE component container div -->
+
+<!-- TEMP CODE: for seeing live changes to the data object -->
+<br /><br /><br /><br />
+<div>JSON: {{userFTEs | json}}</div>

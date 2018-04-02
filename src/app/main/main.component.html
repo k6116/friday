@@ -7,8 +7,8 @@
   <h3>Welcome, {{ loggedInUser?.fullName }}</h3>
   <h3>{{ loggedInUser?.email }}</h3>
 
-  <!-- TEMP CODE: test angular material -->
   <button class="test-mat-button" mat-raised-button color="warn" (click)="onLogoutClick()">Logout</button>
 </div>
 
-
+<!-- import the FTE entry screen component -->
+<app-fte-entry></app-fte-entry>

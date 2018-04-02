@@ -1,0 +1,13 @@
+
+.fte-table-row {
+    width:80px;
+  }
+  
+  .top-margin {
+    margin-top: 50px;
+  }
+  
+  .table-scrollable {
+    height:120px;
+    overflow:scroll;
+  }

@@ -6,6 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { NouisliderModule } from 'ng2-nouislider';
 
 // ANGULAR MATERIAL MODULES
 import { MatButtonModule, MatCheckboxModule, MatExpansionModule } from '@angular/material';
@@ -29,6 +30,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { MainComponent } from './main/main.component';
 import { NoticeModalComponent } from './modals/notice-modal/notice-modal.component';
 import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
+import { FteEntryComponent } from './fte-entry/fte-entry.component';
 
 
 
@@ -40,7 +42,8 @@ import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.comp
     MainComponent,
     NoticeModalComponent,
     ConfirmModalComponent,
-    SafeHtmlPipe
+    SafeHtmlPipe,
+    FteEntryComponent
   ],
   imports: [
     AppRoutingModule,
@@ -51,7 +54,8 @@ import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.comp
     HttpModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatExpansionModule
+    MatExpansionModule,
+    NouisliderModule
   ],
   providers: [
     ApiDataService,

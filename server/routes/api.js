@@ -10,6 +10,9 @@ router.post('/login', controllers.auth.authenticate);
 router.get('/getInfoFromToken', controllers.auth.getInfoFromToken);
 router.post('/resetToken', controllers.auth.resetToken);
 
+// FTE data controller
+router.get('/ftedata/:userID', controllers.fteData.getFteData);
+
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
