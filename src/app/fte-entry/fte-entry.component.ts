@@ -24,7 +24,7 @@ export class FteEntryComponent implements OnInit {
   userFTEs: any;  // array to store user FTE data
   display: boolean; // TODO: find a better solution to FTE display timing issue
   loggedInUser: User; // object for logged in user's info
-  projects: any;
+  projects: any;  // for aliasing formarray
 
   constructor(
     private fb: FormBuilder,
@@ -40,8 +40,6 @@ export class FteEntryComponent implements OnInit {
   ngOnInit() {
 
     this.setSliderConfig(); // initalize slider config
-    // initialize the by-month FTE display with most recent 2 quarters visible
-    this.fteMonthVisible = this.fteMonthVisible.fill(true, 18, 24);
 
     // get logged in user's info
     this.authService.getLoggedInUser((user, err) => {
@@ -111,6 +109,9 @@ export class FteEntryComponent implements OnInit {
     } else {
       this.sliderRange = [7, 9];
     }
+
+    // initialize the by-month FTE display with the slider range handles
+    this.fteMonthVisible = this.fteMonthVisible.fill(true, this.sliderRange[0] * 3, this.sliderRange[1] * 3);
 
     // generate slider labels based on current date
     startDate = moment().startOf('year').subtract(2, 'months'); // first day of this FY
