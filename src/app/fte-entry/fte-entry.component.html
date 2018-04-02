@@ -1,13 +1,13 @@
 <div *ngIf="display" class="container-fluid">
   <div class="row"> <!-- begin row for slider bar -->
       <div class="col-lg-10 col-lg-offset-1">
-          <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" (change)="onSliderChange($event)"></nouislider>
+          <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
       </div>
   </div> <!-- end row -->
 
 
   <div class="row top-margin"> <!-- begin row for FTE entry table -->
-      <div class="col-lg-10 col-lg-offset-1 table-scrollable">
+      <div class="col-lg-10 col-lg-offset-1 table-scrollable"> <!-- using table-scrollable css -->
           <form [formGroup]="FTEFormGroup">
               <div formArrayName="FTEFormArray">
                   <table>
@@ -21,12 +21,13 @@
                       </tr>
                       <tbody>
                           <!-- loop through each project, one row per project -->
-                          <tr [formGroupName]="i" *ngFor="let project of FTEFormGroup.controls.FTEFormArray.controls; let i = index">
+                          <tr [formGroupName]="i" *ngFor="let project of projects; let i = index">
                               <td>{{userFTEs[i].projectName}}</td>
                               <!-- loop through each month's FTE allocation, 24 cells per project -->
                               <ng-container *ngFor="let cell of project.controls; let j = index">
                                 <td [formGroupName]="j" *ngIf="fteMonthVisible[j]"> <!-- only show if slider deems it visible -->
-                                    <input type="text" formControlName="fte" [(ngModel)]="userFTEs[i].allocations[j].fte" class="fte-table-row"/>
+                                    <!-- TODO: setup to use formControlName only instead of ngModel for sending to db -->
+                                    <input type="text" formControlName="fte" [(ngModel)]="userFTEs[i].allocations[j].fte" class="form-control fte-table-row"/>
                                 </td>
                             </ng-container>
                           </tr>

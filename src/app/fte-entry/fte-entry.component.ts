@@ -18,12 +18,13 @@ export class FteEntryComponent implements OnInit {
 
   // initialize variables
   mainSliderConfig: any;  // slider config
-  fteMonthVisible = new Array(24).fill(false);  // boolean array for by-month FTE form display
+  fteMonthVisible = new Array(36).fill(false);  // boolean array for by-month FTE form display
   FTEFormGroup: FormGroup;
-  sliderRange: number[] = [6, 8];
+  sliderRange: number[] = [];
   userFTEs: any;  // array to store user FTE data
   display: boolean; // TODO: find a better solution to FTE display timing issue
   loggedInUser: User; // object for logged in user's info
+  projects: any;
 
   constructor(
     private fb: FormBuilder,
@@ -90,6 +91,7 @@ export class FteEntryComponent implements OnInit {
       // push the temp formarray as 1 object in the Project formarray
       FTEFormArray.push(projFormArray);
     });
+    this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
   }
 
   setSliderConfig() {
@@ -97,31 +99,30 @@ export class FteEntryComponent implements OnInit {
     const moment = require('moment');
     require('moment-fquarter');
 
-    // determine slider start-date for labels based on current date
+    // set slider starting range based on current date
     let startDate = moment().startOf('month');
-    const month = moment(startDate).month();
-
-    if ((month === 0) || (month === 3) || (month === 6) || (month === 9)) {
-      // for jan/apr/jul/oct
-      startDate = moment(startDate).add(1, 'month');
-      startDate = moment(startDate).subtract(2, 'years');
-    } else if ((month === 2) || (month === 5) || (month === 8) || (month === 11)) {
-      // for dec/mar/jun/sep
-      startDate = moment(startDate).add(2, 'months');
-      startDate = moment(startDate).subtract(2, 'years');
+    let month = moment(startDate).month();
+    if (month === 10 || month === 11 || month === 0) {
+      this.sliderRange = [4, 6]; // Q1
+    } else if (month === 1 || month === 2 || month === 3) {
+      this.sliderRange = [5, 7]; // Q2
+    } else if (month === 4 || month === 5 || month === 6) {
+      this.sliderRange = [6, 8];
     } else {
-      startDate = moment(startDate).add(3, 'months');
-      startDate = moment(startDate).subtract(2, 'years');
+      this.sliderRange = [7, 9];
     }
 
-    // using the start date, build an array of quarter + FY labels for the slider bar
+    // generate slider labels based on current date
+    startDate = moment().startOf('year').subtract(2, 'months'); // first day of this FY
+    startDate = moment(startDate).subtract(1, 'year');  // first day of last FY
+    month = moment(startDate).month();
     let firstQuarter = moment(startDate).fquarter(-3).quarter;
     let firstYear = moment(startDate).fquarter(-3).year;
-    const fyLabelArray = new Array<string>(8).fill('');
+    const fyLabelArray = new Array<string>(12).fill('');
 
-    // make an array of label strings, ie - 'Q4-2017', 'Q1-2018'
+    // make an array of label strings, ie - [Q4'17, Q1'18]
     fyLabelArray.forEach(function(element, i) {
-      fyLabelArray[i] = 'Q' + firstQuarter + '-' + firstYear;
+      fyLabelArray[i] = `Q${firstQuarter}'${firstYear.toString().slice(2)}`;
       firstQuarter++;
       if (firstQuarter > 4) {
         firstYear++;
@@ -129,21 +130,26 @@ export class FteEntryComponent implements OnInit {
       }
     });
 
+    // make array of values for slider pips
+    const pipValues = [];
+    for (let i = 0; i <= 12; i = i + 0.5) {
+      pipValues.push(i);
+    }
+
     // set slider config
     this.mainSliderConfig = {
       behaviour: 'tap-drag',
       connect: true,
       range: {
           min: 0,
-          max: 8
+          max: 12
       },
       margin: 1,  // set minimum distance between the 2 handles
-      start: [ 6, 8 ],
       pips: {
           // set the pips (markers) every 0.5 steps. This is a hacky way to get labels in between the steps, as you'll see below
           mode: 'values',
-          values: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8],
-          density: 16,
+          values: pipValues,
+          density: 24,
 
           // custom filter to set pips only visible at the major steps
           filter: function filterHalfSteps( value, type ) {
@@ -207,6 +213,12 @@ export class FteEntryComponent implements OnInit {
     const leftHandle = Math.round(value[0]);
     const rightHandle = Math.round(value[1]);
     this.sliderRange = [leftHandle, rightHandle];
+  }
+
+  onSliderUpdate(value: any) {
+    // get rounded handle values, but don't set
+    const leftHandle = Math.round(value[0]);
+    const rightHandle = Math.round(value[1]);
 
     // translate handle positions to month-quarters
     const posStart = leftHandle * 3;
