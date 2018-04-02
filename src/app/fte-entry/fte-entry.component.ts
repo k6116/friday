@@ -16,29 +16,31 @@ declare const require: any;
 })
 export class FteEntryComponent implements OnInit {
 
-  @Input('userObject') userObject: User;
-
   // initialize variables
-  mainSliderConfig: any;  // initialize slider config
-  fteMonthVisible = new Array(24).fill(false);  // initialize boolean array for by-month FTE form display
+  mainSliderConfig: any;  // slider config
+  fteMonthVisible = new Array(24).fill(false);  // boolean array for by-month FTE form display
   FTEFormGroup: FormGroup;
   sliderRange: number[] = [6, 8];
-  userFTEs: any;  // initialize variable to store user FTE data
+  userFTEs: any;  // array to store user FTE data
   display: boolean; // TODO: find a better solution to FTE display timing issue
-  loggedInUser: User;
-
+  loggedInUser: User; // object for logged in user's info
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private apiDataService: ApiDataService
   ) {
+    // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
     });
   }
 
   ngOnInit() {
+
+    this.setSliderConfig(); // initalize slider config
+    // initialize the by-month FTE display with most recent 2 quarters visible
+    this.fteMonthVisible = this.fteMonthVisible.fill(true, 18, 24);
 
     // get logged in user's info
     this.authService.getLoggedInUser((user, err) => {
@@ -49,23 +51,17 @@ export class FteEntryComponent implements OnInit {
       console.log('logged in user data received in main component:');
       console.log(user);
       this.loggedInUser = user;
-      this.testMethod();
+      this.fteComponentInit();  // initialize the FTE entry component
     });
-
-
-    // initialize the by-month FTE display with most recent 2 quarters visible
-    this.fteMonthVisible = this.fteMonthVisible.fill(true, 18, 24);
   }
 
-
-  testMethod() {
+  fteComponentInit() {
     // get FTE data
     this.apiDataService.getFteData(this.loggedInUser.id)
     .subscribe(
       res => {
         this.userFTEs = res;
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
-        this.setSliderConfig(); // setup the slider, which is dependent on FTE data being retrieved to properly set the slider labels
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
       },
       err => {
@@ -101,13 +97,30 @@ export class FteEntryComponent implements OnInit {
     const moment = require('moment');
     require('moment-fquarter');
 
-    // using the first date in the data array, build an array of quarter + FY labels for the slider bar
-    const firstDate = this.userFTEs[0].allocations[0].month;
-    let firstQuarter = moment(firstDate).fquarter(-3).quarter;
-    let firstYear = moment(firstDate).fquarter(-3).year;
+    // determine slider start-date for labels based on current date
+    let startDate = moment().startOf('month');
+    const month = moment(startDate).month();
+
+    if ((month === 0) || (month === 3) || (month === 6) || (month === 9)) {
+      // for jan/apr/jul/oct
+      startDate = moment(startDate).add(1, 'month');
+      startDate = moment(startDate).subtract(2, 'years');
+    } else if ((month === 2) || (month === 5) || (month === 8) || (month === 11)) {
+      // for dec/mar/jun/sep
+      startDate = moment(startDate).add(2, 'months');
+      startDate = moment(startDate).subtract(2, 'years');
+    } else {
+      startDate = moment(startDate).add(3, 'months');
+      startDate = moment(startDate).subtract(2, 'years');
+    }
+
+    // using the start date, build an array of quarter + FY labels for the slider bar
+    let firstQuarter = moment(startDate).fquarter(-3).quarter;
+    let firstYear = moment(startDate).fquarter(-3).year;
     const fyLabelArray = new Array<string>(8).fill('');
 
-    fyLabelArray.forEach(function(element, i) { // make an array of label strings, ie - 'Q4-2017', 'Q1-2018'
+    // make an array of label strings, ie - 'Q4-2017', 'Q1-2018'
+    fyLabelArray.forEach(function(element, i) {
       fyLabelArray[i] = 'Q' + firstQuarter + '-' + firstYear;
       firstQuarter++;
       if (firstQuarter > 4) {
@@ -116,6 +129,7 @@ export class FteEntryComponent implements OnInit {
       }
     });
 
+    // set slider config
     this.mainSliderConfig = {
       behaviour: 'tap-drag',
       connect: true,
@@ -146,10 +160,6 @@ export class FteEntryComponent implements OnInit {
                 return fyLabelArray[value - 0.5];
                 }
             }
-            // not using From, which is a slider template to translate pip label formatting back to a useable value
-            // from: function ( value ) {
-            //   return value.replace(',-', '');
-            // }
           }
       },
       // set css overrides.  must include all CSS class names, even if they aren't being overridden
