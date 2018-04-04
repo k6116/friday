@@ -11,7 +11,10 @@ function getFteData(req, res) {
     .then(results => {
         const fteTree = new Treeize();
         fteTree.grow(results);
-        res.json(fteTree.getData());
+        res.json({
+          nested: fteTree.getData(),
+          flat: results
+        });
     })
     .catch(error => {
         res.status(400).json({
