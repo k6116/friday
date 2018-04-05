@@ -95,87 +95,34 @@ function update(req, res) {
       )
       .then(savedProjectEmployees => {
 
-        // console.log('saved project employee records:')
-        // console.log(savedProjectEmployees);
+        console.log(`${savedProjectEmployees.length} project employee records inserted`);
 
         // update the existing records
-        // updateData.forEach((record, index) => {
-
-        //   return models.ProjectEmployee.update(
-        //     {
-        //       projectID: record.projectID,
-        //       employeeID: userID,
-        //       fiscalDate: record.fiscalDate,
-        //       fte: record.fte,
-        //       updatedBy: userID,
-        //       updatedAt: record.updatedAt
-        //     },
-        //     {
-        //       where: { id: updateIds[index] }
-        //     }
-        //   )
-        //   .then(updatedProjectEmployee => {
-  
-        //     console.log('project employee record updated')
-            
-        //   });
+        var promises = [];
+        for (var i = 0; i < updateData.length; i++) {
+          var newPromise = models.ProjectEmployee.update(
+            {
+              projectID: updateData[i].projectID,
+              employeeID: userID,
+              fiscalDate: updateData[i].fiscalDate,
+              fte: updateData[i].fte,
+              updatedBy: userID,
+              updatedAt: updateData[i].updatedAt
+            },
+            {
+              where: { id: updateIds[i] },
+              transaction: t
+            }
+          );
+          promises.push(newPromise);
+        };
+        return Promise.all(promises)
+        .then(updatedProjectEmployee => {
           
-          // update the existing records
-          return sequelize.transaction(function (t) {
-            var promises = [];
-            for (var i = 0; i < updateData.length; i++) {
-              var newPromise = models.ProjectEmployee.update(
-                {
-                  projectID: updateData[i].projectID,
-                  employeeID: userID,
-                  fiscalDate: updateData[i].fiscalDate,
-                  fte: updateData[i].fte,
-                  updatedBy: userID,
-                  updatedAt: updateData[i].updatedAt
-                },
-                {
-                  where: { id: updateIds[i] },
-                  transaction: t
-                }
-              );
-              promises.push(newPromise);
-            };
-            return Promise.all(promises)
-            .then(updatedProjectEmployee => {
-              
-              console.log('project employee records updated')
-              
-            });
-
-          // });
-         
-
-        // })
-
-        // // update the existing records
-        // return models.ProjectEmployee.findAll({
-        //   where: { id: { $in: updateIds } },
-        //   transaction: t
-        // })
-        // .then(projectEmployees => {
-        //   console.log('project employees to update:');
-        //   console.log(projectEmployees);
-        //   const updatePromises = projectEmployees.map(projectEmployee => {
-        //     return projectEmployee.update(updateData);
-        //   });
-        //   console.log('updatePromises');
-        //   console.log(updatePromises);
-        //   return Promise.all(updatePromises)
-        // })
-        // .then(updatedProjectEmployees => {
-
-          // console.log('updated project employee records:')
-          // console.log(updatedProjectEmployees);
-
-          console.log('we are done!')
+          console.log(`${updatedProjectEmployee.length} project employee records updated`);
           
         });
-
+          
       })
 
     }).then(() => {
