@@ -102,11 +102,11 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     // this.FTEFormGroup.controls.FTEFormArray[i].controls
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
-    console.log('fte project array');
-    console.log(FTEFormProjectArray);
+    // console.log('fte project array');
+    // console.log(FTEFormProjectArray);
     const FTEFormGroup = FTEFormProjectArray.at(j);
-    console.log('fte form group (cell)');
-    console.log(FTEFormGroup);
+    // console.log('fte form group (cell)');
+    // console.log(FTEFormGroup);
     FTEFormGroup.patchValue({
       updated: true
     });
