@@ -4,7 +4,7 @@ const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize')
 const Treeize = require('treeize');
 const moment = require('moment');
-const Promise = require("bluebird");
+
 
 function getFteData(req, res) {
 
