@@ -62,4 +62,13 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  // update FTE data
+  updateFteData(fteData: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+    return this.http.post(`/api/ftedata/${userID}`, JSON.stringify(fteData), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
 }

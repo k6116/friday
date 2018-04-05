@@ -27,6 +27,7 @@
                               <td>{{project.projectName}}</td>
                               <!-- loop through each month's FTE allocation, 24 cells per project -->
                               <ng-container *ngFor="let month of months; let j = index">
+                                  <!-- [@conditionState]="state" -->
                                 <td [formGroupName]="j" *ngIf="fteMonthVisible[j]"> <!-- only show if slider deems it visible -->
                                     <!-- TODO: setup to use formControlName only instead of ngModel for sending to db -->
                                     <input type="text" formControlName="fte" class="form-control fte-table-row" (change)="onFTEChange(i, j)"/>
@@ -45,7 +46,7 @@
 
 <div class="test-buttons">
   <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestFormClick()">Test Form Data</button>
-  <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestFormClick()">Save</button>
+  <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestSaveClick()">Save</button>
 </div>
 
 

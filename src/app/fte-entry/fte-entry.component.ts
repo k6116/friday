@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { NouisliderModule } from 'ng2-nouislider';
 
 import { User } from '../_shared/models/user.model';
@@ -7,16 +8,35 @@ import { AuthService } from '../auth/auth.service';
 import { ApiDataService } from '../_shared/services/api-data.service';
 import { UserFTEs, AllocationsArray} from './fte-model';
 
-// import moment and fiscal quarter plugin
 const moment = require('moment');
 require('moment-fquarter');
 
 declare const require: any;
+declare const $: any;
 
 @Component({
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
   styleUrls: ['./fte-entry.component.css']
+  // animations: [
+  //   trigger('conditionState', [
+  //     state('in', style({
+  //       opacity: 1,
+  //       transform: 'translateY(0)'
+  //     })),
+  //     transition('in => void', [
+  //       animate(100, style({
+  //         opacity: 0,
+  //         transform: 'translateY(25px)'
+  //       }))
+  //     ]),
+  //     transition('void => in', [
+  //       animate(100, style({
+  //         opacity: 1
+  //       }))
+  //     ])
+  //   ])
+  // ]
 })
 export class FteEntryComponent implements OnInit, AfterViewInit {
 
@@ -31,6 +51,7 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
   loggedInUser: User; // object for logged in user's info
   projects: any;  // for aliasing formarray
   months: string[] = [];
+  state: string; // for angular animation
 
   constructor(
     private fb: FormBuilder,
@@ -41,6 +62,9 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
     });
+
+    this.state = 'in';
+
   }
 
   ngOnInit() {
@@ -95,6 +119,27 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     console.log(this.FTEFormGroup.value.FTEFormArray);
   }
 
+
+  onTestSaveClick() {
+
+    const fteData = this.FTEFormGroup.value.FTEFormArray;
+    const t0 = performance.now();
+    // call the api data service to send the put request
+    this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
+      .subscribe(
+        res => {
+          console.log(res);
+          const t1 = performance.now();
+          console.log(`save fte values took ${t1 - t0} milliseconds`);
+        },
+        err => {
+          console.log(err);
+        }
+      );
+
+  }
+
+
   fteComponentInit() {
     // get FTE data
     this.apiDataService.getFteData(this.loggedInUser.id)
@@ -131,8 +176,8 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     }
     console.log('months array:');
     console.log(this.months);
-    console.log('first month as string');
-    console.log(moment(this.months[0]).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z');
+    // console.log('first month as string');
+    // console.log(moment(this.months[0]).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z');
   }
 
   buildFteEntryForm = (): void => {
@@ -166,7 +211,8 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
           this.fb.group({
             recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
             projectID: [proj.projectID],
-            month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
+            // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
+            month: [month],
             fte: [foundEntry ? foundEntry['allocations:fte'] : null],
             newRecord: [foundEntry ? false : true],
             updated: [false]
