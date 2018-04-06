@@ -105,11 +105,12 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     const scrollTop = $('div.table-scrollable').scrollTop();
     const scrollLeft = $('div.table-scrollable').scrollLeft();
     console.log(`scroll left: ${scrollLeft}, scroll top: ${scrollTop}`);
-    // $('thead').css('left', -$('tbody').scrollLeft());
-    $('table.table-ftes thead tr').css('top', `${scrollTop}px`);
-    $('table.table-ftes tbody tr td.col-project-name').css('left', `${scrollLeft - 15}px`);
-    // $('tbody td:nth-child(1)').css('left', $('tbody').scrollLeft());
 
+    $('div.table-header-underlay').css('top', `${scrollTop}px`);
+    $('table.table-ftes thead tr th').css('top', `${scrollTop - 10}px`);
+    $('table.table-ftes tbody tr td.col-project-name').css('left', `${scrollLeft - 15}px`);
+    $('table.table-ftes thead tr th.header-project').css('left', `${scrollLeft - 15}px`);
+    $('div.table-header-underlay').css('left', `${scrollLeft}px`);
   }
 
 
