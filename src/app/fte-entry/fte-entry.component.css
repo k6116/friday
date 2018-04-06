@@ -1,18 +1,43 @@
 
 .fte-table-row {
-    width:80px;
-  }
-  
-  .top-margin {
-    margin-top: 50px;
-  }
-  
-  .table-scrollable {
-    height: 480px;
-    overflow:scroll;
-  }
+  width:80px;
+}
+
+.top-margin {
+  margin-top: 50px;
+}
+
+.table-scrollable {
+  max-height: 380px;
+  overflow: scroll;
+}
 
 .test-buttons {
   margin-top: 50px;
   text-align: center;
 }
+
+table.table-ftes, table.table-ftes thead, table.table-ftes thead tr {
+  position: relative;
+  display: block;
+}
+
+table.table-ftes thead tr {
+  top: 0;
+  background-color: white;
+  z-index: 2;
+}
+
+table.table-ftes tbody, table.table-ftes tbody tr {
+  position: relative;
+}
+
+table td.col-project-name {
+  position: relative;
+  padding-right: 20px;
+  left: -15px;
+  background-color: white;
+  z-index: 1;
+}
+
+

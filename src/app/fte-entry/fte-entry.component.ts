@@ -100,6 +100,19 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
 
   }
 
+
+  onTableScroll(event) {
+    const scrollTop = $('div.table-scrollable').scrollTop();
+    const scrollLeft = $('div.table-scrollable').scrollLeft();
+    console.log(`scroll left: ${scrollLeft}, scroll top: ${scrollTop}`);
+    // $('thead').css('left', -$('tbody').scrollLeft());
+    $('table.table-ftes thead tr').css('top', `${scrollTop}px`);
+    $('table.table-ftes tbody tr td.col-project-name').css('left', `${scrollLeft - 15}px`);
+    // $('tbody td:nth-child(1)').css('left', $('tbody').scrollLeft());
+
+  }
+
+
   onFTEChange(i, j, value) {
     console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
 
