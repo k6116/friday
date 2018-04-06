@@ -30,7 +30,7 @@
                                   <!-- [@conditionState]="state" -->
                                 <td [formGroupName]="j" *ngIf="fteMonthVisible[j]"> <!-- only show if slider deems it visible -->
                                     <!-- TODO: setup to use formControlName only instead of ngModel for sending to db -->
-                                    <input type="text" formControlName="fte" class="form-control fte-table-row" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict numChars=3 allowDecimal=false/>
+                                    <input type="text" formControlName="fte" class="form-control fte-table-row" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
                                 </td>
                             </ng-container>
                           </tr>

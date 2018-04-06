@@ -5,15 +5,11 @@ import { Directive, Input, HostListener } from '@angular/core';
 })
 export class FteInputRestrictDirective {
 
-  @Input() numChars: number;
-  @Input() allowDecimal: boolean;
-
   @HostListener('keypress', ['$event']) onKeyPress(e) {
     const key = e.key;
     const value = e.target.value;
     const text = e.target.value + key;
     const length = +value.length;
-    console.log(`key pressed: ${key}, current text: ${text}, current length: ${length}`);
     // first character must be 0, 1, or decimal
     if (length === 0 && !(key === '0' || key === '1' || key === '.')) {
       e.preventDefault();
@@ -39,8 +35,6 @@ export class FteInputRestrictDirective {
     } else if (length === 3) {
       e.preventDefault();
     }
-    console.log('event:');
-    console.log(e);
 
   }
 

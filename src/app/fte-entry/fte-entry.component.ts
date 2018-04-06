@@ -118,7 +118,7 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
         fteReplaceValue = null;
       }
     }
-    console.log(`match is ${match}, replacement value: ${fteReplaceValue}`);
+    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}`);
 
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
@@ -236,7 +236,7 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
             projectID: [proj.projectID],
             // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
             month: [month],
-            fte: [foundEntry ? foundEntry['allocations:fte'] : null],
+            fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
             newRecord: [foundEntry ? false : true],
             updated: [false]
           })
