@@ -43,6 +43,10 @@ table thead tr th.header-project {
   z-index: 3;
 }
 
+table thead tr th.header-month {
+  text-align: center;
+}
+
 table thead tr th {
   position: relative;
   background-color: white;
