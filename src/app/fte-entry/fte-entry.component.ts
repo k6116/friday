@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
+import { DecimalPipe } from '@angular/common';
 import { NouisliderModule } from 'ng2-nouislider';
 
 import { User } from '../_shared/models/user.model';
@@ -17,7 +18,8 @@ declare const $: any;
 @Component({
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
-  styleUrls: ['./fte-entry.component.css']
+  styleUrls: ['./fte-entry.component.css'],
+  providers: [DecimalPipe]
   // animations: [
   //   trigger('conditionState', [
   //     state('in', style({
@@ -56,7 +58,8 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private apiDataService: ApiDataService
+    private apiDataService: ApiDataService,
+    private decimalPipe: DecimalPipe
   ) {
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
@@ -97,19 +100,39 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
 
   }
 
-  onFTEChange(i, j) {
-    console.log(`fte entry changed ${i} ${j}`);
-    // this.FTEFormGroup.controls.FTEFormArray[i].controls
+  onFTEChange(i, j, value) {
+    console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
+
+    let fteReplace: boolean;
+    let fteReplaceValue: any;
+
+    // check for match on the standard three digit format 0.5, 1.0
+    const match = /^[0][.][1-9]{1}$/.test(value) || /^[1][.][0]{1}$/.test(value);
+    // if not a match, will want to update/patch it to use the standard format
+    if (!match) {
+      fteReplace = true;
+      // check for still valid format such as .6, 1., 1
+      if (/^[.][1-9]{1}$/.test(value) || /^[1][.]$/.test(value) || /^[1]$/.test(value)) {
+        fteReplaceValue = this.decimalPipe.transform(value, '1.1');
+      } else {
+        fteReplaceValue = null;
+      }
+    }
+    console.log(`match is ${match}, replacement value: ${fteReplaceValue}`);
+
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
-    // console.log('fte project array');
-    // console.log(FTEFormProjectArray);
     const FTEFormGroup = FTEFormProjectArray.at(j);
-    // console.log('fte form group (cell)');
-    // console.log(FTEFormGroup);
     FTEFormGroup.patchValue({
       updated: true
     });
+
+    if (fteReplace) {
+      FTEFormGroup.patchValue({
+        fte: fteReplaceValue
+      });
+    }
+
   }
 
   onTestFormClick() {
