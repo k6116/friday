@@ -54,6 +54,7 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
   projects: any;  // for aliasing formarray
   months: string[] = [];
   state: string; // for angular animation
+  monthlyTotals: number[];
 
   constructor(
     private fb: FormBuilder,
@@ -67,6 +68,8 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     });
 
     this.state = 'in';
+
+    this.monthlyTotals = new Array(36).fill(null);
 
   }
 
@@ -86,10 +89,6 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
       this.fteComponentInit();  // initialize the FTE entry component
     });
 
-    // this.FTEFormGroup.get('FTEFormArray').valueChanges.subscribe(val => {
-    //   console.log(val);
-    // });
-
     this.buildMonthsArray();
 
   }
@@ -104,7 +103,7 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
   onTableScroll(event) {
     const scrollTop = $('div.table-scrollable').scrollTop();
     const scrollLeft = $('div.table-scrollable').scrollLeft();
-    console.log(`scroll left: ${scrollLeft}, scroll top: ${scrollTop}`);
+    // console.log(`scroll left: ${scrollLeft}, scroll top: ${scrollTop}`);
 
     $('div.table-header-underlay').css('top', `${scrollTop}px`);
     $('table.table-ftes thead tr th').css('top', `${scrollTop - 10}px`);
@@ -148,6 +147,61 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
         fte: fteReplaceValue
       });
     }
+
+    // update the monthly total
+    this.updateMonthlyTotal(j);
+
+  }
+
+
+  updateMonthlyTotal(index) {
+
+    // initialize a temporary variable, set to zero
+    let total = 0;
+
+    // set the outer form array of projeccts and months
+    const fteTable = this.FTEFormGroup.value.FTEFormArray;
+
+    // loop through each project
+    fteTable.forEach((project, i) => {
+      // loop through each month
+      project.forEach((month, j) => {
+        // if the month matches the month that was updated, update the total
+        if (j === index) {
+          total += +month.fte;
+        }
+      });
+    });
+
+    // set the monthly totals property at the index
+    this.monthlyTotals[index] = total === 0 ? null : total;
+
+  }
+
+
+  updateMonthlyTotals() {
+
+    // initialize a temporary array with zeros to hold the totals
+    let totals = new Array(36).fill(0);
+
+    // set the outer form array of projeccts and months
+    const fteTable = this.FTEFormGroup.value.FTEFormArray;
+
+    // loop through each project
+    fteTable.forEach((project, i) => {
+      // loop through each month
+      project.forEach((month, j) => {
+        totals[j] += +month.fte;
+      });
+    });
+
+    // replace the zeros with nulls to show blanks
+    totals = totals.map(total => {
+      return total === 0 ? null : total;
+    });
+
+    // set the monthly totals property
+    this.monthlyTotals = totals;
 
   }
 
@@ -262,6 +316,10 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
       FTEFormArray.push(projFormArray);
     });
     // this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
+
+    // update the totals row
+    this.updateMonthlyTotals();
+
   }
 
   setSliderConfig() {
