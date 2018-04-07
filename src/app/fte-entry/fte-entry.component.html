@@ -44,7 +44,7 @@
                               <td class="col-total-name totals-row-cell">TOTAL</td>
                               <ng-container *ngFor="let month of months; let z = index">
                                   <td class="totals-row-cell" *ngIf="fteMonthVisible[z]">
-                                      <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" class="form-control fte-table-row fte-totals-column" [attr.month-index]="z">
+                                      <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control fte-table-row fte-totals-column' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
                                   </td>
                               </ng-container>
                           </tr>

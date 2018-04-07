@@ -55,6 +55,7 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
   months: string[] = [];
   state: string; // for angular animation
   monthlyTotals: number[];
+  monthlyTotalsValid: boolean[];
 
   constructor(
     private fb: FormBuilder,
@@ -70,6 +71,7 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     this.state = 'in';
 
     this.monthlyTotals = new Array(36).fill(null);
+    this.monthlyTotalsValid = new Array(36).fill(true);
 
   }
 
@@ -151,6 +153,9 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     // update the monthly total
     this.updateMonthlyTotal(j);
 
+    // set the border color for the monthly totals inputs
+    this.setMonthlyTotalsBorder();
+
   }
 
 
@@ -173,8 +178,11 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
       });
     });
 
+    // set to null if zero (to show blank) and round to one significant digit
+    total = total === 0 ? null : Math.round(total * 10) / 10;
+
     // set the monthly totals property at the index
-    this.monthlyTotals[index] = total === 0 ? null : total;
+    this.monthlyTotals[index] = total;
 
   }
 
@@ -200,10 +208,40 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
       return total === 0 ? null : total;
     });
 
+    // round the totals to one significant digit
+    totals = totals.map(total => {
+      return total ? Math.round(total * 10) / 10 : null;
+    });
+
     // set the monthly totals property
     this.monthlyTotals = totals;
 
   }
+
+  // set red border around totals that don't total to 1
+  setMonthlyTotalsBorder() {
+
+    this.monthlyTotals.forEach((total, index) => {
+
+      // get a reference to the input element using jquery
+      const $totalEl = $(`input.fte-totals-column[month-index="${index}"]`);
+
+      if (!total) {
+        // console.log(`month ${index} total is null(${total})`);
+        this.monthlyTotalsValid[index] = true;
+      } else if (total !== 1) {
+        // console.log(`month ${index} does NOT total to 1.0 (${total})`);
+        this.monthlyTotalsValid[index] = false;
+      } else {
+        // console.log(`month ${index} DOES total to 1.0 (${total})`);
+        this.monthlyTotalsValid[index] = true;
+      }
+
+    });
+
+
+  }
+
 
   onTestFormClick() {
     console.log('form object (this.form):');
@@ -319,6 +357,9 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
 
     // update the totals row
     this.updateMonthlyTotals();
+
+    // set red border around total inputs that don't sum up to 1
+    this.setMonthlyTotalsBorder();
 
   }
 
