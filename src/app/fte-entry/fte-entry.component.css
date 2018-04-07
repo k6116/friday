@@ -19,6 +19,10 @@
   text-align: center;
 }
 
+div.table-inner-cont {
+  padding-bottom: 50px;
+}
+
 table.table-ftes, table.table-ftes thead, table.table-ftes thead tr {
   position: relative;
 }
@@ -68,4 +72,18 @@ div.table-header-underlay {
   width: 100%;
   color: white;
   text-align: right;
+}
+
+/* TOTALS ROW */
+
+table td.totals-row-cell {
+  padding-top: 15px;
+}
+
+table td.col-total-name {
+  position: relative;
+  padding-right: 20px;
+  left: -15px;
+  background-color: white;
+  z-index: 1;
 }

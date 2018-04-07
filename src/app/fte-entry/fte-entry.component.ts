@@ -109,8 +109,10 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     $('div.table-header-underlay').css('top', `${scrollTop}px`);
     $('table.table-ftes thead tr th').css('top', `${scrollTop - 10}px`);
     $('table.table-ftes tbody tr td.col-project-name').css('left', `${scrollLeft - 15}px`);
+    $('table.table-ftes tbody tr td.col-total-name').css('left', `${scrollLeft - 15}px`);
     $('table.table-ftes thead tr th.header-project').css('left', `${scrollLeft - 15}px`);
     $('div.table-header-underlay').css('left', `${scrollLeft}px`);
+
   }
 
 
@@ -381,6 +383,7 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     const leftHandle = Math.round(value[0]);
     const rightHandle = Math.round(value[1]);
     this.sliderRange = [leftHandle, rightHandle];
+
   }
 
   onSliderUpdate(value: any) {
@@ -395,5 +398,12 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     // set only months that should be visible to true
     this.fteMonthVisible = this.fteMonthVisible.fill(false);
     this.fteMonthVisible = this.fteMonthVisible.fill(true, posStart, posStart + posDelta);
+
+    // TEMP CODE: workaround for rendering issue for column headers (months)
+    let scrollTop = $('div.table-scrollable').scrollTop();
+    $('div.table-scrollable').scrollTop(scrollTop - 1);
+    scrollTop = $('div.table-scrollable').scrollTop();
+    $('div.table-scrollable').scrollTop(scrollTop + 1);
+
   }
 }
