@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
+import { DecimalPipe } from '@angular/common';
 import { NouisliderModule } from 'ng2-nouislider';
 
 import { User } from '../_shared/models/user.model';
@@ -17,7 +18,8 @@ declare const $: any;
 @Component({
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
-  styleUrls: ['./fte-entry.component.css']
+  styleUrls: ['./fte-entry.component.css'],
+  providers: [DecimalPipe]
   // animations: [
   //   trigger('conditionState', [
   //     state('in', style({
@@ -52,11 +54,14 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
   projects: any;  // for aliasing formarray
   months: string[] = [];
   state: string; // for angular animation
+  monthlyTotals: number[];
+  monthlyTotalsValid: boolean[];
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private apiDataService: ApiDataService
+    private apiDataService: ApiDataService,
+    private decimalPipe: DecimalPipe
   ) {
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
@@ -64,6 +69,9 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     });
 
     this.state = 'in';
+
+    this.monthlyTotals = new Array(36).fill(null);
+    this.monthlyTotalsValid = new Array(36).fill(true);
 
   }
 
@@ -83,10 +91,6 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
       this.fteComponentInit();  // initialize the FTE entry component
     });
 
-    // this.FTEFormGroup.get('FTEFormArray').valueChanges.subscribe(val => {
-    //   console.log(val);
-    // });
-
     this.buildMonthsArray();
 
   }
@@ -97,20 +101,147 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
 
   }
 
-  onFTEChange(i, j) {
-    console.log(`fte entry changed ${i} ${j}`);
-    // this.FTEFormGroup.controls.FTEFormArray[i].controls
+
+  onTableScroll(event) {
+    const scrollTop = $('div.table-scrollable').scrollTop();
+    const scrollLeft = $('div.table-scrollable').scrollLeft();
+    // console.log(`scroll left: ${scrollLeft}, scroll top: ${scrollTop}`);
+
+    $('div.table-header-underlay').css('top', `${scrollTop}px`);
+    $('table.table-ftes thead tr th').css('top', `${scrollTop - 10}px`);
+    $('table.table-ftes tbody tr td.col-project-name').css('left', `${scrollLeft - 15}px`);
+    $('table.table-ftes tbody tr td.col-total-name').css('left', `${scrollLeft - 15}px`);
+    $('table.table-ftes thead tr th.header-project').css('left', `${scrollLeft - 15}px`);
+    $('div.table-header-underlay').css('left', `${scrollLeft}px`);
+
+  }
+
+
+  onFTEChange(i, j, value) {
+    console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
+
+    let fteReplace: boolean;
+    let fteReplaceValue: any;
+
+    // check for match on the standard three digit format 0.5, 1.0
+    const match = /^[0][.][1-9]{1}$/.test(value) || /^[1][.][0]{1}$/.test(value);
+    // if not a match, will want to update/patch it to use the standard format
+    if (!match) {
+      fteReplace = true;
+      // check for still valid format such as .6, 1., 1
+      if (/^[.][1-9]{1}$/.test(value) || /^[1][.]$/.test(value) || /^[1]$/.test(value)) {
+        fteReplaceValue = this.decimalPipe.transform(value, '1.1');
+      } else {
+        fteReplaceValue = null;
+      }
+    }
+    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}`);
+
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
-    console.log('fte project array');
-    console.log(FTEFormProjectArray);
     const FTEFormGroup = FTEFormProjectArray.at(j);
-    console.log('fte form group (cell)');
-    console.log(FTEFormGroup);
     FTEFormGroup.patchValue({
       updated: true
     });
+
+    if (fteReplace) {
+      FTEFormGroup.patchValue({
+        fte: fteReplaceValue
+      });
+    }
+
+    // update the monthly total
+    this.updateMonthlyTotal(j);
+
+    // set the border color for the monthly totals inputs
+    this.setMonthlyTotalsBorder();
+
   }
+
+
+  updateMonthlyTotal(index) {
+
+    // initialize a temporary variable, set to zero
+    let total = 0;
+
+    // set the outer form array of projeccts and months
+    const fteTable = this.FTEFormGroup.value.FTEFormArray;
+
+    // loop through each project
+    fteTable.forEach((project, i) => {
+      // loop through each month
+      project.forEach((month, j) => {
+        // if the month matches the month that was updated, update the total
+        if (j === index) {
+          total += +month.fte;
+        }
+      });
+    });
+
+    // set to null if zero (to show blank) and round to one significant digit
+    total = total === 0 ? null : Math.round(total * 10) / 10;
+
+    // set the monthly totals property at the index
+    this.monthlyTotals[index] = total;
+
+  }
+
+
+  updateMonthlyTotals() {
+
+    // initialize a temporary array with zeros to hold the totals
+    let totals = new Array(36).fill(0);
+
+    // set the outer form array of projeccts and months
+    const fteTable = this.FTEFormGroup.value.FTEFormArray;
+
+    // loop through each project
+    fteTable.forEach((project, i) => {
+      // loop through each month
+      project.forEach((month, j) => {
+        totals[j] += +month.fte;
+      });
+    });
+
+    // replace the zeros with nulls to show blanks
+    totals = totals.map(total => {
+      return total === 0 ? null : total;
+    });
+
+    // round the totals to one significant digit
+    totals = totals.map(total => {
+      return total ? Math.round(total * 10) / 10 : null;
+    });
+
+    // set the monthly totals property
+    this.monthlyTotals = totals;
+
+  }
+
+  // set red border around totals that don't total to 1
+  setMonthlyTotalsBorder() {
+
+    this.monthlyTotals.forEach((total, index) => {
+
+      // get a reference to the input element using jquery
+      const $totalEl = $(`input.fte-totals-column[month-index="${index}"]`);
+
+      if (!total) {
+        // console.log(`month ${index} total is null(${total})`);
+        this.monthlyTotalsValid[index] = true;
+      } else if (total !== 1) {
+        // console.log(`month ${index} does NOT total to 1.0 (${total})`);
+        this.monthlyTotalsValid[index] = false;
+      } else {
+        // console.log(`month ${index} DOES total to 1.0 (${total})`);
+        this.monthlyTotalsValid[index] = true;
+      }
+
+    });
+
+
+  }
+
 
   onTestFormClick() {
     console.log('form object (this.form):');
@@ -213,7 +344,7 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
             projectID: [proj.projectID],
             // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
             month: [month],
-            fte: [foundEntry ? foundEntry['allocations:fte'] : null],
+            fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
             newRecord: [foundEntry ? false : true],
             updated: [false]
           })
@@ -223,6 +354,13 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
       FTEFormArray.push(projFormArray);
     });
     // this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
+
+    // update the totals row
+    this.updateMonthlyTotals();
+
+    // set red border around total inputs that don't sum up to 1
+    this.setMonthlyTotalsBorder();
+
   }
 
   setSliderConfig() {
@@ -344,6 +482,7 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     const leftHandle = Math.round(value[0]);
     const rightHandle = Math.round(value[1]);
     this.sliderRange = [leftHandle, rightHandle];
+
   }
 
   onSliderUpdate(value: any) {
@@ -358,5 +497,12 @@ export class FteEntryComponent implements OnInit, AfterViewInit {
     // set only months that should be visible to true
     this.fteMonthVisible = this.fteMonthVisible.fill(false);
     this.fteMonthVisible = this.fteMonthVisible.fill(true, posStart, posStart + posDelta);
+
+    // TEMP CODE: workaround for rendering issue for column headers (months)
+    let scrollTop = $('div.table-scrollable').scrollTop();
+    $('div.table-scrollable').scrollTop(scrollTop - 1);
+    scrollTop = $('div.table-scrollable').scrollTop();
+    $('div.table-scrollable').scrollTop(scrollTop + 1);
+
   }
 }
