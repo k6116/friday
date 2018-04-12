@@ -1,3 +1,5 @@
+
+
 <div *ngIf="display" class="container-fluid">
   <div class="row"> <!-- begin row for slider bar -->
       <div class="col-lg-10 col-lg-offset-1">
@@ -7,29 +9,44 @@
 
 
   <div class="row top-margin"> <!-- begin row for FTE entry table -->
-      <div class="col-lg-10 col-lg-offset-1 table-scrollable"> <!-- using table-scrollable css -->
+
+      <div class="col-lg-10 col-lg-offset-1 table-scrollable" (scroll)="onTableScroll($event)"> <!-- using table-scrollable css -->
           <form [formGroup]="FTEFormGroup">
-              <div formArrayName="FTEFormArray">
-                  <table>
-                      <tr> <!-- first row of table is month-name column-headers -->
-                          <th>Project</th>
-                          <!-- loop through each month in the userFTEs data object-->
-                          <ng-container *ngFor="let month of userFTEs[0].allocations; let k = index">
-                            <!-- only show the month column if the slider deems it visible -->
-                            <th *ngIf="fteMonthVisible[k]">{{month.month | date:'MMM-yyyy':'+0'}}</th>
-                          </ng-container>
-                      </tr>
+              <div class="table-inner-cont" formArrayName="FTEFormArray">
+                  <div class="table-header-underlay">
+                  </div>
+                  <table class="table-ftes">
+                      <thead>
+                          <tr> <!-- first row of table is month-name column-headers -->
+                              <th class="header-project">Project</th>
+                              <!-- loop through each month in the userFTEs data object-->
+                              <ng-container *ngFor="let month of months; let k = index">
+                                  <!-- only show the month column if the slider deems it visible -->
+                                  <th class="header-month" *ngIf="fteMonthVisible[k]">{{month | date:'MMM-yyyy':'+0'}}</th>
+                              </ng-container>
+                          </tr>
+                      </thead>
                       <tbody>
                           <!-- loop through each project, one row per project -->
                           <tr [formGroupName]="i" *ngFor="let project of projects; let i = index">
-                              <td>{{userFTEs[i].projectName}}</td>
+                              <td class="col-project-name">{{project.projectName}}</td>
                               <!-- loop through each month's FTE allocation, 24 cells per project -->
-                              <ng-container *ngFor="let cell of project.controls; let j = index">
-                                <td [formGroupName]="j" *ngIf="fteMonthVisible[j]"> <!-- only show if slider deems it visible -->
-                                    <!-- TODO: setup to use formControlName only instead of ngModel for sending to db -->
-                                    <input type="text" formControlName="fte" [(ngModel)]="userFTEs[i].allocations[j].fte" class="form-control fte-table-row"/>
-                                </td>
+                              <ng-container *ngFor="let month of months; let j = index">
+                                  <!-- [@conditionState]="state" -->
+                                  <td [formGroupName]="j" *ngIf="fteMonthVisible[j]"> <!-- only show if slider deems it visible -->
+                                      <!-- TODO: setup to use formControlName only instead of ngModel for sending to db -->
+                                      <input type="text" formControlName="fte" class="form-control fte-table-row" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
+                                  </td>
                             </ng-container>
+                          </tr>
+                          <!-- totals row-->
+                          <tr classs="totals-row">
+                              <td class="col-total-name totals-row-cell">TOTAL</td>
+                              <ng-container *ngFor="let month of months; let z = index">
+                                  <td class="totals-row-cell" *ngIf="fteMonthVisible[z]">
+                                      <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control fte-table-row fte-totals-column' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
+                                  </td>
+                              </ng-container>
                           </tr>
                       </tbody>
                   </table>
@@ -40,6 +57,14 @@
 
 </div> <!-- end FTE component container div -->
 
+
+<div class="test-buttons">
+  <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestFormClick()">Test Form Data</button>
+  <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestSaveClick()">Save</button>
+</div>
+
+
+
 <!-- TEMP CODE: for seeing live changes to the data object -->
-<br /><br /><br /><br />
-<div>JSON: {{userFTEs | json}}</div>
+<!-- <br /><br /><br /><br />
+<div>JSON: {{userFTEs | json}}</div> -->
