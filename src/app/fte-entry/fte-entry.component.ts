@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { NouisliderModule } from 'ng2-nouislider';
 
 import { User } from '../_shared/models/user.model';
@@ -7,14 +8,37 @@ import { AuthService } from '../auth/auth.service';
 import { ApiDataService } from '../_shared/services/api-data.service';
 import { UserFTEs, AllocationsArray} from './fte-model';
 
+const moment = require('moment');
+require('moment-fquarter');
+
 declare const require: any;
+declare const $: any;
 
 @Component({
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
   styleUrls: ['./fte-entry.component.css']
+  // animations: [
+  //   trigger('conditionState', [
+  //     state('in', style({
+  //       opacity: 1,
+  //       transform: 'translateY(0)'
+  //     })),
+  //     transition('in => void', [
+  //       animate(100, style({
+  //         opacity: 0,
+  //         transform: 'translateY(25px)'
+  //       }))
+  //     ]),
+  //     transition('void => in', [
+  //       animate(100, style({
+  //         opacity: 1
+  //       }))
+  //     ])
+  //   ])
+  // ]
 })
-export class FteEntryComponent implements OnInit {
+export class FteEntryComponent implements OnInit, AfterViewInit {
 
   // initialize variables
   mainSliderConfig: any;  // slider config
@@ -22,9 +46,12 @@ export class FteEntryComponent implements OnInit {
   FTEFormGroup: FormGroup;
   sliderRange: number[] = [];
   userFTEs: any;  // array to store user FTE data
+  userFTEsFlat: any;  // array to store user FTE data (flattened/non-treeized version)
   display: boolean; // TODO: find a better solution to FTE display timing issue
   loggedInUser: User; // object for logged in user's info
   projects: any;  // for aliasing formarray
+  months: string[] = [];
+  state: string; // for angular animation
 
   constructor(
     private fb: FormBuilder,
@@ -35,6 +62,9 @@ export class FteEntryComponent implements OnInit {
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
     });
+
+    this.state = 'in';
+
   }
 
   ngOnInit() {
@@ -52,16 +82,79 @@ export class FteEntryComponent implements OnInit {
       this.loggedInUser = user;
       this.fteComponentInit();  // initialize the FTE entry component
     });
+
+    // this.FTEFormGroup.get('FTEFormArray').valueChanges.subscribe(val => {
+    //   console.log(val);
+    // });
+
+    this.buildMonthsArray();
+
   }
+
+  ngAfterViewInit() {
+
+
+
+  }
+
+  onFTEChange(i, j) {
+    console.log(`fte entry changed ${i} ${j}`);
+    // this.FTEFormGroup.controls.FTEFormArray[i].controls
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+    const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
+    console.log('fte project array');
+    console.log(FTEFormProjectArray);
+    const FTEFormGroup = FTEFormProjectArray.at(j);
+    console.log('fte form group (cell)');
+    console.log(FTEFormGroup);
+    FTEFormGroup.patchValue({
+      updated: true
+    });
+  }
+
+  onTestFormClick() {
+    console.log('form object (this.form):');
+    console.log(this.FTEFormGroup);
+    console.log('form data (this.form.value.FTEFormArray):');
+    console.log(this.FTEFormGroup.value.FTEFormArray);
+  }
+
+
+  onTestSaveClick() {
+
+    const fteData = this.FTEFormGroup.value.FTEFormArray;
+    const t0 = performance.now();
+    // call the api data service to send the put request
+    this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
+      .subscribe(
+        res => {
+          console.log(res);
+          const t1 = performance.now();
+          console.log(`save fte values took ${t1 - t0} milliseconds`);
+        },
+        err => {
+          console.log(err);
+        }
+      );
+
+  }
+
 
   fteComponentInit() {
     // get FTE data
     this.apiDataService.getFteData(this.loggedInUser.id)
     .subscribe(
       res => {
-        this.userFTEs = res;
+        console.log(res);
+        this.userFTEs = res.nested;
+        this.userFTEsFlat = res.flat;
+        console.log('user ftes (this.userFTEs):');
+        console.log(this.userFTEs);
+        console.log('user ftes flat (this.userFTEsFlat):');
+        console.log(this.userFTEsFlat);
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
+        this.projects = this.userFTEs;
       },
       err => {
         console.log(err);
@@ -69,33 +162,70 @@ export class FteEntryComponent implements OnInit {
     );
   }
 
+  buildMonthsArray() {
+    const startDate = moment().utc().startOf('year').subtract(2, 'months').subtract(1, 'years');
+    const endDate = moment(startDate).add(3, 'years');
+    // console.log(`start date:`);
+    // console.log(startDate);
+    // console.log(`end date:`);
+    // console.log(endDate);
+    const numMonths = endDate.diff(startDate, 'months');
+    // console.log(`number of months: ${numMonths}`);
+    for (let i = 0; i < numMonths; i++) {
+      this.months.push(moment(startDate).add(i, 'months'));
+    }
+    console.log('months array:');
+    console.log(this.months);
+    // console.log('first month as string');
+    // console.log(moment(this.months[0]).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z');
+  }
+
   buildFteEntryForm = (): void => {
     // grab the Project formarray
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+
+
+    console.log('unix epoch for first month:');
+    console.log(moment(this.months[0]).unix());
+
 
     // loop through each project to get into the FTE entry elements
     this.userFTEs.forEach( (proj: UserFTEs) => {
       const projFormArray = this.fb.array([]); // instantiating a temp formarray for each project
 
-      proj.allocations.forEach( (mo: AllocationsArray) => {
+      // proj.allocations.forEach( (mo: AllocationsArray) => {
+      this.months.forEach(month => {
         // for each FTE entry in a given project, push the FTE controller into the temp formarray
         // so we will have 1 controller per month, one array of controllers per project
+        // console.log('unix epoch in seconds:');
+        // console.log(moment(mo.month).unix());
+
+        // attempt to find a record/object for this project and month
+        const foundEntry = this.userFTEsFlat.find(userFTE => {
+          return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+        });
+        // console.log(`found object for project ${proj.projectName} and month ${month}:`);
+        // console.log(foundEntry);
+
         projFormArray.push(
           this.fb.group({
-            fte: ['']
+            recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
+            projectID: [proj.projectID],
+            // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
+            month: [month],
+            fte: [foundEntry ? foundEntry['allocations:fte'] : null],
+            newRecord: [foundEntry ? false : true],
+            updated: [false]
           })
         );
       });
       // push the temp formarray as 1 object in the Project formarray
       FTEFormArray.push(projFormArray);
     });
-    this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
+    // this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
   }
 
   setSliderConfig() {
-    // import moment and fiscal quarter plugin
-    const moment = require('moment');
-    require('moment-fquarter');
 
     // set slider starting range based on current date
     let startDate = moment().startOf('month');

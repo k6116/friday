@@ -40,17 +40,17 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
     // TEMP CODE for testing api data guard
-    this.apiDataService.getUserData()
-      .subscribe(
-        res => {
-          console.log('get user data successfull:');
-          console.log(res);
-        },
-        err => {
-          console.log('get user data error:');
-          console.log(err);
-        }
-      );
+    // this.apiDataService.getUserData()
+    //   .subscribe(
+    //     res => {
+    //       console.log('get user data successfull:');
+    //       console.log(res);
+    //     },
+    //     err => {
+    //       console.log('get user data error:');
+    //       console.log(err);
+    //     }
+    //   );
 
   }
 

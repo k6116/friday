@@ -8,6 +8,11 @@
   }
   
   .table-scrollable {
-    height:120px;
+    height: 480px;
     overflow:scroll;
   }
+
+.test-buttons {
+  margin-top: 50px;
+  text-align: center;
+}
