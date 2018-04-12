@@ -1,0 +1,14 @@
+
+.container-fluid {
+    margin: 75px 200px 200px 200px;
+  }
+  
+  .org-cont {
+    margin-top: 30px;
+    position: relative;
+    left: -20px;
+  }
+  
+  .name-cont {
+    margin-top: 20px;
+  }

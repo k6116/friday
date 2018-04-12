@@ -31,6 +31,8 @@ import { MainComponent } from './main/main.component';
 import { NoticeModalComponent } from './modals/notice-modal/notice-modal.component';
 import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
 import { FteEntryComponent } from './fte-entry/fte-entry.component';
+import { OrgComponent } from './org/org.component';
+import { OrgTreeComponent } from './org-tree/org-tree.component';
 
 
 
@@ -43,7 +45,9 @@ import { FteEntryComponent } from './fte-entry/fte-entry.component';
     NoticeModalComponent,
     ConfirmModalComponent,
     SafeHtmlPipe,
-    FteEntryComponent
+    FteEntryComponent,
+    OrgComponent,
+    OrgTreeComponent
   ],
   imports: [
     AppRoutingModule,

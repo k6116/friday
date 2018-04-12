@@ -40,7 +40,7 @@ router.use('/', function(req, res, next) {
 // NOTE: all routes after this middleware function WILL be protected in the case of invalid token
 
 router.get('/users', controllers.auth.index);
-
+router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
 
 
 module.exports = router;

@@ -14,6 +14,10 @@ export class AppDataService {
 
   resetTimer = new EventEmitter<boolean>();
 
+  // recursion testing
+  employeeIcon = new EventEmitter<any>();
+  employee = new EventEmitter<any>();
+
   constructor() { }
 
 }

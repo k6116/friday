@@ -1,5 +1,6 @@
 
 module.exports = {
   auth: require('./authController'),
-  fteData: require('./fteDataController')
+  fteData: require('./fteDataController'),
+  employeeList: require('./employeeListController')
 }

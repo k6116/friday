@@ -62,4 +62,18 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getOrgData(managerEmailAddress: string) {
+    const employeeListData = this.getEmployeeList(managerEmailAddress);
+
+    return forkJoin([
+      employeeListData
+    ]);
+
+  }
+
+  getEmployeeList(managerEmailAddress) {
+    return this.http.get(`/api/employeeList/${managerEmailAddress}`)
+      .map((response: Response) => response.json());
+  }
+
 }
