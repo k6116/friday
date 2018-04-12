@@ -13,6 +13,7 @@ import { MatButtonModule, MatCheckboxModule, MatExpansionModule } from '@angular
 
 // DIRECTIVES
 import { AutofocusDirective } from './_shared/directives/autofocus.directive';
+import { FteInputRestrictDirective } from './_shared/directives/fte-input-restrict.directive';
 
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
@@ -47,7 +48,8 @@ import { OrgTreeComponent } from './org-tree/org-tree.component';
     SafeHtmlPipe,
     FteEntryComponent,
     OrgComponent,
-    OrgTreeComponent
+    OrgTreeComponent,
+    FteInputRestrictDirective
   ],
   imports: [
     AppRoutingModule,

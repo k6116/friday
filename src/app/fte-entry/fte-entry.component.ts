@@ -1,5 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
+import { DecimalPipe } from '@angular/common';
 import { NouisliderModule } from 'ng2-nouislider';
 
 import { User } from '../_shared/models/user.model';
@@ -7,14 +9,38 @@ import { AuthService } from '../auth/auth.service';
 import { ApiDataService } from '../_shared/services/api-data.service';
 import { UserFTEs, AllocationsArray} from './fte-model';
 
+const moment = require('moment');
+require('moment-fquarter');
+
 declare const require: any;
+declare const $: any;
 
 @Component({
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
-  styleUrls: ['./fte-entry.component.css']
+  styleUrls: ['./fte-entry.component.css'],
+  providers: [DecimalPipe]
+  // animations: [
+  //   trigger('conditionState', [
+  //     state('in', style({
+  //       opacity: 1,
+  //       transform: 'translateY(0)'
+  //     })),
+  //     transition('in => void', [
+  //       animate(100, style({
+  //         opacity: 0,
+  //         transform: 'translateY(25px)'
+  //       }))
+  //     ]),
+  //     transition('void => in', [
+  //       animate(100, style({
+  //         opacity: 1
+  //       }))
+  //     ])
+  //   ])
+  // ]
 })
-export class FteEntryComponent implements OnInit {
+export class FteEntryComponent implements OnInit, AfterViewInit {
 
   // initialize variables
   mainSliderConfig: any;  // slider config
@@ -22,19 +48,31 @@ export class FteEntryComponent implements OnInit {
   FTEFormGroup: FormGroup;
   sliderRange: number[] = [];
   userFTEs: any;  // array to store user FTE data
+  userFTEsFlat: any;  // array to store user FTE data (flattened/non-treeized version)
   display: boolean; // TODO: find a better solution to FTE display timing issue
   loggedInUser: User; // object for logged in user's info
   projects: any;  // for aliasing formarray
+  months: string[] = [];
+  state: string; // for angular animation
+  monthlyTotals: number[];
+  monthlyTotalsValid: boolean[];
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private apiDataService: ApiDataService
+    private apiDataService: ApiDataService,
+    private decimalPipe: DecimalPipe
   ) {
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
     });
+
+    this.state = 'in';
+
+    this.monthlyTotals = new Array(36).fill(null);
+    this.monthlyTotalsValid = new Array(36).fill(true);
+
   }
 
   ngOnInit() {
@@ -52,16 +90,202 @@ export class FteEntryComponent implements OnInit {
       this.loggedInUser = user;
       this.fteComponentInit();  // initialize the FTE entry component
     });
+
+    this.buildMonthsArray();
+
   }
+
+  ngAfterViewInit() {
+
+
+
+  }
+
+
+  onTableScroll(event) {
+    const scrollTop = $('div.table-scrollable').scrollTop();
+    const scrollLeft = $('div.table-scrollable').scrollLeft();
+    // console.log(`scroll left: ${scrollLeft}, scroll top: ${scrollTop}`);
+
+    $('div.table-header-underlay').css('top', `${scrollTop}px`);
+    $('table.table-ftes thead tr th').css('top', `${scrollTop - 10}px`);
+    $('table.table-ftes tbody tr td.col-project-name').css('left', `${scrollLeft - 15}px`);
+    $('table.table-ftes tbody tr td.col-total-name').css('left', `${scrollLeft - 15}px`);
+    $('table.table-ftes thead tr th.header-project').css('left', `${scrollLeft - 15}px`);
+    $('div.table-header-underlay').css('left', `${scrollLeft}px`);
+
+  }
+
+
+  onFTEChange(i, j, value) {
+    console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
+
+    let fteReplace: boolean;
+    let fteReplaceValue: any;
+
+    // check for match on the standard three digit format 0.5, 1.0
+    const match = /^[0][.][1-9]{1}$/.test(value) || /^[1][.][0]{1}$/.test(value);
+    // if not a match, will want to update/patch it to use the standard format
+    if (!match) {
+      fteReplace = true;
+      // check for still valid format such as .6, 1., 1
+      if (/^[.][1-9]{1}$/.test(value) || /^[1][.]$/.test(value) || /^[1]$/.test(value)) {
+        fteReplaceValue = this.decimalPipe.transform(value, '1.1');
+      } else {
+        fteReplaceValue = null;
+      }
+    }
+    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}`);
+
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+    const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
+    const FTEFormGroup = FTEFormProjectArray.at(j);
+    FTEFormGroup.patchValue({
+      updated: true
+    });
+
+    if (fteReplace) {
+      FTEFormGroup.patchValue({
+        fte: fteReplaceValue
+      });
+    }
+
+    // update the monthly total
+    this.updateMonthlyTotal(j);
+
+    // set the border color for the monthly totals inputs
+    this.setMonthlyTotalsBorder();
+
+  }
+
+
+  updateMonthlyTotal(index) {
+
+    // initialize a temporary variable, set to zero
+    let total = 0;
+
+    // set the outer form array of projeccts and months
+    const fteTable = this.FTEFormGroup.value.FTEFormArray;
+
+    // loop through each project
+    fteTable.forEach((project, i) => {
+      // loop through each month
+      project.forEach((month, j) => {
+        // if the month matches the month that was updated, update the total
+        if (j === index) {
+          total += +month.fte;
+        }
+      });
+    });
+
+    // set to null if zero (to show blank) and round to one significant digit
+    total = total === 0 ? null : Math.round(total * 10) / 10;
+
+    // set the monthly totals property at the index
+    this.monthlyTotals[index] = total;
+
+  }
+
+
+  updateMonthlyTotals() {
+
+    // initialize a temporary array with zeros to hold the totals
+    let totals = new Array(36).fill(0);
+
+    // set the outer form array of projeccts and months
+    const fteTable = this.FTEFormGroup.value.FTEFormArray;
+
+    // loop through each project
+    fteTable.forEach((project, i) => {
+      // loop through each month
+      project.forEach((month, j) => {
+        totals[j] += +month.fte;
+      });
+    });
+
+    // replace the zeros with nulls to show blanks
+    totals = totals.map(total => {
+      return total === 0 ? null : total;
+    });
+
+    // round the totals to one significant digit
+    totals = totals.map(total => {
+      return total ? Math.round(total * 10) / 10 : null;
+    });
+
+    // set the monthly totals property
+    this.monthlyTotals = totals;
+
+  }
+
+  // set red border around totals that don't total to 1
+  setMonthlyTotalsBorder() {
+
+    this.monthlyTotals.forEach((total, index) => {
+
+      // get a reference to the input element using jquery
+      const $totalEl = $(`input.fte-totals-column[month-index="${index}"]`);
+
+      if (!total) {
+        // console.log(`month ${index} total is null(${total})`);
+        this.monthlyTotalsValid[index] = true;
+      } else if (total !== 1) {
+        // console.log(`month ${index} does NOT total to 1.0 (${total})`);
+        this.monthlyTotalsValid[index] = false;
+      } else {
+        // console.log(`month ${index} DOES total to 1.0 (${total})`);
+        this.monthlyTotalsValid[index] = true;
+      }
+
+    });
+
+
+  }
+
+
+  onTestFormClick() {
+    console.log('form object (this.form):');
+    console.log(this.FTEFormGroup);
+    console.log('form data (this.form.value.FTEFormArray):');
+    console.log(this.FTEFormGroup.value.FTEFormArray);
+  }
+
+
+  onTestSaveClick() {
+
+    const fteData = this.FTEFormGroup.value.FTEFormArray;
+    const t0 = performance.now();
+    // call the api data service to send the put request
+    this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
+      .subscribe(
+        res => {
+          console.log(res);
+          const t1 = performance.now();
+          console.log(`save fte values took ${t1 - t0} milliseconds`);
+        },
+        err => {
+          console.log(err);
+        }
+      );
+
+  }
+
 
   fteComponentInit() {
     // get FTE data
     this.apiDataService.getFteData(this.loggedInUser.id)
     .subscribe(
       res => {
-        this.userFTEs = res;
+        console.log(res);
+        this.userFTEs = res.nested;
+        this.userFTEsFlat = res.flat;
+        console.log('user ftes (this.userFTEs):');
+        console.log(this.userFTEs);
+        console.log('user ftes flat (this.userFTEsFlat):');
+        console.log(this.userFTEsFlat);
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
+        this.projects = this.userFTEs;
       },
       err => {
         console.log(err);
@@ -69,33 +293,77 @@ export class FteEntryComponent implements OnInit {
     );
   }
 
+  buildMonthsArray() {
+    const startDate = moment().utc().startOf('year').subtract(2, 'months').subtract(1, 'years');
+    const endDate = moment(startDate).add(3, 'years');
+    // console.log(`start date:`);
+    // console.log(startDate);
+    // console.log(`end date:`);
+    // console.log(endDate);
+    const numMonths = endDate.diff(startDate, 'months');
+    // console.log(`number of months: ${numMonths}`);
+    for (let i = 0; i < numMonths; i++) {
+      this.months.push(moment(startDate).add(i, 'months'));
+    }
+    console.log('months array:');
+    console.log(this.months);
+    // console.log('first month as string');
+    // console.log(moment(this.months[0]).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z');
+  }
+
   buildFteEntryForm = (): void => {
     // grab the Project formarray
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+
+
+    console.log('unix epoch for first month:');
+    console.log(moment(this.months[0]).unix());
+
 
     // loop through each project to get into the FTE entry elements
     this.userFTEs.forEach( (proj: UserFTEs) => {
       const projFormArray = this.fb.array([]); // instantiating a temp formarray for each project
 
-      proj.allocations.forEach( (mo: AllocationsArray) => {
+      // proj.allocations.forEach( (mo: AllocationsArray) => {
+      this.months.forEach(month => {
         // for each FTE entry in a given project, push the FTE controller into the temp formarray
         // so we will have 1 controller per month, one array of controllers per project
+        // console.log('unix epoch in seconds:');
+        // console.log(moment(mo.month).unix());
+
+        // attempt to find a record/object for this project and month
+        const foundEntry = this.userFTEsFlat.find(userFTE => {
+          return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+        });
+        // console.log(`found object for project ${proj.projectName} and month ${month}:`);
+        // console.log(foundEntry);
+
         projFormArray.push(
           this.fb.group({
-            fte: ['']
+            recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
+            projectID: [proj.projectID],
+            // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
+            month: [month],
+            fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
+            newRecord: [foundEntry ? false : true],
+            updated: [false]
           })
         );
       });
       // push the temp formarray as 1 object in the Project formarray
       FTEFormArray.push(projFormArray);
     });
-    this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
+    // this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
+
+    // update the totals row
+    this.updateMonthlyTotals();
+
+    // set red border around total inputs that don't sum up to 1
+    this.setMonthlyTotalsBorder();
+
   }
 
   setSliderConfig() {
-    // import moment and fiscal quarter plugin
-    const moment = require('moment');
-    require('moment-fquarter');
 
     // set slider starting range based on current date
     let startDate = moment().startOf('month');
@@ -214,6 +482,7 @@ export class FteEntryComponent implements OnInit {
     const leftHandle = Math.round(value[0]);
     const rightHandle = Math.round(value[1]);
     this.sliderRange = [leftHandle, rightHandle];
+
   }
 
   onSliderUpdate(value: any) {
@@ -228,5 +497,12 @@ export class FteEntryComponent implements OnInit {
     // set only months that should be visible to true
     this.fteMonthVisible = this.fteMonthVisible.fill(false);
     this.fteMonthVisible = this.fteMonthVisible.fill(true, posStart, posStart + posDelta);
+
+    // TEMP CODE: workaround for rendering issue for column headers (months)
+    let scrollTop = $('div.table-scrollable').scrollTop();
+    $('div.table-scrollable').scrollTop(scrollTop - 1);
+    scrollTop = $('div.table-scrollable').scrollTop();
+    $('div.table-scrollable').scrollTop(scrollTop + 1);
+
   }
 }
