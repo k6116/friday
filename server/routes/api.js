@@ -14,6 +14,9 @@ router.post('/resetToken', controllers.auth.resetToken);
 router.get('/ftedata/:userID', controllers.fteData.getFteData);
 router.post('/ftedata/:userID', controllers.fteData.update);
 
+// ORG CONTROLLER
+router.get('/org/:emailAddress', controllers.org.show);
+
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified

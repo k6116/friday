@@ -8,6 +8,9 @@
   <h3>{{ loggedInUser?.email }}</h3>
 
   <button class="test-mat-button" mat-raised-button color="warn" (click)="onLogoutClick()">Logout</button>
+  <button class="test-mat-button" mat-raised-button color="warn" (click)="onGetOrgDataClick()">Get Org Data</button>
+  <label class="label-email">Email Address</label>
+  <input type="text" class="form-control test-email" [(ngModel)]="emailAddress">
 </div>
 
 <!-- import the FTE entry screen component -->

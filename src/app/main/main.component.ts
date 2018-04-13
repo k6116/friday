@@ -17,7 +17,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   loggedInUser: User;
   subscription1: Subscription;
-
+  emailAddress: string;
 
   constructor(
     private authService: AuthService,
@@ -62,6 +62,26 @@ export class MainComponent implements OnInit, OnDestroy {
   onLogoutClick() {
     // log the user out, don't show auto-logout message
     this.authService.routeToLogin(false);
+  }
+
+
+  onGetOrgDataClick() {
+
+    const t0 = performance.now();
+    this.apiDataService.getOrgData(this.emailAddress)
+      .subscribe(
+        res => {
+          console.log(res);
+          const json = JSON.parse(res[0].json);
+          const t1 = performance.now();
+          console.log(`time to get org data: ${t1 - t0} milliseconds`);
+          console.log(json);
+        },
+        err => {
+          console.log(err);
+        }
+      );
+
   }
 
 
