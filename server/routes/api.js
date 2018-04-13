@@ -14,6 +14,9 @@ router.post('/resetToken', controllers.auth.resetToken);
 router.get('/ftedata/:userID', controllers.fteData.getFteData);
 router.post('/ftedata/:userID', controllers.fteData.update);
 
+// ORG TREE DATA
+router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
+
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified
@@ -40,7 +43,7 @@ router.use('/', function(req, res, next) {
 // NOTE: all routes after this middleware function WILL be protected in the case of invalid token
 
 router.get('/users', controllers.auth.index);
-router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
+
 
 
 module.exports = router;

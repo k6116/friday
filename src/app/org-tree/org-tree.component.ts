@@ -23,8 +23,6 @@ export class OrgTreeComponent implements OnInit {
   ) { }
 
 
-  // BEGIN ACCORDIAN
-
   ngOnInit() {
     // click on name and display assigne projects and FTW from resources.ProjectEmployees
     // this.organization = [
@@ -43,36 +41,32 @@ export class OrgTreeComponent implements OnInit {
     //         uid: 2,
     //         mgruid: 1,
     //       },
+  }
 
+
+  onDisplayClick() {
+
+    this.displayOrg = true;
     const managerEmailAddress = 'ethan_hunt@keysight.com';
+
     this.apiDataService.getOrgData(managerEmailAddress)
       .subscribe(
           res => {
-            console.log('treeize data:');
-            this.employeeList = res[0];
 
-           // this.appDataService.managerEmailAddress = managerEmailAddress;
-           // this.appDataService.employeeList = this.employeeList;
-            // console.log(this.employeeList);
+            this.employeeList = res;
 
-            // var supervisorID = this.employeeList.filter(a=>a.EMAIL_ADDRESS==managerEmailAddress).PERSON_ID;
-            const supervisorID = this.employeeList[0].PERSON_ID;
-            console.log('supervisorID: ' + this.employeeList[0].PERSON_ID);
 
-            this.organizationNested = this.getNestedOrgData(this.employeeList, supervisorID); // 21938 22286 4551
-             console.log('Org Chart Tree List');
-             console.log(this.organizationNested);
+           //  this.organizationNested = this.getNestedOrgData(this.employeeList, supervisorID); // 21938 22286 4551
+            //  console.log('Nested Employee List:');
+            //  console.log(this.organizationNested);
 
-            this.organizationNested.sort(function(a, b) {
-                if (a.items === undefined) {
-                  return 1;
-                } else {
-                  return -1;
-                }
-            });
-
-            console.log('SORTED!');
-            console.log(this.organizationNested);
+            // this.organizationNested.sort(function(a, b) {
+            //     if (a.items === undefined) {
+            //       return 1;
+            //     } else {
+            //       return -1;
+            //     }
+            // });
 
            // this.items = [{label: this.employeeList[0].EMAIL_ADDRESS, items: this.testData}];
 
@@ -97,10 +91,11 @@ export class OrgTreeComponent implements OnInit {
         }
       }
     return out;
-    }
+  }
 
 
-// ********************* END ACCORDIAN
+
+
 
   logUserDetails(name: string, address: string, opts?: any) {
     console.log(`${name} lives at ${address}, phone number is: ${opts.phone ? opts.phone : 'not known'}`);
@@ -333,13 +328,6 @@ export class OrgTreeComponent implements OnInit {
 
     return maxLevel;
 
-  }
-
-
-
-  // display org
-  onTestDisplayOrgClick() {
-    this.displayOrg = true;
   }
 
 

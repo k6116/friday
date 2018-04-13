@@ -16,12 +16,6 @@ const configPLM = {
 };
 
 
-// username: 'DARWIN_USER',
-// password: 'sp_f1nches',
-// username: 'IETOOLS_USER',
-//   password: 'be3pH0r3ekNo!r',
-
-
 
 module.exports = {
   config: config, 

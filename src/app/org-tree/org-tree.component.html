@@ -4,27 +4,27 @@
 
 <div class="container-fluid">
 
-  <button class="btn btn-primary" (click)="onTestFactorialClick()">Factorial</button>
-  <button class="btn btn-primary" (click)="onTestDisplayOrgClick()">Display Org</button>
-  <button class="btn btn-primary" (click)="onTestMaxLevelClick()">Max Level</button>
+  <!-- <button class="btn btn-primary" (click)="onTestFactorialClick()">Factorial</button> -->
+  <button class="btn btn-warning" (click)="onTestDisplayOrgClick()">get data</button>
+  <!-- <button class="btn btn-primary" (click)="onTestMaxLevelClick()">Max Level</button> -->
 
   <div class="name-cont" click="onNameContClick($event)">
-    <label>Name</label>
+    <!-- <label>Find</label> -->
     <div class="form-group form-inline" click="onFormGroupClick($event)">
-      <input [(ngModel)]="employeeName" type="text" autocomplete="off" class="form-control" (keydown)="onTestKeyDown($event)" (keypress)="onTestKeyPress($event)" (keyup)="onTestKeyUp($event)">
-      <button class="btn btn-primary" (click)="onTestNumEmployeesClick()">Num Employees</button>
+      <!-- <input [(ngModel)]="employeeName" type="text" autocomplete="off" class="form-control" (keydown)="onTestKeyDown($event)" (keypress)="onTestKeyPress($event)" (keyup)="onTestKeyUp($event)" placeholder="Enter Email Address"> -->
+      <!-- <button class="btn btn-primary" (click)="onTestNumEmployeesClick()">Num Employees</button>
       <button class="btn btn-primary" (click)="onTestNumEmployeesAllClick()">Num Employees All</button>
       <button class="btn btn-primary" (click)="onTestManagerNameClick()">Manager Name</button>
       <button class="btn btn-primary" (click)="onTestClick($event)" (mousedown)="onTestMouseDown($event)" (mouseup)="onTestMouseUp($event); $event.stopPropagation()">Click Events</button>
       <button class="btn btn-primary" (click)="onExpandCollapse()">Expand/Collapse</button>
       <button class="btn btn-primary" (click)="onTestFlatToNested()">Flat to Nested</button>
-      <button class="btn btn-primary" (click)="onTestSubOrganization()">Sub Org</button>
+      <button class="btn btn-primary" (click)="onTestSubOrganization()">Sub Org</button> -->
     </div>
   </div>
   
-  <div *ngIf="displayOrg" class="org-cont">
+  <!-- <div *ngIf="displayOrg" class="org-cont">
     <app-org [employees]="employeeList"></app-org>
-  </div>
+  </div> -->
   
 </div>
 

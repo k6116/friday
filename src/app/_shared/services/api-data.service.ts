@@ -63,16 +63,11 @@ export class ApiDataService {
   }
 
   getOrgData(managerEmailAddress: string) {
-    const employeeListData = this.getEmployeeList(managerEmailAddress);
 
-    return forkJoin([
-      employeeListData
-    ]);
+    return this.http.get(`/api/employeeList/${managerEmailAddress}`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
 
-  }
-
-  getEmployeeList(managerEmailAddress) {
-    return this.http.get(`/api/employeeList/${managerEmailAddress}`);
   }
 
   // update FTE data
