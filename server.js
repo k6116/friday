@@ -20,7 +20,7 @@ const sequelize = require('./server/db/sequelize');
 //   rejectUnauthorized: false 
 // };
 
-// connect to the database
+// connect to the database(s)
 sequelize.connect();
 
 // create the express application

@@ -71,4 +71,11 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getOrgData(emailAddress: string) {
+    return this.http.get(`/api/org/${emailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+
 }

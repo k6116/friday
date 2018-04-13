@@ -6,3 +6,8 @@
 .test-mat-button {
   margin-top: 50px;
 }
+
+input.test-email {
+  display: inline-block;
+  width: 300px;
+}
