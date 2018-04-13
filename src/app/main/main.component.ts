@@ -71,7 +71,7 @@ export class MainComponent implements OnInit, OnDestroy {
     this.apiDataService.getOrgData(this.emailAddress)
       .subscribe(
         res => {
-          console.log(res);
+          // console.log(res);
           const json = JSON.parse(res[0].json);
           const t1 = performance.now();
           console.log(`time to get org data: ${t1 - t0} milliseconds`);
