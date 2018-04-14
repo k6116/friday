@@ -1,19 +1,20 @@
 
 const Sequelize = require('sequelize');
-const sequelizePLM = require('../db/sequelize').sequelizePLM;
-const sequelize = require('../db/sequelize').sequelize;
-const Treeize = require('treeize');
+const sequelize2017 = require('../db/sequelize').sequelize2017;
 
 function show(req, res) {
+  const emailAddress = req.params.managerEmailAddress;
 
-  var managerEmailAddress = req.params.managerEmailAddress;
-  console.log('Calling PLM:');
-  sequelizePLM.query('EXEC JARVIS.GetOrgChart :managerEmailAddress', {replacements: {managerEmailAddress: managerEmailAddress}, type: sequelizePLM.QueryTypes.SELECT})
-    .then(function(results){    
-      res.json(results);
+  sequelize2017.query('EXECUTE dbo.GetNestedOrgJson :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize2017.QueryTypes.SELECT})
+    .then(org => {
+      console.log("returning nested org data");
+      res.json(org);
     })
-    .error(function(err){
-      console.log(err);
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
     });
 }
 

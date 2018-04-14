@@ -1,4 +1,3 @@
-
 const config = {
   dbname: "Jarvis_DEV",
   host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',
@@ -15,11 +14,18 @@ const configPLM = {
   dialect: 'mssql'
 };
 
-
+const config2017 = {
+  dbname: "JarvisResources",
+  host: 'WCOSOFW2.COS.IS.KEYSIGHT.COM',
+  username: 'JarvisRTUser',
+  password: '3pineapple#',
+  dialect: 'mssql'
+};
 
 module.exports = {
   config: config, 
-  configPLM: configPLM
+  configPLM: configPLM,
+  config2017: config2017
 };
 
 

@@ -2,8 +2,10 @@
 <div *ngFor="let employee of employees; let i=index" class="emp-cont-outer">
   <ul class="emp-cont-inner">
     <li class="emp-item">
-      {{employee.LAST_NAME}}
-      <app-org [employees]="employee.employees" *ngIf="employee.employees && employee.showEmployees" [class]="'emp-cont ' + employee.PERSON_ID"></app-org>
+      <div (click)="onFullNameClick($event.target.innerText)">
+      {{employee.fullName}}
+      </div>
+      <app-org (click)="onFullNameChildClick($event.target.innerText)" [employees]="employee.employees" *ngIf="employee.employees && employee.showEmployees" [class]="'emp-cont ' + employee.personID"></app-org>
     </li>
   </ul>
 </div>

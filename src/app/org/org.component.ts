@@ -1,6 +1,7 @@
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AppDataService } from '../_shared/services/app-data.service';
+// import { EventEmitter } from 'events';
 
 @Component({
   selector: 'app-org',
@@ -10,7 +11,10 @@ import { AppDataService } from '../_shared/services/app-data.service';
 export class OrgComponent implements OnInit {
 
   @Input() employees;
+  @Output() nodeFullName = new EventEmitter<string>();
+
   blockClickEvent: boolean;
+
 
   constructor(
     private appDataService: AppDataService
@@ -19,14 +23,24 @@ export class OrgComponent implements OnInit {
   ngOnInit() {
   }
 
-  onExpandCollapseIconClick(employee, index, event: Event) {
-    event.stopPropagation();
-    this.appDataService.employeeIcon.emit(employee);
+  // onExpandCollapseIconClick(employee, index, event: Event) {
+  //   event.stopPropagation();
+  //   this.appDataService.employeeIcon.emit(employee);
+  // }
+
+  // onEmployeeNameClick(employee, i, event: Event) {
+  //   event.stopPropagation();
+  //   this.appDataService.employee.emit(employee);
+  // }
+
+  onFullNameClick(text: string) {
+    this.nodeFullName.emit(text);
+    console.log('Inner Event: ' + text);
   }
 
-  onEmployeeNameClick(employee, i, event: Event) {
-    event.stopPropagation();
-    this.appDataService.employee.emit(employee);
+  onFullNameChildClick(text: string) {
+    this.nodeFullName.emit(text);
+    console.log('Inner Child Event: ' + text);
   }
 
 }

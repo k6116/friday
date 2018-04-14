@@ -16,6 +16,8 @@ router.post('/ftedata/:userID', controllers.fteData.update);
 
 // ORG TREE DATA
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
+// ORG CONTROLLER
+router.get('/org/:emailAddress', controllers.org.show);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 

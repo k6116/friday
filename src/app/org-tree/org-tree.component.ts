@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ApiDataService } from '../_shared/services/api-data.service';
+import { AppDataService } from '../_shared/services/app-data.service';
 import * as _ from 'lodash';
 declare var $: any;
 
@@ -15,86 +16,90 @@ export class OrgTreeComponent implements OnInit {
   organizationFlat: any;
   organizationNested: any;
   subOrganization: any;
-  displayOrg: boolean;
-  employeeName: string;
+  employeeFullName: string;
+  employeeEmail: string;
 
   constructor(
-    private apiDataService: ApiDataService
+    private apiDataService: ApiDataService,
+    private appDataService: AppDataService
   ) { }
 
 
   ngOnInit() {
-    // click on name and display assigne projects and FTW from resources.ProjectEmployees
-    // this.organization = [
-    //   {
-    //     name: 'Patrick B Harper',
-    //     managerName: 'Shidah Ahmad',
-    //     level: 0,
-    //     uid: 1,
-    //     showEmployees: true,
-    //     employees: [
-    //       {
-    //         name: 'Nitin Aery',
-    //         managerName: 'Patrick B Harper',
-    //         manager: false,
-    //         level: 1,
-    //         uid: 2,
-    //         mgruid: 1,
-    //       },
+
   }
 
 
   onDisplayClick() {
 
-    this.displayOrg = true;
-    const managerEmailAddress = 'ethan_hunt@keysight.com';
-
-    this.apiDataService.getOrgData(managerEmailAddress)
+    this.apiDataService.getEmployeeData(this.employeeEmail)
       .subscribe(
           res => {
 
-            this.employeeList = res;
-
-
-           //  this.organizationNested = this.getNestedOrgData(this.employeeList, supervisorID); // 21938 22286 4551
-            //  console.log('Nested Employee List:');
-            //  console.log(this.organizationNested);
-
-            // this.organizationNested.sort(function(a, b) {
-            //     if (a.items === undefined) {
-            //       return 1;
-            //     } else {
-            //       return -1;
-            //     }
-            // });
-
-           // this.items = [{label: this.employeeList[0].EMAIL_ADDRESS, items: this.testData}];
-
+           this.employeeList =  JSON.parse('[' + res[0].json + ']');
+           console.log( this.employeeList);
           },
           err => {
             console.log(err);
           }
       );
+  }
+nodeFullName(fullName) {
+    console.log('Outer Event Reached: ' + fullName);
+    this.employeeFullName = fullName;
+    this.expandCollapse(this.employeeList, this.employeeFullName);
+}
 
+  onExpandCollapse() {
+    this.expandCollapse(this.employeeList, this.employeeFullName);
   }
 
-  getNestedOrgData(arr, parent) {
-    const out = [];
-    for (const i in arr) {
-        if (arr[i].SUPERVISOR_ID === parent) {
-            const directReports = this.getNestedOrgData(arr, arr[i].PERSON_ID);
-            if (directReports.length) {
-                arr[i].directReports = directReports;
-            }
-            // out.push(arr[i])
-            out.push({label: arr[i].EMAIL_ADDRESS, items: arr[i].directReports, level: arr[i].Level, show: true});
+  expandCollapse(org: any, fullName: string) {
+
+    for (const i in org) {
+      if (typeof org[i] === 'object') {
+        if (org[i].fullName === fullName) {
+          console.log(`found manager name ${org[i].fullName}`);
+          org[i].showEmployees = !org[i].showEmployees;
+          console.log('org for this manager:');
+          console.log(org[i]);
+          return;
+        } else {
+          this.expandCollapse(org[i].employees, fullName);
         }
       }
-    return out;
+    }
+
   }
 
+    // manager name
+    onTestManagerNameClick() {
+      const managerName = this.getManagerName(this.employeeList, this.employeeFullName);
+      console.log(`manager for ${this.employeeFullName} is ${managerName}`);
+    }
 
+   getManagerName(org: any, empName: string): string {
 
+      let returnManagerName: string;
+      loopThroughOrg(org);
+
+   function loopThroughOrg(org2: any, managerName?: string) {
+        for (const i in org2) {
+          if (typeof org2[i] === 'object') {
+            if (org2[i].fullName === empName) {
+              returnManagerName = managerName;
+            }
+            if (org2[i].employees) {
+              managerName = org2[i].fullName;
+              loopThroughOrg(org2[i].employees, managerName);
+            }
+          }
+        }
+      }
+
+      return returnManagerName;
+
+    }
 
 
   logUserDetails(name: string, address: string, opts?: any) {
@@ -174,7 +179,7 @@ export class OrgTreeComponent implements OnInit {
 
   onTestSubOrganization() {
     const t0 = performance.now();
-    this.subOrganization = this.getSubOrg(this.employeeList, this.employeeName);
+    this.subOrganization = this.getSubOrg(this.employeeList, this.employeeFullName);
     const t1 = performance.now();
     console.log(`sub organization method took ${t1 - t0} milliseconds`);
     console.log('sub organization:');
@@ -207,31 +212,6 @@ export class OrgTreeComponent implements OnInit {
 
   // EXPAND / COLLAPSE TESTING
 
-  onExpandCollapse() {
-    console.log('employee/manager name is: ' + this.employeeName);
-    // const org = this.organization;
-    this.expandCollapse(this.employeeList, this.employeeName);
-  }
-
-  expandCollapse(org: any, name: string) {
-
-    for (const i in org) {
-      if (typeof org[i] === 'object') {
-        // console.log(`looking at name ${org[i].name}`);
-        // console.log(org[i]);
-        if (org[i].name === name) {
-          console.log(`found manager name ${org[i].name}`);
-          org[i].showEmployees = !org[i].showEmployees;
-          console.log('org for this manager:');
-          console.log(org[i]);
-          return;
-        } else {
-          this.expandCollapse(org[i].employees, name);
-        }
-      }
-    }
-
-  }
 
 
 
@@ -274,10 +254,12 @@ export class OrgTreeComponent implements OnInit {
 
   onTestKeyPress(event) {
     console.log('input key press event triggered');
+
   }
 
   onTestKeyUp(event) {
     console.log('input key up event triggered');
+    this.expandCollapse(this.employeeList, this.employeeFullName);
   }
 
 
@@ -334,8 +316,8 @@ export class OrgTreeComponent implements OnInit {
 
   // number of employees
   onTestNumEmployeesClick() {
-    const numEmployees = this.getNumEmployees(this.employeeList, this.employeeName);
-    console.log(`number of employees for ${this.employeeName} is: ${numEmployees}`);
+    const numEmployees = this.getNumEmployees(this.employeeList, this.employeeFullName);
+    console.log(`number of employees for ${this.employeeFullName} is: ${numEmployees}`);
   }
 
   getNumEmployees(org: any, managerName: string, directOnly?: boolean): number {
@@ -404,32 +386,5 @@ export class OrgTreeComponent implements OnInit {
 
 
 
-  // manager name
-  onTestManagerNameClick() {
-    const managerName = this.getManagerName(this.employeeList, this.employeeName);
-    console.log(`manager for ${this.employeeName} is ${managerName}`);
-  }
 
-  getManagerName(org: any, empName: string): string {
-
-    let returnManagerName: string;
-    loopThroughOrg(org);
-
-    function loopThroughOrg(org2: any, managerName?: string) {
-      for (const i in org2) {
-        if (typeof org2[i] === 'object') {
-          if (org2[i].name === empName) {
-            returnManagerName = managerName;
-          }
-          if (org2[i].employees) {
-            managerName = org2[i].name;
-            loopThroughOrg(org2[i].employees, managerName);
-          }
-        }
-      }
-    }
-
-    return returnManagerName;
-
-  }
 }
