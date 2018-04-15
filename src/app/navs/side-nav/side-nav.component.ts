@@ -31,11 +31,13 @@ export class SideNavComponent implements OnInit {
           subItems: [
             {
               title: 'Me',
-              alias: 'me'
+              alias: 'me',
+              path: 'fte-entry'
             },
             {
               title: 'My Team',
-              alias: 'myTeam'
+              alias: 'myTeam',
+              path: 'fte-entry-team'
             }
           ]
         },
@@ -43,6 +45,7 @@ export class SideNavComponent implements OnInit {
           title: 'Projects',
           iconClass: 'nc-gantt',
           alias: 'projects',
+          path: 'setups/projects',
           expanded: false
         },
         {
@@ -53,11 +56,13 @@ export class SideNavComponent implements OnInit {
           subItems: [
             {
               title: 'Projects',
-              alias: 'projects'
+              alias: 'projects',
+              path: 'reports/projects'
             },
             {
               title: 'Employees',
-              alias: 'employees'
+              alias: 'employees',
+              path: 'reports/employees'
             }
           ]
         }
