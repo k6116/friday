@@ -17,9 +17,8 @@
 
 .app-logo-cont {
   float: left;
-  /* padding-top: 6px;
-  margin-left: 200px;
-  padding-left: 15px; */
+  position: relative;
+  top: 10px;
 }
 
 .app-logo {
@@ -30,16 +29,23 @@
 
 .app-title-cont {
   float: left;
-  /* line-height: 55px; */
-  /* margin-top: 10px;
-  margin-left: 5px; */
 }
 
 .app-title {
   font-family: "Roboto", sans-serif;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 600;
   color: rgb(36, 43, 48);
+  display: inline;
+  padding-left: 10px;
+  line-height: 55px;
+}
+
+.app-sub-title {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(23, 107, 167);
   display: inline;
   padding-left: 5px;
   line-height: 55px;
