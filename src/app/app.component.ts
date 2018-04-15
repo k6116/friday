@@ -70,6 +70,7 @@ export class AppComponent implements OnInit {
     // update the last activity property with a new timestamp
     this.authService.updateLastActivity();
     console.log(`document clicked, class: ${event.target.className}`);
+    this.appDataService.clickedClass.emit(event.target.className);
   }
 
   onDocumentKeyDown() {

@@ -137,3 +137,7 @@ button.app-menu-dropdown-button:hover {
   background-color: rgb(240, 240, 240);
 }
 
+button.app-menu-dropdown-button:focus {
+  outline: 0;
+}
+
