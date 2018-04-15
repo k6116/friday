@@ -30,10 +30,12 @@ export class SideNavComponent implements OnInit {
           expanded: false,
           subItems: [
             {
-              title: 'Me'
+              title: 'Me',
+              alias: 'me'
             },
             {
-              title: 'My Team'
+              title: 'My Team',
+              alias: 'myTeam'
             }
           ]
         },
@@ -50,10 +52,12 @@ export class SideNavComponent implements OnInit {
           expanded: false,
           subItems: [
             {
-              title: 'Projects'
+              title: 'Projects',
+              alias: 'projects'
             },
             {
-              title: 'Employees'
+              title: 'Employees',
+              alias: 'employees'
             }
           ]
         }

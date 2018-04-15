@@ -3,30 +3,22 @@
 
   <div class="sidenav-menu-items">
 
-    <div class="sidenav-menu-item fteEntry">
-      <div class="sidenav-mainmenu-cont" (click)="onMenuItemClick('fteEntry')">
-        <i class="nc-icon nc-calendar-add sidenav-menu-icon"></i>
-        <div class="sidenav-menu-item-text">FTE Entry</div>
-        <i class="fa fa-caret-right sidenav-expand-collapse-icon" aria-hidden="true"></i>
-      </div>
-      <div class="sidenav-submenu-cont">
-        <div class="sidenav-submenu-item" (click)="onSubMenuItemClick('me')">
-          Me
-        </div>
-        <div class="sidenav-submenu-item" (click)="onSubMenuItemClick('myTeam')">
-          My Team
-        </div>
-      </div>
-    </div>
+    <div *ngFor="let menu of menuStructure" [class]="'sidenav-menu-item ' + menu.alias">
 
-    <div class="sidenav-menu-item projects" (click)="onMenuItemClick('projects')">
-      <i class="nc-icon nc-gantt sidenav-menu-icon"></i>
-      <div class="sidenav-menu-item-text">Projects</div>
-    </div>
+      <div class="sidenav-mainmenu-cont" (click)="onMenuItemClick(menu.alias)">
+        <i [class]="'nc-icon sidenav-menu-icon ' + menu.iconClass"></i>
+        <div class="sidenav-menu-item-text">{{ menu.title }}</div>
+        <i *ngIf="menu.subItems" class="fa fa-caret-right sidenav-expand-collapse-icon" aria-hidden="true"></i>
+      </div>
 
-    <div class="sidenav-menu-item reports" (click)="onMenuItemClick('reports')">
-      <i class="nc-icon nc-chart-bar-33 sidenav-menu-icon"></i>
-      <div class="sidenav-menu-item-text">Reports</div>
+      <ng-container *ngIf="menu.subItems">
+        <div *ngFor="let subMenu of menu.subItems" class="sidenav-submenu-cont">
+          <div class="sidenav-submenu-item" (click)="onSubMenuItemClick(subMenu.alias)">
+            {{ subMenu.title }}
+          </div>
+        </div>
+      </ng-container>
+
     </div>
 
   </div>
