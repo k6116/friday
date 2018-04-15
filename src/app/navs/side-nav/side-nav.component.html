@@ -13,7 +13,7 @@
 
       <ng-container *ngIf="menu.subItems">
         <div *ngFor="let subMenu of menu.subItems" class="sidenav-submenu-cont">
-          <div class="sidenav-submenu-item" (click)="onSubMenuItemClick(subMenu.alias)">
+          <div class="sidenav-submenu-item" (click)="onSubMenuItemClick(menu.alias, subMenu.alias)">
             {{ subMenu.title }}
           </div>
         </div>

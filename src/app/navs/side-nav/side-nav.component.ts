@@ -74,9 +74,6 @@ export class SideNavComponent implements OnInit {
 
   ngOnInit() {
 
-    // init the tooltip javascript (still need this for the expand/collapse since it is applied in the html)
-    $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
-
     // get the current route path from the url
     const path = this.router.url.slice(1, this.router.url.length);
 
@@ -90,13 +87,15 @@ export class SideNavComponent implements OnInit {
     console.log(`menu item ${menuItem} clicked`);
     const $el = $(`div.sidenav-menu-item.${menuItem}`);
     console.log($el);
-    const foundMenuItem = this.menuStructure.find(menu => {
-      return menu.alias === menuItem;
-    });
+    // const foundMenuItem = this.menuStructure.find(menu => {
+    //   return menu.alias === menuItem;
+    // });
+    const foundMenuItem = this.getMenuObject(menuItem);
     console.log('found menu item object');
     console.log(foundMenuItem);
     // transition from 55px + 3px + 40px x each sub menu item
     if (foundMenuItem) {
+      // if the menu item has a sub-menu, expand or collapse the menu
       if (foundMenuItem.subItems) {
         let height;
         if (!foundMenuItem.expanded) {
@@ -109,13 +108,40 @@ export class SideNavComponent implements OnInit {
           foundMenuItem.expanded = false;
         }
       } else {
-        // navigate to menu item, since there are no subitems
+        // navigate to the selected/clicked route
+        this.router.navigate([`/${foundMenuItem.path}`]);
       }
     }
   }
 
-  onSubMenuItemClick(subMenuItem: string) {
+  onSubMenuItemClick(menuItem: string, subMenuItem: string) {
     console.log(`sub menu item ${subMenuItem} clicked`);
+    const foundMenuItem = this.getSubMenuObject(menuItem, subMenuItem);
+    console.log('found menu item object');
+    console.log(foundMenuItem);
+    // navigate to the selected/clicked route
+    this.router.navigate([`/${foundMenuItem.path}`]);
+  }
+
+  getMenuObject(menuItem: string): any {
+    return this.menuStructure.find(menu => {
+      return menu.alias === menuItem;
+    });
+  }
+
+  getSubMenuObject(menuItem: string, subMenuItem: string): any {
+    const foundMenuItem = this.menuStructure.find(menu => {
+      return menu.alias === menuItem;
+    });
+    if (foundMenuItem) {
+      return foundMenuItem.subItems.find(subMenu => {
+        return subMenu.alias === subMenuItem;
+      });
+    }
+  }
+
+  getMenuElement(alias: string): any {
+    return $(`div.sidenav-menu-item.${alias}`);
   }
 
 
