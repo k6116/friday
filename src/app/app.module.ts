@@ -32,6 +32,8 @@ import { MainComponent } from './main/main.component';
 import { NoticeModalComponent } from './modals/notice-modal/notice-modal.component';
 import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
 import { FteEntryComponent } from './fte-entry/fte-entry.component';
+import { TopNavComponent } from './navs/top-nav/top-nav.component';
+import { SideNavComponent } from './navs/side-nav/side-nav.component';
 
 
 
@@ -45,7 +47,9 @@ import { FteEntryComponent } from './fte-entry/fte-entry.component';
     ConfirmModalComponent,
     SafeHtmlPipe,
     FteEntryComponent,
-    FteInputRestrictDirective
+    FteInputRestrictDirective,
+    TopNavComponent,
+    SideNavComponent
   ],
   imports: [
     AppRoutingModule,

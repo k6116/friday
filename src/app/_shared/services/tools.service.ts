@@ -10,9 +10,9 @@ export class ToolsService {
     if (decimalPlaces === 0) {
       return Math.round(number);
     } else if (decimalPlaces === 1) {
-      return Math.round(number * 10) / 10
+      return Math.round(number * 10) / 10;
     } else if (decimalPlaces >= 2) {
-      return Math.round(number * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces)
+      return Math.round(number * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
     } else {
       return number;
     }
