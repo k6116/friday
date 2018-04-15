@@ -1,31 +1,35 @@
 
 <div class="sidenav-cont">
+
   <div class="sidenav-menu-items">
 
-    <div class="sidenav-menu-item recipe" (click)="onMenuItemClick('recipe')" (mouseenter)="onMenuItemMouseEnter('Recipe')">
-      <i class="nc-icon nc-recipe-book-47 sidenav-menu-icon recipe procedure"></i>
-      <div class="sidenav-menu-item-text">Generate Recipe</div>
+    <div class="sidenav-menu-item fteEntry">
+      <div class="sidenav-mainmenu-cont" (click)="onMenuItemClick('fteEntry')">
+        <i class="nc-icon nc-calendar-add sidenav-menu-icon"></i>
+        <div class="sidenav-menu-item-text">FTE Entry</div>
+        <i class="fa fa-caret-right sidenav-expand-collapse-icon" aria-hidden="true"></i>
+      </div>
+      <div class="sidenav-submenu-cont">
+        <div class="sidenav-submenu-item" (click)="onSubMenuItemClick('me')">
+          Me
+        </div>
+        <div class="sidenav-submenu-item" (click)="onSubMenuItemClick('myTeam')">
+          My Team
+        </div>
+      </div>
     </div>
 
-    <div class="sidenav-menu-item parts" (click)="onMenuItemClick('parts')" (mouseenter)="onMenuItemMouseEnter('Parts')">
-      <i class="nc-icon nc-rim sidenav-menu-icon parts"></i>
-      <div class="sidenav-menu-item-text">Parts</div>
+    <div class="sidenav-menu-item projects" (click)="onMenuItemClick('projects')">
+      <i class="nc-icon nc-gantt sidenav-menu-icon"></i>
+      <div class="sidenav-menu-item-text">Projects</div>
     </div>
 
-    <div class="sidenav-menu-item procedures" (click)="onMenuItemClick('procedures')" (mouseenter)="onMenuItemMouseEnter('Procedures')">
-      <i class="nc-icon nc-receipt-list-43 sidenav-menu-icon procedures"></i>
-      <div class="sidenav-menu-item-text">Procedures</div>
-    </div>
-
-    <div class="sidenav-menu-item tanks" (click)="onMenuItemClick('tanks')" (mouseenter)="onMenuItemMouseEnter('Tanks')">
-      <i class="nc-icon nc-wash sidenav-menu-icon tanks"></i>
-      <div class="sidenav-menu-item-text">Tanks</div>
+    <div class="sidenav-menu-item reports" (click)="onMenuItemClick('reports')">
+      <i class="nc-icon nc-chart-bar-33 sidenav-menu-icon"></i>
+      <div class="sidenav-menu-item-text">Reports</div>
     </div>
 
   </div>
 
-  <div class="sidenav-expand-collapse-cont" data-toggle="tooltip" data-placement="right" [title]="expandCollapseTooltip" (click)="onExpandCollapseClick()">
-    <i [ngClass]="{'nc-double-right': toggleMode == 'expand', 'nc-double-left': toggleMode == 'collapse'}" class="nc-icon sidenav-menu-icon"></i>
-  </div>
 
 </div>

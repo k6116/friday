@@ -15,11 +15,53 @@ export class SideNavComponent implements OnInit {
   toggleMode: string;
   expandCollapseTooltip: string;
   initStart: number;
+  menuStructure: any;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private appDataService: AppDataService) { }
+    private appDataService: AppDataService) {
+
+      this.menuStructure = [
+        {
+          title: 'FTE Entry',
+          iconClass: 'nc-calendar-add',
+          alias: 'fteEntry',
+          expanded: false,
+          subItems: [
+            {
+              title: 'Me'
+            },
+            {
+              title: 'My Team'
+            }
+          ]
+        },
+        {
+          title: 'Projects',
+          iconClass: 'nc-gantt',
+          alias: 'projects',
+          expanded: false
+        },
+        {
+          title: 'Reports',
+          iconClass: 'nc-chart-bar-33',
+          alias: 'reports',
+          expanded: false,
+          subItems: [
+            {
+              title: 'Projects'
+            },
+            {
+              title: 'Employees'
+            }
+          ]
+        }
+      ];
+
+
+  }
+
 
   ngOnInit() {
 
@@ -34,5 +76,38 @@ export class SideNavComponent implements OnInit {
     this.selectedMenu = path;
 
   }
+
+  onMenuItemClick(menuItem: string) {
+    console.log(`menu item ${menuItem} clicked`);
+    const $el = $(`div.sidenav-menu-item.${menuItem}`);
+    console.log($el);
+    const foundMenuItem = this.menuStructure.find(menu => {
+      return menu.alias === menuItem;
+    });
+    console.log('found menu item object');
+    console.log(foundMenuItem);
+    // transition from 55px + 3px + 40px x each sub menu item
+    if (foundMenuItem) {
+      if (foundMenuItem.subItems) {
+        let height;
+        if (!foundMenuItem.expanded) {
+          height = 55 + 3 + (foundMenuItem.subItems.length * 40);
+          $el.css('height', `${height}px`);
+          foundMenuItem.expanded = true;
+        } else {
+          height = 55;
+          $el.css('height', `${height}px`);
+          foundMenuItem.expanded = false;
+        }
+      } else {
+        // navigate to menu item, since there are no subitems
+      }
+    }
+  }
+
+  onSubMenuItemClick(subMenuItem: string) {
+    console.log(`sub menu item ${subMenuItem} clicked`);
+  }
+
 
 }

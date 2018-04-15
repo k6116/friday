@@ -162,96 +162,36 @@ License - nucleoapp.com/license/
 	font icons
 -------------------------*/
 
-.nc-dots-05::before {
+.nc-calendar-add::before {
     content: "\ea01";
 }
 
-.nc-dots-07::before {
+.nc-calendar-grid-58::before {
     content: "\ea02";
 }
 
-.nc-double-left::before {
+.nc-chart-bar-33::before {
     content: "\ea03";
 }
 
-.nc-double-right::before {
+.nc-event-create::before {
     content: "\ea04";
 }
 
-.nc-edit-74::before {
+.nc-folder-time::before {
     content: "\ea05";
 }
 
-.nc-enlarge-46::before {
+.nc-gantt::before {
     content: "\ea06";
 }
 
-.nc-hanger-clothes::before {
-    content: "\ea08";
-}
-
-.nc-l-settings::before {
+.nc-settings-gear-64::before {
     content: "\ea07";
 }
 
-.nc-notes::before {
-    content: "\ea09";
-}
-
-.nc-panel::before {
-    content: "\ea0a";
-}
-
-.nc-pencil::before {
-    content: "\ea0b";
-}
-
-.nc-ram::before {
-    content: "\ea0c";
-}
-
-.nc-receipt-list-43::before {
-    content: "\ea0d";
-}
-
-.nc-recipe-book-46::before {
-    content: "\ea0e";
-}
-
-.nc-recipe-book-47::before {
-    content: "\ea0f";
-}
-
-.nc-rim::before {
-    content: "\ea10";
-}
-
-.nc-settings-gear-65::before {
-    content: "\ea11";
-}
-
-.nc-settings::before {
-    content: "\ea12";
-}
-
-.nc-storage-hanger::before {
-    content: "\ea13";
-}
-
-.nc-table-left::before {
-    content: "\ea14";
-}
-
-.nc-table-right::before {
-    content: "\ea15";
-}
-
-.nc-video-67::before {
-    content: "\ea16";
-}
-
-.nc-wash::before {
-    content: "\ea17";
+.nc-wifi-router::before {
+    content: "\ea08";
 }
 
 

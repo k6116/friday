@@ -1,8 +1,8 @@
 
 .nav-bar {
-  background-color: rgb(240, 240, 240);
+  background-color: rgb(227, 230, 232);
   box-shadow: 0 0 4px rgba(0,0,0,.14), 0 4px 8px rgba(0,0,0,.28);
-  height: 48px;
+  height: 55px;
   position: fixed;
   top: 0;
   left: 0;
@@ -12,13 +12,14 @@
 
 .app-ident {
   cursor: pointer;
+  margin-left: 80px
 }
 
 .app-logo-cont {
   float: left;
-  padding-top: 6px;
+  /* padding-top: 6px;
   margin-left: 200px;
-  padding-left: 15px;
+  padding-left: 15px; */
 }
 
 .app-logo {
@@ -29,19 +30,19 @@
 
 .app-title-cont {
   float: left;
-  /*line-height: 60px;*/
-  margin-top: 10px;
-  margin-left: 5px;
+  /* line-height: 55px; */
+  /* margin-top: 10px;
+  margin-left: 5px; */
 }
 
 .app-title {
   font-family: "Roboto", sans-serif;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 600;
-  color: rgba(80, 80, 80, 1);
+  color: rgb(36, 43, 48);
   display: inline;
   padding-left: 5px;
-  line-height: unset;
+  line-height: 55px;
 }
 
 .app-menu {
