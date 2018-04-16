@@ -32,12 +32,12 @@ export class SideNavComponent implements OnInit {
             {
               title: 'Me',
               alias: 'me',
-              path: 'fte-entry'
+              path: 'fte-entry/employee'
             },
             {
               title: 'My Team',
               alias: 'myTeam',
-              path: 'fte-entry-team'
+              path: 'fte-entry/team'
             }
           ]
         },
