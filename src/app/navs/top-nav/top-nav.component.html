@@ -26,10 +26,10 @@
 
       <div class="app-menu-dropdown-cont">
         <div class="app-menu-dropdown-name">
-          Bill Schuetzle
+          {{ loggedInUser?.fullName }}
         </div>
         <div class="app-menu-dropdown-email">
-          bill_schuetzle@keysight.com
+          {{ loggedInUser?.email }}
         </div>
         <div>
           <button type="button" class="app-menu-dropdown-button profile" (click)="onProfileButtonClick()">Profile</button>
