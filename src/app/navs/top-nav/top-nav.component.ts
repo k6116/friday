@@ -35,6 +35,8 @@ export class TopNavComponent implements OnInit, OnDestroy {
       'app-menu-dropdown-email',
       'app-menu-dropdown-button profile',
       'app-menu-dropdown-button logout',
+      'dropdown-triangle',
+      'dropdown-triangle-bottom'
     ];
 
   }
@@ -54,7 +56,7 @@ export class TopNavComponent implements OnInit, OnDestroy {
 
     this.subscription1 = this.appDataService.clickedClass.subscribe(
       (clickedClass: string) => {
-        console.log('clickedClass received in navbar component: ' + clickedClass);
+        // console.log('clickedClass received in navbar component: ' + clickedClass);
         this.hideDropDown(clickedClass);
     });
 
