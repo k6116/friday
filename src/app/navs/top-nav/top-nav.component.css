@@ -1,0 +1,194 @@
+
+
+/* navbar container */
+
+.nav-bar {
+  background-color: rgb(227, 230, 232);
+  box-shadow: 0 0 4px rgba(0,0,0,.14), 0 4px 8px rgba(0,0,0,.28);
+  height: 55px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 20;
+}
+
+/* left container with logo and title */
+
+.app-ident {
+  cursor: pointer;
+  margin-left: 80px
+}
+
+.app-logo-cont {
+  float: left;
+  position: relative;
+  top: 10px;
+}
+
+.app-logo {
+  width: 32px;
+  top: 3px;
+  position: relative;
+}
+
+.app-title-cont {
+  float: left;
+}
+
+.app-title {
+  font-family: "Roboto", sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: rgb(36, 43, 48);
+  display: inline;
+  padding-left: 10px;
+  line-height: 55px;
+}
+
+.app-sub-title {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(23, 107, 167);
+  display: inline;
+  padding-left: 5px;
+  line-height: 55px;
+}
+
+
+
+/* right container with avatar logo */
+
+.app-menu {
+  float: right;
+  margin-right: 80px;
+  text-align: right;
+}
+
+.app-menu-dropdown {
+  display: inline-block;
+  cursor: pointer;
+  padding-left: 0;
+  position: relative;
+  top: 12px;
+}
+
+.app-menu-text {
+  display: inline-block;
+  color: white;
+  font-size: 16px;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  background-color: rgb(36, 43, 48);
+  padding-top: 5px;
+  font-weight: 600;
+  border-radius: 15px;
+}
+
+
+/* dropdown (profile, logout) container */
+
+.app-menu-dropdown-cont {
+  box-shadow: 0 2px 10px rgba(0,0,0,.2);
+  position: relative;
+  top: 23px;
+  z-index: 3;
+  background-color: white;
+  text-align: left;
+  visibility: hidden;
+  opacity: 0;
+  width: 100%;
+  height: 115px;
+  transition: opacity 0.35s;
+  padding: 15px 20px;
+}
+
+.app-menu-dropdown-name {
+  font-family: arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-menu-dropdown-email {
+  font-family: arial, sans-serif;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+button.app-menu-dropdown-button.profile {
+  float: left;
+}
+
+button.app-menu-dropdown-button.logout {
+  float: right;
+}
+
+button.app-menu-dropdown-button {
+  background-color: rgb(248, 248, 248);
+  border: 1px solid lightgrey;
+  padding: 5px 10px;
+  font-family: arial, sans-serif;
+  font-size: 13px;
+}
+
+button.app-menu-dropdown-button:hover {
+  background-color: rgb(240, 240, 240);
+}
+
+button.app-menu-dropdown-button:focus {
+  outline: 0;
+}
+
+.dropdown-triangle {
+  position: absolute;
+  top: -6px;
+  right: 7px;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  z-index: 3;
+  transform: rotate(45deg);
+  box-shadow: 0px 0px 5px rgba(0,0,0,.2);
+}
+
+.dropdown-triangle-bottom {
+  position: absolute;
+  top: 0px;
+  right: 2px;
+  width: 26px;
+  height: 16px;
+  background-color: white;
+  z-index: 3;
+}
+
+
+/* triangle above dropdown container */
+
+/* .app-menu-dropdown-cont:before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: -10px;
+  top: 18px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid #ffffff;
+}
+
+.app-menu-dropdown-cont:after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  top: 20px;
+  left: -8px;
+  z-index: -1;
+  border: 1px solid lightgrey;
+  box-shadow: 0px 0px 5px rgba(0,0,0,.2);
+} */
+

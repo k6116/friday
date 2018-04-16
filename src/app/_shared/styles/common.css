@@ -1,0 +1,15 @@
+
+div.container-fluid {
+  margin-top: 100px;
+  margin-left: 100px;
+}
+
+div.col-lg-10 {
+  padding: 0;
+}
+
+div.page-title {
+  display: inline-block;
+  font-size: 18px;
+  margin-bottom: 10px;
+}

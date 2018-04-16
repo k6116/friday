@@ -4,9 +4,9 @@ import { trigger, state, style, transition, animate, keyframes, group } from '@a
 import { DecimalPipe } from '@angular/common';
 import { NouisliderModule } from 'ng2-nouislider';
 
-import { User } from '../_shared/models/user.model';
-import { AuthService } from '../auth/auth.service';
-import { ApiDataService } from '../_shared/services/api-data.service';
+import { User } from '../../_shared/models/user.model';
+import { AuthService } from '../../auth/auth.service';
+import { ApiDataService } from '../../_shared/services/api-data.service';
 import { UserFTEs, AllocationsArray} from './fte-model';
 
 const moment = require('moment');
@@ -42,7 +42,7 @@ declare const $: any;
   //   ])
   // ]
 })
-export class FteEntryComponent implements OnInit, AfterViewInit {
+export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
   // initialize variables
   mainSliderConfig: any;  // slider config
