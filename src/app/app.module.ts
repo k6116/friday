@@ -7,7 +7,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NouisliderModule } from 'ng2-nouislider';
-import { ClickOutsideModule } from 'ng4-click-outside';
 
 // ANGULAR MATERIAL MODULES
 import { MatButtonModule, MatCheckboxModule, MatExpansionModule } from '@angular/material';
@@ -68,8 +67,7 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
     MatButtonModule,
     MatCheckboxModule,
     MatExpansionModule,
-    NouisliderModule,
-    ClickOutsideModule
+    NouisliderModule
   ],
   providers: [
     ApiDataService,

@@ -9,16 +9,13 @@
 <!-- confirm modal component -->
 <app-confirm-modal (confirmYesClick)="onConfirmYesClick()" (confirmCancelClick)="onConfirmCancelClick()"></app-confirm-modal>
 
-<!-- TEMP CODE: display the loggin in user's name and email -->
-<div class="main-cont" *ngIf="loggedInUser">
-  <h3>Welcome, {{ loggedInUser?.fullName }}</h3>
-  <h3>{{ loggedInUser?.email }}</h3>
-
-  <button class="test-mat-button" mat-raised-button color="warn" (click)="onLogoutClick()">Logout</button>
-  <button class="test-mat-button" mat-raised-button color="warn" (click)="onGetOrgDataClick()">Get Org Data</button>
-  <label class="label-email">Email Address</label>
-  <input type="text" class="form-control test-email" [(ngModel)]="emailAddress">
+<!-- temp page content for testing routes -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-10 col-lg-offset-1">
+      <div class="page-title">
+        Main/Landing Page (Dashboard?)
+      </div>
+    </div>
+  </div>
 </div>
-
-<!-- import the FTE entry screen component -->
-<app-fte-entry></app-fte-entry>
