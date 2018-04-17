@@ -1,0 +1,28 @@
+.fullName {
+  margin-left: 15px;
+  font-size: 12px;
+}
+
+.fullNameClicked {
+ font-weight: bold;
+}
+
+ul li {
+  font-size: 8px;
+}
+  
+ul li.right-arrow:before  {
+    content: "►";
+    position: absolute;    
+}
+
+ul li.down-arrow:before {
+    content: "▼";
+    position: absolute;     
+}
+
+ul li.default:before {
+  content: "■";
+  position: absolute;
+  color: rgba(143, 214, 158, 0.3); 
+}

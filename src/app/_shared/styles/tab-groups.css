@@ -1,0 +1,77 @@
+
+  .tab-label {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 27px 0 10px 0;
+    display: inline-block;
+    position: relative;
+    top: 11px;
+    left: 0px;
+    background-color: white;
+    border-left: 1px solid lightgrey;
+    border-top: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px 5px 0 0;
+    height: 40px;
+  }
+  
+  .tabgroup.tab-custom {
+    min-width: 825px;
+    border: 1px solid lightgrey;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0 5px 5px 5px;
+  }
+  
+  .tab-inner-cont {
+    margin: 40px 0 40px 40px;
+    min-height: 50px;
+  }
+  
+  .row.row-custom:not(:last-child) {
+    margin-bottom: 25px;
+  }
+  
+  div.col-custom {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+
+  div.form-group.form-group-custom {
+    display: inline-block;
+    margin-right: 40px;
+    margin-bottom: 0;
+    width: 200px;
+  }
+
+  .form-group-custom.form-group-properties {
+    margin-bottom: -10px;
+  }
+  
+  label.label-custom {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  
+  input.form-control.form-control-custom, select.form-control.form-control-custom {
+    width: 100%;
+  }
+  
+  textarea.form-control.form-control-custom {
+    resize: none;
+  }
+
+  input.form-control.form-control-custom[disabled], select.form-control.form-control-custom[disabled], textarea.form-control.form-control-custom[disabled] {
+    cursor: default;
+    background-color: rgb(253, 253, 253);
+  }
+
+  .btn[disabled] {
+    cursor: default;
+  }

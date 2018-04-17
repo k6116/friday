@@ -62,6 +62,14 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getEmployeeData(managerEmailAddress: string) {
+
+    return this.http.get(`/api/employeeList/${managerEmailAddress}`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+
+  }
+
   // update FTE data
   updateFteData(fteData: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});

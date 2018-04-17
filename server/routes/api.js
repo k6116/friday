@@ -14,6 +14,8 @@ router.post('/resetToken', controllers.auth.resetToken);
 router.get('/ftedata/:userID', controllers.fteData.getFteData);
 router.post('/ftedata/:userID', controllers.fteData.update);
 
+// ORG TREE DATA
+router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
 // ORG CONTROLLER
 router.get('/org/:emailAddress', controllers.org.show);
 

@@ -1,0 +1,20 @@
+.container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+  }
+
+.left-side {
+    width: auto;
+
+  }
+
+  .right-side {
+    width: auto;
+  
+  }
+
+  .input-email {
+    font-size: 10px;
+    width: 200px;
+  }
