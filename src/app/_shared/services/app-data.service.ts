@@ -16,6 +16,8 @@ export class AppDataService {
 
   clickedClass = new EventEmitter<string>();
 
+  selectedMenu: string;  // alias for the active/selected menu
+
   constructor() { }
 
 }

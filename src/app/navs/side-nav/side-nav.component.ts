@@ -22,6 +22,9 @@ export class SideNavComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private appDataService: AppDataService) {
 
+      // on change (expand or collapse), update array of main menu items with expanded property
+      // and set in app-data.service
+      // on init, pick up the data and update the menu structure while using jquery to set the heights, temporarily removing transitions
       this.menuStructure = [
         {
           title: 'FTE Entry',
@@ -32,12 +35,14 @@ export class SideNavComponent implements OnInit {
             {
               title: 'Me',
               alias: 'me',
-              path: 'fte-entry/employee'
+              path: 'fte-entry/employee',
+              active: false
             },
             {
               title: 'My Team',
               alias: 'myTeam',
-              path: 'fte-entry/team'
+              path: 'fte-entry/team',
+              active: false
             }
           ]
         },
@@ -46,7 +51,8 @@ export class SideNavComponent implements OnInit {
           iconClass: 'nc-gantt',
           alias: 'projects',
           path: 'setups/projects',
-          expanded: false
+          expanded: false,
+          active: true
         },
         {
           title: 'Reports',
@@ -57,12 +63,14 @@ export class SideNavComponent implements OnInit {
             {
               title: 'Projects',
               alias: 'projects',
-              path: 'reports/projects'
+              path: 'reports/projects',
+              active: false
             },
             {
               title: 'Employees',
               alias: 'employees',
-              path: 'reports/employees'
+              path: 'reports/employees',
+              active: true
             }
           ]
         }
@@ -76,6 +84,8 @@ export class SideNavComponent implements OnInit {
 
     // get the current route path from the url
     const path = this.router.url.slice(1, this.router.url.length);
+
+    console.log(`current path is: ${path}`);
 
     // set the icon color based to light blue for the current/active menu
     // needed here if the user goes directly to the route using the url
@@ -108,10 +118,23 @@ export class SideNavComponent implements OnInit {
           foundMenuItem.expanded = false;
         }
       } else {
+        // store the active/selected menu item in the cache (app-data service)
+        this.appDataService.selectedMenu = menuItem;
         // navigate to the selected/clicked route
         this.router.navigate([`/${foundMenuItem.path}`]);
       }
     }
+  }
+
+  // go through the entire menu structure (main menu and sub menu items)
+  // and set the active property to true if the alias matches (and set all others to false)
+  highlightActiveMenu(path: string) {
+    this.menuStructure.forEach(menuItem => {
+      menuItem.active = menuItem.path === path ? true : false;
+      menuItem.subItems.forEach(subMenuItem => {
+        subMenuItem.active = subMenuItem.path === path ? true : false;
+      });
+    });
   }
 
   onSubMenuItemClick(menuItem: string, subMenuItem: string) {

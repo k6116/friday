@@ -18,7 +18,7 @@ declare var $: any;
         opacity: 1
       })),
       transition('in => void', [
-        animate(350, style({
+        animate(100, style({
           opacity: 0
         }))
       ]),

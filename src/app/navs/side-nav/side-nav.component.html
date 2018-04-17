@@ -5,14 +5,14 @@
 
     <div *ngFor="let menu of menuStructure" [class]="'sidenav-menu-item ' + menu.alias">
 
-      <div class="sidenav-mainmenu-cont" (click)="onMenuItemClick(menu.alias)">
+      <div class="sidenav-mainmenu-cont" [style.color]="menu.active ? 'lightblue' : 'white'" (click)="onMenuItemClick(menu.alias)">
         <i [class]="'nc-icon sidenav-menu-icon ' + menu.iconClass"></i>
         <div class="sidenav-menu-item-text">{{ menu.title }}</div>
         <i *ngIf="menu.subItems" [class]="'fa sidenav-expand-collapse-icon ' + (menu.expanded ? 'fa-caret-down' : 'fa-caret-right')" aria-hidden="true"></i>
       </div>
 
       <ng-container *ngIf="menu.subItems">
-        <div *ngFor="let subMenu of menu.subItems" class="sidenav-submenu-cont">
+        <div *ngFor="let subMenu of menu.subItems"  [style.color]="subMenu.active ? 'lightblue' : 'white'" class="sidenav-submenu-cont">
           <div class="sidenav-submenu-item" (click)="onSubMenuItemClick(menu.alias, subMenu.alias)">
             {{ subMenu.title }}
           </div>
