@@ -23,8 +23,8 @@
       <div class="app-menu-dropdown" (click)="onAvatarClick()">
         <div class="app-menu-text">{{ firstInitial }}</div>
       </div>
-
-      <div class="app-menu-dropdown-cont">
+      
+      <div *ngIf="showDropDown" [@conditionState]="state" class="app-menu-dropdown-cont">
         <div class="app-menu-dropdown-name">
           {{ loggedInUser?.fullName }}
         </div>

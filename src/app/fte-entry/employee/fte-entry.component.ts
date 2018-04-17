@@ -501,10 +501,10 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     this.fteMonthVisible = this.fteMonthVisible.fill(true, posStart, posStart + posDelta);
 
     // TEMP CODE: workaround for rendering issue for column headers (months)
-    let scrollTop = $('div.table-scrollable').scrollTop();
-    $('div.table-scrollable').scrollTop(scrollTop - 1);
-    scrollTop = $('div.table-scrollable').scrollTop();
-    $('div.table-scrollable').scrollTop(scrollTop + 1);
+    // let scrollTop = $('div.table-scrollable').scrollTop();
+    // $('div.table-scrollable').scrollTop(scrollTop - 1);
+    // scrollTop = $('div.table-scrollable').scrollTop();
+    // $('div.table-scrollable').scrollTop(scrollTop + 1);
 
   }
 }

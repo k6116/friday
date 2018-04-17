@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { Subscription } from 'rxjs/Subscription';
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
@@ -10,7 +11,24 @@ declare var $: any;
 @Component({
   selector: 'app-top-nav',
   templateUrl: './top-nav.component.html',
-  styleUrls: ['./top-nav.component.css']
+  styleUrls: ['./top-nav.component.css'],
+  animations: [
+    trigger('conditionState', [
+      state('in', style({
+        opacity: 1
+      })),
+      transition('in => void', [
+        animate(350, style({
+          opacity: 0
+        }))
+      ]),
+      transition('void => in', [
+        animate(350, style({
+          opacity: 1
+        }))
+      ])
+    ])
+  ]
 })
 export class TopNavComponent implements OnInit, OnDestroy {
 
@@ -18,6 +36,8 @@ export class TopNavComponent implements OnInit, OnDestroy {
   firstInitial: string;
   dropDownClasses: string[];
   subscription1: Subscription;
+  showDropDown: boolean;
+  state: string;
 
   constructor(
     private router: Router,
@@ -33,11 +53,13 @@ export class TopNavComponent implements OnInit, OnDestroy {
       'app-menu-dropdown-cont',
       'app-menu-dropdown-name',
       'app-menu-dropdown-email',
-      'app-menu-dropdown-button profile',
-      'app-menu-dropdown-button logout',
+      'app-menu-dropdown-button',
+      'app-menu-dropdown-button',
       'dropdown-triangle',
       'dropdown-triangle-bottom'
     ];
+
+    this.showDropDown = false;
 
   }
 
@@ -56,9 +78,11 @@ export class TopNavComponent implements OnInit, OnDestroy {
 
     this.subscription1 = this.appDataService.clickedClass.subscribe(
       (clickedClass: string) => {
-        // console.log('clickedClass received in navbar component: ' + clickedClass);
+        console.log('clickedClass received in navbar component: ' + clickedClass);
         this.hideDropDown(clickedClass);
     });
+
+    this.state = 'in';
 
   }
 
@@ -71,28 +95,32 @@ export class TopNavComponent implements OnInit, OnDestroy {
   }
 
   onAvatarClick() {
-    const dropdownClass = 'div.app-menu-dropdown-cont';
-    const visible = $(dropdownClass).css('visibility');
-    if (visible === 'visible') {
-      $(dropdownClass).css('opacity', '0');
-      setTimeout(() => {
-        $(dropdownClass).css('visibility', 'hidden');
-      }, 100);
-    } else {
-      $(dropdownClass).css('visibility', 'visible');
-      $(dropdownClass).css('opacity', '1');
-    }
+    this.showDropDown = !this.showDropDown;
+    console.log('avatar clicked');
+    console.log(this.showDropDown);
+    // const dropdownClass = 'div.app-menu-dropdown-cont';
+    // const visible = $(dropdownClass).css('visibility');
+    // if (visible === 'visible') {
+    //   $(dropdownClass).css('opacity', '0');
+    //   setTimeout(() => {
+    //     $(dropdownClass).css('visibility', 'hidden');
+    //   }, 100);
+    // } else {
+    //   $(dropdownClass).css('visibility', 'visible');
+    //   $(dropdownClass).css('opacity', '1');
+    // }
   }
 
   hideDropDown(clickedClass: string) {
-    const dropdownClass = 'div.app-menu-dropdown-cont';
-    const visible = $(dropdownClass).css('visibility');
-    if (visible === 'visible') {
-      if (!this.dropDownClasses.includes(clickedClass)) {
-        $(dropdownClass).css('opacity', '0');
-        setTimeout(() => {
-          $(dropdownClass).css('visibility', 'hidden');
-        }, 100);
+    // const dropdownClass = 'div.app-menu-dropdown-cont';
+    // const visible = $(dropdownClass).css('visibility');
+    if (this.showDropDown) {
+      if (!this.dropDownClasses.includes(clickedClass.split(' ')[0])) {
+        this.showDropDown = false;
+        // $(dropdownClass).css('opacity', '0');
+        // setTimeout(() => {
+        //   $(dropdownClass).css('visibility', 'hidden');
+        // }, 100);
       }
     }
   }
