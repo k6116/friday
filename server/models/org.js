@@ -1,6 +1,6 @@
 
 const Sequelize = require('sequelize');
-const sequelize = require('../db/sequelize').sequelize2;
+const sequelize = require('../db/sequelize').sequelize2017;
 
 
 const Org = sequelize.define('org',

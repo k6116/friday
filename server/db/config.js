@@ -1,5 +1,4 @@
-
-const config1 = {
+const config = {
   dbname: "Jarvis_DEV",
   host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',
   username: 'JarvisRTUser',
@@ -7,7 +6,15 @@ const config1 = {
   dialect: 'mssql'
 };
 
-const config2 = {
+const configPLM = {
+  dbname: "OracleWorkSpace",
+  host: 'PLMBRIDGE.COS.IS.KEYSIGHT.COM',
+  username: 'DARWIN_USER',
+  password: 'sp_f1nches',
+  dialect: 'mssql'
+};
+
+const config2017 = {
   dbname: "JarvisResources",
   host: 'WCOSOFW2.COS.IS.KEYSIGHT.COM',
   username: 'JarvisRTUser',
@@ -15,10 +22,10 @@ const config2 = {
   dialect: 'mssql'
 };
 
-
 module.exports = {
-  config1: config1,
-  config2: config2
+  config: config, 
+  configPLM: configPLM,
+  config2017: config2017
 };
 
 
