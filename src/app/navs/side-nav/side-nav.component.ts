@@ -134,9 +134,11 @@ export class SideNavComponent implements OnInit {
       if (menuItem.hasOwnProperty('path')) {
         menuItem.active = menuItem.path === path ? true : false;
       }
-      menuItem.subItems.forEach(subMenuItem => {
-        subMenuItem.active = subMenuItem.path === path ? true : false;
-      });
+      if (menuItem.hasOwnProperty('subItems')) {
+        menuItem.subItems.forEach(subMenuItem => {
+          subMenuItem.active = subMenuItem.path === path ? true : false;
+        });
+      }
     });
   }
 
