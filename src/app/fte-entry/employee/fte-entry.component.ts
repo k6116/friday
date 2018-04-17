@@ -8,6 +8,8 @@ import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { UserFTEs, AllocationsArray} from './fte-model';
+import { utils, write, WorkBook } from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const moment = require('moment');
 require('moment-fquarter');
@@ -505,6 +507,27 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     // $('div.table-scrollable').scrollTop(scrollTop - 1);
     // scrollTop = $('div.table-scrollable').scrollTop();
     // $('div.table-scrollable').scrollTop(scrollTop + 1);
+
+  }
+
+  exportXLSX() {
+    const ws_name = 'Sheet1';
+    const wb: WorkBook = { SheetNames: [], Sheets: {} };
+    const ws: any = utils.json_to_sheet(this.userFTEs);
+    wb.SheetNames.push(ws_name);
+    wb.Sheets[ws_name] = ws;
+    const wbout = write(wb, { bookType: 'xlsx', bookSST: true, type: 'binary' });
+
+    function s2ab(s) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i !== s.length; ++i) {
+        view[i] = s.charCodeAt(i) & 0xFF;
+      }
+      return buf;
+    }
+
+    saveAs(new Blob([s2ab(wbout)], { type: 'application/octet-stream' }), 'userFTE.xlsx');
 
   }
 }
