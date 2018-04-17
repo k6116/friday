@@ -52,7 +52,7 @@ export class SideNavComponent implements OnInit {
           alias: 'projects',
           path: 'setups/projects',
           expanded: false,
-          active: true
+          active: false
         },
         {
           title: 'Reports',
@@ -70,7 +70,7 @@ export class SideNavComponent implements OnInit {
               title: 'Employees',
               alias: 'employees',
               path: 'reports/employees',
-              active: true
+              active: false
             }
           ]
         }
@@ -90,6 +90,7 @@ export class SideNavComponent implements OnInit {
     // set the icon color based to light blue for the current/active menu
     // needed here if the user goes directly to the route using the url
     this.selectedMenu = path;
+    this.highlightActiveMenu(path);
 
   }
 
@@ -130,7 +131,9 @@ export class SideNavComponent implements OnInit {
   // and set the active property to true if the alias matches (and set all others to false)
   highlightActiveMenu(path: string) {
     this.menuStructure.forEach(menuItem => {
-      menuItem.active = menuItem.path === path ? true : false;
+      if (menuItem.hasOwnProperty('path')) {
+        menuItem.active = menuItem.path === path ? true : false;
+      }
       menuItem.subItems.forEach(subMenuItem => {
         subMenuItem.active = subMenuItem.path === path ? true : false;
       });
