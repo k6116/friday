@@ -1,6 +1,14 @@
 
+<!-- top nav component -->
+<app-top-nav></app-top-nav>
 
-<div *ngIf="display" class="container-fluid">
+<!-- side nav component -->
+<app-side-nav></app-side-nav>
+
+<!-- confirm modal component -->
+<app-confirm-modal (confirmYesClick)="onConfirmYesClick()" (confirmCancelClick)="onConfirmCancelClick()"></app-confirm-modal>
+
+<div *ngIf="display" class="container-fluid outer-cont">
   <div class="row"> <!-- begin row for slider bar -->
       <div class="col-lg-10 col-lg-offset-1">
           <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
@@ -55,13 +63,14 @@
       </div> <!-- end FTE entry scrollable div -->
   </div> <!-- end row -->
 
+  <div class="test-buttons">
+    <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestFormClick()">Test Form Data</button>
+    <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestSaveClick()">Save</button>
+    <button class="test-mat-button" mat-raised-button color="warn" (click)="exportXLSX()">Export</button>
+  </div>
+
 </div> <!-- end FTE component container div -->
 
-
-<div class="test-buttons">
-  <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestFormClick()">Test Form Data</button>
-  <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestSaveClick()">Save</button>
-</div>
 
 
 

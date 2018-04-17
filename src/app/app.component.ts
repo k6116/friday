@@ -10,8 +10,8 @@ import { AuthService } from './auth/auth.service';
   styleUrls: ['./app.component.css'],
   // tslint:disable-next-line:use-host-property-decorator
   host: {
-    '(document:click)': 'onDocumentEvent()',
-    '(document:keydown)': 'onDocumentEvent()'
+    '(document:click)': 'onDocumentClick($event)',
+    '(document:keydown)': 'onDocumentKeyDown()'
   }
 })
 export class AppComponent implements OnInit {
@@ -62,6 +62,18 @@ export class AppComponent implements OnInit {
   }
 
   onDocumentEvent() {
+    // update the last activity property with a new timestamp
+    this.authService.updateLastActivity();
+  }
+
+  onDocumentClick(event) {
+    // update the last activity property with a new timestamp
+    this.authService.updateLastActivity();
+    // console.log(`document clicked, class: ${event.target.className}`);
+    this.appDataService.clickedClass.emit(event.target.className);
+  }
+
+  onDocumentKeyDown() {
     // update the last activity property with a new timestamp
     this.authService.updateLastActivity();
   }

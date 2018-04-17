@@ -14,6 +14,8 @@ export class AppDataService {
 
   resetTimer = new EventEmitter<boolean>();
 
+  clickedClass = new EventEmitter<string>();
+
   constructor() { }
 
 }
