@@ -31,9 +31,16 @@ import { LoginComponent } from './auth/login/login.component';
 import { MainComponent } from './main/main.component';
 import { NoticeModalComponent } from './modals/notice-modal/notice-modal.component';
 import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
-import { FteEntryComponent } from './fte-entry/fte-entry.component';
 import { OrgComponent } from './org/org.component';
 import { OrgTreeComponent } from './org-tree/org-tree.component';
+import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.component';
+import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
+import { TopNavComponent } from './navs/top-nav/top-nav.component';
+import { SideNavComponent } from './navs/side-nav/side-nav.component';
+import { ProjectsReportsComponent } from './reports/projects/projects.component';
+import { EmployeesReportsComponent } from './reports/employees/employees.component';
+import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+
 
 
 
@@ -46,10 +53,17 @@ import { OrgTreeComponent } from './org-tree/org-tree.component';
     NoticeModalComponent,
     ConfirmModalComponent,
     SafeHtmlPipe,
-    FteEntryComponent,
     OrgComponent,
     OrgTreeComponent,
-    FteInputRestrictDirective
+    FteInputRestrictDirective,
+    FteEntryEmployeeComponent,
+    FteInputRestrictDirective,
+    TopNavComponent,
+    SideNavComponent,
+    ProjectsReportsComponent,
+    EmployeesReportsComponent,
+    ProjectsSetupsComponent,
+    FteEntryTeamComponent
   ],
   imports: [
     AppRoutingModule,

@@ -25,8 +25,8 @@ export class OrgTreeComponent implements OnInit {
 
   ngOnInit() {
 
-    this.employeeEmail = 'kristi_burgess@keysight.com';
-    this.onDisplayClick();
+    // this.employeeEmail = 'kristi_burgess@keysight.com';
+    // this.onDisplayClick();
 
   }
 

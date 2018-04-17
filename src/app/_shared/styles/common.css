@@ -1,56 +1,15 @@
 
-/* BOOTSTRAP CONTAINER */
-
-.container-fluid {
-  margin: 75px 200px 200px 200px;
+div.container-fluid {
+  margin-top: 100px;
+  margin-left: 100px;
 }
 
-/* MAIN HEADER TEXT FOR SETUPS PAGES */
-
-h2.page-header-text {
-  font-family: "Roboto", sans-serif;
-  font-size: 21px;
-  margin-bottom: 0;
-  padding-bottom: 10px;
-  border-bottom: 2px solid rgb(210, 210, 210);;
+div.col-lg-10 {
+  padding: 0;
 }
 
-/* MAIN COMBOBOX SELECTION FOR SETUPS PAGES */
-
-div.row.main-selection-combobox {
-  margin-top: 30px;
+div.page-title {
+  display: inline-block;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
-
-
-/* INFO MESSAGE BELOW MAIN COMBOBOX */
-
-div.info-message-col {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-div.info-message-cont i.fa {
-  margin-right: 7px;
-}
-
-
-/* HELP ICON */
-
-i.fa.fa-question-circle.help-icon {
-  color: rgb(34, 122, 202);
-  cursor: pointer;
-}
-
-
-/* overlay to temporarily disable page */
-
-div.overlay {
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  background-color: transparent;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
