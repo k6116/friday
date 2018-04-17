@@ -5,14 +5,39 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Attach Chrome",
+            "type": "chrome",
+            "request": "attach",
+            "sourceMaps": true,
+            "port": 3000,
+            "url": "localhost",
+            "webRoot": "${workspaceFolder}/src"
+            // "webRoot": "${workspaceFolder}/dist/out-tsc/**/*.js"
+        },
+        // {
+        //     "name": "Launch Chrome",
+        //     "type": "chrome",
+        //     "request": "launch",  
+        //     "sourceMaps": false,         
+        //     "file": "${workspaceFolder}/src/index.html"
+        // },
+        {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Node",
             "program": "${workspaceFolder}\\server.js",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            // "preLaunchTask": "node_modules/typescript/bin/tsc: build - tsconfig.json",
+            // "preLaunchTask": "${workspaceRoot}\\node_modules\\typescript\\bin\\tsc",
             "outFiles": [
                 "${workspaceFolder}/dist/out-tsc/**/*.js"
-            ]
-        }
+            ],
+            "console": "integratedTerminal"
+        }       
+    ],
+    "compounds": [
+     {
+         "name": "Full Stack",
+         "configurations": ["Launch Node", "Attach Chrome"]
+     }       
     ]
 }
