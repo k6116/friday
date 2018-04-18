@@ -17,7 +17,6 @@
   border-bottom: 1px solid rgb(111, 111, 111);
   overflow: hidden;
   white-space: nowrap;
-  /* transition: height .35s ease-out; */
 }
 
 .sidenav-menu-item:hover {
@@ -33,15 +32,12 @@
   font-size: 22px;
   line-height: 55px;
   margin-left: 18px;
-  /* color: rgb(240, 240, 240); */
 }
 
 .sidenav-menu-item-text {
   display: inline-block;
   margin-left: 14px;
   font-size: 14px;
-  /* white-space: nowrap;
-  overflow: hidden; */
   position: relative;
   top: -7px;
 }
@@ -63,5 +59,5 @@
 }
 
 .sidenav-submenu-item {
-  padding: 10px 0 10px 18px;
+  padding: 10px 0 10px 26px;
 }

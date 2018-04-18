@@ -91,8 +91,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     // get the array of expanded menu objects from the cache
     // if the expandedMenus have data, call a method to expand the appropriate ones
     this.expandedMenus = this.appDataService.expandedMenus;
-    console.log('expanded menus received in side nav component');
-    console.log(this.expandedMenus);
     if (this.expandedMenus) {
       if (this.expandedMenus.length) {
         this.setExpandedProperties(this.expandedMenus);
@@ -102,8 +100,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     // get the current route path from the url
     const path = this.router.url.slice(1, this.router.url.length);
 
-    console.log(`current path is: ${path}`);
-
     // set the icon color based to light blue for the current/active menu
     // needed here if the user goes directly to the route using the url or on refresh
     this.selectedMenu = path;
@@ -111,12 +107,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
     // get parent menu object based on the current path
     this.getParentOfCurrentRoute(path);
-    console.log('parent menu to expand');
-    console.log(this.parentMenuToExpand);
     if (this.parentMenuToExpand) {
       const expandedMenu = [];
       expandedMenu.push(this.parentMenuToExpand);
-      console.log(expandedMenu);
       this.setExpandedProperties(expandedMenu);
     }
 
@@ -126,9 +119,11 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
     if (this.expandedMenus) {
       if (this.expandedMenus.length) {
+        console.log('expanding menus');
         this.expandMenus(this.expandedMenus);
       }
     } else if (this.parentMenuToExpand) {
+      console.log('expanding parent menu');
       const expandedMenu = [];
       expandedMenu.push(this.parentMenuToExpand);
       this.expandMenus(expandedMenu);
@@ -137,16 +132,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
   }
 
   onMenuItemClick(menuItem: string) {
-    console.log(`menu item ${menuItem} clicked`);
+    console.log(`menu item clicked: ${menuItem}`);
     const $el = $(`div.sidenav-menu-item.${menuItem}`);
-    console.log($el);
-    // const foundMenuItem = this.menuStructure.find(menu => {
-    //   return menu.alias === menuItem;
-    // });
     const foundMenuItem = this.getMenuObject(menuItem);
-    console.log('found menu item object');
-    console.log(foundMenuItem);
-    // transition from 55px + 3px + 40px x each sub menu item
     if (foundMenuItem) {
       // if the menu item has a sub-menu, expand or collapse the menu
       if (foundMenuItem.subItems) {
@@ -159,6 +147,13 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         this.router.navigate([`/${foundMenuItem.path}`]);
       }
     }
+  }
+
+  onSubMenuItemClick(menuItem: string, subMenuItem: string) {
+    console.log(`sub menu item clicked: ${subMenuItem}`);
+    const foundMenuItem = this.getSubMenuObject(menuItem, subMenuItem);
+    // navigate to the selected/clicked route
+    this.router.navigate([`/${foundMenuItem.path}`]);
   }
 
   // go through the entire menu structure (main menu and sub menu items)
@@ -182,27 +177,14 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         const foundSubMenuItem = menuItem.subItems.find(subItem => {
           return subItem.path === path;
         });
-        console.log('found sub menu item');
-        console.log(foundSubMenuItem);
         if (foundSubMenuItem) {
           const foundMainMenuItem = this.menuStructure.find(mainItem => {
             return mainItem.alias === foundSubMenuItem.parentAlias;
           });
-          console.log('found main menu item');
-          console.log(foundMainMenuItem);
           this.parentMenuToExpand = foundMainMenuItem;
         }
       }
     });
-  }
-
-  onSubMenuItemClick(menuItem: string, subMenuItem: string) {
-    console.log(`sub menu item ${subMenuItem} clicked`);
-    const foundMenuItem = this.getSubMenuObject(menuItem, subMenuItem);
-    console.log('found menu item object');
-    console.log(foundMenuItem);
-    // navigate to the selected/clicked route
-    this.router.navigate([`/${foundMenuItem.path}`]);
   }
 
   getMenuObject(menuItem: string): any {
@@ -230,8 +212,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     const expandedMenus = this.menuStructure.filter(menu => {
       return menu.expanded;
     });
-    console.log('expanded menus being stored in appDataService:');
-    console.log(expandedMenus);
     this.appDataService.expandedMenus = expandedMenus;
   }
 
@@ -251,11 +231,11 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       const foundMenuItem = this.menuStructure.find(menuItem => {
         return expandedMenu.alias === menuItem.alias;
       });
-      console.log(foundMenuItem);
       if (foundMenuItem) {
         this.expandOrCollapseMenu(true, foundMenuItem.alias, false, true);
       }
     });
+    this.storeExpandedMenus();
   }
 
   expandOrCollapseMenu(expand: boolean, alias: string, animate: boolean, skipPropertyUpdate?: boolean) {

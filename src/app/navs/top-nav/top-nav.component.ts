@@ -47,21 +47,11 @@ export class TopNavComponent implements OnInit, OnDestroy {
 
     // TO-DO: try to find a simpler/cleaner way to hide the dropdown on click outside
     // NOTE: ng4 click outside will only work outside (but within) the navbar component
-    this.dropDownClasses = [
-      'app-menu-dropdown',
-      'app-menu-text',
-      'app-menu-dropdown-cont',
-      'app-menu-dropdown-name',
-      'app-menu-dropdown-email',
-      'app-menu-dropdown-button',
-      'app-menu-dropdown-button',
-      'dropdown-triangle',
-      'dropdown-triangle-bottom'
-    ];
 
     this.showDropDown = false;
 
   }
+
 
   ngOnInit() {
 
@@ -70,69 +60,52 @@ export class TopNavComponent implements OnInit, OnDestroy {
         console.log(`error getting logged in user: ${err}`);
         return;
       }
-      console.log('logged in user data received in top navbar component:');
-      console.log(user);
       this.loggedInUser = user;
       this.firstInitial = this.loggedInUser.fullName.substring(0, 1).toUpperCase();
     });
 
     this.subscription1 = this.appDataService.clickedClass.subscribe(
       (clickedClass: string) => {
-        console.log('clickedClass received in navbar component: ' + clickedClass);
         this.hideDropDown(clickedClass);
     });
 
     this.state = 'in';
-
   }
+
 
   ngOnDestroy() {
     this.subscription1.unsubscribe();
   }
 
+
   onAppClick() {
     window.location.href = '/main';
   }
 
+
   onAvatarClick() {
     this.showDropDown = !this.showDropDown;
-    console.log('avatar clicked');
-    console.log(this.showDropDown);
-    // const dropdownClass = 'div.app-menu-dropdown-cont';
-    // const visible = $(dropdownClass).css('visibility');
-    // if (visible === 'visible') {
-    //   $(dropdownClass).css('opacity', '0');
-    //   setTimeout(() => {
-    //     $(dropdownClass).css('visibility', 'hidden');
-    //   }, 100);
-    // } else {
-    //   $(dropdownClass).css('visibility', 'visible');
-    //   $(dropdownClass).css('opacity', '1');
-    // }
   }
 
+
   hideDropDown(clickedClass: string) {
-    // const dropdownClass = 'div.app-menu-dropdown-cont';
-    // const visible = $(dropdownClass).css('visibility');
     if (this.showDropDown) {
-      if (!this.dropDownClasses.includes(clickedClass.split(' ')[0])) {
+      if (clickedClass.split(' ')[0] !== 'topnav-menu') {
         this.showDropDown = false;
-        // $(dropdownClass).css('opacity', '0');
-        // setTimeout(() => {
-        //   $(dropdownClass).css('visibility', 'hidden');
-        // }, 100);
       }
     }
   }
+
 
   onProfileButtonClick() {
     console.log('profile button clicked');
   }
 
+
   onLogoutButtonClick() {
-    console.log('logout button clicked');
     // log the user out, don't show auto-logout message
     this.authService.routeToLogin(false);
   }
+
 
 }
