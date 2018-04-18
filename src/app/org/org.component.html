@@ -2,7 +2,7 @@
 <div *ngFor="let employee of employees; let i=index" class="emp-cont-outer">
   <ul class="emp-cont-inner">
     <li [class]="getLineClass(employee)">
-      <div (click)="onFullNameClick($event.target.innerText)" [class]="getNameClass(employee)">
+      <div (click)="onFullNameClick($event.target.innerText, employee)" [class]="getNameClass(employee)">
       {{employee.fullName}}
       </div>
       <app-org (click)="onFullNameChildClick($event.target.innerText)" [employees]="employee.employees" *ngIf="employee.employees && employee.showEmployees"></app-org>

@@ -20,23 +20,23 @@
 
     <div class="app-menu">
 
-      <div class="app-menu-dropdown" (click)="onAvatarClick()">
-        <div class="app-menu-text">{{ firstInitial }}</div>
+      <div class="topnav-menu app-menu-dropdown" (click)="onAvatarClick()">
+        <div class="topnav-menu app-menu-text">{{ firstInitial }}</div>
       </div>
-
-      <div class="app-menu-dropdown-cont">
-        <div class="app-menu-dropdown-name">
-          Bill Schuetzle
+      
+      <div *ngIf="showDropDown" [@conditionState]="state" class="topnav-menu app-menu-dropdown-cont">
+        <div class="topnav-menu app-menu-dropdown-name">
+          {{ loggedInUser?.fullName }}
         </div>
-        <div class="app-menu-dropdown-email">
-          bill_schuetzle@keysight.com
+        <div class="topnav-menu app-menu-dropdown-email">
+          {{ loggedInUser?.email }}
         </div>
         <div>
-          <button type="button" class="app-menu-dropdown-button profile" (click)="onProfileButtonClick()">Profile</button>
-          <button type="button" class="app-menu-dropdown-button logout" (click)="onLogoutButtonClick()">Logout</button>
+          <button type="button" class="topnav-menu app-menu-dropdown-button profile" (click)="onProfileButtonClick()">Profile</button>
+          <button type="button" class="topnav-menu app-menu-dropdown-button logout" (click)="onLogoutButtonClick()">Logout</button>
         </div>
-        <div class="dropdown-triangle"></div>
-        <div class="dropdown-triangle-bottom"></div>
+        <div class="topnav-menu dropdown-triangle"></div>
+        <div class="topnav-menu dropdown-triangle-bottom"></div>
       </div>
       
     </div>

@@ -20,11 +20,12 @@ export class OrgComponent implements OnInit {
   ngOnInit() {
   }
 
-  onFullNameClick(text: string) {
+  onFullNameClick(text: string, employee: any) {
 
     this.nodeFullName.emit(text);
     console.log('Inner Event: ' + text);
     this.nameClicked = text;
+    console.log(employee);
   }
 
   onFullNameChildClick(text: string) {
