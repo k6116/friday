@@ -16,12 +16,17 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   nestedOrgData: any;
   subscription1: Subscription;
   waitingForOrgData: boolean;
+  displayOrgDropDown: boolean;
 
   constructor(
     private appDataService: AppDataService,
     private apiDataService: ApiDataService,
     private authService: AuthService
-  ) { }
+  ) {
+
+    this.displayOrgDropDown = false;
+
+  }
 
   ngOnInit() {
 
@@ -33,6 +38,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     this.subscription1 = this.appDataService.nestedOrgData.subscribe(
       (nestedOrgData: any) => {
         this.nestedOrgData = nestedOrgData;
+        this.appDataService.$nestedOrgData = nestedOrgData;
         console.log('nested org data received in employee reports component via subscription');
         this.waitingForOrgData = false;
     });
@@ -63,6 +69,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');
         console.log('nested org object retrieved from api data service in employee reports component');
         console.log(nestedOrgData);
+        this.appDataService.$nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
       },
       err => {
@@ -82,6 +89,9 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   onOrgDropDownClick() {
     console.log('org dropdown clicked');
+    if (!this.waitingForOrgData) {
+      this.displayOrgDropDown = !this.displayOrgDropDown;
+    }
   }
 
 }

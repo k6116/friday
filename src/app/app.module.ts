@@ -40,6 +40,7 @@ import { SideNavComponent } from './navs/side-nav/side-nav.component';
 import { ProjectsReportsComponent } from './reports/projects/projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
 
 
 
@@ -63,7 +64,8 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
     ProjectsReportsComponent,
     EmployeesReportsComponent,
     ProjectsSetupsComponent,
-    FteEntryTeamComponent
+    FteEntryTeamComponent,
+    OrgDropdownComponent
   ],
   imports: [
     AppRoutingModule,
