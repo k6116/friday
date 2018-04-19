@@ -71,6 +71,14 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     );
   }
 
+  getDropDownStyle(): any {
+    if (this.waitingForOrgData) {
+      return {'background-color': 'rgb(225, 225, 225)', cursor: 'wait'};
+    } else {
+      return {'background-color': 'rgb(245, 245, 245)'};
+    }
+  }
+
 
   onOrgDropDownClick() {
     console.log('org dropdown clicked');

@@ -17,7 +17,7 @@
     <div class="col-lg-10 col-lg-offset-1">
 
       <!-- 'dropdown' container to select employee from nested org structure -->
-      <div class="org-dropdown-control"  [style.background-color]="waitingForOrgData ? 'rgb(225, 225, 225)' : 'rgb(245, 245, 245)'" (click)="onOrgDropDownClick()">
+      <div class="org-dropdown-control" [ngStyle]="getDropDownStyle()" (click)="onOrgDropDownClick()">
         Select Employee
         <i class="fa fa-caret-down org-dropdown-control-caret"></i>
       </div>
