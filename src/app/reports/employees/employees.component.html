@@ -13,4 +13,20 @@
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-lg-10 col-lg-offset-1">
+
+      <!-- 'dropdown' container to select employee from nested org structure -->
+      <div class="org-dropdown-control"  [style.background-color]="waitingForOrgData ? 'rgb(225, 225, 225)' : 'rgb(245, 245, 245)'" (click)="onOrgDropDownClick()">
+        Select Employee
+        <i class="fa fa-caret-down org-dropdown-control-caret"></i>
+      </div>
+
+      <!-- spinner to display while waiting for data to arrive -->
+      <div class="orgdata-spinner-cont" [style.visibility]="waitingForOrgData ? 'visible' : 'hidden'">
+        <div class="orgdata-spinner"></div>
+      </div>
+
+    </div>
+  </div>
 </div>
