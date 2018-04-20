@@ -23,6 +23,16 @@ i.fa.org-dropdown-control-caret {
   line-height: 1.5;
 }
 
+app-org-dropdown {
+  position: relative;
+  left: -15px;
+}
+
+div.org-dropdown-cont {
+  position: absolute;
+  z-index: 1;
+}
+
 
 /* spinner for waiting org hierarchy data to arrive */
 

@@ -192,6 +192,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // get and store the nested org data upon successfull login
   getNestedOrgData(email: string) {
+    this.appDataService.nestedOrgDataRequested = true;
     this.apiDataService.getOrgData(email)
     .subscribe(
       res => {
@@ -200,7 +201,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         // console.log(nestedOrgData);
         this.appDataService.$nestedOrgData = nestedOrgData;
         this.appDataService.nestedOrgData.emit(nestedOrgData);
-        this.appDataService.nestedOrgDataRequested = true;
       },
       err => {
         console.log('error getting nested org data');

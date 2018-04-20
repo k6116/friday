@@ -28,9 +28,17 @@
       </div>
 
       <div *ngIf="displayOrgDropDown" class="org-dropdown-cont">
-        <app-org-dropdown></app-org-dropdown>
+        <app-org-dropdown [employees]="nestedOrgData" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)"></app-org-dropdown>
       </div>
 
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-lg-10 col-lg-offset-1">
+      {{ displayedEmployee?.fullName }}
+    </div>
+  </div>
+
+
 </div>

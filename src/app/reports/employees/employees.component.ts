@@ -5,6 +5,7 @@ import { AppDataService } from '../../_shared/services/app-data.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
 
+declare var $: any;
 
 @Component({
   selector: 'app-employees-reports',
@@ -17,6 +18,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   waitingForOrgData: boolean;
   displayOrgDropDown: boolean;
+  displayedEmployee: any;
 
   constructor(
     private appDataService: AppDataService,
@@ -30,16 +32,23 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+
+    // TEMP CODE: testing nested org data requested
+    console.log('nested org data requested:');
+    console.log(this.appDataService.nestedOrgDataRequested);
+
     this.nestedOrgData = this.appDataService.$nestedOrgData;
     if (this.nestedOrgData) {
       console.log('nested org data picked up in employee reports');
+      console.log(this.nestedOrgData);
     }
 
     this.subscription1 = this.appDataService.nestedOrgData.subscribe(
       (nestedOrgData: any) => {
         this.nestedOrgData = nestedOrgData;
-        this.appDataService.$nestedOrgData = nestedOrgData;
+        // this.appDataService.$nestedOrgData = nestedOrgData;
         console.log('nested org data received in employee reports component via subscription');
+        console.log(this.nestedOrgData);
         this.waitingForOrgData = false;
     });
 
@@ -47,7 +56,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
       // get logged in user's info
       this.authService.getLoggedInUser((user, err) => {
         // this.getNestedOrgData(user.email);
-        this.getNestedOrgData('ron_nersesian@keysight.com');
+        this.getNestedOrgData('pat_harper@keysight.com');
       });
     }
 
@@ -69,7 +78,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');
         console.log('nested org object retrieved from api data service in employee reports component');
         console.log(nestedOrgData);
-        this.appDataService.$nestedOrgData = nestedOrgData;
+        this.nestedOrgData = nestedOrgData;
+        // this.appDataService.$nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
       },
       err => {
@@ -93,5 +103,62 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
       this.displayOrgDropDown = !this.displayOrgDropDown;
     }
   }
+
+  onclickedEmployeeIcon(employee) {
+    console.log('clicked employee icon fired with employee:');
+    console.log(employee);
+    this.expandCollapseOrg(this.nestedOrgData, employee.fullName);
+  }
+
+  onclickedEmployee(employee) {
+    console.log('clicked employee fired with employee:');
+    console.log(employee);
+    this.displayOrgDropDown = false;
+    this.displayedEmployee = employee;
+  }
+
+
+  expandCollapseOrg(org: any, name: string) {
+
+    for (const i in org) {
+      if (typeof org[i] === 'object') {
+        // console.log(`employee name: ${org[i].name}`);
+        // console.log(`looking for employee ${name}`);
+        if (org[i].fullName === name) {
+          console.log('found name match');
+          console.log(`show employees set to ${org[i].showEmployees}, clicked employee uid is ${org[i].uid}`);
+          console.log('number of employees: ' + org[i].employees.length);
+          const maxHeight = 51 * org[i].employees.length;
+          // COLLAPSE
+          if (org[i].showEmployees) {
+            // $(`.team-cont.${org[i].uid}`).css('transition', 'max-height 1s ease-in');
+            $(`.team-cont.${org[i].uid}`).css('max-height', '0');
+            setTimeout(() => {
+              org[i].showEmployees = false;
+            }, 500);
+            return;
+          // EXPAND
+          } else {
+            org[i].showEmployees = true;
+            setTimeout(() => {
+              // $(`.team-cont.${org[i].uid}`).css('transition', 'max-height 1s ease-out');
+              // NOTE: TRY THIS INSTEAD TO GET THE HEIGHT
+              // const maxHeight2 = $(`.team-cont.${org[i].uid}`).height();
+              $(`.team-cont.${org[i].uid}`).css('max-height', maxHeight);
+            }, 100);
+            return;
+          }
+        // RECURSE TO KEEP TRYING TO FIND THE EMPLOYEE
+        } else if (org[i].employees) {
+          // console.log('recurse here');
+          this.expandCollapseOrg(org[i].employees, name);
+        }
+      }
+    }
+
+  }
+
+
+
 
 }

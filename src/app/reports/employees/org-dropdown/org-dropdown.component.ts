@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { AppDataService } from '../../../_shared/services/app-data.service';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+
+declare var $: any;
 
 @Component({
   selector: 'app-org-dropdown',
@@ -8,17 +9,38 @@ import { AppDataService } from '../../../_shared/services/app-data.service';
 })
 export class OrgDropdownComponent implements OnInit {
 
-  // @Input() employees: any;
-  employees: any;
+  @Input() employees: any;
+  @Output() clickedEmployeeIcon = new EventEmitter<any>();
+  @Output() clickedEmployee = new EventEmitter<any>();
 
-  constructor(
-    private appDataService: AppDataService
-  ) { }
+
+  constructor() { }
 
   ngOnInit() {
-    this.employees = this.appDataService.$nestedOrgData;
-    console.log('employees array on org dropdown component init:');
-    console.log(this.employees);
   }
+
+  onExpandCollapseIconClick(employee) {
+    console.log('expand collapse icon clicked');
+    this.clickedEmployeeIcon.emit(
+      {
+        uid: employee.uid,
+        fullName: employee.fullName,
+        emailAddress: employee.emailAddress
+      }
+    );
+  }
+
+  onEmployeeNameClick(employee) {
+    console.log('employee name clicked');
+    this.clickedEmployee.emit(
+      {
+        uid: employee.uid,
+        fullName: employee.fullName,
+        emailAddress: employee.emailAddress
+      }
+    );
+  }
+
+
 
 }
