@@ -27,7 +27,7 @@
         <div class="orgdata-spinner"></div>
       </div>
 
-      <div *ngIf="displayOrgDropDown" class="org-dropdown-cont">
+      <div *ngIf="displayOrgDropDown" class="org-dropdown-cont" (scroll)="onScroll($event)">
         <app-org-dropdown [employees]="nestedOrgData" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)"></app-org-dropdown>
       </div>
 

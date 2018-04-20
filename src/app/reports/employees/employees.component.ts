@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AppDataService } from '../../_shared/services/app-data.service';
@@ -19,6 +19,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   waitingForOrgData: boolean;
   displayOrgDropDown: boolean;
   displayedEmployee: any;
+  employeeElements: any;
 
   constructor(
     private appDataService: AppDataService,
@@ -32,10 +33,6 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-
-    // TEMP CODE: testing nested org data requested
-    console.log('nested org data requested:');
-    console.log(this.appDataService.nestedOrgDataRequested);
 
     this.nestedOrgData = this.appDataService.$nestedOrgData;
     if (this.nestedOrgData) {
@@ -111,6 +108,10 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     console.log('clicked employee icon fired with employee:');
     console.log(employee);
     this.expandCollapseOrg(this.nestedOrgData, employee.fullName);
+    setTimeout(() => {
+      this.employeeElements = $('div.emp-name');
+      // console.log(this.employeeElements.length);
+    }, 100);
   }
 
   onclickedEmployee(employee) {
@@ -152,6 +153,40 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   }
 
 
+  @HostListener('scroll', ['$event'])
+  onScroll(event) {
+
+    const displayedLevels: number[] = [];
+    this.employeeElements.each((i, obj) => {
+      const dataUID = obj.getAttribute('data-uid');
+      const element = `div.emp-name[data-uid=${dataUID}]`;
+      if (this.checkInView(element, false)) {
+        displayedLevels.push($(element).data('level'));
+      }
+    });
+    const rootLevel = this.nestedOrgData[0].level;
+    const minLevel = Math.min(...displayedLevels);
+    const indent = minLevel - rootLevel - 1 >= 1 ? minLevel - rootLevel - 1 : 0;
+    const container = $('div.org-dropdown-cont');
+    container.scrollLeft(indent * 15);
+
+  }
+
+
+  checkInView(elem, partial): boolean {
+    const container = $('div.org-dropdown-cont');
+    const contHeight = container.height();
+    const contTop = container.scrollTop();
+    const contBottom = contTop + contHeight ;
+
+    const elemTop = $(elem).offset().top - container.offset().top;
+    const elemBottom = elemTop + $(elem).height();
+
+    const isTotal = (elemTop >= 0 && elemBottom <= contHeight);
+    const isPart = ((elemTop < 0 && elemBottom > 0 ) || (elemTop > 0 && elemTop <= container.height())) && partial;
+
+    return isTotal || isPart;
+  }
 
 
 }

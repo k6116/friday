@@ -3,7 +3,7 @@
 <div *ngFor="let employeee of employees; let i=index" class="emp-cont-outer">
   <ul class="emp-cont-inner">
     <li class="emp-item">
-      <div class="emp-name">
+      <div class="emp-name" [attr.data-level]="employeee.level" [attr.data-uid]="employeee.uid" [attr.data-name]="employeee.fullName">
         <div class="expand-collapse-icon-cont">
           <i *ngIf="employeee.employees" [class]="'fa expand-collapse ' + (employeee.showEmployees ? 'fa-caret-down' : 'fa-caret-right')" (click)="onExpandCollapseIconClick(employeee)"></i>
         </div>

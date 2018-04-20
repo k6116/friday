@@ -32,7 +32,8 @@ div.org-dropdown-cont {
   position: absolute;
   z-index: 1;
   max-height: 50vh;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   width: 217px;
   border: 1px solid lightgrey;
   background-color: rgb(250, 250, 250);
