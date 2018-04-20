@@ -115,6 +115,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     console.log(employee);
     this.displayOrgDropDown = false;
     this.displayedEmployee = employee;
+    this.collapseOrg(this.nestedOrgData);
   }
 
 
@@ -127,6 +128,20 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
           return;
         } else if (org[i].employees) {
           this.expandCollapseOrg(org[i].employees, name);
+        }
+      }
+    }
+
+  }
+
+  // collapse all managers - set showEmployees to false
+  collapseOrg(org: any) {
+
+    for (const i in org) {
+      if (typeof org[i] === 'object') {
+        org[i].showEmployees = false;
+        if (org[i].employees) {
+          this.collapseOrg(org[i].employees);
         }
       }
     }
