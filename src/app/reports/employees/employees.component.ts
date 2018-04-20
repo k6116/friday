@@ -169,6 +169,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     const indent = minLevel - rootLevel - 1 >= 1 ? minLevel - rootLevel - 1 : 0;
     const container = $('div.org-dropdown-cont');
     container.scrollLeft(indent * 15);
+    // container.animate({scrollLeft: indent * 15}, 100);
 
   }
 
