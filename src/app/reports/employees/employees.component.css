@@ -31,7 +31,7 @@ app-org-dropdown {
 div.org-dropdown-cont {
   position: absolute;
   z-index: 1;
-  height: 300px;
+  max-height: 50vh;
   overflow: auto;
   width: 217px;
   border: 1px solid lightgrey;
