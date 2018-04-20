@@ -122,39 +122,10 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
     for (const i in org) {
       if (typeof org[i] === 'object') {
-        // console.log(`employee name: ${org[i].name}`);
-        // console.log(`looking for employee ${name}`);
         if (org[i].fullName === name) {
-          console.log('found name match');
-          console.log(`show employees set to ${org[i].showEmployees}, clicked employee uid is ${org[i].uid}`);
-          console.log('number of employees: ' + org[i].employees.length);
-          const maxHeight = 51 * org[i].employees.length;
-          // COLLAPSE
-          if (org[i].showEmployees) {
-            // $(`.team-cont.${org[i].uid}`).css('transition', 'max-height 1s ease-in');
-            $(`.team-cont.${org[i].uid}`).css('max-height', '0');
-            setTimeout(() => {
-              org[i].showEmployees = false;
-            }, 500);
-            return;
-          // EXPAND
-          } else {
-            // $(`.team-cont.${org[i].uid}`).css('max-height', '0');
-            org[i].showEmployees = true;
-            setTimeout(() => {
-              // $(`.team-cont.${org[i].uid}`).css('transition', 'max-height 1s ease-out');
-              // NOTE: TRY THIS INSTEAD TO GET THE HEIGHT
-              // const maxHeight2 = $(`.team-cont.${org[i].uid}`).height();
-              $(`.team-cont.${org[i].uid}`).css('max-height', maxHeight);
-              setTimeout(() => {
-                $(`.team-cont.${org[i].uid}`).css('max-height', '10000px');
-              }, 10000);
-            }, 100);
-            return;
-          }
-        // RECURSE TO KEEP TRYING TO FIND THE EMPLOYEE
+          org[i].showEmployees = !org[i].showEmployees;
+          return;
         } else if (org[i].employees) {
-          // console.log('recurse here');
           this.expandCollapseOrg(org[i].employees, name);
         }
       }

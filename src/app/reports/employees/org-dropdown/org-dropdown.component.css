@@ -14,7 +14,6 @@ ul.emp-cont-inner {
   position: relative;
   left: -1px;
   padding: 10px;
-  /* border: 1px solid lightgrey; */
   width: 200px;
   background-color: rgb(250, 250, 250);
   display: inline-block;
@@ -22,13 +21,12 @@ ul.emp-cont-inner {
 }
 
 div.team-cont {
-  /* overflow: hidden; */
-  transition: max-height 1.0s ease-out;
-  max-height: 0;
+  /* transition: max-height 1.0s ease-out;
+  max-height: 0; */
 }
 
 div.team-cont.collapse {
-  max-height: 0;
+  /* max-height: 0; */
 }
 
 i.fa.expand-collapse {
