@@ -41,6 +41,28 @@ export class OrgDropdownComponent implements OnInit {
     );
   }
 
+  onclickedEmployeeIcon(employee) {
+    console.log('expand collapse icon clicked');
+    this.clickedEmployeeIcon.emit(
+      {
+        uid: employee.uid,
+        fullName: employee.fullName,
+        emailAddress: employee.emailAddress
+      }
+    );
+  }
+
+  onclickedEmployee(employee) {
+    console.log('employee name clicked');
+    this.clickedEmployee.emit(
+      {
+        uid: employee.uid,
+        fullName: employee.fullName,
+        emailAddress: employee.emailAddress
+      }
+    );
+  }
+
 
 
 }
