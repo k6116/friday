@@ -31,7 +31,11 @@ app-org-dropdown {
 div.org-dropdown-cont {
   position: absolute;
   z-index: 1;
+  height: 300px;
+  overflow: auto;
+  width: 217px;
 }
+
 
 
 /* spinner for waiting org hierarchy data to arrive */

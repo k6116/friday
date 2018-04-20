@@ -19,9 +19,9 @@ ul.emp-cont-inner {
 }
 
 div.team-cont {
-  overflow: hidden;
-  transition: max-height 0.2s ease-out;
-  max-height: 10000px;
+  /* overflow: hidden; */
+  transition: max-height 1.0s ease-out;
+  max-height: 0;
 }
 
 div.team-cont.collapse {

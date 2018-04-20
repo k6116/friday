@@ -139,12 +139,16 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
             return;
           // EXPAND
           } else {
+            // $(`.team-cont.${org[i].uid}`).css('max-height', '0');
             org[i].showEmployees = true;
             setTimeout(() => {
               // $(`.team-cont.${org[i].uid}`).css('transition', 'max-height 1s ease-out');
               // NOTE: TRY THIS INSTEAD TO GET THE HEIGHT
               // const maxHeight2 = $(`.team-cont.${org[i].uid}`).height();
               $(`.team-cont.${org[i].uid}`).css('max-height', maxHeight);
+              setTimeout(() => {
+                $(`.team-cont.${org[i].uid}`).css('max-height', '10000px');
+              }, 10000);
             }, 100);
             return;
           }
