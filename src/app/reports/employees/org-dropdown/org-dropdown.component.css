@@ -1,15 +1,15 @@
 
-.emp-cont {
-  opacity: 1;
-  color: black;
-  transition: color 0.5s;
-}
 
 ul.emp-cont-inner {
   list-style-type: none;
   padding-left: 15px;
   margin-bottom: 0;
 }
+
+/* div.team-cont {
+  max-height: 0;
+  transition: max-height 0.5s ease-out;
+} */
 
 .emp-name {
   position: relative;
@@ -20,15 +20,6 @@ ul.emp-cont-inner {
   display: inline-block;
   border-left: 1px solid lightgrey;
   white-space: nowrap;
-}
-
-div.team-cont {
-  /* transition: max-height 1.0s ease-out;
-  max-height: 0; */
-}
-
-div.team-cont.collapse {
-  /* max-height: 0; */
 }
 
 i.fa.expand-collapse {

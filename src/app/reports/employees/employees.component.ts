@@ -76,7 +76,6 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         console.log('nested org object retrieved from api data service in employee reports component');
         console.log(nestedOrgData);
         this.nestedOrgData = nestedOrgData;
-        // this.appDataService.$nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
       },
       err => {
@@ -95,45 +94,88 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
 
   onOrgDropDownClick() {
-    console.log('org dropdown clicked');
     if (!this.waitingForOrgData) {
-      this.displayOrgDropDown = !this.displayOrgDropDown;
-    }
-    if (!this.displayOrgDropDown) {
-      this.collapseOrg(this.nestedOrgData);
+      if (!this.displayOrgDropDown) {
+        if (this.nestedOrgData[0].numEmployees > 0) {
+          this.nestedOrgData[0].showEmployees = true;
+        }
+        this.displayOrgDropDown = true;
+        setTimeout(() => {
+          this.employeeElements = $('div.emp-name');
+        }, 0);
+      } else {
+        this.displayOrgDropDown = false;
+        this.collapseOrg(this.nestedOrgData);
+      }
     }
   }
 
   onclickedEmployeeIcon(employee) {
-    console.log('clicked employee icon fired with employee:');
-    console.log(employee);
-    this.expandCollapseOrg(this.nestedOrgData, employee.fullName);
-    setTimeout(() => {
-      this.employeeElements = $('div.emp-name');
-      // console.log(this.employeeElements.length);
-    }, 100);
+    this.expandCollapseOrg(this.nestedOrgData, employee.fullName, true);
   }
 
   onclickedEmployee(employee) {
-    console.log('clicked employee fired with employee:');
-    console.log(employee);
     this.displayOrgDropDown = false;
     this.displayedEmployee = employee;
     this.collapseOrg(this.nestedOrgData);
   }
 
 
-  expandCollapseOrg(org: any, name: string) {
+  expandCollapseOrg(org: any, name: string, animate?: boolean) {
 
     for (const i in org) {
       if (typeof org[i] === 'object') {
         if (org[i].fullName === name) {
-          org[i].showEmployees = !org[i].showEmployees;
+          if (animate) {
+            if (!org[i].showEmployees) {
+              org[i].showEmployees = !org[i].showEmployees;
+              this.setEmployeeElements();
+              this.animateExpandCollapse(org[i], true);
+            } else {
+              this.animateExpandCollapse(org[i], false);
+              setTimeout(() => {
+                org[i].showEmployees = !org[i].showEmployees;
+                this.setEmployeeElements();
+              }, 500);
+            }
+          } else {
+            org[i].showEmployees = !org[i].showEmployees;
+            this.setEmployeeElements();
+          }
           return;
         } else if (org[i].employees) {
-          this.expandCollapseOrg(org[i].employees, name);
+          this.expandCollapseOrg(org[i].employees, name, animate);
         }
       }
+    }
+
+  }
+
+  setEmployeeElements() {
+    setTimeout(() => {
+      this.employeeElements = $('div.emp-name');
+    }, 0);
+  }
+
+  animateExpandCollapse(employee: any, expand: boolean) {
+
+    const $el = $(`div.team-cont.${employee.uid}`);
+    if (expand) {
+      $el.css({'max-height': '0', 'transition': 'max-height 0.5s ease-out'});
+      setTimeout(() => {
+        $el.css('max-height', `${32 * employee.numEmployees}px`);
+      }, 0);
+      setTimeout(() => {
+        $el.css({'max-height': '', 'transition': ''});
+      }, 500);
+    } else {
+      $el.css({'max-height': `${32 * employee.numEmployees}px`, 'transition': 'max-height 0.5s ease-in'});
+      setTimeout(() => {
+        $el.css('max-height', '0');
+      }, 0);
+      setTimeout(() => {
+        $el.css({'max-height': '', 'transition': ''});
+      }, 500);
     }
 
   }
@@ -179,6 +221,11 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     const contHeight = container.height();
     const contTop = container.scrollTop();
     const contBottom = contTop + contHeight ;
+
+    if (!$(elem).offset()) {
+      console.log('ERROR: cant find element');
+      return false;
+    }
 
     const elemTop = $(elem).offset().top - container.offset().top;
     const elemBottom = elemTop + $(elem).height();

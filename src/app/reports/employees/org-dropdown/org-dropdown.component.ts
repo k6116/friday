@@ -14,7 +14,8 @@ export class OrgDropdownComponent implements OnInit {
   @Output() clickedEmployee = new EventEmitter<any>();
 
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
