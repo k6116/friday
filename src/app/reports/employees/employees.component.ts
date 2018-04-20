@@ -102,6 +102,9 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     if (!this.waitingForOrgData) {
       this.displayOrgDropDown = !this.displayOrgDropDown;
     }
+    if (!this.displayOrgDropDown) {
+      this.collapseOrg(this.nestedOrgData);
+    }
   }
 
   onclickedEmployeeIcon(employee) {
