@@ -51,18 +51,13 @@ div.row.employee-display-cont {
   font-size: 18px;
 }
 
-input.form-control.report-filter.start-date {
-  display: inline-block;
-  width: 200px;
-  margin-left: 25px;
-}
+
 
 /* spinner for waiting org hierarchy data to arrive */
 
 .orgdata-spinner-cont {
-  display: inline-block;
-  margin-left: 10px;
-  position: relative;
+  position: absolute;
+  right: 35px;
   top: 5px;
 }
 

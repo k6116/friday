@@ -21,43 +21,42 @@ export class OrgDropdownComponent implements OnInit {
   }
 
   onExpandCollapseIconClick(employee) {
-    this.clickedEmployeeIcon.emit(
-      {
-        uid: employee.uid,
-        fullName: employee.fullName,
-        emailAddress: employee.emailAddress
-      }
-    );
+    this.emitClickedEmployeeIcon(employee);
   }
 
   onEmployeeNameClick(employee) {
-    this.clickedEmployee.emit(
-      {
-        uid: employee.uid,
-        fullName: employee.fullName,
-        emailAddress: employee.emailAddress
-      }
-    );
+    this.emitClickedEmployee(employee);
   }
 
   onclickedEmployeeIcon(employee) {
-    this.clickedEmployeeIcon.emit(
-      {
-        uid: employee.uid,
-        fullName: employee.fullName,
-        emailAddress: employee.emailAddress
-      }
-    );
+    this.emitClickedEmployeeIcon(employee);
   }
 
   onclickedEmployee(employee) {
-    this.clickedEmployee.emit(
-      {
-        uid: employee.uid,
-        fullName: employee.fullName,
-        emailAddress: employee.emailAddress
-      }
-    );
+    this.emitClickedEmployee(employee);
+  }
+
+  emitClickedEmployee(employee) {
+    this.clickedEmployee.emit(this.getEmployeeObject(employee));
+  }
+
+  emitClickedEmployeeIcon(employee) {
+    this.clickedEmployeeIcon.emit(this.getEmployeeObject(employee));
+  }
+
+  // only return select properties (removing nested employees etc.)
+  getEmployeeObject(employee): any {
+    return {
+      emailAddress: employee.emailAddress,
+      employeeID: employee.employeeID,
+      fullName: employee.fullName,
+      level: employee.level,
+      numEmployees: employee.numEmployees,
+      personID: employee.personID,
+      showEmployees: employee.showEmployees,
+      supervisorID: employee.supervisorID,
+      uid: employee.uid
+    };
   }
 
 

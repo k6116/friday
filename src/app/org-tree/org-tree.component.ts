@@ -6,7 +6,7 @@ declare var $: any;
 @Component({
   selector: 'app-org-tree',
   templateUrl: './org-tree.component.html',
-  styleUrls: ['./org-tree.component.css', '../_shared/styles/tab-groups.css', '../_shared/styles/common.css'],
+  styleUrls: ['./org-tree.component.css', '../_shared/styles/common.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class OrgTreeComponent implements OnInit {

@@ -20,6 +20,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   waitingForOrgData: boolean;
   displayOrgDropDown: boolean;
   displayedEmployee: any;
+  displayResults: boolean;
   employeeElements: any;
   dropDownDisplayedEmployee: string;
 
@@ -30,9 +31,10 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   ) {
 
     this.displayOrgDropDown = false;
-    this.dropDownDisplayedEmployee = 'Select Employee';
+    this.dropDownDisplayedEmployee = 'Loading...';
 
   }
+
 
   ngOnInit() {
 
@@ -41,6 +43,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     if (this.nestedOrgData) {
       console.log('nested org data picked up in employee reports');
       console.log(this.nestedOrgData);
+      this.setInitialDropDownEmployee();
     }
 
     this.subscription1 = this.appDataService.nestedOrgData.subscribe(
@@ -50,6 +53,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         console.log('nested org data received in employee reports component via subscription');
         console.log(this.nestedOrgData);
         this.waitingForOrgData = false;
+        this.setInitialDropDownEmployee();
     });
 
     if (!this.appDataService.nestedOrgDataRequested) {
@@ -67,9 +71,11 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   }
 
+
   ngOnDestroy() {
     this.subscription1.unsubscribe();
   }
+
 
   getNestedOrgData(email: string) {
     this.apiDataService.getOrgData(email)
@@ -81,6 +87,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         this.nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
         this.appDataService.$nestedOrgData = this.nestedOrgData;
+        this.setInitialDropDownEmployee();
         const t0 = performance.now();
         this.flatOrgData = this.flattenNestedOrgData($.extend(true, {}, this.nestedOrgData));
         const t1 = performance.now();
@@ -94,12 +101,19 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     );
   }
 
+
   getDropDownStyle(): any {
     if (this.waitingForOrgData) {
       return {'background-color': 'rgb(245, 245, 245)', cursor: 'wait'};
     } else {
       return {'background-color': 'rgb(255, 255, 255)'};
     }
+  }
+
+
+  setInitialDropDownEmployee() {
+    this.dropDownDisplayedEmployee = this.nestedOrgData[0].fullName;
+    this.displayedEmployee = this.nestedOrgData[0];
   }
 
 
@@ -120,13 +134,18 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     }
   }
 
+
   onclickedEmployeeIcon(employee) {
     this.expandCollapseOrg(this.nestedOrgData, employee.fullName, true);
   }
 
+
   onclickedEmployee(employee) {
     this.displayOrgDropDown = false;
     this.displayedEmployee = employee;
+    console.log('displayed employee');
+    console.log(this.displayedEmployee);
+    this.displayResults = true;
     this.dropDownDisplayedEmployee = employee.fullName;
     this.collapseOrg(this.nestedOrgData);
   }
@@ -165,11 +184,13 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   }
 
+
   setEmployeeElements() {
     setTimeout(() => {
       this.employeeElements = $('div.emp-name');
     }, 0);
   }
+
 
   animateExpandCollapse(employee: any, expand: boolean) {
 
@@ -194,6 +215,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   }
 
+
   // collapse all managers - set showEmployees to false
   collapseOrg(org: any) {
 
@@ -211,10 +233,9 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   @HostListener('scroll', ['$event'])
   onScroll(event) {
-
     this.setIndent();
-
   }
+
 
   setIndent() {
     const displayedLevels: number[] = [];

@@ -4,49 +4,81 @@
 <!-- side nav component -->
 <app-side-nav></app-side-nav>
 
-<!-- temp page content for testing routes -->
+
+<!-- main page/form container -->
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-lg-10 col-lg-offset-1">
-      <div class="page-title">
-        Employee Reports Page
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-10 col-lg-offset-1">
+
+  <!-- row for report search/filter -->
+  <div class="row row-custom">
+    
+    <div class="col-xs-12 col-custom">
 
       <!-- 'dropdown' container to select employee from nested org structure -->
-      <div [class]="'org-dropdown-control' + (displayOrgDropDown ? ' highlight' : '')" [ngStyle]="getDropDownStyle()" (click)="onOrgDropDownClick()">
-        {{ dropDownDisplayedEmployee }}
-        <i class="fa fa-caret-down org-dropdown-control-caret"></i>
-      </div>
+      <div class="form-group form-group-custom">
 
-      <!-- spinner to display while waiting for data to arrive -->
-      <div class="orgdata-spinner-cont" [style.visibility]="waitingForOrgData ? 'visible' : 'hidden'">
-        <div class="orgdata-spinner"></div>
-      </div>
-
-      <div *ngIf="displayOrgDropDown" class="org-dropdown-cont" (scroll)="onScroll($event)">
-        <div class="org-dropdown-cont-inner">
-          <app-org-dropdown [employees]="nestedOrgData" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)"></app-org-dropdown>
+        <label class="label-custom">Employee</label>
+        <div [class]="'org-dropdown-control' + (displayOrgDropDown ? ' highlight' : '')" [ngStyle]="getDropDownStyle()" (click)="onOrgDropDownClick()">
+          {{ dropDownDisplayedEmployee }}
+          <!-- dropdown caret -->
+          <i class="fa fa-caret-down org-dropdown-control-caret"></i>
+          <!-- spinner to display while waiting for data to arrive -->
+          <div class="orgdata-spinner-cont" [style.visibility]="waitingForOrgData ? 'visible' : 'hidden'">
+            <div class="orgdata-spinner"></div>
+          </div>
         </div>
+
+        <div *ngIf="displayOrgDropDown" class="org-dropdown-cont" (scroll)="onScroll($event)">
+          <div class="org-dropdown-cont-inner">
+            <app-org-dropdown [employees]="nestedOrgData" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)"></app-org-dropdown>
+          </div>
+        </div>
+
       </div>
 
-      <input type="date" class="form-control report-filter start-date" placeholder="start date">
+      <!-- from date (month) selection -->
+      <div class="form-group form-group-custom">
+
+        <label class="label-custom">From</label>
+        <input type="month" class="form-control">
+
+      </div>
+
+      <!-- to date (month) selection -->
+      <div class="form-group form-group-custom">
+
+        <label class="label-custom">To</label>
+        <input type="month" class="form-control">
+
+      </div>
+      
 
     </div>
   </div>
 
-  <div class="row employee-display-cont">
-    <div class="col-lg-10 col-lg-offset-1">
-      <p>
-        Name: {{ displayedEmployee?.fullName }}
-      </p>
-      <p>
-        Email Address: {{ displayedEmployee?.emailAddress }}
-      </p>
+
+
+  <!-- temporary row for selected employee details table -->
+  <div *ngIf="displayResults" class="row row-custom">
+  
+    <div class="col-xs-12 col-custom">
+
+      <table class="table table-striped">
+        <thead>
+          <th>Name</th>
+          <th>Email</th>
+          <th># Employees</th>
+          <th>Employee ID</th>
+        </thead>
+        <tbody>
+          <td>{{ displayedEmployee?.fullName }}</td>
+          <td>{{ displayedEmployee?.emailAddress }}</td>
+          <td>{{ displayedEmployee?.numEmployees }}</td>
+          <td>{{ displayedEmployee?.employeeID }}</td>
+        </tbody>
+      </table>
+
     </div>
+
   </div>
 
 
