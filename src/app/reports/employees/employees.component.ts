@@ -77,6 +77,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         console.log(nestedOrgData);
         this.nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
+        this.appDataService.$nestedOrgData = this.nestedOrgData;
       },
       err => {
         console.log('error getting nested org data');
@@ -161,7 +162,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
     const $el = $(`div.team-cont.${employee.uid}`);
     if (expand) {
-      $el.css({'max-height': '0', 'transition': 'max-height 0.5s ease-out'});
+      $el.css({'max-height': '0', 'transition': 'max-height 0.35s ease-out'});
       setTimeout(() => {
         $el.css('max-height', `${32 * employee.numEmployees}px`);
       }, 0);
@@ -169,7 +170,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         $el.css({'max-height': '', 'transition': ''});
       }, 500);
     } else {
-      $el.css({'max-height': `${32 * employee.numEmployees}px`, 'transition': 'max-height 0.5s ease-in'});
+      $el.css({'max-height': `${32 * employee.numEmployees}px`, 'transition': 'max-height 0.35s ease-in'});
       setTimeout(() => {
         $el.css('max-height', '0');
       }, 0);

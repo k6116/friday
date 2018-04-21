@@ -21,7 +21,6 @@ export class OrgDropdownComponent implements OnInit {
   }
 
   onExpandCollapseIconClick(employee) {
-    console.log('expand collapse icon clicked');
     this.clickedEmployeeIcon.emit(
       {
         uid: employee.uid,
@@ -32,7 +31,6 @@ export class OrgDropdownComponent implements OnInit {
   }
 
   onEmployeeNameClick(employee) {
-    console.log('employee name clicked');
     this.clickedEmployee.emit(
       {
         uid: employee.uid,
@@ -43,7 +41,6 @@ export class OrgDropdownComponent implements OnInit {
   }
 
   onclickedEmployeeIcon(employee) {
-    console.log('expand collapse icon clicked');
     this.clickedEmployeeIcon.emit(
       {
         uid: employee.uid,
@@ -54,7 +51,6 @@ export class OrgDropdownComponent implements OnInit {
   }
 
   onclickedEmployee(employee) {
-    console.log('employee name clicked');
     this.clickedEmployee.emit(
       {
         uid: employee.uid,
