@@ -156,14 +156,23 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     console.log(this.displayedEmployee);
 
     this.manager = this.getManager(this.nestedOrgData, employee);
-    this.managerString = `${this.manager.fullName} (id: ${this.manager.employeeID})`;
+    console.log('manager:');
+    console.log(this.manager);
 
-    this.teamMembersString = this.buildCoworkersString(this.manager);
+    this.managerString = this.manager ? `${this.manager.fullName} (id: ${this.manager.employeeID})` : 'No Manager in Org Structure';
+
+    if (this.manager) {
+      this.teamMembersString = this.buildCoworkersString(this.manager);
+    } else {
+      this.teamMembersString = undefined;
+    }
 
     this.employees = this.getEmployees(this.nestedOrgData, employee);
-    this.employeesString = this.buildEmployeesString(this.employees);
     console.log('employees:');
     console.log(this.employees);
+
+    this.employeesString = this.buildEmployeesString(this.employees);
+
 
     this.displayResults = true;
 
@@ -328,7 +337,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   getManager(org: any, employee: any): any {
 
-    let manager: any = {};
+    let manager: any;
     findManager(org, employee);
 
     function findManager(org2: any, employee2: any) {

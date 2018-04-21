@@ -97,7 +97,7 @@
     <div class="row row-custom">
 
       <div class="col-xs-12 col-custom">
-        <label class="label-custom">Co-Workers ({{ manager.employees.length }})</label>
+        <label class="label-custom">Co-Workers <span *ngIf="manager">({{ manager.employees?.length }})</span></label>
         <div>
           {{ teamMembersString }}
         </div>
