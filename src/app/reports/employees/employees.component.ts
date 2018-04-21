@@ -15,6 +15,7 @@ declare var $: any;
 export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   nestedOrgData: any;
+  flatOrgData: any;
   subscription1: Subscription;
   waitingForOrgData: boolean;
   displayOrgDropDown: boolean;
@@ -78,6 +79,12 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         this.nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
         this.appDataService.$nestedOrgData = this.nestedOrgData;
+        const t0 = performance.now();
+        this.flatOrgData = this.flattenNestedOrgData($.extend(true, {}, this.nestedOrgData));
+        const t1 = performance.now();
+        console.log(`flatten org data took ${t1 - t0} milliseconds`);
+        console.log('flattened org data');
+        console.log(this.flatOrgData);
       },
       err => {
         console.log('error getting nested org data');
@@ -87,9 +94,9 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   getDropDownStyle(): any {
     if (this.waitingForOrgData) {
-      return {'background-color': 'rgb(225, 225, 225)', cursor: 'wait'};
+      return {'background-color': 'rgb(245, 245, 245)', cursor: 'wait'};
     } else {
-      return {'background-color': 'rgb(245, 245, 245)'};
+      return {'background-color': 'rgb(255, 255, 255)'};
     }
   }
 
@@ -236,6 +243,31 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     const isPart = ((elemTop < 0 && elemBottom > 0 ) || (elemTop > 0 && elemTop <= container.height())) && partial;
 
     return isTotal || isPart;
+  }
+
+
+  flattenNestedOrgData(org: any): any {
+
+    const flatOrgData: any[] = [];
+    flattenOrgData(org);
+
+    function flattenOrgData(org2: any) {
+      for (const i in org2) {
+        if (typeof org2[i] === 'object') {
+          const employee = $.extend(true, {}, org2[i]);
+          if (employee.hasOwnProperty('employees')) {
+            delete employee.employees;
+          }
+          flatOrgData.push(employee);
+          if (org2[i].employees) {
+            flattenOrgData(org2[i].employees);
+          }
+        }
+      }
+    }
+
+    return flatOrgData;
+
   }
 
 

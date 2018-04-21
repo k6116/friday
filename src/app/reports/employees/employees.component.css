@@ -45,6 +45,11 @@ div.row.employee-display-cont {
   font-size: 18px;
 }
 
+input.form-control.report-filter.start-date {
+  display: inline-block;
+  width: 200px;
+  margin-left: 25px;
+}
 
 /* spinner for waiting org hierarchy data to arrive */
 
@@ -67,4 +72,13 @@ div.row.employee-display-cont {
 @keyframes orgdata-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* bootstrap style soft blue glow border */
+
+div.org-dropdown-control.highlight {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
 }
