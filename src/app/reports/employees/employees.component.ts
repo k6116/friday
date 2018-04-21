@@ -21,6 +21,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   displayOrgDropDown: boolean;
   displayedEmployee: any;
   employeeElements: any;
+  dropDownDisplayedEmployee: string;
 
   constructor(
     private appDataService: AppDataService,
@@ -29,6 +30,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   ) {
 
     this.displayOrgDropDown = false;
+    this.dropDownDisplayedEmployee = 'Select Employee';
 
   }
 
@@ -125,6 +127,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   onclickedEmployee(employee) {
     this.displayOrgDropDown = false;
     this.displayedEmployee = employee;
+    this.dropDownDisplayedEmployee = employee.fullName;
     this.collapseOrg(this.nestedOrgData);
   }
 

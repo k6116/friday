@@ -18,7 +18,7 @@
 
       <!-- 'dropdown' container to select employee from nested org structure -->
       <div [class]="'org-dropdown-control' + (displayOrgDropDown ? ' highlight' : '')" [ngStyle]="getDropDownStyle()" (click)="onOrgDropDownClick()">
-        Select Employee
+        {{ dropDownDisplayedEmployee }}
         <i class="fa fa-caret-down org-dropdown-control-caret"></i>
       </div>
 
