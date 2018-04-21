@@ -24,6 +24,15 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   employeeElements: any;
   dropDownDisplayedEmployee: string;
 
+  // temp properties for testing
+  manager: any;
+  managerString: string;
+  employees: any;
+  employeesString: string;
+  teamMembers: any;
+  teamMembersString: string;
+
+
   constructor(
     private appDataService: AppDataService,
     private apiDataService: ApiDataService,
@@ -145,9 +154,24 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     this.displayedEmployee = employee;
     console.log('displayed employee');
     console.log(this.displayedEmployee);
+
+    this.manager = this.getManager(this.nestedOrgData, employee);
+    this.managerString = `${this.manager.fullName} (id: ${this.manager.employeeID})`;
+
+    this.teamMembersString = this.buildCoworkersString(this.manager);
+
+    this.employees = this.getEmployees(this.nestedOrgData, employee);
+    this.employeesString = this.buildEmployeesString(this.employees);
+    console.log('employees:');
+    console.log(this.employees);
+
     this.displayResults = true;
+
     this.dropDownDisplayedEmployee = employee.fullName;
     this.collapseOrg(this.nestedOrgData);
+
+    // console.log('manager data:');
+    // console.log(manager);
   }
 
 
@@ -299,6 +323,83 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
     return flatOrgData;
 
+  }
+
+
+  getManager(org: any, employee: any): any {
+
+    let manager: any = {};
+    findManager(org, employee);
+
+    function findManager(org2: any, employee2: any) {
+      for (const i in org2) {
+        if (typeof org2[i] === 'object') {
+          if (org2[i].personID === employee2.supervisorID) {
+            manager = org2[i];
+            return;
+          }
+          if (org2[i].employees) {
+            findManager(org2[i].employees, employee2);
+          }
+        }
+      }
+    }
+
+    return manager;
+
+  }
+
+
+  getEmployees(org: any, employee: any): any {
+
+    const employees: any[] = [];
+    findEmployees(org, employee);
+
+    function findEmployees(org2: any, employee2: any) {
+      for (const i in org2) {
+        if (typeof org2[i] === 'object') {
+          if (org2[i].personID === employee2.personID) {
+            if (org2[i].hasOwnProperty('employees')) {
+              org2[i].employees.forEach(employee3 => {
+                const empCopy = $.extend(true, {}, employee3);
+                if (empCopy.hasOwnProperty('employees')) {
+                  delete empCopy.employees;
+                }
+                employees.push(empCopy);
+              });
+            }
+            return;
+          }
+          if (org2[i].employees) {
+            findEmployees(org2[i].employees, employee2);
+          }
+        }
+      }
+    }
+
+    return employees;
+
+  }
+
+
+  // TEMP CODE: build string of co-workers for the selected employee
+  buildCoworkersString(manager): string {
+    const teamArr: string[] = [];
+    if (manager.hasOwnProperty('employees')) {
+      manager.employees.forEach(employee => {
+        teamArr.push(`${employee.fullName} (id: ${employee.employeeID})`);
+      });
+    }
+    return teamArr.join(', ');
+  }
+
+  // TEMP CODE: build string of employees for the selected employee
+  buildEmployeesString(employees): string {
+    const empArr: string[] = [];
+    employees.forEach(employee => {
+      empArr.push(`${employee.fullName} (id: ${employee.employeeID})`);
+    });
+    return empArr.length ? empArr.join(', ') : '';
   }
 
 

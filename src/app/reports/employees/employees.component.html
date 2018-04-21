@@ -58,26 +58,64 @@
 
 
   <!-- temporary row for selected employee details table -->
-  <div *ngIf="displayResults" class="row row-custom">
+  <div *ngIf="displayResults">
   
-    <div class="col-xs-12 col-custom">
+    <div class="row row-custom">
 
-      <table class="table table-striped">
-        <thead>
-          <th>Name</th>
-          <th>Email</th>
-          <th># Employees</th>
-          <th>Employee ID</th>
-        </thead>
-        <tbody>
-          <td>{{ displayedEmployee?.fullName }}</td>
-          <td>{{ displayedEmployee?.emailAddress }}</td>
-          <td>{{ displayedEmployee?.numEmployees }}</td>
-          <td>{{ displayedEmployee?.employeeID }}</td>
-        </tbody>
-      </table>
+      <div class="col-xs-12 col-custom">
+
+        <table class="table table-striped table-employee-details">
+          <thead>
+            <th>Name</th>
+            <th>Email</th>
+            <th># Employees</th>
+            <th>Employee ID</th>
+          </thead>
+          <tbody>
+            <td>{{ displayedEmployee?.fullName }}</td>
+            <td>{{ displayedEmployee?.emailAddress }}</td>
+            <td>{{ displayedEmployee?.numEmployees }}</td>
+            <td>{{ displayedEmployee?.employeeID }}</td>
+          </tbody>
+        </table>
+    
+        </div>
 
     </div>
+
+    <div class="row row-custom">
+
+      <div class="col-xs-12 col-custom">
+        <label class="label-custom">Manager</label>
+        <div>
+          {{ managerString }}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row row-custom">
+
+      <div class="col-xs-12 col-custom">
+        <label class="label-custom">Co-Workers ({{ manager.employees.length }})</label>
+        <div>
+          {{ teamMembersString }}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row row-custom">
+
+      <div class="col-xs-12 col-custom">
+        <label class="label-custom">Employees ({{ employees.length }})</label>
+        <div>
+          {{ employeesString }}
+        </div>
+      </div>
+
+    </div>
+
 
   </div>
 
