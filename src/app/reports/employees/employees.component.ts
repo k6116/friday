@@ -141,17 +141,20 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
             if (!org[i].showEmployees) {
               org[i].showEmployees = !org[i].showEmployees;
               this.setEmployeeElements();
+              // this.setIndent();
               this.animateExpandCollapse(org[i], true);
             } else {
               this.animateExpandCollapse(org[i], false);
               setTimeout(() => {
                 org[i].showEmployees = !org[i].showEmployees;
                 this.setEmployeeElements();
+                // this.setIndent();
               }, 500);
             }
           } else {
             org[i].showEmployees = !org[i].showEmployees;
             this.setEmployeeElements();
+            // this.setIndent();
           }
           return;
         } else if (org[i].employees) {
@@ -209,6 +212,11 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   @HostListener('scroll', ['$event'])
   onScroll(event) {
 
+    this.setIndent();
+
+  }
+
+  setIndent() {
     const displayedLevels: number[] = [];
     this.employeeElements.each((i, obj) => {
       const dataUID = obj.getAttribute('data-uid');
@@ -220,11 +228,10 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     const rootLevel = this.nestedOrgData[0].level;
     const minLevel = Math.min(...displayedLevels);
     const indent = minLevel - rootLevel - 1 >= 1 ? minLevel - rootLevel - 1 : 0;
-    $('div.emp-name').css('left', -(1 + (indent * 15)));
+    $('div.org-dropdown-cont-inner').css('left', -(1 + (indent * 15)));
     // const container = $('div.org-dropdown-cont');
     // container.scrollLeft(indent * 15);
     // container.animate({scrollLeft: indent * 15}, 100);
-
   }
 
 

@@ -39,6 +39,12 @@ div.org-dropdown-cont {
   background-color: rgb(250, 250, 250);
 }
 
+div.org-dropdown-cont-inner {
+  position: relative;
+  left: -1px;
+  transition: left .35s;  
+}
+
 div.row.employee-display-cont {
   margin-top: 25px;
   margin-left: 10px;

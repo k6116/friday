@@ -28,7 +28,9 @@
       </div>
 
       <div *ngIf="displayOrgDropDown" class="org-dropdown-cont" (scroll)="onScroll($event)">
-        <app-org-dropdown [employees]="nestedOrgData" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)"></app-org-dropdown>
+        <div class="org-dropdown-cont-inner">
+          <app-org-dropdown [employees]="nestedOrgData" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)"></app-org-dropdown>
+        </div>
       </div>
 
       <input type="date" class="form-control report-filter start-date" placeholder="start date">
