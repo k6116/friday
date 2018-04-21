@@ -20,6 +20,7 @@ ul.emp-cont-inner {
   display: inline-block;
   border-left: 1px solid lightgrey;
   white-space: nowrap;
+  transition: left .35s;
 }
 
 i.fa.expand-collapse {

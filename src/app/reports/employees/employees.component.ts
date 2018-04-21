@@ -209,8 +209,9 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     const rootLevel = this.nestedOrgData[0].level;
     const minLevel = Math.min(...displayedLevels);
     const indent = minLevel - rootLevel - 1 >= 1 ? minLevel - rootLevel - 1 : 0;
-    const container = $('div.org-dropdown-cont');
-    container.scrollLeft(indent * 15);
+    $('div.emp-name').css('left', -(1 + (indent * 15)));
+    // const container = $('div.org-dropdown-cont');
+    // container.scrollLeft(indent * 15);
     // container.animate({scrollLeft: indent * 15}, 100);
 
   }
