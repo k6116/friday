@@ -85,5 +85,14 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  // for click tracking
+  logClick(clickData: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+    return this.http.post(`/api/clickTracking/${userID}`, JSON.stringify(clickData), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
 
 }

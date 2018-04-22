@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
 
-
+import * as moment from 'moment';
 declare var $: any;
 
 @Injectable()
@@ -29,6 +29,39 @@ export class ClickTrackingService {
       console.log(userID);
       const path = this.router.url;
       console.log(path);
+
+      const clickObj = {
+        clickedDateTime: moment(),
+        employeeID: userID,
+        page: null,
+        path: path,
+        clickedOn: clickTrack,
+        text: null
+      };
+
+      const clickTrackArr = clickTrack.split(',');
+      clickTrackArr.forEach(obj => {
+        const objArr = obj.split(':');
+        const propName = objArr[0].trim();
+        clickObj[propName] = objArr[1].trim();
+      });
+
+      console.log('click tracking object to insert:');
+      console.log(clickObj);
+
+
+      this.apiDataService.logClick(clickObj, userID)
+      .subscribe(
+        res => {
+          console.log(res);
+          console.log('log click successfull');
+        },
+        err => {
+          console.log(err);
+          console.log('log click failed');
+        }
+      );
+
     }
 
 
