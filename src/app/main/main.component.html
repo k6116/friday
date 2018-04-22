@@ -15,8 +15,8 @@
       <h2 class="page-header-text">
         Main/Landing Page
       </h2>
-      <div class="bait-button">
-        <button class="test-mat-button" mat-raised-button color="warn" (click)="onBaitClick()">Click Me</button>
+      <div class="bait-button-cont">
+        <button class="bait-button" mat-raised-button color="warn" [attr.data-clicktrack]="'ClickedOn: Rick Roll Button'" (click)="onBaitClick()">Click Me</button>
       </div>
     </div>
   </div>

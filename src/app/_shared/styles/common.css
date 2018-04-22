@@ -52,7 +52,8 @@ input.form-control.form-control-custom[disabled], select.form-control.form-contr
 
 /* page header text (temporary) */
 h2.page-header-text {
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: 600;
   margin: 0;
 }
 

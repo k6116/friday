@@ -24,6 +24,7 @@ import { AppDataService } from './_shared/services/app-data.service';
 import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { ToolsService } from './_shared/services/tools.service';
+import { ClickTrackingService } from './_shared/services/click-tracking.service';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -39,8 +40,6 @@ import { ProjectsReportsComponent } from './reports/projects/projects.component'
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
-
-
 
 
 @NgModule({
@@ -80,7 +79,8 @@ import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropd
     AppDataService,
     AuthService,
     AuthGuardService,
-    ToolsService
+    ToolsService,
+    ClickTrackingService
   ],
   bootstrap: [AppComponent]
 })
