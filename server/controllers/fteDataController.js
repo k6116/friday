@@ -9,7 +9,7 @@ const moment = require('moment');
 function getFteData(req, res) {
 
     const userID = req.params.userID;
-    sequelize.query('EXECUTE brcheung.DisplayFTE :userID', {replacements: {userID: userID}, type: sequelize.QueryTypes.SELECT})
+    sequelize.query('EXECUTE resources.DisplayFTE :userID', {replacements: {userID: userID}, type: sequelize.QueryTypes.SELECT})
     .then(results => {
         const fteTree = new Treeize();
         fteTree.grow(results);

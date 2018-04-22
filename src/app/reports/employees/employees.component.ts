@@ -47,12 +47,14 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-
-    this.nestedOrgData = this.appDataService.$nestedOrgData;
-    if (this.nestedOrgData) {
-      console.log('nested org data picked up in employee reports');
-      console.log(this.nestedOrgData);
-      this.setInitialDropDownEmployee();
+    if (!this.appDataService.nestedOrgDataRequested) {
+      if (this.appDataService.$nestedOrgData) {
+        this.nestedOrgData = this.appDataService.$nestedOrgData;
+        console.log('nested org data picked up in employee reports');
+        console.log(this.nestedOrgData);
+        this.waitingForOrgData = false;
+        this.setInitialDropDownEmployee();
+      }
     }
 
     this.subscription1 = this.appDataService.nestedOrgData.subscribe(
@@ -229,7 +231,15 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
     const $el = $(`div.team-cont.${employee.uid}`);
     if (expand) {
-      $el.css({'max-height': '0', 'transition': 'max-height 0.35s ease-out'});
+      $el.css(
+        {
+          'max-height': '0',
+          // '-webkit-transition': 'max-height 0.35s ease-out',
+          // '-moz-transition': 'max-height 0.35s ease-out',
+          // '-o-transition': 'max-height 0.35s ease-out',
+          'transition': 'max-height 0.35s ease-out'
+        }
+      );
       setTimeout(() => {
         $el.css('max-height', `${32 * employee.numEmployees}px`);
       }, 0);
@@ -237,7 +247,15 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         $el.css({'max-height': '', 'transition': ''});
       }, 500);
     } else {
-      $el.css({'max-height': `${32 * employee.numEmployees}px`, 'transition': 'max-height 0.35s ease-in'});
+      $el.css(
+        {
+          'max-height': `${32 * employee.numEmployees}px`,
+          // '-webkit-transition': 'max-height 0.35s ease-in',
+          // '-moz-transition': 'max-height 0.35s ease-in',
+          // '-o-transition': 'max-height 0.35s ease-in',
+          'transition': 'max-height 0.35s ease-in'
+        }
+      );
       setTimeout(() => {
         $el.css('max-height', '0');
       }, 0);
