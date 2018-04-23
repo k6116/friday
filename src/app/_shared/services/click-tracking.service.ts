@@ -16,52 +16,57 @@ export class ClickTrackingService {
   ) { }
 
   logClickWithAttribute(event) {
-    // console.log('log click fired');
-    // console.log(event);
+
     // get the element into a jQuery object
     const $el = $(event.target);
+
     // get the data from the attribute
     const clickTrack = $el.closest('[data-clicktrack]').data('clicktrack');
-    console.log(clickTrack);
-    // if any data was found, get the path and user id
-    if (clickTrack) {
-      const userID = this.authService.loggedInUser.id;
-      console.log(userID);
-      const path = this.router.url;
-      console.log(path);
 
+    // if any data was found
+    if (clickTrack) {
+
+      // get the user id
+      const userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
+
+      // get the url path
+      const path = this.router.url;
+
+      // build an object that will be inserted into the table
       const clickObj = {
         clickedDateTime: moment(),
         employeeID: userID,
         page: null,
         path: path,
-        clickedOn: clickTrack,
+        clickedOn: null,
         text: null
       };
 
+      // replace the page, clickedOn, and text property values if found in the attribute string
+      let error = false;
       const clickTrackArr = clickTrack.split(',');
       clickTrackArr.forEach(obj => {
         const objArr = obj.split(':');
         const propName = objArr[0].trim();
-        clickObj[propName] = objArr[1].trim();
+        if (clickObj.hasOwnProperty(propName)) {
+          clickObj[propName] = objArr[1].trim();
+        } else {
+          error = true;
+          console.error('improper format for click tracking attribute');
+        }
       });
 
-      console.log('click tracking object to insert:');
-      console.log(clickObj);
-
-
-      this.apiDataService.logClick(clickObj, userID)
-      .subscribe(
-        res => {
-          console.log(res);
-          console.log('log click successfull');
-        },
-        err => {
-          console.log(err);
-          console.log('log click failed');
-        }
-      );
-
+      if (!error) {
+        this.apiDataService.logClick(clickObj, userID)
+        .subscribe(
+          res => {
+            console.log(res);
+          },
+          err => {
+            console.log(err);
+          }
+        );
+      }
     }
 
 
