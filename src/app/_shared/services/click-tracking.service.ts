@@ -63,7 +63,7 @@ export class ClickTrackingService {
             console.log(res);
           },
           err => {
-            console.log(err);
+            console.error(err);
           }
         );
       }
