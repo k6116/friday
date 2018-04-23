@@ -85,5 +85,11 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getProjects() {
+    return this.http.get('api/projects')
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
 
 }

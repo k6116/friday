@@ -1,0 +1,94 @@
+
+<div class="projects-modal-outer-cont" [@modalStateOuter]="outerDivState">
+  <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState">
+    <div class="projects-modal-body">
+      <div class="projects-filter-cont">
+        <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter">
+      </div>
+      <div class="project-table-cont">       
+          <table>
+            <tr>
+              <td *ngFor="let project of projects  | filter :filterString:'ProjectName':{smartSearch: true} | slice:0:4">
+              
+                      <div class="card" >
+                    
+                          <!-- <div class="pretty p-default p-curve p-thick p-smooth">
+                              <input type="checkbox" />
+                              <div class="state p-warning">
+                                  
+                              </div>
+                          </div> -->
+                           
+                          <h6 class="project-name">{{project.ProjectName}}</h6> 
+                      <div class="card-body">        
+                              <table>
+                                <tr><td rowspan="4" class="column-inner">{{project.Description}}</td><td><button class="btn btn-primary btn-sm button-inner"></button></td></tr>
+                                <tr><td colspan="2"><button class="btn btn-primary btn-sm button-inner"></button></td></tr>
+                                <tr><td colspan="2"><button class="btn btn-warning btn-sm button-inner"></button></td></tr>
+                                <tr><td colspan="2"><button class="btn btn-warning btn-sm button-inner"></button></td></tr>
+                              </table>
+                              <div class="text-center">{{project.ProjectTypeName}}</div>
+                        </div>
+              
+                        <div class="card-footer text-muted text-center" >
+                            <input type="checkbox" (change)="onSelectedProject(project.ProjectID)" />
+                            <small>Created by <b>{{project.FullName}}</b> on <b>{{project.CreationDate | date: 'MM/dd/yyyy'}}</b></small>
+                        </div>
+                        </div>                  
+              </td>
+            </tr>
+            <tr>
+               <td *ngFor="let project of projects | filter :filterString:'ProjectName':{smartSearch: true} | slice:4:8">
+                      <div class="card">
+                          <h6 class="project-name">{{project.ProjectName}}</h6> 
+                          <div class="card-body">        
+                                  <table>
+                                    <tr><td rowspan="4" class="column-inner">{{project.Description}}</td><td><button class="btn btn-primary btn-sm button-inner"></button></td></tr>
+                                    <tr><td colspan="2"><button class="btn btn-primary btn-sm button-inner"></button></td></tr>
+                                    <tr><td colspan="2"><button class="btn btn-warning btn-sm button-inner"></button></td></tr>
+                                    <tr><td colspan="2"><button class="btn btn-warning btn-sm button-inner"></button></td></tr>
+                                  </table>
+                                  <div class="text-center">{{project.ProjectTypeName}}</div>
+                            </div>
+                  
+                            <div class="card-footer text-muted text-center">
+                                <input type="checkbox" (change)="onSelectedProject(project.ProjectID)" />
+                                <!-- <input type="checkbox" (change)="onSelectedProject(project.ProjectID)"/> -->
+                                <small>Created by <b>{{project.FullName}}</b> on <b>{{project.CreationDate | date: 'MM/dd/yyyy'}}</b></small>
+                            </div>
+                        </div>
+                      </td>              
+                
+              </tr>
+              <tr>
+                  <td *ngFor="let project of projects | filter :filterString:'ProjectName':{smartSearch: true} | slice:8:12">
+                         <div class="card">
+                             <h6 class="project-name">{{project.ProjectName}}</h6> 
+                             <div class="card-body">        
+                                     <table>
+                                       <tr><td rowspan="4" class="column-inner">{{project.Description}}</td><td><button class="btn btn-primary btn-sm button-inner"></button></td></tr>
+                                       <tr><td colspan="2"><button class="btn btn-primary btn-sm button-inner"></button></td></tr>
+                                       <tr><td colspan="2"><button class="btn btn-warning btn-sm button-inner"></button></td></tr>
+                                       <tr><td colspan="2"><button class="btn btn-warning btn-sm button-inner"></button></td></tr>
+                                     </table>
+                                     <div class="text-center">{{project.ProjectTypeName}}</div>
+                               </div>
+                     
+                               <div class="card-footer text-muted text-center">
+                                   <input type="checkbox" (change)="onSelectedProject(project.ProjectID)" />
+                                   <!-- <input type="checkbox" (change)="onSelectedProject(project.ProjectID)"/> -->
+                                   <small>Created by <b>{{project.FullName}}</b> on <b>{{project.CreationDate | date: 'MM/dd/yyyy'}}</b></small>
+                               </div>
+                           </div>
+                         </td>              
+                   
+                 </tr>
+          </table>
+      </div>
+      <div class="projects-modal-close-button-cont">
+        <button class="btn btn-warning projects-modal-close-button" (click)="onCancelClicked()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -17,6 +17,7 @@ import { FteInputRestrictDirective } from './_shared/directives/fte-input-restri
 
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
+import { FilterPipe } from './_shared/pipes/filter.pipe';
 
 // SERVICES
 import { ApiDataService } from './_shared/services/api-data.service';
@@ -40,8 +41,8 @@ import { SideNavComponent } from './navs/side-nav/side-nav.component';
 import { ProjectsReportsComponent } from './reports/projects/projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
-
-
+import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
+import { TestComponent } from './test/test.component';
 
 
 @NgModule({
@@ -63,7 +64,10 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
     ProjectsReportsComponent,
     EmployeesReportsComponent,
     ProjectsSetupsComponent,
-    FteEntryTeamComponent
+    FteEntryTeamComponent,
+    ProjectsModalComponent,
+    FilterPipe,
+    TestComponent
   ],
   imports: [
     AppRoutingModule,
