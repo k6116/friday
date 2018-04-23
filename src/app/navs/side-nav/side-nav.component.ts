@@ -35,14 +35,14 @@ export class SideNavComponent implements OnInit, AfterViewInit {
             {
               title: 'Me',
               alias: 'me',
-              path: 'fte-entry/employee',
+              path: 'main/fte-entry/employee',
               parentAlias: 'fteEntry',
               active: false
             },
             {
               title: 'My Team',
               alias: 'myTeam',
-              path: 'fte-entry/team',
+              path: 'main/fte-entry/team',
               parentAlias: 'fteEntry',
               active: false
             }
@@ -52,7 +52,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           title: 'Projects',
           iconClass: 'nc-gantt',
           alias: 'projects',
-          path: 'setups/projects',
+          path: 'main/setups/projects',
           expanded: false,
           active: false
         },
@@ -65,14 +65,14 @@ export class SideNavComponent implements OnInit, AfterViewInit {
             {
               title: 'Projects',
               alias: 'projects',
-              path: 'reports/projects',
+              path: 'main/reports/projects',
               parentAlias: 'reports',
               active: false
             },
             {
               title: 'Employees',
               alias: 'employees',
-              path: 'reports/employees',
+              path: 'main/reports/employees',
               parentAlias: 'reports',
               active: false
             }
@@ -90,12 +90,12 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     // if the expandedMenus have data, call a method to expand the appropriate ones
     // this is because on navigation this component will always be reinitialized
     // TO-DO: hopefully this can be avoided by restructuring the app with child and auxilary routing
-    this.expandedMenus = this.appDataService.expandedMenus;
-    if (this.expandedMenus) {
-      if (this.expandedMenus.length) {
-        this.setExpandedProperties(this.expandedMenus);
-      }
-    }
+    // this.expandedMenus = this.appDataService.expandedMenus;
+    // if (this.expandedMenus) {
+    //   if (this.expandedMenus.length) {
+    //     this.setExpandedProperties(this.expandedMenus);
+    //   }
+    // }
 
     // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
     const path = this.router.url.slice(1, this.router.url.length);
@@ -125,12 +125,13 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     // Error: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked
 
     // expand the main menu items identified on init if any
-    if (this.expandedMenus) {
-      if (this.expandedMenus.length) {
-        this.expandMenus(this.expandedMenus);
-      }
-    // expand the parent main menu item idenfied on init if any
-    } else if (this.parentMenuToExpand) {
+    // if (this.expandedMenus) {
+    //   if (this.expandedMenus.length) {
+    //     this.expandMenus(this.expandedMenus);
+    //   }
+    // // expand the parent main menu item idenfied on init if any
+    // } else
+    if (this.parentMenuToExpand) {
       const expandedMenu = [];
       // push it into an array so that the expandMenus method can be reused
       expandedMenu.push(this.parentMenuToExpand);
