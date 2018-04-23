@@ -11,7 +11,11 @@ const ClickTracking = sequelize.define('clickTracking',
     page: { type: Sequelize.STRING, field: 'Page' },
     path: { type: Sequelize.STRING, field: 'Path' },
     clickedOn: { type: Sequelize.STRING, field: 'ClickedOn' },
-    text: { type: Sequelize.STRING, field: 'Text' }
+    text: { type: Sequelize.STRING, field: 'Text' },
+    browser: { type: Sequelize.STRING, field: 'Browser' },
+    browserVersion: { type: Sequelize.STRING, field: 'BrowserVersion' },
+    os: { type: Sequelize.STRING, field: 'OS' },
+    osVersion: { type: Sequelize.STRING, field: 'OSVersion' }
   },
   {
     schema: 'resources',

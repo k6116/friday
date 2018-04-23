@@ -4,6 +4,7 @@ import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
 
 import * as moment from 'moment';
+import * as bowser from 'bowser';
 declare var $: any;
 
 @Injectable()
@@ -39,7 +40,11 @@ export class ClickTrackingService {
         page: null,
         path: path,
         clickedOn: null,
-        text: null
+        text: null,
+        browser: bowser.name,
+        browserVersion: bowser.version,
+        os: bowser.osname,
+        osVersion: bowser.osversion
       };
 
       // replace the page, clickedOn, and text property values if found in the attribute string
