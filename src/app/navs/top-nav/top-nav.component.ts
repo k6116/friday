@@ -63,8 +63,8 @@ export class TopNavComponent implements OnInit, OnDestroy {
         return;
       }
       this.loggedInUser = user;
-      console.log('logged in user object received in top nav component on init:');
-      console.log(this.loggedInUser);
+      // console.log('logged in user object received in top nav component on init:');
+      // console.log(this.loggedInUser);
       // get the user's first name initial to create the google style 'avatar'
       this.firstInitial = this.loggedInUser.fullName.substring(0, 1).toUpperCase();
     });

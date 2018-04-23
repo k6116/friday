@@ -67,10 +67,10 @@ export class AuthService {
 
   // get user information for components that need the data, to deal with scenario where there may or may not be user info in the cache
   getLoggedInUser(callback: (user: User, error?: string) => void): void {
-    console.log('getLoggedInUser method called');
+    // console.log('getLoggedInUser method called');
     // if the data is already stored in memory, just return that
     if (this.loggedInUser) {
-      console.log('returning logged in user data from memory');
+      // console.log('returning logged in user data from memory');
       callback(this.loggedInUser);
     // otherwise, need to get the data from the token
     } else {

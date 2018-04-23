@@ -60,7 +60,7 @@ export class ClickTrackingService {
         this.apiDataService.logClick(clickObj, userID)
         .subscribe(
           res => {
-            console.log(res);
+            // console.log(res);
           },
           err => {
             console.error(err);

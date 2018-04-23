@@ -20,14 +20,14 @@ export class MainComponent implements OnInit {
   }
 
   onConfirmYesClick() {
-    console.log('user clicked yes in the confirm modal');
+    // console.log('user clicked yes in the confirm modal');
     this.authService.modalIsDisplayed = undefined;
     this.authService.resetToken();
   }
 
 
   onConfirmCancelClick() {
-    console.log('user clicked cancel in the confirm modal');
+    // console.log('user clicked cancel in the confirm modal');
     this.authService.modalIsDisplayed = undefined;
     this.authService.routeToLogin(false);
   }

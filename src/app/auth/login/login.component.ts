@@ -89,8 +89,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.logAuthPerformance(t0);
 
           // TEMP CODE: to log the response
-          console.log('authentication was successfull:');
-          console.log(res);
+          // console.log('authentication was successfull:');
+          // console.log(res);
 
           // store data in the auth service related to the logged in user
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
@@ -122,8 +122,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.logAuthPerformance(t0);
 
           // TEMP CODE to log the response (error)
-          console.log('authentication failed:');
-          console.log(err);
+          console.error('authentication failed:');
+          console.error(err);
 
           // display the appropriate message depending on the type of error (timeout, invalid credentials, etc.)
           this.handleErrorMessage(err);
@@ -203,7 +203,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.appDataService.nestedOrgData.emit(nestedOrgData);
       },
       err => {
-        console.log('error getting nested org data');
+        console.error('error getting nested org data');
       }
     );
   }
