@@ -76,13 +76,13 @@ export class AuthService {
     } else {
       const token = localStorage.getItem('jarvisToken');
       if (token) {
-        console.log('logged in user does not exist in memory, getting from token instead');
+        // console.log('logged in user does not exist in memory, getting from token instead');
         const t0 = performance.now();
         this.apiDataService.getInfoFromToken(token)
           .subscribe(
             res => {
               const t1 = performance.now();
-              console.log(`get info from token took ${t1 - t0} milliseconds`);
+              // console.log(`get info from token took ${t1 - t0} milliseconds`);
               this.loggedInUser = new User().deserialize(res.jarvisUser);
               callback(this.loggedInUser);
             },
@@ -127,7 +127,7 @@ export class AuthService {
             // check for token has expired error, just for logging (for now)
             if (error.error.hasOwnProperty('name') && error.error.hasOwnProperty('message') && error.error.hasOwnProperty('expiredAt')) {
               if (error.error.message === 'jwt expired') {
-                console.log(`jwt token expired at ${error.error.expiredAt}`);
+                // console.log(`jwt token expired at ${error.error.expiredAt}`);
               }
             }
             // regardless of the cause, clear the user data/cache (properties in this service) and token, and re-route to the login page
@@ -160,8 +160,8 @@ export class AuthService {
     const numInactivitySeconds = moment().diff(moment.unix(this.lastActivity), 'seconds');
 
     // TEMP CODE: to test the timer is working properly
-    console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
-    console.log(`time since last activity: ${numInactivityMins} (minutes); ${numInactivitySeconds} (seconds)`);
+    // console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
+    // console.log(`time since last activity: ${numInactivityMins} (minutes); ${numInactivitySeconds} (seconds)`);
     this.logTokenStatus();
 
     // if the token is expired, log the user out and display a message on the login page
@@ -178,7 +178,7 @@ export class AuthService {
       this.apiDataService.resetToken(this.loggedInUser)
         .subscribe(
           res => {
-            console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
+            // console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
             // update the token info in memory
             this.token = res.token;
             // remove and reset the token in local storage
@@ -188,8 +188,8 @@ export class AuthService {
             this.appDataService.resetTimer.emit(true);
           },
           err => {
-            console.log('reset token error:');
-            console.log(err);
+            console.error('reset token error:');
+            console.error(err);
           }
         );
     // if the token is about to expire, show a modal asking the user if they want to keep working/stay logged in
@@ -220,8 +220,8 @@ export class AuthService {
           this.logTokenStatus();
         },
         err => {
-          console.log('reset token error:');
-          console.log(err);
+          console.error('reset token error:');
+          console.error(err);
         }
       );
   }
@@ -248,7 +248,7 @@ export class AuthService {
     if (this.token) {
       const expiringAt = moment.unix(this.token.expiringAt);
       const now = moment();
-      console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
+      // console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
       if (expiringAt.diff(now, 'seconds') <= this.warnBeforeExpiration * 60) {
         return true;
       }
@@ -340,7 +340,7 @@ export class AuthService {
   // TEMP CODE: to log the token status
   logTokenStatus() {
     if (this.token) {
-      console.log(`token was issued at: ${this.tokenIssuedDate()}; expiring at: ${this.tokenExpirationDate()}`);
+      // console.log(`token was issued at: ${this.tokenIssuedDate()}; expiring at: ${this.tokenExpirationDate()}`);
     }
   }
 

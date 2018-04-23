@@ -86,11 +86,11 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     // get logged in user's info
     this.authService.getLoggedInUser((user, err) => {
       if (err) {
-        console.log(`error getting logged in user: ${err}`);
+        // console.log(`error getting logged in user: ${err}`);
         return;
       }
-      console.log('logged in user data received in main component:');
-      console.log(user);
+      // console.log('logged in user data received in main component:');
+      // console.log(user);
       this.loggedInUser = user;
       this.fteComponentInit();  // initialize the FTE entry component
     });
@@ -268,7 +268,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
           console.log(`save fte values took ${t1 - t0} milliseconds`);
         },
         err => {
-          console.log(err);
+          console.error(err);
         }
       );
 
@@ -280,19 +280,19 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     this.apiDataService.getFteData(this.loggedInUser.id)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
         this.userFTEs = res.nested;
         this.userFTEsFlat = res.flat;
-        console.log('user ftes (this.userFTEs):');
-        console.log(this.userFTEs);
-        console.log('user ftes flat (this.userFTEsFlat):');
-        console.log(this.userFTEsFlat);
+        // console.log('user ftes (this.userFTEs):');
+        // console.log(this.userFTEs);
+        // console.log('user ftes flat (this.userFTEsFlat):');
+        // console.log(this.userFTEsFlat);
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
         this.projects = this.userFTEs;
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
   }
@@ -309,8 +309,8 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < numMonths; i++) {
       this.months.push(moment(startDate).add(i, 'months'));
     }
-    console.log('months array:');
-    console.log(this.months);
+    // console.log('months array:');
+    // console.log(this.months);
     // console.log('first month as string');
     // console.log(moment(this.months[0]).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z');
   }
@@ -320,8 +320,8 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
 
 
-    console.log('unix epoch for first month:');
-    console.log(moment(this.months[0]).unix());
+    // console.log('unix epoch for first month:');
+    // console.log(moment(this.months[0]).unix());
 
 
     // loop through each project to get into the FTE entry elements
