@@ -2,10 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AuthService } from '../auth/auth.service';
-import { User } from '../_shared/models/user.model';
-import { AppDataService } from '../_shared/services/app-data.service';
-import { ApiDataService } from '../_shared/services/api-data.service';
-
 
 
 @Component({
@@ -13,77 +9,15 @@ import { ApiDataService } from '../_shared/services/api-data.service';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css', '../_shared/styles/common.css']
 })
-export class MainComponent implements OnInit, OnDestroy {
-
-  loggedInUser: User;
-  subscription1: Subscription;
-  emailAddress: string;
+export class MainComponent implements OnInit {
 
   constructor(
-    private authService: AuthService,
-    private appDataService: AppDataService,
-    private apiDataService: ApiDataService
+    private authService: AuthService
   ) { }
-
 
   ngOnInit() {
 
-    this.authService.getLoggedInUser((user, err) => {
-      if (err) {
-        console.log(`error getting logged in user: ${err}`);
-        return;
-      }
-      console.log('logged in user data received in main component:');
-      console.log(user);
-      this.loggedInUser = user;
-    });
-
-
-    // TEMP CODE for testing api data guard
-    // this.apiDataService.getUserData()
-    //   .subscribe(
-    //     res => {
-    //       console.log('get user data successfull:');
-    //       console.log(res);
-    //     },
-    //     err => {
-    //       console.log('get user data error:');
-    //       console.log(err);
-    //     }
-    //   );
-
   }
-
-
-  ngOnDestroy() {
-  }
-
-
-  onLogoutClick() {
-    // log the user out, don't show auto-logout message
-    this.authService.routeToLogin(false);
-  }
-
-
-  onGetOrgDataClick() {
-
-    const t0 = performance.now();
-    this.apiDataService.getOrgData(this.emailAddress)
-      .subscribe(
-        res => {
-          // console.log(res);
-          const json = JSON.parse(res[0].json);
-          const t1 = performance.now();
-          console.log(`time to get org data: ${t1 - t0} milliseconds`);
-          console.log(json);
-        },
-        err => {
-          console.log(err);
-        }
-      );
-
-  }
-
 
   onConfirmYesClick() {
     console.log('user clicked yes in the confirm modal');
