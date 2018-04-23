@@ -1,15 +1,60 @@
 
-div.container-fluid {
-  margin-top: 100px;
-  margin-left: 100px;
-}
 
-div.col-lg-10 {
+/* customized bootstrap fluid container (to accomodate navbar and sidebar) */
+.container-fluid {
+  margin: 100px 100px 100px 250px;
   padding: 0;
 }
 
-div.page-title {
-  display: inline-block;
-  font-size: 18px;
-  margin-bottom: 10px;
+/* customized bootstrap row */
+.row.row-custom {
+  margin-left: 0;
+  margin-right: 0;
 }
+
+.row.row-custom:not(:last-child) {
+  margin-bottom: 25px;
+}
+
+/* customized bootstrap column */
+div.col-custom {
+  padding: 0;
+}
+
+/* customized boostrap form group */
+div.form-group.form-group-custom {
+  display: inline-block;
+  margin-right: 40px;
+  margin-bottom: 0;
+  width: 200px;
+}
+
+/* customized bootstrap label */
+label.label-custom {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+input.form-control.form-control-custom, select.form-control.form-control-custom {
+  width: 100%;
+}
+
+
+/* custom disabled controls (lighter background color) */
+input.form-control.form-control-custom[disabled], select.form-control.form-control-custom[disabled], textarea.form-control.form-control-custom[disabled] {
+  cursor: default;
+  background-color: rgb(253, 253, 253);
+}
+
+
+/* page header text (temporary) */
+h2.page-header-text {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+

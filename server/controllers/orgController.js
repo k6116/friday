@@ -1,6 +1,6 @@
 
 const models = require('../models/_index')
-const sequelize = require('../db/sequelize').sequelize2;
+const sequelize = require('../db/sequelize').sequelize2017;
 
 
 function show(req, res) {

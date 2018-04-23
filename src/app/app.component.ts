@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { AppDataService } from './_shared/services/app-data.service';
 import { AuthService } from './auth/auth.service';
+import { ClickTrackingService } from './_shared/services/click-tracking.service';
+
+declare var $: any;
 
 @Component({
   selector: 'app-root',
@@ -28,7 +31,8 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private appDataService: AppDataService,
-    private authService: AuthService
+    private authService: AuthService,
+    private clickTrackingService: ClickTrackingService
   ) {
 
     // set the timer interval in minutes, used to check for user activity
@@ -69,8 +73,10 @@ export class AppComponent implements OnInit {
   onDocumentClick(event) {
     // update the last activity property with a new timestamp
     this.authService.updateLastActivity();
-    // console.log(`document clicked, class: ${event.target.className}`);
+    // emit the clicked class to the data service for a click outside type solution
     this.appDataService.clickedClass.emit(event.target.className);
+    // send the event to the click tracking service to log in the database if appropriate
+    this.clickTrackingService.logClickWithAttribute(event);
   }
 
   onDocumentKeyDown() {

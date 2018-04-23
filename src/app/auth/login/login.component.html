@@ -23,7 +23,7 @@
 
       <div class="form-group form-group-login form-group-login-button">
 
-        <button type="button" class="btn btn-primary btn-login" (click)="onLoginClick()">Login</button>
+        <button type="button" class="btn btn-primary btn-login" [attr.data-clicktrack]="'clickedOn: Login Button, text: ' + userName" (click)="onLoginClick()">Login</button>
         
       </div>
 
