@@ -1,5 +1,5 @@
 const config = {
-  dbname: "Jarvis_DEV",
+  dbname: "Jarvis_Resources",
   host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',
   username: 'JarvisRTUser',
   password: '3pineapple#',

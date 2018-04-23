@@ -22,7 +22,7 @@ declare const $: any;
 @Component({
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
-  styleUrls: ['./fte-entry.component.css'],
+  styleUrls: ['./fte-entry.component.css', '../../_shared/styles/common.css'],
   providers: [DecimalPipe]
   // animations: [
   //   trigger('conditionState', [

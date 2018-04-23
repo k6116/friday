@@ -10,11 +10,26 @@
 
 <!-- temp page content for testing routes -->
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-lg-10 col-lg-offset-1">
-      <div class="page-title">
-        Main/Landing Page (Dashboard?)
+  <div class="row row-custom">
+    <div class="col-xs-12 col-custom">
+      <h2 class="page-header-text">
+        Main/Landing Page
+      </h2>
+      <div class="bait-button-cont">
+        <button class="bait-button" mat-raised-button color="warn" [attr.data-clicktrack]="'clickedOn: Rick Roll Button, page: Main, text: you had been warned!'" (click)="onBaitClick()">Click Me</button>
       </div>
     </div>
   </div>
+
+  <div *ngIf="showRick" class="row row-custom">
+    <div class="col-xs-12 col-custom">
+      <h2 class="bait-text">{{ rickText }}</h2>
+    </div>
+    <div class="col-xs-12 col-custom">
+      <iframe width="800" height="450" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+  </div>
+
 </div>
+
+

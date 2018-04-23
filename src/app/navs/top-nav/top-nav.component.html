@@ -32,8 +32,8 @@
           {{ loggedInUser?.email }}
         </div>
         <div>
-          <button type="button" class="topnav-menu app-menu-dropdown-button profile" (click)="onProfileButtonClick()">Profile</button>
-          <button type="button" class="topnav-menu app-menu-dropdown-button logout" (click)="onLogoutButtonClick()">Logout</button>
+          <button type="button" class="topnav-menu app-menu-dropdown-button profile" [attr.data-clicktrack]="'clickedOn: Profile Button'" (click)="onProfileButtonClick()">Profile</button>
+          <button type="button" class="topnav-menu app-menu-dropdown-button logout" data-clicktrack="clickedOn: Logout Button" (click)="onLogoutButtonClick()">Logout</button>
         </div>
         <div class="topnav-menu dropdown-triangle"></div>
         <div class="topnav-menu dropdown-triangle-bottom"></div>

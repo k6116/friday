@@ -112,8 +112,14 @@ export class TopNavComponent implements OnInit, OnDestroy {
 
 
   onLogoutButtonClick() {
+    // clear any data in the app data service (cache) that should be cleared on logout
+    this.clearCacheOnLogout();
     // log the user out and don't show auto-logout message by passing in false
     this.authService.routeToLogin(false);
+  }
+
+  clearCacheOnLogout() {
+    this.appDataService.nestedOrgDataRequested = undefined;
   }
 
 

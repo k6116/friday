@@ -20,6 +20,10 @@ export class AppDataService {
 
   expandedMenus: any; // array of expanded menu objects to use to expand sidebar menu items on init
 
+  nestedOrgData = new EventEmitter<any>();
+  $nestedOrgData: any;
+  nestedOrgDataRequested: boolean;
+
   constructor() { }
 
 }

@@ -12,13 +12,11 @@ import { ProjectsReportsComponent } from './reports/projects/projects.component'
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 
 import { AuthGuardService } from './auth/auth-guard.service';
-import { OrgTreeComponent } from './org-tree/org-tree.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'org', component: OrgTreeComponent },
   { path: 'main', component: MainComponent, canActivate: [AuthGuardService] },
   { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService] },
   { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },

@@ -19,6 +19,9 @@ export class MainComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   emailAddress: string;
 
+  showRick: boolean;
+  rickText: string;
+
   constructor(
     private authService: AuthService,
     private appDataService: AppDataService,
@@ -98,5 +101,11 @@ export class MainComponent implements OnInit, OnDestroy {
     this.authService.routeToLogin(false);
   }
 
+  onBaitClick() {
+    this.showRick = true;
+    setTimeout(() => {
+      this.rickText = `You've Been Rick-Rolled!`;
+    }, 2000);
+  }
 
 }
