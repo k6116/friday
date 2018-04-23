@@ -4,5 +4,6 @@ module.exports = {
   fteData: require('./fteDataController'),
   employeeList: require('./employeeListController'),
   org: require('./orgController'),
-  project: require('./projectController')
+  project: require('./projectController'),
+  clickTracking: require('./clickTrackingController')
 }

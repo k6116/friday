@@ -22,7 +22,7 @@ declare const $: any;
 @Component({
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
-  styleUrls: ['./fte-entry.component.css'],
+  styleUrls: ['./fte-entry.component.css', '../../_shared/styles/common.css'],
   providers: [DecimalPipe]
   // animations: [
   //   trigger('conditionState', [
@@ -60,6 +60,9 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   state: string; // for angular animation
   monthlyTotals: number[];
   monthlyTotalsValid: boolean[];
+  showProjectsModal: boolean;
+  projectList: any;
+  selectedProjectId: number;
 
   constructor(
     private fb: FormBuilder,
@@ -97,14 +100,38 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
     this.buildMonthsArray();
 
+
   }
 
   ngAfterViewInit() {
-
-
-
   }
 
+    onAddProjectClick() {
+
+      this.apiDataService.getProjects()
+      .subscribe(
+        res => {
+          console.log('get project data successfull:');
+          console.log(res);
+          this.projectList = res;
+        },
+        err => {
+          console.log('get project data error:');
+          console.log(err);
+        }
+      );
+
+      this.showProjectsModal = true;
+    }
+
+    onModalClosed(selectedProjectId: number) {
+      setTimeout(() => {
+        this.showProjectsModal = false;
+      }, 500);
+      this.selectedProjectId = selectedProjectId;
+      console.log('Selected Project Id:');
+      console.log(this.selectedProjectId);
+    }
 
   onTableScroll(event) {
     const scrollTop = $('div.table-scrollable').scrollTop();

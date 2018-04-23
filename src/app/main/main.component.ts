@@ -98,5 +98,4 @@ export class MainComponent implements OnInit, OnDestroy {
     this.authService.routeToLogin(false);
   }
 
-
 }

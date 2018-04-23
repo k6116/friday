@@ -1,18 +1,10 @@
 const config = {
-  dbname: "Jarvis_TEST",
+  dbname: "Jarvis_Resources",
   host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',
-  username: 'JarvisApp',
-  password: 's0urceCode',
+  username: 'JarvisRTUser',
+  password: '3pineapple#',
   dialect: 'mssql'
 };
-
-// const config = {
-//   dbname: "Jarvis_Resources",
-//   host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',
-//   username: 'JarvisRTUser',
-//   password: '3pineapple#',
-//   dialect: 'mssql'
-// };
 
 const configPLM = {
   dbname: "OracleWorkSpace",

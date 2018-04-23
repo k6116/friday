@@ -25,6 +25,7 @@ import { AppDataService } from './_shared/services/app-data.service';
 import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { ToolsService } from './_shared/services/tools.service';
+import { ClickTrackingService } from './_shared/services/click-tracking.service';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -32,8 +33,6 @@ import { LoginComponent } from './auth/login/login.component';
 import { MainComponent } from './main/main.component';
 import { NoticeModalComponent } from './modals/notice-modal/notice-modal.component';
 import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
-import { OrgComponent } from './org/org.component';
-import { OrgTreeComponent } from './org-tree/org-tree.component';
 import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.component';
 import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
 import { TopNavComponent } from './navs/top-nav/top-nav.component';
@@ -43,6 +42,7 @@ import { EmployeesReportsComponent } from './reports/employees/employees.compone
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
+import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
 
 
 @NgModule({
@@ -54,8 +54,6 @@ import { TestComponent } from './test/test.component';
     NoticeModalComponent,
     ConfirmModalComponent,
     SafeHtmlPipe,
-    OrgComponent,
-    OrgTreeComponent,
     FteInputRestrictDirective,
     FteEntryEmployeeComponent,
     FteInputRestrictDirective,
@@ -67,7 +65,8 @@ import { TestComponent } from './test/test.component';
     FteEntryTeamComponent,
     ProjectsModalComponent,
     FilterPipe,
-    TestComponent
+    TestComponent,
+    OrgDropdownComponent
   ],
   imports: [
     AppRoutingModule,
@@ -86,7 +85,8 @@ import { TestComponent } from './test/test.component';
     AppDataService,
     AuthService,
     AuthGuardService,
-    ToolsService
+    ToolsService,
+    ClickTrackingService
   ],
   bootstrap: [AppComponent]
 })

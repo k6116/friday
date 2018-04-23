@@ -108,8 +108,12 @@ export class LoginComponent implements OnInit, OnDestroy {
           // clear the autologout object
           this.appDataService.autoLogout$ = undefined;
 
+          // get and store nested org data for this user, in anticipation of use and for performance
+          // this.getNestedOrgData(res.jarvisUser.email);
+          this.getNestedOrgData('ron_nersesian@keysight.com');
+
           // route to the main page
-          this.router.navigateByUrl('/main');
+          this.router.navigateByUrl('/main/fte-entry/employee');
 
         },
         err => {
@@ -184,6 +188,24 @@ export class LoginComponent implements OnInit, OnDestroy {
     } else {
       this.displayMessage('Invalid user name or password', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
     }
+  }
+
+  // get and store the nested org data upon successfull login
+  getNestedOrgData(email: string) {
+    this.appDataService.nestedOrgDataRequested = true;
+    this.apiDataService.getOrgData(email)
+    .subscribe(
+      res => {
+        const nestedOrgData = JSON.parse('[' + res[0].json + ']');
+        // console.log('nested org object');
+        // console.log(nestedOrgData);
+        this.appDataService.$nestedOrgData = nestedOrgData;
+        this.appDataService.nestedOrgData.emit(nestedOrgData);
+      },
+      err => {
+        console.log('error getting nested org data');
+      }
+    );
   }
 
 

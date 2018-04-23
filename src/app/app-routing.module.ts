@@ -12,21 +12,24 @@ import { ProjectsReportsComponent } from './reports/projects/projects.component'
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 
 import { AuthGuardService } from './auth/auth-guard.service';
-import { OrgTreeComponent } from './org-tree/org-tree.component';
 import { TestComponent } from './test/test.component';
-
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'org', component: OrgTreeComponent },
   { path: 'test', component: TestComponent },
-  { path: 'main', component: MainComponent, canActivate: [AuthGuardService] },
-  { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService] },
-  { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },
-  { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService] },
-  { path: 'reports/projects', component: ProjectsReportsComponent, canActivate: [AuthGuardService] },
-  { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'main',
+    component: MainComponent,
+    canActivate: [AuthGuardService],
+    children: [
+      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService] },
+      { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },
+      { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService] },
+      { path: 'reports/projects', component: ProjectsReportsComponent, canActivate: [AuthGuardService] },
+      { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
+    ]
+  },
   { path: '**', redirectTo: '/login' }
 ];
 

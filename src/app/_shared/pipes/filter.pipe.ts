@@ -15,7 +15,7 @@ export class FilterPipe implements PipeTransform {
     return objects.filter(object => {
       if (options.matchAny) {
         return (object[property] ? object[property] : '').toString().toLowerCase().includes(filter.toString().toLowerCase());
-      } else if (options.smartSearch) {
+      } else if (options.matchOptimistic) {
         try {
             const regexp = new RegExp(/[^a-zA-Z0-9\\s]/gm);
             if (object[property]) {

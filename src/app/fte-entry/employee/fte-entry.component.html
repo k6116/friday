@@ -1,24 +1,17 @@
 
-<!-- top nav component -->
-<app-top-nav></app-top-nav>
+<app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" (selectedProject)="onModalClosed($event)"></app-projects-modal>
+<div *ngIf="display" class="container-fluid">
 
-<!-- side nav component -->
-<app-side-nav></app-side-nav>
-
-<!-- confirm modal component -->
-<app-confirm-modal (confirmYesClick)="onConfirmYesClick()" (confirmCancelClick)="onConfirmCancelClick()"></app-confirm-modal>
-
-<div *ngIf="display" class="container-fluid outer-cont">
-  <div class="row"> <!-- begin row for slider bar -->
-      <div class="col-lg-10 col-lg-offset-1">
-          <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
-      </div>
+  <div class="row row-custom"> <!-- begin row for slider bar -->
+    <div class="col-xs-12 col-custom col-slider">
+      <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
+    </div>
   </div> <!-- end row -->
 
 
-  <div class="row top-margin"> <!-- begin row for FTE entry table -->
+  <div class="row row-custom top-margin"> <!-- begin row for FTE entry table -->
 
-      <div class="col-lg-10 col-lg-offset-1 table-scrollable" (scroll)="onTableScroll($event)"> <!-- using table-scrollable css -->
+      <div class="col-xs-12 col-custom table-scrollable" (scroll)="onTableScroll($event)"> <!-- using table-scrollable css -->
           <form [formGroup]="FTEFormGroup">
               <div class="table-inner-cont" formArrayName="FTEFormArray">
                   <div class="table-header-underlay">
@@ -64,6 +57,7 @@
   </div> <!-- end row -->
 
   <div class="test-buttons">
+    <button class="test-mat-button" mat-raised-button color="warn" (click)="onAddProjectClick()">Add Project</button>
     <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestFormClick()">Test Form Data</button>
     <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestSaveClick()">Save</button>
     <button class="test-mat-button" mat-raised-button color="warn" (click)="exportXLSX()">Export</button>

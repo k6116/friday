@@ -8,7 +8,7 @@
       <div class="project-table-cont">       
           <table>
             <tr>
-              <td *ngFor="let project of projects  | filter :filterString:'ProjectName':{smartSearch: true} | slice:0:4">
+              <td *ngFor="let project of projects  | filter :filterString:'ProjectName':{matchOptimistic: true} | slice:0:4">
               
                       <div class="card" >
                     
@@ -31,7 +31,7 @@
                         </div>
               
                         <div class="card-footer text-muted text-center" >
-                            <input type="checkbox" (change)="onSelectedProject(project.ProjectID)" />
+                            <input type="checkbox" (change)="onSelectedProject(project.ProjectID)"/>
                             <small>Created by <b>{{project.FullName}}</b> on <b>{{project.CreationDate | date: 'MM/dd/yyyy'}}</b></small>
                         </div>
                         </div>                  
@@ -52,8 +52,7 @@
                             </div>
                   
                             <div class="card-footer text-muted text-center">
-                                <input type="checkbox" (change)="onSelectedProject(project.ProjectID)" />
-                                <!-- <input type="checkbox" (change)="onSelectedProject(project.ProjectID)"/> -->
+                                <input type="checkbox" (change)="onSelectedProject(project.ProjectID)" />                                
                                 <small>Created by <b>{{project.FullName}}</b> on <b>{{project.CreationDate | date: 'MM/dd/yyyy'}}</b></small>
                             </div>
                         </div>

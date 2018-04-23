@@ -79,7 +79,6 @@ constructor() {
       this.outerDivState = 'out';
       this.innerDivState = 'out';
 
-
   }
 
     onCancelClicked() {
