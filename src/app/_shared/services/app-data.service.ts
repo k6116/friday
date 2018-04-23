@@ -23,6 +23,7 @@ export class AppDataService {
   nestedOrgData = new EventEmitter<any>();
   $nestedOrgData: any;
   nestedOrgDataRequested: boolean;
+  nestedOrgDataCached: boolean;
 
   constructor() { }
 

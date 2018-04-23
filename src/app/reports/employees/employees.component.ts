@@ -47,31 +47,36 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    if (!this.appDataService.nestedOrgDataRequested) {
-      if (this.appDataService.$nestedOrgData) {
-        this.nestedOrgData = this.appDataService.$nestedOrgData;
-        console.log('nested org data picked up in employee reports');
-        console.log(this.nestedOrgData);
-        this.waitingForOrgData = false;
-        this.setInitialDropDownEmployee();
-      }
+
+    if (this.appDataService.$nestedOrgData) {
+      this.nestedOrgData = this.appDataService.$nestedOrgData;
+      this.appDataService.nestedOrgDataCached = true;
+      console.log('nested org data picked up in employee reports');
+      console.log(this.nestedOrgData);
+      this.waitingForOrgData = false;
+      this.setInitialDropDownEmployee();
+      this.appDataService.nestedOrgDataRequested = undefined;
     }
 
     this.subscription1 = this.appDataService.nestedOrgData.subscribe(
       (nestedOrgData: any) => {
-        this.nestedOrgData = nestedOrgData;
-        // this.appDataService.$nestedOrgData = nestedOrgData;
-        console.log('nested org data received in employee reports component via subscription');
-        console.log(this.nestedOrgData);
-        this.waitingForOrgData = false;
-        this.setInitialDropDownEmployee();
+        if (!this.appDataService.nestedOrgDataCached) {
+          this.nestedOrgData = nestedOrgData;
+          this.appDataService.$nestedOrgData = nestedOrgData;
+          this.appDataService.nestedOrgDataCached = true;
+          console.log('nested org data received in employee reports component via subscription');
+          console.log(this.nestedOrgData);
+          this.waitingForOrgData = false;
+          this.setInitialDropDownEmployee();
+          this.appDataService.nestedOrgDataRequested = undefined;
+        }
     });
 
-    if (!this.appDataService.nestedOrgDataRequested) {
+    if (!this.appDataService.nestedOrgDataRequested && !this.appDataService.nestedOrgDataCached) {
       // get logged in user's info
       this.authService.getLoggedInUser((user, err) => {
         // this.getNestedOrgData(user.email);
-        this.getNestedOrgData('pat_harper@keysight.com');
+        this.getNestedOrgData('ron_nersesian@keysight.com');
       });
     }
 
@@ -98,6 +103,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         this.nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
         this.appDataService.$nestedOrgData = this.nestedOrgData;
+        this.appDataService.nestedOrgDataCached = true;
         this.setInitialDropDownEmployee();
         const t0 = performance.now();
         this.flatOrgData = this.flattenNestedOrgData($.extend(true, {}, this.nestedOrgData));
