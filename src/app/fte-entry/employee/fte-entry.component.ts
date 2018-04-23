@@ -7,6 +7,7 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ToolsService } from '../../_shared/services/tools.service';
 import { UserFTEs, AllocationsArray} from './fte-model';
 import { utils, write, WorkBook } from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -65,6 +66,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private apiDataService: ApiDataService,
+    private toolsService: ToolsService,
     private decimalPipe: DecimalPipe
   ) {
     // initialize the FTE formgroup
@@ -319,52 +321,80 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     // grab the Project formarray
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
 
+    // remove any existing form groups in the array
+    this.toolsService.clearFormArray(FTEFormArray);
+
 
     console.log('unix epoch for first month:');
     console.log(moment(this.months[0]).unix());
 
+    // check if no data was returned
+    if (this.userFTEs.length) {
+      // loop through each project to get into the FTE entry elements
+      this.userFTEs.forEach( (proj: UserFTEs) => {
+        const projFormArray = this.fb.array([]); // instantiating a temp formarray for each project
 
-    // loop through each project to get into the FTE entry elements
-    this.userFTEs.forEach( (proj: UserFTEs) => {
-      const projFormArray = this.fb.array([]); // instantiating a temp formarray for each project
+        // proj.allocations.forEach( (mo: AllocationsArray) => {
+        this.months.forEach(month => {
+          // for each FTE entry in a given project, push the FTE controller into the temp formarray
+          // so we will have 1 controller per month, one array of controllers per project
+          // console.log('unix epoch in seconds:');
+          // console.log(moment(mo.month).unix());
 
-      // proj.allocations.forEach( (mo: AllocationsArray) => {
-      this.months.forEach(month => {
-        // for each FTE entry in a given project, push the FTE controller into the temp formarray
-        // so we will have 1 controller per month, one array of controllers per project
-        // console.log('unix epoch in seconds:');
-        // console.log(moment(mo.month).unix());
+          // attempt to find a record/object for this project and month
+          const foundEntry = this.userFTEsFlat.find(userFTE => {
+            return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+          });
+          // console.log(`found object for project ${proj.projectName} and month ${month}:`);
+          // console.log(foundEntry);
 
-        // attempt to find a record/object for this project and month
-        const foundEntry = this.userFTEsFlat.find(userFTE => {
-          return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+          projFormArray.push(
+            this.fb.group({
+              recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
+              projectID: [proj.projectID],
+              // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
+              month: [month],
+              fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
+              newRecord: [foundEntry ? false : true],
+              updated: [false]
+            })
+          );
         });
-        // console.log(`found object for project ${proj.projectName} and month ${month}:`);
-        // console.log(foundEntry);
-
-        projFormArray.push(
-          this.fb.group({
-            recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
-            projectID: [proj.projectID],
-            // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
-            month: [month],
-            fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
-            newRecord: [foundEntry ? false : true],
-            updated: [false]
-          })
-        );
+        console.log(projFormArray);
+        // push the temp formarray as 1 object in the Project formarray
+        FTEFormArray.push(projFormArray);
       });
-      // push the temp formarray as 1 object in the Project formarray
-      FTEFormArray.push(projFormArray);
+      // this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
+
+      // update the totals row
+      this.updateMonthlyTotals();
+
+      // set red border around total inputs that don't sum up to 1
+      this.setMonthlyTotalsBorder();
+    }
+  }
+
+  addNewProject() {
+    const newProject = new UserFTEs;
+    newProject.userID = this.loggedInUser.id;
+    newProject.projectID = 16;
+    newProject.projectName = 'Bacon';
+    newProject.allocations = new Array<AllocationsArray>();
+    this.months.forEach( month => {
+      const newMonth = new AllocationsArray;
+      newMonth.month = moment(month).utc().format();
+      newMonth.fte = null;
+      newMonth.recordID = null;
+      newProject.allocations.push(newMonth);
     });
-    // this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
+    console.log('new project');
+    console.log(newProject);
 
-    // update the totals row
-    this.updateMonthlyTotals();
-
-    // set red border around total inputs that don't sum up to 1
-    this.setMonthlyTotalsBorder();
-
+    this.userFTEs.push(newProject);
+    console.log(this.userFTEs);
+    this.buildFteEntryForm();
+    console.log('projects array');
+    console.log(this.projects);
   }
 
   setSliderConfig() {

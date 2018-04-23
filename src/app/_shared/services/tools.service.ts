@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FormArray } from '@angular/forms';
 
 @Injectable()
 export class ToolsService {
@@ -60,5 +61,18 @@ export class ToolsService {
 
   }
 
+  clearFormArrays(formArrays: string[], form: any) {
+    formArrays.forEach(formArray => {
+      const formArr = <FormArray>form.controls[formArray];
+      this.clearFormArray(formArr);
+    });
+  }
+
+  clearFormArray(formArray: any) {
+    const len = formArray.length;
+    for (let i = 0; i < len; i++) {
+      formArray.removeAt(0);
+    }
+  }
 
 }
