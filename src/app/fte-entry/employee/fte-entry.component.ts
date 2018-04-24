@@ -259,7 +259,6 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
 
   onTestSaveClick() {
-    // this.clearEmptyProjects();  // remove any completely empty projects before saving
 
     const fteData = this.FTEFormGroup.value.FTEFormArray;
     const t0 = performance.now();
@@ -384,10 +383,13 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   }
 
   selectNewProject(list: any) {
+    // instantiate a new project and pre-fill with userID and project info
     const newProject = new UserFTEs;
     newProject.userID = this.loggedInUser.id;
     newProject.projectID = list.ProjectID;
     newProject.projectName = list.ProjectName;
+
+    // loop through the already-built months array and initialize null FTEs for each month in this new project
     newProject.allocations = new Array<AllocationsArray>();
     this.months.forEach( month => {
       const newMonth = new AllocationsArray;
@@ -397,7 +399,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
       newProject.allocations.push(newMonth);
     });
 
-    this.userFTEs.push(newProject);
+    this.userFTEs.push(newProject); // push to the userFTEs object and rebuild the form
     this.buildFteEntryForm(true);
   }
 
