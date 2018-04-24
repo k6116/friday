@@ -28,7 +28,6 @@ export class ClickTrackingService {
 
       // get the user id
       const userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
-
       // get the url path
       const path = this.router.url;
 

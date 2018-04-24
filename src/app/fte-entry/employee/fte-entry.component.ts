@@ -98,7 +98,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
       this.fteComponentInit();  // initialize the FTE entry component
     });
 
-    this.buildMonthsArray();
+   this.buildMonthsArray();
 
 
   }
