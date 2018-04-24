@@ -28,17 +28,19 @@
                       </thead>
                       <tbody>
                           <!-- loop through each project, one row per project -->
-                          <tr [formGroupName]="i" *ngFor="let project of projects; let i = index">
-                              <td class="col-project-name">{{project.projectName}}</td>
-                              <!-- loop through each month's FTE allocation, 24 cells per project -->
-                              <ng-container *ngFor="let month of months; let j = index">
-                                  <!-- [@conditionState]="state" -->
-                                  <td [formGroupName]="j" *ngIf="fteMonthVisible[j]"> <!-- only show if slider deems it visible -->
-                                      <!-- TODO: setup to use formControlName only instead of ngModel for sending to db -->
-                                      <input type="text" formControlName="fte" class="form-control fte-table-row" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
-                                  </td>
-                            </ng-container>
-                          </tr>
+                          <ng-container *ngFor="let project of projects; let i = index">
+                            <tr [formGroupName]="i" *ngIf="fteProjectVisible[i]">
+                                <td class="col-project-name">{{project.projectName}}</td>
+                                <!-- loop through each month's FTE allocation, 24 cells per project -->
+                                <ng-container *ngFor="let month of months; let j = index">
+                                    <!-- [@conditionState]="state" -->
+                                    <td [formGroupName]="j" *ngIf="fteMonthVisible[j]"> <!-- only show if slider deems it visible -->
+                                        <!-- TODO: setup to use formControlName only instead of ngModel for sending to db -->
+                                        <input type="text" formControlName="fte" class="form-control fte-table-row" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
+                                    </td>
+                                </ng-container>
+                            </tr>
+                          </ng-container>
                           <!-- totals row-->
                           <tr class="totals-row">
                               <td class="col-total-name totals-row-cell">TOTAL</td>

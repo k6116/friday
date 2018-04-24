@@ -50,6 +50,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   // initialize variables
   mainSliderConfig: any;  // slider config
   fteMonthVisible = new Array(36).fill(false);  // boolean array for by-month FTE form display
+  fteProjectVisible = new Array;  // boolean array for by-project row display
   FTEFormGroup: FormGroup;
   sliderRange: number[] = [];
   userFTEs: any;  // array to store user FTE data
@@ -324,7 +325,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
     // remove any existing form groups in the array
     this.toolsService.clearFormArray(FTEFormArray);
-
+    this.fteProjectVisible.length = 0;  // clear out project visibility
 
     console.log('unix epoch for first month:');
     console.log(moment(this.months[0]).unix());
@@ -333,6 +334,12 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     if (this.userFTEs.length) {
       // loop through each project to get into the FTE entry elements
       this.userFTEs.forEach( (proj: UserFTEs) => {
+
+        // add a 'true' for each project in the dataset
+        this.fteProjectVisible.push(true);
+        console.log('updated project visible');
+        console.log(this.fteProjectVisible);
+
         const projFormArray = this.fb.array([]); // instantiating a temp formarray for each project
 
         // proj.allocations.forEach( (mo: AllocationsArray) => {
@@ -540,9 +547,31 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     const leftHandle = Math.round(value[0]);
     const rightHandle = Math.round(value[1]);
 
+    // reset project visibility
+    this.fteProjectVisible.length = 0;
+
     // translate handle positions to month-quarters
     const posStart = leftHandle * 3;
     const posDelta = ((rightHandle - leftHandle) * 3);
+
+    // set new project visibility
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
+    let nullCounter = posStart;
+
+    FTEFormArray.controls.forEach( project => {
+      for (let i = posStart; i < (posStart + posDelta); i++) {  // only look at the cells that are visible based on the slider
+        const currProjControls = project['controls'][i].controls;
+        if (currProjControls.fte.value) {
+          // if any of the controls have an FTE value, break out of the loop and make the whole project visible
+          i = posStart + posDelta;
+          this.fteProjectVisible.push(true);
+        } else { nullCounter++; }
+        if (nullCounter === (posStart + posDelta)) {
+          // all nulls, so project shouldn't be displayed
+          this.fteProjectVisible.push(false);
+        }
+      }
+    });
 
     // set only months that should be visible to true
     this.fteMonthVisible = this.fteMonthVisible.fill(false);
