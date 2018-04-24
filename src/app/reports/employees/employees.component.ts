@@ -440,11 +440,4 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   }
 
 
-  onBaitClick() {
-    this.showRick = true;
-    setTimeout(() => {
-      this.rickText = `You've Been Rick-Rolled!`;
-    }, 2000);
-  }
-
 }
