@@ -31,7 +31,7 @@
                       <tbody>
                           <!-- loop through each project, one row per project -->
                           <ng-container *ngFor="let project of projects; let i = index">
-                            <tr [formGroupName]="i" *ngIf="fteProjectVisible[i]">
+                            <tr [formGroupName]="i" [style.display]="fteProjectVisible[i] ? 'table-row' : 'none'">                                <!-- *ngIf="fteProjectVisible[i]" -->
                                 <td class="col-project-name">{{project.projectName}}</td>
                                 <!-- loop through each month's FTE allocation, 24 cells per project -->
                                 <ng-container *ngFor="let month of months; let j = index">

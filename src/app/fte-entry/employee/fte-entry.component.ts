@@ -259,22 +259,22 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
 
   onTestSaveClick() {
+    // this.clearEmptyProjects();  // remove any completely empty projects before saving
 
     const fteData = this.FTEFormGroup.value.FTEFormArray;
     const t0 = performance.now();
     // call the api data service to send the put request
     this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
-      .subscribe(
-        res => {
-          console.log(res);
-          const t1 = performance.now();
-          console.log(`save fte values took ${t1 - t0} milliseconds`);
-        },
-        err => {
-          console.log(err);
-        }
-      );
-
+    .subscribe(
+      res => {
+        console.log(res);
+        const t1 = performance.now();
+        console.log(`save fte values took ${t1 - t0} milliseconds`);
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
 
@@ -564,6 +564,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         if (currProjControls.fte.value) {
           // if any of the controls have an FTE value, break out of the loop and make the whole project visible
           i = posStart + posDelta;
+          nullCounter = posStart; // reset nullCounter
           this.fteProjectVisible.push(true);
         } else { nullCounter++; }
         if (nullCounter === (posStart + posDelta)) {
