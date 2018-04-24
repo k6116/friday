@@ -61,6 +61,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   state: string; // for angular animation
   monthlyTotals: number[];
   monthlyTotalsValid: boolean[];
+  projectList: any; // array to hold list of all projects queried from DB
 
   constructor(
     private fb: FormBuilder,
@@ -375,10 +376,25 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   }
 
   addNewProject() {
+    // get FTE data
+    this.apiDataService.getProjectList()
+    .subscribe(
+      res => {
+        console.log('project list:');
+        this.projectList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+  }
+
+  selectNewProject(list: any) {
     const newProject = new UserFTEs;
     newProject.userID = this.loggedInUser.id;
-    newProject.projectID = 16;
-    newProject.projectName = 'Bacon';
+    newProject.projectID = list.ProjectID;
+    newProject.projectName = list.ProjectName;
     newProject.allocations = new Array<AllocationsArray>();
     this.months.forEach( month => {
       const newMonth = new AllocationsArray;

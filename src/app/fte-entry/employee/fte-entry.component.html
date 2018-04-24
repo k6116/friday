@@ -59,12 +59,31 @@
     <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestFormClick()">Test Form Data</button>
     <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestSaveClick()">Save</button>
     <button class="test-mat-button" mat-raised-button color="warn" (click)="exportXLSX()">Export</button>
-    <button class="test-mat-button" mat-raised-button color="warn" (click)="addNewProject()">Add New Project</button>
+    <button class="test-mat-button" mat-raised-button color="warn" data-toggle="modal" data-target="#projectListModal" (click)="addNewProject()">Add New Project</button>
   </div>
 
 </div> <!-- end FTE component container div -->
 
 
+<!-- Modal -->
+<div class="modal fade" id="projectListModal" tabindex="-1" role="dialog" aria-labelledby="projectListModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-condensed table-bordered table-hover">
+                    <tr *ngFor="let list of projectList" (click)="selectNewProject(list)" data-dismiss="modal">
+                        <td>{{list.ProjectID}}</td>
+                        <td>{{list.ProjectName}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- TEMP CODE: for seeing live changes to the data object -->
