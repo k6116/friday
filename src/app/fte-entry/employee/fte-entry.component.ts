@@ -543,6 +543,8 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   }
 
   onSliderUpdate(value: any) {
+    this.clearEmptyProjects();
+
     // get rounded handle values, but don't set
     const leftHandle = Math.round(value[0]);
     const rightHandle = Math.round(value[1]);
@@ -583,6 +585,22 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     // scrollTop = $('div.table-scrollable').scrollTop();
     // $('div.table-scrollable').scrollTop(scrollTop + 1);
 
+  }
+
+  clearEmptyProjects() {
+    // look for any projects where all FTE values are null, and remove from the data object
+    this.userFTEs.forEach( project => {
+      const max = project.allocations.length;
+      let i = 0;
+      project.allocations.forEach( month => {
+        if (!month.fte) { i++; }
+      });
+      if (i === max) {
+        const index = this.userFTEs.indexOf(project);
+        this.userFTEs.splice(index, 1);
+      }
+    });
+    this.buildFteEntryForm();
   }
 
   exportXLSX() {
