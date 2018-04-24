@@ -120,7 +120,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.getNestedOrgData('ron_nersesian@keysight.com');
 
           // route to the main page
-          this.router.navigateByUrl('/main/fte-entry/employee');
+          this.router.navigateByUrl('/main');
 
         },
         err => {
