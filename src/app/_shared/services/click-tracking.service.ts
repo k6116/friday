@@ -18,8 +18,6 @@ export class ClickTrackingService {
 
 
   logClickWithEvent(clickTrack: string) {
-    console.log('log click with event called');
-    console.log(clickTrack);
     this.logClick(clickTrack);
   }
 
