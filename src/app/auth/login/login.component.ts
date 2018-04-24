@@ -5,6 +5,7 @@ import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
+import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { User } from '../../_shared/models/user.model';
 
 import * as moment from 'moment';
@@ -41,7 +42,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private apiDataService: ApiDataService,
     private appDataService: AppDataService,
     private authService: AuthService,
-    private toolsService: ToolsService
+    private toolsService: ToolsService,
+    private clickTrackingService: ClickTrackingService
   ) { }
 
   ngOnInit() {
@@ -58,6 +60,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+  }
+
+  onLoginKeyEnter() {
+    this.clickTrackingService.logClickWithEvent(`page: Login, clickedOn: Login Button, text: ${this.userName}`);
+    this.onLoginClick();
   }
 
   onLoginClick() {
