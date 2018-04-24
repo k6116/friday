@@ -9,8 +9,10 @@
 
 
   <div class="row row-custom top-margin"> <!-- begin row for FTE entry table -->
-
-      <div class="col-xs-12 col-custom table-scrollable" (scroll)="onTableScroll($event)"> <!-- using table-scrollable css -->
+      <div *ngIf="!displayFTETable" class="col-xs-12 col-custom">
+        <p>no FTE data for the selected period</p>
+      </div>
+      <div *ngIf="displayFTETable" class="col-xs-12 col-custom table-scrollable" (scroll)="onTableScroll($event)"> <!-- using table-scrollable css -->
           <form [formGroup]="FTEFormGroup">
               <div class="table-inner-cont" formArrayName="FTEFormArray">
                   <div class="table-header-underlay">

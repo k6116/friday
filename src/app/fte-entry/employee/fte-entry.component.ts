@@ -18,8 +18,6 @@ require('moment-fquarter');
 declare const require: any;
 declare const $: any;
 
-// Test
-
 @Component({
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
@@ -52,10 +50,11 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   fteMonthVisible = new Array(36).fill(false);  // boolean array for by-month FTE form display
   fteProjectVisible = new Array;  // boolean array for by-project row display
   FTEFormGroup: FormGroup;
-  sliderRange: number[] = [];
+  sliderRange: number[] = []; // contains the live slider values
   userFTEs: any;  // array to store user FTE data
   userFTEsFlat: any;  // array to store user FTE data (flattened/non-treeized version)
   display: boolean; // TODO: find a better solution to FTE display timing issue
+  displayFTETable = false;
   loggedInUser: User; // object for logged in user's info
   projects: any;  // for aliasing formarray
   months: string[] = [];
@@ -284,14 +283,9 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     this.apiDataService.getFteData(this.loggedInUser.id)
     .subscribe(
       res => {
-        console.log(res);
         this.userFTEs = res.nested;
         this.userFTEsFlat = res.flat;
-        console.log('user ftes (this.userFTEs):');
-        console.log(this.userFTEs);
-        console.log('user ftes flat (this.userFTEsFlat):');
-        console.log(this.userFTEsFlat);
-        this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+        this.buildFteEntryForm(false); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
         this.projects = this.userFTEs;
       },
@@ -302,88 +296,80 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   }
 
   buildMonthsArray() {
+    // build an array of months that matches the slider length, based on today's date
     const startDate = moment().utc().startOf('year').subtract(2, 'months').subtract(1, 'years');
     const endDate = moment(startDate).add(3, 'years');
-    // console.log(`start date:`);
-    // console.log(startDate);
-    // console.log(`end date:`);
-    // console.log(endDate);
+
     const numMonths = endDate.diff(startDate, 'months');
-    // console.log(`number of months: ${numMonths}`);
+
     for (let i = 0; i < numMonths; i++) {
       this.months.push(moment(startDate).add(i, 'months'));
     }
-    console.log('months array:');
-    console.log(this.months);
-    // console.log('first month as string');
-    // console.log(moment(this.months[0]).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z');
   }
 
-  buildFteEntryForm = (): void => {
+  buildFteEntryForm = (isNewProject: boolean): void => {
     // grab the Project formarray
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
 
     // remove any existing form groups in the array
     this.toolsService.clearFormArray(FTEFormArray);
-    this.fteProjectVisible.length = 0;  // clear out project visibility
 
-    console.log('unix epoch for first month:');
-    console.log(moment(this.months[0]).unix());
-
-    // check if no data was returned
-    if (this.userFTEs.length) {
-      // loop through each project to get into the FTE entry elements
-      this.userFTEs.forEach( (proj: UserFTEs) => {
-
-        // add a 'true' for each project in the dataset
-        this.fteProjectVisible.push(true);
-        console.log('updated project visible');
-        console.log(this.fteProjectVisible);
-
-        const projFormArray = this.fb.array([]); // instantiating a temp formarray for each project
-
-        // proj.allocations.forEach( (mo: AllocationsArray) => {
-        this.months.forEach(month => {
-          // for each FTE entry in a given project, push the FTE controller into the temp formarray
-          // so we will have 1 controller per month, one array of controllers per project
-          // console.log('unix epoch in seconds:');
-          // console.log(moment(mo.month).unix());
-
-          // attempt to find a record/object for this project and month
-          const foundEntry = this.userFTEsFlat.find(userFTE => {
-            return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
-          });
-          // console.log(`found object for project ${proj.projectName} and month ${month}:`);
-          // console.log(foundEntry);
-
-          projFormArray.push(
-            this.fb.group({
-              recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
-              projectID: [proj.projectID],
-              // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
-              month: [month],
-              fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
-              newRecord: [foundEntry ? false : true],
-              updated: [false]
-            })
-          );
-        });
-        console.log(projFormArray);
-        // push the temp formarray as 1 object in the Project formarray
-        FTEFormArray.push(projFormArray);
-      });
-      // this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
-
-      // update the totals row
-      this.updateMonthlyTotals();
-
-      // set red border around total inputs that don't sum up to 1
-      this.setMonthlyTotalsBorder();
+    // if a new project was added that triggered this function call, push a temporary true to display it
+    if (isNewProject) {
+      this.fteProjectVisible.push(true);
+    } else {
+      this.fteProjectVisible.length = 0;  // clear out project visibility
     }
+
+    // loop through each project to get into the FTE entry elements
+    this.userFTEs.forEach( (proj: UserFTEs) => {
+
+      // add a 'true' for each project in the dataset
+      if (!isNewProject) { this.fteProjectVisible.push(true); }
+
+      const projFormArray = this.fb.array([]); // instantiating a temp formarray for each project
+
+      // proj.allocations.forEach( (mo: AllocationsArray) => {
+      this.months.forEach(month => {
+        // for each FTE entry in a given project, push the FTE controller into the temp formarray
+        // so we will have 1 controller per month, one array of controllers per project
+
+        // attempt to find a record/object for this project and month
+        const foundEntry = this.userFTEsFlat.find(userFTE => {
+          return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+        });
+        // console.log(`found object for project ${proj.projectName} and month ${month}:`);
+        // console.log(foundEntry);
+
+        projFormArray.push(
+          this.fb.group({
+            recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
+            projectID: [proj.projectID],
+            // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
+            month: [month],
+            fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
+            newRecord: [foundEntry ? false : true],
+            updated: [false]
+          })
+        );
+      });
+      // push the temp formarray as 1 object in the Project formarray
+      FTEFormArray.push(projFormArray);
+    });
+    // this.projects = FTEFormArray.controls;  // alias the FormArray controls for easy reading
+
+    // update the totals row
+    this.updateMonthlyTotals();
+
+    // set red border around total inputs that don't sum up to 1
+    this.setMonthlyTotalsBorder();
+
+    this.checkIfNoProjectsVisible();
+
   }
 
   addNewProject() {
-    // get FTE data
+    // get list of projects from db and display in modal
     this.apiDataService.getProjectList()
     .subscribe(
       res => {
@@ -410,14 +396,9 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
       newMonth.recordID = null;
       newProject.allocations.push(newMonth);
     });
-    console.log('new project');
-    console.log(newProject);
 
     this.userFTEs.push(newProject);
-    console.log(this.userFTEs);
-    this.buildFteEntryForm();
-    console.log('projects array');
-    console.log(this.projects);
+    this.buildFteEntryForm(true);
   }
 
   setSliderConfig() {
@@ -540,21 +521,38 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     const rightHandle = Math.round(value[1]);
     this.sliderRange = [leftHandle, rightHandle];
 
+    this.clearEmptyProjects();  // only do when slider is dropped, (not mid-drag) for performance
   }
 
   onSliderUpdate(value: any) {
-    this.clearEmptyProjects();
 
     // get rounded handle values, but don't set
     const leftHandle = Math.round(value[0]);
     const rightHandle = Math.round(value[1]);
 
-    // reset project visibility
-    this.fteProjectVisible.length = 0;
-
     // translate handle positions to month-quarters
     const posStart = leftHandle * 3;
     const posDelta = ((rightHandle - leftHandle) * 3);
+
+    this.updateProjectVisibility(posStart, posDelta);
+
+    // set only months that should be visible to true
+    this.fteMonthVisible = this.fteMonthVisible.fill(false);
+    this.fteMonthVisible = this.fteMonthVisible.fill(true, posStart, posStart + posDelta);
+
+    this.checkIfNoProjectsVisible();
+
+    // TEMP CODE: workaround for rendering issue for column headers (months)
+    // let scrollTop = $('div.table-scrollable').scrollTop();
+    // $('div.table-scrollable').scrollTop(scrollTop - 1);
+    // scrollTop = $('div.table-scrollable').scrollTop();
+    // $('div.table-scrollable').scrollTop(scrollTop + 1);
+
+  }
+
+  updateProjectVisibility(posStart: number, posDelta: number) {
+    // reset project visibility
+    this.fteProjectVisible.length = 0;
 
     // set new project visibility
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
@@ -571,20 +569,10 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         if (nullCounter === (posStart + posDelta)) {
           // all nulls, so project shouldn't be displayed
           this.fteProjectVisible.push(false);
+          nullCounter = posStart; // reset nullCounter
         }
       }
     });
-
-    // set only months that should be visible to true
-    this.fteMonthVisible = this.fteMonthVisible.fill(false);
-    this.fteMonthVisible = this.fteMonthVisible.fill(true, posStart, posStart + posDelta);
-
-    // TEMP CODE: workaround for rendering issue for column headers (months)
-    // let scrollTop = $('div.table-scrollable').scrollTop();
-    // $('div.table-scrollable').scrollTop(scrollTop - 1);
-    // scrollTop = $('div.table-scrollable').scrollTop();
-    // $('div.table-scrollable').scrollTop(scrollTop + 1);
-
   }
 
   clearEmptyProjects() {
@@ -600,7 +588,18 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         this.userFTEs.splice(index, 1);
       }
     });
-    this.buildFteEntryForm();
+    this.buildFteEntryForm(false);
+  }
+
+  checkIfNoProjectsVisible() {
+    // if all projects in the slider-defined view are false, then hide the FTE form div and display a different one
+    if (this.fteProjectVisible.every(testIfFalse)) {
+      this.displayFTETable = false;
+    } else { this.displayFTETable = true; }
+
+    function testIfFalse(value) {
+      return value === false;
+    }
   }
 
   exportXLSX() {
