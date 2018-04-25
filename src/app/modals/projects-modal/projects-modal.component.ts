@@ -50,9 +50,9 @@ export class ProjectsModalComponent implements OnInit {
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
 
-constructor() {
+  constructor() {
 
-}
+  }
 
   ngOnInit() {
 
@@ -71,26 +71,26 @@ constructor() {
 
   onSelectedProject(selProject: any) {
 
-      console.log('Selected Project Id:');
-      console.log(selProject.ProjectID);
+    console.log('Selected Project Id:');
+    console.log(selProject.ProjectID);
 
-      console.log('Selected Project:');
-      console.log(selProject.ProjectName);
+    console.log('Selected Project:');
+    console.log(selProject.ProjectName);
 
-      this.outerDivState = 'out';
-      this.innerDivState = 'out';
-      this.selectedProject.emit(selProject);
-      this.outerDivState = 'out';
-      this.innerDivState = 'out';
+    this.outerDivState = 'out';
+    this.innerDivState = 'out';
+    this.selectedProject.emit(selProject);
+    this.outerDivState = 'out';
+    this.innerDivState = 'out';
 
   }
 
-    onCancelClicked() {
-      console.log('cancel button clicked');
-      this.outerDivState = 'out';
-      this.innerDivState = 'out';
-      this.cancel.emit(true);
-    }
+  onCancelClicked() {
+    console.log('cancel button clicked');
+    this.outerDivState = 'out';
+    this.innerDivState = 'out';
+    this.cancel.emit(true);
+  }
 
 }
 

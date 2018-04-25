@@ -6,10 +6,10 @@
       </div>
       <div class="project-table-cont">   
         
-        <div class="infinite-card" *ngFor="let project of projects | filter :filterString:'ProjectName':{matchOptimistic: true}">
+        <!-- <div class="infinite-card" *ngFor="let project of projects | filter :filterString:'ProjectName':{matchOptimistic: true}">
             <div class="card">
-                <h6 class="project-name">{{project.ProjectName}}</h6> 
-                <div class="card-body">        
+                <h6 class="project-name">{{project.ProjectName}}</h6>
+                <div class="card-body">
                     <table>
                       <tr><td rowspan="4" class="project-description">{{project.Description}}</td><td><button class="btn btn-primary btn-sm project-sub-menu"></button></td></tr>
                       <tr><td colspan="2"><button class="btn btn-primary btn-sm project-sub-menu"></button></td></tr>
@@ -25,10 +25,36 @@
                 </div>
               </div>            
         </div>          
+      </div> -->
+
+
+      <div class="card-columns">
+        
+        <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{matchOptimistic: true}">
+          <div class="card-header-cont">
+              <div class="card-header-img">
+                <img class="card-project-avatar" src="../assets/bacon.png" alt="">
+              </div>
+            <div class="card-header-text">
+              {{ project.ProjectName }}
+            </div>
+          </div>
+          <!-- <h5 class="card-header-custom">{{ project.ProjectName }}</h5> -->
+          <div class="card-body">
+            <h5 class="card-title">{{ project.ProjectTypeName }}</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+
       </div>
+
+
+
       <div class="projects-modal-close-button-cont">
         <button class="btn btn-warning projects-modal-close-button" (click)="onCancelClicked()">Cancel</button>
       </div>
+
     </div>
   </div>
 </div>
