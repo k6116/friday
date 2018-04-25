@@ -110,6 +110,16 @@ img.card-project-avatar {
   width: 75%;
 }
 
+p.card-text {
+  overflow: hidden;
+  position: relative;
+  line-height: 1.4em;
+  height: 4.2em;
+  text-align: left;
+  margin-right: -1em;
+  padding-right: 1em;
+}
+
 
 
 
