@@ -142,7 +142,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         fteReplaceValue = null;
       }
     }
-    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}`);
+    console.log(`match is ${match}, replacement value: ${fteReplaceValue}, at ${i}, ${j}`);
 
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
@@ -155,7 +155,19 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
       FTEFormGroup.patchValue({
         fte: fteReplaceValue
       });
+      // {
+      //   onlySelf: true,
+      //   emitEvent: true,
+      //   emitModelToViewChange: true,
+      //   emitViewToModelChange: true
+      // });
     }
+
+    // if (fteReplace) {
+    //   FTEFormGroup.setValue({
+    //     fte: fteReplaceValue
+    //   });
+    // }
 
     // update the monthly total
     this.updateMonthlyTotal(j);
