@@ -107,47 +107,55 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
   }
 
-    onAddProjectClick() {
+  onAddProjectClick() {
 
-      this.apiDataService.getProjects()
-      .subscribe(
-        res => {
-          console.log('get project data successfull:');
-          console.log(res);
-          this.projectList = res;
-        },
-        err => {
-          console.log('get project data error:');
-          console.log(err);
-        }
-      );
+    this.apiDataService.getProjects()
+    .subscribe(
+      res => {
+        console.log('get project data successfull:');
+        console.log(res);
+        this.projectList = res;
+      },
+      err => {
+        console.log('get project data error:');
+        console.log(err);
+      }
+    );
 
-      this.showProjectsModal = true;
-    }
+    this.showProjectsModal = true;
+  }
 
-    onModalClosed(selectedProject: any) {
-      setTimeout(() => {
-        this.showProjectsModal = false;
-      }, 500);
+  onModalClosed(selectedProject: any) {
+    console.log('on modal closed fired');
+    setTimeout(() => {
+      this.showProjectsModal = false;
+    }, 500);
 
-      const newProject = new UserFTEs;
-      newProject.userID = this.loggedInUser.id;
-      newProject.projectID = selectedProject.ProjectID;
-      newProject.projectName = selectedProject.ProjectName;
+    const newProject = new UserFTEs;
+    newProject.userID = this.loggedInUser.id;
+    newProject.projectID = selectedProject.ProjectID;
+    newProject.projectName = selectedProject.ProjectName;
 
-      // loop through the already-built months array and initialize null FTEs for each month in this new project
-      newProject.allocations = new Array<AllocationsArray>();
-      this.months.forEach( month => {
-        const newMonth = new AllocationsArray;
-        newMonth.month = moment(month).utc().format();
-        newMonth.fte = null;
-        newMonth.recordID = null;
-        newProject.allocations.push(newMonth);
-      });
+    // loop through the already-built months array and initialize null FTEs for each month in this new project
+    newProject.allocations = new Array<AllocationsArray>();
+    this.months.forEach( month => {
+      const newMonth = new AllocationsArray;
+      newMonth.month = moment(month).utc().format();
+      newMonth.fte = null;
+      newMonth.recordID = null;
+      newProject.allocations.push(newMonth);
+    });
 
-      this.userFTEs.push(newProject); // push to the userFTEs object and rebuild the form
-      this.buildFteEntryForm(true);
-    }
+    this.userFTEs.push(newProject); // push to the userFTEs object and rebuild the form
+    this.buildFteEntryForm(true);
+  }
+
+  onModalCancelClick() {
+    console.log('on modal cancel fired');
+    setTimeout(() => {
+      this.showProjectsModal = false;
+    }, 500);
+  }
 
   onTableScroll(event) {
     const scrollTop = $('div.table-scrollable').scrollTop();

@@ -15,7 +15,7 @@ router.get('/ftedata/:userID', controllers.fteData.getFteData);
 router.post('/ftedata/:userID', controllers.fteData.update);
 
 // project list data
-router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
+// router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
 
 // ORG TREE DATA
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);

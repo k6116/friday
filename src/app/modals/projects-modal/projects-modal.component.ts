@@ -48,6 +48,7 @@ export class ProjectsModalComponent implements OnInit {
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
+  @Output() cancel = new EventEmitter<boolean>();
 
 constructor() {
 
@@ -88,6 +89,7 @@ constructor() {
       console.log('cancel button clicked');
       this.outerDivState = 'out';
       this.innerDivState = 'out';
+      this.cancel.emit(true);
     }
 
 }

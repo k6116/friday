@@ -1,12 +1,12 @@
 
-<app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" (selectedProject)="onModalClosed($event)"></app-projects-modal>
+<app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()"></app-projects-modal>
 <div *ngIf="display" class="container-fluid">
 
-  <div class="row row-custom"> <!-- begin row for slider bar -->
+  <!-- <div class="row row-custom"> begin row for slider bar -->
     <div class="col-xs-12 col-custom col-slider">
       <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
     </div>
-  </div> <!-- end row -->
+  <!-- </div> end row -->
 
 
   <div class="row row-custom top-margin"> <!-- begin row for FTE entry table -->

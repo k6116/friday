@@ -5,6 +5,6 @@ module.exports = {
   employeeList: require('./employeeListController'),
   org: require('./orgController'),
   project: require('./projectController'),
-  clickTracking: require('./clickTrackingController'),
-  projectSelector: require('./projectSelectorController')
+  clickTracking: require('./clickTrackingController')
+  // projectSelector: require('./projectSelectorController')
 }
