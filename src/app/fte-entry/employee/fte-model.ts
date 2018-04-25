@@ -2,6 +2,7 @@ export class UserFTEs {
     projectID: number;
     projectName: string;
     allocations: AllocationsArray[];
+    userID: number;
 }
 
 export class AllocationsArray {

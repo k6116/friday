@@ -47,7 +47,7 @@ export class ProjectsModalComponent implements OnInit {
   checkboxValue: any;
 
   @Input() projects: any;
-  @Output() selectedProject = new EventEmitter<number>();
+  @Output() selectedProject = new EventEmitter<any>();
 
 constructor() {
 
@@ -68,10 +68,13 @@ constructor() {
     console.log(this.projects);
   }
 
-  onSelectedProject(selProject: number) {
+  onSelectedProject(selProject: any) {
 
       console.log('Selected Project Id:');
-      console.log(selProject);
+      console.log(selProject.ProjectID);
+
+      console.log('Selected Project:');
+      console.log(selProject.ProjectName);
 
       this.outerDivState = 'out';
       this.innerDivState = 'out';

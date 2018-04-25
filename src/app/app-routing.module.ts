@@ -23,6 +23,7 @@ const routes: Routes = [
     component: MainComponent,
     canActivate: [AuthGuardService],
     children: [
+      { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full', canActivate: [AuthGuardService] },
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService] },
