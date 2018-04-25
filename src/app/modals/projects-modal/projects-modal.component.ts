@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 
+declare var $: any;
 
 @Component({
   selector: 'app-projects-modal',
@@ -39,7 +40,7 @@ import { trigger, state, style, transition, animate, keyframes, group } from '@a
     ])
   ]
 })
-export class ProjectsModalComponent implements OnInit {
+export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   outerDivState: string;
   innerDivState: string;
@@ -67,6 +68,13 @@ export class ProjectsModalComponent implements OnInit {
 
     console.log('projects received in projects modal');
     console.log(this.projects);
+  }
+
+  ngAfterViewInit() {
+
+    // init bootstrap tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+
   }
 
   onSelectedProject(selProject: any) {
