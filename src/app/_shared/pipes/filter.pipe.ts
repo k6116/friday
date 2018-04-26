@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 // const Fuse = require('fuse'); // TODO
+import * as fuse from 'fuse.js';
 
 @Pipe({
   name: 'filter',

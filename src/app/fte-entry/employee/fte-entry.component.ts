@@ -649,7 +649,9 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
       const randomFileIndex: number = Math.floor((Math.random() * (avatarFiles.length)));
       const randomFile = avatarFiles[randomFileIndex];
       const randomProject: number = Math.floor((Math.random() * (3)));
-      if (randomProject === 0) {
+      if (project.ProjectName === 'Deuce') {
+        project.avatar = `../assets/deuce.png`;
+      } else if (randomProject === 0) {
         project.avatar = `../assets/${randomFile}.png`;
       } else {
         project.avatar = null;
