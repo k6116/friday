@@ -643,7 +643,8 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
   // TEMP CODE: to emulate/spoof project avatars
   setRandomProjectAvatars() {
-    const avatarFiles = ['eggs', 'bacon', 'cheese', 'avocado'];
+    // tslint:disable-next-line:max-line-length
+    const avatarFiles = ['avocado', 'bacon', 'beer', 'cheese', 'coffee', 'fries', 'grapes', 'lemon-slice', 'pizza-slice', 'tacos', 'watermelon'];
     this.projectList.forEach(project => {
       const randomFileIndex: number = Math.floor((Math.random() * (avatarFiles.length)));
       const randomFile = avatarFiles[randomFileIndex];
@@ -654,13 +655,13 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         project.avatar = null;
       }
     });
-    console.log('projects with avatars');
-    const filteredProjects = this.projectList.filter(project => {
-      return project.avatar;
-    });
-    console.log(filteredProjects);
-    console.log('number of project with avatars:');
-    console.log(filteredProjects.length);
+    // console.log('projects with avatars');
+    // const filteredProjects = this.projectList.filter(project => {
+    //   return project.avatar;
+    // });
+    // console.log(filteredProjects);
+    // console.log('number of project with avatars:');
+    // console.log(filteredProjects.length);
   }
 
 
