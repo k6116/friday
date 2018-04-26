@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 
 declare var $: any;
@@ -51,6 +51,13 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    // console.log(event);
+    const newHeight = $('div.projects-modal-body').height() - 150;
+    $('div.project-table-cont').height(newHeight);
+  }
+
   constructor() {
 
   }
@@ -73,7 +80,12 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
 
     // init bootstrap tooltips
-    $('[data-toggle="tooltip"]').tooltip();
+    setTimeout(() => {
+      $('[data-toggle="tooltip"]').tooltip();
+    }, 3000);
+
+    const newHeight = $('div.projects-modal-body').height() - 150;
+    $('div.project-table-cont').height(newHeight);
 
   }
 

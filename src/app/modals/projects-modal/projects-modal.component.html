@@ -1,9 +1,16 @@
 <div class="projects-modal-outer-cont" [@modalStateOuter]="outerDivState">
   <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState">
     <div class="projects-modal-body">
+
       <div class="projects-filter-cont">
-        <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter">
+        <div class="projects-modal-filter">
+          <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter">
+        </div>
+        <div class="projects-modal-close" (click)="onCancelClicked()">
+          <i class="nc-icon nc-circle-remove projects-modal-close-button"></i>
+        </div>
       </div>
+
       <div class="project-table-cont">   
         
         <!-- <div class="infinite-card" *ngFor="let project of projects | filter :filterString:'ProjectName':{matchOptimistic: true}">
@@ -64,9 +71,9 @@
 
 
 
-      <div class="projects-modal-close-button-cont">
+      <!-- <div class="projects-modal-close-button-cont">
         <button class="btn btn-warning projects-modal-close-button" (click)="onCancelClicked()">Cancel</button>
-      </div>
+      </div> -->
 
     </div>
   </div>

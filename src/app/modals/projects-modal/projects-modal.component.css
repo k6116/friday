@@ -40,8 +40,8 @@ div.projects-modal-close-button-cont {
 
 
 div.projects-filter-cont {
-  width: 225px;
-  margin-bottom: 20px;
+  /* width: 225px; */
+  margin: 20px 20px 40px 20px;
 }
 
 div.project-table-cont {
@@ -55,6 +55,20 @@ div.project-table-cont {
 
 /* BILL'S CSS FOR CARDS */
 
+div.projects-modal-close {
+  /* display: inline-block; */
+  float: right;
+  font-size: 30px;
+  color: grey;  
+}
+
+i.projects-modal-close-button {
+  cursor: pointer;
+}
+
+div.projects-modal-filter {
+  display: inline-block;
+}
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
@@ -114,7 +128,7 @@ p.card-text {
   overflow: hidden;
   position: relative;
   line-height: 1.4em;
-  height: 4.2em;
+  height: 5.6em;
   text-align: left;
   /* margin-right: -1em;
   padding-right: 1em; */
@@ -143,7 +157,7 @@ div.card-button {
   border: 1px solid rgb(224, 224, 224);
   padding: 2px 8px;
   background-color: lightgrey;
-  background-color: rgb(240, 240, 240);
+  background-color: rgb(236, 236, 236);
   text-align: center;
   cursor: pointer;
 }
