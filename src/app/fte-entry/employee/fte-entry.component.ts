@@ -99,16 +99,6 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
       this.fteComponentInit();  // initialize the FTE entry component
     });
 
-   this.buildMonthsArray();
-
-
-  }
-
-  ngAfterViewInit() {
-  }
-
-  onAddProjectClick() {
-
     this.apiDataService.getProjects()
     .subscribe(
       res => {
@@ -121,6 +111,16 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         console.log(err);
       }
     );
+
+   this.buildMonthsArray();
+
+
+  }
+
+  ngAfterViewInit() {
+  }
+
+  onAddProjectClick() {
 
     this.showProjectsModal = true;
   }

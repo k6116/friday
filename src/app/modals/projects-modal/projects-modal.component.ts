@@ -82,7 +82,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // init bootstrap tooltips
     setTimeout(() => {
       $('[data-toggle="tooltip"]').tooltip();
-    }, 3000);
+    }, 1000);
 
     const newHeight = $('div.projects-modal-body').height() - 150;
     $('div.project-table-cont').height(newHeight);
