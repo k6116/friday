@@ -105,6 +105,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         console.log('get project data successfull:');
         console.log(res);
         this.projectList = res;
+        this.setRandomProjectAvatars();
       },
       err => {
         console.log('get project data error:');
@@ -638,4 +639,30 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     saveAs(new Blob([s2ab(wbout)], { type: 'application/octet-stream' }), 'userFTE.xlsx');
 
   }
+
+
+  // TEMP CODE: to emulate/spoof project avatars
+  setRandomProjectAvatars() {
+    const avatarFiles = ['eggs', 'bacon', 'cheese', 'avocado'];
+    this.projectList.forEach(project => {
+      const randomFileIndex: number = Math.floor((Math.random() * (avatarFiles.length)));
+      const randomFile = avatarFiles[randomFileIndex];
+      const randomProject: number = Math.floor((Math.random() * (3)));
+      if (randomProject === 0) {
+        project.avatar = `../assets/${randomFile}.png`;
+      } else {
+        project.avatar = null;
+      }
+    });
+    console.log('projects with avatars');
+    const filteredProjects = this.projectList.filter(project => {
+      return project.avatar;
+    });
+    console.log(filteredProjects);
+    console.log('number of project with avatars:');
+    console.log(filteredProjects.length);
+  }
+
+
+
 }

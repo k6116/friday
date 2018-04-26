@@ -39,8 +39,8 @@
         
         <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{matchOptimistic: true}">
           <div class="card-header-cont">
-              <div class="card-header-img">
-                <img class="card-project-avatar" src="../assets/bacon.png" alt="">
+              <div class="card-header-img" *ngIf="project.avatar">
+                <img class="card-project-avatar" [attr.src]="project.avatar" alt="">
               </div>
             <div class="card-header-text">
               {{ project.ProjectName }}
