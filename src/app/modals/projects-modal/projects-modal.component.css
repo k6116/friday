@@ -130,14 +130,20 @@ p.card-text {
   line-height: 1.4em;
   height: 5.6em;
   text-align: left;
-  /* margin-right: -1em;
-  padding-right: 1em; */
+}
+
+p.card-text:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40%;
+  height: 1.4em;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
 div.card-body {
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
-  /* padding: 1.25rem; */
   display: inline-block;
   width: 85%;
   padding: 10px 20px 30px 20px;
