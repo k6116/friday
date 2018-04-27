@@ -37,7 +37,7 @@
 
       <div class="cards-cont">
         
-        <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{matchOptimistic: true}">
+        <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{matchOptimistic: true, paginationFilter: paginateFilter}">
           <div class="card-header-cont">
               <div class="card-header-img" *ngIf="project.avatar">
                 <img class="card-project-avatar" [attr.src]="project.avatar" alt="">

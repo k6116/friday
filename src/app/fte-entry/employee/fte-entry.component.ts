@@ -106,6 +106,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         console.log(res);
         this.projectList = res;
         this.setRandomProjectAvatars();
+        this.trimProjects(500);
       },
       err => {
         console.log('get project data error:');
@@ -664,6 +665,10 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     // console.log(filteredProjects);
     // console.log('number of project with avatars:');
     // console.log(filteredProjects.length);
+  }
+
+  trimProjects(numProjects: number) {
+    this.projectList = this.projectList.slice(0, numProjects);
   }
 
 

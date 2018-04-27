@@ -45,6 +45,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   outerDivState: string;
   innerDivState: string;
   filterString: string;
+  paginateFilter: any;
+  pagRegexp: string;
   checkboxValue: any;
 
   @Input() projects: any;
@@ -54,7 +56,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     // console.log(event);
-    const newHeight = $('div.projects-modal-body').height() - 150;
+    const newHeight = $('div.projects-modal-body').height() - 170;
     $('div.project-table-cont').height(newHeight);
   }
 
@@ -75,6 +77,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     console.log('projects received in projects modal');
     console.log(this.projects);
+
+    // this.filterString = 'ra';
+    // this.pagRegexp = '[0-A]';
+    this.paginateFilter = {on: true, property: 'ProjectName', regexp: '[0-C]'};
+
   }
 
   ngAfterViewInit() {
@@ -84,7 +91,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       $('[data-toggle="tooltip"]').tooltip();
     }, 1000);
 
-    const newHeight = $('div.projects-modal-body').height() - 150;
+    const newHeight = $('div.projects-modal-body').height() - 170;
     $('div.project-table-cont').height(newHeight);
 
   }
