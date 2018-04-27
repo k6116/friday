@@ -75,4 +75,21 @@ export class ToolsService {
     }
   }
 
+  buildPaginationRanges(objects: any, objProp: string, maxPerPage: number): any {
+
+    const charArr = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const charCounts: number[] = [];
+    charArr.forEach(char => {
+      const filteredObjects = objects.filter(object => {
+        return char.toUpperCase() === object[objProp][0].toUpperCase();
+      });
+      charCounts.push(filteredObjects.length);
+    });
+    console.log('character counts');
+    console.log(charCounts);
+    console.log(charCounts.reduce((accumulator, currentValue) => accumulator + currentValue));
+    return charCounts;
+
+  }
+
 }
