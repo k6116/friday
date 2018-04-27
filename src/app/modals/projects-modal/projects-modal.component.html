@@ -9,7 +9,28 @@
         <div class="projects-modal-close" (click)="onCancelClicked()">
           <i class="nc-icon nc-circle-remove projects-modal-close-button"></i>
         </div>
+        <div class="projects-pagination">
+          <ul class="pagination">
+            <li class="page-item">
+              <a class="page-link">
+                <span>&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item" *ngFor="let link of paginationLinks">
+              <a class="page-link" (click)="onPaginationLinkClick(link)">{{ link }}</a>
+            </li>
+            <!-- <li class="page-item"><a class="page-link">2</a></li>
+            <li class="page-item"><a class="page-link">3</a></li> -->
+            <li class="page-item">
+              <a class="page-link">
+                <span>&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
+
+      
 
       <div class="project-table-cont">   
         

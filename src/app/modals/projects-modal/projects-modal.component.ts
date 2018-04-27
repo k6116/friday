@@ -47,6 +47,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   innerDivState: string;
   filterString: string;
   paginateFilter: any;
+  paginationLinks: any;
   pagRegexp: string;
   checkboxValue: any;
 
@@ -81,8 +82,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     console.log('projects received in projects modal');
     console.log(this.projects);
 
-    const paginationRanges = this.toolsService.buildPaginationRanges(this.projects, 'ProjectName', 100);
-    console.log(paginationRanges);
+    this.paginationLinks = this.toolsService.buildPaginationRanges(this.projects, 'ProjectName', 25);
+    console.log(this.paginationLinks);
 
     // this.filterString = 'ra';
     // this.pagRegexp = '[0-A]';
@@ -116,6 +117,10 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.outerDivState = 'out';
     this.innerDivState = 'out';
 
+  }
+
+  onPaginationLinkClick(link) {
+    console.log('pagination link clicked: ' + link);
   }
 
   onCancelClicked() {

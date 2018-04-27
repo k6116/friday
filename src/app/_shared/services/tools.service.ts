@@ -96,10 +96,12 @@ export class ToolsService {
       if (total > maxPerPage) {
         total = 0;
         endChar = charArr[index - 1];
-        returnArr.push(`${startChar}-${endChar}`);
+        const range: string = startChar !== endChar ? `${startChar}-${endChar}` : startChar;
+        returnArr.push(range);
         startChar = charArr[index];
       } else if (index === charCounts.length - 1) {
         endChar = charArr[index];
+        const range: string = startChar !== endChar ? `${startChar}-${endChar}` : startChar;
         returnArr.push(`${startChar}-${endChar}`);
       }
     });

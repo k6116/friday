@@ -64,6 +64,11 @@ div.projects-modal-filter {
   display: inline-block;
 }
 
+div.projects-pagination {
+  display: inline-block;
+  margin-left: 20px;
+}
+
 .cards-cont {
   display: flex;
   flex-flow: row wrap;
