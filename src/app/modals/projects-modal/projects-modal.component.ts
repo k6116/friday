@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
+import { ToolsService } from '../../_shared/services/tools.service';
 
 declare var $: any;
 
@@ -60,7 +61,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     $('div.project-table-cont').height(newHeight);
   }
 
-  constructor() {
+  constructor(
+    private toolsService: ToolsService
+  ) {
 
   }
 
@@ -77,6 +80,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     console.log('projects received in projects modal');
     console.log(this.projects);
+
+    const paginationRanges = this.toolsService.buildPaginationRanges(this.projects, 'ProjectName', 100);
+    console.log(paginationRanges);
 
     // this.filterString = 'ra';
     // this.pagRegexp = '[0-A]';

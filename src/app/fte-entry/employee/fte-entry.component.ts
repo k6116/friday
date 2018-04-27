@@ -107,7 +107,6 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         this.projectList = res;
         this.setRandomProjectAvatars();
         this.trimProjects(500);
-        const temp = this.toolsService.buildPaginationRanges(this.projectList, 'ProjectName', 100);
       },
       err => {
         console.log('get project data error:');

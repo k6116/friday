@@ -79,16 +79,32 @@ export class ToolsService {
 
     const charArr = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     const charCounts: number[] = [];
+    const returnArr = [];
+
     charArr.forEach(char => {
       const filteredObjects = objects.filter(object => {
         return char.toUpperCase() === object[objProp][0].toUpperCase();
       });
       charCounts.push(filteredObjects.length);
     });
-    console.log('character counts');
-    console.log(charCounts);
-    console.log(charCounts.reduce((accumulator, currentValue) => accumulator + currentValue));
-    return charCounts;
+
+    let startChar: string = charArr[0];
+    let endChar: string;
+    let total = 0;
+    charCounts.forEach((count, index) => {
+      total += +count;
+      if (total > maxPerPage) {
+        total = 0;
+        endChar = charArr[index - 1];
+        returnArr.push(`${startChar}-${endChar}`);
+        startChar = charArr[index];
+      } else if (index === charCounts.length - 1) {
+        endChar = charArr[index];
+        returnArr.push(`${startChar}-${endChar}`);
+      }
+    });
+
+    return returnArr;
 
   }
 
