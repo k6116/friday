@@ -20,9 +20,14 @@
 
     <div class="app-menu">
 
-      <div class="topnav-menu app-menu-dropdown" (click)="onAvatarClick()">
+      <!-- <div class="topnav-menu app-menu-dropdown" (click)="onAvatarClick()">
+        <div class="topnav-menu app-menu-text">{{ firstInitial }}</div>
+      </div> -->
+
+      <div class="topnav-menu app-menu-dropdown"  (click)="onAvatarClick()">
         <div class="topnav-menu app-menu-text">{{ firstInitial }}</div>
       </div>
+      
       
       <div *ngIf="showDropDown" [@conditionState]="state" class="topnav-menu app-menu-dropdown-cont">
         <div class="topnav-menu app-menu-dropdown-name">

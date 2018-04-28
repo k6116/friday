@@ -11,13 +11,14 @@
   left: 0;
   width: 100%;
   z-index: 20;
+  padding: 0 80px;
 }
 
 /* left container with logo and title */
 
 .app-ident {
   cursor: pointer;
-  margin-left: 80px
+  /* margin-left: 80px */
 }
 
 .app-logo-cont {
@@ -62,29 +63,26 @@
 
 .app-menu {
   float: right;
-  margin-right: 80px;
-  text-align: right;
 }
 
-.app-menu-dropdown {
-  display: inline-block;
-  cursor: pointer;
-  padding-left: 0;
-  position: relative;
-  top: 12px;
-}
-
-.app-menu-text {
-  display: inline-block;
-  color: white;
-  font-size: 16px;
-  width: 30px;
+div.app-menu-dropdown {
   height: 30px;
-  text-align: center;
-  background-color: rgb(36, 43, 48);
-  padding-top: 5px;
-  font-weight: 600;
+  width: 30px;
   border-radius: 15px;
+  background-color: black;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 80px;
+  margin: auto 0;
+  cursor: pointer;
+}
+
+div.app-menu-text {
+  color: white;
+  line-height: 30px;
+  text-align: center;
+  font-weight: 600;
 }
 
 
@@ -93,7 +91,7 @@
 .app-menu-dropdown-cont {
   box-shadow: 0 2px 10px rgba(0,0,0,.2);
   position: relative;
-  top: 23px;
+  top: 53px;
   z-index: 3;
   background-color: white;
   text-align: left;
