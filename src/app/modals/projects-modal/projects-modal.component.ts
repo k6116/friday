@@ -51,6 +51,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   selectedPage: number;
   checkboxValue: any;
   projectsDisplay: any;
+  numProjectsToDisplayAtOnce: number;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -80,14 +81,17 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       this.innerDivState = 'in';
     }, 0);
 
+    // set the number of projects to display initially, and to add for infinite scroll, and for pagination chunks
+    this.numProjectsToDisplayAtOnce = 100;
+
     console.log('projects received in projects modal');
     console.log(this.projects);
     console.log(`number of projects: ${this.projects.length}`);
 
-    this.projectsDisplay = this.projects.slice(0, 100);
+    this.projectsDisplay = this.projects.slice(0, this.numProjectsToDisplayAtOnce);
     console.log(`number of displayed projects: ${this.projectsDisplay.length}`);
 
-    this.paginationLinks = this.toolsService.buildPaginationRanges(this.projects, 'ProjectName', 100);
+    this.paginationLinks = this.toolsService.buildPaginationRanges(this.projects, 'ProjectName', this.numProjectsToDisplayAtOnce);
     console.log(this.paginationLinks);
 
     this.paginateFilter = {on: false, property: 'ProjectName', regexp: `[${this.paginationLinks[0]}]`};
@@ -149,28 +153,45 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onScroll(event) {
-    // console.log('scrolling div..');
+  onScroll() {
+    if (this.scrollAtBottom()) {
+      this.addProjectsForInfiniteScroll();
+    }
+  }
+
+  scrollAtBottom(): boolean {
+    // get the project cards container element using jQuery
     const $el = $('div.project-table-cont');
+    // get the current scrollbar position from the top in pixels
     const scrollPosition = $el.scrollTop();
+    // get the total scrollable height of the div with this calculation
+    // need to subtract the visible height to get a comparable height with scrollTop
     const scrollHeight = $el.prop('scrollHeight');
     const height = $el.height();
     const totalDivHeight = scrollHeight - height;
-    // console.log(`scroll position: ${scrollPosition}, div height total: ${totalDivHeight}`);
+    // if the scroll position is at (or maybe slightly below due to rounding), return true otherwise false
     if (scrollPosition >= totalDivHeight) {
-      console.log('scroll bar is at the bottom');
-      const numDisplayedProjects = this.projectsDisplay.length;
-      const numProjects = this.projects.length;
-      const numRemainingProjects = numProjects - numDisplayedProjects;
-      const numProjectsToAdd = Math.min(100, numRemainingProjects);
-      if (numProjectsToAdd > 0) {
-        console.log('number of projects to add: ' + numProjectsToAdd);
-        const projectsToAdd = this.projects.slice(numDisplayedProjects, numDisplayedProjects + numProjectsToAdd);
-        console.log('projects to add:');
-        console.log(projectsToAdd);
-        this.projectsDisplay.push(...projectsToAdd);
-        console.log(`number of displayed projects: ${this.projectsDisplay.length}`);
-      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  addProjectsForInfiniteScroll() {
+    // get the number of currently displayed projects
+    const numDisplayedProjects = this.projectsDisplay.length;
+    // get the number of total projects
+    const numProjects = this.projects.length;
+    // calculate the number of remaining projects that could be displaed
+    const numRemainingProjects = numProjects - numDisplayedProjects;
+    // take the minimum of X projects or remaining projects
+    const numProjectsToAdd = Math.min(this.numProjectsToDisplayAtOnce, numRemainingProjects);
+    // if there are any more projects to add
+    if (numProjectsToAdd > 0) {
+      // slice off another chunk of project objects to add to the array
+      const projectsToAdd = this.projects.slice(numDisplayedProjects, numDisplayedProjects + numProjectsToAdd);
+      // add the new projects to the array of projects to display
+      this.projectsDisplay.push(...projectsToAdd);
     }
   }
 
