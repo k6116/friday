@@ -3,12 +3,15 @@
     <div class="projects-modal-body">
 
       <div class="projects-filter-cont">
+
         <div class="projects-modal-filter">
           <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter">
         </div>
+
         <div class="projects-modal-close" (click)="onCancelClicked()">
           <i class="nc-icon nc-circle-remove projects-modal-close-button"></i>
         </div>
+
         <div class="projects-pagination" *ngIf="paginationLinks.length > 1">
           <ul class="pagination">
             <li class="page-item">
@@ -26,49 +29,50 @@
             </li>
           </ul>
         </div>
+
       </div>
 
       
 
-      <div class="project-table-cont">   
+      <div class="project-table-cont" (scroll)="onScroll($event)">   
         
       
-      <div class="cards-cont">
-        
-        <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{matchOptimistic: true, paginationFilter: paginateFilter}">
-          <div class="card-header-cont">
-              <div class="card-header-img" *ngIf="project.avatar">
-                <img class="card-project-avatar" [attr.src]="project.avatar" alt="">
+        <div class="cards-cont">
+          
+          <div class="card" *ngFor="let project of projectsDisplay | filter :filterString:'ProjectName':{matchOptimistic: true, paginationFilter: paginateFilter}">
+            <div class="card-header-cont">
+                <div class="card-header-img" *ngIf="project.avatar">
+                  <img class="card-project-avatar" [attr.src]="project.avatar" alt="">
+                </div>
+              <div class="card-header-text">
+                {{ project.ProjectName }}
               </div>
-            <div class="card-header-text">
-              {{ project.ProjectName }}
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ project.ProjectTypeName }}</h5>
+              <p class="card-text">{{ project.Description }}</p>
+            </div>
+            <div class="card-buttons">
+              <div class="card-button" data-toggle="tooltip" data-placement="right" title="Project Info">
+                <i class="fa fa-info" aria-hidden="true"></i>
+              </div>
+              <div class="card-button" data-toggle="tooltip" data-placement="right" title="Project Roster">
+                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+              </div>
+              <div class="card-button" data-toggle="tooltip" data-placement="right" title="Something Else">
+                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="button" class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
             </div>
           </div>
-          <div class="card-body">
-            <h5 class="card-title">{{ project.ProjectTypeName }}</h5>
-            <p class="card-text">{{ project.Description }}</p>
-          </div>
-          <div class="card-buttons">
-            <div class="card-button" data-toggle="tooltip" data-placement="right" title="Project Info">
-              <i class="fa fa-info" aria-hidden="true"></i>
-            </div>
-            <div class="card-button" data-toggle="tooltip" data-placement="right" title="Project Roster">
-              <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-            </div>
-            <div class="card-button" data-toggle="tooltip" data-placement="right" title="Something Else">
-              <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button type="button" class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
-          </div>
+
         </div>
 
       </div>
 
-
-
-
+  
     </div>
   </div>
 </div>

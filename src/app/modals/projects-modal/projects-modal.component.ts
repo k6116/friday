@@ -50,6 +50,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   paginationLinks: any;
   selectedPage: number;
   checkboxValue: any;
+  projectsDisplay: any;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -81,11 +82,15 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     console.log('projects received in projects modal');
     console.log(this.projects);
+    console.log(`number of projects: ${this.projects.length}`);
+
+    this.projectsDisplay = this.projects.slice(0, 100);
+    console.log(`number of displayed projects: ${this.projectsDisplay.length}`);
 
     this.paginationLinks = this.toolsService.buildPaginationRanges(this.projects, 'ProjectName', 100);
     console.log(this.paginationLinks);
 
-    this.paginateFilter = {on: true, property: 'ProjectName', regexp: `[${this.paginationLinks[0]}]`};
+    this.paginateFilter = {on: false, property: 'ProjectName', regexp: `[${this.paginationLinks[0]}]`};
     this.selectedPage = 0;
 
   }
@@ -141,6 +146,31 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     if (newPage) {
       const link = this.paginationLinks[this.selectedPage];
       this.paginateFilter = {on: true, property: 'ProjectName', regexp: `[${link}]`};
+    }
+  }
+
+  onScroll(event) {
+    // console.log('scrolling div..');
+    const $el = $('div.project-table-cont');
+    const scrollPosition = $el.scrollTop();
+    const scrollHeight = $el.prop('scrollHeight');
+    const height = $el.height();
+    const totalDivHeight = scrollHeight - height;
+    // console.log(`scroll position: ${scrollPosition}, div height total: ${totalDivHeight}`);
+    if (scrollPosition >= totalDivHeight) {
+      console.log('scroll bar is at the bottom');
+      const numDisplayedProjects = this.projectsDisplay.length;
+      const numProjects = this.projects.length;
+      const numRemainingProjects = numProjects - numDisplayedProjects;
+      const numProjectsToAdd = Math.min(100, numRemainingProjects);
+      if (numProjectsToAdd > 0) {
+        console.log('number of projects to add: ' + numProjectsToAdd);
+        const projectsToAdd = this.projects.slice(numDisplayedProjects, numDisplayedProjects + numProjectsToAdd);
+        console.log('projects to add:');
+        console.log(projectsToAdd);
+        this.projectsDisplay.push(...projectsToAdd);
+        console.log(`number of displayed projects: ${this.projectsDisplay.length}`);
+      }
     }
   }
 

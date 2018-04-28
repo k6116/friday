@@ -106,7 +106,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         console.log(res);
         this.projectList = res;
         this.setRandomProjectAvatars();
-        this.trimProjects(500);
+        // this.trimProjects(500);
       },
       err => {
         console.log('get project data error:');
