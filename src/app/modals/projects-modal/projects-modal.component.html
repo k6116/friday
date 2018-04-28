@@ -9,20 +9,18 @@
         <div class="projects-modal-close" (click)="onCancelClicked()">
           <i class="nc-icon nc-circle-remove projects-modal-close-button"></i>
         </div>
-        <div class="projects-pagination">
+        <div class="projects-pagination" *ngIf="paginationLinks.length > 1">
           <ul class="pagination">
             <li class="page-item">
-              <a class="page-link">
+              <a class="page-link" (click)="onPaginationArrowClick('left')">
                 <span>&laquo;</span>
               </a>
             </li>
             <li class="page-item" *ngFor="let link of paginationLinks; let i=index">
               <a [class]="'page-link' + (i === selectedPage ? ' active' : '')" [attr.data-link]="link" (click)="onPaginationLinkClick(link)">{{ link }}</a>
             </li>
-            <!-- <li class="page-item"><a class="page-link">2</a></li>
-            <li class="page-item"><a class="page-link">3</a></li> -->
             <li class="page-item">
-              <a class="page-link">
+              <a class="page-link" (click)="onPaginationArrowClick('right')">
                 <span>&raquo;</span>
               </a>
             </li>
@@ -34,28 +32,7 @@
 
       <div class="project-table-cont">   
         
-        <!-- <div class="infinite-card" *ngFor="let project of projects | filter :filterString:'ProjectName':{matchOptimistic: true}">
-            <div class="card">
-                <h6 class="project-name">{{project.ProjectName}}</h6>
-                <div class="card-body">
-                    <table>
-                      <tr><td rowspan="4" class="project-description">{{project.Description}}</td><td><button class="btn btn-primary btn-sm project-sub-menu"></button></td></tr>
-                      <tr><td colspan="2"><button class="btn btn-primary btn-sm project-sub-menu"></button></td></tr>
-                      <tr><td colspan="2"><button class="btn btn-warning btn-sm project-sub-menu"></button></td></tr>
-                      <tr><td colspan="2"><button class="btn btn-warning btn-sm project-sub-menu"></button></td></tr>
-                    </table>
-                    <div class="project-type">{{project.ProjectTypeName}}</div>
-                </div>
-    
-                <div class="card-footer text-muted text-center" >
-                  <input type="checkbox" class="select-project" (change)="onSelectedProject(project)"/>
-                  <small>Created by <b>{{project.FullName}}</b> on <b>{{project.CreationDate | date: 'MM/dd/yyyy'}}</b></small>
-                </div>
-              </div>            
-        </div>          
-      </div> -->
-
-
+      
       <div class="cards-cont">
         
         <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{matchOptimistic: true, paginationFilter: paginateFilter}">
@@ -67,7 +44,6 @@
               {{ project.ProjectName }}
             </div>
           </div>
-          <!-- <h5 class="card-header-custom">{{ project.ProjectName }}</h5> -->
           <div class="card-body">
             <h5 class="card-title">{{ project.ProjectTypeName }}</h5>
             <p class="card-text">{{ project.Description }}</p>
@@ -92,9 +68,6 @@
 
 
 
-      <!-- <div class="projects-modal-close-button-cont">
-        <button class="btn btn-warning projects-modal-close-button" (click)="onCancelClicked()">Cancel</button>
-      </div> -->
 
     </div>
   </div>

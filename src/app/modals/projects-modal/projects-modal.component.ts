@@ -124,6 +124,26 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.selectedPage = this.paginationLinks.indexOf(link);
   }
 
+  onPaginationArrowClick(direction: string) {
+    console.log('pagination arrow clicked: ' + direction);
+    let newPage: boolean;
+    if (direction === 'right') {
+      if (this.selectedPage !== this.paginationLinks.length - 1) {
+        this.selectedPage++;
+        newPage = true;
+      }
+    } else if (direction === 'left') {
+      if (this.selectedPage !== 0) {
+        this.selectedPage--;
+        newPage = true;
+      }
+    }
+    if (newPage) {
+      const link = this.paginationLinks[this.selectedPage];
+      this.paginateFilter = {on: true, property: 'ProjectName', regexp: `[${link}]`};
+    }
+  }
+
   onCancelClicked() {
     console.log('cancel button clicked');
     this.outerDivState = 'out';
