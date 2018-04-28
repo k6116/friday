@@ -7,6 +7,7 @@
   height: 100%;
   top: 55px;
   background-color: rgb(36, 43, 48);
+  font-size: 14px;
 }
 
 .sidenav-menu-item {
@@ -37,7 +38,6 @@
 .sidenav-menu-item-text {
   display: inline-block;
   margin-left: 14px;
-  font-size: 14px;
   position: relative;
   top: -7px;
 }
