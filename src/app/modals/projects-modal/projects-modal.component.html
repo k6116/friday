@@ -16,8 +16,8 @@
                 <span>&laquo;</span>
               </a>
             </li>
-            <li class="page-item" *ngFor="let link of paginationLinks">
-              <a class="page-link" (click)="onPaginationLinkClick(link)">{{ link }}</a>
+            <li class="page-item" *ngFor="let link of paginationLinks; let i=index">
+              <a [class]="'page-link' + (i === selectedPage ? ' active' : '')" [attr.data-link]="link" (click)="onPaginationLinkClick(link)">{{ link }}</a>
             </li>
             <!-- <li class="page-item"><a class="page-link">2</a></li>
             <li class="page-item"><a class="page-link">3</a></li> -->

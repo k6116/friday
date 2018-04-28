@@ -48,7 +48,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   filterString: string;
   paginateFilter: any;
   paginationLinks: any;
-  pagRegexp: string;
+  selectedPage: number;
   checkboxValue: any;
 
   @Input() projects: any;
@@ -82,12 +82,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     console.log('projects received in projects modal');
     console.log(this.projects);
 
-    this.paginationLinks = this.toolsService.buildPaginationRanges(this.projects, 'ProjectName', 25);
+    this.paginationLinks = this.toolsService.buildPaginationRanges(this.projects, 'ProjectName', 100);
     console.log(this.paginationLinks);
 
-    // this.filterString = 'ra';
-    // this.pagRegexp = '[0-A]';
-    this.paginateFilter = {on: true, property: 'ProjectName', regexp: '[0-C]'};
+    this.paginateFilter = {on: true, property: 'ProjectName', regexp: `[${this.paginationLinks[0]}]`};
+    this.selectedPage = 0;
 
   }
 
@@ -121,6 +120,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onPaginationLinkClick(link) {
     console.log('pagination link clicked: ' + link);
+    this.paginateFilter = {on: true, property: 'ProjectName', regexp: `[${link}]`};
+    this.selectedPage = this.paginationLinks.indexOf(link);
   }
 
   onCancelClicked() {

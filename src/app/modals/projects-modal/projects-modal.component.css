@@ -29,6 +29,10 @@ div.projects-modal-body {
   padding: 0 40px;
 }
 
+a.page-link.active {
+  background-color: rgb(233, 236, 239);
+}
+
 div.projects-modal-close-button-cont {
   position: absolute;
   bottom: 20px;
