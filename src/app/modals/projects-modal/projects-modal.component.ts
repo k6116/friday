@@ -52,6 +52,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   checkboxValue: any;
   projectsDisplay: any;
   numProjectsToDisplayAtOnce: number;
+  numProjectsToDisplay: number;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -83,6 +84,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     // set the number of projects to display initially, and to add for infinite scroll, and for pagination chunks
     this.numProjectsToDisplayAtOnce = 100;
+    this.numProjectsToDisplay = 100;
 
     console.log('projects received in projects modal');
     console.log(this.projects);
@@ -155,7 +157,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onScroll() {
     if (this.scrollAtBottom()) {
-      this.addProjectsForInfiniteScroll();
+      this.addProjectsForInfiniteScroll2();
     }
   }
 
@@ -177,6 +179,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // option 1: push more projects into the array that is in the loop, however can't filter on projects not in array
   addProjectsForInfiniteScroll() {
     // get the number of currently displayed projects
     const numDisplayedProjects = this.projectsDisplay.length;
@@ -192,6 +195,23 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       const projectsToAdd = this.projects.slice(numDisplayedProjects, numDisplayedProjects + numProjectsToAdd);
       // add the new projects to the array of projects to display
       this.projectsDisplay.push(...projectsToAdd);
+    }
+  }
+
+  // option 2: use all projects in the ngFor, but use filter pipe to limit, update limit when reaching the bottom
+  addProjectsForInfiniteScroll2() {
+    // get the number of currently displayed projects
+    const numDisplayedProjects = this.numProjectsToDisplay;
+    // get the number of total projects
+    const numProjects = this.projects.length;
+    // calculate the number of remaining projects that could be displaed
+    const numRemainingProjects = numProjects - numDisplayedProjects;
+    // take the minimum of X projects or remaining projects
+    const numProjectsToAdd = Math.min(this.numProjectsToDisplayAtOnce, numRemainingProjects);
+    // if there are any more projects to add
+    if (numProjectsToAdd > 0) {
+      // update / increment the number of projects to display (using the filter pipe)
+      this.numProjectsToDisplay += numProjectsToAdd;
     }
   }
 

@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 // const Fuse = require('fuse'); // TODO
 import * as fuse from 'fuse.js';
+declare var $: any;
 
 @Pipe({
   name: 'filter',
@@ -13,9 +14,12 @@ export class FilterPipe implements PipeTransform {
     console.log('pipe filter options:');
     console.log(options);
 
+
     // check if a filter was provided (through string or options object)
     let hasFilter: boolean;
     if (filter) {
+      hasFilter = true;
+    } else if (options.hasOwnProperty('limitTo')) {
       hasFilter = true;
     } else if (options.hasOwnProperty('paginationFilter')) {
       hasFilter = options.paginationFilter.on;
@@ -38,6 +42,14 @@ export class FilterPipe implements PipeTransform {
           return regexp.test(object[prop][0]);
         });
       }
+    }
+
+    // no string filter, but has limitTo filter turned on
+    if (!filter && options.hasOwnProperty('limitTo')) {
+      console.log('limit to filter working');
+      return objects.filter((object, index) => {
+        return index <= +options.limitTo;
+      });
     }
 
     // for string filter
