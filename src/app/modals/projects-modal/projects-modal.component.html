@@ -5,11 +5,7 @@
       <div class="projects-filter-cont">
 
         <div class="projects-modal-filter">
-          <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter">
-        </div>
-
-        <div class="projects-modal-close" (click)="onCancelClicked()">
-          <i class="nc-icon nc-circle-remove projects-modal-close-button"></i>
+          <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter" appAutofocus>
         </div>
 
         <div class="projects-pagination" *ngIf="paginationLinks.length > 1">
@@ -29,6 +25,10 @@
             </li>
           </ul>
         </div>
+
+        <div class="projects-modal-close" (click)="onCancelClicked()">
+            <i class="nc-icon nc-circle-remove projects-modal-close-button"></i>
+          </div>
 
       </div>
 

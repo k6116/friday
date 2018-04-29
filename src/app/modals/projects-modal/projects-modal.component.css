@@ -1,4 +1,7 @@
 
+
+/* modal containers */
+
 div.projects-modal-outer-cont {
   position: fixed;
   top: 0;
@@ -29,9 +32,39 @@ div.projects-modal-body {
   padding: 0 40px;
 }
 
+
+/* filter / search box */
+
+div.projects-modal-filter {
+  display: inline-block;
+}
+
+div.projects-filter-cont {
+  margin: 40px 0;
+}
+
+input.projects-filter-input {
+  width: 200px;
+}
+
+
+/* pagination */
+
+div.projects-pagination {
+  display: inline-block;
+  margin-left: 20px;
+}
+
+div.projects-pagination {
+  font-size: 14px;
+}
+
 a.page-link.active {
   background-color: rgb(233, 236, 239);
 }
+
+
+/* close button */
 
 div.projects-modal-close-button-cont {
   position: absolute;
@@ -42,35 +75,21 @@ div.projects-modal-close-button-cont {
   margin: 0 auto;
 }
 
-
-div.projects-filter-cont {
-  margin: 40px 0;
-}
-
-div.project-table-cont {
-  overflow-y: scroll;
-}
-
-
-/* BILL'S CSS FOR CARDS */
-
 div.projects-modal-close {
   float: right;
   font-size: 30px;
-  color: grey;  
+  color: rgb(167, 167, 167);;  
 }
 
 i.projects-modal-close-button {
   cursor: pointer;
 }
 
-div.projects-modal-filter {
-  display: inline-block;
-}
 
-div.projects-pagination {
-  display: inline-block;
-  margin-left: 20px;
+/* cards */
+
+div.project-table-cont {
+  overflow-y: scroll;
 }
 
 .cards-cont {
@@ -79,28 +98,26 @@ div.projects-pagination {
   /* justify-content: space-between; */
 }
 
-/* Small devices (landscape phones, 576px and up) */
+/* media queries for card columns (1-5 columns) */
+
 @media (min-width: 576px) {
   div.card {
     flex-basis: 100%;
   }
 }
 
-/* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {
   div.card {
     flex-basis: 46.5%;
   }
 }
 
-/* Large devices (desktops, 992px and up) */
 @media (min-width: 1000px) {
   div.card {
     flex-basis: 30.7%;
   }
 }
 
-/* Large devices (desktops, 992px and up) */
 @media (min-width: 1300px) {
   div.card {
     flex-basis: 23.1%;
@@ -108,7 +125,6 @@ div.projects-pagination {
 
 }
 
-/* Extra large devices (large desktops, 1700px and up) */
 @media (min-width: 1600px) {
   div.card {
     flex-basis: 18.5%;
@@ -123,8 +139,6 @@ div.card {
 .card-header-cont {
   background-color: rgb(236, 236, 236);
   padding: 10px 20px 5px 20px;
-  font-weight: 600;
-  font-size: 18px;
 }
 
 .card-header-img {
@@ -145,6 +159,19 @@ img.card-project-avatar {
   overflow: hidden;
   display: inline-block;
   width: 75%;
+  font-weight: 600;
+  font-size: 17px;
+}
+
+div.card-body {
+  display: inline-block;
+  width: 85%;
+  padding: 10px 20px 30px 20px;
+}
+
+h5.card-title {
+  font-weight: 600;
+  font-size: 16px;
 }
 
 p.card-text {
@@ -153,6 +180,7 @@ p.card-text {
   line-height: 1.4em;
   height: 5.6em;
   text-align: left;
+  font-size: 15px;
 }
 
 p.card-text:after {
@@ -166,28 +194,13 @@ p.card-text:after {
   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
-div.card-body {
-  display: inline-block;
-  width: 85%;
-  padding: 10px 20px 30px 20px;
-}
-
-h5.card-title {
-  font-weight: 600;
-  font-size: 18px;
-}
-
-/* div.card-buttons {
-  float: right;
-} */
-
 div.card-buttons {
   float: right;
   margin-left: auto;
   margin-top: auto;
   position: absolute;
   right: 0;
-  top: 72.39px;
+  top: 68.59px;
 }
 
 div.card-button {
@@ -199,53 +212,42 @@ div.card-button {
   cursor: pointer;
 }
 
+button.project-select-button {
+  font-size: 15px;
+}
+
 .card-footer {
   text-align: center;
 }
 
 
+/* bootstrap 4 override test */
+
+.form-control {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.form-control:focus {
+  /* border-color: rgb(102, 175, 233);   bootstrap blue */
+  border-color: rgb(163, 197, 255);
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(163, 197, 255, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(163, 197, 255, .6);
+}
 
 
-
-
-
-
-/* contents within modal */
-
-  .infinite-card {
-    /* adjust width percentage to control x-number of cards per row */
-     width: 20%; 
-     display: inline-block;
-     font-size: 10px;
-     margin-left: 5px;
-     margin-right: 0px;
-  }
-
-  .project-table {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-  }
-
-  .project-name {
-    text-align: center;
-    font-size: 10px;
-    font-weight: bold;
-  }
-
-  .project-type {
-   text-align: center;
-   font-weight: bold;
-  }
-
-  .project-sub-menu {  
-    font-size: 8px;
-    height: 10px;
-    width: 10px;
-  }
-
-  .select-project {
-    position: absolute;
-    left: 2px;
-    top: 145px;
-  }
