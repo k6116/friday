@@ -252,7 +252,10 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     // update the project
     const randomProject: number = Math.floor((Math.random() * (10)));
-    this.clickedProject = this.projects[randomProject];
+    const projectID = $(element).closest('div.card-button').data('id');
+    this.clickedProject = this.projects.find(project => {
+      return project.ProjectID === +projectID;
+    });
 
     // show the modal
     this.showInfoModal = true;

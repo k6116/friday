@@ -7,7 +7,15 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class ProjectsInfoModalComponent implements OnInit {
 
-  @Input() project: any;
+  // @Input() project: any;
+  // private _categoryId: string;
+  project: any;
+
+  @Input() set selectedProject(value: any) {
+    this.project = value;
+    console.log(this.project);
+  }
+
   @Output() close = new EventEmitter<boolean>();
 
   constructor() { }

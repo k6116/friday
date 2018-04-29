@@ -36,7 +36,7 @@
 
       <div class="project-table-cont" (scroll)="onScroll()">   
         
-        <app-projects-info-modal [style.display]="showInfoModal ? 'inline' : 'none'" [project]="clickedProject" (close)="onProjectsInfoModalCloseClick()"></app-projects-info-modal>
+        <app-projects-info-modal [style.display]="showInfoModal ? 'inline' : 'none'" [selectedProject]="clickedProject" (close)="onProjectsInfoModalCloseClick()"></app-projects-info-modal>
       
         <div class="cards-cont">
           
