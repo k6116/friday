@@ -54,6 +54,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   numProjectsToDisplayAtOnce: number;
   numProjectsToDisplay: number;
   showInfoModal: boolean;
+  clickedProject: any;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -221,7 +222,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     console.log($(element));
 
     let left = $(element).closest('div.card-button').offset().left - $(element).closest('div.project-table-cont').offset().left + 35;
-    const top = $(element).closest('div.card-button').offset().top - $(element).closest('div.project-table-cont').offset().top;
+    const top = ($(element).closest('div.card-button').offset().top -
+      $('div.project-table-cont').offset().top) + $('div.project-table-cont').scrollTop();
 
     console.log(`position - top: ${top}, left: ${left}`);
 
@@ -247,6 +249,10 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     const $el = $('div.projects-info-modal-outer-cont');
     $el.css('left', left);
     $el.css('top', top);
+
+    // update the project
+    const randomProject: number = Math.floor((Math.random() * (10)));
+    this.clickedProject = this.projects[randomProject];
 
     // show the modal
     this.showInfoModal = true;
