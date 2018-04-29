@@ -53,6 +53,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   projectsDisplay: any;
   numProjectsToDisplayAtOnce: number;
   numProjectsToDisplay: number;
+  showInfoModal: boolean;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -172,7 +173,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     const height = $el.height();
     const totalDivHeight = scrollHeight - height;
     // if the scroll position is at (or maybe slightly below due to rounding), return true otherwise false
-    if (scrollPosition >= totalDivHeight) {
+    if (scrollPosition >= totalDivHeight - 5) {
       return true;
     } else {
       return false;
@@ -215,11 +216,52 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onProjectInfoClick(element) {
+    console.log('project info clicked');
+    console.log($(element));
+
+    let left = $(element).closest('div.card-button').offset().left - $(element).closest('div.project-table-cont').offset().left + 35;
+    const top = $(element).closest('div.card-button').offset().top - $(element).closest('div.project-table-cont').offset().top;
+
+    console.log(`position - top: ${top}, left: ${left}`);
+
+    const cardsWidth = $('div.project-table-cont').width();
+    const widthRight = cardsWidth - left;
+    const widthLeft = left;
+
+    // rule: if there is enough width to the right (400px), show to the right, otherwise take the max of the two and use that
+    // to show to the left, just subtract the width (400px) to use for the left property (plus 35)
+    console.log(`remaining widths - right: ${widthRight}, left: ${widthLeft}`);
+    if (widthRight > 400) {
+      left = left;
+    } else {
+      const maxWidth = Math.max(widthRight, widthLeft);
+      if (maxWidth === widthRight) {
+        left = left;
+      } else {
+        left = left - 400 - 35;
+      }
+    }
+
+    // set the top and left css properties of the modal
+    const $el = $('div.projects-info-modal-outer-cont');
+    $el.css('left', left);
+    $el.css('top', top);
+
+    // show the modal
+    this.showInfoModal = true;
+
+  }
+
   onCancelClicked() {
     console.log('cancel button clicked');
     this.outerDivState = 'out';
     this.innerDivState = 'out';
     this.cancel.emit(true);
+  }
+
+  onProjectsInfoModalCloseClick() {
+    this.showInfoModal = false;
   }
 
 }

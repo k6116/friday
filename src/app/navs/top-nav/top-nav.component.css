@@ -33,6 +33,13 @@
   position: relative;
 }
 
+.app-logo-img {
+  height: 45px;
+  width: 45px;
+  position: relative;
+  top: -5px;
+}
+
 .app-title-cont {
   float: left;
 }
@@ -51,7 +58,7 @@
   font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: rgb(23, 107, 167);
+  color: #283593;
   display: inline;
   padding-left: 5px;
   line-height: 55px;

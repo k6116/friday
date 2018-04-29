@@ -90,6 +90,7 @@ i.projects-modal-close-button {
 
 div.project-table-cont {
   overflow-y: scroll;
+  position: relative;  /* set to relative for the button modals to be absolutely positioned */
 }
 
 .cards-cont {

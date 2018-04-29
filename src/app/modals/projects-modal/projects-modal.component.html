@@ -36,6 +36,7 @@
 
       <div class="project-table-cont" (scroll)="onScroll()">   
         
+        <app-projects-info-modal [style.display]="showInfoModal ? 'inline' : 'none'" (close)="onProjectsInfoModalCloseClick()"></app-projects-info-modal>
       
         <div class="cards-cont">
           
@@ -53,7 +54,7 @@
               <p class="card-text">{{ project.Description }}</p>
             </div>
             <div class="card-buttons">
-              <div class="card-button" data-toggle="tooltip" data-placement="right" title="Project Info">
+              <div class="card-button" [attr.data-id]="project.ProjectID" data-toggle="tooltip" data-placement="right" title="Project Info" (click)="onProjectInfoClick($event.target)">
                 <i class="fa fa-info" aria-hidden="true"></i>
               </div>
               <div class="card-button" data-toggle="tooltip" data-placement="right" title="Project Roster">

@@ -43,6 +43,7 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
 import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
+import { ProjectsInfoModalComponent } from './modals/projects-info-modal/projects-info-modal.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropd
     ProjectsModalComponent,
     FilterPipe,
     TestComponent,
-    OrgDropdownComponent
+    OrgDropdownComponent,
+    ProjectsInfoModalComponent
   ],
   imports: [
     AppRoutingModule,

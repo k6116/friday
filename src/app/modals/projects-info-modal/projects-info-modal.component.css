@@ -1,0 +1,12 @@
+
+div.projects-info-modal-outer-cont {
+  height: 300px;
+  width: 400px;
+  background-color: white;
+  z-index: 200;
+  display: inline-block;
+  position: absolute;
+  top: 70px;
+  left: 264px;
+  border: 1px solid lightgrey;
+}
