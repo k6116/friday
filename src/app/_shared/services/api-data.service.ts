@@ -107,4 +107,10 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getProjectRoster(projectID: number) {
+    return this.http.get(`/api/getProjectRoster/${projectID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
 }

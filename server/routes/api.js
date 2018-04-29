@@ -14,7 +14,8 @@ router.post('/resetToken', controllers.auth.resetToken);
 router.get('/ftedata/:userID', controllers.fteData.getFteData);
 router.post('/ftedata/:userID', controllers.fteData.update);
 
-// project list data
+// PROJECTS CONTROLLER
+router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
 // router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
 
 // ORG TREE DATA

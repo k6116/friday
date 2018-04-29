@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ApiDataService } from '../../_shared/services/api-data.service';
 
 @Component({
   selector: 'app-projects-info-modal',
@@ -7,20 +8,38 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class ProjectsInfoModalComponent implements OnInit {
 
-  // @Input() project: any;
-  // private _categoryId: string;
   project: any;
+  projectRoster: any;
 
   @Input() set selectedProject(value: any) {
     this.project = value;
     console.log(this.project);
+    if (this.project) {
+      this.getProjectRoster();
+    }
   }
 
   @Output() close = new EventEmitter<boolean>();
 
-  constructor() { }
+  constructor(
+    private apiDataService: ApiDataService
+  ) { }
 
   ngOnInit() {
+  }
+
+  getProjectRoster() {
+    console.log('getting project roster');
+    this.apiDataService.getProjectRoster(this.project.ProjectID)
+    .subscribe(
+      res => {
+        console.log('project roster:');
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
   onCloseClick() {

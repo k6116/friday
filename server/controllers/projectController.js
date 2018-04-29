@@ -1,4 +1,7 @@
 const sequelize = require('../db/sequelize').sequelize;
+const models = require('../models/_index')
+const moment = require('moment');
+const momentTz = require('moment-timezone');
 
 function getAll(req, res) {
    
@@ -16,9 +19,31 @@ function getAll(req, res) {
     console.log("Returning Projects");
     console.log(p);
      res.json(p);
-    })  
+    })
+
+}
+
+function getProjectRoster(req, res) {
+
+  const projectID = req.params.projectID;
+  const month = moment().utc().startOf('month');
+
+  models.ProjectEmployee.findAll({
+    where: {projectID: projectID, fiscalDate: month}
+  })
+  .then(projectEmployees => {
+    res.json(projectEmployees);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+
 }
 
 module.exports = {
-    getAll: getAll
+  getAll: getAll,
+  getProjectRoster: getProjectRoster
 }
