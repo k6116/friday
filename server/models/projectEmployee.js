@@ -2,6 +2,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize').sequelize;
 
+const User = require('./user');
 
 const ProjectEmployee = sequelize.define('projectEmployee',
   {
@@ -20,5 +21,9 @@ const ProjectEmployee = sequelize.define('projectEmployee',
   }
 );
 
+// ProjectEmployee.hasMany(User);
+// ProjectEmployee.hasMany(User, {foreignKey: 'EmployeeID', targetKey: 'EmployeeID'});
+ProjectEmployee.hasMany(User, {foreignKey: 'EmployeeID', sourceKey: 'EmployeeID'});
+// User.belongsTo(ProjectEmployee, {foreignKey: 'EmployeeID', targetKey: 'EmployeeID'});
 
 module.exports = ProjectEmployee

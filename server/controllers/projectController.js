@@ -29,7 +29,11 @@ function getProjectRoster(req, res) {
   const month = moment().utc().startOf('month');
 
   models.ProjectEmployee.findAll({
-    where: {projectID: projectID, fiscalDate: month}
+    where: {projectID: projectID, fiscalDate: month},
+    attributes: ['projectID', 'employeeID'],
+    include: [
+      { model: models.User }
+    ]
   })
   .then(projectEmployees => {
     res.json(projectEmployees);
