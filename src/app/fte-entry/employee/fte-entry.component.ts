@@ -607,7 +607,9 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
   clearEmptyProjects() {
     // look for any projects where all FTE values are null, and remove from the data object
-
+    // then, rebuild the FTE entry form to remove the empty project form
+    // also, count if any rows needed to be altered.  If not, don't rebuild the FTE entry form (fixes display flicker problem)
+    let countChanges = 0;
     this.userFTEs.forEach( project => {
       const max = project.allocations.length;
       let i = 0;
@@ -617,9 +619,12 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
       if (i === max) {
         const index = this.userFTEs.indexOf(project);
         this.userFTEs.splice(index, 1);
+        countChanges++;
       }
     });
-
+    if (countChanges) {
+      this.buildFteEntryForm(false);
+    }
   }
 
   checkIfNoProjectsVisible() {
