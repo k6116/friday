@@ -36,15 +36,15 @@
 
       <div class="project-table-cont" (scroll)="onScroll()">   
         
-        <app-projects-info-modal [style.display]="showInfoModal ? 'inline' : 'none'" [project]="clickedProject" (close)="onProjectsInfoModalCloseClick()"></app-projects-info-modal>
-        <app-projects-roster-modal [style.display]="showRosterModal ? 'inline' : 'none'" [selectedProject]="clickedProject" (close)="onProjectsRosterModalCloseClick()"></app-projects-roster-modal>
+        <app-projects-info-modal [style.display]="showInfoModal ? 'inline' : 'none'" [project]="clickedProjectForInfoModal" (close)="onProjectsInfoModalCloseClick()"></app-projects-info-modal>
+        <app-projects-roster-modal [style.display]="showRosterModal ? 'inline' : 'none'" [selectedProject]="clickedProjectForRosterModal" (close)="onProjectsRosterModalCloseClick()"></app-projects-roster-modal>
 
         <div class="cards-cont">
           
           <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{limitTo: numProjectsToDisplay, matchOptimistic: true, paginationFilter: paginateFilter}">
             <div class="card-header-cont">
                 <div class="card-header-img" *ngIf="project.avatar">
-                  <img class="card-project-avatar" [attr.src]="project.avatar" alt="">
+                  <img class="card-project-avatar" [src]="project.avatar" alt="">
                 </div>
               <div class="card-header-text">
                 {{ project.ProjectName }}

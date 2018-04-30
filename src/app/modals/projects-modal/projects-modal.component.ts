@@ -55,7 +55,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   numProjectsToDisplay: number;
   showInfoModal: boolean;
   showRosterModal: boolean;
-  clickedProject: any;
+  clickedProjectForInfoModal: any;
+  clickedProjectForRosterModal: any;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -228,8 +229,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // set the modal position (top and left css properties)
     this.setModalPosition(position, 'div.projects-info-modal-outer-cont');
 
-    // set and deliver the project data to the modal component
-    this.setProject(element);
+    // get and deliver the project data to the modal component
+    this.clickedProjectForInfoModal = this.getProject(element);
 
     // show the modal
     setTimeout(() => {
@@ -247,8 +248,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // set the modal position (top and left css properties)
     this.setModalPosition(position, 'div.projects-roster-modal-outer-cont');
 
-    // set and deliver the project data to the modal component
-    this.setProject(element);
+    // get and deliver the project data to the modal component
+    this.clickedProjectForRosterModal = this.getProject(element);
 
     // show the modal
     setTimeout(() => {
@@ -311,13 +312,13 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   // update the clickedProject that is passed to the component through @input
-  setProject(element) {
+  getProject(element): any {
 
     // get the project id from the card buttons custom html attribute 'data-id'
     const projectID = $(element).closest('div.card-button').data('id');
 
     // find the project from the array of all projects using the id
-    this.clickedProject = this.projects.find(project => {
+    return this.projects.find(project => {
       return project.ProjectID === +projectID;
     });
 
