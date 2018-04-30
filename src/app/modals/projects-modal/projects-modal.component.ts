@@ -288,7 +288,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       if (maxWidth === widthRight) {
         left = left + buttonWidth;   // display modal to the right of the button
       } else {
-        left = left - modalWidth - buttonWidth;   // display modal to the left of the button
+        left = left - modalWidth;   // display modal to the left of the button
       }
     }
 
