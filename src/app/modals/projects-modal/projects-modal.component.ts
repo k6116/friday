@@ -286,28 +286,52 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     const modalWidth = $(modalSelector).outerWidth();
 
     // calculate the left position
+    let position: string;
     if (widthRight > modalWidth) {
-      left = left + buttonWidth;   // display modal to the right of the button
+      position = 'right';
+      left = left + buttonWidth + 10;   // display modal to the right of the button
     } else {
       const maxWidth = Math.max(widthRight, widthLeft);
       if (maxWidth === widthRight) {
-        left = left + buttonWidth;   // display modal to the right of the button
+        position = 'right';
+        left = left + buttonWidth + 10;   // display modal to the right of the button
       } else {
-        left = left - modalWidth;   // display modal to the left of the button
+        position = 'left';
+        left = left - modalWidth - 10;   // display modal to the left of the button
       }
     }
 
     // return an object with the left and top values
-    return {left: left, top: top};
+    return {
+      position: position,
+      left: left,
+      top: top
+    };
 
   }
 
   // update the top and left css properties for the modal
   setModalPosition(position, selector) {
 
+    // set the container's position
     const $el = $(selector);
     $el.css('left', position.left);
     $el.css('top', position.top);
+
+    // set the triangle position
+    const $elTriangle = $(`${selector} .dropdown-triangle`);
+    const $elTriangleCover = $(`${selector} .dropdown-triangle-cover`);
+    if (position.position === 'right') {
+      $elTriangle.css('left', '-8px');
+      $elTriangle.css('right', 'unset');
+      $elTriangleCover.css('left', '0');
+      $elTriangleCover.css('right', 'unset');
+    } else if (position.position === 'left') {
+      $elTriangle.css('left', 'unset');
+      $elTriangle.css('right', '-8px');
+      $elTriangleCover.css('left', 'unset');
+      $elTriangleCover.css('right', '0');
+    }
 
   }
 

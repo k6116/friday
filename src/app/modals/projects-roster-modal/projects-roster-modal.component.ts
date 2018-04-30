@@ -39,6 +39,9 @@ export class ProjectsRosterModalComponent implements OnInit {
       res => {
         console.log('project roster:');
         console.log(res);
+        if (res.length) {
+          this.projectRoster = res[0];
+        }
       },
       err => {
         console.log(err);
