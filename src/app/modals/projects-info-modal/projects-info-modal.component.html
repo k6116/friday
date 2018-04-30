@@ -1,5 +1,5 @@
 
-<div class="projects-info-modal-outer-cont">
+<div class="projects-info-modal-outer-cont" (clickOutside)="onClickedOutside($event)">
   projects info contents
   <a (click)="onCloseClick()">close</a>
   <div>

@@ -37,6 +37,7 @@
     "moment-fquarter": "^1.0.0",
     "moment-timezone": "^0.5.14",
     "ng2-nouislider": "^1.7.7",
+    "ng4-click-outside": "^1.0.1",
     "node": "^9.11.0",
     "nouislider": "^11.0.3",
     "pretty-checkbox": "^3.0.3",

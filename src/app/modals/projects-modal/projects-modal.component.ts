@@ -232,7 +232,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.setProject(element);
 
     // show the modal
-    this.showInfoModal = true;
+    setTimeout(() => {
+      this.showInfoModal = true;
+    }, 0);
 
   }
 
@@ -249,7 +251,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.setProject(element);
 
     // show the modal
-    this.showRosterModal = true;
+    setTimeout(() => {
+      this.showRosterModal = true;
+    }, 0);
 
   }
 
@@ -327,11 +331,15 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   onProjectsInfoModalCloseClick() {
-    this.showInfoModal = false;
+    setTimeout(() => {
+      this.showInfoModal = false;
+    }, 0);
   }
 
   onProjectsRosterModalCloseClick() {
-    this.showRosterModal = false;
+    setTimeout(() => {
+      this.showRosterModal = false;
+    }, 0);
   }
 
 }
