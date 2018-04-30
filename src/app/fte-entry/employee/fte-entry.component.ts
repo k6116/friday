@@ -48,6 +48,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   // initialize variables
   mainSliderConfig: any;  // slider config
   fteMonthVisible = new Array(36).fill(false);  // boolean array for by-month FTE form display
+  fteMonthEditable = new Array(36).fill(false);  // boolean array for by-month FTE box disabling
   fteProjectVisible = new Array;  // boolean array for by-project row display
   FTEFormGroup: FormGroup;
   sliderRange: number[] = []; // contains the live slider values
@@ -99,6 +100,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     });
 
     this.buildMonthsArray();
+    this.buildFteEditableArray();
 
   }
 
@@ -304,6 +306,31 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < numMonths; i++) {
       this.months.push(moment(startDate).add(i, 'months'));
     }
+  }
+
+  buildFteEditableArray() {
+    // build a boolean array of FTE entry months that are editable, based on current month
+    const startMonth = this.months[0];
+    let currentMonth = moment().utc().startOf('month');
+    const secondMonthInQuarter = [2, 5, 8, 11];
+    const thirdMonthInQuarter = [0, 3, 6, 9];
+
+    // we want current fiscal quarter to be editable as long as we are in that FQ,
+    // so adjust the current month to allow all months in the current quarter to be editable
+    if (moment(currentMonth).month() in thirdMonthInQuarter) {
+      console.log('third month in quarter');
+      currentMonth = moment(currentMonth).subtract(2, 'months');
+    } else if (moment(currentMonth).month() in secondMonthInQuarter) {
+      console.log('second month in quarter');
+      currentMonth = moment(currentMonth).subtract(1, 'month');
+    } else {
+      console.log('first month in quarter');
+    }
+
+    // find the number of months between the start of the FTE display and current month
+    const monthsBetween = currentMonth.diff(startMonth, 'months');
+    this.fteMonthEditable.fill(true, 0, monthsBetween);  // zero-indexed
+    console.log(this.fteMonthEditable);
   }
 
   buildFteEntryForm = (isNewProject: boolean): void => {
@@ -517,7 +544,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     };
   }
 
-  onSliderChange(value: any) {
+  onSliderChange(value: any) {  // event only fires when slider handle is dropped
     // round the slider values and set the handles to emulate snapping
     const leftHandle = Math.round(value[0]);
     const rightHandle = Math.round(value[1]);
@@ -526,7 +553,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     this.clearEmptyProjects();  // only do when slider is dropped, (not mid-drag) for performance
   }
 
-  onSliderUpdate(value: any) {
+  onSliderUpdate(value: any) {  // event fires while slider handle is mid-drag
 
     // get rounded handle values, but don't set
     const leftHandle = Math.round(value[0]);
@@ -580,6 +607,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
   clearEmptyProjects() {
     // look for any projects where all FTE values are null, and remove from the data object
+
     this.userFTEs.forEach( project => {
       const max = project.allocations.length;
       let i = 0;
@@ -591,7 +619,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         this.userFTEs.splice(index, 1);
       }
     });
-    this.buildFteEntryForm(false);
+
   }
 
   checkIfNoProjectsVisible() {
