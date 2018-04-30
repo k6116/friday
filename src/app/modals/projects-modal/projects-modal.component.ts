@@ -237,6 +237,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       this.showInfoModal = true;
     }, 0);
 
+    // hide the tooltip
+    $(`.card-button.info[data-id=${this.clickedProjectForInfoModal.ProjectID}]`).tooltip('hide');
+
   }
 
 
@@ -255,6 +258,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.showRosterModal = true;
     }, 0);
+
+    // hide the tooltip
+    $(`.card-button.roster[data-id=${this.clickedProjectForRosterModal.ProjectID}]`).tooltip('hide');
 
   }
 
@@ -365,6 +371,27 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.showRosterModal = false;
     }, 0);
+  }
+
+  onCardButtonMouseEnter(title: string, buttonClass: string, projectID: number) {
+
+    console.log(`card button mouse enter for ${title}`);
+
+    // set bootstrap tooltip options (uses js not html so need to set the title)
+    const tooltipOptions = {
+      title: title,
+      placement: 'right'
+    };
+
+    if (buttonClass === 'roster' && this.showRosterModal && this.clickedProjectForRosterModal.ProjectID === projectID) {
+      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('hide');
+    } else if (buttonClass === 'info' && this.showInfoModal && this.clickedProjectForInfoModal.ProjectID === projectID) {
+      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('hide');
+    } else {
+      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
+      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('show');
+    }
+
   }
 
 }
