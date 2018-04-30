@@ -1,0 +1,12 @@
+
+div.projects-roster-modal-outer-cont {
+  height: 400px;
+  width: 225px;
+  background-color: white;
+  z-index: 200;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid lightgrey;
+}

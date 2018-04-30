@@ -36,8 +36,9 @@
 
       <div class="project-table-cont" (scroll)="onScroll()">   
         
-        <app-projects-info-modal [style.display]="showInfoModal ? 'inline' : 'none'" [selectedProject]="clickedProject" (close)="onProjectsInfoModalCloseClick()"></app-projects-info-modal>
-      
+        <app-projects-info-modal [style.display]="showInfoModal ? 'inline' : 'none'" [project]="clickedProject" (close)="onProjectsInfoModalCloseClick()"></app-projects-info-modal>
+        <app-projects-roster-modal [style.display]="showRosterModal ? 'inline' : 'none'" [selectedProject]="clickedProject" (close)="onProjectsRosterModalCloseClick()"></app-projects-roster-modal>
+
         <div class="cards-cont">
           
           <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{limitTo: numProjectsToDisplay, matchOptimistic: true, paginationFilter: paginateFilter}">
@@ -57,7 +58,7 @@
               <div class="card-button" [attr.data-id]="project.ProjectID" data-toggle="tooltip" data-placement="right" title="Project Info" (click)="onProjectInfoClick($event.target)">
                 <i class="fa fa-info" aria-hidden="true"></i>
               </div>
-              <div class="card-button" data-toggle="tooltip" data-placement="right" title="Project Roster">
+              <div class="card-button" [attr.data-id]="project.ProjectID" data-toggle="tooltip" data-placement="right" title="Project Roster" (click)="onProjectRosterClick($event.target)">
                 <i class="fa fa-user-circle-o" aria-hidden="true"></i>
               </div>
               <div class="card-button" data-toggle="tooltip" data-placement="right" title="Something Else">

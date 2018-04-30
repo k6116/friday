@@ -54,6 +54,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   numProjectsToDisplayAtOnce: number;
   numProjectsToDisplay: number;
   showInfoModal: boolean;
+  showRosterModal: boolean;
   clickedProject: any;
 
   @Input() projects: any;
@@ -262,6 +263,52 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
+
+  onProjectRosterClick(element) {
+    console.log('project roster clicked');
+    console.log($(element));
+
+    let left = $(element).closest('div.card-button').offset().left - $(element).closest('div.project-table-cont').offset().left + 35;
+    const top = ($(element).closest('div.card-button').offset().top -
+      $('div.project-table-cont').offset().top) + $('div.project-table-cont').scrollTop();
+
+    console.log(`position - top: ${top}, left: ${left}`);
+
+    const cardsWidth = $('div.project-table-cont').width();
+    const widthRight = cardsWidth - left;
+    const widthLeft = left;
+
+    // rule: if there is enough width to the right (400px), show to the right, otherwise take the max of the two and use that
+    // to show to the left, just subtract the width (400px) to use for the left property (plus 35)
+    console.log(`remaining widths - right: ${widthRight}, left: ${widthLeft}`);
+    if (widthRight > 400) {
+      left = left;
+    } else {
+      const maxWidth = Math.max(widthRight, widthLeft);
+      if (maxWidth === widthRight) {
+        left = left;
+      } else {
+        left = left - 400 - 35;
+      }
+    }
+
+    // set the top and left css properties of the modal
+    const $el = $('div.projects-info-modal-outer-cont');
+    $el.css('left', left);
+    $el.css('top', top);
+
+    // update the project
+    const randomProject: number = Math.floor((Math.random() * (10)));
+    const projectID = $(element).closest('div.card-button').data('id');
+    this.clickedProject = this.projects.find(project => {
+      return project.ProjectID === +projectID;
+    });
+
+    // show the modal
+    this.showInfoModal = true;
+
+  }
+
   onCancelClicked() {
     console.log('cancel button clicked');
     this.outerDivState = 'out';
@@ -271,6 +318,10 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onProjectsInfoModalCloseClick() {
     this.showInfoModal = false;
+  }
+
+  onProjectsRosterModalCloseClick() {
+    this.showRosterModal = false;
   }
 
 }

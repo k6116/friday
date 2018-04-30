@@ -6,7 +6,7 @@ div.projects-info-modal-outer-cont {
   z-index: 200;
   display: inline-block;
   position: absolute;
-  top: 70px;
-  left: 264px;
+  top: 0;
+  left: 0;
   border: 1px solid lightgrey;
 }
