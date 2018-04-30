@@ -48,8 +48,9 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   // initialize variables
   mainSliderConfig: any;  // slider config
   fteMonthVisible = new Array(36).fill(false);  // boolean array for by-month FTE form display
-  fteMonthEditable = new Array(36).fill(false);  // boolean array for by-month FTE box disabling
+  fteMonthEditable = new Array(36).fill(true);  // boolean array for by-month FTE box disabling
   fteProjectVisible = new Array;  // boolean array for by-project row display
+  fteProjectDeletable = new Array;  // boolean array for by-project delete-ability
   FTEFormGroup: FormGroup;
   sliderRange: number[] = []; // contains the live slider values
   userFTEs: any;  // array to store user FTE data
@@ -101,6 +102,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
     this.buildMonthsArray();
     this.buildFteEditableArray();
+
 
   }
 
@@ -329,7 +331,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
     // find the number of months between the start of the FTE display and current month
     const monthsBetween = currentMonth.diff(startMonth, 'months');
-    this.fteMonthEditable.fill(true, 0, monthsBetween);  // zero-indexed
+    this.fteMonthEditable.fill(false, 0, monthsBetween);  // zero-indexed
     console.log(this.fteMonthEditable);
   }
 
@@ -340,9 +342,10 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     // remove any existing form groups in the array
     this.toolsService.clearFormArray(FTEFormArray);
 
-    // if a new project was added that triggered this function call, push a temporary true to display it
+    // if a new project was added that triggered this function call, push a temporary true to display it and make it delete-able
     if (isNewProject) {
       this.fteProjectVisible.push(true);
+      this.fteProjectDeletable.push(true);
     } else {
       this.fteProjectVisible.length = 0;  // clear out project visibility
     }
@@ -391,6 +394,8 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     this.setMonthlyTotalsBorder();
 
     this.checkIfNoProjectsVisible();
+
+    this.updateProjectDeletability();
 
   }
 
@@ -603,6 +608,38 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         }
       }
     });
+  }
+
+  updateProjectDeletability() {
+    // reset project visibility
+    this.fteProjectDeletable.length = 0;
+
+    // set new project visibility
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
+    const firstDeletableMonth = this.fteMonthEditable.findIndex( value => {
+      return value; // look for the first month that is editable
+    });
+    console.log('bla');
+    console.log(firstDeletableMonth);
+
+    FTEFormArray.controls.forEach( project => {
+      let nullCounter = 0;
+
+      for (let i = 0; i < firstDeletableMonth; i++) {
+        const currProjControls = project['controls'][i].controls;
+        if (currProjControls.fte.value) {
+          // if any of the controls have an FTE value, break out of the loop and make the whole project not deletable
+          i = firstDeletableMonth;
+          nullCounter = 0; // reset nullCounter
+          this.fteProjectDeletable.push(false);
+        } else { nullCounter++; }
+      }
+
+      if (nullCounter === firstDeletableMonth) {
+        this.fteProjectDeletable.push(true);
+      }
+    });
+    console.log(this.fteProjectDeletable);
   }
 
   clearEmptyProjects() {

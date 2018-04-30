@@ -20,6 +20,7 @@
                   <table class="table-ftes">
                       <thead>
                           <tr> <!-- first row of table is month-name column-headers -->
+                              <th class="header-project">&nbsp;</th><!-- for trash icon -->
                               <th class="header-project">Project</th>
                               <!-- loop through each month in the userFTEs data object-->
                               <ng-container *ngFor="let month of months; let k = index">
@@ -32,19 +33,23 @@
                           <!-- loop through each project, one row per project -->
                           <ng-container *ngFor="let project of projects; let i = index">
                             <tr [formGroupName]="i" [style.display]="fteProjectVisible[i] ? 'table-row' : 'none'">
+                                <td class="col-project-name"> <!-- for trash icon -->
+                                    <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" aria-hidden="true"></i>
+                                </td>
                                 <td class="col-project-name">{{project.projectName}}</td>
                                 <!-- loop through each month's FTE allocation, "monthly" cells per project -->
                                 <ng-container *ngFor="let month of months; let j = index">
                                     <!-- [@conditionState]="state" -->
                                     <td [formGroupName]="j" *ngIf="fteMonthVisible[j]"> <!-- only show if slider deems it visible -->
                                         <!-- TODO: setup to use formControlName only instead of ngModel for sending to db -->
-                                        <input type="text" formControlName="fte" class="form-control fte-table-row" [attr.disabled]="fteMonthEditable[j] ? '' : null" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
+                                        <input type="text" formControlName="fte" class="form-control fte-table-row" [attr.disabled]="fteMonthEditable[j] ? null : ''" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
                                     </td>
                                 </ng-container>
                             </tr>
                           </ng-container>
                           <!-- totals row-->
                           <tr class="totals-row">
+                              <td class="col-total-name totals-row-cell">&nbsp;</td> <!-- for trash icon -->
                               <td class="col-total-name totals-row-cell">TOTAL</td>
                               <ng-container *ngFor="let month of months; let z = index">
                                   <td class="totals-row-cell" *ngIf="fteMonthVisible[z]">
