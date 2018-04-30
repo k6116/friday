@@ -1,7 +1,7 @@
 const sequelize = require('../db/sequelize').sequelize;
 const models = require('../models/_index')
 const moment = require('moment');
-const momentTz = require('moment-timezone');
+const Treeize = require('treeize');
 
 function getAll(req, res) {
    
@@ -26,17 +26,30 @@ function getAll(req, res) {
 function getProjectRoster(req, res) {
 
   const projectID = req.params.projectID;
-  const month = moment().utc().startOf('month');
+  const month = moment().utc().startOf('month').format('YYYY-MM-DD')
 
-  models.ProjectEmployee.findAll({
-    where: {projectID: projectID, fiscalDate: month},
-    attributes: ['projectID', 'employeeID'],
-    include: [
-      { model: models.User }
-    ]
-  })
-  .then(projectEmployees => {
-    res.json(projectEmployees);
+  const sql = `
+    SELECT 
+      T1.ProjectID as 'projectID',
+      T1.ProjectName as 'projectName',
+      T1.[Description] as 'description',
+      T3.FullName as 'teamMembers:name',
+      T2.FTE as 'teamMembers:fte'
+    FROM 
+      projects.Projects T1
+      LEFT JOIN resources.ProjectEmployees T2 ON T1.ProjectID = T2.ProjectID
+      LEFT JOIN accesscontrol.Employees T3 ON T2.EmployeeID = T3.EmployeeID
+    WHERE 
+      T1.ProjectID = ${projectID}
+      AND T2.FiscalDate = '${month}'
+  `
+
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+  .then(projectTeamData => {
+    const projectTeamTree = new Treeize();
+    projectTeamTree.grow(projectTeamData);
+    const projectTeam = projectTeamTree.getData();
+    res.json(projectTeam);
   })
   .catch(error => {
     res.status(400).json({
@@ -44,6 +57,7 @@ function getProjectRoster(req, res) {
       error: {message: error}
     })
   });
+
 
 }
 
