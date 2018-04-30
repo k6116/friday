@@ -203,6 +203,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   // option 2: use all projects in the ngFor, but use filter pipe to limit, update limit when reaching the bottom
   addProjectsForInfiniteScroll2() {
+
     // get the number of currently displayed projects
     const numDisplayedProjects = this.numProjectsToDisplay;
     // get the number of total projects
@@ -216,47 +217,19 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       // update / increment the number of projects to display (using the filter pipe)
       this.numProjectsToDisplay += numProjectsToAdd;
     }
+
   }
 
   onProjectInfoClick(element) {
-    console.log('project info clicked');
-    console.log($(element));
 
-    let left = $(element).closest('div.card-button').offset().left - $(element).closest('div.project-table-cont').offset().left + 35;
-    const top = ($(element).closest('div.card-button').offset().top -
-      $('div.project-table-cont').offset().top) + $('div.project-table-cont').scrollTop();
+    // get the position to display based on the clicked element (button)
+    const position = this.calculateModalPosition(element, 'div.projects-info-modal-outer-cont');
 
-    console.log(`position - top: ${top}, left: ${left}`);
+    // set the modal position (top and left css properties)
+    this.setModalPosition(position, 'div.projects-info-modal-outer-cont');
 
-    const cardsWidth = $('div.project-table-cont').width();
-    const widthRight = cardsWidth - left;
-    const widthLeft = left;
-
-    // rule: if there is enough width to the right (400px), show to the right, otherwise take the max of the two and use that
-    // to show to the left, just subtract the width (400px) to use for the left property (plus 35)
-    console.log(`remaining widths - right: ${widthRight}, left: ${widthLeft}`);
-    if (widthRight > 400) {
-      left = left;
-    } else {
-      const maxWidth = Math.max(widthRight, widthLeft);
-      if (maxWidth === widthRight) {
-        left = left;
-      } else {
-        left = left - 400 - 35;
-      }
-    }
-
-    // set the top and left css properties of the modal
-    const $el = $('div.projects-info-modal-outer-cont');
-    $el.css('left', left);
-    $el.css('top', top);
-
-    // update the project
-    const randomProject: number = Math.floor((Math.random() * (10)));
-    const projectID = $(element).closest('div.card-button').data('id');
-    this.clickedProject = this.projects.find(project => {
-      return project.ProjectID === +projectID;
-    });
+    // set and deliver the project data to the modal component
+    this.setProject(element);
 
     // show the modal
     this.showInfoModal = true;
@@ -265,47 +238,84 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
 
   onProjectRosterClick(element) {
-    console.log('project roster clicked');
-    console.log($(element));
 
-    let left = $(element).closest('div.card-button').offset().left - $(element).closest('div.project-table-cont').offset().left + 35;
+    // get the position to display based on the clicked element (button)
+    const position = this.calculateModalPosition(element, 'div.projects-roster-modal-outer-cont');
+
+    // set the modal position (top and left css properties)
+    this.setModalPosition(position, 'div.projects-roster-modal-outer-cont');
+
+    // set and deliver the project data to the modal component
+    this.setProject(element);
+
+    // show the modal
+    this.showRosterModal = true;
+
+  }
+
+  // since the modals are a single element, need to move the position to align with the button before displaying
+  // returns an object with left and top properties
+  calculateModalPosition(element, modalSelector: string): any {
+
+    // set the button width in pixels
+    const buttonWidth = $(element).closest('div.card-button').outerWidth();
+
+    // get the left position using the distance from the left side of the window with the left sides of the cards table and card button
+    // (subtract the table distance from the button distance)
+    // use .closest to find the closest parent, in case the icon inside the button is clicked and passed as the element
+    let left = $(element).closest('div.card-button').offset().left - $('div.project-table-cont').offset().left;
+    // get the top position in a similar way, except accounting also for the scroll distance from the top of the table
     const top = ($(element).closest('div.card-button').offset().top -
       $('div.project-table-cont').offset().top) + $('div.project-table-cont').scrollTop();
 
-    console.log(`position - top: ${top}, left: ${left}`);
-
+    // calculate the available widths from the button to the left and right sides of the table
     const cardsWidth = $('div.project-table-cont').width();
     const widthRight = cardsWidth - left;
     const widthLeft = left;
 
+    // determine the final left position, based on available widths to the left and right
     // rule: if there is enough width to the right (400px), show to the right, otherwise take the max of the two and use that
-    // to show to the left, just subtract the width (400px) to use for the left property (plus 35)
-    console.log(`remaining widths - right: ${widthRight}, left: ${widthLeft}`);
-    if (widthRight > 400) {
-      left = left;
+    // to show to the left, just subtract the width (400px) to use for the left property
+
+    // get the width of the modal
+    const modalWidth = $(modalSelector).outerWidth();
+
+    // calculate the left position
+    if (widthRight > modalWidth) {
+      left = left + buttonWidth;   // display modal to the right of the button
     } else {
       const maxWidth = Math.max(widthRight, widthLeft);
       if (maxWidth === widthRight) {
-        left = left;
+        left = left + buttonWidth;   // display modal to the right of the button
       } else {
-        left = left - 400 - 35;
+        left = left - modalWidth - buttonWidth;   // display modal to the left of the button
       }
     }
 
-    // set the top and left css properties of the modal
-    const $el = $('div.projects-info-modal-outer-cont');
-    $el.css('left', left);
-    $el.css('top', top);
+    // return an object with the left and top values
+    return {left: left, top: top};
 
-    // update the project
-    const randomProject: number = Math.floor((Math.random() * (10)));
+  }
+
+  // update the top and left css properties for the modal
+  setModalPosition(position, selector) {
+
+    const $el = $(selector);
+    $el.css('left', position.left);
+    $el.css('top', position.top);
+
+  }
+
+  // update the clickedProject that is passed to the component through @input
+  setProject(element) {
+
+    // get the project id from the card buttons custom html attribute 'data-id'
     const projectID = $(element).closest('div.card-button').data('id');
+
+    // find the project from the array of all projects using the id
     this.clickedProject = this.projects.find(project => {
       return project.ProjectID === +projectID;
     });
-
-    // show the modal
-    this.showInfoModal = true;
 
   }
 
