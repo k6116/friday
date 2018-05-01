@@ -75,4 +75,39 @@ export class ToolsService {
     }
   }
 
+  buildPaginationRanges(objects: any, objProp: string, maxPerPage: number): any {
+
+    const charArr = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const charCounts: number[] = [];
+    const returnArr = [];
+
+    charArr.forEach(char => {
+      const filteredObjects = objects.filter(object => {
+        return char.toUpperCase() === object[objProp][0].toUpperCase();
+      });
+      charCounts.push(filteredObjects.length);
+    });
+
+    let startChar: string = charArr[0];
+    let endChar: string;
+    let total = 0;
+    charCounts.forEach((count, index) => {
+      total += +count;
+      if (total > maxPerPage) {
+        total = 0;
+        endChar = charArr[index - 1];
+        const range: string = startChar !== endChar ? `${startChar}-${endChar}` : startChar;
+        returnArr.push(range);
+        startChar = charArr[index];
+      } else if (index === charCounts.length - 1) {
+        endChar = charArr[index];
+        const range: string = startChar !== endChar ? `${startChar}-${endChar}` : startChar;
+        returnArr.push(`${startChar}-${endChar}`);
+      }
+    });
+
+    return returnArr;
+
+  }
+
 }

@@ -1,0 +1,12 @@
+
+<div class="projects-info-modal-outer-cont" (clickOutside)="onClickedOutside($event)">
+  projects info contents
+  <div>
+    {{ project?.ProjectName }}
+  </div>
+  <a class="projects-info-modal close-button" (click)="onCloseClick()">close</a>
+
+  <div class="projects-info-modal dropdown-triangle"></div>
+  <div class="projects-info-modal dropdown-triangle-cover"></div>
+
+</div>

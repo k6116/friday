@@ -12,10 +12,11 @@ import { ProjectsReportsComponent } from './reports/projects/projects.component'
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 
 import { AuthGuardService } from './auth/auth-guard.service';
-
+import { TestComponent } from './test/test.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'test', component: TestComponent },
   { path: 'login', component: LoginComponent },
   {
     path: 'main',
