@@ -116,6 +116,6 @@ input.form-control[disabled], select.form-control[disabled], textarea.form-contr
 
 .btn-primary {
   color: #fff;
-  background-color: #607d8c;
-  border-color: #607d8c;
+  background-color: rgb(108, 117, 125);;
+  border-color: rgb(108, 117, 125);;
 }

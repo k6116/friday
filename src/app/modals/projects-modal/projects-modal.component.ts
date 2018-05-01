@@ -375,21 +375,40 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onCardButtonMouseEnter(title: string, buttonClass: string, projectID: number) {
 
-    console.log(`card button mouse enter for ${title}`);
+    // console.log(`card button mouse enter for ${title}`);
 
     // set bootstrap tooltip options (uses js not html so need to set the title)
     const tooltipOptions = {
       title: title,
-      placement: 'right'
+      placement: 'left'
     };
 
     if (buttonClass === 'roster' && this.showRosterModal && this.clickedProjectForRosterModal.ProjectID === projectID) {
-      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('hide');
+      // $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
+      console.log('roster tooltip being disposed');
+      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('dispose');
     } else if (buttonClass === 'info' && this.showInfoModal && this.clickedProjectForInfoModal.ProjectID === projectID) {
-      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('hide');
+      // $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
+      console.log('info tooltip being disposed');
+      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('dispose');
     } else {
+      console.log(`showing tooltip for project id: ${projectID}`);
       $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
       $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('show');
+    }
+
+  }
+
+  onCardButtonMouseLeave(buttonClass: string, projectID: number) {
+
+    if (buttonClass === 'roster') {
+      // $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
+      console.log(`disposing roster card button for project id: ${projectID}`);
+      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('dispose');
+    } else if (buttonClass === 'info') {
+      // $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
+      console.log(`disposing info card button for project id: ${projectID}`);
+      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('dispose');
     }
 
   }

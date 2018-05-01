@@ -55,10 +55,10 @@
               <p class="card-text">{{ project.Description }}</p>
             </div>
             <div class="card-buttons">
-              <div class="card-button info" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Project Info', 'info', project.ProjectID)" (click)="onProjectInfoClick($event.target)">
+              <div class="card-button info" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Project Info', 'info', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('info', project.ProjectID)" (click)="onProjectInfoClick($event.target)">
                 <i class="fa fa-info" aria-hidden="true"></i>
               </div>
-              <div class="card-button roster" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Project Roster', 'roster', project.ProjectID)" (click)="onProjectRosterClick($event.target)">
+              <div class="card-button roster" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Project Roster', 'roster', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('roster', project.ProjectID)" (click)="onProjectRosterClick($event.target)">
                 <i class="fa fa-user-circle-o" aria-hidden="true"></i>
               </div>
               <div class="card-button" data-toggle="tooltip" data-placement="right" title="Something Else">
