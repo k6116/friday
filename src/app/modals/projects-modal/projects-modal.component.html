@@ -61,7 +61,7 @@
               <div class="card-button roster" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Project Roster', 'roster', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('roster', project.ProjectID)" (click)="onProjectRosterClick($event.target)">
                 <i class="fa fa-user-circle-o" aria-hidden="true"></i>
               </div>
-              <div class="card-button" data-toggle="tooltip" data-placement="right" title="Something Else">
+              <div class="card-button other" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Something Else', 'other', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('other', project.ProjectID)">
                 <i class="fa fa-snowflake-o" aria-hidden="true"></i>
               </div>
             </div>

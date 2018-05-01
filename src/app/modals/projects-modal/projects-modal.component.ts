@@ -107,11 +107,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
-    // init bootstrap tooltips
-    setTimeout(() => {
-      $('[data-toggle="tooltip"]').tooltip();
-    }, 1000);
-
     const newHeight = $('div.projects-modal-body').height() - 170;
     $('div.project-table-cont').height(newHeight);
 
@@ -373,9 +368,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     }, 0);
   }
 
+  // show the tooltip on mouse enter
   onCardButtonMouseEnter(title: string, buttonClass: string, projectID: number) {
-
-    // console.log(`card button mouse enter for ${title}`);
 
     // set bootstrap tooltip options (uses js not html so need to set the title)
     const tooltipOptions = {
@@ -383,35 +377,23 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       placement: 'left'
     };
 
-    if (buttonClass === 'roster' && this.showRosterModal && this.clickedProjectForRosterModal.ProjectID === projectID) {
-      // $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
-      console.log('roster tooltip being disposed');
-      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('dispose');
-    } else if (buttonClass === 'info' && this.showInfoModal && this.clickedProjectForInfoModal.ProjectID === projectID) {
-      // $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
-      console.log('info tooltip being disposed');
-      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('dispose');
-    } else {
-      console.log(`showing tooltip for project id: ${projectID}`);
-      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
-      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('show');
-    }
+    // attaches a tooltip handler to the specific button element
+    $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
+
+    // show the tooltip
+    $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('show');
 
   }
 
+  // dispose of the tooltip on mouse leave
+  // NOTE: this is critical to prevent scroll performance issues
   onCardButtonMouseLeave(buttonClass: string, projectID: number) {
 
-    if (buttonClass === 'roster') {
-      // $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
-      console.log(`disposing roster card button for project id: ${projectID}`);
-      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('dispose');
-    } else if (buttonClass === 'info') {
-      // $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip(tooltipOptions);
-      console.log(`disposing info card button for project id: ${projectID}`);
-      $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('dispose');
-    }
+    // hide and destroy the button element's tooltip
+    $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('dispose');
 
   }
+
 
 }
 
