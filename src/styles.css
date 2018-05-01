@@ -7,3 +7,12 @@ body.body-custom {
   background-color: rgb(245, 245, 245);
   font-size: 14px;
 }
+
+button.btn {
+  font-size: 14px;
+}
+
+input.form-control {
+  font-size: 14px;
+}
+

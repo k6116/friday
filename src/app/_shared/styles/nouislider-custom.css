@@ -5,9 +5,10 @@
 }
 
 .noUi-value-sub-mod {
-  color: #aaa;
-  font-size: 18px;
+  color: rgb(33, 37, 41);
+  font-size: 14px;
   margin-top: -12px;
+  font-weight: 500;
 }
   
 .noUi-marker-sub-mod {
@@ -26,11 +27,19 @@
   top: -4px;
   right: -11px;
   left: auto;
-  border: 3px solid #DDD;
+  border: 3px solid #819ca9;
   border-radius: 20px;
-  background: #819ca9;
+  background: white;
   cursor: default;
   box-shadow: inset 0 0 1px #FFF, inset 0 1px 7px #EBEBEB, 0 3px 6px -3px #BBB;
+}
+
+.noUi-handle-mod:focus {
+  outline: none;
+}
+
+.noUi-target {
+  background-color: rgb(212, 212, 212);
 }
 
   

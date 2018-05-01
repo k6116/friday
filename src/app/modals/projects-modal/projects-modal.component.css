@@ -213,8 +213,10 @@ div.card-button {
   cursor: pointer;
 }
 
-button.project-select-button {
+button.btn.btn-outline-success.project-select-button {
   font-size: 15px;
+  color: rgb(89, 89, 89);
+  border-color: rgb(159, 159, 159);
 }
 
 .card-footer {
@@ -222,7 +224,7 @@ button.project-select-button {
 }
 
 
-/* bootstrap 4 override test */
+/* bootstrap 4 override test for filter input */
 
 .form-control {
   display: block;
