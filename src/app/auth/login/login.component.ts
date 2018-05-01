@@ -109,8 +109,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.appDataService.autoLogout$ = undefined;
 
           // get and store nested org data for this user, in anticipation of use and for performance
-          // this.getNestedOrgData(res.jarvisUser.email);
-          this.getNestedOrgData('ron_nersesian@keysight.com');
+           this.getNestedOrgData(res.jarvisUser.email);
+       //   this.getNestedOrgData('ron_nersesian@keysight.com');
 
           // route to the main page
           this.router.navigateByUrl('/main');

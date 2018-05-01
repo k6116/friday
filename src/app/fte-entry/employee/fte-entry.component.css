@@ -14,13 +14,14 @@ div.col-custom.col-slider {
 }
 
 .top-margin {
-  margin-top: 50px;
+  margin-top: 75px;
 }
 
 div.col-custom.table-scrollable {
   max-height: 397px;
-  overflow: scroll;
+  overflow: auto;
   padding: 10px 14px;
+  width: 100%;
 }
 
 .test-buttons {
@@ -44,7 +45,6 @@ table td.col-project-name {
   position: relative;
   padding-right: 20px;
   left: -15px;
-  background-color: white;
   z-index: 1;
 }
 
@@ -52,7 +52,6 @@ table thead tr th.header-project {
   position: relative;
   left: -15px;
   padding-right: 20px;
-  background-color: white;
   z-index: 3;
 }
 
@@ -62,15 +61,14 @@ table thead tr th.header-month {
 
 table thead tr th {
   position: relative;
-  background-color: white;
   z-index: 2;
   padding-bottom: 10px;
   top: -10px;
 }
 
-
+/* turning off for now, would like a pure css solution */
 div.table-header-underlay {
-  background-color: white;
+  background-color: rgb(245, 245, 245);
   z-index: 2;
   position: absolute;
   top: 0px;
@@ -81,6 +79,11 @@ div.table-header-underlay {
   width: 100%;
   color: white;
   text-align: right;
+  display: none;  
+}
+
+th.header-project, th.header-month, td.col-project-name, td.totals-row-cell {
+  background-color: rgb(245, 245, 245);
 }
 
 /* TOTALS ROW */
@@ -93,7 +96,6 @@ table td.col-total-name {
   position: relative;
   padding-right: 20px;
   left: -15px;
-  background-color: white;
   z-index: 1;
 }
 
@@ -109,5 +111,12 @@ input.form-control.highlight-invalid {
 
 input.form-control[disabled], select.form-control[disabled], textarea.form-control[disabled] {
   cursor: default;
-  background-color: rgb(248, 248, 248);
+  background-color: rgb(230, 230, 230);
+}
+
+
+.btn-primary {
+  color: #fff;
+  background-color: rgb(108, 117, 125);;
+  border-color: rgb(108, 117, 125);;
 }

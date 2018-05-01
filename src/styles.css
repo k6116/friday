@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+/* input, textarea, button {
+    outline: none !important; 
+    box-shadow: none !important; } */
+
+body.body-custom {
+  background-color: rgb(245, 245, 245);
+  font-size: 14px;
+}
+
+button.btn {
+  font-size: 14px;
+}
+
+input.form-control {
+  font-size: 14px;
+}
+

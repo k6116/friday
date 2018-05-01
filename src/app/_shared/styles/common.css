@@ -2,8 +2,9 @@
 
 /* customized bootstrap fluid container (to accomodate navbar and sidebar) */
 .container-fluid {
-  margin: 100px 100px 100px 250px;
+  margin: 125px 100px 100px 250px;
   padding: 0;
+  width: unset;
 }
 
 /* customized bootstrap row */
@@ -47,6 +48,14 @@ input.form-control.form-control-custom, select.form-control.form-control-custom 
 input.form-control.form-control-custom[disabled], select.form-control.form-control-custom[disabled], textarea.form-control.form-control-custom[disabled] {
   cursor: default;
   background-color: rgb(253, 253, 253);
+}
+
+input.form-control:focus {
+  /* bootstrap 3 blue shadow color: rgb(102, 175, 233); */
+  border-color: rgb(163, 197, 255);
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(163, 197, 255, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(163, 197, 255, .6);
 }
 
 
