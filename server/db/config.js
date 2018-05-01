@@ -27,5 +27,3 @@ module.exports = {
   configPLM: configPLM,
   config2017: config2017
 };
-
-

@@ -32,10 +32,6 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   teamMembers: any;
   teamMembersString: string;
 
-  // for testing
-  showRick: boolean;
-  rickText: string;
-
 
   constructor(
     private appDataService: AppDataService,
