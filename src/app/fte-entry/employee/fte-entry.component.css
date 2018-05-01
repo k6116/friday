@@ -83,6 +83,10 @@ div.table-header-underlay {
   text-align: right;
 }
 
+i.fa-trash-o {
+  color: red;
+}
+
 /* TOTALS ROW */
 
 table td.totals-row-cell {

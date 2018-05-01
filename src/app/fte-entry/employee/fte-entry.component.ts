@@ -549,6 +549,11 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     };
   }
 
+  onTrashClick(index: number) {
+
+    console.log('user clicked to delete project index ' + index);
+  }
+
   onSliderChange(value: any) {  // event only fires when slider handle is dropped
     // round the slider values and set the handles to emulate snapping
     const leftHandle = Math.round(value[0]);
@@ -590,9 +595,10 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
     // set new project visibility
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
-    let nullCounter = posStart;
 
     FTEFormArray.controls.forEach( project => {
+      let nullCounter = posStart;
+
       for (let i = posStart; i < (posStart + posDelta); i++) {  // only look at the cells that are visible based on the slider
         const currProjControls = project['controls'][i].controls;
         if (currProjControls.fte.value) {
@@ -601,26 +607,22 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
           nullCounter = posStart; // reset nullCounter
           this.fteProjectVisible.push(true);
         } else { nullCounter++; }
-        if (nullCounter === (posStart + posDelta)) {
-          // all nulls, so project shouldn't be displayed
-          this.fteProjectVisible.push(false);
-          nullCounter = posStart; // reset nullCounter
-        }
+      }
+      if (nullCounter === (posStart + posDelta)) {
+        // all nulls, so project shouldn't be displayed
+        this.fteProjectVisible.push(false);
       }
     });
   }
 
   updateProjectDeletability() {
-    // reset project visibility
+    // reset project deletability
     this.fteProjectDeletable.length = 0;
 
-    // set new project visibility
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
     const firstDeletableMonth = this.fteMonthEditable.findIndex( value => {
       return value; // look for the first month that is editable
     });
-    console.log('bla');
-    console.log(firstDeletableMonth);
 
     FTEFormArray.controls.forEach( project => {
       let nullCounter = 0;
@@ -634,12 +636,11 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
           this.fteProjectDeletable.push(false);
         } else { nullCounter++; }
       }
-
       if (nullCounter === firstDeletableMonth) {
+        // all historic FTE values are null, so project can safely be deleted
         this.fteProjectDeletable.push(true);
       }
     });
-    console.log(this.fteProjectDeletable);
   }
 
   clearEmptyProjects() {
