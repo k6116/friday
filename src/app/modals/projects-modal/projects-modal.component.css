@@ -219,6 +219,11 @@ button.btn.btn-outline-success.project-select-button {
   border-color: rgb(159, 159, 159);
 }
 
+button.btn.btn-outline-success.project-select-button:hover {
+  color: white;
+  border-color: rgb(40, 167, 69);
+}
+
 .card-footer {
   text-align: center;
 }

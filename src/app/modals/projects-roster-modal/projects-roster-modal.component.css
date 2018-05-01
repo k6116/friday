@@ -39,3 +39,11 @@ div.projects-roster-modal.dropdown-triangle-cover {
   background-color: white;
   z-index: 3;
 }
+
+/* close button */
+
+a.projects-roster-modal.close-button {
+  display: block;
+  color: blue;
+  cursor: pointer;
+}

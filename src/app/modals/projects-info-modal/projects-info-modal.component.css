@@ -39,3 +39,13 @@ div.projects-info-modal.dropdown-triangle-cover {
   background-color: white;
   z-index: 3;
 }
+
+/* modal contents */
+
+/* close button */
+
+a.projects-info-modal.close-button {
+  display: block;
+  color: blue;
+  cursor: pointer;
+}
