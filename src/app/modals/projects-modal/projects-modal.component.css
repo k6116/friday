@@ -1,0 +1,261 @@
+
+
+/* modal containers */
+
+div.projects-modal-outer-cont {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  /* background-color: rgba(0, 0, 0, 0.4); */
+}
+  
+div.projects-modal-inner-cont {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  background-color: white;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  z-index: 100;
+  opacity: 0;
+}
+
+div.projects-modal-body {
+  height: 100%;
+  width: 100%;
+  padding: 0 40px;
+}
+
+
+/* filter / search box */
+
+div.projects-modal-filter {
+  display: inline-block;
+}
+
+div.projects-filter-cont {
+  margin: 40px 0;
+}
+
+input.projects-filter-input {
+  width: 200px;
+}
+
+
+/* pagination */
+
+div.projects-pagination {
+  display: inline-block;
+  margin-left: 20px;
+}
+
+div.projects-pagination {
+  font-size: 14px;
+}
+
+a.page-link.active {
+  background-color: rgb(233, 236, 239);
+}
+
+
+/* close button */
+
+div.projects-modal-close-button-cont {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  width: 0;
+  margin: 0 auto;
+}
+
+div.projects-modal-close {
+  float: right;
+  font-size: 30px;
+  color: rgb(167, 167, 167);;  
+}
+
+i.projects-modal-close-button {
+  cursor: pointer;
+}
+
+
+/* cards */
+
+div.project-table-cont {
+  overflow-y: scroll;
+  position: relative;  /* set to relative for the button modals to be absolutely positioned */
+}
+
+.cards-cont {
+  display: flex;
+  flex-flow: row wrap;
+  /* justify-content: space-between; */
+}
+
+/* media queries for card columns (1-5 columns) */
+
+@media (min-width: 576px) {
+  div.card {
+    flex-basis: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  div.card {
+    flex-basis: 46.5%;
+  }
+}
+
+@media (min-width: 1000px) {
+  div.card {
+    flex-basis: 30.7%;
+  }
+}
+
+@media (min-width: 1300px) {
+  div.card {
+    flex-basis: 23.1%;
+  }
+
+}
+
+@media (min-width: 1600px) {
+  div.card {
+    flex-basis: 18.5%;
+  }
+}
+
+div.card {
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+
+.card-header-cont {
+  background-color: rgb(236, 236, 236);
+  padding: 10px 20px 5px 20px;
+}
+
+.card-header-img {
+  display: inline-block;
+  height: 48px;
+  width: 20%;
+  overflow: hidden;
+}
+
+img.card-project-avatar {
+  height: 38px;
+  width: 38px;
+}
+
+.card-header-text {
+  line-height: 1.4em;
+  height: 2.8em;
+  overflow: hidden;
+  display: inline-block;
+  width: 75%;
+  font-weight: 600;
+  font-size: 17px;
+}
+
+div.card-body {
+  display: inline-block;
+  width: 85%;
+  padding: 10px 20px 30px 20px;
+}
+
+h5.card-title {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+p.card-text {
+  overflow: hidden;
+  position: relative;
+  line-height: 1.4em;
+  height: 5.6em;
+  text-align: left;
+  font-size: 15px;
+}
+
+p.card-text:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40%;
+  height: 1.4em;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+div.card-buttons {
+  float: right;
+  margin-left: auto;
+  margin-top: auto;
+  position: absolute;
+  right: 0;
+  top: 68.59px;
+}
+
+div.card-button {
+  border: 1px solid rgb(224, 224, 224);
+  padding: 2px 8px;
+  background-color: lightgrey;
+  background-color: rgb(236, 236, 236);
+  text-align: center;
+  cursor: pointer;
+}
+
+button.btn.btn-outline-success.project-select-button {
+  font-size: 15px;
+  color: rgb(89, 89, 89);
+  border-color: rgb(159, 159, 159);
+}
+
+button.btn.btn-outline-success.project-select-button:hover {
+  color: white;
+  border-color: rgb(40, 167, 69);
+}
+
+.card-footer {
+  text-align: center;
+}
+
+
+/* bootstrap 4 override test for filter input */
+
+.form-control {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.form-control:focus {
+  /* border-color: rgb(102, 175, 233);   bootstrap blue */
+  border-color: rgb(163, 197, 255);
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(163, 197, 255, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(163, 197, 255, .6);
+}
+
+

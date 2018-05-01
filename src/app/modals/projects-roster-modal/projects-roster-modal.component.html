@@ -1,0 +1,20 @@
+
+<div class="projects-roster-modal-outer-cont" (clickOutside)="onClickedOutside($event)">
+  projects roster contents
+  <div>
+    {{ project?.ProjectName }}
+  </div>
+  <div *ngIf="projectRoster" class="projects-roster-modal-team-members">
+    <div class="projects-roster-modal-team-member" *ngFor="let teamMember of projectRoster.teamMembers">
+      {{ teamMember.name }}
+    </div>
+  </div>
+  <div *ngIf="!projectRoster" class="projects-roster-modal-no-team-members">
+    No Team Members
+  </div>
+  <a class="projects-roster-modal close-button" (click)="onCloseClick()">close</a>
+
+  <div class="projects-roster-modal dropdown-triangle"></div>
+  <div class="projects-roster-modal dropdown-triangle-cover"></div>
+
+</div>

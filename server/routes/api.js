@@ -14,14 +14,16 @@ router.post('/resetToken', controllers.auth.resetToken);
 router.get('/ftedata/:userID', controllers.fteData.getFteData);
 router.post('/ftedata/:userID', controllers.fteData.update);
 
-// project list data
-router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
+// PROJECTS CONTROLLER
+router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
+// router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
 
 // ORG TREE DATA
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
 
 // ORG CONTROLLER
 router.get('/org/:emailAddress', controllers.org.show);
+router.get('/projects', controllers.project.getAll)
 
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);

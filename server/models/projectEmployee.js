@@ -2,6 +2,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize').sequelize;
 
+const User = require('./user');
 
 const ProjectEmployee = sequelize.define('projectEmployee',
   {
