@@ -11,7 +11,7 @@ declare var $: any;
   animations: [
     trigger('modalStateOuter', [
       state('in', style({
-        'background-color': 'rgba(0, 0, 0, 0.2)'
+        'background-color': 'rgba(0, 0, 0, 0.4)'
       })),
       transition('in => out', [
         animate(500, style({
@@ -20,7 +20,7 @@ declare var $: any;
       ]),
       transition('out => in', [
         animate(500, style({
-          'background-color': 'rgba(0, 0, 0, 0.2)'
+          'background-color': 'rgba(0, 0, 0, 0.4)'
         }))
       ])
     ]),

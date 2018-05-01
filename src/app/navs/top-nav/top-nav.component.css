@@ -3,8 +3,8 @@
 /* navbar container */
 
 .nav-bar {
-  background-color: rgb(204, 209, 212);
-  box-shadow: 0 0 4px rgba(0,0,0,.14), 0 4px 8px rgba(0,0,0,.28);
+  background-color: rgb(60, 82, 94);
+  /* box-shadow: 0 0 4px rgba(0,0,0,.14), 0 4px 8px rgba(0,0,0,.28); */
   height: 55px;
   position: fixed;
   top: 0;
@@ -34,10 +34,10 @@
 }
 
 .app-logo-img {
-  height: 45px;
-  width: 45px;
+  height: 40px;
+  width: 40px;
   position: relative;
-  top: -5px;
+  top: -2px;
 }
 
 .app-title-cont {
@@ -48,7 +48,7 @@
   font-family: "Roboto", sans-serif;
   font-size: 28px;
   font-weight: 600;
-  color: rgb(36, 43, 48);
+  color: white;
   display: inline;
   padding-left: 10px;
   line-height: 55px;
@@ -56,9 +56,9 @@
 
 .app-sub-title {
   font-family: "Roboto", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: rgb(63, 124, 173);
+  color: rgb(255, 255, 141);
   display: inline;
   padding-left: 5px;
   line-height: 55px;
@@ -76,7 +76,7 @@ div.app-menu-dropdown {
   height: 30px;
   width: 30px;
   border-radius: 15px;
-  background-color: rgb(37, 43, 48);
+  background-color: rgb(120, 124, 129);
   position: absolute;
   top: 0;
   bottom: 0;
