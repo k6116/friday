@@ -68,7 +68,7 @@ export class FilterPipe implements PipeTransform {
       } else if (options.matchFuzzy) {
               const fuseOptions = {
                 shouldSort: true,
-                threshold: 0.6,
+                threshold: 0.6, // can lower threshold in tenth percent increments if too many results
                 location: 0,
                 distance: 100,
                 maxPatternLength: 32,
