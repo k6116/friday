@@ -19,15 +19,6 @@ function show(req, res) {
       })
     });
 
-
-  // models.Org.findOne({
-  //   where: { id: 1 }
-  // }
-  // ).then(org => {
-  //   console.log("returning nested org data");
-  //   res.json(org);
-  // });
-
 }
 
 module.exports = {
