@@ -5,15 +5,15 @@
 
     <div *ngFor="let menu of menuStructure" [class]="'sidenav-menu-item ' + menu.alias">
 
-      <div class="sidenav-mainmenu-cont" [style.color]="menu.active ? 'rgb(168, 214, 255)' : 'white'" [attr.data-clicktrack]="'clickedOn: Main Menu > ' + menu.title" (click)="onMenuItemClick(menu.alias)">
+      <div class="sidenav-mainmenu-cont" [style.border-left]="menu.active ? '5px solid #fde772' : '5px solid transparent'" [attr.data-clicktrack]="'page: Main, clickedOn: Menu Item, clickedOnSub: ' + menu.title" (click)="onMenuItemClick(menu.alias)">
         <i [class]="'nc-icon sidenav-menu-icon ' + menu.iconClass"></i>
         <div class="sidenav-menu-item-text">{{ menu.title }}</div>
         <i *ngIf="menu.subItems" [class]="'fa sidenav-expand-collapse-icon ' + (menu.expanded ? 'fa-caret-down' : 'fa-caret-right')" aria-hidden="true"></i>
       </div>
 
       <ng-container *ngIf="menu.subItems">
-        <div *ngFor="let subMenu of menu.subItems" [style.color]="subMenu.active ? 'rgb(168, 214, 255)' : 'white'" class="sidenav-submenu-cont">
-          <div class="sidenav-submenu-item" [attr.data-clicktrack]="'clickedOn: Sub Menu > ' + subMenu.title" (click)="onSubMenuItemClick(menu.alias, subMenu.alias)">
+        <div *ngFor="let subMenu of menu.subItems" [style.border-left]="subMenu.active ? '5px solid #fde772' : '5px solid transparent'" class="sidenav-submenu-cont">
+          <div class="sidenav-submenu-item" [attr.data-clicktrack]="'page: Main, clickedOn: Menu Item, clickedOnSub: ' + menu.title + ' > ' + subMenu.title" (click)="onSubMenuItemClick(menu.alias, subMenu.alias)">
             {{ subMenu.title }}
           </div>
         </div>
@@ -25,3 +25,4 @@
 
 
 </div>
+

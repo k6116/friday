@@ -32,10 +32,6 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   teamMembers: any;
   teamMembersString: string;
 
-  // for testing
-  showRick: boolean;
-  rickText: string;
-
 
   constructor(
     private appDataService: AppDataService,
@@ -55,8 +51,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     if (this.appDataService.$nestedOrgData) {
       this.nestedOrgData = this.appDataService.$nestedOrgData;
       this.appDataService.nestedOrgDataCached = true;
-      console.log('nested org data picked up in employee reports');
-      console.log(this.nestedOrgData);
+      // console.log('nested org data picked up in employee reports');
+      // console.log(this.nestedOrgData);
       this.waitingForOrgData = false;
       this.setInitialDropDownEmployee();
       this.appDataService.nestedOrgDataRequested = undefined;
@@ -68,8 +64,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
           this.nestedOrgData = nestedOrgData;
           this.appDataService.$nestedOrgData = nestedOrgData;
           this.appDataService.nestedOrgDataCached = true;
-          console.log('nested org data received in employee reports component via subscription');
-          console.log(this.nestedOrgData);
+          // console.log('nested org data received in employee reports component via subscription');
+          // console.log(this.nestedOrgData);
           this.waitingForOrgData = false;
           this.setInitialDropDownEmployee();
           this.appDataService.nestedOrgDataRequested = undefined;
@@ -102,8 +98,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     .subscribe(
       res => {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');
-        console.log('nested org object retrieved from api data service in employee reports component');
-        console.log(nestedOrgData);
+        // console.log('nested org object retrieved from api data service in employee reports component');
+        // console.log(nestedOrgData);
         this.nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
         this.appDataService.$nestedOrgData = this.nestedOrgData;
@@ -112,12 +108,12 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         const t0 = performance.now();
         this.flatOrgData = this.flattenNestedOrgData($.extend(true, {}, this.nestedOrgData));
         const t1 = performance.now();
-        console.log(`flatten org data took ${t1 - t0} milliseconds`);
-        console.log('flattened org data');
-        console.log(this.flatOrgData);
+        // console.log(`flatten org data took ${t1 - t0} milliseconds`);
+        // console.log('flattened org data');
+        // console.log(this.flatOrgData);
       },
       err => {
-        console.log('error getting nested org data');
+        console.error('error getting nested org data');
       }
     );
   }
@@ -164,12 +160,12 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   onclickedEmployee(employee) {
     this.displayOrgDropDown = false;
     this.displayedEmployee = employee;
-    console.log('displayed employee');
-    console.log(this.displayedEmployee);
+    // console.log('displayed employee');
+    // console.log(this.displayedEmployee);
 
     this.manager = this.getManager(this.nestedOrgData, employee);
-    console.log('manager:');
-    console.log(this.manager);
+    // console.log('manager:');
+    // console.log(this.manager);
 
     this.managerString = this.manager ? `${this.manager.fullName} (id: ${this.manager.employeeID})` : 'No Manager in Org Structure';
 
@@ -180,8 +176,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     }
 
     this.employees = this.getEmployees(this.nestedOrgData, employee);
-    console.log('employees:');
-    console.log(this.employees);
+    // console.log('employees:');
+    // console.log(this.employees);
 
     this.employeesString = this.buildEmployeesString(this.employees);
 
@@ -324,7 +320,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     const contBottom = contTop + contHeight ;
 
     if (!$(elem).offset()) {
-      console.log('ERROR: cant find element');
+      console.error('cant find element');
       return false;
     }
 
@@ -439,12 +435,5 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     return empArr.length ? empArr.join(', ') : '';
   }
 
-
-  onBaitClick() {
-    this.showRick = true;
-    setTimeout(() => {
-      this.rickText = `You've Been Rick-Rolled!`;
-    }, 2000);
-  }
 
 }

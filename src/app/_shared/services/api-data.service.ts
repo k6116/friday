@@ -15,7 +15,7 @@ export class ApiDataService {
     private http: Http
   ) {
     // set the timeout to 15 seconds
-    this.timeout = 15000;
+    this.timeout = 90000;
   }
 
 
@@ -85,6 +85,13 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+
+  getProjects() {
+    return this.http.get('api/projects')
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+  }
+
   // for click tracking
   logClick(clickData: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
@@ -106,5 +113,11 @@ export class ApiDataService {
     .map((response: Response) => response.json());
   }
 
+
+  getProjectRoster(projectID: number) {
+    return this.http.get(`/api/getProjectRoster/${projectID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
 
 }

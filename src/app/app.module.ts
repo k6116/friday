@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NouisliderModule } from 'ng2-nouislider';
+import { ClickOutsideModule } from 'ng4-click-outside';
 
 // ANGULAR MATERIAL MODULES
 import { MatButtonModule, MatCheckboxModule, MatExpansionModule } from '@angular/material';
@@ -17,6 +18,7 @@ import { FteInputRestrictDirective } from './_shared/directives/fte-input-restri
 
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
+import { FilterPipe } from './_shared/pipes/filter.pipe';
 
 // SERVICES
 import { ApiDataService } from './_shared/services/api-data.service';
@@ -39,7 +41,11 @@ import { SideNavComponent } from './navs/side-nav/side-nav.component';
 import { ProjectsReportsComponent } from './reports/projects/projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
+import { TestComponent } from './test/test.component';
 import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
+import { ProjectsInfoModalComponent } from './modals/projects-info-modal/projects-info-modal.component';
+import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/projects-roster-modal.component';
 
 
 @NgModule({
@@ -60,7 +66,12 @@ import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropd
     EmployeesReportsComponent,
     ProjectsSetupsComponent,
     FteEntryTeamComponent,
-    OrgDropdownComponent
+    ProjectsModalComponent,
+    FilterPipe,
+    TestComponent,
+    OrgDropdownComponent,
+    ProjectsInfoModalComponent,
+    ProjectsRosterModalComponent
   ],
   imports: [
     AppRoutingModule,
@@ -72,7 +83,8 @@ import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropd
     MatButtonModule,
     MatCheckboxModule,
     MatExpansionModule,
-    NouisliderModule
+    NouisliderModule,
+    ClickOutsideModule
   ],
   providers: [
     ApiDataService,

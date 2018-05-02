@@ -1,11 +1,12 @@
 
+<app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()"></app-projects-modal>
 <div *ngIf="display" class="container-fluid">
 
-  <div class="row row-custom"> <!-- begin row for slider bar -->
-    <div class="col-sm col-custom col-slider">
+  <!-- <div class="row row-custom"> begin row for slider bar -->
+    <div class="col-xs-12 col-custom col-slider">
       <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
     </div>
-  </div> <!-- end row -->
+  <!-- </div> end row -->
 
 
   <div class="row row-custom top-margin"> <!-- begin row for FTE entry table -->
@@ -31,12 +32,15 @@
                       <tbody>
                           <!-- loop through each project, one row per project -->
                           <ng-container *ngFor="let project of projects; let i = index">
-                            <tr [formGroupName]="i" [style.display]="fteProjectVisible[i] ? 'table-row' : 'none'">                                <!-- *ngIf="fteProjectVisible[i]" -->
+                            <tr [formGroupName]="i">
+                                <!-- *ngIf="fteProjectVisible[i]" -->                               
+                                <!-- [style.display]="fteProjectVisible[i] ? 'table-row' : 'none'" -->
                                 <td class="col-project-name">{{project.projectName}}</td>
                                 <!-- loop through each month's FTE allocation, 24 cells per project -->
                                 <ng-container *ngFor="let month of months; let j = index">
                                     <!-- [@conditionState]="state" -->
-                                    <td [formGroupName]="j" *ngIf="fteMonthVisible[j]"> <!-- only show if slider deems it visible -->
+                                    <td [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'"> <!-- only show if slider deems it visible -->
+                                        <!-- *ngIf="fteMonthVisible[j]" -->
                                         <!-- TODO: setup to use formControlName only instead of ngModel for sending to db -->
                                         <input type="text" formControlName="fte" class="form-control fte-table-row" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
                                     </td>
@@ -60,34 +64,13 @@
   </div> <!-- end row -->
 
   <div class="test-buttons">
-    <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestFormClick()">Test Form Data</button>
-    <button class="test-mat-button" mat-raised-button color="warn" (click)="onTestSaveClick()">Save</button>
-    <button class="test-mat-button" mat-raised-button color="warn" (click)="exportXLSX()">Export</button>
-    <button class="test-mat-button" mat-raised-button color="warn" data-toggle="modal" data-target="#projectListModal" (click)="addNewProject()">Add New Project</button>
+    <button class="btn btn-primary" (click)="onAddProjectClick()">Add Project</button>
+    <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
+    <button class="btn btn-primary" (click)="onTestSaveClick()">Save</button>
+    <button class="btn btn-primary" (click)="exportXLSX()">Export</button>
   </div>
 
 </div> <!-- end FTE component container div -->
-
-
-<!-- Modal -->
-<div class="modal fade" id="projectListModal" tabindex="-1" role="dialog" aria-labelledby="projectListModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Modal Header</h4>
-            </div>
-            <div class="modal-body">
-                <table class="table table-condensed table-bordered table-hover">
-                    <tr *ngFor="let list of projectList" (click)="selectNewProject(list)" data-dismiss="modal">
-                        <td>{{list.ProjectID}}</td>
-                        <td>{{list.ProjectName}}</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <!-- TEMP CODE: for seeing live changes to the data object -->
