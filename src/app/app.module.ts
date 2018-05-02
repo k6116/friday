@@ -27,6 +27,7 @@ import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { ToolsService } from './_shared/services/tools.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
+import { FilterService } from './_shared/services/filter.service';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -92,7 +93,8 @@ import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/pro
     AuthService,
     AuthGuardService,
     ToolsService,
-    ClickTrackingService
+    ClickTrackingService,
+    FilterService
   ],
   bootstrap: [AppComponent]
 })
