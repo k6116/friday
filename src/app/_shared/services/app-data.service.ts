@@ -16,10 +16,6 @@ export class AppDataService {
 
   clickedClass = new EventEmitter<string>();
 
-  selectedMenu: string;  // alias for the active/selected menu
-
-  expandedMenus: any; // array of expanded menu objects to use to expand sidebar menu items on init
-
   nestedOrgData = new EventEmitter<any>();
   $nestedOrgData: any;
   nestedOrgDataRequested: boolean;

@@ -10,20 +10,20 @@
       <div class="form-group form-group-login">
 
         <label>User Name</label>
-        <input #userNameVC [(ngModel)]="userName" type="text" class="form-control login-user-name" (keyup.enter)="onLoginClick()" appAutofocus>
+        <input #userNameVC [(ngModel)]="userName" type="text" class="form-control login-user-name" (keyup.enter)="onLoginKeyEnter()" appAutofocus>
         
       </div>
 
       <div class="form-group form-group-login">
 
         <label>Password</label>
-        <input #passwordVC [(ngModel)]="password" type="password" class="form-control password" (keyup.enter)="onLoginClick()">
+        <input #passwordVC [(ngModel)]="password" type="password" class="form-control password" (keyup.enter)="onLoginKeyEnter()">
         
       </div>
 
       <div class="form-group form-group-login form-group-login-button">
 
-        <button type="button" class="btn btn-primary btn-login" [attr.data-clicktrack]="'clickedOn: Login Button, text: ' + userName" (click)="onLoginClick()">Login</button>
+        <button type="button" class="btn btn-primary btn-login" [attr.data-clicktrack]="'page: Login, clickedOn: Login Button, text: ' + userName" (click)="onLoginClick()">Login</button>
         
       </div>
 

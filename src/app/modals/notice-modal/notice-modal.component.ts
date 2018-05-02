@@ -29,8 +29,8 @@ export class NoticeModalComponent implements OnInit, OnDestroy {
     this.subscription1 = this.appDataService.noticeModalData.subscribe(
       (object: any) => {
         this.modal = object;
-        console.log('notice modal object:');
-        console.log(this.modal);
+        // console.log('notice modal object:');
+        // console.log(this.modal);
         if (this.modal.hasOwnProperty('display')) {
           this.displayModal(this.modal.display);
         }
@@ -51,7 +51,7 @@ export class NoticeModalComponent implements OnInit, OnDestroy {
   }
 
   onOkButtonClick() {
-    console.log('ok button clicked in notice modal component');
+    // console.log('ok button clicked in notice modal component');
     this.confirmOkClick.emit(null);
   }
 

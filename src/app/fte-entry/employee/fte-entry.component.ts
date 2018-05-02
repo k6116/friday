@@ -92,11 +92,11 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     // get logged in user's info
     this.authService.getLoggedInUser((user, err) => {
       if (err) {
-        console.log(`error getting logged in user: ${err}`);
+        // console.log(`error getting logged in user: ${err}`);
         return;
       }
-      console.log('logged in user data received in main component:');
-      console.log(user);
+      // console.log('logged in user data received in main component:');
+      // console.log(user);
       this.loggedInUser = user;
       this.fteComponentInit();  // initialize the FTE entry component
     });
@@ -194,7 +194,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         fteReplaceValue = null;
       }
     }
-    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}`);
+    console.log(`match is ${match}, replacement value: ${fteReplaceValue}, at ${i}, ${j}`);
 
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
@@ -207,7 +207,19 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
       FTEFormGroup.patchValue({
         fte: fteReplaceValue
       });
+      // {
+      //   onlySelf: true,
+      //   emitEvent: true,
+      //   emitModelToViewChange: true,
+      //   emitViewToModelChange: true
+      // });
     }
+
+    // if (fteReplace) {
+    //   FTEFormGroup.setValue({
+    //     fte: fteReplaceValue
+    //   });
+    // }
 
     // update the monthly total
     this.updateMonthlyTotal(j);
@@ -341,7 +353,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         this.projects = this.userFTEs;
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
   }

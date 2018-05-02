@@ -5,6 +5,7 @@ import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
+import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { User } from '../../_shared/models/user.model';
 
 import * as moment from 'moment';
@@ -41,7 +42,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private apiDataService: ApiDataService,
     private appDataService: AppDataService,
     private authService: AuthService,
-    private toolsService: ToolsService
+    private toolsService: ToolsService,
+    private clickTrackingService: ClickTrackingService
   ) { }
 
   ngOnInit() {
@@ -58,6 +60,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+  }
+
+  onLoginKeyEnter() {
+    this.clickTrackingService.logClickWithEvent(`page: Login, clickedOn: Login Button, text: ${this.userName}`);
+    this.onLoginClick();
   }
 
   onLoginClick() {
@@ -89,8 +96,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.logAuthPerformance(t0);
 
           // TEMP CODE: to log the response
-          console.log('authentication was successfull:');
-          console.log(res);
+          // console.log('authentication was successfull:');
+          // console.log(res);
 
           // store data in the auth service related to the logged in user
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
@@ -109,8 +116,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.appDataService.autoLogout$ = undefined;
 
           // get and store nested org data for this user, in anticipation of use and for performance
-           this.getNestedOrgData(res.jarvisUser.email);
-       //   this.getNestedOrgData('ron_nersesian@keysight.com');
+          //  this.getNestedOrgData(res.jarvisUser.email);
+          this.getNestedOrgData('ethan_hunt@keysight.com');
 
           // route to the main page
           this.router.navigateByUrl('/main');
@@ -122,8 +129,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.logAuthPerformance(t0);
 
           // TEMP CODE to log the response (error)
-          console.log('authentication failed:');
-          console.log(err);
+          console.error('authentication failed:');
+          console.error(err);
 
           // display the appropriate message depending on the type of error (timeout, invalid credentials, etc.)
           this.handleErrorMessage(err);
@@ -203,7 +210,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.appDataService.nestedOrgData.emit(nestedOrgData);
       },
       err => {
-        console.log('error getting nested org data');
+        console.error('error getting nested org data');
       }
     );
   }
