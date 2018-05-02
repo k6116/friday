@@ -23,6 +23,12 @@ router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
 // ORG CONTROLLER
 router.get('/org/:emailAddress', controllers.org.show);
 
+// CREATE PROJECT CONTROLLER
+router.get('/userProjectList/:userID', controllers.createProjects.show);
+
+// CREATE PROJECT CONTROLLER
+router.post('/createProject', controllers.createProjects.insert);
+
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);
 

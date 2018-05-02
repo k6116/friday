@@ -100,4 +100,20 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getUserProjectList(userID: number) {
+
+    return this.http.get(`/api/userProjectList/${userID}`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+
+  }
+
+  createProject(project: any) {
+
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post('/api/createProject/', JSON.stringify(project), options)
+      .map((response: Response) => response.json());
+  }
+
 }

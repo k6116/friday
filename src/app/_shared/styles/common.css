@@ -4,6 +4,7 @@
 .container-fluid {
   margin: 100px 100px 100px 250px;
   padding: 0;
+  width: unset;
 }
 
 /* customized bootstrap row */
