@@ -26,6 +26,9 @@ router.get('/org/:emailAddress', controllers.org.show);
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);
 
+// Profile Controller
+router.get('/getJobTitle', controllers.profile.show);
+
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified

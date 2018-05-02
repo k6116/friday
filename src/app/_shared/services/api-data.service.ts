@@ -100,4 +100,11 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getJobTitle() {
+    return this.http.get(`/api/getJobTitle`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+  }
+
+
 }

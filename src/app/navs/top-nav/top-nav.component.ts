@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
+import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ProfileModalComponent } from '../../modals/profile-modal/profile-modal';
 
 declare var $: any;
 
@@ -39,11 +41,15 @@ export class TopNavComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   showDropDown: boolean;
   state: string;
+  projectList: any; // array to hold list of all projects queried from DB
+  jobTitle: string;
+  value: number;
 
   constructor(
     private router: Router,
     private authService: AuthService,
-    private appDataService: AppDataService
+    private appDataService: AppDataService,
+    private apiDataService: ApiDataService
   ) {
 
     // TO-DO: try to find a simpler/cleaner way to hide the dropdown on click outside
@@ -108,6 +114,7 @@ export class TopNavComponent implements OnInit, OnDestroy {
   onProfileButtonClick() {
     // TEMP CODE: log the click to test the button
     console.log('profile button clicked');
+    this.getJobTitle();
   }
 
 
@@ -122,5 +129,20 @@ export class TopNavComponent implements OnInit, OnDestroy {
     this.appDataService.nestedOrgDataRequested = undefined;
   }
 
+  getJobTitle() {
+
+    this.apiDataService.getJobTitle().subscribe(
+      res => {
+        console.log('getJobTitle WORKS');
+        this.jobTitle = res;
+        this.value = this.jobTitle.length;
+        console.log(this.jobTitle);
+        console.log(this.value);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
 
 }
