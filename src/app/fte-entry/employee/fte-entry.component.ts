@@ -544,7 +544,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
           handle: 'handle-mod', // modified
           // handleLower: 'handle-lower',
           // handleUpper: 'handle-upper',
-          horizontal: 'horizontal-mod', // modified
+          horizontal: 'horizontal', // modified
           vertical: 'vertical',
           background: 'background',
           connect: 'connect',
