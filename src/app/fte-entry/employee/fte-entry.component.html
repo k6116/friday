@@ -4,7 +4,7 @@
 
   <!-- <div class="row row-custom"> begin row for slider bar -->
     <div class="col-xs-12 col-custom col-slider">
-      <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
+      <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)" (end)="onSliderEnd($event)"></nouislider>
     </div>
   <!-- </div> end row -->
 
@@ -76,6 +76,6 @@
 </div> <!-- end FTE component container div -->
 
 
-<!-- TEMP CODE: for seeing live changes to the data object -->
-<!-- <br /><br /><br /><br />
-<div>JSON: {{userFTEs | json}}</div> -->
+<!-- toast notifications -->
+<div id="toast-save" class="toast toast-success">FTE values have been saved!</div>
+<div id="toast-project-removed" class="toast toast-warn">Projects without FTE entries were removed</div>

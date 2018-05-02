@@ -333,6 +333,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         console.log(res);
         const t1 = performance.now();
         console.log(`save fte values took ${t1 - t0} milliseconds`);
+        this.showToastSave();
       },
       err => {
         console.log(err);
@@ -579,13 +580,15 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     console.log('user clicked to delete project index ' + index);
   }
 
+  onSliderEnd(value: any) {  // event only fires when slider handle is dropped
+    this.clearEmptyProjects();  // only do when slider is dropped, (not mid-drag) for performance
+  }
+
   onSliderChange(value: any) {  // event only fires when slider handle is dropped
     // round the slider values and set the handles to emulate snapping
     const leftHandle = Math.round(value[0]);
     const rightHandle = Math.round(value[1]);
     this.sliderRange = [leftHandle, rightHandle];
-
-    this.clearEmptyProjects();  // only do when slider is dropped, (not mid-drag) for performance
   }
 
   onSliderUpdate(value: any) {  // event fires while slider handle is mid-drag
@@ -687,6 +690,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     });
     if (countChanges) {
       this.buildFteEntryForm(false);
+      this.showToastProjectRemoved();
     }
   }
 
@@ -758,6 +762,20 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     this.projectList = this.projectList.slice(0, numProjects);
   }
 
+  showToastSave() {
+    const toast = document.getElementById('toast-save');
+    toast.classList.add('toast-show');
 
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(() => { toast.classList.remove('toast-show'); }, 3000);
+  }
+
+  showToastProjectRemoved() {
+    const toast = document.getElementById('toast-project-removed');
+    toast.classList.add('toast-show');
+
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(() => { toast.classList.remove('toast-show'); }, 3000);
+  }
 
 }
