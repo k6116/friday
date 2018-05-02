@@ -1,0 +1,49 @@
+
+/* outer container */
+
+div.projects-roster-modal-outer-cont {
+  height: 300px;
+  width: 225px;
+  background-color: white;
+  z-index: 200;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,.2);
+  padding: 15px 20px;
+}
+
+/* left or right triangle */
+
+div.projects-roster-modal.dropdown-triangle {
+  position: absolute;
+  top: 7px;
+  left: -8px;
+  right: unset;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  z-index: 3;
+  transform: rotate(45deg);
+  box-shadow: 0px 0px 5px rgba(0,0,0,.2);
+}
+
+div.projects-roster-modal.dropdown-triangle-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: unset;
+  width: 16px;
+  height: 26px;
+  background-color: white;
+  z-index: 3;
+}
+
+/* close button */
+
+a.projects-roster-modal.close-button {
+  display: block;
+  color: blue;
+  cursor: pointer;
+}

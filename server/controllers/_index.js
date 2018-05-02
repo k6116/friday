@@ -6,5 +6,6 @@ module.exports = {
   org: require('./orgController'),
   clickTracking: require('./clickTrackingController'),
   createProjects: require('./createProjectsController'),
-  projectSelector: require('./projectSelectorController')
+  project: require('./projectController'),
+  // projectSelector: require('./projectSelectorController')
 }

@@ -61,7 +61,8 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   state: string; // for angular animation
   monthlyTotals: number[];
   monthlyTotalsValid: boolean[];
-  projectList: any; // array to hold list of all projects queried from DB
+  showProjectsModal: boolean;
+  projectList: any;
 
   constructor(
     private fb: FormBuilder,
@@ -89,25 +90,74 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     // get logged in user's info
     this.authService.getLoggedInUser((user, err) => {
       if (err) {
-        console.log(`error getting logged in user: ${err}`);
+        // console.log(`error getting logged in user: ${err}`);
         return;
       }
-      console.log('logged in user data received in main component:');
-      console.log(user);
+      // console.log('logged in user data received in main component:');
+      // console.log(user);
       this.loggedInUser = user;
       this.fteComponentInit();  // initialize the FTE entry component
     });
 
-    this.buildMonthsArray();
+    this.apiDataService.getProjects()
+    .subscribe(
+      res => {
+        console.log('get project data successfull:');
+        console.log(res);
+        this.projectList = res;
+        this.setRandomProjectAvatars();
+        // this.trimProjects(500);
+      },
+      err => {
+        console.log('get project data error:');
+        console.log(err);
+      }
+    );
+
+   this.buildMonthsArray();
+
 
   }
 
   ngAfterViewInit() {
-
-
-
   }
 
+  onAddProjectClick() {
+
+    this.showProjectsModal = true;
+  }
+
+  onModalClosed(selectedProject: any) {
+    console.log('on modal closed fired');
+    setTimeout(() => {
+      this.showProjectsModal = false;
+    }, 500);
+
+    const newProject = new UserFTEs;
+    newProject.userID = this.loggedInUser.id;
+    newProject.projectID = selectedProject.ProjectID;
+    newProject.projectName = selectedProject.ProjectName;
+
+    // loop through the already-built months array and initialize null FTEs for each month in this new project
+    newProject.allocations = new Array<AllocationsArray>();
+    this.months.forEach( month => {
+      const newMonth = new AllocationsArray;
+      newMonth.month = moment(month).utc().format();
+      newMonth.fte = null;
+      newMonth.recordID = null;
+      newProject.allocations.push(newMonth);
+    });
+
+    this.userFTEs.push(newProject); // push to the userFTEs object and rebuild the form
+    this.buildFteEntryForm(true);
+  }
+
+  onModalCancelClick() {
+    console.log('on modal cancel fired');
+    setTimeout(() => {
+      this.showProjectsModal = false;
+    }, 500);
+  }
 
   onTableScroll(event) {
     const scrollTop = $('div.table-scrollable').scrollTop();
@@ -142,7 +192,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         fteReplaceValue = null;
       }
     }
-    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}`);
+    console.log(`match is ${match}, replacement value: ${fteReplaceValue}, at ${i}, ${j}`);
 
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
@@ -155,7 +205,19 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
       FTEFormGroup.patchValue({
         fte: fteReplaceValue
       });
+      // {
+      //   onlySelf: true,
+      //   emitEvent: true,
+      //   emitModelToViewChange: true,
+      //   emitViewToModelChange: true
+      // });
     }
+
+    // if (fteReplace) {
+    //   FTEFormGroup.setValue({
+    //     fte: fteReplaceValue
+    //   });
+    // }
 
     // update the monthly total
     this.updateMonthlyTotal(j);
@@ -289,7 +351,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
         this.projects = this.userFTEs;
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
   }
@@ -367,41 +429,6 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
   }
 
-  addNewProject() {
-    // get list of projects from db and display in modal
-    this.apiDataService.getProjectList()
-    .subscribe(
-      res => {
-        console.log('project list:');
-        this.projectList = res;
-      },
-      err => {
-        console.log(err);
-      }
-    );
-
-  }
-
-  selectNewProject(list: any) {
-    // instantiate a new project and pre-fill with userID and project info
-    const newProject = new UserFTEs;
-    newProject.userID = this.loggedInUser.id;
-    newProject.projectID = list.ProjectID;
-    newProject.projectName = list.ProjectName;
-
-    // loop through the already-built months array and initialize null FTEs for each month in this new project
-    newProject.allocations = new Array<AllocationsArray>();
-    this.months.forEach( month => {
-      const newMonth = new AllocationsArray;
-      newMonth.month = moment(month).utc().format();
-      newMonth.fte = null;
-      newMonth.recordID = null;
-      newProject.allocations.push(newMonth);
-    });
-
-    this.userFTEs.push(newProject); // push to the userFTEs object and rebuild the form
-    this.buildFteEntryForm(true);
-  }
 
   setSliderConfig() {
 
@@ -625,4 +652,43 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     saveAs(new Blob([s2ab(wbout)], { type: 'application/octet-stream' }), 'userFTE.xlsx');
 
   }
+
+
+  // TEMP CODE: to emulate/spoof project avatars
+  setRandomProjectAvatars() {
+    // tslint:disable-next-line:max-line-length
+    const avatarFiles = ['avocado', 'bacon', 'beer', 'cheese', 'coffee', 'fries', 'grapes', 'lemon-slice', 'pizza-slice', 'tacos', 'watermelon'];
+    this.projectList.forEach(project => {
+      const randomFileIndex: number = Math.floor((Math.random() * (avatarFiles.length)));
+      const randomFile = avatarFiles[randomFileIndex];
+      const randomProject: number = Math.floor((Math.random() * (3)));
+      if (project.ProjectName === 'Deuce') {
+        project.avatar = `../assets/deuce.png`;
+      } else if (project.ProjectName === 'Arges50') {
+        project.avatar = `../assets/arges.png`;
+      } else if (project.ProjectName === 'Baymax') {
+        project.avatar = `../assets/baymax.png`;
+      } else if (project.ProjectName === 'Minions') {
+        project.avatar = `../assets/minions.png`;
+      } else if (randomProject === 0) {
+        project.avatar = `../assets/${randomFile}.png`;
+      } else {
+        project.avatar = null;
+      }
+    });
+    // console.log('projects with avatars');
+    // const filteredProjects = this.projectList.filter(project => {
+    //   return project.avatar;
+    // });
+    // console.log(filteredProjects);
+    // console.log('number of project with avatars:');
+    // console.log(filteredProjects.length);
+  }
+
+  trimProjects(numProjects: number) {
+    this.projectList = this.projectList.slice(0, numProjects);
+  }
+
+
+
 }

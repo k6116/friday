@@ -86,23 +86,11 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
-    // get the array of expanded menu objects from the cache
-    // if the expandedMenus have data, call a method to expand the appropriate ones
-    // this is because on navigation this component will always be reinitialized
-    // TO-DO: hopefully this can be avoided by restructuring the app with child and auxilary routing
-    // this.expandedMenus = this.appDataService.expandedMenus;
-    // if (this.expandedMenus) {
-    //   if (this.expandedMenus.length) {
-    //     this.setExpandedProperties(this.expandedMenus);
-    //   }
-    // }
-
     // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
     const path = this.router.url.slice(1, this.router.url.length);
 
     // highlight the selected/active menu item with color, background color, etc.
     // needed here if the user goes directly to the route using the url or on refresh
-    this.selectedMenu = path;
     this.highlightActiveMenu(path);
 
     // attempt to find the parent menu item, if a sub-menu item is the active one
@@ -123,14 +111,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     // what is done on init is just setting the properties
     // separating these two is also used to avoid this error for the class binding for the caret icon:
     // Error: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked
-
-    // expand the main menu items identified on init if any
-    // if (this.expandedMenus) {
-    //   if (this.expandedMenus.length) {
-    //     this.expandMenus(this.expandedMenus);
-    //   }
-    // // expand the parent main menu item idenfied on init if any
-    // } else
     if (this.parentMenuToExpand) {
       const expandedMenu = [];
       // push it into an array so that the expandMenus method can be reused
@@ -149,13 +129,10 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       // if the menu item has a sub-menu, expand or collapse the menu (toggle it by passing !foundMenuItem.expanded)
       if (foundMenuItem.subItems) {
         this.expandOrCollapseMenu(!foundMenuItem.expanded, menuItem, true);
-        // store the expanded menus in the cache (app-data service) so they can be opened up on re-init
-        this.storeExpandedMenus();
       } else {
-        // store the active/selected menu item in the cache (app-data service) so it can be highlighed on re-init
-        this.appDataService.selectedMenu = menuItem;
         // navigate to the selected/clicked route
         this.router.navigate([`/${foundMenuItem.path}`]);
+        this.highlightActiveMenu(foundMenuItem.path);
       }
     }
   }
@@ -166,6 +143,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     const foundMenuItem = this.getSubMenuObject(menuItem, subMenuItem);
     // navigate to the selected/clicked route
     this.router.navigate([`/${foundMenuItem.path}`]);
+    this.highlightActiveMenu(foundMenuItem.path);
   }
 
   // hightlight the active/selected menu by going through the entire menu structure (main menu and sub menu items)
@@ -225,15 +203,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // go through the menu structure (main menu items only) and find the ones that are expanded
-  // store this array of objects (returned using the filter method) in the cache / app-data service
-  storeExpandedMenus() {
-    const expandedMenus = this.menuStructure.filter(menu => {
-      return menu.expanded;
-    });
-    this.appDataService.expandedMenus = expandedMenus;
-  }
-
   // go through the cached expanded menu items and set the expanded property to true
   setExpandedProperties(expandedMenus: any) {
     expandedMenus.forEach(expandedMenu => {
@@ -256,9 +225,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         this.expandOrCollapseMenu(true, foundMenuItem.alias, false, true);
       }
     });
-    // need to call this for edge case where the page is refreshed at a sub menu route, and the parent is then expanded to show it
-    // without this, a click on a different menu item and subsequent re-route would collapse it
-    this.storeExpandedMenus();
   }
 
   // method to perform the expanding or collapsing of a main menu item

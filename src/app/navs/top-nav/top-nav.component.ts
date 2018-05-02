@@ -59,10 +59,12 @@ export class TopNavComponent implements OnInit, OnDestroy {
     // most of the time, this will be stored in the cache when navigating around the app
     this.authService.getLoggedInUser((user, err) => {
       if (err) {
-        console.log(`error getting logged in user: ${err}`);
+        console.error(`error getting logged in user: ${err}`);
         return;
       }
       this.loggedInUser = user;
+      // console.log('logged in user object received in top nav component on init:');
+      // console.log(this.loggedInUser);
       // get the user's first name initial to create the google style 'avatar'
       this.firstInitial = this.loggedInUser.fullName.substring(0, 1).toUpperCase();
     });
