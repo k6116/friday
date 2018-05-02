@@ -41,7 +41,7 @@
 
         <div class="cards-cont">
           
-          <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{limitTo: numProjectsToDisplay, matchOptimistic: true, paginationFilter: paginateFilter}">
+          <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{limitTo: numProjectsToDisplay, matchFuzzy: true, paginationFilter: paginateFilter}">
             <div class="card-header-cont">
                 <div class="card-header-img" *ngIf="project.avatar">
                   <img class="card-project-avatar" [src]="project.avatar" alt="">
