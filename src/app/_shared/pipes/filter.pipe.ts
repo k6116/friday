@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-// const Fuse = require('fuse'); // TODO
 import * as fuse from 'fuse.js';
 declare var $: any;
 
@@ -55,33 +54,31 @@ export class FilterPipe implements PipeTransform {
 
       } else if (options.matchOptimistic) {
         try {
-            const regexp = new RegExp('/[^a-zA-Z0-9\\s]/gm');
             if (object[property]) {
-              const p = object[property].replace(regexp, '').toLowerCase();
-              const f = filter.replace(regexp, '').toLowerCase();
+              const p = object[property].replace(/[^a-zA-Z0-9\\s]/gm, '').toLowerCase();
+              const f = filter.replace(/[^a-zA-Z0-9\\s]/gm, '').toLowerCase();
               return p.includes(f);
             }
 
          } catch (RegexMatchTimeoutException) {
-           console.log('pipe error on smart search');
-            return '';
+           console.log('optimistic search regex error');
+            return false;
          }
 
       } else if (options.matchFuzzy) {
-              const Options = {
+              const fuseOptions = {
                 shouldSort: true,
-                threshold: 0.6,
+                threshold: 0.6, // can lower threshold in tenth percent increments if too many results
                 location: 0,
                 distance: 100,
                 maxPatternLength: 32,
                 minMatchCharLength: 1,
-                keys: [
-                  object[property]
-              ]
+                keys: [property]
               };
-              // TODO
-              // const f = new Fuse(object[property], Options);
-              // return f.search(filter);
+
+              const f = new fuse([property + ': ' + object[property]], fuseOptions);
+              const result = f.search(filter);
+              return result.length > 0;
 
       } else {
         return (object[property] ? object[property] : '').substring(0, filter.length).toLowerCase() === filter.toLowerCase();

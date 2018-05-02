@@ -1,39 +1,39 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
-  "configurations": [
-      {
-          "type": "node",
-          "request": "launch",
-          "name": "Launch Node",
-          "program": "${workspaceFolder}\\server.js",
-          "outFiles": [
-              "${workspaceFolder}/dist/out-tsc/**/*.js"
-          ],
-          "console": "integratedTerminal"
-      },
-      {
-          "name": "Launch Chrome",
-          "type": "chrome",
-          "request": "launch",
-          "sourceMapPathOverrides": {
-              "webpack:/*":"${webRoot}/*",
-              "webpack:///./*": "${webRoot}/*",
-              "webpack:///src/*": "${webRoot}/*",
-              "webpack:///*": "*",
-              "webpack:///./~/*": "${webRoot}/node_modules/*",
-              "meteor://??app/*": "${webRoot}/*"
-          },
-          "url": "http://localhost:3000/#",
-          "webRoot": "${workspaceFolder}"
-        }
-  ],
-  "compounds": [
-   {
-       "name": "Full Stack",
-       "configurations": ["Launch Node", "Launch Chrome"]
-   }       
-  ]
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Node",
+            "program": "${workspaceFolder}\\server.js",
+            "outFiles": [
+                "${workspaceFolder}/dist/out-tsc/**/*.js"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Launch Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "sourceMapPathOverrides": {
+                "webpack:/*":"${webRoot}/*",
+                "webpack:///./*": "${webRoot}/*",
+                "webpack:///src/*": "${webRoot}/*",
+                "webpack:///*": "*",
+                "webpack:///./~/*": "${webRoot}/node_modules/*",
+                "meteor://??app/*": "${webRoot}/*"
+            },
+            "url": "http://localhost:3000/#",
+            "webRoot": "${workspaceFolder}"
+          }
+    ],
+    "compounds": [
+     {
+         "name": "Full Stack",
+         "configurations": ["Launch Node", "Launch Chrome"]
+     }       
+    ]
 }
