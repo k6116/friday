@@ -4,7 +4,7 @@
   <div class="nav-bar">
 
 
-    <div class="app-ident" (click)="onAppClick()">
+    <div [attr.data-clicktrack]="'page: Main, clickedOn: Jaris Logo'" class="app-ident" (click)="onAppClick()">
 
       <div class="app-logo-cont">
         <img class="app-logo-img" src="../assets/python.png">
@@ -21,11 +21,7 @@
 
     <div class="app-menu">
 
-      <!-- <div class="topnav-menu app-menu-dropdown" (click)="onAvatarClick()">
-        <div class="topnav-menu app-menu-text">{{ firstInitial }}</div>
-      </div> -->
-
-      <div class="topnav-menu app-menu-dropdown"  (click)="onAvatarClick()">
+      <div class="topnav-menu app-menu-dropdown" [attr.data-clicktrack]="'page: Main, clickedOn: User Avatar'" (click)="onAvatarClick()">
         <div class="topnav-menu app-menu-text">{{ firstInitial }}</div>
       </div>
       
@@ -38,8 +34,8 @@
           {{ loggedInUser?.email }}
         </div>
         <div>
-          <button type="button" class="topnav-menu app-menu-dropdown-button profile" [attr.data-clicktrack]="'clickedOn: Profile Button'" (click)="onProfileButtonClick()">Profile</button>
-          <button type="button" class="topnav-menu app-menu-dropdown-button logout" data-clicktrack="clickedOn: Logout Button" (click)="onLogoutButtonClick()">Logout</button>
+          <button type="button" class="topnav-menu app-menu-dropdown-button profile" data-clicktrack="page: Main, clickedOn: Profile Button" (click)="onProfileButtonClick()">Profile</button>
+          <button type="button" class="topnav-menu app-menu-dropdown-button logout" data-clicktrack="page: Main, clickedOn: Logout Button" (click)="onLogoutButtonClick()">Logout</button>
         </div>
         <div class="topnav-menu dropdown-triangle"></div>
         <div class="topnav-menu dropdown-triangle-bottom"></div>
