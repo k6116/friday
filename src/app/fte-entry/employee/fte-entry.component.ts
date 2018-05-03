@@ -83,14 +83,15 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit, OnDestr
     this.monthlyTotals = new Array(36).fill(null);
     this.monthlyTotalsValid = new Array(36).fill(true);
 
+    this.changeDetectorRef.detach();
+    this.timer = setInterval(() => {
+      this.changeDetectorRef.detectChanges();
+    }, 200);
+
   }
 
   ngOnInit() {
 
-    this.changeDetectorRef.detach();
-    this.timer = setInterval(() => {
-      this.changeDetectorRef.detectChanges();
-    }, 100);
 
     this.setSliderConfig(); // initalize slider config
 

@@ -50,16 +50,22 @@ export class FilterPipe implements PipeTransform {
     // fuzzy filter using fuse.js
     if (options.hasOwnProperty('matchFuzzy')) {
 
+      const t0 = performance.now();
+
       const fuseOptions = {
-        threshold: 0.4,
+        threshold: 0.3,
         location: 0,
         distance: 100,
-        maxPatternLength: 32,
+        maxPatternLength: 16,
         minMatchCharLength: 1,
         keys: [property]
       };
       const fuse = new Fuse(objects, fuseOptions);
       const result = fuse.search(filter);
+
+      const t1 = performance.now();
+      console.log(`fuzzy search took ${t1 - t0} milliseconds`);
+
       return result;
 
     }
