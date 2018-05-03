@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import * as fuse from 'fuse.js';
+import * as Fuse from 'fuse.js';
 declare var $: any;
 
 @Pipe({
@@ -47,6 +47,23 @@ export class FilterPipe implements PipeTransform {
       });
     }
 
+    // fuzzy filter using fuse.js
+    if (options.hasOwnProperty('matchFuzzy')) {
+
+      const fuseOptions = {
+        threshold: 0.4,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 1,
+        keys: [property]
+      };
+      const fuse = new Fuse(objects, fuseOptions);
+      const result = fuse.search(filter);
+      return result;
+
+    }
+
     // for string filter
     return objects.filter(object => {
       if (options.matchAny) {
@@ -76,7 +93,7 @@ export class FilterPipe implements PipeTransform {
                 keys: [property]
               };
 
-              const f = new fuse([property + ': ' + object[property]], fuseOptions);
+              const f = new Fuse([property + ': ' + object[property]], fuseOptions);
               const result = f.search(filter);
               return result.length > 0;
 
