@@ -128,6 +128,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngAfterViewInit() {
+
   }
 
   ngOnDestroy() {
@@ -136,7 +137,6 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   onAddProjectClick() {
-
     this.showProjectsModal = true;
   }
 

@@ -53,7 +53,7 @@ export class FilterPipe implements PipeTransform {
       const t0 = performance.now();
 
       const fuseOptions = {
-        threshold: 0.3,
+        threshold: 0.4,
         location: 0,
         distance: 100,
         maxPatternLength: 16,

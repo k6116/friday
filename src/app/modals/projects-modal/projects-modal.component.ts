@@ -1,4 +1,5 @@
-import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
+  HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { ToolsService } from '../../_shared/services/tools.service';
 
@@ -8,6 +9,7 @@ declare var $: any;
   selector: 'app-projects-modal',
   templateUrl: './projects-modal.component.html',
   styleUrls: ['./projects-modal.component.css'],
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('modalStateOuter', [
       state('in', style({
@@ -69,8 +71,10 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   constructor(
-    private toolsService: ToolsService
+    private toolsService: ToolsService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
+
 
   }
 
