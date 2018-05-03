@@ -64,7 +64,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    // console.log(event);
     const newHeight = $('div.projects-modal-body').height() - 170;
     $('div.project-table-cont').height(newHeight);
   }
