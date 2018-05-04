@@ -5,22 +5,32 @@
 table.sticky-table {
   display: block;   /* display block is key to the whole solution */
   overflow: auto;
-  height: 300px;
-  width: 600px;
+  height: 400px;
+  width: 50%;
   margin-top: 50px;
   margin-left: 50px;
+  border: 1px solid grey;
 }
 
 table.sticky-table .sticky-cell {
-  height: 75px;
-  width: 150px;
+  /* height: 75px;
+  width: 150px; */
+  padding: 25px;
   min-width: 150px;
 }
 
-th.sticky-cell.sticky-header-cell {
+.sticky-table-quarters th.sticky-cell.sticky-header-cell {
   position: sticky;
   position: -webkit-sticky;
   top: 0;
+  z-index: 100;
+  background-color: #e1e1e1;
+}
+
+.sticky-table-header th.sticky-cell.sticky-header-cell {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 72px;
   z-index: 100;
   background-color: #e1e1e1;
 }
@@ -47,9 +57,27 @@ tr.sticky-row.totals .sticky-body-cell {
   z-index: 100;
 }
 
+tr.sticky-row.totals .sticky-body-cell:before {
+  content:'';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  border-top: 1px solid grey;
+}
+
 tr.sticky-row.totals .sticky-body-cell.sticky-footer-left {
   z-index: 101;
 }
+
+/* th:after{
+  content:'';
+  position:absolute;
+  left: 0;
+  bottom: 0;
+  width:100%;
+  border-bottom: 1px solid grey;
+} */
 
 /* approach using divs */
 
