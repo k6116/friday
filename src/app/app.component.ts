@@ -5,6 +5,7 @@ import { AppDataService } from './_shared/services/app-data.service';
 import { AuthService } from './auth/auth.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
 
+import * as bowser from 'bowser';
 declare var $: any;
 
 @Component({
@@ -41,12 +42,24 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    // start a timer to fire every x minutes to check the login status
-    this.startTimer();
-    // update the last activity property with a new timestamp
-    this.authService.updateLastActivity();
-    // attempt to get user info, expiration date etc. from the token if one exists
-    this.authService.getInfoFromToken();
+
+    // check for browser compatibility
+    const browserCheck = this.broswerIsCompatible();
+
+    if (!browserCheck) {
+      console.log('this browser is not compatible, will redirect to different page');
+      this.router.navigateByUrl('/block');
+    } else {
+      console.log('this browser IS compatible');
+      // start a timer to fire every x minutes to check the login status
+      console.log('starting timer for auth service');
+      this.startTimer();
+      // update the last activity property with a new timestamp
+      this.authService.updateLastActivity();
+      // attempt to get user info, expiration date etc. from the token if one exists
+      this.authService.getInfoFromToken();
+
+    }
 
     this.subscription1 = this.appDataService.resetTimer.subscribe(
       (resetTimer: boolean) => {
@@ -63,6 +76,12 @@ export class AppComponent implements OnInit {
 
 
   }
+
+  // returns true or false depending on whether they are using Chrome version 65.0 or later
+  broswerIsCompatible(): boolean {
+    return bowser.name === 'Chrome' && +bowser.version >= 65;
+  }
+
 
   onDocumentEvent() {
     // update the last activity property with a new timestamp
