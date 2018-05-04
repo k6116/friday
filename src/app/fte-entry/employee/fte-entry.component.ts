@@ -47,6 +47,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
   // initialize variables
   mainSliderConfig: any;  // slider config
+  sliderDisabled = false;
   fteMonthVisible = new Array(36).fill(false);  // boolean array for by-month FTE form display
   fteMonthEditable = new Array(36).fill(true);  // boolean array for by-month FTE box disabling
   fteProjectVisible = new Array;  // boolean array for by-project row display
@@ -118,6 +119,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
    this.buildMonthsArray();
    this.buildFteEditableArray();
+   this.fteFormChangeListener();
 
   }
 
@@ -152,6 +154,7 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
     this.userFTEs.push(newProject); // push to the userFTEs object and rebuild the form
     this.buildFteEntryForm(true);
+    this.sliderDisabled = true;
   }
 
   onModalCancelClick() {
@@ -580,10 +583,6 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     console.log('user clicked to delete project index ' + index);
   }
 
-  onSliderEnd(value: any) {  // event only fires when slider handle is dropped
-    this.clearEmptyProjects();  // only do when slider is dropped, (not mid-drag) for performance
-  }
-
   onSliderChange(value: any) {  // event only fires when slider handle is dropped
     // round the slider values and set the handles to emulate snapping
     const leftHandle = Math.round(value[0]);
@@ -671,26 +670,25 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     });
   }
 
-  clearEmptyProjects() {
-    // look for any projects where all FTE values are null, and remove from the data object
-    // then, rebuild the FTE entry form to remove the empty project form
-    // also, count if any rows needed to be altered.  If not, don't rebuild the FTE entry form (fixes display flicker problem)
-    let countChanges = 0;
-    this.userFTEs.forEach( project => {
-      const max = project.allocations.length;
-      let i = 0;
-      project.allocations.forEach( month => {
-        if (!month.fte) { i++; }
+  checkIfEmptyProjects() {
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
+    let emptyCounter = 0;
+    FTEFormArray.controls.forEach( project => {
+      // check if ALL months for a given project have an empty FTE value
+      const projectEmpty = project['controls'].every( month => {
+        const currProjControls = month.controls;
+        return !currProjControls.fte.value;
       });
-      if (i === max) {
-        const index = this.userFTEs.indexOf(project);
-        this.userFTEs.splice(index, 1);
-        countChanges++;
+      // if so, disable the slider
+      if (projectEmpty) {
+        this.sliderDisabled = true;
+        emptyCounter++;
       }
     });
-    if (countChanges) {
-      this.buildFteEntryForm(false);
-      this.showToastProjectRemoved();
+
+    // if we didn't find any hits at all, then re-enable the slider
+    if (!emptyCounter) {
+      this.sliderDisabled = false;
     }
   }
 
@@ -703,6 +701,13 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     function testIfFalse(value) {
       return value === false;
     }
+  }
+
+  fteFormChangeListener() {
+    // listen for any changes to the FTE form
+    this.FTEFormGroup.valueChanges.subscribe( () => {
+      this.checkIfEmptyProjects();
+    });
   }
 
   exportXLSX() {
@@ -770,12 +775,14 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     setTimeout(() => { toast.classList.remove('toast-show'); }, 3000);
   }
 
-  showToastProjectRemoved() {
-    const toast = document.getElementById('toast-project-removed');
-    toast.classList.add('toast-show');
+  showToastSliderDisabled() {
+    if (this.sliderDisabled) {
+      const toast = document.getElementById('toast-slider-disabled');
+      toast.classList.add('toast-show');
 
-    // After 3 seconds, remove the show class from DIV
-    setTimeout(() => { toast.classList.remove('toast-show'); }, 3000);
+      // After 3 seconds, remove the show class from DIV
+      setTimeout(() => { toast.classList.remove('toast-show'); }, 3000);
+    }
   }
 
 }
