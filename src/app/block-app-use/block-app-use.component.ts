@@ -16,13 +16,21 @@ export class BlockAppUseComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
-    console.log('block app use component initialized');
+
+    // open the notice modal
+    // NOTE: using setTimeout here to avoid 'ExpressionChangedAfterItHasBeenCheckedError'
+    setTimeout(() => {
+      this.openNoticeModal();
+    }, 0);
 
   }
 
   ngAfterViewInit() {
 
-    console.log('emitting data to the notice modal from the block app component');
+  }
+
+
+  openNoticeModal() {
 
     this.appDataService.noticeModalData.emit(
       {

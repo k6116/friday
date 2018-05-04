@@ -26,13 +26,11 @@ export class NoticeModalComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    console.log('notice modal initialized');
-
     this.subscription1 = this.appDataService.noticeModalData.subscribe(
       (object: any) => {
         this.modal = object;
-        console.log('notice modal object:');
-        console.log(this.modal);
+        // console.log('notice modal object:');
+        // console.log(this.modal);
         if (this.modal.hasOwnProperty('display')) {
           this.displayModal(this.modal.display);
         }
