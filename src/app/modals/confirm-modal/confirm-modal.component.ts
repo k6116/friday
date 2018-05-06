@@ -52,12 +52,10 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
   }
 
   onYesButtonClick() {
-    // console.log('yes button clicked in confirm modal component');
     this.confirmYesClick.emit(null);
   }
 
   onCancelButtonClick() {
-    // console.log('cancel button clicked in confirm modal component');
     this.confirmCancelClick.emit(null);
   }
 

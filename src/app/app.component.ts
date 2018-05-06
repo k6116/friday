@@ -46,11 +46,11 @@ export class AppComponent implements OnInit {
     // check for browser compatibility
     const browserCheck = this.broswerIsCompatible();
 
+    // if the browser is not compatible, navigate (redirect) to the block page
     if (!browserCheck) {
-      console.log('this browser is not compatible, will redirect to different page');
       this.router.navigateByUrl('/block');
+    // continue otherwise if the browser is compatible
     } else {
-      console.log('this browser IS compatible');
       // start a timer to fire every x minutes to check the login status
       console.log('starting timer for auth service');
       this.startTimer();
@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
         this.resetTimer();
     });
 
-    // log the init and current path
+    // TEMP CODE: log the init and current path
     // NOTE: this could be used to redirect to main or login if they go directly to a different path
     // the setTimeout with zero is needed here (could try to put it in afterViewInit though)
     setTimeout(() => {

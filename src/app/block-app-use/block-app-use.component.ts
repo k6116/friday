@@ -16,7 +16,6 @@ export class BlockAppUseComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
-
     // open the notice modal
     // NOTE: using setTimeout here to avoid 'ExpressionChangedAfterItHasBeenCheckedError'
     setTimeout(() => {
@@ -32,6 +31,7 @@ export class BlockAppUseComponent implements OnInit, AfterViewInit {
 
   openNoticeModal() {
 
+    // emit an object to be picked up by the notice modal via subscription
     this.appDataService.noticeModalData.emit(
       {
         title: 'Browser Not Supported',
