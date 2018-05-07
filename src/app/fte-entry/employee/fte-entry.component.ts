@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { DecimalPipe } from '@angular/common';
@@ -43,7 +43,7 @@ declare const $: any;
   //   ])
   // ]
 })
-export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
+export class FteEntryEmployeeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // initialize variables
   mainSliderConfig: any;  // slider config
@@ -63,13 +63,15 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   monthlyTotalsValid: boolean[];
   showProjectsModal: boolean;
   projectList: any;
+  timer: any;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private apiDataService: ApiDataService,
     private toolsService: ToolsService,
-    private decimalPipe: DecimalPipe
+    private decimalPipe: DecimalPipe,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
@@ -81,9 +83,15 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
     this.monthlyTotals = new Array(36).fill(null);
     this.monthlyTotalsValid = new Array(36).fill(true);
 
+    this.changeDetectorRef.detach();
+    this.timer = setInterval(() => {
+      this.changeDetectorRef.detectChanges();
+    }, 200);
+
   }
 
   ngOnInit() {
+
 
     this.setSliderConfig(); // initalize slider config
 
@@ -120,10 +128,15 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.timer);
+    this.changeDetectorRef.detach();
   }
 
   onAddProjectClick() {
-
     this.showProjectsModal = true;
   }
 

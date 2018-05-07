@@ -10,12 +10,14 @@ import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { ProjectsReportsComponent } from './reports/projects/projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
+import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
 import { AuthGuardService } from './auth/auth-guard.service';
 import { TestComponent } from './test/test.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'block', component: BlockAppUseComponent },
   { path: 'test', component: TestComponent },
   // { path: 'login', component: LoginComponent },
   // {
