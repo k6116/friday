@@ -115,11 +115,18 @@ export class ApiDataService {
 
   }
 
-  createProject(project: any) {
-
+  createProject(project: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
-    return this.http.post('/api/createProject/', JSON.stringify(project), options)
+    return this.http.post(`/api/createProject/${userID}`, JSON.stringify(project), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  updateProject(project: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/updateProject/${userID}`, JSON.stringify(project), options)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

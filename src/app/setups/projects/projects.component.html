@@ -1,4 +1,7 @@
-<div class="container-fluid">
+<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" (updateSuccess)="onUpdateSuccess()"></app-projects-edit-modal>
+<app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal>
+
+<div *ngIf="display" class="container-fluid">
 
   <div class="row row-custom">
       <div class="col-xs-12 col-custom">
@@ -14,32 +17,27 @@
             <thead>
                 <tr> <!-- first row of table is month-name column-headers -->
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th>Project Name</th>
                     <th>ProjectType</th>
+                    <th>Description</th>
                 </tr>
             </thead>
-            <tr *ngFor="let project of projectData" (click)="selectProject(project)">
+            <tr *ngFor="let project of projectList" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)">
                 <td>{{ project['id'] }}</td>
                 <td>{{ project['projectName'] }}</td>
-                <td>{{ project['description'] }}</td>
                 <td>{{ project['projectTypes.projectTypeName'] }}</td>
+                <td>{{ project['description'] }}</td>
             </tr>
         </table>
     </div>
   </div>
 
   <div class="row row-custom">
-    <div class="col-xs-6">
-      <div class="bait-button-cont">
-        <button class="test-mat-button" mat-raised-button color="warn" (click)="getUserProjectList()">Get Project</button>
-      </div>
-    </div>
-    <div class="col-xs-6">
-      <div class="bait-button-cont">
-        <button class="test-mat-button" mat-raised-button color="warn" (click)="createProject()">Create Project</button>
-      </div>
+    <div class="col-xs-12 project-buttons">
+      <button class="btn btn-primary" data-toggle="modal" data-target="#projectsCreateModal" (click)="createProject()">Create Project</button>
     </div>
   </div>
-  </div>
+
+
+</div>
 

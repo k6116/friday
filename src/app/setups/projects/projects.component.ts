@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ApiDataService } from '../../_shared/services/api-data.service';
+import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../auth/auth.service';
 import { User } from '../../_shared/models/user.model';
 
@@ -15,12 +16,17 @@ export class ProjectsSetupsComponent implements OnInit {
   projectName: string;
   projectType: number;
   projectDescription: string;
+  projectList: any;
   projectData: any;
   loggedInUser: User;
+  showProjectsEditModal: boolean;
+  showProjectsCreateModal: boolean;
+  display: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
     private apiDataService: ApiDataService,
+    private appDataService: AppDataService,
     private authService: AuthService,
   ) {
     // initialize the formgroup
@@ -29,6 +35,8 @@ export class ProjectsSetupsComponent implements OnInit {
       projectType: [null],
       projectDescription: [null],
     });
+
+    this.display = true;
 
   }
 
@@ -47,24 +55,6 @@ export class ProjectsSetupsComponent implements OnInit {
 
   }
 
-  createProject() {
-
-    // set the form data that will be sent in the body of the request
-    const project = this.form.getRawValue();
-    console.log(project);
-    this.apiDataService.createProject(project)
-    .subscribe(
-      res => {
-        console.log(res);
-
-      },
-      err => {
-        console.log(err);
-      }
-    );
-
-  }
-
   getUserProjectList() {
 
     this.apiDataService.getUserProjectList(this.loggedInUser.id)
@@ -72,7 +62,7 @@ export class ProjectsSetupsComponent implements OnInit {
         res => {
           console.log(`project list for user  id ${this.loggedInUser.id}`);
           console.log(res);
-          this.projectData = res;
+          this.projectList = res;
 
         },
         err => {
@@ -81,8 +71,22 @@ export class ProjectsSetupsComponent implements OnInit {
       );
   }
 
+  createProject() {
+    this.showProjectsCreateModal = true;
+  }
+
   selectProject(project: any) {
-    console.log(project);
+    this.showProjectsEditModal = true;
+    this.projectData = project;
+  }
+
+  onCreateSuccess() {
+    console.log('My Project List Refreshed');
+    this.getUserProjectList();
+  }
+
+  onUpdateSuccess() {
+    this.getUserProjectList();
   }
 
 }
