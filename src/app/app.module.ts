@@ -46,6 +46,7 @@ import { TestComponent } from './test/test.component';
 import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
 import { ProjectsInfoModalComponent } from './modals/projects-info-modal/projects-info-modal.component';
 import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/projects-roster-modal.component';
+import { ChartsModule } from 'ng2-charts';
 
 
 @NgModule({
@@ -84,7 +85,8 @@ import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/pro
     MatCheckboxModule,
     MatExpansionModule,
     NouisliderModule,
-    ClickOutsideModule
+    ClickOutsideModule,
+    ChartsModule
   ],
   providers: [
     ApiDataService,

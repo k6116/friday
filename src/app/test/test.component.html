@@ -1,0 +1,47 @@
+<div class=container>
+<div>
+    <h4>Performance Load Testing</h4>
+</div>
+<div>
+    Cycles <input type=number [(ngModel)]='cycles' step=10>
+    Threads <input type=number [(ngModel)]='threads' step=2>  
+</div>
+<div class=buttons>
+        <button class='btn btn-info' (click)='startTest()'>Start</button>
+        <button class='btn btn-danger' (click)='stopTest()'>Stop</button>
+</div>
+
+<div class=results><b>Results:</b></div>
+<div>Starting performance of <b>{{cycles}}</b> cycles with a concurrency of <b>{{threads}}</b> threads.</div>
+
+<div class="row">
+        <div class="col-md-6">
+          <div style="display: block;">
+          <canvas baseChart width="400" height="400"
+                      [datasets]="lineChartData"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      (chartHover)="chartHovered($event)"
+                      (chartClick)="chartClicked($event)"></canvas>
+          </div>
+        </div>
+        <div class="col-md-6" style="margin-bottom: 10px">
+          <table class="table table-responsive table-condensed">
+              <tr>
+                  <th colspan="10">Avg per nTH Cycle</th>
+              </tr>
+            <tr>
+              <th *ngFor="let label of lineChartLabels">{{label}}</th>
+            </tr>
+            <tr *ngFor="let d of lineChartData">
+              <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
+            </tr>
+          </table>
+          <button (click)="randomize()">CLICK</button>
+        </div>
+      </div>
+
+</div>
