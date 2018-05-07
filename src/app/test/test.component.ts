@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiDataService } from '../_shared/services/api-data.service';
 
 @Component({
   selector: 'app-test',
@@ -8,15 +7,11 @@ import { ApiDataService } from '../_shared/services/api-data.service';
 })
 export class TestComponent implements OnInit {
 
-constructor ( private apiDataService: ApiDataService) {
-
-}
+  constructor () {
+  }
 
   ngOnInit() {
-
   }
 
-  onTestClick() {
 
-  }
 }

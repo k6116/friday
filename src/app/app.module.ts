@@ -48,6 +48,7 @@ import { ProjectsInfoModalComponent } from './modals/projects-info-modal/project
 import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
 import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/projects-roster-modal.component';
+import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
 
 @NgModule({
@@ -75,7 +76,8 @@ import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/pro
     ProjectsEditModalComponent,
     ProjectsCreateModalComponent,
     ProjectsInfoModalComponent,
-    ProjectsRosterModalComponent
+    ProjectsRosterModalComponent,
+    BlockAppUseComponent
   ],
   imports: [
     AppRoutingModule,
