@@ -43,7 +43,7 @@ declare const $: any;
   //   ])
   // ]
 })
-export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
+export class FteEntryEmployeeComponent implements OnInit {
 
   // initialize variables
   mainSliderConfig: any;  // slider config
@@ -121,9 +121,6 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
    this.buildFteEditableArray();
    this.fteFormChangeListener();
 
-  }
-
-  ngAfterViewInit() {
   }
 
   onAddProjectClick() {
@@ -455,13 +452,15 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
           month: [month],
           fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
           newRecord: [foundEntry ? false : true],
-          updated: [false]
+          updated: [false],
+          toBeDeleted: [false]
         })
       );
     });
     // cast the new project to an 'any', so we can assign an arbitrary property of projectName to each array
     const tempProj: any = projFormArray;
     tempProj.projectName = proj.projectName;
+    tempProj.alive = true;
     // push the temp formarray as 1 object in the Project formarray
     FTEFormArray.push(tempProj);
   }
@@ -583,6 +582,20 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
   onTrashClick(index: number) {
 
     console.log('user clicked to delete project index ' + index);
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+    const deletedProject: any = FTEFormArray.controls[index];
+
+    // make project invisible by setting it to not alive and not visible
+    deletedProject.alive = false;
+    this.fteProjectVisible[index] = false;
+
+    // loop through each month and set the toBeDeleted flag if it has a db record
+    deletedProject.controls.forEach( month => {
+      if (month.controls.recordID.value) {
+        console.log('made it');
+        month.controls.toBeDeleted.setValue(true);
+      }
+    });
   }
 
   onSliderChange(value: any) {  // event only fires when slider handle is dropped
@@ -696,13 +709,11 @@ export class FteEntryEmployeeComponent implements OnInit, AfterViewInit {
 
   checkIfNoProjectsVisible() {
     // if all projects in the slider-defined view are false, then hide the FTE form div and display a different one
-    if (this.fteProjectVisible.every(testIfFalse)) {
+    if (this.fteProjectVisible.every( value => {
+      return value === false;
+    })) {
       this.displayFTETable = false;
     } else { this.displayFTETable = true; }
-
-    function testIfFalse(value) {
-      return value === false;
-    }
   }
 
   fteFormChangeListener() {

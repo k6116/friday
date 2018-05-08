@@ -47,36 +47,44 @@ function update(req, res) {
   // build arrays of objects for insert and update
   const insertData = [];
   const updateData = [];
+  const deleteIds = [];
   const updateIds = [];
   allFormData.forEach(data => {
-    // insert array
-    if (data.newRecord && data.fte) {
-      insertData.push({
+    // if data needs to be deleted, parse into delete array
+    if (data.toBeDeleted) {
+      deleteIds.push(data.recordID);
+    }
+    else {
+      // insert array
+      if (data.newRecord && data.fte) {
+        insertData.push({
+            projectID: data.projectID,
+            employeeID: userID,
+            fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
+            fte: +data.fte,
+            updatedBy: userID,
+            updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+          }
+        )
+      }
+      // update array
+      if (!data.newRecord && data.updated) {
+        updateData.push({
           projectID: data.projectID,
           employeeID: userID,
           fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
           fte: +data.fte,
           updatedBy: userID,
           updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
-        }
-      )
-    }
-    // update array
-    if (!data.newRecord && data.updated) {
-      updateData.push({
-        projectID: data.projectID,
-        employeeID: userID,
-        fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
-        fte: +data.fte,
-        updatedBy: userID,
-        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
-      })
-      // record ids array for updates
-      updateIds.push(data.recordID);
+        })
+        // record ids array for updates
+        updateIds.push(data.recordID);
+      }
     }
   });
 
-
+  console.log('ids for deletion');
+  console.log(deleteIds);
   console.log('data to insert');
   console.log(insertData);
   console.log('data to update');
