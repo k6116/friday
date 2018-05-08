@@ -97,41 +97,52 @@ function update(req, res) {
 
     // insert the new records
     return models.ProjectEmployee
-      .bulkCreate(
-        insertData,
-        {transaction: t}
-      )
-      .then(savedProjectEmployees => {
-
-        console.log(`${savedProjectEmployees.length} project employee records inserted`);
-
-        // update the existing records
-        var promises = [];
-        for (var i = 0; i < updateData.length; i++) {
-          var newPromise = models.ProjectEmployee.update(
-            {
-              projectID: updateData[i].projectID,
-              employeeID: userID,
-              fiscalDate: updateData[i].fiscalDate,
-              fte: updateData[i].fte,
-              updatedBy: userID,
-              updatedAt: updateData[i].updatedAt
-            },
-            {
-              where: { id: updateIds[i] },
-              transaction: t
-            }
-          );
-          promises.push(newPromise);
-        };
-        return Promise.all(promises)
-        .then(updatedProjectEmployee => {
-          
-          console.log(`${updatedProjectEmployee.length} project employee records updated`);
-          
-        });
-          
+      .destroy({
+        where: { id: deleteIds },
+        transaction: t
       })
+      .then( deletedRows => {
+        console.log(`${deletedRows} project employee records deleted`);
+
+        return models.ProjectEmployee.bulkCreate(
+          insertData,
+          {transaction: t}
+        )
+        .then(savedProjectEmployees => {
+  
+          console.log(savedProjectEmployees);
+          console.log(`${savedProjectEmployees.length} project employee records inserted`);
+  
+          // update the existing records
+          var promises = [];
+          for (var i = 0; i < updateData.length; i++) {
+            var newPromise = models.ProjectEmployee.update(
+              {
+                projectID: updateData[i].projectID,
+                employeeID: userID,
+                fiscalDate: updateData[i].fiscalDate,
+                fte: updateData[i].fte,
+                updatedBy: userID,
+                updatedAt: updateData[i].updatedAt
+              },
+              {
+                where: { id: updateIds[i] },
+                transaction: t
+              }
+            );
+            promises.push(newPromise);
+          };
+          return Promise.all(promises)
+          .then(updatedProjectEmployee => {
+            
+            console.log(`${updatedProjectEmployee.length} project employee records updated`);
+            
+          });
+            
+        })
+
+      })
+      
 
     }).then(() => {
 
