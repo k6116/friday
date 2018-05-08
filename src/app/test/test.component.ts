@@ -92,7 +92,7 @@ constructor ( private apiDataService: ApiDataService) {
 }
 
   ngOnInit() {
-        this.cycles = 10;
+        this.cycles = 100;
         this.threads = 1;
   }
 
