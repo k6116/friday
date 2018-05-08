@@ -38,6 +38,7 @@
                                     <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
                                 </td>
                                 <td class="col-project-name">{{project.projectName}}</td>
+                                <!-- <td class="col-project-name">{{project.controls[0].controls.projectName.value}}</td> -->
                                 <!-- loop through each month's FTE allocation, "monthly" cells per project -->
                                 <ng-container *ngFor="let month of months; let j = index">
                                     <!-- [@conditionState]="state" -->
