@@ -49,6 +49,9 @@ import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/pro
 import { ChartsModule } from 'ng2-charts';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
+// CHARTS
+import 'hammerjs';
+import 'chartjs-plugin-zoom';
 
 @NgModule({
   declarations: [

@@ -15,17 +15,11 @@ threads: number;
 threadACycle: Array<any>;
 threadBCycle: Array<any>;
 
-public lineChartData: Array<any> = [
-  {data: [10, 20, 10, 30, 10, 20, 190, 10, 20, 190], label: `Avg Spread`}
- // {data: [30, 10, 20, 30, 10, 30, 90, 10, 20, 190], label: 'Avg Spread B'}
-];
+completedCycles: number;
 
-public lineChartLabels: Array<any> = ['C1', 'C2', 'C3', 'C4', 'C5',
-'C6', 'C7', 'C8', 'C9', 'C10'];
+public lineChartData: Array<any> = [{data: [0], label: 'Worker A'}];
+public lineChartLabels: Array<any> = [1];
 
-public lineChartOptions: any = {
-  responsive: true
-};
 public lineChartColors: Array<any> = [
   { // grey
     backgroundColor: 'rgba(148,159,177,0.2)',
@@ -44,39 +38,50 @@ public lineChartColors: Array<any> = [
     pointHoverBorderColor: 'rgba(77,83,96,1)'
   }
 ];
-public lineChartLegend: boolean = true;
+
+  public lineChartOptions: any = {
+    responsive: true,
+    pan: {
+      enabled: true,
+      mode: 'x'
+  },
+  zoom: {
+      enabled: true,
+      mode: 'x',
+      limits: {
+          max: 100,
+          min: 10
+      }
+  }
+
+  };
+
+
+public lineChartLegend: true;
 public lineChartType: string = 'line';
 
-public randomize(): void {
-  let _lineChartData: Array<any> = new Array(this.lineChartData.length);
-  for (let i = 0; i < this.lineChartData.length; i++) {
-    _lineChartData[i] = {data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label};
-    for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-      _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
-    }
-  }
-  this.lineChartData = _lineChartData;
-}
 
 showData(): void {
+// i = rows of data
+// j = individual data elements
 
-  let _lineChartData: Array<any> = new Array(this.cycles);
-  for (let i = 0; i < this.cycles; i++) {
-    _lineChartData[i] = {data: new Array(0), label: 'data'};
+  const _lineChartData: Array<any> = new Array(1);
 
-    for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-     if (i === 0) { _lineChartData[i].data[j] = this.threadACycle[j]; } // first thread
-    // if (i === 1) { _lineChartData[i].data[j] = this.threadBCycle[j]; } // second thread
+   _lineChartData[0] = {data: new Array(this.cycles), label: this.lineChartData[0].label};
+
+    for (let j = 0; j < _lineChartData[0].data.length; j++) {
+       this.lineChartLabels[j] = 'C' + j.toString();
+      _lineChartData[0].data[j] = this.threadACycle[j];
+
     }
-  }
+
   this.lineChartData = _lineChartData;
 
-}
+  }
 
-// events
-public chartClicked(e: any): void {
-  console.log(e);
-}
+ public chartClicked(e: any): void {
+    console.log(e);
+  }
 
 public chartHovered(e: any): void {
   console.log(e);
@@ -87,18 +92,24 @@ constructor ( private apiDataService: ApiDataService) {
 }
 
   ngOnInit() {
-this.cycles = 10;
-this.threads = 4;
+        this.cycles = 10;
+        this.threads = 1;
   }
 
   startTest() {
+
     this.threadACycle = new Array<any>();
-    this.threadBCycle = new Array<any>();
+    const timeBeforeLoop = performance.now();
 
     let i: number;
     for (i = 1; i <= this.cycles; i++) {
         this.performTest();
     }
+    const timeAfterLoop = performance.now();
+    const f = moment.utc(timeAfterLoop - timeBeforeLoop).format('SSSS');
+    const v = +f; // convert to integer
+    console.log(`Completed Cycles in ${v} milliseconds`);
+    this.completedCycles = v;
 
     this.showData();
   }
@@ -124,13 +135,22 @@ this.threads = 4;
     const v = +f; // convert to integer
     console.log(`retrieve projects took ${v} milliseconds`);
     this.threadACycle.push(v);
-    this.threadBCycle.push(Math.floor((Math.random() * 100) + 1));
-
   }
 
   stopTest() {
+    this.threadACycle = new Array<any>();
+    this.threadBCycle = new Array<any>();
 
+    this.lineChartData = [{data: [0], label: 'Worker A'}];
+    let label = new Array<any>();
+    label = [1];
+
+    const labelsLength = this.lineChartLabels.length;
+    for (let p = 0; p < labelsLength; p++) {
+      this.lineChartLabels.pop();
+    }
+
+   // this.lineChartLabels =  label;
   }
-
 
 }
