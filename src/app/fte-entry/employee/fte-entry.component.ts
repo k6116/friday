@@ -457,12 +457,11 @@ export class FteEntryEmployeeComponent implements OnInit {
         })
       );
     });
-    // cast the new project to an 'any', so we can assign an arbitrary property of projectName to each array
+    // cast the new project to an 'any', so we can assign arbitrary properties to each array
     const tempProj: any = projFormArray;
-    tempProj.projectName = proj.projectName;
-    tempProj.alive = true;
-    // push the temp formarray as 1 object in the Project formarray
-    FTEFormArray.push(tempProj);
+    tempProj.projectName = proj.projectName;  // used to parse the projectName in HTML without having to dive into the controls
+    tempProj.alive = true;  // used to keep track of whether a project should be permanently hidden due to being deleted
+    FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
   }
 
   setSliderConfig() {
@@ -589,10 +588,9 @@ export class FteEntryEmployeeComponent implements OnInit {
     deletedProject.alive = false;
     this.fteProjectVisible[index] = false;
 
-    // loop through each month and set the toBeDeleted flag if it has a db record
+    // loop through each month and set the toBeDeleted flag if it has an FTE value
     deletedProject.controls.forEach( month => {
-      if (month.controls.recordID.value) {
-        console.log('made it');
+      if (month.controls.fte.value) {
         month.controls.toBeDeleted.setValue(true);
       }
     });

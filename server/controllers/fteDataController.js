@@ -33,26 +33,33 @@ function update(req, res) {
   const formData = req.body;
   const userID = req.params.userID;
 
-  console.log('form data:');
-  console.log(formData);
+  // console.log('form data:');
+  // console.log(formData);
 
   // combine all project arrays into a single array
   const allFormData = [];
   formData.forEach(projectArr => {
     allFormData.push(...projectArr);
   });
-  console.log('combined form data:');
-  console.log(allFormData);
+  // console.log('combined form data:');
+  // console.log(allFormData);
 
   // build arrays of objects for insert and update
   const insertData = [];
   const updateData = [];
-  const deleteIds = [];
+  const deleteProjectIds = [];
+  const deleteProjectUserIds = [];
   const updateIds = [];
   allFormData.forEach(data => {
-    // if data needs to be deleted, parse into delete array
+    // if data needs to be deleted, parse projectIDs and userIDs into delete arrays
     if (data.toBeDeleted) {
-      deleteIds.push(data.recordID);
+      if (!deleteProjectIds.find( value => {
+        // only put the projectID into the delete array if it doesn't already exist in there
+        return value === data.projectID
+      })) {
+        deleteProjectIds.push(data.projectID);
+        deleteProjectUserIds.push(userID);
+      }
     }
     else {
       // insert array
@@ -83,8 +90,10 @@ function update(req, res) {
     }
   });
 
-  console.log('ids for deletion');
-  console.log(deleteIds);
+  console.log('projects for deletion');
+  console.log(deleteProjectIds);
+  console.log('users of projects to be deleted')
+  console.log(deleteProjectUserIds);
   console.log('data to insert');
   console.log(insertData);
   console.log('data to update');
@@ -98,7 +107,10 @@ function update(req, res) {
     // insert the new records
     return models.ProjectEmployee
       .destroy({
-        where: { id: deleteIds },
+        where: {
+          projectID: deleteProjectIds,
+          employeeID: deleteProjectUserIds
+        },
         transaction: t
       })
       .then( deletedRows => {
