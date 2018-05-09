@@ -8,6 +8,7 @@ import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { ToolsService } from '../../_shared/services/tools.service';
+import { ToastService } from '../../_shared/services/toast.service';
 import { UserFTEs, AllocationsArray} from './fte-model';
 import { utils, write, WorkBook } from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -22,7 +23,7 @@ declare const $: any;
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
   styleUrls: ['./fte-entry.component.css', '../../_shared/styles/common.css'],
-  providers: [DecimalPipe]
+  providers: [DecimalPipe, ToastService]
   // animations: [
   //   trigger('conditionState', [
   //     state('in', style({
@@ -72,6 +73,7 @@ export class FteEntryEmployeeComponent implements OnInit {
     private authService: AuthService,
     private apiDataService: ApiDataService,
     private toolsService: ToolsService,
+    private toastService: ToastService,
     private decimalPipe: DecimalPipe
   ) {
     // initialize the FTE formgroup
@@ -334,7 +336,7 @@ export class FteEntryEmployeeComponent implements OnInit {
         console.log(res);
         const t1 = performance.now();
         console.log(`save fte values took ${t1 - t0} milliseconds`);
-        this.showToastSave();
+        this.toastService.success();
       },
       err => {
         console.log(err);
@@ -778,13 +780,6 @@ export class FteEntryEmployeeComponent implements OnInit {
     this.projectList = this.projectList.slice(0, numProjects);
   }
 
-  showToastSave() {
-    const toast = document.getElementById('toast-save');
-    toast.classList.add('toast-show');
-
-    // After 3 seconds, remove the show class from DIV
-    setTimeout(() => { toast.classList.remove('toast-show'); }, 3000);
-  }
 
   showToastSliderDisabled() {
     if (this.sliderDisabled) {

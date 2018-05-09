@@ -142,10 +142,10 @@ div.toast {
   color: #fff;
 }
 
-div.toast.toast-success {
+/* div.toast.toast-success {
   background-color: rgb(37, 71, 37);
   color: #fff;
-}
+} */
 
 div.toast.toast-warn {
   background-color: rgb(196, 160, 0);
