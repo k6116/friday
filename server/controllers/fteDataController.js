@@ -33,16 +33,16 @@ function update(req, res) {
   const formData = req.body;
   const userID = req.params.userID;
 
-  console.log('form data:');
-  console.log(formData);
+  // console.log('form data:');
+  // console.log(formData);
 
   // combine all project arrays into a single array
   const allFormData = [];
   formData.forEach(projectArr => {
     allFormData.push(...projectArr);
   });
-  console.log('combined form data:');
-  console.log(allFormData);
+  // console.log('combined form data:');
+  // console.log(allFormData);
 
   // build arrays of objects for insert and update
   const insertData = [];
@@ -77,12 +77,12 @@ function update(req, res) {
   });
 
 
-  console.log('data to insert');
-  console.log(insertData);
-  console.log('data to update');
-  console.log(updateData);
-  console.log('ids for update');
-  console.log(updateIds);
+  // console.log('data to insert');
+  // console.log(insertData);
+  // console.log('data to update');
+  // console.log(updateData);
+  // console.log('ids for update');
+  // console.log(updateIds);
 
 
   return sequelize.transaction((t) => {
@@ -95,7 +95,7 @@ function update(req, res) {
       )
       .then(savedProjectEmployees => {
 
-        console.log(`${savedProjectEmployees.length} project employee records inserted`);
+        // console.log(`${savedProjectEmployees.length} project employee records inserted`);
 
         // update the existing records
         var promises = [];
@@ -119,7 +119,7 @@ function update(req, res) {
         return Promise.all(promises)
         .then(updatedProjectEmployee => {
           
-          console.log(`${updatedProjectEmployee.length} project employee records updated`);
+          // console.log(`${updatedProjectEmployee.length} project employee records updated`);
           
         });
           
@@ -133,7 +133,7 @@ function update(req, res) {
 
     }).catch(error => {
 
-      console.log(error);
+      // console.log(error);
       res.status(500).json({
         title: 'update failed',
         error: {message: error}

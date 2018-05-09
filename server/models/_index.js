@@ -4,6 +4,8 @@ module.exports = {
   ProjectEmployee: require('./projectEmployee.js'),
   Org: require('./org.js'),
   ClickTracking: require('./clickTracking.js'),
-  Profile: require('./profile.js'),
+  JobTitle: require('./profile.js').JobTitle,
+  JobTitleSub: require('./profile.js').JobTitleSub,
+  JobTitleJunction: require('./profile.js').JobTitleJunction,
   Project: require('./project.js')
 }

@@ -107,12 +107,17 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
-  getJobTitle() {
-    return this.http.get(`/api/getJobTitle`)
+  getJobTitleSubList(jobTitleID: number) {
+    return this.http.get(`/api/getJobTitle/${jobTitleID}`)
     .timeout(this.timeout)
     .map((response: Response) => response.json());
   }
 
+  getJobTitleList() {
+    return this.http.get(`/api/getJobTitleList/`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+  }
 
   getProjectRoster(projectID: number) {
     return this.http.get(`/api/getProjectRoster/${projectID}`)

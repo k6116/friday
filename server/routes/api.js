@@ -29,7 +29,8 @@ router.get('/projects', controllers.project.getAll)
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);
 
 // Profile Controller
-router.get('/getJobTitle', controllers.profile.show);
+router.get('/getJobTitleList', controllers.profile.show);
+router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 

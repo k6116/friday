@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { Subscription } from 'rxjs/Subscription';
@@ -6,7 +6,7 @@ import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
-import { ProfileModalComponent } from '../../modals/profile-modal/profile-modal';
+import { ProfileModalComponent } from '../../modals/profile-modal/profile-modal.component';
 
 declare var $: any;
 
@@ -42,8 +42,9 @@ export class TopNavComponent implements OnInit, OnDestroy {
   showDropDown: boolean;
   state: string;
   projectList: any; // array to hold list of all projects queried from DB
-  jobTitle: string;
-  value: number;
+  showProfileModal: boolean;
+
+  @ViewChild(ProfileModalComponent) profileModal: ProfileModalComponent;
 
   constructor(
     private router: Router,
@@ -116,7 +117,8 @@ export class TopNavComponent implements OnInit, OnDestroy {
   onProfileButtonClick() {
     // TEMP CODE: log the click to test the button
     console.log('profile button clicked');
-    this.getJobTitle();
+    this.showProfileModal = true;
+    this.profileModal.abc();
   }
 
 
@@ -131,20 +133,8 @@ export class TopNavComponent implements OnInit, OnDestroy {
     this.appDataService.nestedOrgDataRequested = undefined;
   }
 
-  getJobTitle() {
-
-    this.apiDataService.getJobTitle().subscribe(
-      res => {
-        console.log('getJobTitle WORKS');
-        this.jobTitle = res;
-        this.value = this.jobTitle.length;
-        console.log(this.jobTitle);
-        console.log(this.value);
-      },
-      err => {
-        console.log(err);
-      }
-    );
+  awef() {
+    console.log('awef works');
   }
 
 }
