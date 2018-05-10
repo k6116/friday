@@ -9,10 +9,11 @@ export class ToastService {
   private subject = new Subject<any>();
 
   getToasts(): Observable<any> {
+    console.log('made it to getToasts');
     return this.subject.asObservable();
   }
-
   success(text: string) {
+    console.log('made it to success');
     this.subject.next({
       type: 'success',
       text: text

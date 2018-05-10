@@ -4,8 +4,7 @@ import { ToastService } from '../_shared/services/toast.service';
 @Component({
   selector: 'app-toast',
   templateUrl: './toast.component.html',
-  styleUrls: ['./toast.component.css'],
-  providers: [ToastService]
+  styleUrls: ['./toast.component.css']
 })
 export class ToastComponent implements OnInit {
 
@@ -14,6 +13,7 @@ export class ToastComponent implements OnInit {
   toastText: string;
 
   ngOnInit() {
+    console.log('we init');
     this.toastService.getToasts().subscribe( toast => {
       console.log('made it here');
       console.log(toast);

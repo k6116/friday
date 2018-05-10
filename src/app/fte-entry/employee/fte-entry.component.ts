@@ -336,7 +336,7 @@ export class FteEntryEmployeeComponent implements OnInit {
         console.log(res);
         const t1 = performance.now();
         console.log(`save fte values took ${t1 - t0} milliseconds`);
-        this.toastService.success('test message');
+        this.toastService.success('blablablablabla');
       },
       err => {
         console.log(err);

@@ -1,4 +1,5 @@
 
+<app-toast></app-toast>
 <app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()"></app-projects-modal>
 <div *ngIf="display" class="container-fluid">
 
