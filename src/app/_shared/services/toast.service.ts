@@ -1,15 +1,22 @@
 import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs/rx';
 
 @Injectable()
 export class ToastService {
 
   constructor() { }
 
-  success() {
-    const toast = document.getElementById('toast-save');
-    toast.classList.add('toast-show');
+  private subject = new Subject<any>();
 
-    // After 3 seconds, remove the show class from DIV
-    setTimeout(() => { toast.classList.remove('toast-show'); }, 3000);
+  getToasts(): Observable<any> {
+    return this.subject.asObservable();
   }
+
+  success(text: string) {
+    this.subject.next({
+      type: 'success',
+      text: text
+    });
+  }
+
 }
