@@ -1,10 +1,9 @@
 
-<app-toast></app-toast>
 <app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()"></app-projects-modal>
 <div *ngIf="display" class="container-fluid">
 
   <!-- <div class="row row-custom"> begin row for slider bar -->
-    <div class="col-xs-12 col-custom col-slider" (click)="showToastSliderDisabled()">
+    <div class="col-xs-12 col-custom col-slider" (click)="showSliderDisabledToast()">
       <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" [disabled]="sliderDisabled" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
     </div>
   <!-- </div> end row -->
@@ -71,12 +70,8 @@
   <div class="test-buttons">
     <button class="btn btn-primary" (click)="onAddProjectClick()">Add Project</button>
     <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
-    <button class="btn btn-primary" (click)="onTestSaveClick()">Save</button>
+    <button class="btn btn-primary" (click)="onSaveClick()">Save</button>
     <button class="btn btn-primary" (click)="exportXLSX()">Export</button>
   </div>
 
 </div> <!-- end FTE component container div -->
-
-
-<!-- toast notifications -->
-<div id="toast-slider-disabled" class="toast toast-warn">Slider is disabled when a project is empty</div>

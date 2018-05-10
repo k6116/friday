@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastService } from '../_shared/services/toast.service';
+import { AppDataService } from '../_shared/services/app-data.service';
 
 @Component({
   selector: 'app-toast',
@@ -8,25 +8,23 @@ import { ToastService } from '../_shared/services/toast.service';
 })
 export class ToastComponent implements OnInit {
 
-  constructor(private toastService: ToastService) { }
+  constructor(private appDataService: AppDataService) { }
 
+  toastType: string;
   toastText: string;
+  toastShow = false;
 
   ngOnInit() {
-    console.log('we init');
-    this.toastService.getToasts().subscribe( toast => {
-      console.log('made it here');
-      console.log(toast);
+    this.appDataService.toast.subscribe( toast => {
+      this.toastType = `toast toast-${toast.type}`;
       this.toastText = toast.text;
       this.showToast();
     });
   }
 
   showToast() {
-    const toast = document.getElementById('toast');
-    toast.classList.add('toast-show');
-
-    // After 3 seconds, remove the show class from DIV
-    setTimeout(() => { toast.classList.remove('toast-show'); }, 3000);
+    // show the toast, then remove the toastShow class from the div after 3 sec
+    this.toastShow = true;
+    setTimeout(() => { this.toastShow = false; }, 3000);
   }
 }

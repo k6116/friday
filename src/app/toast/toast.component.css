@@ -1,10 +1,9 @@
 div.toast {
     visibility: hidden;
     min-width: 250px;
-    margin-left: -125px;
+    max-width: 250px;
     text-align: center;
-    border-radius: 2px;
-    padding: 16px;
+    padding: 10px;
     position: fixed;
     z-index: 1;
     right: 20px;
@@ -19,7 +18,12 @@ div.toast {
   }
   
   div.toast.toast-warn {
-    background-color: rgb(196, 160, 0);
+    background-color: rgb(224, 190, 0);
+    color: #000;
+  }
+
+  div.toast.toast-error {
+    background-color: rgb(173, 28, 28);
     color: #fff;
   }
   

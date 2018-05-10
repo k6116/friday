@@ -7,8 +7,8 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
+import { AppDataService } from '../../_shared/services/app-data.service';
 import { ToolsService } from '../../_shared/services/tools.service';
-import { ToastService } from '../../_shared/services/toast.service';
 import { UserFTEs, AllocationsArray} from './fte-model';
 import { utils, write, WorkBook } from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -23,7 +23,7 @@ declare const $: any;
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
   styleUrls: ['./fte-entry.component.css', '../../_shared/styles/common.css'],
-  providers: [DecimalPipe, ToastService]
+  providers: [DecimalPipe]
   // animations: [
   //   trigger('conditionState', [
   //     state('in', style({
@@ -72,8 +72,8 @@ export class FteEntryEmployeeComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private apiDataService: ApiDataService,
+    private appDataService: AppDataService,
     private toolsService: ToolsService,
-    private toastService: ToastService,
     private decimalPipe: DecimalPipe
   ) {
     // initialize the FTE formgroup
@@ -310,10 +310,7 @@ export class FteEntryEmployeeComponent implements OnInit {
         // console.log(`month ${index} DOES total to 1.0 (${total})`);
         this.monthlyTotalsValid[index] = true;
       }
-
     });
-
-
   }
 
 
@@ -324,22 +321,20 @@ export class FteEntryEmployeeComponent implements OnInit {
     console.log(this.FTEFormGroup.value.FTEFormArray);
   }
 
-
-  onTestSaveClick() {
-
+  onSaveClick() {
     const fteData = this.FTEFormGroup.value.FTEFormArray;
     const t0 = performance.now();
     // call the api data service to send the put request
     this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
     .subscribe(
       res => {
-        console.log(res);
         const t1 = performance.now();
         console.log(`save fte values took ${t1 - t0} milliseconds`);
-        this.toastService.success('blablablablabla');
+        this.appDataService.raiseToast('success', res.message);
       },
       err => {
         console.log(err);
+        this.appDataService.raiseToast('error', err.message);
       }
     );
   }
@@ -386,19 +381,14 @@ export class FteEntryEmployeeComponent implements OnInit {
     // we want current fiscal quarter to be editable as long as we are in that FQ,
     // so adjust the current month to allow all months in the current quarter to be editable
     if (moment(currentMonth).month() in thirdMonthInQuarter) {
-      console.log('third month in quarter');
       currentMonth = moment(currentMonth).subtract(2, 'months');
     } else if (moment(currentMonth).month() in secondMonthInQuarter) {
-      console.log('second month in quarter');
       currentMonth = moment(currentMonth).subtract(1, 'month');
-    } else {
-      console.log('first month in quarter');
     }
 
     // find the number of months between the start of the FTE display and current month
     const monthsBetween = currentMonth.diff(startMonth, 'months');
     this.fteMonthEditable.fill(false, 0, monthsBetween);  // zero-indexed
-    console.log(this.fteMonthEditable);
   }
 
   buildFteEntryForm() {
@@ -593,9 +583,12 @@ export class FteEntryEmployeeComponent implements OnInit {
     // loop through each month and set the toBeDeleted flag if it has an FTE value
     deletedProject.controls.forEach( month => {
       if (month.controls.fte.value) {
+        month.controls.fte.value = null;
         month.controls.toBeDeleted.setValue(true);
       }
     });
+    this.updateMonthlyTotals();
+    this.setMonthlyTotalsBorder();
   }
 
   onSliderChange(value: any) {  // event only fires when slider handle is dropped
@@ -685,9 +678,10 @@ export class FteEntryEmployeeComponent implements OnInit {
     });
   }
 
-  checkIfEmptyProjects() {
+  checkIfEmptyProjects(): string {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
     let emptyCounter = 0;
+    let emptyProjectName: string = null;
     FTEFormArray.controls.forEach( project => {
       // check if ALL months for a given project have an empty FTE value
       const projectEmpty = project['controls'].every( month => {
@@ -698,6 +692,7 @@ export class FteEntryEmployeeComponent implements OnInit {
       if (projectEmpty) {
         this.sliderDisabled = true;
         emptyCounter++;
+        emptyProjectName = project.value[0].projectName;
       }
     });
 
@@ -705,6 +700,7 @@ export class FteEntryEmployeeComponent implements OnInit {
     if (!emptyCounter) {
       this.sliderDisabled = false;
     }
+    return emptyProjectName;
   }
 
   checkIfNoProjectsVisible() {
@@ -781,13 +777,10 @@ export class FteEntryEmployeeComponent implements OnInit {
   }
 
 
-  showToastSliderDisabled() {
+  showSliderDisabledToast() {
+    const name = this.checkIfEmptyProjects();
     if (this.sliderDisabled) {
-      const toast = document.getElementById('toast-slider-disabled');
-      toast.classList.add('toast-show');
-
-      // After 3 seconds, remove the show class from DIV
-      setTimeout(() => { toast.classList.remove('toast-show'); }, 3000);
+      this.appDataService.raiseToast('warn', `Please enter FTE values for project: ${name}`);
     }
   }
 

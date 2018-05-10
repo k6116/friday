@@ -23,7 +23,6 @@ import { FilterPipe } from './_shared/pipes/filter.pipe';
 // SERVICES
 import { ApiDataService } from './_shared/services/api-data.service';
 import { AppDataService } from './_shared/services/app-data.service';
-import { ToastService } from './_shared/services/toast.service';
 import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { ToolsService } from './_shared/services/tools.service';
@@ -94,7 +93,6 @@ import { ToastComponent } from './toast/toast.component';
     AppDataService,
     AuthService,
     AuthGuardService,
-    ToastService,
     ToolsService,
     ClickTrackingService
   ],
