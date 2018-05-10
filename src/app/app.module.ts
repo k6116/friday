@@ -47,6 +47,7 @@ import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropd
 import { ProjectsInfoModalComponent } from './modals/projects-info-modal/projects-info-modal.component';
 import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/projects-roster-modal.component';
 import { ToastComponent } from './toast/toast.component';
+import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
 
 @NgModule({
@@ -73,7 +74,8 @@ import { ToastComponent } from './toast/toast.component';
     OrgDropdownComponent,
     ProjectsInfoModalComponent,
     ProjectsRosterModalComponent,
-    ToastComponent
+    ToastComponent,
+    BlockAppUseComponent
   ],
   imports: [
     AppRoutingModule,

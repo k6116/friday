@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { DecimalPipe } from '@angular/common';
@@ -44,7 +44,7 @@ declare const $: any;
   //   ])
   // ]
 })
-export class FteEntryEmployeeComponent implements OnInit {
+export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
   // initialize variables
   mainSliderConfig: any;  // slider config
@@ -67,6 +67,7 @@ export class FteEntryEmployeeComponent implements OnInit {
   monthlyTotalsValid: boolean[];
   showProjectsModal: boolean;
   projectList: any;
+  timer: any;
 
   constructor(
     private fb: FormBuilder,
@@ -74,7 +75,8 @@ export class FteEntryEmployeeComponent implements OnInit {
     private apiDataService: ApiDataService,
     private appDataService: AppDataService,
     private toolsService: ToolsService,
-    private decimalPipe: DecimalPipe
+    private decimalPipe: DecimalPipe,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
@@ -86,9 +88,15 @@ export class FteEntryEmployeeComponent implements OnInit {
     this.monthlyTotals = new Array(36).fill(null);
     this.monthlyTotalsValid = new Array(36).fill(true);
 
+    this.changeDetectorRef.detach();
+    this.timer = setInterval(() => {
+      this.changeDetectorRef.detectChanges();
+    }, 200);
+
   }
 
   ngOnInit() {
+
 
     this.setSliderConfig(); // initalize slider config
 
@@ -123,10 +131,15 @@ export class FteEntryEmployeeComponent implements OnInit {
    this.buildFteEditableArray();
    this.fteFormChangeListener();
 
+
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.timer);
+    this.changeDetectorRef.detach();
   }
 
   onAddProjectClick() {
-
     this.showProjectsModal = true;
   }
 
