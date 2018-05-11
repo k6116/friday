@@ -2,74 +2,81 @@
 <app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()"></app-projects-modal>
 <div *ngIf="display" class="container-fluid">
 
-  <!-- <div class="row row-custom"> begin row for slider bar -->
+    <!-- <div class="row row-custom"> begin row for slider bar -->
     <div class="col-xs-12 col-custom col-slider" (click)="showSliderDisabledToast()">
-      <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" [disabled]="sliderDisabled" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
+        <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" [disabled]="sliderDisabled" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
     </div>
-  <!-- </div> end row -->
+    <!-- </div> end row -->
 
 
-  <div class="row row-custom top-margin"> <!-- begin row for FTE entry table -->
-      <div *ngIf="!displayFTETable" class="col-sm col-custom">
-        <p>no FTE data for the selected period</p>
-      </div>
-      <div *ngIf="displayFTETable" class="col-sm col-custom table-scrollable" (scroll)="onTableScroll($event)"> <!-- using table-scrollable css -->
-          <form [formGroup]="FTEFormGroup">
-              <div class="table-inner-cont" formArrayName="FTEFormArray">
-                  <div class="table-header-underlay">
-                  </div>
-                  <table class="table-ftes">
-                      <thead>
-                          <tr> <!-- first row of table is month-name column-headers -->
-                              <th class="header-project">&nbsp;</th><!-- for trash icon -->
-                              <th class="header-project">Project</th>
-                              <!-- loop through each month in the userFTEs data object-->
-                              <ng-container *ngFor="let month of months; let k = index">
-                                  <!-- only show the month column if the slider deems it visible -->
-                                  <th class="header-month" [@colState]="fteMonthVisible[k]" [style.display]="fteMonthVisible[k] ? 'table-cell' : 'none'">{{month | date:'MMM-yyyy':'+0'}}</th>
-                              </ng-container>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <!-- loop through each project, one row per project -->
-                          <ng-container *ngFor="let project of projects; let i = index">
-                            <tr [formGroupName]="i" [style.display]="(fteProjectVisible[i] && project.alive) ? 'table-row' : 'none'">
-                                <td class="col-project-name"> <!-- for trash icon -->
-                                    <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
-                                </td>
-                                <td class="col-project-name">{{project.projectName}}</td>
-                                <!-- <td class="col-project-name">{{project.controls[0].controls.projectName.value}}</td> -->
-                                <!-- loop through each month's FTE allocation, "monthly" cells per project -->
-                                <ng-container *ngFor="let month of months; let j = index">
-                                    <!-- only show if slider deems it visible -->
-                                    <td [@colState]="fteMonthVisible[j]" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">
-                                        <input type="text" formControlName="fte" class="form-control fte-table-row" [attr.disabled]="fteMonthEditable[j] ? null : ''" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
-                                    </td>
+    <div class="row row-custom top-margin"> <!-- begin row for FTE entry table -->
+        <div *ngIf="!displayFTETable" class="col-sm col-custom">
+            <p>no FTE data for the selected period</p>
+        </div>
+
+        <div *ngIf="displayFTETable" class="col-sm col-custom table-scrollable" (scroll)="onTableScroll($event)"> <!-- using table-scrollable css -->
+            <form [formGroup]="FTEFormGroup">
+                <div class="table-inner-cont" formArrayName="FTEFormArray">
+                <div class="table-header-underlay">
+                </div>
+                    <table class="table-ftes">
+                        <thead>
+                            <tr> <!-- first row of table is month-name column-headers -->
+                                <th class="header-project">&nbsp;</th><!-- for trash icon -->
+                                <th class="header-project">Project</th>
+                                <!-- loop through each month in the userFTEs data object-->
+                                <ng-container *ngFor="let month of months; let k = index">
+                                    <!-- only show the month column if the slider deems it visible -->
+                                    <th class="header-month" [@colState]="fteMonthVisible[k]" [style.display]="fteMonthVisible[k] ? 'table-cell' : 'none'">{{month | date:'MMM-yyyy':'+0'}}</th>
                                 </ng-container>
                             </tr>
-                          </ng-container>
-                          <!-- totals row-->
-                          <tr class="totals-row">
-                              <td class="col-total-name totals-row-cell">&nbsp;</td> <!-- for trash icon -->
-                              <td class="col-total-name totals-row-cell">TOTAL</td>
-                              <ng-container *ngFor="let month of months; let z = index">
-                                  <td class="totals-row-cell" *ngIf="fteMonthVisible[z]">
-                                      <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control fte-table-row fte-totals-column' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
-                                  </td>
-                              </ng-container>
-                          </tr>
-                      </tbody>
-                  </table>
-              </div>
-          </form>
-      </div> <!-- end FTE entry scrollable div -->
-  </div> <!-- end row -->
+                        </thead>
+                        <tbody>
+                            <!-- loop through each project, one row per project -->
+                            <ng-container *ngFor="let project of projects; let i = index">
+                                <tr [formGroupName]="i" [style.display]="(fteProjectVisible[i] && project.alive) ? 'table-row' : 'none'">
+                                    <td class="col-project-name"> <!-- for trash icon -->
+                                        <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
+                                    </td>
+                                    <td class="col-project-name">{{project.projectName}}</td>
+                                    <!-- <td class="col-project-name">{{project.controls[0].controls.projectName.value}}</td> -->
+                                    <!-- loop through each month's FTE allocation, "monthly" cells per project -->
+                                    <ng-container *ngFor="let month of months; let j = index">
+                                        <!-- only show if slider deems it visible -->
+                                        <td [@colState]="fteMonthVisible[j]" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">
+                                            <input type="text" formControlName="fte" class="form-control fte-table-row" [attr.disabled]="fteMonthEditable[j] ? null : ''" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
+                                        </td>
+                                    </ng-container>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div> <!-- end FTE entry scrollable div -->
+    </div> <!-- end row -->
 
-  <div class="test-buttons">
-    <button class="btn btn-primary" (click)="onAddProjectClick()">Add Project</button>
-    <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
-    <button class="btn btn-primary" (click)="onSaveClick()">Save</button>
-    <button class="btn btn-primary" (click)="exportXLSX()">Export</button>
-  </div>
+    <div class="row row-custom top-margin"> <!-- begin row for FTE entry table -->
+        <!-- totals row-->
+        <table class="table-ftes">
+            <tr class="totals-row">
+                <td class="col-total-name totals-row-cell">&nbsp;</td> <!-- for trash icon -->
+                <td class="col-total-name totals-row-cell">TOTAL</td>
+                <ng-container *ngFor="let month of months; let z = index">
+                    <td class="totals-row-cell" *ngIf="fteMonthVisible[z]">
+                        <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control fte-table-row fte-totals-column' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
+                    </td>
+                </ng-container>
+            </tr>
+        </table>
+    </div>
+
+
+    <div class="test-buttons">
+        <button class="btn btn-primary" (click)="onAddProjectClick()">Add Project</button>
+        <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
+        <button class="btn btn-primary" (click)="onSaveClick()">Save</button>
+        <button class="btn btn-primary" (click)="exportXLSX()">Export</button>
+    </div>
 
 </div> <!-- end FTE component container div -->

@@ -87,7 +87,13 @@ th.header-project, th.header-month, td.col-project-name, td.totals-row-cell {
 }
 
 i.fa-trash-o {
+  font-size: 13pt;
   color: red;
+}
+
+i.fa-trash-o:hover {
+  color: gray;
+  cursor: pointer;
 }
 
 /* TOTALS ROW */
