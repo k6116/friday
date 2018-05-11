@@ -33,50 +33,67 @@ function update(req, res) {
   const formData = req.body;
   const userID = req.params.userID;
 
-  console.log('form data:');
-  console.log(formData);
+  // console.log('form data:');
+  // console.log(formData);
 
   // combine all project arrays into a single array
   const allFormData = [];
   formData.forEach(projectArr => {
     allFormData.push(...projectArr);
   });
-  console.log('combined form data:');
-  console.log(allFormData);
+  // console.log('combined form data:');
+  // console.log(allFormData);
 
   // build arrays of objects for insert and update
   const insertData = [];
   const updateData = [];
+  const deleteProjectIds = [];
+  const deleteProjectUserIds = [];
   const updateIds = [];
   allFormData.forEach(data => {
-    // insert array
-    if (data.newRecord && data.fte) {
-      insertData.push({
+    // if data needs to be deleted, parse projectIDs and userIDs into delete arrays
+    if (data.toBeDeleted) {
+      if (!deleteProjectIds.find( value => {
+        // only put the projectID into the delete array if it doesn't already exist in there
+        return value === data.projectID
+      })) {
+        deleteProjectIds.push(data.projectID);
+        deleteProjectUserIds.push(userID);
+      }
+    }
+    else {
+      // insert array
+      if (data.newRecord && data.fte) {
+        insertData.push({
+            projectID: data.projectID,
+            employeeID: userID,
+            fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
+            fte: +data.fte,
+            updatedBy: userID,
+            updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+          }
+        )
+      }
+      // update array
+      if (!data.newRecord && data.updated) {
+        updateData.push({
           projectID: data.projectID,
           employeeID: userID,
           fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
           fte: +data.fte,
           updatedBy: userID,
           updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
-        }
-      )
-    }
-    // update array
-    if (!data.newRecord && data.updated) {
-      updateData.push({
-        projectID: data.projectID,
-        employeeID: userID,
-        fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
-        fte: +data.fte,
-        updatedBy: userID,
-        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
-      })
-      // record ids array for updates
-      updateIds.push(data.recordID);
+        })
+        // record ids array for updates
+        updateIds.push(data.recordID);
+      }
     }
   });
 
-
+  console.log('projects for deletion');
+  console.log(deleteProjectIds);
+  console.log('users of projects to be deleted')
+  console.log(deleteProjectUserIds);
   console.log('data to insert');
   console.log(insertData);
   console.log('data to update');
@@ -89,41 +106,55 @@ function update(req, res) {
 
     // insert the new records
     return models.ProjectEmployee
-      .bulkCreate(
-        insertData,
-        {transaction: t}
-      )
-      .then(savedProjectEmployees => {
-
-        console.log(`${savedProjectEmployees.length} project employee records inserted`);
-
-        // update the existing records
-        var promises = [];
-        for (var i = 0; i < updateData.length; i++) {
-          var newPromise = models.ProjectEmployee.update(
-            {
-              projectID: updateData[i].projectID,
-              employeeID: userID,
-              fiscalDate: updateData[i].fiscalDate,
-              fte: updateData[i].fte,
-              updatedBy: userID,
-              updatedAt: updateData[i].updatedAt
-            },
-            {
-              where: { id: updateIds[i] },
-              transaction: t
-            }
-          );
-          promises.push(newPromise);
-        };
-        return Promise.all(promises)
-        .then(updatedProjectEmployee => {
-          
-          console.log(`${updatedProjectEmployee.length} project employee records updated`);
-          
-        });
-          
+      .destroy({
+        where: {
+          projectID: deleteProjectIds,
+          employeeID: deleteProjectUserIds
+        },
+        transaction: t
       })
+      .then( deletedRows => {
+        console.log(`${deletedRows} project employee records deleted`);
+
+        return models.ProjectEmployee.bulkCreate(
+          insertData,
+          {transaction: t}
+        )
+        .then(savedProjectEmployees => {
+  
+          console.log(savedProjectEmployees);
+          console.log(`${savedProjectEmployees.length} project employee records inserted`);
+  
+          // update the existing records
+          var promises = [];
+          for (var i = 0; i < updateData.length; i++) {
+            var newPromise = models.ProjectEmployee.update(
+              {
+                projectID: updateData[i].projectID,
+                employeeID: userID,
+                fiscalDate: updateData[i].fiscalDate,
+                fte: updateData[i].fte,
+                updatedBy: userID,
+                updatedAt: updateData[i].updatedAt
+              },
+              {
+                where: { id: updateIds[i] },
+                transaction: t
+              }
+            );
+            promises.push(newPromise);
+          };
+          return Promise.all(promises)
+          .then(updatedProjectEmployee => {
+            
+            console.log(`${updatedProjectEmployee.length} project employee records updated`);
+            
+          });
+            
+        })
+
+      })
+      
 
     }).then(() => {
 

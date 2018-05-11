@@ -12,6 +12,8 @@ export class AppDataService {
   noticeModalData = new EventEmitter<any>();
   confirmModalData = new EventEmitter<any>();
 
+  toast = new EventEmitter<any>();
+
   resetTimer = new EventEmitter<boolean>();
 
   clickedClass = new EventEmitter<string>();
@@ -23,4 +25,10 @@ export class AppDataService {
 
   constructor() { }
 
+  raiseToast( toastType: 'success' | 'warn' | 'error', toastText: string) {
+    this.toast.emit({
+      type: toastType,
+      text: toastText
+    });
+  }
 }
