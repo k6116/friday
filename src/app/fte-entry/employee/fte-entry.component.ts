@@ -23,7 +23,25 @@ declare const $: any;
   selector: 'app-fte-entry',
   templateUrl: './fte-entry.component.html',
   styleUrls: ['./fte-entry.component.css', '../../_shared/styles/common.css'],
-  providers: [DecimalPipe]
+  providers: [DecimalPipe],
+  animations: [
+    trigger('colState', [
+      state('1', style({
+        transform: 'translateX(0)',
+        opacity: 1
+      })),
+      state('0', style({
+        transform: 'translateX(-100%)',
+        opacity: 0
+      })),
+      transition('0 => 1', [
+        animate('100ms ease-in')
+      ]),
+      transition('1 => 0', [
+        animate('100ms ease-out')
+      ])
+    ])
+  ]
   // animations: [
   //   trigger('conditionState', [
   //     state('in', style({
