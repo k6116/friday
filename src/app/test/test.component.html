@@ -8,26 +8,42 @@
 </div>
 <div class=buttons>
         <button class='btn btn-info' (click)='startTest()'>Start</button>
-        <button class='btn btn-danger' (click)='stopTest()'>Reset</button>
+        <button class='btn btn-danger' (click)='resetTest()'>Reset</button>
+        <button class='btn btn-primary' (click)='spawnWorkerClick()'>Spawn</button>
 </div>
 
 <div class=results><b>Results:</b></div>
 <div>Starting performance of <b>{{cycles}}</b> cycles with a concurrency of <b>{{threads}}</b> thread(s).</div>
-<div *ngIf=completedCycles>Complete Cycles in <b>{{completedCycles}}</b> milliseconds.</div>
+<div *ngIf=completedCycles>Complete Last Cycle in <b>{{completedCycles}}</b> milliseconds.</div>
 
-<div class="row">
-        <div class="col-lg-8">
-          <div style="display: block;">
-          <canvas baseChart width="800" height="800"
-                      [datasets]="lineChartData"
-                      [labels]="lineChartLabels"
-                      [options]="lineChartOptions"
-                      [colors]="lineChartColors"
-                      [legend]="lineChartLegend"
-                      [chartType]="lineChartType"
-                      (chartHover)="chartHovered($event)"
-                      (chartClick)="chartClicked($event)"></canvas>
-          </div>
+<div style="width: 100%; display: table;">
+    <div style="display: table-row">
+        <div style="width: 600px; display: table-cell;">
+                <canvas baseChart width="600" height="600"
+                [datasets]="singleCycleData"
+                [labels]="singleCycleLabels"
+                [options]="chartOptions"
+                [colors]="chartColors"
+                [legend]="chartLegend"
+                [chartType]="chartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+            
+
         </div>
+        
+        <div style="display: table-cell;">
+                <canvas baseChart width="600" height="600"
+                [datasets]="cycleChartData"
+                [labels]="cycleChartLabels"
+                [options]="chartOptions"
+                [colors]="chartColors"
+                [legend]="chartLegend"
+                [chartType]="chartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+        
+        </div>
+    </div>
 </div>
 

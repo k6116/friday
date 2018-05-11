@@ -12,17 +12,18 @@ export class TestComponent implements OnInit {
 cycles: number;
 threads: number;
 
-threadACycle: Array<any>;
-threadBCycle: Array<any>;
+public singleCycleData: Array<any> = [{data: [], label: 'Individual Hits'}];
+public singleCycleLabels: Array<any> = new Array<any>();
 
 completedCycles: number;
+public cycleChartData: Array<any> = [{data: [], label: 'Cycle Completions'}];
+public cycleChartLabels: Array<any> = new Array<any>();
 
-public lineChartData: Array<any> = [{data: [0], label: 'Worker A'}];
-public lineChartLabels: Array<any> = [1];
 
-public lineChartColors: Array<any> = [
+
+public chartColors: Array<any> = [
   { // grey
-    backgroundColor: 'rgba(148,159,177,0.2)',
+    backgroundColor: 'rgba(163, 197, 255, .2)',
     borderColor: 'rgba(148,159,177,1)',
     pointBackgroundColor: 'rgba(148,159,177,1)',
     pointBorderColor: '#fff',
@@ -39,7 +40,7 @@ public lineChartColors: Array<any> = [
   }
 ];
 
-  public lineChartOptions: any = {
+  public chartOptions: any = {
     responsive: true,
     pan: {
       enabled: true,
@@ -50,107 +51,108 @@ public lineChartColors: Array<any> = [
       mode: 'x',
       limits: {
           max: 100,
-          min: 10
+          min: 0
       }
   }
 
   };
 
 
-public lineChartLegend: true;
-public lineChartType: string = 'line';
+public chartLegend: true;
+public chartType: string = 'line';
 
 
-showData(): void {
-// i = rows of data
-// j = individual data elements
-
-  const _lineChartData: Array<any> = new Array(1);
-
-   _lineChartData[0] = {data: new Array(this.cycles), label: this.lineChartData[0].label};
-
-    for (let j = 0; j < _lineChartData[0].data.length; j++) {
-       this.lineChartLabels[j] = 'C' + j.toString();
-      _lineChartData[0].data[j] = this.threadACycle[j];
-
-    }
-
-  this.lineChartData = _lineChartData;
-
-  }
-
- public chartClicked(e: any): void {
-    console.log(e);
-  }
-
-public chartHovered(e: any): void {
-  console.log(e);
-}
 
 constructor ( private apiDataService: ApiDataService) {
 
 }
 
   ngOnInit() {
-        this.cycles = 100;
+        this.cycles = 20;
         this.threads = 1;
+  }
+
+  getLatestCycleCompletion(): number {
+
+    return  this.singleCycleData[0].data.reduce(this.getSum) / this.singleCycleData[0].data.length;
+  }
+
+  getSum(total, num) {
+    return total + num;
+  }
+
+  spawnWorkerClick() {
+    const myWorker = new Worker('./worker.js');
+    myWorker.postMessage(2);
+    myWorker.onmessage = function(e) {
+
+      console.log('Message received from worker: ' + e.data);
+    };
   }
 
   startTest() {
 
-    this.threadACycle = new Array<any>();
-    const timeBeforeLoop = performance.now();
+    this.singleCycleLabels.length = 0; // one cycle set at a time for display
+    this.singleCycleData[0].data.length = 0;
 
-    let i: number;
-    for (i = 1; i <= this.cycles; i++) {
-        this.performTest();
+    for (let i = 1; i <= this.cycles; i++) {
+      this.performTest(i);
     }
-    const timeAfterLoop = performance.now();
-    const f = moment.utc(timeAfterLoop - timeBeforeLoop).format('SSSS');
-    const v = +f; // convert to integer
-    console.log(`Completed Cycles in ${v} milliseconds`);
-    this.completedCycles = v;
-
-    this.showData();
   }
 
 
-  performTest() {
+  performTest(iteration: number) {
 
     const t0 = performance.now();
 
     this.apiDataService.getProjects()
     .subscribe(
       res => {
+        const t1 = performance.now();
+        const tDiff = moment.utc(t1 - t0);
+
+        console.log(`retrieve projects took ${tDiff} milliseconds`);
+        this.singleCycleLabels.push('C' + iteration.toString());
+        this.singleCycleData[0].data.push(tDiff);
+
+        if (iteration === this.cycles) {
+          console.log('length before reduction');
+          console.log(this.singleCycleData[0].data.length);
+          const sum = this.singleCycleData[0].data.reduce(this.getSum) / this.singleCycleData[0].data.length;
+          const sumAvg = Math.floor(sum);  // convert to integer
+          console.log(`full cycle took ${sumAvg} milliseconds`);
+
+          this.cycleChartLabels.push('T' + (this.cycleChartLabels.length + 1).toString());
+          this.cycleChartData[0].data.push(sumAvg);
+          this.completedCycles = sumAvg;
+        }
 
       },
       err => {
         console.log('get project data error:');
         console.log(err);
+
       }
     );
-
-    const t1 = performance.now();
-    const f = moment.utc(t1 - t0).format('SSSS');
-    const v = +f; // convert to integer
-    console.log(`retrieve projects took ${v} milliseconds`);
-    this.threadACycle.push(v);
   }
 
-  stopTest() {
-    this.threadACycle = new Array<any>();
-    this.threadBCycle = new Array<any>();
 
-    this.lineChartData = [{data: [0], label: 'Worker A'}];
-    let label = new Array<any>();
-    label = [1];
+  resetTest() {
 
-    const labelsLength = this.lineChartLabels.length;
-    for (let p = 0; p < labelsLength; p++) {
-      this.lineChartLabels.pop();
-    }
+    this.singleCycleData[0].data.length = 0;
+    this.singleCycleLabels.length = 0;
 
-   // this.lineChartLabels =  label;
+    this.cycleChartData[0].data.length = 0;
+    this.cycleChartLabels.length = 0;
+
+  }
+
+  public chartClicked(e: any): void {
+    console.log(e);
+  }
+
+  public chartHovered(e: any): void {
+  console.log(e);
   }
 
 }
