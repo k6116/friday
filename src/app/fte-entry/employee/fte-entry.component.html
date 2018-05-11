@@ -17,8 +17,8 @@
         <div *ngIf="displayFTETable" class="col-sm col-custom table-scrollable" (scroll)="onTableScroll($event)"> <!-- using table-scrollable css -->
             <form [formGroup]="FTEFormGroup">
                 <div class="table-inner-cont" formArrayName="FTEFormArray">
-                <div class="table-header-underlay">
-                </div>
+                <!-- <div class="table-header-underlay">
+                </div> -->
                     <table class="table-ftes">
                         <thead>
                             <tr> <!-- first row of table is month-name column-headers -->
@@ -50,27 +50,22 @@
                                 </tr>
                             </ng-container>
                         </tbody>
+                        <tfoot>
+                            <tr class="totals-row">
+                                <td class="col-total-name totals-row-cell">&nbsp;</td> <!-- for trash icon -->
+                                <td class="col-total-name totals-row-cell">TOTAL</td>
+                                <ng-container *ngFor="let month of months; let z = index">
+                                    <td class="totals-row-cell" *ngIf="fteMonthVisible[z]">
+                                        <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control fte-table-row fte-totals-column' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
+                                    </td>
+                                </ng-container>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </form>
         </div> <!-- end FTE entry scrollable div -->
     </div> <!-- end row -->
-
-    <div class="row row-custom top-margin"> <!-- begin row for FTE entry table -->
-        <!-- totals row-->
-        <table class="table-ftes">
-            <tr class="totals-row">
-                <td class="col-total-name totals-row-cell">&nbsp;</td> <!-- for trash icon -->
-                <td class="col-total-name totals-row-cell">TOTAL</td>
-                <ng-container *ngFor="let month of months; let z = index">
-                    <td class="totals-row-cell" *ngIf="fteMonthVisible[z]">
-                        <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control fte-table-row fte-totals-column' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
-                    </td>
-                </ng-container>
-            </tr>
-        </table>
-    </div>
-
 
     <div class="test-buttons">
         <button class="btn btn-primary" (click)="onAddProjectClick()">Add Project</button>
