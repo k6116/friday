@@ -113,7 +113,7 @@ function update(req, res) {
           updatedAt: today
         },
         {
-          where: {id: project.id},
+          where: {id: project.projectID},
           transaction: t
         }
       )
@@ -145,82 +145,32 @@ function update(req, res) {
 
 function destroy(req, res) {
 
-  // get the tank id and tank number from the params
-  var tankID = req.params.id;
-  var tankNumber = req.params.number;
+  // get the project object and userID from the params
+  const project = req.body;
+  const userID = req.params.userID;
 
-  // variable to hold the new list after delete, to send back in the response
-  var newTanksList;
-
-  console.log(`deleting tank with id: ${tankID} and tank number: ${tankNumber}`);
+  console.log(`deleting project with id: ${project.projectID}`);
 
   return sequelize.transaction((t) => {
 
-    return models.TankEfficiency
+    return models.Projects
       .destroy(
         {
-          where: {tankID: tankID},
+          where: {id: project.projectID},
           transaction: t
         }
       )
       .then(deletedRecordCount => {
 
-        console.log('number of records deleted in the tankEfficiency table:')
+        console.log('number of projects deleted in the projects table:')
         console.log(deletedRecordCount);
-
-        return models.TankEfficiencyHistory
-          .destroy(
-            {
-              where: {tankID: tankID},
-              transaction: t
-            }
-          )
-          .then(deletedRecordCount => {
-
-            console.log('number of records deleted in the tankEfficiencyHistory table:')
-            console.log(deletedRecordCount);
-
-            // delete the record in the tank table
-            return models.Tank
-              .destroy(
-                {
-                  where: {id: tankID},
-                  transaction: t
-                }
-              )
-              .then(deletedRecordCount => {
-
-                console.log('number of deleted records in the tank table');
-                console.log(deletedRecordCount);
-
-                // return a new list of tanks in the response to re-populate the combobox
-                // this should yield better performance vs. making another request from the client side
-                return models.Tank
-                  .findAll(
-                    {
-                      attributes: ['id', 'tankNumber', 'tankType'],
-                      order: ['id'],
-                      transaction: t
-                    }
-                  )
-                  .then(tanks => {
-
-                    console.log('we are done deleting!')
-                    newTanksList = tanks;
-
-                  })
-
-              })
-
-          })
 
       })
 
     }).then(() => {
 
       res.json({
-        message: `The tank '${tankNumber}' has been deleted successfully`,
-        tanks: newTanksList
+        message: `The projectID '${project.projectID}' has been deleted successfully`,
       })
 
     }).catch(error => {
@@ -233,9 +183,7 @@ function destroy(req, res) {
 
     })
 
-
 }
-
 
 
 module.exports = {

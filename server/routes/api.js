@@ -29,6 +29,7 @@ router.get('/projects', controllers.project.getAll)
 router.get('/userProjectList/:userID', controllers.createProjects.show);
 router.post('/createProject/:userID', controllers.createProjects.insert);
 router.post('/updateProject/:userID', controllers.createProjects.update);
+router.post('/deleteProject/:userID', controllers.createProjects.destroy);
 
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);

@@ -131,6 +131,14 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  deleteProject(project: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/deleteProject/${userID}`, JSON.stringify(project), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   getProjectRoster(projectID: number) {
     return this.http.get(`/api/getProjectRoster/${projectID}`)
       .timeout(this.timeout)

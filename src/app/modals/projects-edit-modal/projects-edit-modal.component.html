@@ -3,12 +3,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="projectsEditModalLabel">Edit Project</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
         <form [formGroup]="form">
+          <div class="form-group">
+              <input formControlName="projectID" type="text" class="form-control" id="project-id" value="{{ projectData.id }}" visible="false">
+          </div>
           <div class="form-group">
             <label for="project-name" class="col-form-label">Project Name:</label>
             <input formControlName="projectName" type="text" class="form-control" id="project-name" value="{{ projectData.projectName }}">
@@ -25,6 +25,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="getProjectData()">Data</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="deleteProject()">Delete</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onCancelClicked()">Close</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="updateProject()">Save</button>
       </div>

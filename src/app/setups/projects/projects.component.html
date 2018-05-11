@@ -1,4 +1,4 @@
-<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" (updateSuccess)="onUpdateSuccess()"></app-projects-edit-modal>
+<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
 <app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal>
 
 <div *ngIf="display" class="container-fluid">

@@ -1,18 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../auth/auth.service';
+import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
 import { User } from '../../_shared/models/user.model';
 
 @Component({
   selector: 'app-projects-setups',
   templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.css', '../../_shared/styles/common.css']
+  styleUrls: ['./projects.component.css', '../../_shared/styles/common.css'],
 })
 export class ProjectsSetupsComponent implements OnInit {
 
-  form: FormGroup;
   projectName: string;
   projectType: number;
   projectDescription: string;
@@ -23,21 +22,14 @@ export class ProjectsSetupsComponent implements OnInit {
   showProjectsCreateModal: boolean;
   display: boolean;
 
+  @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
+
   constructor(
-    private formBuilder: FormBuilder,
     private apiDataService: ApiDataService,
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
-    // initialize the formgroup
-    this.form = this.formBuilder.group({
-      projectName: [null],
-      projectType: [null],
-      projectDescription: [null],
-    });
-
     this.display = true;
-
   }
 
   ngOnInit() {
@@ -52,18 +44,23 @@ export class ProjectsSetupsComponent implements OnInit {
       this.loggedInUser = user;
       this.getUserProjectList();
     });
+  }
 
+  selectProject(project: any) {
+    this.showProjectsEditModal = true;
+    this.projectData = project;
+    setTimeout(() => {
+      this.projectsEditModalComponent.populateForm();
+    }, 0);
   }
 
   getUserProjectList() {
-
     this.apiDataService.getUserProjectList(this.loggedInUser.id)
       .subscribe(
         res => {
-          console.log(`project list for user  id ${this.loggedInUser.id}`);
+          console.log(`project list for user id ${this.loggedInUser.id}`);
           console.log(res);
           this.projectList = res;
-
         },
         err => {
           console.log(err);
@@ -75,17 +72,18 @@ export class ProjectsSetupsComponent implements OnInit {
     this.showProjectsCreateModal = true;
   }
 
-  selectProject(project: any) {
-    this.showProjectsEditModal = true;
-    this.projectData = project;
-  }
-
   onCreateSuccess() {
-    console.log('My Project List Refreshed');
+    console.log('Create project success. My Project List Refreshed');
     this.getUserProjectList();
   }
 
   onUpdateSuccess() {
+    console.log('Update project success. My Project List Refreshed');
+    this.getUserProjectList();
+  }
+
+  onDeleteSuccess() {
+    console.log('Delete project success. My Project List Refreshed');
     this.getUserProjectList();
   }
 
