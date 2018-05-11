@@ -42,25 +42,6 @@ declare const $: any;
       ])
     ])
   ]
-  // animations: [
-  //   trigger('conditionState', [
-  //     state('in', style({
-  //       opacity: 1,
-  //       transform: 'translateY(0)'
-  //     })),
-  //     transition('in => void', [
-  //       animate(100, style({
-  //         opacity: 0,
-  //         transform: 'translateY(25px)'
-  //       }))
-  //     ]),
-  //     transition('void => in', [
-  //       animate(100, style({
-  //         opacity: 1
-  //       }))
-  //     ])
-  //   ])
-  // ]
 })
 export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
@@ -100,8 +81,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
     });
-
-    this.state = 'in';
 
     this.monthlyTotals = new Array(36).fill(null);
     this.monthlyTotalsValid = new Array(36).fill(true);
@@ -362,10 +341,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
         const t1 = performance.now();
         console.log(`save fte values took ${t1 - t0} milliseconds`);
         this.appDataService.raiseToast('success', res.message);
+        this.resetProjectFlags();
       },
       err => {
         console.log(err);
-        this.appDataService.raiseToast('error', err.message);
+        this.appDataService.raiseToast('error', `${err.status}: ${err.statusText}`);
       }
     );
   }
@@ -653,6 +633,36 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     // scrollTop = $('div.table-scrollable').scrollTop();
     // $('div.table-scrollable').scrollTop(scrollTop + 1);
 
+  }
+
+  resetProjectFlags() {
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
+
+    FTEFormArray.controls.forEach( project => {
+      const currentProject: any = project;
+      // if the project isn't alive (was slated for deletion), then actually splice it out of the form
+      if (!currentProject.alive) {
+        // console.log('splice out project: ' + currentProject.projectName);
+        const deletedProjectIndex = FTEFormArray.controls.indexOf(project);
+        FTEFormArray.controls.splice(deletedProjectIndex, 1);
+        this.fteProjectVisible.splice(deletedProjectIndex, 1);  // also remove the boolean entry for project visibility and delete-ability
+        this.fteProjectDeletable.splice(deletedProjectIndex, 1);
+      } else {
+        // otherwise, loop through each month and reset the flags that were flipped
+        project['controls'].forEach( month => {
+          if (month.value.fte && month.value.newRecord) {
+            // console.log('set newRecord false for: ' + month.value.fte);
+            month.controls.newRecord.setValue(false);
+            month.controls.updated.setValue(false);
+            // console.log('new state: ' + month.value.newRecord);
+          } else if (month.value.fte && month.value.updated) {
+            // console.log('set updated false for: ' + month.value.fte);
+            month.controls.updated.setValue(false);
+            // console.log('new state: ' + month.value.updated);
+          }
+        });
+      }
+    });
   }
 
   updateProjectVisibility(posStart: number, posDelta: number) {

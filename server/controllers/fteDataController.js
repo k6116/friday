@@ -32,6 +32,7 @@ function update(req, res) {
 
   const formData = req.body;
   const userID = req.params.userID;
+  const updatedValues = [];
 
   // console.log('form data:');
   // console.log(formData);
@@ -114,6 +115,7 @@ function update(req, res) {
         transaction: t
       })
       .then( deletedRows => {
+        updatedValues.push(deletedRows);
         console.log(`${deletedRows} project employee records deleted`);
 
         return models.ProjectEmployee.bulkCreate(
@@ -122,6 +124,7 @@ function update(req, res) {
         )
         .then(savedProjectEmployees => {
   
+          updatedValues.push(savedProjectEmployees.length);
           console.log(savedProjectEmployees);
           console.log(`${savedProjectEmployees.length} project employee records inserted`);
   
@@ -147,6 +150,7 @@ function update(req, res) {
           return Promise.all(promises)
           .then(updatedProjectEmployee => {
             
+            updatedValues.push(updatedProjectEmployee.length);
             console.log(`${updatedProjectEmployee.length} project employee records updated`);
             
           });
@@ -159,15 +163,19 @@ function update(req, res) {
     }).then(() => {
 
       res.json({
-        message: `The FTEs have been inserted and updated successfully`,
+        // message: `Save successful!\n
+        // ${updatedValues[0]} records deleted\n
+        // ${updatedValues[1]} records inserted\n
+        // ${updatedValues[2]} records updated`
+        message: 'Your FTE values have been successfully saved!'
       })
 
     }).catch(error => {
 
       console.log(error);
       res.status(500).json({
-        title: 'update failed',
-        error: {message: error}
+        message: 'update failed',
+        error: error
       });
 
     })
