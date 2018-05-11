@@ -154,5 +154,4 @@ constructor ( private apiDataService: ApiDataService) {
   public chartHovered(e: any): void {
   console.log(e);
   }
-
 }

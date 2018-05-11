@@ -47,6 +47,7 @@ import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropd
 import { ProjectsInfoModalComponent } from './modals/projects-info-modal/projects-info-modal.component';
 import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/projects-roster-modal.component';
 import { ChartsModule } from 'ng2-charts';
+import { ToastComponent } from './toast/toast.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
 // CHARTS
@@ -77,6 +78,7 @@ import 'chartjs-plugin-zoom';
     OrgDropdownComponent,
     ProjectsInfoModalComponent,
     ProjectsRosterModalComponent,
+    ToastComponent,
     BlockAppUseComponent
   ],
   imports: [

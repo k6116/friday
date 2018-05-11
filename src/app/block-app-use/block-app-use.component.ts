@@ -35,7 +35,7 @@ export class BlockAppUseComponent implements OnInit, AfterViewInit {
     this.appDataService.noticeModalData.emit(
       {
         title: 'Browser Not Supported',
-        message: `Jarvis Resoruces will not work with ${bowser.name} version ${bowser.version}.  Please
+        message: `Jarvis Resources will not work with ${bowser.name} version ${bowser.version}.  Please
          use Google Chrome version 65.0 or later.`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(197, 50, 76)',

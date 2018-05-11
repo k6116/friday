@@ -1,0 +1,58 @@
+div.toast {
+    visibility: hidden;
+    min-width: 250px;
+    max-width: 250px;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    z-index: 1;
+    right: 20px;
+    bottom: 20px;
+    background-color: #333;
+    color: #fff;
+  }
+  
+  div.toast.toast-success {
+    background-color: rgb(37, 71, 37);
+    color: #fff;
+  }
+  
+  div.toast.toast-warn {
+    background-color: rgb(224, 190, 0);
+    color: #000;
+  }
+
+  div.toast.toast-error {
+    background-color: rgb(173, 28, 28);
+    color: #fff;
+  }
+  
+  div.toast-show {
+    visibility: visible;  /* show toast when clicked */
+  
+  /* Add animation: Take 0.5 seconds to fade in and out the toast.
+  However, delay the fade out process for 2.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  
+  /* Animations to fade the toast in and out */
+  @-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 20px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 20px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+    from {bottom: 20px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+    from {bottom: 20px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  } 
