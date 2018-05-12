@@ -9,20 +9,30 @@ div.col-custom.col-slider {
   padding: 0 10px;
 }
 
-.fte-table-row {
+td, th, input {
   width:80px;
+}
+
+th.icon, td.icon {
+  min-width:30px;
+  max-width:30px;
+  width:30px;
+}
+
+.firstColumnHeader {
+  min-width: 100px;
 }
 
 .top-margin {
   margin-top: 75px;
 }
 
-div.col-custom.table-scrollable {
+/* div.col-custom.table-scrollable {
   max-height: 397px;
   overflow: auto;
   padding: 10px 14px;
   width: 100%;
-}
+} */
 
 .test-buttons {
   margin-top: 50px;
@@ -30,10 +40,49 @@ div.col-custom.table-scrollable {
 }
 
 div.table-inner-cont {
-  padding-bottom: 50px;
+  top: 0px;
+  overflow-x: scroll;
 }
 
-table.table-ftes, table.table-ftes thead, table.table-ftes thead tr {
+table {
+  width: 100%;
+}
+
+thead tr {
+  top: 0;
+  left: 0;
+  height: 30px;
+}
+
+th { /* sadly right now, Chrome only supports position:sticky on th elements, not thead, which is where we would like it */
+  top: 0px;
+  z-index: 2;
+  border: 1px solid;
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+thead, tfoot, tbody {
+  display: block;
+  width: 100%;
+}
+
+tbody {
+  height: 200px;
+  overflow-y: scroll;
+}
+tfoot tr {
+  left: 0;
+  bottom: 0;
+  height: 40px;
+  z-index: 2;
+}
+
+tbody tr:first-of-type td {
+  padding-top: 0px;
+}
+
+/* table.table-ftes, table.table-ftes thead, table.table-ftes thead tr {
   position: relative;
 }
 
@@ -64,10 +113,10 @@ table thead tr th {
   z-index: 2;
   padding-bottom: 10px;
   top: -10px;
-}
+} */
 
 /* turning off for now, would like a pure css solution */
-div.table-header-underlay {
+/* div.table-header-underlay {
   background-color: rgb(245, 245, 245);
   z-index: 2;
   position: absolute;
@@ -80,7 +129,7 @@ div.table-header-underlay {
   color: white;
   text-align: right;
   display: none;  
-}
+} */
 
 th.header-project, th.header-month, td.col-project-name, td.totals-row-cell {
   background-color: rgb(245, 245, 245);
