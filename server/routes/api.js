@@ -17,6 +17,12 @@ router.post('/ftedata/:userID', controllers.fteData.update);
 // PROJECTS CONTROLLER
 router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
 // router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
+router.get('/getProjectTypesList/', controllers.project.getProjectTypesList);
+router.get('/getPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.project.getPrimaryKeyRefs);
+router.get('/userProjectList/:userID', controllers.project.getUserProjectList);
+router.post('/createProject/:userID', controllers.project.insertProject);
+router.post('/updateProject/:userID', controllers.project.updateProject);
+router.post('/deleteProject/:userID', controllers.project.deleteProject);
 
 // ORG TREE DATA
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
@@ -24,12 +30,6 @@ router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
 // ORG CONTROLLER
 router.get('/org/:emailAddress', controllers.org.show);
 router.get('/projects', controllers.project.getAll)
-
-// CREATE PROJECT CONTROLLER
-router.get('/userProjectList/:userID', controllers.createProjects.show);
-router.post('/createProject/:userID', controllers.createProjects.insert);
-router.post('/updateProject/:userID', controllers.createProjects.update);
-router.post('/deleteProject/:userID', controllers.createProjects.destroy);
 
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);

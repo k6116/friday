@@ -115,6 +115,14 @@ export class ApiDataService {
 
   }
 
+  getProjectTypesList() {
+
+    return this.http.get(`/api/getProjectTypesList/`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+
+  }
+
   createProject(project: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
@@ -137,6 +145,12 @@ export class ApiDataService {
     return this.http.post(`/api/deleteProject/${userID}`, JSON.stringify(project), options)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
+  }
+
+  getPrimaryKeyRefs(pKeyName: string, pKeyValue: number, userID: number) {
+    return this.http.get(`/api/getPrimaryKeyRefs/${pKeyName}/${pKeyValue}/${userID}`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
   }
 
   getProjectRoster(projectID: number) {

@@ -3,6 +3,7 @@ import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../auth/auth.service';
 import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
+import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
 import { User } from '../../_shared/models/user.model';
 
 @Component({
@@ -22,6 +23,7 @@ export class ProjectsSetupsComponent implements OnInit {
   showProjectsCreateModal: boolean;
   display: boolean;
 
+  @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
 
   constructor(
@@ -39,8 +41,6 @@ export class ProjectsSetupsComponent implements OnInit {
         console.log(`error getting logged in user: ${err}`);
         return;
       }
-      console.log('logged in user data received in main component:');
-      console.log(user);
       this.loggedInUser = user;
       this.getUserProjectList();
     });
@@ -58,8 +58,7 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataService.getUserProjectList(this.loggedInUser.id)
       .subscribe(
         res => {
-          console.log(`project list for user id ${this.loggedInUser.id}`);
-          console.log(res);
+          // console.log(res);
           this.projectList = res;
         },
         err => {
@@ -70,6 +69,9 @@ export class ProjectsSetupsComponent implements OnInit {
 
   createProject() {
     this.showProjectsCreateModal = true;
+    setTimeout(() => {
+      this.projectsCreateModalComponent.resetForm();
+    }, 0);
   }
 
   onCreateSuccess() {

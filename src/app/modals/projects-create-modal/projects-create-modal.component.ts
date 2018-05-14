@@ -19,6 +19,7 @@ export class ProjectsCreateModalComponent implements OnInit {
 
   form: FormGroup;
   userID: any;
+  projectTypesList: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -26,13 +27,8 @@ export class ProjectsCreateModalComponent implements OnInit {
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
-     // initialize the formgroup
-     this.form = this.formBuilder.group({
-      projectName: [null],
-      // projectType: [null],
-      projectDescription: [null],
-      projectNotes: [null],
-    });
+    this.resetForm();
+    this.getProjectTypesList();
    }
 
   ngOnInit() {
@@ -40,12 +36,39 @@ export class ProjectsCreateModalComponent implements OnInit {
      this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
   }
 
+  resetForm() {
+    // initialize the formgroup
+    this.form = this.formBuilder.group({
+      projectName: [null, [Validators.required]],
+      projectTypeID: [null, [Validators.required]],
+      projectDescription: [null],
+      projectNotes: [null],
+    });
+  }
+
+  getProjectTypesList() {
+    this.apiDataService.getProjectTypesList()
+    .subscribe(
+      res => {
+        // console.log(res);
+        this.projectTypesList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  // This change event is not needed right now, keeping as reference
+  selectedProjectType(projectTypeID) {
+    // console.log(projectTypeID.value);
+  }
+
   createProject() {
 
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
-    console.log(project);
-    console.log('UserID: ' + this.userID);
+
     this.apiDataService.createProject(project, this.userID)
     .subscribe(
       res => {

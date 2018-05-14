@@ -22,6 +22,11 @@ export class ProjectsEditModalComponent implements OnInit {
   form: FormGroup;
   userID: any;
   userJobTitleID: any;
+  pKeyName: string;
+  pKeyValue: number;
+  pKeyRefList: any;
+  disableDelete: boolean;
+  projectTypesList: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -29,14 +34,12 @@ export class ProjectsEditModalComponent implements OnInit {
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
-    // initialize the formgroup
-    this.form = this.formBuilder.group({
-      projectID: [null],
-      projectName: [null],
-      // projectType: [null],
-      projectDescription: [null],
-      projectNotes: [null],
-    });
+
+    this.pKeyName = 'ProjectID';
+    this.disableDelete = true;
+
+    this.resetForm();
+    this.getProjectTypesList();
    }
 
   ngOnInit() {
@@ -44,49 +47,66 @@ export class ProjectsEditModalComponent implements OnInit {
     this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
   }
 
-  getProjectData() {
-    console.log(this.projectData);
-    console.log('JobTitleID: ' + this.userJobTitleID);
-    const project = this.form.getRawValue();
-    console.log(project);
+  // getProjectData() {
+  //   console.log(this.projectData);
+  //   const project = this.form.getRawValue();
+  //   console.log(project);
+  // }
+
+  getProjectTypesList() {
+    this.apiDataService.getProjectTypesList()
+    .subscribe(
+      res => {
+        // console.log(res);
+        this.projectTypesList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
   updateProject() {
-
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
-    console.log(project);
-    console.log('UserID: ' + this.userID);
+
     this.apiDataService.updateProject(project, this.userID)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
         this.updateSuccess.emit(true);
       },
       err => {
         console.log(err);
       }
     );
-
   }
 
   deleteProject() {
-
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
-    console.log(project);
-    console.log('UserID: ' + this.userID);
+
     this.apiDataService.deleteProject(project, this.userID)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
         this.deleteSuccess.emit(true);
       },
       err => {
         console.log(err);
       }
     );
+  }
 
+  resetForm() {
+    // initialize the formgroup
+    this.form = this.formBuilder.group({
+      projectID: [null],
+      projectName: [null],
+      projectTypeID: [null],
+      projectDescription: [null],
+      projectNotes: [null],
+    });
   }
 
   populateForm() {
@@ -94,15 +114,38 @@ export class ProjectsEditModalComponent implements OnInit {
     this.form = this.formBuilder.group({
       projectID: this.projectData.id,
       projectName: this.projectData.projectName,
-      // projectType: [null],
+      projectTypeID: this.projectData['projectTypes.id'],
       projectDescription: this.projectData.description,
       projectNotes: this.projectData.notes,
     });
+
+    this.getPrimaryKeyRefs();
+
   }
 
-  onCancelClicked() {
-    console.log('cancel button clicked');
+  getPrimaryKeyRefs() {
+    this.pKeyValue = this.projectData.id;
+
+    this.apiDataService.getPrimaryKeyRefs(this.pKeyName, this.pKeyValue, this.userID)
+      .subscribe(
+        res => {
+          // console.log(res);
+          this.pKeyRefList = res;
+          if (this.pKeyRefList.length === 0) {
+            this.disableDelete = false;
+          } else {
+            this.disableDelete = true;
+          }
+        },
+        err => {
+          console.log(err);
+        }
+      );
   }
+
+  // onCancelClicked() {
+  //   console.log('cancel button clicked');
+  // }
 
 }
 
