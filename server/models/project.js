@@ -26,7 +26,6 @@ const Projects = sequelize.define('projects',
   }
 );
 
-// Project.belongsToMany(User, {through: 'projectEmployee'}, {foreignKey: 'EmployeeID', sourceKey: 'EmployeeID'});
 const ProjectTypes = sequelize.define('projectTypes',
   {
     id: { type: Sequelize.INTEGER, field: 'ProjectTypeID', primaryKey: true, autoIncrement: true },

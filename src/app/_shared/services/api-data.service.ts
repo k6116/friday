@@ -109,7 +109,7 @@ export class ApiDataService {
 
   getUserProjectList(userID: number) {
 
-    return this.http.get(`/api/userProjectList/${userID}`)
+    return this.http.get(`/api/getUserProjectList/${userID}`)
     .timeout(this.timeout)
     .map((response: Response) => response.json());
 

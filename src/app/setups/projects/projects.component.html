@@ -25,9 +25,9 @@
             </thead>
             <tr *ngFor="let project of projectList" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)">
                 <!-- <td>{{ project['id'] }}</td> -->
-                <td>{{ project['projectName'] }}</td>
-                <td>{{ project['projectTypes.projectTypeName'] }}</td>
-                <td>{{ project['description'] }}</td>
+                <td width="15%">{{ project['projectName'] }}</td>
+                <td width="5%">{{ project['projectTypes.projectTypeName'] }}</td>
+                <td width="50%">{{ project['description'] }}</td>
                 <td>{{ project['notes'] }}</td>
             </tr>
         </table>
