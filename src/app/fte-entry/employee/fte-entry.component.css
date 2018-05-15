@@ -32,37 +32,21 @@ i.fa-trash-o:hover {
 
 
 /* FTE Table CSS */
-div.table-inner-cont {
+/* div.table-inner-cont {
   top: 0px;
   overflow-x: scroll;
-}
+} */
 
 table {
-  width: 100%;
-  overflow-y: hidden;
-}
-
-thead, tfoot {
-  /* using block display to separate header and footer
-  to simulate fixed header and footer */
   display: block;
+  overflow: auto;
+  height: 300px;
   width: 100%;
-}
-
-tbody {
-  display: block;
-  width: 100%;
-  height: 200px;
-  overflow-y: scroll;
-}
-
-td, th, input {
-  width:80px;
 }
 
 thead tr {
-  top: 0;
   left: 0;
+  top: 0;
   height: 30px;
 }
 
@@ -70,31 +54,60 @@ tfoot tr {
   left: 0;
   bottom: 0;
   height: 40px;
+  z-index: 1;
+}
+
+
+thead tr th {
+  /* using block display to separate header and footer
+  to simulate fixed header and footer */
+  position: sticky;
+  top: 0px;
+  z-index: 1;
+}
+
+tbody {
+  z-index: 0;
+}
+
+tfoot tr td {
+  position: sticky;
+  bottom: 0px;
+  /* z-index: 1; */
+}
+
+td, th, input {
+  width:80px;
+}
+
+thead tr th.top-corner {
   z-index: 2;
 }
 
-th.icon, td.icon {
+thead tr th.icon, tbody tr td.icon, tfoot tr td.icon {
   /* using absolute positioning to simulate frozen
   first column */
   background-color: rgb(245, 245, 245);
   position: sticky;
-  /* left: 0px; */
+  left: 0px;
   padding-top: 5px;
   min-width: 30px;
   max-width: 30px;
   width: 30px;
   min-height: 35px;
-  z-index: 1;
+  z-index: 2;
 }
+
+
 
 th.firstColumnHeader, td.firstColumnHeader {
   /* using absolute positioning to simulate frozen
   first column */
   background-color: rgb(245, 245, 245);
   position: sticky;
-  /* left: 30px; */
-  padding-top: 5px;
-  padding-left: 30px;
+  left: 30px;
+  /* padding-top: 5px;
+  padding-left: 30px; */
   min-width: 140px;
   min-height: 36px;
   z-index: 1;
@@ -104,7 +117,7 @@ th.firstColumnSpacer, td.firstColumnSpacer {
   /* because of absolute positioning above, need a spacer
   underneath to push table rows out from underneath the headers.
   margin and border-spacing don't work within td elements */
-  min-width: 140px;
+  /* min-width: 140px; */
 }
 
 input.fakeInput {
