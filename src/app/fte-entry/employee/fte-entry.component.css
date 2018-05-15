@@ -9,132 +9,17 @@ div.col-custom.col-slider {
   padding: 0 10px;
 }
 
-td, th, input {
-  width:80px;
-}
-
-th.icon, td.icon {
-  min-width:30px;
-  max-width:30px;
-  width:30px;
-}
-
-.firstColumnHeader {
-  min-width: 100px;
-}
-
 .top-margin {
   margin-top: 75px;
 }
-
-/* div.col-custom.table-scrollable {
-  max-height: 397px;
-  overflow: auto;
-  padding: 10px 14px;
-  width: 100%;
-} */
 
 .test-buttons {
   margin-top: 50px;
   text-align: center;
 }
 
-div.table-inner-cont {
-  top: 0px;
-  overflow-x: scroll;
-}
 
-table {
-  width: 100%;
-}
-
-thead tr {
-  top: 0;
-  left: 0;
-  height: 30px;
-}
-
-th { /* sadly right now, Chrome only supports position:sticky on th elements, not thead, which is where we would like it */
-  top: 0px;
-  z-index: 2;
-  border: 1px solid;
-  border-collapse: separate;
-  border-spacing: 2px;
-}
-
-thead, tfoot, tbody {
-  display: block;
-  width: 100%;
-}
-
-tbody {
-  height: 200px;
-  overflow-y: scroll;
-}
-tfoot tr {
-  left: 0;
-  bottom: 0;
-  height: 40px;
-  z-index: 2;
-}
-
-tbody tr:first-of-type td {
-  padding-top: 0px;
-}
-
-/* table.table-ftes, table.table-ftes thead, table.table-ftes thead tr {
-  position: relative;
-}
-
-table.table-ftes tbody, table.table-ftes tbody tr {
-  position: relative;
-}
-
-table td.col-project-name {
-  position: relative;
-  padding-right: 20px;
-  left: -15px;
-  z-index: 1;
-}
-
-table thead tr th.header-project {
-  position: relative;
-  left: -15px;
-  padding-right: 20px;
-  z-index: 3;
-}
-
-table thead tr th.header-month {
-  text-align: center;
-}
-
-table thead tr th {
-  position: relative;
-  z-index: 2;
-  padding-bottom: 10px;
-  top: -10px;
-} */
-
-/* turning off for now, would like a pure css solution */
-/* div.table-header-underlay {
-  background-color: rgb(245, 245, 245);
-  z-index: 2;
-  position: absolute;
-  top: 0px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  width: 100%;
-  left: 0px;
-  width: 100%;
-  color: white;
-  text-align: right;
-  display: none;  
-} */
-
-th.header-project, th.header-month, td.col-project-name, td.totals-row-cell {
-  background-color: rgb(245, 245, 245);
-}
-
+/* trash button icon */
 i.fa-trash-o {
   font-size: 13pt;
   color: red;
@@ -145,9 +30,102 @@ i.fa-trash-o:hover {
   cursor: pointer;
 }
 
+
+/* FTE Table CSS */
+div.table-inner-cont {
+  top: 0px;
+  overflow-x: scroll;
+}
+
+table {
+  width: 100%;
+  overflow-y: hidden;
+}
+
+thead, tfoot {
+  /* using block display to separate header and footer
+  to simulate fixed header and footer */
+  display: block;
+  width: 100%;
+}
+
+tbody {
+  display: block;
+  width: 100%;
+  height: 200px;
+  overflow-y: scroll;
+}
+
+td, th, input {
+  width:80px;
+}
+
+thead tr {
+  top: 0;
+  left: 0;
+  height: 30px;
+}
+
+tfoot tr {
+  left: 0;
+  bottom: 0;
+  height: 40px;
+  z-index: 2;
+}
+
+th.icon, td.icon {
+  /* using absolute positioning to simulate frozen
+  first column */
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  /* left: 0px; */
+  padding-top: 5px;
+  min-width: 30px;
+  max-width: 30px;
+  width: 30px;
+  min-height: 35px;
+  z-index: 1;
+}
+
+th.firstColumnHeader, td.firstColumnHeader {
+  /* using absolute positioning to simulate frozen
+  first column */
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  /* left: 30px; */
+  padding-top: 5px;
+  padding-left: 30px;
+  min-width: 140px;
+  min-height: 36px;
+  z-index: 1;
+}
+
+th.firstColumnSpacer, td.firstColumnSpacer {
+  /* because of absolute positioning above, need a spacer
+  underneath to push table rows out from underneath the headers.
+  margin and border-spacing don't work within td elements */
+  min-width: 140px;
+}
+
+input.fakeInput {
+  /* due to misalignment between column headers and FTE values while using block display, I
+  made the column headers also "input" boxes to get the same margin/border/padding/spacing
+  variables as the FTE table */
+  border: none;
+  background-color: rgb(245, 245, 245);
+  color: rgb(0,0,0);
+  font-weight: bold;
+  text-align: center;
+}
+
+
+/* th.header-project, th.header-month, td.col-project-name, td.totals-row-cell {
+  background-color: rgb(245, 245, 245);
+} */
+
 /* TOTALS ROW */
 
-table td.totals-row-cell {
+/* table td.totals-row-cell {
   padding-top: 15px;
 }
 
@@ -156,7 +134,7 @@ table td.col-total-name {
   padding-right: 20px;
   left: -15px;
   z-index: 1;
-}
+} */
 
 input.form-control.highlight-invalid {
   border-color: rgb(236, 154, 154);
