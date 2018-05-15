@@ -6,6 +6,7 @@ const http = require('http');
 const https = require('https');
 const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
+const email = require('./server/email/email');
 
 // set the ssl options object, reading keys and certs from the filesystem
 // NOTE: for use on the web server uncomment this block
@@ -50,6 +51,9 @@ http.createServer(app)
   .listen(port1, () => {
     console.log(`node server listening on port: ${port1}`);
   });
+
+//SET EMAIL SCHEDULES
+email.setSchedules();
 
 // create a second node server for to forward http (port 80) requests to https (port 443)
 // NOTE: for use on the web server uncomment this block

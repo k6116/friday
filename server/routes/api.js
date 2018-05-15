@@ -28,6 +28,9 @@ router.get('/projects', controllers.project.getAll)
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);
 
+// EMAIL CONTROLLER
+router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
+
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified
