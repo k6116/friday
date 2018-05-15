@@ -45,6 +45,8 @@ import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.c
 import { TestComponent } from './test/test.component';
 import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
 import { ProjectsInfoModalComponent } from './modals/projects-info-modal/projects-info-modal.component';
+import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
+import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
 import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/projects-roster-modal.component';
 import { ChartsModule } from 'ng2-charts';
 import { ToastComponent } from './toast/toast.component';
@@ -76,6 +78,8 @@ import 'chartjs-plugin-zoom';
     FilterPipe,
     TestComponent,
     OrgDropdownComponent,
+    ProjectsEditModalComponent,
+    ProjectsCreateModalComponent,
     ProjectsInfoModalComponent,
     ProjectsRosterModalComponent,
     ToastComponent,
