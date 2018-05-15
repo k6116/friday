@@ -14,25 +14,27 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
 import { AuthGuardService } from './auth/auth-guard.service';
 import { TestComponent } from './test/test.component';
+import { PerformanceComponent } from './performance/performance.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'block', component: BlockAppUseComponent },
   { path: 'test', component: TestComponent },
-  // { path: 'login', component: LoginComponent },
-  // {
-  //   path: 'main',
-  //   component: MainComponent,
-  //   canActivate: [AuthGuardService],
-  //   children: [
-  //     { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full', canActivate: [AuthGuardService] },
-  //     { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService] },
-  //     { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },
-  //     { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService] },
-  //     { path: 'reports/projects', component: ProjectsReportsComponent, canActivate: [AuthGuardService] },
-  //     { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
-  //   ]
-  // },
+  { path: 'perf', component: PerformanceComponent },
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'main',
+    component: MainComponent,
+    canActivate: [AuthGuardService],
+    children: [
+      { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full', canActivate: [AuthGuardService] },
+      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService] },
+      { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },
+      { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService] },
+      { path: 'reports/projects', component: ProjectsReportsComponent, canActivate: [AuthGuardService] },
+      { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
+    ]
+  },
   { path: '**', redirectTo: '/login' }
 ];
 

@@ -55,6 +55,7 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
+import { PerformanceComponent } from './performance/performance.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import 'chartjs-plugin-zoom';
     ProjectsInfoModalComponent,
     ProjectsRosterModalComponent,
     ToastComponent,
-    BlockAppUseComponent
+    BlockAppUseComponent,
+    PerformanceComponent
   ],
   imports: [
     AppRoutingModule,
