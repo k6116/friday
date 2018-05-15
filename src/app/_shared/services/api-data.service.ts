@@ -107,6 +107,52 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getUserProjectList(userID: number) {
+
+    return this.http.get(`/api/getUserProjectList/${userID}`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+
+  }
+
+  getProjectTypesList() {
+
+    return this.http.get(`/api/getProjectTypesList/`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+
+  }
+
+  createProject(project: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/createProject/${userID}`, JSON.stringify(project), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  updateProject(project: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/updateProject/${userID}`, JSON.stringify(project), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  deleteProject(project: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/deleteProject/${userID}`, JSON.stringify(project), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getPrimaryKeyRefs(pKeyName: string, pKeyValue: number, userID: number) {
+    return this.http.get(`/api/getPrimaryKeyRefs/${pKeyName}/${pKeyValue}/${userID}`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+  }
+
   getProjectRoster(projectID: number) {
     return this.http.get(`/api/getProjectRoster/${projectID}`)
       .timeout(this.timeout)
