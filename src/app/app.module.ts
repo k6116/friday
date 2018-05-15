@@ -105,3 +105,4 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+//   "swig-email-templates": "^5.0.1",    "node-schedule": "^1.3.0", "nodemailer": "^4.6.4",  "axios": "^0.18.0",
