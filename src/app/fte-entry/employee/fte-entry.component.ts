@@ -174,24 +174,24 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     }, 500);
   }
 
-  onTableScroll(event) {
-    // const scrollTop = $('div.table-scrollable').scrollTop();
-    // const scrollLeft = $('div.table-scrollable').scrollLeft();
-    // // console.log(`scroll left: ${scrollLeft}, scroll top: ${scrollTop}`);
+  // onTableScroll(event) {
+  //   const scrollTop = $('div.table-scrollable').scrollTop();
+  //   const scrollLeft = $('div.table-scrollable').scrollLeft();
+  //   console.log(`scroll left: ${scrollLeft}, scroll top: ${scrollTop}`);
 
-    // $('div.table-header-underlay').css('top', `${scrollTop}px`);
-    // $('table.table-ftes thead tr th').css('top', `${scrollTop - 10}px`);
-    // $('table.table-ftes tbody tr td.col-project-name').css('left', `${scrollLeft - 15}px`);
-    // $('table.table-ftes tbody tr td.col-total-name').css('left', `${scrollLeft - 15}px`);
-    // $('table.table-ftes thead tr th.header-project').css('left', `${scrollLeft - 15}px`);
-    // $('div.table-header-underlay').css('left', `${scrollLeft}px`);
+  //   $('div.table-header-underlay').css('top', `${scrollTop}px`);
+  //   $('table.table-ftes thead tr th').css('top', `${scrollTop - 10}px`);
+  //   $('table.table-ftes tbody tr td.col-project-name').css('left', `${scrollLeft - 15}px`);
+  //   $('table.table-ftes tbody tr td.col-total-name').css('left', `${scrollLeft - 15}px`);
+  //   $('table.table-ftes thead tr th.header-project').css('left', `${scrollLeft - 15}px`);
+  //   $('div.table-header-underlay').css('left', `${scrollLeft}px`);
 
-    // const top = document.getElementById('table-body').scrollTop;
-    // const translate = 'translatey(-' + top + 'px)';
-    // $('td.col-first-frozen').css(
-    //   'transform', `translateY(-${top}px)`
-    // );
-  }
+  //   const top = document.getElementById('table-body').scrollTop;
+  //   const translate = 'translatey(-' + top + 'px)';
+  //   $('td.col-first-frozen').css(
+  //     'transform', `translateY(-${top}px)`
+  //   );
+  // }
 
 
   onFTEChange(i, j, value) {

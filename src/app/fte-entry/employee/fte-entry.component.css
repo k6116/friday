@@ -32,15 +32,20 @@ i.fa-trash-o:hover {
 
 
 /* FTE Table CSS */
-/* div.table-inner-cont {
-  top: 0px;
-  overflow-x: scroll;
-} */
+
+.fte-table-container {
+  /* forces the table container to be a consistent height and width, even when no FTE values exist for the selected period */
+  height: 500px;
+  width: 100%;
+}
 
 table {
+  /* using display:block forces the table elements to renders as block elements so we can make sticky work */
   display: block;
-  overflow: auto;
-  height: 300px;
+  overflow: scroll;
+  top: 0px;
+  left: 0px;
+  height: 500px; /* set equal to fte-table-container height */
   width: 100%;
 }
 
@@ -59,10 +64,9 @@ tfoot tr {
 
 
 thead tr th {
-  /* using block display to separate header and footer
-  to simulate fixed header and footer */
   position: sticky;
   top: 0px;
+  left: 30px;
   z-index: 1;
 }
 
@@ -73,20 +77,21 @@ tbody {
 tfoot tr td {
   position: sticky;
   bottom: 0px;
-  /* z-index: 1; */
+  left: 30px;
 }
 
 td, th, input {
-  width:80px;
+  width: 80px;
 }
 
 thead tr th.top-corner {
+  left: 0px;
+  min-width: 170px;
+  padding-left: 30px;
   z-index: 2;
 }
 
 thead tr th.icon, tbody tr td.icon, tfoot tr td.icon {
-  /* using absolute positioning to simulate frozen
-  first column */
   background-color: rgb(245, 245, 245);
   position: sticky;
   left: 0px;
@@ -95,59 +100,26 @@ thead tr th.icon, tbody tr td.icon, tfoot tr td.icon {
   max-width: 30px;
   width: 30px;
   min-height: 35px;
-  z-index: 2;
+  z-index: 1;
 }
 
-
-
 th.firstColumnHeader, td.firstColumnHeader {
-  /* using absolute positioning to simulate frozen
-  first column */
   background-color: rgb(245, 245, 245);
   position: sticky;
   left: 30px;
-  /* padding-top: 5px;
-  padding-left: 30px; */
   min-width: 140px;
   min-height: 36px;
   z-index: 1;
 }
 
-th.firstColumnSpacer, td.firstColumnSpacer {
-  /* because of absolute positioning above, need a spacer
-  underneath to push table rows out from underneath the headers.
-  margin and border-spacing don't work within td elements */
-  /* min-width: 140px; */
-}
 
-input.fakeInput {
-  /* due to misalignment between column headers and FTE values while using block display, I
-  made the column headers also "input" boxes to get the same margin/border/padding/spacing
-  variables as the FTE table */
-  border: none;
+thead tr th.first-row-header {
   background-color: rgb(245, 245, 245);
-  color: rgb(0,0,0);
-  font-weight: bold;
   text-align: center;
 }
 
 
-/* th.header-project, th.header-month, td.col-project-name, td.totals-row-cell {
-  background-color: rgb(245, 245, 245);
-} */
-
 /* TOTALS ROW */
-
-/* table td.totals-row-cell {
-  padding-top: 15px;
-}
-
-table td.col-total-name {
-  position: relative;
-  padding-right: 20px;
-  left: -15px;
-  z-index: 1;
-} */
 
 input.form-control.highlight-invalid {
   border-color: rgb(236, 154, 154);
