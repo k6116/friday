@@ -6,6 +6,7 @@ const http = require('http');
 const https = require('https');
 const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
+const dotevnv = require('dotenv').config()
 
 // set the ssl options object, reading keys and certs from the filesystem
 // NOTE: for use on the web server uncomment this block
@@ -42,24 +43,40 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-console.log(process.env.NODE_ENV);
 
+// get environment (dev or prod)
+const isProd = process.env.PRODUCTION;
 
-// create a node server for https on port 3000 (localhost) or 443 (server)
-// NOTE: for use on the web server change to https, add the sslOptions, and change to port 443:  https.createServer(sslOptions, app)
-const port1 = 3000;
-http.createServer(app)
-  .listen(port1, () => {
-    console.log(`node server listening on port: ${port1}`);
+// start development server
+if (isProd === 'false') {
+
+  const port1 = 3000;
+  http.createServer(app)
+    .listen(port1, () => {
+      console.log(`node server listening on port: ${port1}`);
+    });
+
+// start production server
+} else {
+
+  // create a node server for https on port 443
+  const port1 = 443;
+  https.createServer(sslOptions, app)
+    .listen(port1, () => {
+      console.log(`node server listening on port: ${port1}`);
+    });
+
+  // create a second node server for to forward http (port 80) requests to https (port 443)
+  const port2 = 80;
+  http.createServer((req, res) => {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+  })
+  .listen(80, () => {
+    console.log(`node server listening on port: ${port2}`);
   });
 
-// create a second node server for to forward http (port 80) requests to https (port 443)
-// NOTE: for use on the web server uncomment this block
-// const port2 = 80;
-// http.createServer((req, res) => {
-//   res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-//   res.end();
-// })
-// .listen(80, () => {
-//   console.log(`node server listening on port: ${port2}`);
-// });
+
+}
+
+
