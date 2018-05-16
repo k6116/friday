@@ -118,7 +118,7 @@ export class TopNavComponent implements OnInit, OnDestroy {
     // TEMP CODE: log the click to test the button
     console.log('profile button clicked');
     this.showProfileModal = true;
-    this.profileModal.abc();
+    this.profileModal.getJobTitleList();
   }
 
 

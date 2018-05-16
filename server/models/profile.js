@@ -2,6 +2,19 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize').sequelize;
 
+// const Employees = sequelize.define('employees',
+//     {
+//         id: { type: Sequelize.INTEGER, field: 'EmployeeID', primaryKey: true, autoIncrement: true },
+//         jobTitleID: { type: Sequelize.INTEGER, field: 'JobTitleID' },
+//         jobTitleSubID: { type: Sequelize.INTEGER, field: 'JobTitleSubID' },    
+//     },
+//     {
+//         schema: 'accesscontrol',
+//         tableName: 'Employees',
+//         timestamps: false
+//     }
+// );
+
 const JobTitle = sequelize.define('jobTitle',
     {
         id: { type: Sequelize.INTEGER, field: 'JobTitleID', primaryKey: true, autoIncrement: true },
@@ -18,7 +31,7 @@ const JobTitle = sequelize.define('jobTitle',
 
 const JobTitleSub = sequelize.define('jobTitleSub',
     {
-        jobTitleSubID: { type: Sequelize.INTEGER, field: 'JobTitleSubID', primaryKey: true, autoIncrement: true },
+        id: { type: Sequelize.INTEGER, field: 'JobTitleSubID', primaryKey: true, autoIncrement: true },
         jobTitleSubName: { type: Sequelize.STRING, field: 'JobTitleSubName' },
         description: { type: Sequelize.STRING, field: 'Description' },
     },
@@ -28,7 +41,6 @@ const JobTitleSub = sequelize.define('jobTitleSub',
         timestamps: false
     }
 )
-    // JobTitle.hasMany(JobTitleSub, {foreignKey: 'JobTitleSubID', sourceKey: 'JobTitleSubID' });
     
 const JobTitleJunction = sequelize.define( "jobTitleJunction",
     {
@@ -42,11 +54,16 @@ const JobTitleJunction = sequelize.define( "jobTitleJunction",
     }
 )
 
-    JobTitleJunction.hasMany(JobTitleSub, {foreignKey: 'JobTitleSubID', sourceKey: 'JobTitleSubID' });
+// For junction tables without primary key
+JobTitleJunction.removeAttribute('id');
 
-    module.exports = {
-        JobTitle: JobTitle,
-        JobTitleSub: JobTitleSub,
-        JobTitleJunction: JobTitleJunction
-    }
+JobTitle.hasOne(JobTitleJunction, {foreignKey: 'JobTitleID', sourceKey: 'JobTitleID' });
+JobTitleJunction.hasMany(JobTitleSub, {foreignKey: 'JobTitleSubID', sourceKey: 'JobTitleSubID' });
+
+module.exports = {
+    // Employees: Employees,
+    JobTitle: JobTitle,
+    JobTitleSub: JobTitleSub,
+    JobTitleJunction: JobTitleJunction
+}
     
