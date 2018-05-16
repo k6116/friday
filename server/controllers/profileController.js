@@ -6,6 +6,7 @@ const Sequelize = require('sequelize');
 function show(req, res) {
 
     models.JobTitle.findAll({
+        order: [['jobTitleName', 'ASC']], 
         attributes: ['id', 'jobTitleName'],
         include: [{
             model: models.JobTitleJunction,
