@@ -1,36 +1,62 @@
-<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
-<app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal>
-
-<div *ngIf="display" class="container-fluid">
-
+<div class="container-fluid">
+<!-- HEADER -->
   <div class="row row-custom">
-      <div class="col-xs-12 col-custom">
-        <h2 class="page-header-text">
-          My Projects List
-        </h2>
+    <div class="col-xs-12 col-custom">
+      <h2 class="page-header-text">
+        My Projects List
+      </h2>
+    </div>
+  </div>
+<!--  -->
+<!-- ACCORDION START -->
+  <div class="accordion" id="accordionExample">
+    <div class="card" *ngFor="let project of projectList; let k = index">
+      <div class="card-header" [attr.id]="k">
+        <h5 class="mb-0">
+          <button class="btn btn-link" type="button" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="true" aria-controls="collapse[j]">
+              {{ k + 1 }} - {{ project['projectName'] }}
+          </button>
+        </h5>
+      </div>
+      <div id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionExample">
+        <div class="card-body">
+          {{ project['id'] }}
+        </div>
       </div>
     </div>
 
+<!-- ACCORDION END -->
+
+
+
+<!-- PAUL'S -->
+<!-- <div class="container-fluid">
+  <div class="row row-custom">
+    <div class="col-xs-12 col-custom">
+      <h2 class="page-header-text">
+        My Projects List
+      </h2>
+    </div>
+  </div>
+
   <div class="row row-custom">
     <div class="col-sm col-custom table-scrollable">
-        <table class="table table-striped table-sm table-hover">
-            <thead>
-                <tr> <!-- first row of table is month-name column-headers -->
-                    <!-- <th>ID</th> -->
-                    <th>Project Name</th>
-                    <th>ProjectType</th>
-                    <th>Description</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tr *ngFor="let project of projectList" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)">
-                <!-- <td>{{ project['id'] }}</td> -->
-                <td width="15%">{{ project['projectName'] }}</td>
-                <td width="5%">{{ project['projectTypes.projectTypeName'] }}</td>
-                <td width="50%">{{ project['description'] }}</td>
-                <td>{{ project['notes'] }}</td>
-            </tr>
-        </table>
+      <table class="table table-striped table-sm table-hover">
+        <thead>
+          <tr>
+            <th>Project Name</th>
+            <th>ProjectType</th>
+            <th>Description</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tr *ngFor="let project of projectList" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)">
+          <td width="15%">{{ project['projectName'] }}</td>
+          <td width="5%">{{ project['projectTypes.projectTypeName'] }}</td>
+          <td width="50%">{{ project['description'] }}</td>
+          <td>{{ project['notes'] }}</td>
+        </tr>
+      </table>
     </div>
   </div>
 
@@ -40,6 +66,7 @@
     </div>
   </div>
 
-
 </div>
 
+<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
+<app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal> -->

@@ -31,7 +31,7 @@ export class ProjectsSetupsComponent implements OnInit {
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
-    this.display = true;
+    // this.display = true;
   }
 
   ngOnInit() {
