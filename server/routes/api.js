@@ -16,6 +16,7 @@ router.post('/ftedata/:userID', controllers.fteData.update);
 
 // PROJECTS CONTROLLER
 router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
+router.get('/getUserPLMData/:userEmailAddress', controllers.project.getUserPLMData);
 // router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
 router.get('/getProjectTypesList/', controllers.project.getProjectTypesList);
 router.get('/getPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.project.getPrimaryKeyRefs);

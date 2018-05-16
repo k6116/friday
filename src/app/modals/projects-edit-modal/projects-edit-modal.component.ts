@@ -47,11 +47,12 @@ export class ProjectsEditModalComponent implements OnInit {
     this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
   }
 
-  // getProjectData() {
-  //   console.log(this.projectData);
-  //   const project = this.form.getRawValue();
-  //   console.log(project);
-  // }
+  getProjectData() {
+    // console.log(this.projectData);
+    // const project = this.form.getRawValue();
+    // console.log(project);
+    console.log(this.appDataService.$nestedOrgData);
+  }
 
   getProjectTypesList() {
     this.apiDataService.getProjectTypesList()

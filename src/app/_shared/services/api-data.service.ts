@@ -101,6 +101,11 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getUserPLMData(userEmailAddress: string) {
+    return this.http.get(`/api/getUserPLMData/${userEmailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
   getProjectList() {
     return this.http.get(`/api/projects/projectlist`)
       .timeout(this.timeout)
@@ -108,19 +113,15 @@ export class ApiDataService {
   }
 
   getUserProjectList(userID: number) {
-
     return this.http.get(`/api/getUserProjectList/${userID}`)
     .timeout(this.timeout)
     .map((response: Response) => response.json());
-
   }
 
   getProjectTypesList() {
-
     return this.http.get(`/api/getProjectTypesList/`)
     .timeout(this.timeout)
     .map((response: Response) => response.json());
-
   }
 
   createProject(project: any, userID: number) {
