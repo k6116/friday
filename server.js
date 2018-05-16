@@ -42,6 +42,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
+console.log(process.env.NODE_ENV);
+
 
 // create a node server for https on port 3000 (localhost) or 443 (server)
 // NOTE: for use on the web server change to https, add the sslOptions, and change to port 443:  https.createServer(sslOptions, app)
