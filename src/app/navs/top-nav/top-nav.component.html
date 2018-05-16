@@ -3,7 +3,6 @@
 
   <div class="nav-bar">
 
-
     <div [attr.data-clicktrack]="'page: Main, clickedOn: Jaris Logo'" class="app-ident" (click)="onAppClick()">
 
       <div class="app-logo-cont">
@@ -34,7 +33,7 @@
           {{ loggedInUser?.email }}
         </div>
         <div>
-          <button type="button" class="topnav-menu app-menu-dropdown-button profile" data-clicktrack="page: Main, clickedOn: Profile Button" (click)="onProfileButtonClick()">Profile</button>
+          <button type="button" class="topnav-menu app-menu-dropdown-button profile" data-toggle="modal" data-target="#profileModal" data-clicktrack="page: Main, clickedOn: Profile Button" (click)="onProfileButtonClick()">Profile</button>
           <button type="button" class="topnav-menu app-menu-dropdown-button logout" data-clicktrack="page: Main, clickedOn: Logout Button" (click)="onLogoutButtonClick()">Logout</button>
         </div>
         <div class="topnav-menu dropdown-triangle"></div>
@@ -47,3 +46,5 @@
   </div>
 
 </header>
+
+<app-profile-modal (parent)="awef()"></app-profile-modal>
