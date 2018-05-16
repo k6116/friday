@@ -1,0 +1,47 @@
+<div class="modal fade" id="projectsEditModal" tabindex="-1" role="dialog" aria-labelledby="projectsEditModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="projectsEditModalLabel">Edit Project</h5>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+
+          <input formControlName="projectID" type="hidden" class="form-control" id="project-id" value="{{ projectData['id'] }}" visible="false">
+
+          <div class="form-group">
+            <label for="project-name" class="col-form-label">Project Name:</label>
+            <input formControlName="projectName" type="text" class="form-control" id="project-name" value="{{ projectData['projectName'] }}">
+          </div>
+          <div class="form-group">
+              <label for="project-type">Project Type:</label>
+              <select formControlName="projectTypeID" class="form-control">
+                <option *ngFor="let projectType of projectTypesList" [value]="projectType.id">
+                  {{ projectType.projectTypeName }}
+                </option>
+              </select>
+            </div>
+          <div class="form-group">
+            <label for="description-text" class="col-form-label">Description:</label>
+            <textarea formControlName="projectDescription" class="form-control" id="description-text"  value="{{ projectData['description'] }}"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="notes-text" class="col-form-label">Notes:</label>
+            <textarea formControlName="projectNotes" class="form-control" id="notes-text"  value="{{ projectData['notes'] }}"></textarea>
+          </div>
+        </form>
+      </div>
+      <div *ngIf="disableDelete" class="modal-footer">
+        <tr *ngFor="let table of pKeyRefList">
+          <td>Table: {{ table.TableName }} | Count: {{ table.NumOfRows }}</td>
+        </tr>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" (click)="getProjectData()">Data</button> -->
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onCancelClicked()">Close</button> -->
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" [disabled]="disableDelete" (click)="deleteProject()">Delete</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="updateProject()">Update</button>
+      </div>
+    </div>
+  </div>
+</div>

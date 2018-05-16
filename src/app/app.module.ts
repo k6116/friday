@@ -46,7 +46,10 @@ import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.c
 import { TestComponent } from './test/test.component';
 import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
 import { ProjectsInfoModalComponent } from './modals/projects-info-modal/projects-info-modal.component';
+import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
+import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
 import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/projects-roster-modal.component';
+import { ToastComponent } from './toast/toast.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
 
@@ -73,8 +76,11 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
     FilterPipe,
     TestComponent,
     OrgDropdownComponent,
+    ProjectsEditModalComponent,
+    ProjectsCreateModalComponent,
     ProjectsInfoModalComponent,
     ProjectsRosterModalComponent,
+    ToastComponent,
     BlockAppUseComponent
   ],
   imports: [

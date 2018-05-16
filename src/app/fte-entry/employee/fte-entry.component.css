@@ -86,6 +86,10 @@ th.header-project, th.header-month, td.col-project-name, td.totals-row-cell {
   background-color: rgb(245, 245, 245);
 }
 
+i.fa-trash-o {
+  color: red;
+}
+
 /* TOTALS ROW */
 
 table td.totals-row-cell {
