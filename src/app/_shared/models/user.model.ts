@@ -10,6 +10,7 @@ export class User implements Deserializable<User> {
   userName: string;
   email: string;
   roleID: number;
+  jobTitleID: number;
   loginEnabled: boolean;
   forcePasswordReset: boolean;
   createdBy: number;

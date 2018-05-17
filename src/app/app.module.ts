@@ -41,6 +41,7 @@ import { SideNavComponent } from './navs/side-nav/side-nav.component';
 import { ProjectsReportsComponent } from './reports/projects/projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
 import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
@@ -75,6 +76,7 @@ import { PerformanceComponent } from './performance/performance.component';
     EmployeesReportsComponent,
     ProjectsSetupsComponent,
     FteEntryTeamComponent,
+    ProfileModalComponent,
     ProjectsModalComponent,
     FilterPipe,
     TestComponent,

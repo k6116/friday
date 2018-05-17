@@ -7,7 +7,7 @@
       Worker(s) <input type=number [(ngModel)]='threads' step=2>  
   </div>
   <div class=buttons>
-          <button class='btn btn-info' (click)='startTest()'>Start</button>
+          <button class='btn btn-info' [disabled]=!startEnabled (click)='startTest()'>Start</button>
           <button class='btn btn-danger' (click)='resetTest()'>Reset</button>
           <button class='btn btn-primary' (click)='spawnWorkerClick()'>Spawn</button>
   </div>
@@ -19,28 +19,28 @@
   <div style="width: 100%; display: table;">
       <div style="display: table-row">
           <div style="width: 600px; display: table-cell;">
-                  <canvas baseChart width="600" height="600"
+                  <canvas baseChart width="600" height="600" *ngIf='singleCycleData[0].data.length > 0'
                   [datasets]="singleCycleData"
                   [labels]="singleCycleLabels"
                   [options]="chartOptions"
                   [colors]="chartColors"
                   [legend]="chartLegend"
                   [chartType]="chartType"
-                  (chartHover)="chartHovered($event)"
+                
                   (chartClick)="chartClicked($event)"></canvas>
               
   
           </div>
           
           <div style="display: table-cell;">
-                  <canvas baseChart width="600" height="600"
+                  <canvas baseChart width="600" height="600" *ngIf='cycleChartData[0].data.length > 0'
                   [datasets]="cycleChartData"
                   [labels]="cycleChartLabels"
                   [options]="chartOptions"
                   [colors]="chartColors"
                   [legend]="chartLegend"
                   [chartType]="chartType"
-                  (chartHover)="chartHovered($event)"
+             
                   (chartClick)="chartClicked($event)"></canvas>
           
           </div>

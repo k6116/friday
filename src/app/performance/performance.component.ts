@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiDataService } from '../_shared/services/api-data.service';
 import * as moment from 'moment';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-performance',
@@ -14,9 +15,10 @@ export class PerformanceComponent implements OnInit {
 
   public singleCycleData: Array<any> = [{data: [], label: 'Individual Hits'}];
   public singleCycleLabels: Array<any> = new Array<any>();
-  completedCycles: number;
+  public completedCycles: number;
   public cycleChartData: Array<any> = [{data: [], label: 'Cycle Completions'}];
   public cycleChartLabels: Array<any> = new Array<any>();
+  public startEnabled: boolean;
 
 
   public chartColors: Array<any> = [
@@ -46,11 +48,9 @@ export class PerformanceComponent implements OnInit {
     },
     zoom: {
         enabled: true,
+        responsive: true,
         mode: 'x',
-        limits: {
-            max: 100,
-            min: 0
-        }
+        sensitivity: 10,
     }
 
     };
@@ -59,8 +59,6 @@ export class PerformanceComponent implements OnInit {
   public chartLegend: true;
   public chartType: string = 'line';
 
-
-
   constructor ( private apiDataService: ApiDataService) {
 
   }
@@ -68,6 +66,7 @@ export class PerformanceComponent implements OnInit {
     ngOnInit() {
           this.cycles = 20;
           this.threads = 1;
+          this.startEnabled = true;
     }
 
     getLatestCycleCompletion(): number {
@@ -80,12 +79,12 @@ export class PerformanceComponent implements OnInit {
     }
 
     spawnWorkerClick() {
-      const myWorker = new Worker('./worker.js');
-      myWorker.postMessage(2);
-      myWorker.onmessage = function(e) {
+      // const myWorker = new Worker('./worker.js');
+      // myWorker.postMessage(2);
+      // myWorker.onmessage = function(e) {
 
-        console.log('Message received from worker: ' + e.data);
-      };
+      //   console.log('Message received from worker: ' + e.data);
+      // };
     }
 
     startTest() {
@@ -93,8 +92,10 @@ export class PerformanceComponent implements OnInit {
       this.singleCycleLabels.length = 0; // one cycle set at a time for display
       this.singleCycleData[0].data.length = 0;
 
+
       for (let i = 1; i <= this.cycles; i++) {
         this.performTest(i);
+
       }
     }
 
@@ -110,8 +111,11 @@ export class PerformanceComponent implements OnInit {
           const tDiff = moment.utc(t1 - t0);
 
           console.log(`retrieve projects took ${tDiff} milliseconds`);
+
+          if (iteration % (this.cycles / 10) === 0) {
           this.singleCycleLabels.push('C' + iteration.toString());
           this.singleCycleData[0].data.push(tDiff);
+          }
 
           if (iteration === this.cycles) {
             console.log('length before reduction');
@@ -120,9 +124,13 @@ export class PerformanceComponent implements OnInit {
             const sumAvg = Math.floor(sum);  // convert to integer
             console.log(`full cycle took ${sumAvg} milliseconds`);
 
-            this.cycleChartLabels.push('T' + (this.cycleChartLabels.length + 1).toString());
+            this.cycleChartLabels.push('T' + (this.cycleChartLabels.length + 1).toString() + '(' + this.cycles.toString() + ')');        
             this.cycleChartData[0].data.push(sumAvg);
             this.completedCycles = sumAvg;
+            this.startEnabled = true;
+
+          } else {
+            this.startEnabled = false;
           }
 
        },
@@ -133,7 +141,6 @@ export class PerformanceComponent implements OnInit {
         }
       );
     }
-
 
     resetTest() {
 
@@ -149,7 +156,5 @@ export class PerformanceComponent implements OnInit {
       console.log(e);
     }
 
-    public chartHovered(e: any): void {
-    console.log(e);
-    }
+
   }
