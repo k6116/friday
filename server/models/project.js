@@ -40,10 +40,39 @@ const ProjectTypes = sequelize.define('projectTypes',
   }
 );
 
-Projects.hasMany(ProjectTypes, {foreignKey: 'ProjectTypeID', sourceKey: 'ProjectTypeID' });
+const ProjectAccessRequests = sequelize.define('projectAccessRequests',
+  {
+    id: { type: Sequelize.INTEGER, field: 'RequestID', primaryKey: true, autoIncrement: true },
+    requestStatus: { type: Sequelize.STRING, field: 'RequestStatus' },
+    projectID: { type: Sequelize.INTEGER, field: 'ProjectID' },
+    requestedBy: { type: Sequelize.INTEGER, field: 'RequestedBy' },
+    requestedAt: { type: Sequelize.DATE, field: 'RequestDate' },
+    requestNotes: { type: Sequelize.STRING, field: 'RequestNotes' },
+    respondedBy: { type: Sequelize.INTEGER, field: 'RespondedBy' },
+    respondedAt: { type: Sequelize.DATE, field: 'ResponseDate' },
+    responseNotes: { type: Sequelize.STRING, field: 'ResponseNotes' },
+  },
+  {
+    schema: 'resources',
+    tableName: 'ProjectAccessRequests',
+    timestamps: false,
+  }
+);
+
+// Projects.hasMany(ProjectTypes, {foreignKey: 'ProjectTypeID', sourceKey: 'ProjectTypeID' });
+Projects.hasMany(ProjectTypes, {foreignKey: 'ProjectTypeID'});
+ProjectTypes.belongsTo(Projects, {foreignKey: 'ProjectTypeID'});
+
+// ProjectAccessRequests.hasMany(Projects, {foreignKey: 'ProjectID'});
+// Projects.belongsTo(ProjectAccessRequests, {foreignKey: 'ProjectID'});
+Projects.hasMany(ProjectAccessRequests, {foreignKey: 'ProjectID'});
+ProjectAccessRequests.belongsTo(Projects, {foreignKey: 'ProjectID'});
+
+
 
 module.exports = {
   Projects: Projects, 
-  ProjectTypes: ProjectTypes
+  ProjectTypes: ProjectTypes,
+  ProjectAccessRequests: ProjectAccessRequests
 }
 
