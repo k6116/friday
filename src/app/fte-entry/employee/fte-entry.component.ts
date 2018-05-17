@@ -48,6 +48,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   // initialize variables
   mainSliderConfig: any;  // slider config
   sliderDisabled = false;
+  fyLabelArray = new Array;
+  fteQuarterVisible = new Array(12).fill(false);  // boolean array for by-month FTE form display
   fteMonthVisible = new Array(36).fill(false);  // boolean array for by-month FTE form display
   fteMonthEditable = new Array(36).fill(true);  // boolean array for by-month FTE box disabling
   fteProjectVisible = new Array;  // boolean array for by-project row display
@@ -472,11 +474,32 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
   }
 
+  makeFyLabels() {
+    // generate slider labels based on current date
+    let startDate = moment().startOf('year').subtract(2, 'months'); // first day of this FY
+    startDate = moment(startDate).subtract(1, 'year');  // first day of last FY
+    const month = moment(startDate).month();
+    let firstQuarter = moment(startDate).fquarter(-3).quarter;
+    let firstYear = moment(startDate).fquarter(-3).year;
+
+    // make an array of label strings, ie - [Q4'17, Q1'18]
+    for ( let i = 0; i < 12; i++) {
+      this.fyLabelArray.push(`Q${firstQuarter}'${firstYear.toString().slice(2)}`);
+      firstQuarter++;
+      if (firstQuarter > 4) {
+        firstYear++;
+        firstQuarter = 1;
+      }
+    }
+  }
+
   setSliderConfig() {
 
+    this.makeFyLabels();
+
     // set slider starting range based on current date
-    let startDate = moment().startOf('month');
-    let month = moment(startDate).month();
+    const startDate = moment().startOf('month');
+    const month = moment(startDate).month();
     if (month === 10 || month === 11 || month === 0) {
       this.sliderRange = [4, 6]; // Q1
     } else if (month === 1 || month === 2 || month === 3) {
@@ -488,31 +511,18 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     }
 
     // initialize the by-month FTE display with the slider range handles
+    this.fteQuarterVisible = this.fteQuarterVisible.fill(true, this.sliderRange[0], this.sliderRange[1]);
     this.fteMonthVisible = this.fteMonthVisible.fill(true, this.sliderRange[0] * 3, this.sliderRange[1] * 3);
-
-    // generate slider labels based on current date
-    startDate = moment().startOf('year').subtract(2, 'months'); // first day of this FY
-    startDate = moment(startDate).subtract(1, 'year');  // first day of last FY
-    month = moment(startDate).month();
-    let firstQuarter = moment(startDate).fquarter(-3).quarter;
-    let firstYear = moment(startDate).fquarter(-3).year;
-    const fyLabelArray = new Array<string>(12).fill('');
-
-    // make an array of label strings, ie - [Q4'17, Q1'18]
-    fyLabelArray.forEach(function(element, i) {
-      fyLabelArray[i] = `Q${firstQuarter}'${firstYear.toString().slice(2)}`;
-      firstQuarter++;
-      if (firstQuarter > 4) {
-        firstYear++;
-        firstQuarter = 1;
-      }
-    });
+    console.log('test');
+    console.log(this.fteQuarterVisible);
+    console.log(this.fteMonthVisible);
 
     // make array of values for slider pips
     const pipValues = [];
     for (let i = 0; i <= 12; i = i + 0.5) {
       pipValues.push(i);
     }
+    const fyLabelArray = this.fyLabelArray;
 
     // set slider config
     this.mainSliderConfig = {
@@ -627,6 +637,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     this.updateProjectVisibility(posStart, posDelta);
 
     // set only months that should be visible to true
+    this.fteQuarterVisible = this.fteQuarterVisible.fill(false);
+    this.fteQuarterVisible = this.fteQuarterVisible.fill(true, leftHandle, rightHandle);
     this.fteMonthVisible = this.fteMonthVisible.fill(false);
     this.fteMonthVisible = this.fteMonthVisible.fill(true, posStart, posStart + posDelta);
 

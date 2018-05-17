@@ -1,10 +1,4 @@
 
-/* div.outer-cont {
-  margin-left: 125px;
-  margin-top: 100px;
-  margin-bottom: 50px;
-} */
-
 div.col-custom.col-slider {
   padding: 0 10px;
 }
@@ -16,6 +10,12 @@ div.col-custom.col-slider {
 .test-buttons {
   margin-top: 50px;
   text-align: center;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: rgb(108, 117, 125);;
+  border-color: rgb(108, 117, 125);;
 }
 
 
@@ -30,12 +30,20 @@ i.fa-trash-o:hover {
   cursor: pointer;
 }
 
+/* TOTALS ROW */
+input.form-control.highlight-invalid {
+  border-color: rgb(236, 154, 154);
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
+}
+
 
 /* FTE Table CSS */
 
 div.fte-table-container {
   /* forces the table container to be a consistent height and width, even when no FTE values exist for the selected period */
-  height: 300px;
+  height: 500px;
   width: 100%;
   overflow: scroll;
 }
@@ -43,6 +51,8 @@ div.fte-table-container {
 div.fte-table {
   display: table;
   overflow: scroll;
+  vertical-align: middle;
+  border-spacing: 0px 2px;
 }
 
 div.fte-table-header {
@@ -59,14 +69,27 @@ div.fte-table-footer {
 
 div.fte-table-row {
   display: table-row;
+  vertical-align: middle;
 }
 
 div.fte-table-cell {
   display: table-cell;
+  vertical-align: middle;
   min-width: 80px;
   max-width: 80px;
   width: 80px;
+  height: 30px;
   z-index: 0;
+}
+
+/* table header and footer css */
+
+div.fte-table-header div.fte-table-row {
+  /* css for the header row itself */
+  min-height: 30px;
+  max-height: 30px;
+  text-align: center;
+  font-weight: bold;
 }
 
 div.fte-table-header div.fte-table-row div.fte-table-cell {
@@ -74,9 +97,21 @@ div.fte-table-header div.fte-table-row div.fte-table-cell {
   background-color: rgb(245, 245, 245);
   position: sticky;
   top: 0px;
-  text-align: center;
-  font-weight: bold;
   z-index: 1;
+}
+
+div.fte-table-header div.fte-table-row div.fte-table-cell.row-month-header {
+  /* css for the month-header cells in the header */
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  top: 30px;
+  z-index: 1;
+}
+
+div.fte-table-header div.fte-table-row div.fte-table-cell.icon-month-header {
+  /* css for trash icons in the header */
+  position: sticky;
+  top: 30px;
 }
 
 div.fte-table-footer div.fte-table-row div.fte-table-cell {
@@ -84,15 +119,6 @@ div.fte-table-footer div.fte-table-row div.fte-table-cell {
   background-color: rgb(245, 245, 245);
   position: sticky;
   bottom: 0px;
-  z-index: 1;
-}
-
-div.fte-table-body div.fte-table-row div.fte-table-cell.col-project-name {
-  /* css for cells in the body that also have the col-project-name class */
-  background-color: rgb(245, 245, 245);
-  position: sticky;
-  left: 30px;
-  min-width: 140px;
   z-index: 1;
 }
 
@@ -107,124 +133,37 @@ div.fte-table-footer div.fte-table-row div.fte-table-cell.col-projects-totals {
   font-weight: bold;
   z-index: 3;
 }
-
-div.fte-table-body div.fte-table-row div.fte-table-cell.icon {
-  background-color: rgb(245, 245, 245);
-  position: sticky;
-  left: 0px;
-  padding-top: 5px;
-  min-width: 30px;
-  max-width: 30px;
-  width: 30px;
-  min-height: 35px;
-  z-index: 2;
-}
-
 div.fte-table-header div.fte-table-row div.fte-table-cell.icon,
 div.fte-table-footer div.fte-table-row div.fte-table-cell.icon {
+  /* trash icons in the header are sticky towards the top-scroll */
   background-color: rgb(245, 245, 245);
   position: sticky;
   left: 0px;
-  padding-top: 5px;
   min-width: 30px;
   max-width: 30px;
   width: 30px;
-  min-height: 35px;
   z-index: 3; /* icons in the header and footer need to be higher */
 }
 
 
+/* table body css */
 
-
-
-/*
-table {
-  display: block;
-  overflow: scroll;
-  top: 0px;
-  left: 0px;
-  height: 500px;
-  width: 100%;
-}
-
-thead tr {
-  left: 0;
-  top: 0;
-  height: 30px;
-}
-
-tfoot tr {
-  left: 0;
-  bottom: 0;
-  height: 40px;
-  z-index: 1;
-}
-
-
-thead tr th {
-  position: sticky;
-  top: 0px;
-  left: 30px;
-  z-index: 1;
-}
-
-tbody {
-  z-index: 0;
-}
-
-tfoot tr td {
-  position: sticky;
-  bottom: 0px;
-  left: 30px;
-}
-
-td, th, input {
-  width: 80px;
-}
-
-thead tr th.top-corner {
-  left: 0px;
-  min-width: 170px;
-  padding-left: 30px;
-  z-index: 2;
-}
-
-th.firstColumnHeader, td.firstColumnHeader {
+div.fte-table-body div.fte-table-row div.fte-table-cell.col-project-name {
+  /* css for cells in the body that also have the col-project-name class */
   background-color: rgb(245, 245, 245);
   position: sticky;
   left: 30px;
   min-width: 140px;
-  min-height: 36px;
   z-index: 1;
 }
 
-
-thead tr th.first-row-header {
+div.fte-table-body div.fte-table-row div.fte-table-cell.icon {
+  /* trash icons in the body are sticky towards the left-scroll */
   background-color: rgb(245, 245, 245);
-  text-align: center;
-}
-*/
-
-/* TOTALS ROW */
-
-input.form-control.highlight-invalid {
-  border-color: rgb(236, 154, 154);
-  outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(236, 154, 154, .6);
-          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(236, 154, 154, .6);
-}
-
-
-/* TO-DO: COMMON STYLE - MOVE TO _SHARED */
-
-input.form-control[disabled], select.form-control[disabled], textarea.form-control[disabled] {
-  cursor: default;
-  background-color: rgb(230, 230, 230);
-}
-
-
-.btn-primary {
-  color: #fff;
-  background-color: rgb(108, 117, 125);;
-  border-color: rgb(108, 117, 125);;
+  position: sticky;
+  left: 0px;
+  min-width: 30px;
+  max-width: 30px;
+  width: 30px;
+  z-index: 2;
 }

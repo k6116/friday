@@ -38,6 +38,14 @@ label.label-custom {
   text-overflow: ellipsis;
 }
 
+input.form-control {
+  height:35px;
+}
+
+input.form-control[disabled], select.form-control[disabled], textarea.form-control[disabled] {
+  cursor: default;
+  background-color: rgb(230, 230, 230);
+}
 
 input.form-control.form-control-custom, select.form-control.form-control-custom {
   width: 100%;
