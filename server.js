@@ -9,7 +9,6 @@ const sequelize = require('./server/db/sequelize');
 const dotevnv = require('dotenv').config()
 
 // set the ssl options object, reading keys and certs from the filesystem
-// NOTE: for use on the web server uncomment this block
 var sslOptions = {
   key: fs.readFileSync('./etc/ssl/jarvis.key'),
   cert: fs.readFileSync('./etc/ssl/jarvis.crt'),

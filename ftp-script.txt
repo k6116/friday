@@ -1,0 +1,17 @@
+open ftp://chuetzle:1milkbon%23@wcosofw2.cos.is.keysight.com/ -rawsettings ProxyPort=0
+
+lcd C:\webdev\jarvis-rt
+cd /jarvis-rt
+
+put dist
+put public
+put server
+put package.json
+put package-lock.json
+put server.js
+
+exit
+
+# Execute the script using a command like:
+# "C:\Program Files (x86)\WinSCP\WinSCP.exe" /log="C:\writable\path\to\log\WinSCP.log" /ini=nul /script="C:\path\to\script\script.txt"
+# "C:\Program Files (x86)\WinSCP\WinSCP.exe" /log="C:\webdev\jarvis_ftp_log.log" /ini=nul /script="C:\webdev\jarvis_ftp_script.txt"
