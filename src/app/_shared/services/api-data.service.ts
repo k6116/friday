@@ -112,6 +112,18 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getJobTitleList() {
+    return this.http.get(`/api/getJobTitleList/`)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+  }
+
+  updateProfile(userID: number, jobTitles: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+    return this.http.post(`/api/updateProfile/${userID}`, JSON.stringify(jobTitles), options);
+  }
+
   getUserProjectList(userID: number) {
     return this.http.get(`/api/getUserProjectList/${userID}`)
     .timeout(this.timeout)

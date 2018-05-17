@@ -40,6 +40,11 @@ router.get('/getProjectAccessRequestsList/:userID', controllers.projectAccess.ge
 router.post('/submitProjectAccessRequest/:userID', controllers.projectAccess.insertProjectAccessRequest);
 router.post('/responseProjectAccessRequest/:userID/:reply', controllers.projectAccess.updateProjectAccessRequest);
 
+// Profile Controller
+router.get('/getJobTitleList', controllers.profile.show);
+router.post('/updateProfile/:userID', controllers.profile.update);
+// router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
+
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified

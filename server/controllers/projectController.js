@@ -6,7 +6,7 @@ const Treeize = require('treeize');
 
 function getAll(req, res) {
    
-    console.log('reached project controller');
+    // console.log('reached project controller');
 
     var sql = 'SELECT p.ProjectID, substring(p.ProjectName,1,30) as \'ProjectName\', substring(p.Description,1,500) as \'Description\', e.FullName, p.CreationDate, t.ProjectTypeName ';
     sql = sql + 'FROM  projects.Projects p INNER JOIN projects.ProjectTypes t ';
@@ -17,8 +17,8 @@ function getAll(req, res) {
     
     sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
     .then(p => {
-    console.log("Returning Projects");
-    console.log(p);
+    // console.log("Returning Projects");
+    // console.log(p);
      res.json(p);
     })
 
