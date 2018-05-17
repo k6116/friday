@@ -484,7 +484,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
     // make an array of label strings, ie - [Q4'17, Q1'18]
     for ( let i = 0; i < 12; i++) {
-      this.fyLabelArray.push(`Q${firstQuarter}'${firstYear.toString().slice(2)}`);
+      this.fyLabelArray.push(`Q${firstQuarter} - ${firstYear.toString().slice(2)}`);
       firstQuarter++;
       if (firstQuarter > 4) {
         firstYear++;
