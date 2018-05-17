@@ -67,6 +67,7 @@
             </div>
             <div class="card-footer">
               <button type="button" class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
+              <button *ngIf="project.ProjectTypeName=='Solution'" type="button" class="btn btn-outline-success project-select-button" (click)="onRequestedProject(project)">Request</button>
             </div>
           </div>
 

@@ -18,6 +18,7 @@ export class ProjectsSetupsComponent implements OnInit {
   projectDescription: string;
   projectList: any;
   projectData: any;
+  projectAccessRequestsList: any;
   loggedInUser: User;
   showProjectsEditModal: boolean;
   showProjectsCreateModal: boolean;
@@ -43,6 +44,7 @@ export class ProjectsSetupsComponent implements OnInit {
       }
       this.loggedInUser = user;
       this.getUserProjectList();
+      this.getProjectAccessRequestsList();
     });
   }
 
@@ -58,8 +60,21 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataService.getUserProjectList(this.loggedInUser.id)
       .subscribe(
         res => {
-          // console.log(res);
+          console.log(res);
           this.projectList = res;
+        },
+        err => {
+          console.log(err);
+        }
+      );
+  }
+
+  getProjectAccessRequestsList() {
+    this.apiDataService.getProjectAccessRequestsList(this.loggedInUser.id)
+      .subscribe(
+        res => {
+          // console.log(res);
+          this.projectAccessRequestsList = res;
         },
         err => {
           console.log(err);

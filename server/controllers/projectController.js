@@ -12,7 +12,7 @@ function getAll(req, res) {
     sql = sql + 'FROM  projects.Projects p INNER JOIN projects.ProjectTypes t ';
     sql = sql + 'ON p.ProjectTypeID = t.ProjectTypeID '
     sql = sql + 'INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID '
-    sql = sql + 'WHERE Active = 1 AND len(p.Description) > 0 '
+    // sql = sql + 'WHERE Active = 1 AND len(p.Description) > 0 '
     sql = sql + 'ORDER BY p.ProjectName '
     
     sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})

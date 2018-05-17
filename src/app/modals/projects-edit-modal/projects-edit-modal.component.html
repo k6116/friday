@@ -31,6 +31,21 @@
           </div>
         </form>
       </div>
+      <div *ngIf="showPendingRequests" class="modal-footer">
+        <div class="container">
+          <div class="row">
+              <div class="col">
+                Test: 
+              </div>
+              <div class="col">
+                <button type="button" class="btn btn-success btn-block" (click)="getProjectData()">Approve</button>
+              </div>
+              <div class="col">
+                <button type="button" class="btn btn-danger btn-block" [disabled]="disableDelete" (click)="deleteProject()">Deny</button>
+              </div>
+          </div>
+      </div>
+        </div>
       <div *ngIf="disableDelete" class="modal-footer">
         <tr *ngFor="let table of pKeyRefList">
           <td>Table: {{ table.TableName }} | Count: {{ table.NumOfRows }}</td>

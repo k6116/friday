@@ -2,6 +2,8 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
   HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { ToolsService } from '../../_shared/services/tools.service';
+import { ApiDataService } from '../../_shared/services/api-data.service';
+import { AuthService } from '../../auth/auth.service';
 
 declare var $: any;
 
@@ -59,6 +61,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   showRosterModal: boolean;
   clickedProjectForInfoModal: any;
   clickedProjectForRosterModal: any;
+  userID: any;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -72,7 +75,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   constructor(
     private toolsService: ToolsService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private apiDataService: ApiDataService,
+    private authService: AuthService,
   ) {
 
 
@@ -105,6 +110,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     this.paginateFilter = {on: false, property: 'ProjectName', regexp: `[${this.paginationLinks[0]}]`};
     this.selectedPage = 0;
+
+    // get the user id
+    this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
 
   }
 
@@ -397,6 +405,18 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
+  onRequestedProject(project: any) {
+
+    this.apiDataService.submitProjectAccessRequest(project, this.userID)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
 
 }
 

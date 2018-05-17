@@ -16,6 +16,7 @@ declare var $: any;
 export class ProjectsEditModalComponent implements OnInit {
 
   @Input() projectData: any;
+  @Input() projectAccessRequestsList: any;
   @Output() updateSuccess = new EventEmitter<boolean>();
   @Output() deleteSuccess = new EventEmitter<boolean>();
 
@@ -27,6 +28,7 @@ export class ProjectsEditModalComponent implements OnInit {
   pKeyRefList: any;
   disableDelete: boolean;
   projectTypesList: any;
+  showPendingRequests: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -48,10 +50,7 @@ export class ProjectsEditModalComponent implements OnInit {
   }
 
   getProjectData() {
-    // console.log(this.projectData);
-    // const project = this.form.getRawValue();
-    // console.log(project);
-    console.log(this.appDataService.$nestedOrgData);
+    console.log(this.projectAccessRequestsList);
   }
 
   getProjectTypesList() {
@@ -121,7 +120,7 @@ export class ProjectsEditModalComponent implements OnInit {
     });
 
     this.getPrimaryKeyRefs();
-
+    this.handlePendingRequests();
   }
 
   getPrimaryKeyRefs() {
@@ -142,6 +141,21 @@ export class ProjectsEditModalComponent implements OnInit {
           console.log(err);
         }
       );
+  }
+
+  handlePendingRequests() {
+    if (Object.keys(this.projectAccessRequestsList).length === 0) {
+    } else {
+      if (this.projectData.id === this.projectAccessRequestsList[0].ProjectID) {
+        console.log('SHOW ME');
+        this.showPendingRequests = true;
+      } else {
+        console.log('DONT SHOW ME');
+        console.log(this.projectAccessRequestsList);
+        console.log(this.projectData.id + '===' + this.projectAccessRequestsList[0].ProjectID);
+        this.showPendingRequests = false;
+      }
+    }
   }
 
   // onCancelClicked() {
