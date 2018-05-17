@@ -72,12 +72,17 @@ div.fte-table-row {
   vertical-align: middle;
 }
 
+div.fte-table-cell.quarter-spacer {
+  min-width: unset;
+  width: 10px;
+  min-width: 10px;
+}
+
 div.fte-table-cell {
   display: table-cell;
   vertical-align: middle;
-  min-width: 80px;
-  max-width: 80px;
-  width: 80px;
+  width: 60px;
+  min-width: 60px;
   height: 30px;
   z-index: 0;
 }
@@ -98,6 +103,10 @@ div.fte-table-header div.fte-table-row div.fte-table-cell {
   position: sticky;
   top: 0px;
   z-index: 1;
+}
+
+div.fte-table-header div.fte-table-row div.fte-table-cell.border-bottom {
+  border-bottom: 1px solid rgb(130, 130, 130) !important;  /* wtf, bootstrap is using !important in their default display:table-row class, so we have to use it here too sadly */
 }
 
 div.fte-table-header div.fte-table-row div.fte-table-cell.row-month-header {

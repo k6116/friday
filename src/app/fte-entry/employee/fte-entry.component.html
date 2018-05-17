@@ -22,9 +22,10 @@
                                 <div class="fte-table-cell icon">&nbsp;</div> <!-- for trash icon -->
                                 <div class="fte-table-cell col-projects-totals">&nbsp;</div>
                                 <ng-container *ngFor="let label of fyLabelArray; let l = index">
-                                    <div class="fte-table-cell" [style.display]="fteQuarterVisible[l] ? 'table-cell' : 'none'">&nbsp;</div>
-                                    <div class="fte-table-cell" [style.display]="fteQuarterVisible[l] ? 'table-cell' : 'none'">{{label}}</div>
-                                    <div class="fte-table-cell" [style.display]="fteQuarterVisible[l] ? 'table-cell' : 'none'">&nbsp;</div>
+                                    <div class="fte-table-cell border-bottom" [@colState]="fteQuarterVisible[l]" [style.display]="fteQuarterVisible[l] ? '' : 'none'">&nbsp;</div>
+                                    <div class="fte-table-cell border-bottom" [@colState]="fteQuarterVisible[l]" [style.display]="fteQuarterVisible[l] ? '' : 'none'">{{label}}</div>
+                                    <div class="fte-table-cell border-bottom" [@colState]="fteQuarterVisible[l]" [style.display]="fteQuarterVisible[l] ? '' : 'none'">&nbsp;</div>
+                                    <div class="fte-table-cell quarter-spacer" [@colState]="fteQuarterVisible[l]" [style.display]="fteQuarterVisible[l] ? '' : 'none'">&nbsp;</div>
                                 </ng-container>
                             </div>
                             <div class="fte-table-row">
@@ -33,7 +34,10 @@
                                 <!-- loop through each month in the userFTEs data object-->
                                 <ng-container *ngFor="let month of months; let k = index">
                                     <!-- only show the month column if the slider deems it visible -->
-                                    <div class="fte-table-cell row-month-header" [@colState]="fteMonthVisible[k]" [style.display]="fteMonthVisible[k] ? 'table-cell' : 'none'">{{month | date:'MMM-yyyy':'+0'}}</div>
+                                    <div class="fte-table-cell row-month-header" [@colState]="fteMonthVisible[k]" [style.display]="fteMonthVisible[k] ? 'table-cell' : 'none'">{{month | date:'MMM':'+0'}}</div>
+                                    <ng-container *ngIf="k % 3 === 2">
+                                        <div class="fte-table-cell quarter-spacer" [@colState]="fteMonthVisible[k]" [style.display]="fteMonthVisible[k] ? 'table-cell' : 'none'">&nbsp;</div>
+                                    </ng-container>
                                 </ng-container>
                             </div>
                         </div>
@@ -51,6 +55,9 @@
                                         <div class="fte-table-cell" [@colState]="fteMonthVisible[j]" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">
                                             <input type="text" formControlName="fte" class="form-control" [attr.disabled]="fteMonthEditable[j] ? null : ''" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
                                         </div>
+                                        <ng-container *ngIf="j % 3 === 2">
+                                            <div class="fte-table-cell quarter-spacer" [@colState]="fteMonthVisible[j]" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">&nbsp;</div>
+                                        </ng-container>
                                     </ng-container>
                                 </div>
                             </ng-container>
@@ -60,9 +67,13 @@
                                 <div class="fte-table-cell icon">&nbsp;</div> <!-- for trash icon -->
                                 <div class="fte-table-cell col-projects-totals">TOTAL</div>
                                 <ng-container *ngFor="let month of months; let z = index">
-                                    <div class="fte-table-cell" *ngIf="fteMonthVisible[z]">
+                                    <!-- <div class="fte-table-cell" *ngIf="fteMonthVisible[z]"> -->
+                                    <div class="fte-table-cell" [@colState]="fteMonthVisible[z]" [style.display]="fteMonthVisible[z] ? 'table-cell' : 'none'">
                                         <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
                                     </div>
+                                    <ng-container *ngIf="z % 3 === 2">
+                                        <div class="fte-table-cell quarter-spacer" [@colState]="fteMonthVisible[z]" [style.display]="fteMonthVisible[z] ? 'table-cell' : 'none'">&nbsp;</div>
+                                    </ng-container>
                                 </ng-container>
                             </div>
                         </div>
