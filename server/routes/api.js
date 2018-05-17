@@ -34,6 +34,11 @@ router.get('/projects', controllers.project.getAll)
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);
 
+// Profile Controller
+router.get('/getJobTitleList', controllers.profile.show);
+router.post('/updateProfile/:userID', controllers.profile.update);
+// router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
+
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified
