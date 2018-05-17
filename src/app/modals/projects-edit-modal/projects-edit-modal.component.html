@@ -33,16 +33,18 @@
       </div>
       <div *ngIf="showPendingRequests" class="modal-footer">
         <div class="container">
-          <div class="row">
+          <div *ngFor="let request of projectAccessRequestsList" class="row">
+            <div *ngIf="request.projectID === projectData.id" >
               <div class="col">
-                Test: 
+                {{ request['user.fullName'] }} 
               </div>
               <div class="col">
-                <button type="button" class="btn btn-success btn-block" (click)="getProjectData()">Approve</button>
+                <button type="button" class="btn btn-success btn-block" (click)="requestResponse(request, 'Approved')">Approve</button>
               </div>
               <div class="col">
-                <button type="button" class="btn btn-danger btn-block" [disabled]="disableDelete" (click)="deleteProject()">Deny</button>
+                <button type="button" class="btn btn-danger btn-block" (click)="requestResponse(request, 'Denied')">Deny</button>
               </div>
+            </div>
           </div>
       </div>
         </div>

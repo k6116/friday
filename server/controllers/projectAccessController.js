@@ -113,63 +113,57 @@ function insertProjectAccessRequest(req, res) {
 }
 
 
-// function updateProject(req, res) {
+function updateProjectAccessRequest(req, res) {
 
-//   // get the project object from the request body
-//   const project = req.body;
-//   const userID = req.params.userID;
-//   const today = new Date();
+  // get the project object from the request body
+  const request = req.body;
+  const userID = req.params.userID;
+  const reply = req.params.reply;
+  const today = new Date();
 
-//   console.log('updating existing project:');
-//   console.log(project);
+  return sequelize.transaction((t) => {
 
-//   return sequelize.transaction((t) => {
+    return models.ProjectAccessRequests
+      .update(
+        {
+          requestStatus: reply,
+          respondedBy: userID,
+          respondedAt: today,
+          responseNotes: 'Replied'
+        },
+        {
+          where: {id: request.id},
+          transaction: t
+        }
+      )
+      .then(updateProjectAccessRequest => {
 
-//     return models.Projects
-//       .update(
-//         {
-//           projectName: project.projectName,
-//           projectTypeID: project.projectTypeID,
-//           description: project.projectDescription,
-//           createdBy: userID,
-//           createdAt: today,
-//           updatedBy: userID,
-//           updatedAt: today
-//         },
-//         {
-//           where: {id: project.projectID},
-//           transaction: t
-//         }
-//       )
-//       .then(updatedProject => {
+        console.log('Updated Project Access Request')
+        console.log(updateProjectAccessRequest);
 
-//         console.log('Updated Project')
-//         console.log(updatedProject);
+      })
 
-//       })
+    }).then(() => {
 
-//     }).then(() => {
+      res.json({
+        message: `The requestID '${request.id}' has been updated successfully`
+      })
 
-//       res.json({
-//         message: `The project '${project.projectName}' has been updated successfully`
-//       })
+    }).catch(error => {
 
-//     }).catch(error => {
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
 
-//       console.log(error);
-//       res.status(500).json({
-//         title: 'update failed',
-//         error: {message: error}
-//       });
+    })
 
-//     })
-
-// }
+}
 
 
 module.exports = {
   getProjectAccessRequestsList: getProjectAccessRequestsList,
   insertProjectAccessRequest: insertProjectAccessRequest,
-  // updateProject: updateProject,
-  // deleteProject: deleteProject,
+  updateProjectAccessRequest: updateProjectAccessRequest
 }

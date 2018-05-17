@@ -118,7 +118,6 @@ export class ProjectsEditModalComponent implements OnInit {
       projectDescription: this.projectData.description,
       projectNotes: this.projectData.notes,
     });
-
     this.getPrimaryKeyRefs();
     this.handlePendingRequests();
   }
@@ -144,19 +143,29 @@ export class ProjectsEditModalComponent implements OnInit {
   }
 
   handlePendingRequests() {
-    if (Object.keys(this.projectAccessRequestsList).length === 0) {
+    const projectID = this.projectData.id;
+    const found = this.projectAccessRequestsList.some(function (el) {
+      return el.projectID === projectID;
+    });
+    if (found) {
+      this.showPendingRequests = true;
     } else {
-      if (this.projectData.id === this.projectAccessRequestsList[0].ProjectID) {
-        console.log('SHOW ME');
-        this.showPendingRequests = true;
-      } else {
-        console.log('DONT SHOW ME');
-        console.log(this.projectAccessRequestsList);
-        console.log(this.projectData.id + '===' + this.projectAccessRequestsList[0].ProjectID);
-        this.showPendingRequests = false;
-      }
+      this.showPendingRequests = false;
     }
   }
+
+  requestResponse(request: any, reply: string) {
+    this.apiDataService.responseProjectAccessRequest(request, reply, this.userID)
+      .subscribe(
+        res => {
+          console.log(res);
+        },
+        err => {
+          console.log(err);
+        }
+      );
+  }
+
 
   // onCancelClicked() {
   //   console.log('cancel button clicked');
