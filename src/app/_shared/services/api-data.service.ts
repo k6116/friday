@@ -121,7 +121,9 @@ export class ApiDataService {
   updateProfile(userID: number, jobTitles: any) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/updateProfile/${userID}`, JSON.stringify(jobTitles), options);
+    return this.http.post(`/api/updateProfile/${userID}`, JSON.stringify(jobTitles), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
   }
 
   getUserProjectList(userID: number) {

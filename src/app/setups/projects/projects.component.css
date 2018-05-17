@@ -1,12 +1,17 @@
-  div.col-custom.table-scrollable {
-    max-height: 397px;
-    overflow: scroll;
-    padding: 10px 14px;
+  h6.mb-0 {
+    cursor: pointer;
   }
 
-  .project-buttons {
+  div.projectsHeader {
+    background-color:rgb(72, 91, 101, 0.1)
+  }
+
+  .test-buttons {
     margin-top: 50px;
     text-align: center;
   }
-  
-  
+  .btn-primary {
+    color: #fff;
+    background-color: rgb(108, 117, 125);;
+    border-color: rgb(108, 117, 125);;
+  }

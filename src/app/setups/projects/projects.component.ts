@@ -23,6 +23,7 @@ export class ProjectsSetupsComponent implements OnInit {
   showProjectsEditModal: boolean;
   showProjectsCreateModal: boolean;
   display: boolean;
+  editToggle: boolean;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
@@ -32,7 +33,7 @@ export class ProjectsSetupsComponent implements OnInit {
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
-    this.display = true;
+    // this.display = true;
   }
 
   ngOnInit() {
@@ -46,6 +47,8 @@ export class ProjectsSetupsComponent implements OnInit {
       this.getUserProjectList();
       this.getProjectAccessRequestsList();
     });
+    // toggle edit view in collapse header
+    this.editToggle = false;
   }
 
   selectProject(project: any) {
@@ -104,4 +107,16 @@ export class ProjectsSetupsComponent implements OnInit {
     this.getUserProjectList();
   }
 
+  onCollapseClick() {
+    console.log('Collapse clicked, Toggle', this.editToggle);
+    if (this.editToggle = true) {
+      this.editToggle = false;
+    }
+    // this.editToggle = !this.editToggle;
+  }
+
+  onEditButtonClick() {
+    console.log('Pencil button clicked, toggle', this.editToggle);
+    this.editToggle = !this.editToggle;
+  }
 }
