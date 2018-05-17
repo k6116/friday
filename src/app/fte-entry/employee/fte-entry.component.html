@@ -16,47 +16,48 @@
         <div *ngIf="displayFTETable" class="col-sm col-custom fte-table-container">
             <form [formGroup]="FTEFormGroup">
                 <div formArrayName="FTEFormArray">
-                    <table>
-                        <thead>
-                            <tr> <!-- first row of table is month-name column-headers -->
-                                <th colspan="2" class="firstColumnHeader top-corner">Project</th>
+                    <div class="fte-table">
+                        <div class="fte-table-header">
+                            <div class="fte-table-row">
+                                <div class="fte-table-cell icon">&nbsp;</div> <!-- for trash icon -->
+                                <div class="fte-table-cell col-projects-totals">Project</div>
                                 <!-- loop through each month in the userFTEs data object-->
                                 <ng-container *ngFor="let month of months; let k = index">
                                     <!-- only show the month column if the slider deems it visible -->
-                                    <th class="first-row-header" [@colState]="fteMonthVisible[k]" [style.display]="fteMonthVisible[k] ? '' : 'none'">{{month | date:'MMM-yyyy':'+0'}}</th>
+                                    <div class="fte-table-cell" [@colState]="fteMonthVisible[k]" [style.display]="fteMonthVisible[k] ? 'table-cell' : 'none'">{{month | date:'MMM-yyyy':'+0'}}</div>
                                 </ng-container>
-                            </tr>
-                        </thead>
-                        <tbody>
+                            </div>
+                        </div>
+                        <div class="fte-table-body">
                             <!-- loop through each project, one row per project -->
                             <ng-container *ngFor="let project of projects; let i = index">
-                                <tr [formGroupName]="i" [style.display]="(fteProjectVisible[i] && project.alive) ? '' : 'none'">
-                                    <td class="icon"> <!-- for trash icon -->
+                                <div class="fte-table-row" [formGroupName]="i" [style.display]="(fteProjectVisible[i] && project.alive) ? 'table-row' : 'none'">
+                                    <div class="fte-table-cell icon"> <!-- for trash icon -->
                                         <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
-                                    </td>
-                                    <td class="firstColumnHeader">{{ (project.projectName.length > 15) ? (project.projectName | slice:0:15) + '...' : (project.projectName) }}</td>
+                                    </div>
+                                    <div class="fte-table-cell col-project-name">{{ (project.projectName.length > 15) ? (project.projectName | slice:0:15) + '...' : (project.projectName) }}</div>
                                     <!-- loop through each month's FTE allocation, "monthly" cells per project -->
                                     <ng-container *ngFor="let month of months; let j = index">
                                         <!-- only show if slider deems it visible -->
-                                        <td [@colState]="fteMonthVisible[j]" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? '' : 'none'">
+                                        <div class="fte-table-cell" [@colState]="fteMonthVisible[j]" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">
                                             <input type="text" formControlName="fte" class="form-control" [attr.disabled]="fteMonthEditable[j] ? null : ''" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
-                                        </td>
+                                        </div>
                                     </ng-container>
-                                </tr>
+                                </div>
                             </ng-container>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td class="icon">&nbsp;</td> <!-- for trash icon -->
-                                <td class="firstColumnHeader">TOTAL</td>
+                        </div>
+                        <div class="fte-table-footer">
+                            <div class="fte-table-row">
+                                <div class="fte-table-cell icon">&nbsp;</div> <!-- for trash icon -->
+                                <div class="fte-table-cell col-projects-totals">TOTAL</div>
                                 <ng-container *ngFor="let month of months; let z = index">
-                                    <td *ngIf="fteMonthVisible[z]">
+                                    <div class="fte-table-cell" *ngIf="fteMonthVisible[z]">
                                         <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
-                                    </td>
+                                    </div>
                                 </ng-container>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div> <!-- end div that controls entire FTE entry table visibility -->

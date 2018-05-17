@@ -33,19 +33,117 @@ i.fa-trash-o:hover {
 
 /* FTE Table CSS */
 
-.fte-table-container {
+div.fte-table-container {
   /* forces the table container to be a consistent height and width, even when no FTE values exist for the selected period */
-  height: 500px;
+  height: 300px;
   width: 100%;
+  overflow: scroll;
 }
 
+div.fte-table {
+  display: table;
+  overflow: scroll;
+}
+
+div.fte-table-header {
+  display: table-header-group;
+}
+
+div.fte-table-body {
+  display: table-row-group;
+}
+
+div.fte-table-footer {
+  display: table-footer-group;
+}
+
+div.fte-table-row {
+  display: table-row;
+}
+
+div.fte-table-cell {
+  display: table-cell;
+  min-width: 80px;
+  max-width: 80px;
+  width: 80px;
+  z-index: 0;
+}
+
+div.fte-table-header div.fte-table-row div.fte-table-cell {
+  /* css for cells in the header */
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  top: 0px;
+  text-align: center;
+  font-weight: bold;
+  z-index: 1;
+}
+
+div.fte-table-footer div.fte-table-row div.fte-table-cell {
+  /* css for cells in the footer */
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  bottom: 0px;
+  z-index: 1;
+}
+
+div.fte-table-body div.fte-table-row div.fte-table-cell.col-project-name {
+  /* css for cells in the body that also have the col-project-name class */
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  left: 30px;
+  min-width: 140px;
+  z-index: 1;
+}
+
+div.fte-table-header div.fte-table-row div.fte-table-cell.col-projects-totals,
+div.fte-table-footer div.fte-table-row div.fte-table-cell.col-projects-totals {
+  /* css for cells that are the Projects and Totals headings */
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  left: 30px;
+  min-width: 140px;
+  text-align: left;
+  font-weight: bold;
+  z-index: 3;
+}
+
+div.fte-table-body div.fte-table-row div.fte-table-cell.icon {
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  left: 0px;
+  padding-top: 5px;
+  min-width: 30px;
+  max-width: 30px;
+  width: 30px;
+  min-height: 35px;
+  z-index: 2;
+}
+
+div.fte-table-header div.fte-table-row div.fte-table-cell.icon,
+div.fte-table-footer div.fte-table-row div.fte-table-cell.icon {
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  left: 0px;
+  padding-top: 5px;
+  min-width: 30px;
+  max-width: 30px;
+  width: 30px;
+  min-height: 35px;
+  z-index: 3; /* icons in the header and footer need to be higher */
+}
+
+
+
+
+
+/*
 table {
-  /* using display:block forces the table elements to renders as block elements so we can make sticky work */
   display: block;
   overflow: scroll;
   top: 0px;
   left: 0px;
-  height: 500px; /* set equal to fte-table-container height */
+  height: 500px;
   width: 100%;
 }
 
@@ -91,18 +189,6 @@ thead tr th.top-corner {
   z-index: 2;
 }
 
-thead tr th.icon, tbody tr td.icon, tfoot tr td.icon {
-  background-color: rgb(245, 245, 245);
-  position: sticky;
-  left: 0px;
-  padding-top: 5px;
-  min-width: 30px;
-  max-width: 30px;
-  width: 30px;
-  min-height: 35px;
-  z-index: 1;
-}
-
 th.firstColumnHeader, td.firstColumnHeader {
   background-color: rgb(245, 245, 245);
   position: sticky;
@@ -117,7 +203,7 @@ thead tr th.first-row-header {
   background-color: rgb(245, 245, 245);
   text-align: center;
 }
-
+*/
 
 /* TOTALS ROW */
 
