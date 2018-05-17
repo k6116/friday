@@ -116,23 +116,21 @@ export class ApiDataService {
   updateProfile(userID: number, jobTitles: any) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/updateProfile/${userID}`, JSON.stringify(jobTitles), options);
+    return this.http.post(`/api/updateProfile/${userID}`, JSON.stringify(jobTitles), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
   }
 
   getUserProjectList(userID: number) {
-
     return this.http.get(`/api/getUserProjectList/${userID}`)
     .timeout(this.timeout)
     .map((response: Response) => response.json());
-
   }
 
   getProjectTypesList() {
-
     return this.http.get(`/api/getProjectTypesList/`)
     .timeout(this.timeout)
     .map((response: Response) => response.json());
-
   }
 
   createProject(project: any, userID: number) {
