@@ -11,7 +11,6 @@
 <!-- ACCORDION START -->
   <div class="accordion" id="accordionProjectList">
     <!-- PROJECT HEADER START -->
-    <!-- <div class="card projectListHeader"> -->
       <div class="card-header projectsHeader">
         <h6 class="mb-1">
           <div class="row">
@@ -22,22 +21,22 @@
           </div>
         </h6>
       </div>
-    <!-- </div> -->
     <!-- PROJECT HEADER END -->
     <!-- PROJECT LIST START -->
     <div class="card" *ngFor="let project of projectList; let k = index">
-      <div class="card-header" [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k">
-        <h6 class="mb-0">
-          <div class="row" id="projectListCard" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false">
-            <div class="col">{{ project['projectName'] }}</div>
-            <div class="col">{{ project['projectTypes.projectTypeName'] }}</div>
-            <div class="col">{{ project['description'] }}</div>
-            <div class="col">{{ project['notes'] }}</div>
-          </div>
+      <div class="card-header" [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick()">
+        <h6 class="mb-0 row">
+          <div class="col">{{ project['projectName'] }}</div>
+          <div class="col">{{ project['projectTypes.projectTypeName'] }}</div>
+          <div class="col">{{ project['description'] }}</div>
+          <div class="col">{{ project['notes'] }}</div>
+          <!-- Edit Button -->
+          <i class="fa fa-pencil-square-o" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)"></i>
         </h6>
       </div>
       <!-- COLLAPSABLE CARD-BODY START-->
       <div id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
+        
         <div class="card-body">
           {{ project['id'] }}
         </div>
@@ -45,22 +44,11 @@
       <!-- COLLAPSABLE CARD-BODY END -->
     </div>
     <!-- PROJECT LIST END -->
-
 </div>
 <!-- ACCORDION END -->
 
-
 <!-- PAUL'S -->
-<!-- <div class="container-fluid">
-  <div class="row row-custom">
-    <div class="col-xs-12 col-custom">
-      <h2 class="page-header-text">
-        My Projects List
-      </h2>
-    </div>
-  </div>
-
-  <div class="row row-custom">
+  <!-- <div class="row row-custom">
     <div class="col-sm col-custom table-scrollable">
       <table class="table table-striped table-sm table-hover">
         <thead>
@@ -81,10 +69,9 @@
     </div>
   </div> -->
 
-  <div class="row row-custom">
-    <div class="col-xs-12 project-buttons">
-      <button class="btn btn-primary" data-toggle="modal" data-target="#projectsCreateModal" (click)="createProject()">Create Project</button>
-    </div>
+
+  <div class="test-buttons">
+    <button class="btn btn-primary" data-toggle="modal" data-target="#projectsCreateModal" (click)="createProject()">Create Project</button>
   </div>
 
 </div>
