@@ -9,24 +9,45 @@
   </div>
 <!--  -->
 <!-- ACCORDION START -->
-  <div class="accordion" id="accordionExample">
-    <div class="card" *ngFor="let project of projectList; let k = index">
-      <div class="card-header" [attr.id]="k">
-        <h5 class="mb-0">
-          <button class="btn btn-link" type="button" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="true" aria-controls="collapse[j]">
-              {{ k + 1 }} - {{ project['projectName'] }}
-          </button>
-        </h5>
+  <div class="accordion" id="accordionProjectList">
+    <!-- PROJECT HEADER START -->
+    <!-- <div class="card projectListHeader"> -->
+      <div class="card-header projectsHeader">
+        <h6 class="mb-1">
+          <div class="row">
+            <div class="col">Project Name</div>
+            <div class="col">Project Type</div>
+            <div class="col">Description</div>
+            <div class="col">Notes</div>
+          </div>
+        </h6>
       </div>
-      <div id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionExample">
+    <!-- </div> -->
+    <!-- PROJECT HEADER END -->
+    <!-- PROJECT LIST START -->
+    <div class="card" *ngFor="let project of projectList; let k = index">
+      <div class="card-header" [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k">
+        <h6 class="mb-0">
+          <div class="row" id="projectListCard" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false">
+            <div class="col">{{ project['projectName'] }}</div>
+            <div class="col">{{ project['projectTypes.projectTypeName'] }}</div>
+            <div class="col">{{ project['description'] }}</div>
+            <div class="col">{{ project['notes'] }}</div>
+          </div>
+        </h6>
+      </div>
+      <!-- COLLAPSABLE CARD-BODY START-->
+      <div id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
         <div class="card-body">
           {{ project['id'] }}
         </div>
       </div>
+      <!-- COLLAPSABLE CARD-BODY END -->
     </div>
+    <!-- PROJECT LIST END -->
 
+</div>
 <!-- ACCORDION END -->
-
 
 
 <!-- PAUL'S -->
@@ -58,7 +79,7 @@
         </tr>
       </table>
     </div>
-  </div>
+  </div> -->
 
   <div class="row row-custom">
     <div class="col-xs-12 project-buttons">
@@ -69,4 +90,4 @@
 </div>
 
 <app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
-<app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal> -->
+<app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal>

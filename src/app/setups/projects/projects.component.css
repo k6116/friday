@@ -9,4 +9,14 @@
     text-align: center;
   } */
   
-  
+  /* div.projectListCard {
+    cursor: pointer;
+  } */
+
+  h6.mb-0 {
+    cursor: pointer;
+  }
+
+  div.projectsHeader {
+    background-color:rgb(72, 91, 101, 0.1)
+  }
