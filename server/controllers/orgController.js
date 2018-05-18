@@ -9,7 +9,7 @@ function show(req, res) {
 
   sequelize.query('EXECUTE dbo.GetNestedOrgJson :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
     .then(org => {
-      console.log("returning nested org data");
+      // console.log("returning nested org data");
       res.json(org);
     })
     .catch(error => {

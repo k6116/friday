@@ -5,7 +5,7 @@ const Treeize = require('treeize');
 
 function getAll(req, res) {
    
-    console.log('reached project controller');
+    // console.log('reached project controller');
 
     var sql = 'SELECT p.ProjectID, substring(p.ProjectName,1,30) as \'ProjectName\', substring(p.Description,1,500) as \'Description\', e.FullName, p.CreationDate, t.ProjectTypeName ';
     sql = sql + 'FROM  projects.Projects p INNER JOIN projects.ProjectTypes t ';
@@ -16,8 +16,8 @@ function getAll(req, res) {
     
     sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
     .then(p => {
-    console.log("Returning Projects");
-    console.log(p);
+    // console.log("Returning Projects");
+    // console.log(p);
      res.json(p);
     })
 
@@ -58,10 +58,234 @@ function getProjectRoster(req, res) {
     })
   });
 
+}
 
+
+function getUserProjectList(req, res) {
+
+  const userID = req.params.userID;
+
+  models.Projects.findAll({
+    where: {createdBy: userID},
+    attributes: ['id', 'projectName', 'description', 'notes'],
+    raw: true,
+    include: [{
+      model: models.ProjectTypes,
+      attributes: ['id', 'projectTypeName', 'description'],
+    }]
+  })
+  .then(project => {
+    console.log('WORKED')
+    res.json(project);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+
+  });
+}
+
+
+function insertProject(req, res) {
+
+  // get the project object from the request body
+  const project = req.body;
+  const userID = req.params.userID;
+  const today = new Date();
+
+  // variable to hold the new list after delete, to send back in the response
+  var newProjectList;
+
+  return sequelize.transaction((t) => {
+
+    return models.Projects
+      .create(
+        {
+          projectName: project.projectName,
+          description: project.projectDescription,
+          projectTypeID: project.projectTypeID,
+          notes: project.projectNotes,
+          createdBy: userID,
+          createdAt: today,
+          updatedBy: userID,
+          updatedAt: today,
+        },
+        {
+          transaction: t
+        }
+      )
+      .then(savedProject => {
+
+        const projectId = savedProject.id;
+        console.log('created project id is: ' + projectId);
+
+      })
+
+    }).then(() => {
+
+      res.json({
+        message: `The project '${project.projectName}' has been added successfully`,
+        projects: newProjectList
+      })
+
+    }).catch(error => {
+
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
+
+    })
+
+}
+
+
+function updateProject(req, res) {
+
+  // get the project object from the request body
+  const project = req.body;
+  const userID = req.params.userID;
+  const today = new Date();
+
+  console.log('updating existing project:');
+  console.log(project);
+
+  return sequelize.transaction((t) => {
+
+    return models.Projects
+      .update(
+        {
+          projectName: project.projectName,
+          projectTypeID: project.projectTypeID,
+          description: project.projectDescription,
+          createdBy: userID,
+          createdAt: today,
+          updatedBy: userID,
+          updatedAt: today
+        },
+        {
+          where: {id: project.projectID},
+          transaction: t
+        }
+      )
+      .then(updatedProject => {
+
+        console.log('Updated Project')
+        console.log(updatedProject);
+
+      })
+
+    }).then(() => {
+
+      res.json({
+        message: `The project '${project.projectName}' has been updated successfully`
+      })
+
+    }).catch(error => {
+
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
+
+    })
+
+}
+
+
+function deleteProject(req, res) {
+
+  // get the project object and userID from the params
+  const project = req.body;
+  const userID = req.params.userID;
+
+  console.log(`deleting project with id: ${project.projectID}`);
+
+  return sequelize.transaction((t) => {
+
+    return models.Projects
+      .destroy(
+        {
+          where: {id: project.projectID},
+          transaction: t
+        }
+      )
+      .then(deletedRecordCount => {
+
+        console.log('number of projects deleted in the projects table:')
+        console.log(deletedRecordCount);
+
+      })
+
+    }).then(() => {
+
+      res.json({
+        message: `The projectID '${project.projectID}' has been deleted successfully`,
+      })
+
+    }).catch(error => {
+
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
+
+    })
+
+}
+
+
+function getPrimaryKeyRefs(req, res) {
+  
+  const pKeyName = req.params.pKeyName;
+  const pKeyValue = req.params.pKeyValue;
+  const userID = req.params.userID;
+
+  sequelize.query('EXECUTE ref.FindReferencedTables :pKeyName, :pKeyValue, :userID', {replacements: {pKeyName: pKeyName, pKeyValue: pKeyValue, userID: userID}, type: sequelize.QueryTypes.SELECT})
+    .then(org => {
+      console.log("returning primary key reference table list");
+      console.log('EXECUTE ref.FindReferencedTables :pKeyName, :pKeyValue, :userID', {replacements: {pKeyName: pKeyName, pKeyValue: pKeyValue, userID: userID}});
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+
+function getProjectTypesList(req, res) {
+
+  models.ProjectTypes.findAll({
+    attributes: ['id', 'projectTypeName', 'description'],
+  })
+  .then(project => {
+    console.log('WORKED')
+    res.json(project);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+
+  });
 }
 
 module.exports = {
   getAll: getAll,
-  getProjectRoster: getProjectRoster
+  getProjectRoster: getProjectRoster,
+  getUserProjectList: getUserProjectList,
+  insertProject: insertProject,
+  updateProject: updateProject,
+  deleteProject: deleteProject,
+  getPrimaryKeyRefs: getPrimaryKeyRefs,
+  getProjectTypesList: getProjectTypesList
 }

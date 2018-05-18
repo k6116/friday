@@ -17,6 +17,12 @@ router.post('/ftedata/:userID', controllers.fteData.update);
 // PROJECTS CONTROLLER
 router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
 // router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
+router.get('/getProjectTypesList/', controllers.project.getProjectTypesList);
+router.get('/getPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.project.getPrimaryKeyRefs);
+router.get('/getUserProjectList/:userID', controllers.project.getUserProjectList);
+router.post('/createProject/:userID', controllers.project.insertProject);
+router.post('/updateProject/:userID', controllers.project.updateProject);
+router.post('/deleteProject/:userID', controllers.project.deleteProject);
 
 // ORG TREE DATA
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
@@ -27,6 +33,11 @@ router.get('/projects', controllers.project.getAll)
 
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);
+
+// Profile Controller
+router.get('/getJobTitleList', controllers.profile.show);
+router.post('/updateProfile/:userID', controllers.profile.update);
+// router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
