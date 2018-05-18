@@ -1,7 +1,7 @@
 div.toast {
     visibility: hidden;
-    min-width: 250px;
-    max-width: 250px;
+    min-width: 340px;
+    max-width: 340px;
     text-align: center;
     padding: 10px;
     position: fixed;
@@ -31,9 +31,9 @@ div.toast {
     visibility: visible;  /* show toast when clicked */
   
   /* Add animation: Take 0.5 seconds to fade in and out the toast.
-  However, delay the fade out process for 2.5 seconds */
-    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  However, delay the fade out process for 4.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
+    animation: fadein 0.5s, fadeout 0.5s 4.5s;
   }
   
   /* Animations to fade the toast in and out */

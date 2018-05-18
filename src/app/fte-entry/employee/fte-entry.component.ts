@@ -63,7 +63,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   loggedInUser: User; // object for logged in user's info
   projects: any;  // for aliasing formarray
   months: string[] = [];
-  state: string; // for angular animation
+  // state: string; // for angular animation
   monthlyTotals: number[];
   monthlyTotalsValid: boolean[];
   showProjectsModal: boolean;
@@ -176,25 +176,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     }, 500);
   }
 
-  // onTableScroll(event) {
-  //   const scrollTop = $('div.table-scrollable').scrollTop();
-  //   const scrollLeft = $('div.table-scrollable').scrollLeft();
-  //   console.log(`scroll left: ${scrollLeft}, scroll top: ${scrollTop}`);
-
-  //   $('div.table-header-underlay').css('top', `${scrollTop}px`);
-  //   $('table.table-ftes thead tr th').css('top', `${scrollTop - 10}px`);
-  //   $('table.table-ftes tbody tr td.col-project-name').css('left', `${scrollLeft - 15}px`);
-  //   $('table.table-ftes tbody tr td.col-total-name').css('left', `${scrollLeft - 15}px`);
-  //   $('table.table-ftes thead tr th.header-project').css('left', `${scrollLeft - 15}px`);
-  //   $('div.table-header-underlay').css('left', `${scrollLeft}px`);
-
-  //   const top = document.getElementById('table-body').scrollTop;
-  //   const translate = 'translatey(-' + top + 'px)';
-  //   $('td.col-first-frozen').css(
-  //     'transform', `translateY(-${top}px)`
-  //   );
-  // }
-
 
   onFTEChange(i, j, value) {
     console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
@@ -306,7 +287,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
     // set the monthly totals property
     this.monthlyTotals = totals;
-
   }
 
   // set red border around totals that don't total to 1
@@ -339,22 +319,57 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   }
 
   onSaveClick() {
-    const fteData = this.FTEFormGroup.value.FTEFormArray;
-    const t0 = performance.now();
-    // call the api data service to send the put request
-    this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
-    .subscribe(
-      res => {
-        const t1 = performance.now();
-        console.log(`save fte values took ${t1 - t0} milliseconds`);
-        this.appDataService.raiseToast('success', res.message);
-        this.resetProjectFlags();
-      },
-      err => {
-        console.log(err);
-        this.appDataService.raiseToast('error', `${err.status}: ${err.statusText}`);
-      }
-    );
+    // validate totals boxes for current quarter (must = 1)
+    const firstEditableMonth = this.fteMonthEditable.findIndex( value => {
+      return value === true;
+    });
+    const currentQuarterValid = this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 2).every( value => {
+      return value === 1;
+    });
+
+    // validate totals boxes for future quarters (must be < 1)
+    const futureQuartersValid = this.monthlyTotals.slice(firstEditableMonth + 3).every( value => {
+      return value <= 1;
+    });
+
+    if (currentQuarterValid && futureQuartersValid) {
+      const fteData = this.FTEFormGroup.value.FTEFormArray;
+      const t0 = performance.now();
+      // call the api data service to send the put request
+      this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
+      .subscribe(
+        res => {
+          const t1 = performance.now();
+          console.log(`save fte values took ${t1 - t0} milliseconds`);
+          this.appDataService.raiseToast('success', res.message);
+          this.resetProjectFlags();
+        },
+        err => {
+          console.log(err);
+          this.appDataService.raiseToast('error', `${err.status}: ${err.statusText}`);
+        }
+      );
+    } else if (!currentQuarterValid) {
+      const invalidValues = [];
+      this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 2).forEach( value => {
+        if (value !== 1) {
+          invalidValues.push(value);
+        }
+      });
+      this.appDataService.raiseToast('error', `FTE values in the current quarter must total to 1.
+      Please correct the ${invalidValues.length} months and try again.`);
+    } else if (!futureQuartersValid) {
+      const invalidValues = [];
+      this.monthlyTotals.slice(firstEditableMonth + 3).forEach( value => {
+        if (value > 1) {
+          invalidValues.push(value);
+        }
+      });
+      this.appDataService.raiseToast('error', `FTE values in future quarters must not total to more than 1.
+      Please correct the ${invalidValues.length} months in future quarters and try again.`);
+    } else {
+      this.appDataService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
+    }
   }
 
 
@@ -513,9 +528,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     // initialize the by-month FTE display with the slider range handles
     this.fteQuarterVisible = this.fteQuarterVisible.fill(true, this.sliderRange[0], this.sliderRange[1]);
     this.fteMonthVisible = this.fteMonthVisible.fill(true, this.sliderRange[0] * 3, this.sliderRange[1] * 3);
-    console.log('test');
-    console.log(this.fteQuarterVisible);
-    console.log(this.fteMonthVisible);
 
     // make array of values for slider pips
     const pipValues = [];
