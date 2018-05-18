@@ -2,6 +2,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize').sequelize;
 
+const ProjectAccessRequests = require('./project').ProjectAccessRequests;
 
 const User = sequelize.define('user',
   {
@@ -26,5 +27,7 @@ const User = sequelize.define('user',
   }
 );
 
+User.hasMany(ProjectAccessRequests, {foreignKey: 'id'})
+ProjectAccessRequests.belongsTo(User, {foreignKey: 'requestedBy'});
 
 module.exports = User
