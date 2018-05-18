@@ -602,7 +602,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
           active: 'active',
           tooltip: 'tooltip',
           pips: 'pips',
-          pipsHorizontal: 'pips-horizontal',
+          pipsHorizontal: 'pips-horizontal',  // modified
           pipsVertical: 'pips-vertical',
           marker: 'marker',
           markerHorizontal: 'marker-horizontal',
