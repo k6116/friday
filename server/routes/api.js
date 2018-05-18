@@ -14,8 +14,9 @@ router.post('/resetToken', controllers.auth.resetToken);
 router.get('/ftedata/:userID', controllers.fteData.getFteData);
 router.post('/ftedata/:userID', controllers.fteData.update);
 
-// PROJECTS CONTROLLER
+// PROJECT CONTROLLER
 router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
+router.get('/getUserPLMData/:userEmailAddress', controllers.project.getUserPLMData);
 // router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
 router.get('/getProjectTypesList/', controllers.project.getProjectTypesList);
 router.get('/getPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.project.getPrimaryKeyRefs);
@@ -33,6 +34,12 @@ router.get('/projects', controllers.project.getAll)
 
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);
+
+//PROJECT ACCESS CONTROLLER
+router.get('/getProjectAccessRequestsList/:userID', controllers.projectAccess.getProjectAccessRequestsList);
+router.get('/getPublicProjectTypes/:userID', controllers.projectAccess.getPublicProjectTypes);
+router.post('/submitProjectAccessRequest/:userID', controllers.projectAccess.insertProjectAccessRequest);
+router.post('/responseProjectAccessRequest/:userID/:reply', controllers.projectAccess.updateProjectAccessRequest);
 
 // Profile Controller
 router.get('/getJobTitleList', controllers.profile.show);
