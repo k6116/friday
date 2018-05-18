@@ -27,7 +27,7 @@ const User = sequelize.define('user',
   }
 );
 
-User.hasMany(ProjectAccessRequests, {foreignKey: 'EmployeeID'})
-ProjectAccessRequests.belongsTo(User, {foreignKey: 'RequestedBy'});
+User.hasMany(ProjectAccessRequests, {foreignKey: 'id'})
+ProjectAccessRequests.belongsTo(User, {foreignKey: 'requestedBy'});
 
 module.exports = User

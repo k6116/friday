@@ -62,6 +62,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   clickedProjectForInfoModal: any;
   clickedProjectForRosterModal: any;
   userID: any;
+  publicProjectTypes: any;
+  projectAccess: boolean;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -113,6 +115,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     // get the user id
     this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
+
+    this.getPublicProjectTypes();
 
   }
 
@@ -416,6 +420,29 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         console.log(err);
       }
     );
+  }
+
+  getPublicProjectTypes() {
+
+    this.apiDataService.getPublicProjectTypes(this.userID)
+    .subscribe(
+      res => {
+        console.log(res);
+        this.publicProjectTypes = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  check(projectTypeName: any) {
+    if (projectTypeName === 'NPI') {
+      console.log('true');
+      return 1;
+    } else {
+      return 0;
+    }
   }
 
 }

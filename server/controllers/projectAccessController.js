@@ -32,6 +32,32 @@ const Treeize = require('treeize');
 //     });
 // }
 
+
+function getPublicProjectTypes(req, res) {
+
+  const userID = req.params.userID;
+
+  const sql = `
+  SELECT
+    T1.LookupID, T1.LookupName, T1.LookupValue
+  FROM
+    other.Lookups T1
+  WHERE
+    T1.LookupName = 'Public Project Type'
+  `
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(publicProjectTypes => {
+      console.log("returning public project types");
+      res.json(publicProjectTypes);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 function getProjectAccessRequestsList(req, res) {
 
   const userID = req.params.userID;
@@ -163,6 +189,7 @@ function updateProjectAccessRequest(req, res) {
 
 
 module.exports = {
+  getPublicProjectTypes: getPublicProjectTypes,
   getProjectAccessRequestsList: getProjectAccessRequestsList,
   insertProjectAccessRequest: insertProjectAccessRequest,
   updateProjectAccessRequest: updateProjectAccessRequest

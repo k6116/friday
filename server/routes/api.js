@@ -37,6 +37,7 @@ router.post('/clickTracking/:userID', controllers.clickTracking.insert);
 
 //PROJECT ACCESS CONTROLLER
 router.get('/getProjectAccessRequestsList/:userID', controllers.projectAccess.getProjectAccessRequestsList);
+router.get('/getPublicProjectTypes/:userID', controllers.projectAccess.getPublicProjectTypes);
 router.post('/submitProjectAccessRequest/:userID', controllers.projectAccess.insertProjectAccessRequest);
 router.post('/responseProjectAccessRequest/:userID/:reply', controllers.projectAccess.updateProjectAccessRequest);
 

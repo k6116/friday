@@ -121,9 +121,6 @@ function insertProject(req, res) {
   const userID = req.params.userID;
   const today = new Date();
 
-  // variable to hold the new list after delete, to send back in the response
-  var newProjectList;
-
   return sequelize.transaction((t) => {
 
     return models.Projects
@@ -137,7 +134,7 @@ function insertProject(req, res) {
           createdBy: userID,
           createdAt: today,
           updatedBy: userID,
-          updatedAt: today,
+          updatedAt: today
         },
         {
           transaction: t
@@ -145,8 +142,7 @@ function insertProject(req, res) {
       )
       .then(savedProject => {
 
-        const projectId = savedProject.id;
-        console.log('created project id is: ' + projectId);
+        console.log('created project id is: ' + project.id);
 
       })
 
@@ -154,7 +150,6 @@ function insertProject(req, res) {
 
       res.json({
         message: `The project '${project.projectName}' has been added successfully`,
-        projects: newProjectList
       })
 
     }).catch(error => {

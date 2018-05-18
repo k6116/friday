@@ -34,14 +34,13 @@
       <div class="card-header" [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick()">
         <h6 class="mb-0 row">
           <div class="col">{{ project['projectName'] }}</div>
-          <div class="col">{{ project['projectTypes.projectTypeName'] }}</div>
+          <div class="col">{{ project['projectType.projectTypeName'] }}</div>
           <div class="col">{{ project['description'] }}</div>
           <div class="col">{{ project['notes'] }}</div>
           <!-- Edit Button -->
           <i class="fa fa-pencil-square-o" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)"></i>
         </h6>
       </div>
-  </div>
       <!-- COLLAPSABLE CARD-BODY START-->
       <div id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
         
@@ -84,5 +83,5 @@
 
 </div>
 
-<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
+<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" [projectAccessRequestsList]="projectAccessRequestsList" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
 <app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal>

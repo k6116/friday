@@ -188,6 +188,12 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getPublicProjectTypes(userID: number) {
+    return this.http.get(`/api/getPublicProjectTypes/${userID}}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   responseProjectAccessRequest(request: any, reply: string, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });

@@ -59,11 +59,13 @@ const ProjectAccessRequests = sequelize.define('projectAccessRequests',
   }
 );
 
-Projects.hasMany(ProjectTypes, {foreignKey: 'ProjectTypeID'});
-ProjectTypes.belongsTo(Projects, {foreignKey: 'ProjectTypeID'});
 
-Projects.hasMany(ProjectAccessRequests, {foreignKey: 'ProjectID'});
-ProjectAccessRequests.belongsTo(Projects, {foreignKey: 'ProjectID'});
+ProjectTypes.hasMany(Projects, {foreignKey: 'id'});
+Projects.belongsTo(ProjectTypes, {foreignKey: 'projectTypeID'});
+
+Projects.hasMany(ProjectAccessRequests, {foreignKey: 'id'});
+ProjectAccessRequests.belongsTo(Projects, {foreignKey: 'projectID'});
+
 
 module.exports = {
   Projects: Projects, 
