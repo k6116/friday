@@ -4,7 +4,7 @@ div.col-custom.col-slider {
 }
 
 .top-margin {
-  margin-top: 75px;
+  margin-top: 50px;
 }
 
 .test-buttons {
@@ -18,6 +18,18 @@ div.col-custom.col-slider {
   border-color: rgb(108, 117, 125);;
 }
 
+table.slider-header {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  border-collapse: separate;
+  border-spacing: 6px 5px;
+}
+
+tr.slider-header-row td {
+  background-color: rgb(234, 234, 234);
+  font-size: 15px;
+}
 
 /* trash button icon */
 i.fa-trash-o {

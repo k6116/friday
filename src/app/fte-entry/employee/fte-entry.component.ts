@@ -48,7 +48,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   // initialize variables
   mainSliderConfig: any;  // slider config
   sliderDisabled = false;
-  fyLabelArray = new Array;
+  fqLabelArray = new Array; // for labeling fiscal quarters in FTE table
+  fyLabelArray = new Array; // for labeling fiscal years in slider header
   fteQuarterVisible = new Array(12).fill(false);  // boolean array for by-month FTE form display
   fteMonthVisible = new Array(36).fill(false);  // boolean array for by-month FTE form display
   fteMonthEditable = new Array(36).fill(true);  // boolean array for by-month FTE box disabling
@@ -63,7 +64,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   loggedInUser: User; // object for logged in user's info
   projects: any;  // for aliasing formarray
   months: string[] = [];
-  // state: string; // for angular animation
   monthlyTotals: number[];
   monthlyTotalsValid: boolean[];
   showProjectsModal: boolean;
@@ -167,6 +167,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     this.addProjectToFteForm(FTEFormArray, newProject, true);
     this.sliderDisabled = true;
+    this.displayFTETable = true;
   }
 
   onModalCancelClick() {
@@ -509,9 +510,10 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
     // make an array of label strings, ie - [Q4'17, Q1'18]
     for ( let i = 0; i < 12; i++) {
-      this.fyLabelArray.push(`Q${firstQuarter} - ${firstYear.toString().slice(2)}`);
+      this.fqLabelArray.push(`Q${firstQuarter} - ${firstYear.toString().slice(2)}`);
       firstQuarter++;
       if (firstQuarter > 4) {
+        this.fyLabelArray.push(`${firstYear.toString()}`);
         firstYear++;
         firstQuarter = 1;
       }
@@ -544,7 +546,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     for (let i = 0; i <= 12; i = i + 0.5) {
       pipValues.push(i);
     }
-    const fyLabelArray = this.fyLabelArray;
+    const fqLabelArray = this.fqLabelArray;
 
     // set slider config
     this.mainSliderConfig = {
@@ -562,18 +564,18 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
           density: 24,
 
           // custom filter to set pips only visible at the major steps
-          filter: function filterHalfSteps( value, type ) {
+          filter: ( value, type ) => {
             // a '2' returns the full-size label and marker CSS class
             // a '1' returns the sub-size label and marker css class.  We will override the sub-css to make the marker invisible
             return value % 1 ? 2 : 1;
           },
           format: {
             // format labels usch that full-size pips have no label, but sub-size pips have the FY/Quarter label
-            to: function ( value ) {
+            to: ( value ) => {
                 if (value % 1 === 0) {
-                return '';
+                  return '';
                 } else {
-                return fyLabelArray[value - 0.5];
+                  return fqLabelArray[value - 0.5].slice(0, 2);
                 }
             }
           }
