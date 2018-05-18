@@ -16,6 +16,7 @@ declare var $: any;
 export class ProjectsEditModalComponent implements OnInit {
 
   @Input() projectData: any;
+  @Input() projectAccessRequestsList: any;
   @Output() updateSuccess = new EventEmitter<boolean>();
   @Output() deleteSuccess = new EventEmitter<boolean>();
 
@@ -27,6 +28,7 @@ export class ProjectsEditModalComponent implements OnInit {
   pKeyRefList: any;
   disableDelete: boolean;
   projectTypesList: any;
+  showPendingRequests: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -47,11 +49,9 @@ export class ProjectsEditModalComponent implements OnInit {
     this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
   }
 
-  // getProjectData() {
-  //   console.log(this.projectData);
-  //   const project = this.form.getRawValue();
-  //   console.log(project);
-  // }
+  getProjectData() {
+    console.log(this.projectAccessRequestsList);
+  }
 
   getProjectTypesList() {
     this.apiDataService.getProjectTypesList()
@@ -114,13 +114,12 @@ export class ProjectsEditModalComponent implements OnInit {
     this.form = this.formBuilder.group({
       projectID: this.projectData.id,
       projectName: this.projectData.projectName,
-      projectTypeID: this.projectData['projectTypes.id'],
+      projectTypeID: this.projectData['projectType.id'],
       projectDescription: this.projectData.description,
       projectNotes: this.projectData.notes,
     });
-
     this.getPrimaryKeyRefs();
-
+    this.handlePendingRequests();
   }
 
   getPrimaryKeyRefs() {
@@ -142,6 +141,31 @@ export class ProjectsEditModalComponent implements OnInit {
         }
       );
   }
+
+  handlePendingRequests() {
+    const projectID = this.projectData.id;
+    const found = this.projectAccessRequestsList.some(function (el) {
+      return el.projectID === projectID;
+    });
+    if (found) {
+      this.showPendingRequests = true;
+    } else {
+      this.showPendingRequests = false;
+    }
+  }
+
+  requestResponse(request: any, reply: string) {
+    this.apiDataService.responseProjectAccessRequest(request, reply, this.userID)
+      .subscribe(
+        res => {
+          console.log(res);
+        },
+        err => {
+          console.log(err);
+        }
+      );
+  }
+
 
   // onCancelClicked() {
   //   console.log('cancel button clicked');

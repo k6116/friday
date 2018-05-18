@@ -18,7 +18,7 @@
 
 .app-ident {
   cursor: pointer;
-  /* margin-left: 80px */
+  margin-left: -40px
 }
 
 .app-logo-cont {
@@ -33,8 +33,8 @@
 } */
 
 .app-logo-img {
-  height: 40px;
-  width: 40px;
+  height: 50px;
+  width: 130px;
 }
 
 .app-title-cont {
@@ -57,8 +57,8 @@
   font-weight: 600;
   color: #fde772;
   display: inline;
-  padding-left: 5px;
-  line-height: 65px;
+  padding-left: 0px;
+  line-height: 83px;
 }
 
 
