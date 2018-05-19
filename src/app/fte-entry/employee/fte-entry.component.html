@@ -58,7 +58,7 @@
                                 <div class="fte-table-cell icon"> <!-- for trash icon -->
                                     <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
                                 </div>
-                                <div class="fte-table-cell col-project-name">{{ (project.projectName.length > 15) ? (project.projectName | slice:0:15) + '...' : (project.projectName) }}</div>
+                                <div class="fte-table-cell col-project-name">{{ (project.projectName.length > 20) ? (project.projectName | slice:0:20) + '...' : (project.projectName) }}</div>
                                 <!-- loop through each month's FTE allocation, "monthly" cells per project -->
                                 <ng-container *ngFor="let month of months; let j = index">
                                     <div class="fte-table-cell" [@colState]="fteMonthVisible[j]" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">

@@ -11,6 +11,7 @@ export class AppDataService {
 
   noticeModalData = new EventEmitter<any>();
   confirmModalData = new EventEmitter<any>();
+  confirmModalResponse = new EventEmitter<any>();
 
   toast = new EventEmitter<any>();
 

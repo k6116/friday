@@ -13,12 +13,11 @@ declare var $: any;
 })
 export class ConfirmModalComponent implements OnInit, OnDestroy {
 
-  @Output() confirmYesClick = new EventEmitter<any>();
-  @Output() confirmCancelClick = new EventEmitter<any>();
+  // @Output() confirmYesClick = new EventEmitter<any>();
+  // @Output() confirmCancelClick = new EventEmitter<any>();
 
   modal: any;
   subscription1: Subscription;
-
 
   constructor(
     private appDataService: AppDataService
@@ -52,11 +51,11 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
   }
 
   onYesButtonClick() {
-    this.confirmYesClick.emit(null);
+    this.appDataService.confirmModalResponse.emit(true);
   }
 
   onCancelButtonClick() {
-    this.confirmCancelClick.emit(null);
+    this.appDataService.confirmModalResponse.emit(false);
   }
 
 

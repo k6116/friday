@@ -4,7 +4,7 @@ div.col-custom.col-slider {
 }
 
 .top-margin {
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .test-buttons {
@@ -159,7 +159,7 @@ div.fte-table-footer div.fte-table-row div.fte-table-cell.col-projects-totals {
   background-color: rgb(245, 245, 245);
   position: sticky;
   left: 30px;
-  min-width: 140px;
+  min-width: 170px;
   text-align: left;
   font-weight: bold;
   z-index: 3;
@@ -184,7 +184,7 @@ div.fte-table-body div.fte-table-row div.fte-table-cell.col-project-name {
   background-color: rgb(245, 245, 245);
   position: sticky;
   left: 30px;
-  min-width: 140px;
+  min-width: 170px;
   z-index: 1;
 }
 

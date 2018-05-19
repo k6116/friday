@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AuthService } from '../auth/auth.service';
+import { AppDataService } from '../_shared/services/app-data.service';
 
 
 @Component({
@@ -9,14 +10,27 @@ import { AuthService } from '../auth/auth.service';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css', '../_shared/styles/common.css']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private appDataService: AppDataService
   ) { }
 
-  ngOnInit() {
+  confirmModalResponseSubscription: Subscription;
 
+  ngOnInit() {
+    this.confirmModalResponseSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+      if (res) {
+        this.onConfirmYesClick();
+      } else {
+        this.onConfirmCancelClick();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.confirmModalResponseSubscription.unsubscribe();
   }
 
   onConfirmYesClick() {
