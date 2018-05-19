@@ -3,6 +3,7 @@ import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@ang
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { DecimalPipe } from '@angular/common';
 import { NouisliderModule } from 'ng2-nouislider';
+import { Subscription } from 'rxjs/Subscription';
 
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
@@ -46,6 +47,7 @@ declare const $: any;
 export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
   // initialize variables
+  deleteModalSubscription: Subscription;
   mainSliderConfig: any;  // slider config
   sliderDisabled = false;
   fqLabelArray = new Array; // for labeling fiscal quarters in FTE table
@@ -626,19 +628,38 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
 
-    // make project invisible by setting it to not alive and not visible
-    deletedProject.alive = false;
-    this.fteProjectVisible[index] = false;
-
-    // loop through each month and set the toBeDeleted flag if it has an FTE value
-    deletedProject.controls.forEach( month => {
-      if (month.controls.fte.value) {
-        month.controls.fte.value = null;
-        month.controls.toBeDeleted.setValue(true);
+    this.appDataService.confirmModalData.emit(
+      {
+        title: 'Confirm Deletion',
+        message: `Are you sure you want to permanently delete all FTE values for project ${deletedProject.projectName}?`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 193, 27)',
+        display: true
       }
+    );
+
+    const deleteModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+      if (res) {
+        // make project invisible by setting it to not alive and not visible
+        deletedProject.alive = false;
+        this.fteProjectVisible[index] = false;
+
+        // loop through each month and set the toBeDeleted flag if it has an FTE value
+        deletedProject.controls.forEach( month => {
+          if (month.controls.fte.value) {
+            month.controls.fte.value = null;
+            month.controls.toBeDeleted.setValue(true);
+          }
+        });
+        this.updateMonthlyTotals();
+        this.setMonthlyTotalsBorder();
+      } else {
+        console.log('delete aborted');
+      }
+
+      deleteModalSubscription.unsubscribe();
     });
-    this.updateMonthlyTotals();
-    this.setMonthlyTotalsBorder();
+
   }
 
   onSliderChange(value: any) {  // event only fires when slider handle is dropped
