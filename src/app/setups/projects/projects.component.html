@@ -1,87 +1,120 @@
+<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" [projectAccessRequestsList]="projectAccessRequestsList" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
+<app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal>
+
 <div class="container-fluid">
-<!-- HEADER -->
+    <!-- HEADER -->
   <div class="row row-custom">
     <div class="col-xs-12 col-custom">
-      <h2 class="page-header-text">
+      <h1 class="page-header-text">
         My Projects List
-      </h2>
+      </h1>
     </div>
   </div>
-  <div class="row row-custom">
-      <div class="col-xs-12 col-custom">
-          <li *ngFor="let request of projectAccessRequestsList">
-            {{ request['user.fullName'] }} has requested access to your project {{ request['project.projectName'] }}
-          </li>
-      </div>
-  </div>
-<!--  -->
-<!-- ACCORDION START -->
-  <div class="accordion" id="accordionProjectList">
-    <!-- PROJECT HEADER START -->
-      <div class="card-header projectsHeader">
-        <h6 class="mb-1">
-          <div class="row">
-            <div class="col">Project Name</div>
-            <div class="col">Project Type</div>
-            <div class="col">Description</div>
-            <div class="col">Notes</div>
-          </div>
-        </h6>
-      </div>
-    <!-- PROJECT HEADER END -->
-    <!-- PROJECT LIST START -->
-    <div class="card" *ngFor="let project of projectList; let k = index">
-      <div class="card-header" [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick()">
-        <h6 class="mb-0 row">
-          <div class="col">{{ project['projectName'] }}</div>
-          <div class="col">{{ project['projectType.projectTypeName'] }}</div>
-          <div class="col">{{ project['description'] }}</div>
-          <div class="col">{{ project['notes'] }}</div>
-          <!-- Edit Button -->
-          <i class="fa fa-pencil-square-o" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)"></i>
-        </h6>
-      </div>
-      <!-- COLLAPSABLE CARD-BODY START-->
-      <div id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
-        
-        <div class="card-body">
-          {{ project['id'] }}
-        </div>
-      </div>
-      <!-- COLLAPSABLE CARD-BODY END -->
-    </div>
-    <!-- PROJECT LIST END -->
-</div>
-<!-- ACCORDION END -->
-
-<!-- PAUL'S -->
-  <!-- <div class="row row-custom">
-    <div class="col-sm col-custom table-scrollable">
-      <table class="table table-striped table-sm table-hover">
-        <thead>
-          <tr>
-            <th>Project Name</th>
-            <th>ProjectType</th>
-            <th>Description</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tr *ngFor="let project of projectList" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)">
-          <td width="15%">{{ project['projectName'] }}</td>
-          <td width="5%">{{ project['projectTypes.projectTypeName'] }}</td>
-          <td width="50%">{{ project['description'] }}</td>
-          <td>{{ project['notes'] }}</td>
-        </tr>
-      </table>
-    </div>
-  </div> -->
-
+  
+  <!-- Request Alerts -->
+  <table class="table" width="50%">
+    <ng-container *ngFor="let request of projectAccessRequestsList">
+      <tr>
+        <td class="align-middle" width="25%">
+          {{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}
+        </td>
+        <td>
+          <button type="button" class="btn btn-outline-success btn-sm" (click)="requestResponse(request, 'Approved')">Approve</button>
+          <button type="button" class="btn btn-outline-danger btn-sm" (click)="requestResponse(request, 'Denied')">Deny</button>
+        </td>
+      </tr>
+    </ng-container>
+  </table>
+  <!--  -->
 
   <div class="test-buttons">
     <button class="btn btn-primary" data-toggle="modal" data-target="#projectsCreateModal" (click)="createProject()">Create Project</button>
   </div>
 
-</div>
+  <!-- ACCORDION START -->
+  <div class="accordion" id="accordionProjectList">
+    <div class="card">
+      <table class="table table-hover"> <!-- table-bordered -->
 
-<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" [projectAccessRequestsList]="projectAccessRequestsList" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
-<app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal>
+        <!-- PROJECT HEADER START -->    
+        <thead>
+          <tr>
+            <th width="25%" scope="col">Project Name</th>
+            <th width="10%" scope="col">Project Type</th>
+            <th scope="col">Description</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <!-- PROJECT HEADER END -->
+        
+        <tbody *ngFor="let project of projectList; let k = index">
+
+        <!-- PROJECT LIST START -->
+          <tr class="card-header" [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick()">
+            <td>{{ project['projectName'] }}</td>
+            <td>{{ project['projectType.projectTypeName'] }}</td>
+            <td>{{ project['description'] }}</td>
+            <td>{{ project['notes'] }}</td>
+            <!-- Edit Button -->
+            <td>
+              <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)"></i>
+            </td>
+          </tr>
+        <!-- PROJECT LIST END -->
+
+        <!-- COLLAPSABLE CARD-BODY START-->
+          <tr id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
+            <td class="card-body align-middle" colspan="5">
+              <div class="card-deck">
+
+                <div class="card border-info mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title">Basic Info</h5>
+                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                  </div>
+                </div>
+
+                <div class="card border-info mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title">Project Team</h5>
+                    <table class="table table-sm">
+                      <thead>
+                        <th>Name</th>
+                        <th>Job Role</th>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Tawanchai Schmitz</td>
+                          <td>Applications Engineer</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="card border-info mb-3">
+                    <div class="card-body">
+                      <h5 class="card-title">Action Items</h5>
+                      <ng-container *ngFor="let request of projectAccessRequestsList">
+                        <ng-container *ngIf="request['project.projectName']===project.projectName">
+                          <p class="card-text">
+                            {{ request['user.fullName'] }} has requested access to your project {{ request['project.projectName'] }}
+                          </p>  
+                          <button type="button" class="btn btn-outline-success" (click)="requestResponse(request, 'Approved')">Approve</button>
+                          <button type="button" class="btn btn-outline-secondary" (click)="requestResponse(request, 'Denied')">Deny</button>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </div>
+
+              </div>
+            </td>
+          </tr>
+        <!-- COLLAPSABLE CARD-BODY END -->
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

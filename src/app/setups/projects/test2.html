@@ -1,0 +1,57 @@
+<div class="container-fluid">
+    <!-- HEADER -->
+      <div class="row row-custom">
+        <div class="col-xs-12 col-custom">
+          <h1 class="page-header-text">
+            My Projects List
+          </h1>
+        </div>
+      </div>
+      <!-- Request Alerts -->
+      <table>
+        <ng-container *ngFor="let request of projectAccessRequestsList">
+          <tr class="alert">
+            <td>
+              <label>{{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}</label>
+            </td>
+            <td>
+              <button type="button" class="btn btn-outline-success btn-sm" (click)="requestResponse(request, 'Approved')">Approve</button>
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="requestResponse(request, 'Denied')">Deny</button>
+            </td>
+          </tr>
+        </ng-container>
+    </table>
+    <!--  -->
+
+  <!-- ACCORDION START -->
+  <div class="accordion" id="accordionProjectList">
+    <div class="card">
+      <table class="table">
+
+        <!-- PROJECT HEADER START -->    
+        <thead>
+          <tr>
+            <th scope="col">Project Name</th>
+            <th scope="col">Project Type</th>
+            <th scope="col">Description</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+      <!-- PROJECT HEADER END -->
+
+        <!-- PROJECT LIST START -->
+        <tbody *ngFor="let project of projectList; let k = index">
+          <tr class="card-header" [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick()">
+            <td>{{ project['projectName'] }}</td>
+            <td>{{ project['projectType.projectTypeName'] }}</td>
+            <td>{{ project['description'] }}</td>
+            <td>{{ project['notes'] }}</td>
+          </tr>
+        </tbody>
+        <!-- PROJECT LIST END -->
+
+      <!-- PROJECT LIST START -->
+      </table>
+    </div>
+  </div>
+</div>

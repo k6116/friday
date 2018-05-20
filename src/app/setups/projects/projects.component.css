@@ -1,5 +1,6 @@
-  h6.mb-0 {
+  .card-header {
     cursor: pointer;
+    font-weight: normal;
   }
 
   div.projectsHeader {
@@ -8,10 +9,22 @@
 
   .test-buttons {
     margin-top: 50px;
-    text-align: center;
+    /* text-align: center; */
   }
   .btn-primary {
     color: #fff;
     background-color: rgb(108, 117, 125);;
     border-color: rgb(108, 117, 125);;
+  }
+
+  .divider {
+    color: black;
+  }
+
+  .card-header {
+    background-color: white;
+  }
+
+  .card-body:hover {
+    background: white;
   }

@@ -24,6 +24,7 @@ export class ProjectsSetupsComponent implements OnInit {
   showProjectsCreateModal: boolean;
   display: boolean;
   editToggle: boolean;
+  alertToggle: boolean;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
@@ -49,6 +50,7 @@ export class ProjectsSetupsComponent implements OnInit {
     });
     // toggle edit view in collapse header
     this.editToggle = false;
+    this.alertToggle = false;
   }
 
   selectProject(project: any) {
@@ -119,4 +121,18 @@ export class ProjectsSetupsComponent implements OnInit {
     console.log('Pencil button clicked, toggle', this.editToggle);
     this.editToggle = !this.editToggle;
   }
+
+  requestResponse(request: any, reply: string) {
+    this.apiDataService.responseProjectAccessRequest(request, reply, this.loggedInUser.id)
+      .subscribe(
+        res => {
+          console.log(res);
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    this.alertToggle = !this.alertToggle;
+  }
+
 }
