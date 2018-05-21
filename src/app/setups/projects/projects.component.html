@@ -27,9 +27,9 @@
   </table>
   <!--  -->
 
-  <div class="test-buttons">
-    <button class="btn btn-primary" data-toggle="modal" data-target="#projectsCreateModal" (click)="createProject()">Create Project</button>
-  </div>
+  <button class="btn btn-outline-dark btn-sm" data-toggle="tooltip" data-placement="top" title="Create new project">
+      <i class="fa fa-plus" data-toggle="modal" data-target="#projectsCreateModal" (click)="createProject()"></i>
+  </button>
 
   <!-- ACCORDION START -->
   <div class="accordion" id="accordionProjectList">
@@ -70,8 +70,14 @@
                 <div class="card border-info mb-3">
                   <div class="card-body">
                     <h5 class="card-title">Basic Info</h5>
-                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    <table class="table table-sm">
+                        <tbody>
+                          <tr>
+                            <td>Status</td>
+                            <td>{{ project['status'] }}</td>
+                          </tr>
+                        </tbody>
+                    </table>
                   </div>
                 </div>
 

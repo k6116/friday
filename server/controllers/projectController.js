@@ -93,7 +93,7 @@ function getUserProjectList(req, res) {
 
   models.Projects.findAll({
     where: {createdBy: userID},
-    attributes: ['id', 'projectName', 'description', 'notes'],
+    attributes: ['id', 'projectName', 'description', 'notes', 'projectNumber'],
     raw: true,
     include: [{
       model: models.ProjectTypes,

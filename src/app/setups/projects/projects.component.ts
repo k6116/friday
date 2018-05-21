@@ -25,6 +25,7 @@ export class ProjectsSetupsComponent implements OnInit {
   display: boolean;
   editToggle: boolean;
   alertToggle: boolean;
+  cardNPI: any;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
@@ -65,7 +66,7 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataService.getUserProjectList(this.loggedInUser.id)
       .subscribe(
         res => {
-          console.log(res);
+          console.log('Project List: ', res);
           this.projectList = res;
         },
         err => {
@@ -133,6 +134,49 @@ export class ProjectsSetupsComponent implements OnInit {
         }
       );
     this.alertToggle = !this.alertToggle;
+  }
+
+  getCardInfo() {
+    this.cardNPI = [
+      {
+        title: 'Project Status',
+        alias: 'projectStatus',
+        value: this.projectList
+      },
+      {
+        title: 'Oracle Item Number',
+        alias: 'projectStatus'
+      },
+      {
+        title: 'Project Number',
+        alias: 'projectNumber'
+      },
+      {
+        title: 'Priority',
+        alias: 'priority'
+      },
+      {
+        title: 'IBO',
+        alias: 'ibo'
+      },
+      {
+        title: 'MU',
+        alias: 'mu'
+      },
+      {
+        title: 'Organization',
+        alias: 'organization'
+        },
+        {
+          title: 'Notes',
+          alias: 'notes'
+        },
+        {
+          title: 'Description',
+          alias: 'description'
+        },
+
+    ];
   }
 
 }
