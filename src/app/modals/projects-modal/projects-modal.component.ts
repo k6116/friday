@@ -3,6 +3,7 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
+import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../auth/auth.service';
 
 declare var $: any;
@@ -62,8 +63,13 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   clickedProjectForInfoModal: any;
   clickedProjectForRosterModal: any;
   userID: any;
+  userEmail: string;
+  userPLMData: any;
   publicProjectTypes: any;
-  projectAccess: boolean;
+  projectAccessTeamList: any;
+  projectAccessApprovedList: any;
+  projectAccessSubmittedList: any;
+  projectAccessDeniedList: any;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -79,9 +85,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     private toolsService: ToolsService,
     private changeDetectorRef: ChangeDetectorRef,
     private apiDataService: ApiDataService,
+    private appDataService: AppDataService,
     private authService: AuthService,
   ) {
-
 
   }
 
@@ -113,11 +119,12 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.paginateFilter = {on: false, property: 'ProjectName', regexp: `[${this.paginationLinks[0]}]`};
     this.selectedPage = 0;
 
-    // get the user id
+    // get the user id and email
     this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
+    this.userEmail = this.authService.loggedInUser ? this.authService.loggedInUser.email : null;
 
+    this.getUserPLMData(this.userEmail);
     this.getPublicProjectTypes();
-
   }
 
   ngAfterViewInit() {
@@ -410,7 +417,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   onRequestedProject(project: any) {
-
     this.apiDataService.submitProjectAccessRequest(project, this.userID)
     .subscribe(
       res => {
@@ -422,13 +428,14 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     );
   }
 
-  getPublicProjectTypes() {
-
-    this.apiDataService.getPublicProjectTypes(this.userID)
+  getUserPLMData(userEmailAddress: string) {
+    this.apiDataService.getUserPLMData(userEmailAddress)
     .subscribe(
       res => {
-        console.log(res);
-        this.publicProjectTypes = res;
+        console.log('User PLM Data Retrieved');
+        this.appDataService.userPLMData = res;
+        this.getProjectAccessTeamList();
+        this.getProjectAccessList();
       },
       err => {
         console.log(err);
@@ -436,13 +443,77 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     );
   }
 
-  check(projectTypeName: any) {
-    if (projectTypeName === 'NPI') {
-      console.log('true');
-      return 1;
-    } else {
-      return 0;
-    }
+  getPublicProjectTypes() {
+    this.apiDataService.getPublicProjectTypes(this.userID)
+    .subscribe(
+      res => {
+        this.publicProjectTypes = Object.keys(res).map(i => res[i].LookupValue);
+        // console.log(this.publicProjectTypes.indexOf('N1CI'));
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  getProjectAccessTeamList() {
+    const managerEmailAddress = this.appDataService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+    this.apiDataService.getProjectAccessTeamList(this.userID, managerEmailAddress)
+    .subscribe(
+      res => {
+        this.projectAccessTeamList = Object.keys(res).map(i => res[i].id);
+        console.log('Team List');
+        console.log(this.projectAccessTeamList);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  getProjectAccessList() {
+    this.apiDataService.getProjectAccessList(this.userID)
+    .subscribe(
+      res => {
+
+        // Convert into an array of Approved ProjectIDs
+        this.projectAccessApprovedList = Object.keys(res)
+          .filter(i => res[i].requestStatus === 'Approved')
+          .reduce((obj, i) => {
+              obj[i] = res[i]; return obj;
+            }, {});
+        this.projectAccessApprovedList = Object.keys(this.projectAccessApprovedList)
+          .map(i => this.projectAccessApprovedList[i].projectID);
+
+        // Convert into an array of Submitted ProjectIDs
+        this.projectAccessSubmittedList = Object.keys(res)
+          .filter(i => res[i].requestStatus === 'Submitted')
+          .reduce((obj, i) => {
+              obj[i] = res[i]; return obj;
+            }, {});
+        this.projectAccessSubmittedList = Object.keys(this.projectAccessSubmittedList)
+          .map(i => this.projectAccessSubmittedList[i].projectID);
+
+        // Convert into an array of Denied ProjectIDs
+        this.projectAccessDeniedList = Object.keys(res)
+          .filter(i => res[i].requestStatus === 'Denied')
+          .reduce((obj, i) => {
+              obj[i] = res[i]; return obj;
+            }, {});
+        this.projectAccessDeniedList = Object.keys(this.projectAccessDeniedList)
+          .map(i => this.projectAccessDeniedList[i].projectID);
+
+        console.log('Approved List');
+        console.log(this.projectAccessApprovedList);
+        console.log('Submitted List');
+        console.log(this.projectAccessSubmittedList);
+        console.log('Denied List');
+        console.log(this.projectAccessDeniedList);
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
 }
