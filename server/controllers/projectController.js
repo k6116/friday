@@ -94,25 +94,6 @@ function getUserProjectList(req, res) {
 
   const userID = req.params.userID;
 
-<<<<<<< HEAD
-  models.Projects.findAll({
-    where: {createdBy: userID},
-    attributes: ['id', 'projectName', 'description', 'notes', 'projectNumber'],
-    raw: true,
-    include: [{
-      model: models.ProjectTypes,
-      attributes: ['id', 'projectTypeName', 'description'],
-    }]
-  })
-  .then(project => {
-    console.log('WORKED')
-    res.json(project);
-  })
-  .catch(error => {
-    res.status(400).json({
-      title: 'Error (in catch)',
-      error: {message: error}
-=======
   const sql = `
     SELECT DISTINCT
       P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes,
@@ -120,15 +101,14 @@ function getUserProjectList(req, res) {
     FROM
       projects.Projects P1
       LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
-      LEFT JOIN resources.ProjectEmployees P3 ON P1.CreatedBy = P3.EmployeeID
+      LEFT JOIN resources.ProjectEmployees P3 ON P1.ProjectID = P3.ProjectID
     WHERE
-      P1.CreatedBy = '${userID}'
+      P1.CreatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
       console.log("returning user project list");
       res.json(org);
->>>>>>> master
     })
     .catch(error => {
       res.status(400).json({
