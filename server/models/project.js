@@ -64,7 +64,6 @@ const ProjectAccessRequests = sequelize.define('projectAccessRequests',
   }
 );
 
-
 ProjectTypes.hasMany(Projects, {foreignKey: 'id'});
 Projects.belongsTo(ProjectTypes, {foreignKey: 'projectTypeID'});
 
