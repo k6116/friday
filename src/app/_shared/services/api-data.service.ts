@@ -63,11 +63,9 @@ export class ApiDataService {
   }
 
   getEmployeeData(managerEmailAddress: string) {
-
     return this.http.get(`/api/employeeList/${managerEmailAddress}`)
     .timeout(this.timeout)
     .map((response: Response) => response.json());
-
   }
 
   // update FTE data

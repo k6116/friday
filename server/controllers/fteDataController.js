@@ -73,19 +73,12 @@ function update(req, res) {
   // build arrays of objects for insert and update
   const insertData = [];
   const updateData = [];
-  const deleteProjectIds = [];
-  const deleteProjectUserIds = [];
+  const deleteRecordIds = [];
   const updateIds = [];
   allFormData.forEach(data => {
     // if data needs to be deleted, parse projectIDs and userIDs into delete arrays
     if (data.toBeDeleted) {
-      if (!deleteProjectIds.find( value => {
-        // only put the projectID into the delete array if it doesn't already exist in there
-        return value === data.projectID
-      })) {
-        deleteProjectIds.push(data.projectID);
-        deleteProjectUserIds.push(userID);
-      }
+      deleteRecordIds.push(data.recordID);
     }
     else {
       // insert array
@@ -116,10 +109,8 @@ function update(req, res) {
     }
   });
 
-  console.log('projects for deletion');
-  console.log(deleteProjectIds);
-  console.log('users of projects to be deleted')
-  console.log(deleteProjectUserIds);
+  console.log('records for deletion');
+  console.log(deleteRecordIds);
   console.log('data to insert');
   console.log(insertData);
   console.log('data to update');
@@ -134,8 +125,7 @@ function update(req, res) {
     return models.ProjectEmployee
       .destroy({
         where: {
-          projectID: deleteProjectIds,
-          employeeID: deleteProjectUserIds
+          id: deleteRecordIds
         },
         transaction: t
       })

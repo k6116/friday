@@ -319,6 +319,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     console.log(this.FTEFormGroup);
     console.log('form data (this.form.value.FTEFormArray):');
     console.log(this.FTEFormGroup.value.FTEFormArray);
+    console.log('fte-project-visible array');
+    console.log(this.fteProjectVisible);
   }
 
   onSaveClick() {
@@ -499,7 +501,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     const tempProj: any = projFormArray;
     tempProj.projectID = proj.projectID;
     tempProj.projectName = proj.projectName;  // used to parse the projectName in HTML without having to dive into the controls
-    tempProj.alive = true;  // used to keep track of whether a project should be permanently hidden due to being deleted
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
   }
 
@@ -629,6 +630,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
 
+    // emit confirmation modal after they click delete button
     this.appDataService.confirmModalData.emit(
       {
         title: 'Confirm Deletion',
@@ -641,32 +643,26 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
     const deleteModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
       if (res) {
+        // if they click ok, grab the deleted project info and exec db call to delete
         const toBeDeleted = {
           projectID: deletedProject.projectID,
           projectName: deletedProject.projectName
         };
-        this.apiDataService.deleteFteProject(toBeDeleted, this.loggedInUser.id).subscribe(
+        const deleteActionSubscription = this.apiDataService.deleteFteProject(toBeDeleted, this.loggedInUser.id).subscribe(
           deleteResponse => {
+            this.fteProjectVisible.splice(index, 1);
+            this.fteProjectDeletable.splice(index, 1);
+            FTEFormArray.controls.splice(index, 1);
+            this.updateMonthlyTotals();
+            this.setMonthlyTotalsBorder();
             this.appDataService.raiseToast('success', deleteResponse.message);
+            deleteActionSubscription.unsubscribe();
           },
           deleteErr => {
             this.appDataService.raiseToast('warn', `${deleteErr.status}: ${deleteErr.statusText}`);
+            deleteActionSubscription.unsubscribe();
           }
         );
-
-        // make project invisible by setting it to not alive and not visible
-        deletedProject.alive = false;
-        this.fteProjectVisible[index] = false;
-
-        // loop through each month and set the toBeDeleted flag if it has an FTE value
-        deletedProject.controls.forEach( month => {
-          if (month.controls.fte.value) {
-            month.controls.fte.value = null;
-            month.controls.toBeDeleted.setValue(true);
-          }
-        });
-        this.updateMonthlyTotals();
-        this.setMonthlyTotalsBorder();
       } else {
         console.log('delete aborted');
       }
@@ -716,28 +712,20 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
     FTEFormArray.controls.forEach( project => {
       const currentProject: any = project;
-      // if the project isn't alive (was slated for deletion), then actually splice it out of the form
-      if (!currentProject.alive) {
-        // console.log('splice out project: ' + currentProject.projectName);
-        const deletedProjectIndex = FTEFormArray.controls.indexOf(project);
-        FTEFormArray.controls.splice(deletedProjectIndex, 1);
-        this.fteProjectVisible.splice(deletedProjectIndex, 1);  // also remove the boolean entry for project visibility and delete-ability
-        this.fteProjectDeletable.splice(deletedProjectIndex, 1);
-      } else {
-        // otherwise, loop through each month and reset the flags that were flipped
-        project['controls'].forEach( month => {
-          if (month.value.fte && month.value.newRecord) {
-            // console.log('set newRecord false for: ' + month.value.fte);
-            month.controls.newRecord.setValue(false);
-            month.controls.updated.setValue(false);
-            // console.log('new state: ' + month.value.newRecord);
-          } else if (month.value.fte && month.value.updated) {
-            // console.log('set updated false for: ' + month.value.fte);
-            month.controls.updated.setValue(false);
-            // console.log('new state: ' + month.value.updated);
-          }
-        });
-      }
+      // loop through each month and reset the flags that were flipped
+      project['controls'].forEach( month => {
+        if (month.value.fte && month.value.newRecord) {
+          // console.log('set newRecord false for: ' + month.value.fte);
+          month.controls.newRecord.setValue(false);
+          month.controls.updated.setValue(false);
+          // console.log('new state: ' + month.value.newRecord);
+        } else if (month.value.fte && month.value.updated) {
+          // console.log('set updated false for: ' + month.value.fte);
+          month.controls.updated.setValue(false);
+          // console.log('new state: ' + month.value.updated);
+        }
+      });
+
     });
   }
 
