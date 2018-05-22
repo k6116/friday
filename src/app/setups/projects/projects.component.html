@@ -7,6 +7,13 @@
       </h2>
     </div>
   </div>
+  <div class="row row-custom">
+      <div class="col-xs-12 col-custom">
+          <li *ngFor="let request of projectAccessRequestsList">
+            {{ request['user.fullName'] }} has requested access to your project {{ request['project.projectName'] }}
+          </li>
+      </div>
+  </div>
 <!--  -->
 <!-- ACCORDION START -->
   <div class="accordion" id="accordionProjectList">
@@ -27,7 +34,7 @@
       <div class="card-header" [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick()">
         <h6 class="mb-0 row">
           <div class="col">{{ project['projectName'] }}</div>
-          <div class="col">{{ project['projectTypes.projectTypeName'] }}</div>
+          <div class="col">{{ project['projectType.projectTypeName'] }}</div>
           <div class="col">{{ project['description'] }}</div>
           <div class="col">{{ project['notes'] }}</div>
           <!-- Edit Button -->
@@ -76,5 +83,5 @@
 
 </div>
 
-<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
+<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" [projectAccessRequestsList]="projectAccessRequestsList" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
 <app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal>

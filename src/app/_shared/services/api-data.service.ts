@@ -107,6 +107,11 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getUserPLMData(userEmailAddress: string) {
+    return this.http.get(`/api/getUserPLMData/${userEmailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
   getProjectList() {
     return this.http.get(`/api/projects/projectlist`)
       .timeout(this.timeout)
@@ -171,6 +176,46 @@ export class ApiDataService {
 
   getProjectRoster(projectID: number) {
     return this.http.get(`/api/getProjectRoster/${projectID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  submitProjectAccessRequest(project: number, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/submitProjectAccessRequest/${userID}`, JSON.stringify(project), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectAccessRequestsList(userID: number) {
+    return this.http.get(`/api/getProjectAccessRequestsList/${userID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getPublicProjectTypes(userID: number) {
+    return this.http.get(`/api/getPublicProjectTypes/${userID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectAccessTeamList(userID: number, managerEmailAddress: string) {
+    return this.http.get(`/api/getProjectAccessTeamList/${userID}/${managerEmailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectAccessList(userID: number) {
+    return this.http.get(`/api/getProjectAccessList/${userID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  responseProjectAccessRequest(request: any, reply: string, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/responseProjectAccessRequest/${userID}/${reply}`, JSON.stringify(request), options)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

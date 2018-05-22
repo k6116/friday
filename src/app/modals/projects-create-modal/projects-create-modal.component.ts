@@ -19,7 +19,9 @@ export class ProjectsCreateModalComponent implements OnInit {
 
   form: FormGroup;
   userID: any;
+  userEmail: string;
   projectTypesList: any;
+  userPLMData: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -34,6 +36,11 @@ export class ProjectsCreateModalComponent implements OnInit {
   ngOnInit() {
      // get the user id
      this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
+     this.userEmail = this.authService.loggedInUser ? this.authService.loggedInUser.email : null;
+
+     if (!this.appDataService.userPLMData) {
+      this.getUserPLMData(this.userEmail);
+     }
   }
 
   resetForm() {
@@ -68,6 +75,7 @@ export class ProjectsCreateModalComponent implements OnInit {
 
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
+    project.projectOrgManager = this.appDataService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
 
     this.apiDataService.createProject(project, this.userID)
     .subscribe(
@@ -80,6 +88,19 @@ export class ProjectsCreateModalComponent implements OnInit {
       }
     );
 
+  }
+
+  getUserPLMData(userEmailAddress: string) {
+    this.apiDataService.getUserPLMData(userEmailAddress)
+    .subscribe(
+      res => {
+        console.log('User PLM Data Retrieved');
+        this.appDataService.userPLMData = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
 }

@@ -1,4 +1,5 @@
 const sequelize = require('../db/sequelize').sequelize;
+const sequelizePLM = require('../db/sequelize').sequelizePLM;
 const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
@@ -11,7 +12,7 @@ function getAll(req, res) {
     sql = sql + 'FROM  projects.Projects p INNER JOIN projects.ProjectTypes t ';
     sql = sql + 'ON p.ProjectTypeID = t.ProjectTypeID '
     sql = sql + 'INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID '
-    sql = sql + 'WHERE Active = 1 AND len(p.Description) > 0 '
+    // sql = sql + 'WHERE Active = 1 AND len(p.Description) > 0 '
     sql = sql + 'ORDER BY p.ProjectName '
     
     sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
@@ -34,11 +35,14 @@ function getProjectRoster(req, res) {
       T1.ProjectName as 'projectName',
       T1.[Description] as 'description',
       T3.FullName as 'teamMembers:name',
-      T2.FTE as 'teamMembers:fte'
+      T2.FTE as 'teamMembers:fte',
+      T4.JobTitleName + ' - ' + T5.JobTitleSubName as 'teamMembers:jobTitle'
     FROM 
       projects.Projects T1
       LEFT JOIN resources.ProjectEmployees T2 ON T1.ProjectID = T2.ProjectID
       LEFT JOIN accesscontrol.Employees T3 ON T2.EmployeeID = T3.EmployeeID
+      LEFT JOIN accesscontrol.JobTitle T4 ON T3.JobTitleID = T4.JobTitleID
+      LEFT JOIN accesscontrol.JobTitleSub T5 ON T3.JobTitleSubID = T5.JobTitleSubID
     WHERE 
       T1.ProjectID = ${projectID}
       AND T2.FiscalDate = '${month}'
@@ -60,31 +64,58 @@ function getProjectRoster(req, res) {
 
 }
 
+function getUserPLMData(req, res) {
+  const userEmailAddress = req.params.userEmailAddress;
+
+  const sql = `
+    SELECT
+      P1.PERSON_ID, P1.LAST_NAME, P1.FIRST_NAME, P1.EMAIL_ADDRESS, P1.SUPERVISOR_ID, P1.SUPERVISOR_LAST_NAME, P1.SUPERVISOR_FIRST_NAME, P2.EMAIL_ADDRESS AS SUPERVISOR_EMAIL_ADDRESS
+    FROM
+      vPER_ALL_PEOPLE_ORG P1 (NOLOCK)
+      LEFT JOIN vPER_ALL_PEOPLE_F P2 (NOLOCK) ON P1.SUPERVISOR_ID = P2.PERSON_ID
+    WHERE
+      P1.EMAIL_ADDRESS = '${userEmailAddress}'
+  `
+  sequelizePLM.query(sql, { type: sequelizePLM.QueryTypes.SELECT })
+    .then(org => {
+      console.log("returning user PLM data");
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 
 function getUserProjectList(req, res) {
 
   const userID = req.params.userID;
 
-  models.Projects.findAll({
-    where: {createdBy: userID},
-    attributes: ['id', 'projectName', 'description', 'notes'],
-    raw: true,
-    include: [{
-      model: models.ProjectTypes,
-      attributes: ['id', 'projectTypeName', 'description'],
-    }]
-  })
-  .then(project => {
-    console.log('WORKED')
-    res.json(project);
-  })
-  .catch(error => {
-    res.status(400).json({
-      title: 'Error (in catch)',
-      error: {message: error}
+  const sql = `
+    SELECT DISTINCT
+      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes,
+      P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
+    FROM
+      projects.Projects P1
+      LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
+      LEFT JOIN resources.ProjectEmployees P3 ON P1.CreatedBy = P3.EmployeeID
+    WHERE
+      P1.CreatedBy = '${userID}'
+  `
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      console.log("returning user project list");
+      res.json(org);
     })
-
-  });
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
 }
 
 
@@ -95,9 +126,6 @@ function insertProject(req, res) {
   const userID = req.params.userID;
   const today = new Date();
 
-  // variable to hold the new list after delete, to send back in the response
-  var newProjectList;
-
   return sequelize.transaction((t) => {
 
     return models.Projects
@@ -107,10 +135,11 @@ function insertProject(req, res) {
           description: project.projectDescription,
           projectTypeID: project.projectTypeID,
           notes: project.projectNotes,
+          projectOrgManager: project.projectOrgManager,
           createdBy: userID,
           createdAt: today,
           updatedBy: userID,
-          updatedAt: today,
+          updatedAt: today
         },
         {
           transaction: t
@@ -118,8 +147,7 @@ function insertProject(req, res) {
       )
       .then(savedProject => {
 
-        const projectId = savedProject.id;
-        console.log('created project id is: ' + projectId);
+        console.log('created project id is: ' + project.id);
 
       })
 
@@ -127,7 +155,6 @@ function insertProject(req, res) {
 
       res.json({
         message: `The project '${project.projectName}' has been added successfully`,
-        projects: newProjectList
       })
 
     }).catch(error => {
@@ -282,6 +309,7 @@ function getProjectTypesList(req, res) {
 module.exports = {
   getAll: getAll,
   getProjectRoster: getProjectRoster,
+  getUserPLMData: getUserPLMData,
   getUserProjectList: getUserProjectList,
   insertProject: insertProject,
   updateProject: updateProject,

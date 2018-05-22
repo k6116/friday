@@ -49,9 +49,14 @@ import { ProjectsInfoModalComponent } from './modals/projects-info-modal/project
 import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
 import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/projects-roster-modal.component';
+import { ChartsModule } from 'ng2-charts';
 import { ToastComponent } from './toast/toast.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
+// CHARTS
+import 'hammerjs';
+import 'chartjs-plugin-zoom';
+import { PerformanceComponent } from './performance/performance.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +86,8 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
     ProjectsInfoModalComponent,
     ProjectsRosterModalComponent,
     ToastComponent,
-    BlockAppUseComponent
+    BlockAppUseComponent,
+    PerformanceComponent
   ],
   imports: [
     AppRoutingModule,
@@ -94,7 +100,8 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
     MatCheckboxModule,
     MatExpansionModule,
     NouisliderModule,
-    ClickOutsideModule
+    ClickOutsideModule,
+    ChartsModule
   ],
   providers: [
     ApiDataService,

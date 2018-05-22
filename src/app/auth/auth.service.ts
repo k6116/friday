@@ -7,6 +7,8 @@ import { ApiDataService } from '../_shared/services/api-data.service';
 import { AppDataService } from '../_shared/services/app-data.service';
 
 import * as moment from 'moment';
+import { Subscriber } from 'rxjs/Subscriber';
+import { Subscription } from 'rxjs/Subscription';
 
 
 @Injectable()
@@ -29,7 +31,6 @@ export class AuthService {
 
     // set the warning modal to appear 5 minutes before auto-logout
     this.warnBeforeExpiration = 5;
-
   }
 
 
@@ -381,8 +382,5 @@ export class AuthService {
       }
     );
   }
-
-
-
 
 }

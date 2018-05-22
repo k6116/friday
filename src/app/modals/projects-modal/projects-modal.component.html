@@ -66,7 +66,11 @@
               </div>
             </div>
             <div class="card-footer">
-              <button type="button" class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
+                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectAccessApprovedList?.indexOf(project.ProjectID)!=-1 || projectAccessTeamList?.indexOf(project.ProjectID)!=-1" class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
+                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectAccessSubmittedList?.indexOf(project.ProjectID)===-1 && projectAccessApprovedList?.indexOf(project.ProjectID)===-1 && projectAccessDeniedList?.indexOf(project.ProjectID)===-1 && projectAccessTeamList?.indexOf(project.ProjectID)===-1"
+                  class="btn btn-outline-warning project-select-button" (click)="onRequestedProject(project)">Request Access</button>
+                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectAccessSubmittedList?.indexOf(project.ProjectID)!=-1 && projectAccessTeamList?.indexOf(project.ProjectID)===-1" class="btn btn-outline-info" [disabled]="true">Access Request Submitted...</button>
+                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectAccessDeniedList?.indexOf(project.ProjectID)!=-1 && projectAccessTeamList?.indexOf(project.ProjectID)===-1" class="btn btn-outline-danger" [disabled]="true">Access Request DENIED</button>
             </div>
           </div>
 

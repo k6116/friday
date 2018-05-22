@@ -44,7 +44,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private toolsService: ToolsService,
     private clickTrackingService: ClickTrackingService
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
 
