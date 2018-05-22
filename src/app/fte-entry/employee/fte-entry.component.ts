@@ -497,6 +497,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     });
     // cast the new project to an 'any', so we can assign arbitrary properties to each array
     const tempProj: any = projFormArray;
+    tempProj.projectID = proj.projectID;
     tempProj.projectName = proj.projectName;  // used to parse the projectName in HTML without having to dive into the controls
     tempProj.alive = true;  // used to keep track of whether a project should be permanently hidden due to being deleted
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
@@ -640,6 +641,19 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
     const deleteModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
       if (res) {
+        const toBeDeleted = {
+          projectID: deletedProject.projectID,
+          projectName: deletedProject.projectName
+        };
+        this.apiDataService.deleteFteProject(toBeDeleted, this.loggedInUser.id).subscribe(
+          deleteResponse => {
+            this.appDataService.raiseToast('success', deleteResponse.message);
+          },
+          deleteErr => {
+            this.appDataService.raiseToast('warn', `${deleteErr.status}: ${deleteErr.statusText}`);
+          }
+        );
+
         // make project invisible by setting it to not alive and not visible
         deletedProject.alive = false;
         this.fteProjectVisible[index] = false;

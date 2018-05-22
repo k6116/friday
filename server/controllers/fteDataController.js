@@ -27,6 +27,31 @@ function getFteData(req, res) {
 
 }
 
+function deleteProject(req, res) {
+  const userID = req.params.userID;
+  const toBeDeletedID = req.body.projectID;
+  const toBeDeletedName = req.body.projectName;
+  return models.ProjectEmployee
+  .destroy({
+    where: {
+      projectID: toBeDeletedID,
+      employeeID: userID
+    }})
+  .then(deletedRows => {
+    console.log(`${deletedRows} project employee records deleted`);
+    res.json({
+      message: `Successfully deleted project ${toBeDeletedName}`
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({
+      message: 'Delete Failed',
+      error: error
+    });
+  })
+
+}
 
 function update(req, res) {
 
@@ -184,5 +209,6 @@ function update(req, res) {
 
 module.exports = {
     getFteData: getFteData,
-    update: update
+    update: update,
+    deleteProject: deleteProject
 }

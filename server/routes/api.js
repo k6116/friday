@@ -13,6 +13,7 @@ router.post('/resetToken', controllers.auth.resetToken);
 // FTE data controller
 router.get('/ftedata/:userID', controllers.fteData.getFteData);
 router.post('/ftedata/:userID', controllers.fteData.update);
+router.post('/ftedata/deleteProject/:userID', controllers.fteData.deleteProject);
 
 // PROJECTS CONTROLLER
 router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
