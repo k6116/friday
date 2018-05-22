@@ -189,7 +189,19 @@ export class ApiDataService {
   }
 
   getPublicProjectTypes(userID: number) {
-    return this.http.get(`/api/getPublicProjectTypes/${userID}}`)
+    return this.http.get(`/api/getPublicProjectTypes/${userID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectAccessTeamList(userID: number, managerEmailAddress: string) {
+    return this.http.get(`/api/getProjectAccessTeamList/${userID}/${managerEmailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectAccessList(userID: number) {
+    return this.http.get(`/api/getProjectAccessList/${userID}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
