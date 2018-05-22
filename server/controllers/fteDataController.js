@@ -27,11 +27,37 @@ function getFteData(req, res) {
 
 }
 
+function deleteProject(req, res) {
+  const userID = req.params.userID;
+  const toBeDeletedID = req.body.projectID;
+  const toBeDeletedName = req.body.projectName;
+  return models.ProjectEmployee
+  .destroy({
+    where: {
+      projectID: toBeDeletedID,
+      employeeID: userID
+    }})
+  .then(deletedRows => {
+    console.log(`${deletedRows} project employee records deleted`);
+    res.json({
+      message: `Successfully deleted project ${toBeDeletedName}`
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({
+      message: 'Delete Failed',
+      error: error
+    });
+  })
+
+}
 
 function update(req, res) {
 
   const formData = req.body;
   const userID = req.params.userID;
+  const updatedValues = [];
 
   // console.log('form data:');
   // console.log(formData);
@@ -47,19 +73,12 @@ function update(req, res) {
   // build arrays of objects for insert and update
   const insertData = [];
   const updateData = [];
-  const deleteProjectIds = [];
-  const deleteProjectUserIds = [];
+  const deleteRecordIds = [];
   const updateIds = [];
   allFormData.forEach(data => {
     // if data needs to be deleted, parse projectIDs and userIDs into delete arrays
     if (data.toBeDeleted) {
-      if (!deleteProjectIds.find( value => {
-        // only put the projectID into the delete array if it doesn't already exist in there
-        return value === data.projectID
-      })) {
-        deleteProjectIds.push(data.projectID);
-        deleteProjectUserIds.push(userID);
-      }
+      deleteRecordIds.push(data.recordID);
     }
     else {
       // insert array
@@ -90,10 +109,8 @@ function update(req, res) {
     }
   });
 
-  console.log('projects for deletion');
-  console.log(deleteProjectIds);
-  console.log('users of projects to be deleted')
-  console.log(deleteProjectUserIds);
+  console.log('records for deletion');
+  console.log(deleteRecordIds);
   console.log('data to insert');
   console.log(insertData);
   console.log('data to update');
@@ -108,12 +125,12 @@ function update(req, res) {
     return models.ProjectEmployee
       .destroy({
         where: {
-          projectID: deleteProjectIds,
-          employeeID: deleteProjectUserIds
+          id: deleteRecordIds
         },
         transaction: t
       })
       .then( deletedRows => {
+        updatedValues.push(deletedRows);
         console.log(`${deletedRows} project employee records deleted`);
 
         return models.ProjectEmployee.bulkCreate(
@@ -122,6 +139,7 @@ function update(req, res) {
         )
         .then(savedProjectEmployees => {
   
+          updatedValues.push(savedProjectEmployees.length);
           console.log(savedProjectEmployees);
           console.log(`${savedProjectEmployees.length} project employee records inserted`);
   
@@ -147,6 +165,7 @@ function update(req, res) {
           return Promise.all(promises)
           .then(updatedProjectEmployee => {
             
+            updatedValues.push(updatedProjectEmployee.length);
             console.log(`${updatedProjectEmployee.length} project employee records updated`);
             
           });
@@ -159,15 +178,19 @@ function update(req, res) {
     }).then(() => {
 
       res.json({
-        message: `The FTEs have been inserted and updated successfully`,
+        // message: `Save successful!\n
+        // ${updatedValues[0]} records deleted\n
+        // ${updatedValues[1]} records inserted\n
+        // ${updatedValues[2]} records updated`
+        message: 'Your FTE values have been successfully saved!'
       })
 
     }).catch(error => {
 
       // console.log(error);
       res.status(500).json({
-        title: 'update failed',
-        error: {message: error}
+        message: 'update failed',
+        error: error
       });
 
     })
@@ -176,5 +199,6 @@ function update(req, res) {
 
 module.exports = {
     getFteData: getFteData,
-    update: update
+    update: update,
+    deleteProject: deleteProject
 }

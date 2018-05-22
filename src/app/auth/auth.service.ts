@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 import { User } from '../_shared/models/user.model';
 import { ApiDataService } from '../_shared/services/api-data.service';
 import { AppDataService } from '../_shared/services/app-data.service';
 
 import * as moment from 'moment';
 import { Subscriber } from 'rxjs/Subscriber';
-import { Subscription } from 'rxjs/Subscription';
 
 
 @Injectable()
@@ -19,6 +19,7 @@ export class AuthService {
   lastActivity: number;   // epoch time indicating last time there was any mouse click or keypress
   modalIsDisplayed: boolean;
   warnBeforeExpiration: number; // time in minutes before auto logout to display the warning modal
+  confirmModalResponseSubscription: Subscription;
 
   constructor(
     private http: Http,
@@ -357,6 +358,18 @@ export class AuthService {
         display: true
       }
     );
+
+    // after emitting the modal, listen for the response
+    this.confirmModalResponseSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+      if (res) {
+        this.modalIsDisplayed = undefined;
+        this.resetToken();
+      } else {
+        this.modalIsDisplayed = undefined;
+        this.routeToLogin(false);
+      }
+      this.confirmModalResponseSubscription.unsubscribe();
+    });
   }
 
 

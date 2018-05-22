@@ -27,7 +27,7 @@ export class ToastComponent implements OnInit, OnDestroy {
   showToast() {
     // show the toast, then remove the toastShow class from the div after 3 sec
     this.toastShow = true;
-    setTimeout(() => { this.toastShow = false; }, 3000);
+    setTimeout(() => { this.toastShow = false; }, 5000);
   }
 
   ngOnDestroy() {
