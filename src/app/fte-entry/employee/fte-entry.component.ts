@@ -203,9 +203,19 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
     const FTEFormGroup = FTEFormProjectArray.at(j);
-    FTEFormGroup.patchValue({
-      updated: true
-    });
+
+    if ( (fteReplaceValue === null) && (FTEFormGroup.value.recordID !== null) ) {
+      // if the replacement value is a null and the recordID is accessible, delete that record
+      // TODO: get the newly created recordID after a save transaction is completed
+      FTEFormGroup.patchValue({
+        toBeDeleted: true,
+        updated: false
+      });
+    } else {
+      FTEFormGroup.patchValue({
+        updated: true
+      });
+    }
 
     if (fteReplace) {
       FTEFormGroup.patchValue({
@@ -218,12 +228,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       //   emitViewToModelChange: true
       // });
     }
-
-    // if (fteReplace) {
-    //   FTEFormGroup.setValue({
-    //     fte: fteReplaceValue
-    //   });
-    // }
 
     // update the monthly total
     this.updateMonthlyTotal(j);
