@@ -35,11 +35,14 @@ function getProjectRoster(req, res) {
       T1.ProjectName as 'projectName',
       T1.[Description] as 'description',
       T3.FullName as 'teamMembers:name',
-      T2.FTE as 'teamMembers:fte'
+      T2.FTE as 'teamMembers:fte',
+      T4.JobTitleName + ' - ' + T5.JobTitleSubName as 'teamMembers:jobTitle'
     FROM 
       projects.Projects T1
       LEFT JOIN resources.ProjectEmployees T2 ON T1.ProjectID = T2.ProjectID
       LEFT JOIN accesscontrol.Employees T3 ON T2.EmployeeID = T3.EmployeeID
+      LEFT JOIN accesscontrol.JobTitle T4 ON T3.JobTitleID = T4.JobTitleID
+      LEFT JOIN accesscontrol.JobTitleSub T5 ON T3.JobTitleSubID = T5.JobTitleSubID
     WHERE 
       T1.ProjectID = ${projectID}
       AND T2.FiscalDate = '${month}'
@@ -91,26 +94,28 @@ function getUserProjectList(req, res) {
 
   const userID = req.params.userID;
 
-  models.Projects.findAll({
-    where: {createdBy: userID},
-    attributes: ['id', 'projectName', 'description', 'notes'],
-    raw: true,
-    include: [{
-      model: models.ProjectTypes,
-      attributes: ['id', 'projectTypeName', 'description'],
-    }]
-  })
-  .then(project => {
-    console.log('WORKED')
-    res.json(project);
-  })
-  .catch(error => {
-    res.status(400).json({
-      title: 'Error (in catch)',
-      error: {message: error}
+  const sql = `
+    SELECT DISTINCT
+      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes,
+      P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
+    FROM
+      projects.Projects P1
+      LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
+      LEFT JOIN resources.ProjectEmployees P3 ON P1.CreatedBy = P3.EmployeeID
+    WHERE
+      P1.CreatedBy = '${userID}'
+  `
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      console.log("returning user project list");
+      res.json(org);
     })
-
-  });
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
 }
 
 
