@@ -8,7 +8,6 @@ import { AppDataService } from '../_shared/services/app-data.service';
 
 import * as moment from 'moment';
 import { Subscriber } from 'rxjs/Subscriber';
-import { Subscription } from 'rxjs/Subscription';
 
 
 @Injectable()
