@@ -43,11 +43,11 @@ app.get('*', (req, res) => {
 });
 
 
-// get environment (dev or prod)
-const isProd = process.env.PRODUCTION;
+// get environment/instance (dev, test, or prod)
+const env = process.env.ENVIRONMENT;
 
 // start development server
-if (isProd === 'false') {
+if (env === 'dev') {
 
   const port1 = 3000;
   http.createServer(app)
@@ -55,17 +55,17 @@ if (isProd === 'false') {
       console.log(`node server listening on port: ${port1}`);
     });
 
-// start production server
-} else {
+// start test server
+} else if (env === 'test') {
 
   // create a node server for https on port 443
-  const port1 = 443;
+  const port1 = 440;
   https.createServer(sslOptions, app)
     .listen(port1, () => {
       console.log(`node server listening on port: ${port1}`);
     });
 
-  // create a second node server for to forward http (port 80) requests to https (port 443)
+  // create a second node server to forward http (port 80) requests to https (port 443)
   const port2 = 80;
   http.createServer((req, res) => {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
@@ -75,6 +75,25 @@ if (isProd === 'false') {
     console.log(`node server listening on port: ${port2}`);
   });
 
+// start production server
+} else if (env === 'prod') {
+
+  // create a node server for https on port 443
+  const port1 = 443;
+  https.createServer(sslOptions, app)
+    .listen(port1, () => {
+      console.log(`node server listening on port: ${port1}`);
+    });
+
+  // create a second node server to forward http (port 80) requests to https (port 443)
+  const port2 = 80;
+  http.createServer((req, res) => {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+  })
+  .listen(80, () => {
+    console.log(`node server listening on port: ${port2}`);
+  });
 
 }
 
