@@ -8,5 +8,6 @@ module.exports = {
   JobTitleSub: require('./profile.js').JobTitleSub,
   JobTitleJunction: require('./profile.js').JobTitleJunction,
   Projects: require('./project.js').Projects,
-  ProjectTypes: require('./project.js').ProjectTypes
+  ProjectTypes: require('./project.js').ProjectTypes,
+  ProjectAccessRequests: require('./project.js').ProjectAccessRequests
 }

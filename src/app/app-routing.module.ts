@@ -14,11 +14,13 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
 import { AuthGuardService } from './auth/auth-guard.service';
 import { TestComponent } from './test/test.component';
+import { PerformanceComponent } from './performance/performance.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'block', component: BlockAppUseComponent },
   { path: 'test', component: TestComponent },
+  { path: 'perf', component: PerformanceComponent },
   { path: 'login', component: LoginComponent },
   {
     path: 'main',

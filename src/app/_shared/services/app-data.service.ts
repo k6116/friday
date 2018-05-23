@@ -6,11 +6,14 @@ export class AppDataService {
   loggedInUser = new EventEmitter<any>();
   loggedInUser$: any;
 
+  userPLMData: any;
+
   autoLogout = new EventEmitter<any>(); // send an object to the login component with message, icon class and color
   autoLogout$: any;
 
   noticeModalData = new EventEmitter<any>();
   confirmModalData = new EventEmitter<any>();
+  confirmModalResponse = new EventEmitter<any>();
 
   toast = new EventEmitter<any>();
 

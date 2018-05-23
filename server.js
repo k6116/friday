@@ -27,8 +27,9 @@ sequelize.connect();
 const app = express();
 
 // set body parsers
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+// need to set bodyParser limit to allow a large number of projects.  Default is 1mb, which can only support ~15 projects
+app.use(bodyParser.json({limit: '30mb'}));
+app.use(bodyParser.urlencoded({limit: '30mb', extended: true }));
 
 // serve static files
 app.use(express.static(path.join(__dirname, 'dist')));
