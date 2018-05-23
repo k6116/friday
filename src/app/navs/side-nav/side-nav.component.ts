@@ -86,6 +86,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
+    console.log('side nav component has been initialized');
+
     // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
     const path = this.router.url.slice(1, this.router.url.length);
 
