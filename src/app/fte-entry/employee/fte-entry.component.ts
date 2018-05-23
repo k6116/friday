@@ -4,6 +4,7 @@ import { trigger, state, style, transition, animate, keyframes, group } from '@a
 import { DecimalPipe } from '@angular/common';
 import { NouisliderModule } from 'ng2-nouislider';
 import { Subscription } from 'rxjs/Subscription';
+import { ActivatedRoute } from '@angular/router';
 
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
@@ -79,7 +80,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     private appDataService: AppDataService,
     private toolsService: ToolsService,
     private decimalPipe: DecimalPipe,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
@@ -97,6 +99,9 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
+    console.log('testing user resolver');
+    console.log(this.route.snapshot.data);
 
 
     this.setSliderConfig(); // initalize slider config

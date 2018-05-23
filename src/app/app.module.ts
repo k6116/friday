@@ -27,6 +27,7 @@ import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { ToolsService } from './_shared/services/tools.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
+import { UserResolverService } from './_shared/auth/user-resolver.service';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -109,7 +110,8 @@ import { PerformanceComponent } from './performance/performance.component';
     AuthService,
     AuthGuardService,
     ToolsService,
-    ClickTrackingService
+    ClickTrackingService,
+    UserResolverService
   ],
   bootstrap: [AppComponent]
 })
