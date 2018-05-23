@@ -43,6 +43,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
+    console.log(`app component has been initialized`);
+
     // check for browser compatibility
     const browserCheck = this.browserIsCompatible();
 

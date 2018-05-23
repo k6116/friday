@@ -15,7 +15,7 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { TestComponent } from './test/test.component';
 import { PerformanceComponent } from './performance/performance.component';
-import { UserResolverService } from './_shared/auth/user-resolver.service';
+import { UserResolverService } from './_shared/services/user-resolver.service';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -24,13 +24,11 @@ const routes: Routes = [
   { path: 'perf', component: PerformanceComponent },
   { path: 'login', component: LoginComponent },
   {
-    path: 'main',
-    component: MainComponent,
-    canActivate: [AuthGuardService],
+    path: 'main', component: MainComponent, canActivate: [AuthGuardService], resolve: { loggedInUser: UserResolverService },
     children: [
       { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full', canActivate: [AuthGuardService] },
-      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService],
-        resolve: { message: UserResolverService } },
+      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService] },
+        // resolve: { loggedInUser: UserResolverService } },
       { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService] },
       { path: 'reports/projects', component: ProjectsReportsComponent, canActivate: [AuthGuardService] },

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { Subscription } from 'rxjs/Subscription';
 import { User } from '../../_shared/models/user.model';
@@ -50,7 +50,8 @@ export class TopNavComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
     private appDataService: AppDataService,
-    private apiDataService: ApiDataService
+    private apiDataService: ApiDataService,
+    private route: ActivatedRoute
   ) {
 
     // TO-DO: try to find a simpler/cleaner way to hide the dropdown on click outside
@@ -62,19 +63,29 @@ export class TopNavComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+    console.log(`top nav component has been initialized`);
+
+    // console.log('testing user resolver (this.route.snapshot.data)');
+    // console.log(this.route.snapshot.data);
+    // this.loggedInUser = this.route.snapshot.data.loggedInUser.jarvisUser;
+
+    this.loggedInUser = this.authService.loggedInUser;
+
+    this.firstInitial = this.loggedInUser.fullName.substring(0, 1).toUpperCase();
+
     // get the logged in user object from the auth service
     // most of the time, this will be stored in the cache when navigating around the app
-    this.authService.getLoggedInUser((user, err) => {
-      if (err) {
-        console.error(`error getting logged in user: ${err}`);
-        return;
-      }
-      this.loggedInUser = user;
-      // console.log('logged in user object received in top nav component on init:');
-      // console.log(this.loggedInUser);
-      // get the user's first name initial to create the google style 'avatar'
-      this.firstInitial = this.loggedInUser.fullName.substring(0, 1).toUpperCase();
-    });
+    // this.authService.getLoggedInUser((user, err) => {
+    //   if (err) {
+    //     console.error(`error getting logged in user: ${err}`);
+    //     return;
+    //   }
+    //   this.loggedInUser = user;
+    //   // console.log('logged in user object received in top nav component on init:');
+    //   // console.log(this.loggedInUser);
+    //   // get the user's first name initial to create the google style 'avatar'
+    //   this.firstInitial = this.loggedInUser.fullName.substring(0, 1).toUpperCase();
+    // });
 
     // subscribe to the clickedClass property, to determine if the dropdown container should be closed if it is open
     this.subscription1 = this.appDataService.clickedClass.subscribe(

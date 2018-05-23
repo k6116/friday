@@ -100,23 +100,48 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    console.log('testing user resolver');
-    console.log(this.route.snapshot.data);
+    console.log(`fte entry component has been initialized`);
 
+    // console.log('testing user resolver within fte entry component (this.route.snapshot.data)');
+    // console.log(this.route.snapshot.data);
+    // this.loggedInUser = this.route.snapshot.data.loggedInUser.jarvisUser;
+
+    this.loggedInUser = this.authService.loggedInUser;
+
+    this.fteComponentInit();  // initialize the FTE entry component
 
     this.setSliderConfig(); // initalize slider config
 
+
     // get logged in user's info
-    this.authService.getLoggedInUser((user, err) => {
-      if (err) {
-        // console.log(`error getting logged in user: ${err}`);
-        return;
-      }
-      // console.log('logged in user data received in main component:');
-      // console.log(user);
-      this.loggedInUser = user;
-      this.fteComponentInit();  // initialize the FTE entry component
-    });
+    // this.authService.getLoggedInUser((user, err) => {
+    //   if (err) {
+    //     // console.log(`error getting logged in user: ${err}`);
+    //     return;
+    //   }
+    //   console.log('logged in user data received in main component:');
+    //   console.log(user);
+    //   this.loggedInUser = user;
+    //   this.fteComponentInit();  // initialize the FTE entry component
+    // });
+
+   this.buildMonthsArray();
+   this.buildFteEditableArray();
+   this.fteFormChangeListener();
+
+   setTimeout(() => {
+     this.getProjectsForCards();
+   }, 2000);
+
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.timer);
+    this.changeDetectorRef.detach();
+  }
+
+
+  getProjectsForCards() {
 
     this.apiDataService.getProjects()
     .subscribe(
@@ -133,16 +158,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       }
     );
 
-   this.buildMonthsArray();
-   this.buildFteEditableArray();
-   this.fteFormChangeListener();
-
-
-  }
-
-  ngOnDestroy() {
-    clearInterval(this.timer);
-    this.changeDetectorRef.detach();
   }
 
   onAddProjectClick() {
@@ -399,6 +414,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
   fteComponentInit() {
     // get FTE data
+    console.log('starting to get fte data');
+    const t0 = performance.now();
     this.apiDataService.getFteData(this.loggedInUser.id)
     .subscribe(
       res => {
@@ -409,6 +426,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
         // this.projects = this.userFTEs;
         const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
         this.projects = FTEFormArray.controls;
+        const t1 = performance.now();
+        console.log(`get fte data successfull; took ${t1 - t0} milliseconds`);
       },
       err => {
         console.error(err);

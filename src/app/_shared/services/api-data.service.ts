@@ -29,7 +29,7 @@ export class ApiDataService {
   }
 
   // decode the jwt token to get the user info, issued and expiration dates
-  getInfoFromToken(token) {
+  getInfoFromToken(token): Observable<any> {
     const queryString = '?token=' + token;
     return this.http.get(`/api/getInfoFromToken${queryString}`)
       .timeout(this.timeout)
