@@ -3,6 +3,7 @@ import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@ang
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { DecimalPipe } from '@angular/common';
 import { NouisliderModule } from 'ng2-nouislider';
+import { Subscription } from 'rxjs/Subscription';
 
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
@@ -42,31 +43,16 @@ declare const $: any;
       ])
     ])
   ]
-  // animations: [
-  //   trigger('conditionState', [
-  //     state('in', style({
-  //       opacity: 1,
-  //       transform: 'translateY(0)'
-  //     })),
-  //     transition('in => void', [
-  //       animate(100, style({
-  //         opacity: 0,
-  //         transform: 'translateY(25px)'
-  //       }))
-  //     ]),
-  //     transition('void => in', [
-  //       animate(100, style({
-  //         opacity: 1
-  //       }))
-  //     ])
-  //   ])
-  // ]
 })
 export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
   // initialize variables
+  deleteModalSubscription: Subscription;
   mainSliderConfig: any;  // slider config
   sliderDisabled = false;
+  fqLabelArray = new Array; // for labeling fiscal quarters in FTE table
+  fyLabelArray = new Array; // for labeling fiscal years in slider header
+  fteQuarterVisible = new Array(12).fill(false);  // boolean array for by-month FTE form display
   fteMonthVisible = new Array(36).fill(false);  // boolean array for by-month FTE form display
   fteMonthEditable = new Array(36).fill(true);  // boolean array for by-month FTE box disabling
   fteProjectVisible = new Array;  // boolean array for by-project row display
@@ -80,7 +66,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   loggedInUser: User; // object for logged in user's info
   projects: any;  // for aliasing formarray
   months: string[] = [];
-  state: string; // for angular animation
   monthlyTotals: number[];
   monthlyTotalsValid: boolean[];
   showProjectsModal: boolean;
@@ -100,8 +85,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
     });
-
-    this.state = 'in';
 
     this.monthlyTotals = new Array(36).fill(null);
     this.monthlyTotalsValid = new Array(36).fill(true);
@@ -186,6 +169,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     this.addProjectToFteForm(FTEFormArray, newProject, true);
     this.sliderDisabled = true;
+    this.displayFTETable = true;
   }
 
   onModalCancelClick() {
@@ -193,20 +177,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.showProjectsModal = false;
     }, 500);
-  }
-
-  onTableScroll(event) {
-    const scrollTop = $('div.table-scrollable').scrollTop();
-    const scrollLeft = $('div.table-scrollable').scrollLeft();
-    // console.log(`scroll left: ${scrollLeft}, scroll top: ${scrollTop}`);
-
-    $('div.table-header-underlay').css('top', `${scrollTop}px`);
-    $('table.table-ftes thead tr th').css('top', `${scrollTop - 10}px`);
-    $('table.table-ftes tbody tr td.col-project-name').css('left', `${scrollLeft - 15}px`);
-    $('table.table-ftes tbody tr td.col-total-name').css('left', `${scrollLeft - 15}px`);
-    $('table.table-ftes thead tr th.header-project').css('left', `${scrollLeft - 15}px`);
-    $('div.table-header-underlay').css('left', `${scrollLeft}px`);
-
   }
 
 
@@ -233,9 +203,19 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
     const FTEFormGroup = FTEFormProjectArray.at(j);
-    FTEFormGroup.patchValue({
-      updated: true
-    });
+
+    if ( (fteReplaceValue === null) && (FTEFormGroup.value.recordID !== null) ) {
+      // if the replacement value is a null and the recordID is accessible, delete that record
+      // TODO: get the newly created recordID after a save transaction is completed
+      FTEFormGroup.patchValue({
+        toBeDeleted: true,
+        updated: false
+      });
+    } else {
+      FTEFormGroup.patchValue({
+        updated: true
+      });
+    }
 
     if (fteReplace) {
       FTEFormGroup.patchValue({
@@ -248,12 +228,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       //   emitViewToModelChange: true
       // });
     }
-
-    // if (fteReplace) {
-    //   FTEFormGroup.setValue({
-    //     fte: fteReplaceValue
-    //   });
-    // }
 
     // update the monthly total
     this.updateMonthlyTotal(j);
@@ -320,7 +294,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
     // set the monthly totals property
     this.monthlyTotals = totals;
-
   }
 
   // set red border around totals that don't total to 1
@@ -350,24 +323,72 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     console.log(this.FTEFormGroup);
     console.log('form data (this.form.value.FTEFormArray):');
     console.log(this.FTEFormGroup.value.FTEFormArray);
+    console.log('fte-project-visible array');
+    console.log(this.fteProjectVisible);
   }
 
   onSaveClick() {
-    const fteData = this.FTEFormGroup.value.FTEFormArray;
-    const t0 = performance.now();
-    // call the api data service to send the put request
-    this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
-    .subscribe(
-      res => {
-        const t1 = performance.now();
-        console.log(`save fte values took ${t1 - t0} milliseconds`);
-        this.appDataService.raiseToast('success', res.message);
-      },
-      err => {
-        console.log(err);
-        this.appDataService.raiseToast('error', err.message);
-      }
-    );
+
+    const firstEditableMonth = this.fteMonthEditable.findIndex( value => {
+      return value === true;
+    });
+
+    // validate totals boxes for historic quarters (must = 1)
+    const oldQuartersValid = this.monthlyTotals.slice(0, firstEditableMonth).every ( value => {
+      return value === 1;
+    });
+
+    // validate totals boxes for current quarter (must = 1)
+    const currentQuarterValid = this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 2).every( value => {
+      return value === 1;
+    });
+
+    // validate totals boxes for future quarters (must be < 1)
+    const futureQuartersValid = this.monthlyTotals.slice(firstEditableMonth + 3).every( value => {
+      return value <= 1;
+    });
+
+    // only save if all quarters are valid
+    if (oldQuartersValid && currentQuarterValid && futureQuartersValid) {
+      const fteData = this.FTEFormGroup.value.FTEFormArray;
+      const t0 = performance.now();
+      // call the api data service to send the put request
+      this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
+      .subscribe(
+        res => {
+          const t1 = performance.now();
+          console.log(`save fte values took ${t1 - t0} milliseconds`);
+          this.appDataService.raiseToast('success', res.message);
+          this.resetProjectFlags();
+        },
+        err => {
+          console.log(err);
+          this.appDataService.raiseToast('error', `${err.status}: ${err.statusText}`);
+        }
+      );
+    } else if (!currentQuarterValid) {
+      const invalidValues = [];
+      this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 2).forEach( value => {
+        if (value !== 1) {
+          invalidValues.push(value);
+        }
+      });
+      this.appDataService.raiseToast('error', `FTE values in the current quarter must total to 1.
+      Please correct the ${invalidValues.length} months and try again.`);
+    } else if (!futureQuartersValid) {
+      const invalidValues = [];
+      this.monthlyTotals.slice(firstEditableMonth + 3).forEach( value => {
+        if (value > 1) {
+          invalidValues.push(value);
+        }
+      });
+      this.appDataService.raiseToast('error', `FTE values in future quarters must not total to more than 1.
+      Please correct the ${invalidValues.length} months in future quarters and try again.`);
+    } else if (!oldQuartersValid) {
+      this.appDataService.raiseToast('error', 'Your historic FTE values are invalid. Please contact the administrators.');
+    } else {
+      this.appDataService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
+    }
   }
 
 
@@ -482,16 +503,38 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     });
     // cast the new project to an 'any', so we can assign arbitrary properties to each array
     const tempProj: any = projFormArray;
+    tempProj.projectID = proj.projectID;
     tempProj.projectName = proj.projectName;  // used to parse the projectName in HTML without having to dive into the controls
-    tempProj.alive = true;  // used to keep track of whether a project should be permanently hidden due to being deleted
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
+  }
+
+  makeFyLabels() {
+    // generate slider labels based on current date
+    let startDate = moment().startOf('year').subtract(2, 'months'); // first day of this FY
+    startDate = moment(startDate).subtract(1, 'year');  // first day of last FY
+    const month = moment(startDate).month();
+    let firstQuarter = moment(startDate).fquarter(-3).quarter;
+    let firstYear = moment(startDate).fquarter(-3).year;
+
+    // make an array of label strings, ie - [Q4'17, Q1'18]
+    for ( let i = 0; i < 12; i++) {
+      this.fqLabelArray.push(`Q${firstQuarter} - ${firstYear.toString().slice(2)}`);
+      firstQuarter++;
+      if (firstQuarter > 4) {
+        this.fyLabelArray.push(`${firstYear.toString()}`);
+        firstYear++;
+        firstQuarter = 1;
+      }
+    }
   }
 
   setSliderConfig() {
 
+    this.makeFyLabels();
+
     // set slider starting range based on current date
-    let startDate = moment().startOf('month');
-    let month = moment(startDate).month();
+    const startDate = moment().startOf('month');
+    const month = moment(startDate).month();
     if (month === 10 || month === 11 || month === 0) {
       this.sliderRange = [4, 6]; // Q1
     } else if (month === 1 || month === 2 || month === 3) {
@@ -503,31 +546,15 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     }
 
     // initialize the by-month FTE display with the slider range handles
+    this.fteQuarterVisible = this.fteQuarterVisible.fill(true, this.sliderRange[0], this.sliderRange[1]);
     this.fteMonthVisible = this.fteMonthVisible.fill(true, this.sliderRange[0] * 3, this.sliderRange[1] * 3);
-
-    // generate slider labels based on current date
-    startDate = moment().startOf('year').subtract(2, 'months'); // first day of this FY
-    startDate = moment(startDate).subtract(1, 'year');  // first day of last FY
-    month = moment(startDate).month();
-    let firstQuarter = moment(startDate).fquarter(-3).quarter;
-    let firstYear = moment(startDate).fquarter(-3).year;
-    const fyLabelArray = new Array<string>(12).fill('');
-
-    // make an array of label strings, ie - [Q4'17, Q1'18]
-    fyLabelArray.forEach(function(element, i) {
-      fyLabelArray[i] = `Q${firstQuarter}'${firstYear.toString().slice(2)}`;
-      firstQuarter++;
-      if (firstQuarter > 4) {
-        firstYear++;
-        firstQuarter = 1;
-      }
-    });
 
     // make array of values for slider pips
     const pipValues = [];
     for (let i = 0; i <= 12; i = i + 0.5) {
       pipValues.push(i);
     }
+    const fqLabelArray = this.fqLabelArray;
 
     // set slider config
     this.mainSliderConfig = {
@@ -545,18 +572,18 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
           density: 24,
 
           // custom filter to set pips only visible at the major steps
-          filter: function filterHalfSteps( value, type ) {
+          filter: ( value, type ) => {
             // a '2' returns the full-size label and marker CSS class
             // a '1' returns the sub-size label and marker css class.  We will override the sub-css to make the marker invisible
             return value % 1 ? 2 : 1;
           },
           format: {
             // format labels usch that full-size pips have no label, but sub-size pips have the FY/Quarter label
-            to: function ( value ) {
+            to: ( value ) => {
                 if (value % 1 === 0) {
-                return '';
+                  return '';
                 } else {
-                return fyLabelArray[value - 0.5];
+                  return fqLabelArray[value - 0.5].slice(0, 2);
                 }
             }
           }
@@ -583,7 +610,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
           active: 'active',
           tooltip: 'tooltip',
           pips: 'pips',
-          pipsHorizontal: 'pips-horizontal',
+          pipsHorizontal: 'pips-horizontal',  // modified
           pipsVertical: 'pips-vertical',
           marker: 'marker',
           markerHorizontal: 'marker-horizontal',
@@ -607,19 +634,46 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
 
-    // make project invisible by setting it to not alive and not visible
-    deletedProject.alive = false;
-    this.fteProjectVisible[index] = false;
-
-    // loop through each month and set the toBeDeleted flag if it has an FTE value
-    deletedProject.controls.forEach( month => {
-      if (month.controls.fte.value) {
-        month.controls.fte.value = null;
-        month.controls.toBeDeleted.setValue(true);
+    // emit confirmation modal after they click delete button
+    this.appDataService.confirmModalData.emit(
+      {
+        title: 'Confirm Deletion',
+        message: `Are you sure you want to permanently delete all FTE values for project ${deletedProject.projectName}?`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 193, 27)',
+        display: true
       }
+    );
+
+    const deleteModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+      if (res) {
+        // if they click ok, grab the deleted project info and exec db call to delete
+        const toBeDeleted = {
+          projectID: deletedProject.projectID,
+          projectName: deletedProject.projectName
+        };
+        const deleteActionSubscription = this.apiDataService.deleteFteProject(toBeDeleted, this.loggedInUser.id).subscribe(
+          deleteResponse => {
+            this.fteProjectVisible.splice(index, 1);
+            this.fteProjectDeletable.splice(index, 1);
+            FTEFormArray.controls.splice(index, 1);
+            this.updateMonthlyTotals();
+            this.setMonthlyTotalsBorder();
+            this.appDataService.raiseToast('success', deleteResponse.message);
+            deleteActionSubscription.unsubscribe();
+          },
+          deleteErr => {
+            this.appDataService.raiseToast('warn', `${deleteErr.status}: ${deleteErr.statusText}`);
+            deleteActionSubscription.unsubscribe();
+          }
+        );
+      } else {
+        console.log('delete aborted');
+      }
+
+      deleteModalSubscription.unsubscribe();
     });
-    this.updateMonthlyTotals();
-    this.setMonthlyTotalsBorder();
+
   }
 
   onSliderChange(value: any) {  // event only fires when slider handle is dropped
@@ -642,6 +696,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     this.updateProjectVisibility(posStart, posDelta);
 
     // set only months that should be visible to true
+    this.fteQuarterVisible = this.fteQuarterVisible.fill(false);
+    this.fteQuarterVisible = this.fteQuarterVisible.fill(true, leftHandle, rightHandle);
     this.fteMonthVisible = this.fteMonthVisible.fill(false);
     this.fteMonthVisible = this.fteMonthVisible.fill(true, posStart, posStart + posDelta);
 
@@ -653,6 +709,28 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     // scrollTop = $('div.table-scrollable').scrollTop();
     // $('div.table-scrollable').scrollTop(scrollTop + 1);
 
+  }
+
+  resetProjectFlags() {
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
+
+    FTEFormArray.controls.forEach( project => {
+      const currentProject: any = project;
+      // loop through each month and reset the flags that were flipped
+      project['controls'].forEach( month => {
+        if (month.value.fte && month.value.newRecord) {
+          // console.log('set newRecord false for: ' + month.value.fte);
+          month.controls.newRecord.setValue(false);
+          month.controls.updated.setValue(false);
+          // console.log('new state: ' + month.value.newRecord);
+        } else if (month.value.fte && month.value.updated) {
+          // console.log('set updated false for: ' + month.value.fte);
+          month.controls.updated.setValue(false);
+          // console.log('new state: ' + month.value.updated);
+        }
+      });
+
+    });
   }
 
   updateProjectVisibility(posStart: number, posDelta: number) {

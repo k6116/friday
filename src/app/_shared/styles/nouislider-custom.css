@@ -4,11 +4,16 @@
   height: 8px;
 }
 
+.noUi-pips-horizontal {
+  top: -14px;
+}
+
 .noUi-value-sub-mod {
   color: rgb(33, 37, 41);
-  font-size: 14px;
+  font-size: 13px;
   margin-top: -12px;
-  font-weight: 500;
+  font-weight: 400;
+  top: -6px;
 }
   
 .noUi-marker-sub-mod {

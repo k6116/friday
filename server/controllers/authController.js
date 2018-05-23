@@ -7,7 +7,7 @@ const moment = require('moment');
 const momentTz = require('moment-timezone');
 
 const tokenSecret = 'rutabega';  // set the secret code word for enconding and decoding the token with jwt
-const expirationTime = 60 * 60 * 1  // units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
+const expirationTime = 60 * 60 * 0.5  // units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
 
 
 function authenticate(req, res) {
