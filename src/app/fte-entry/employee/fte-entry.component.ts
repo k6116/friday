@@ -72,6 +72,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   showProjectsModal: boolean;
   projectList: any;
   timer: any;
+  showProgressBar: boolean;  // triggers indefinate progress bar
 
   constructor(
     private fb: FormBuilder,
@@ -108,7 +109,10 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
     this.loggedInUser = this.authService.loggedInUser;
 
-    this.fteComponentInit();  // initialize the FTE entry component
+    this.showProgressBar = true;
+    setTimeout(() => {
+      this.fteComponentInit();  // initialize the FTE entry component
+    }, 0);
 
     this.setSliderConfig(); // initalize slider config
 
@@ -416,16 +420,25 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     // get FTE data
     console.log('starting to get fte data');
     const t0 = performance.now();
+    // show the google material style indefinate progress bar
+    // this.showProgressBar = true;
     this.apiDataService.getFteData(this.loggedInUser.id)
     .subscribe(
       res => {
-        this.userFTEs = res.nested;
-        this.userFTEsFlat = res.flat;
-        this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
-        this.display = true;  // ghetto way to force rendering after FTE data is fetched
-        // this.projects = this.userFTEs;
-        const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-        this.projects = FTEFormArray.controls;
+        // hide the progress bar
+        this.showProgressBar = false;
+        setTimeout(() => {
+          const t3 = performance.now();
+          this.userFTEs = res.nested;
+          this.userFTEsFlat = res.flat;
+          this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+          this.display = true;  // ghetto way to force rendering after FTE data is fetched
+          // this.projects = this.userFTEs;
+          const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+          this.projects = FTEFormArray.controls;
+          const t4 = performance.now();
+          console.log(`fte form rendering time: ${t4 - t3} milliseconds`);
+        }, 100);
         const t1 = performance.now();
         console.log(`get fte data successfull; took ${t1 - t0} milliseconds`);
       },

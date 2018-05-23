@@ -1,6 +1,8 @@
 
 <app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()"></app-projects-modal>
 
+<app-progress-bar *ngIf="showProgressBar"></app-progress-bar>
+
 <div *ngIf="display" class="container-fluid">
 
     <!-- block for slider -->

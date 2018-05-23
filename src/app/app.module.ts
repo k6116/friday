@@ -58,6 +58,7 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
 import { PerformanceComponent } from './performance/performance.component';
+import { ProgressBarComponent } from './_shared/components/progress-bar/progress-bar.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,8 @@ import { PerformanceComponent } from './performance/performance.component';
     ProjectsRosterModalComponent,
     ToastComponent,
     BlockAppUseComponent,
-    PerformanceComponent
+    PerformanceComponent,
+    ProgressBarComponent
   ],
   imports: [
     AppRoutingModule,
