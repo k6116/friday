@@ -23,9 +23,9 @@ export class ProjectsSetupsComponent implements OnInit {
   showProjectsEditModal: boolean;
   showProjectsCreateModal: boolean;
   display: boolean;
-  editToggle: boolean;
   alertToggle: boolean;
   cardNPI: any;
+  collapseOpen: boolean;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
@@ -35,7 +35,54 @@ export class ProjectsSetupsComponent implements OnInit {
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
-    // this.display = true;
+    this.cardNPI = [
+      {
+        title: 'Project Status',
+        alias: 'projectStatus',
+        value: ''
+      },
+      {
+        title: 'Oracle Item Number',
+        alias: 'oracleItemNumber',
+        value: ''
+      },
+      {
+        title: 'Project Number',
+        alias: 'projectNumber',
+        value: ''
+      },
+      {
+        title: 'Priority',
+        alias: 'priority',
+        value: ''
+      },
+      {
+        title: 'IBO',
+        alias: 'IBO',
+        value: ''
+      },
+      {
+        title: 'MU',
+        alias: 'MU',
+        value: ''
+      },
+      {
+        title: 'Organization',
+        alias: 'departmentID',
+        value: ''
+        },
+        {
+          title: 'Notes',
+          alias: 'notes',
+          value: ''
+        },
+        {
+          title: 'Description',
+          alias: 'description',
+          value: ''
+        },
+
+    ];
   }
 
   ngOnInit() {
@@ -49,9 +96,9 @@ export class ProjectsSetupsComponent implements OnInit {
       this.getUserProjectList();
       this.getProjectAccessRequestsList();
     });
-    // toggle edit view in collapse header
-    this.editToggle = false;
+
     this.alertToggle = false;
+    this.collapseOpen = false;
   }
 
   selectProject(project: any) {
@@ -60,6 +107,7 @@ export class ProjectsSetupsComponent implements OnInit {
     setTimeout(() => {
       this.projectsEditModalComponent.populateForm();
     }, 0);
+    console.log('edit button clicked');
   }
 
   getUserProjectList() {
@@ -81,6 +129,7 @@ export class ProjectsSetupsComponent implements OnInit {
         res => {
           // console.log(res);
           this.projectAccessRequestsList = res;
+          console.log('ProjectAccessRequest: ', this.projectAccessRequestsList);
         },
         err => {
           console.log(err);
@@ -110,17 +159,17 @@ export class ProjectsSetupsComponent implements OnInit {
     this.getUserProjectList();
   }
 
-  onCollapseClick() {
-    console.log('Collapse clicked, Toggle', this.editToggle);
-    if (this.editToggle = true) {
-      this.editToggle = false;
-    }
-    // this.editToggle = !this.editToggle;
-  }
+  onCollapseClick(project: any) {
+    this.collapseOpen = !this.collapseOpen;
+    console.log('Collapse clicked, collapseOpen', this.collapseOpen);
 
-  onEditButtonClick() {
-    console.log('Pencil button clicked, toggle', this.editToggle);
-    this.editToggle = !this.editToggle;
+    for (let i = 0; i < this.cardNPI.length; i++) {
+      for (let j = 0; j < Object.keys(project).length; j++) {
+        if (this.cardNPI[i].alias === Object.keys(project)[j]) {
+          this.cardNPI[i].value = Object.values(project)[j];
+        }
+      }
+    }
   }
 
   requestResponse(request: any, reply: string) {
@@ -136,47 +185,8 @@ export class ProjectsSetupsComponent implements OnInit {
     this.alertToggle = !this.alertToggle;
   }
 
-  getCardInfo() {
-    this.cardNPI = [
-      {
-        title: 'Project Status',
-        alias: 'projectStatus',
-        value: this.projectList
-      },
-      {
-        title: 'Oracle Item Number',
-        alias: 'projectStatus'
-      },
-      {
-        title: 'Project Number',
-        alias: 'projectNumber'
-      },
-      {
-        title: 'Priority',
-        alias: 'priority'
-      },
-      {
-        title: 'IBO',
-        alias: 'ibo'
-      },
-      {
-        title: 'MU',
-        alias: 'mu'
-      },
-      {
-        title: 'Organization',
-        alias: 'organization'
-        },
-        {
-          title: 'Notes',
-          alias: 'notes'
-        },
-        {
-          title: 'Description',
-          alias: 'description'
-        },
-
-    ];
+  collapseToggle() {
+    this.collapseOpen = !this.collapseOpen;
   }
 
 }
