@@ -34,6 +34,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   iconClass: string;
   iconColor: string;
 
+  // spinner display
+  showProgressSpinner: boolean;
+
   // subscriptions
   subscription1: Subscription;
 
@@ -88,6 +91,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     // start timer for authentication time
     const t0 = performance.now();
 
+    // show the spinner
+    this.showProgressSpinner = true;
+
     // call the api data service to authenticate the user credentials
     this.apiDataService.authenticate(user)
       .subscribe(
@@ -120,6 +126,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           //  this.getNestedOrgData(res.jarvisUser.email);
           this.getNestedOrgData('ethan_hunt@keysight.com');
 
+          // hide the spinner
+          this.showProgressSpinner = false;
+
           // route to the main page
           this.router.navigateByUrl('/main');
 
@@ -132,6 +141,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           // TEMP CODE to log the response (error)
           console.error('authentication failed:');
           console.error(err);
+
+          // hide the spinner
+          this.showProgressSpinner = false;
 
           // display the appropriate message depending on the type of error (timeout, invalid credentials, etc.)
           this.handleErrorMessage(err);

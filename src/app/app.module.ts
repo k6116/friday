@@ -10,7 +10,7 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { ClickOutsideModule } from 'ng4-click-outside';
 
 // ANGULAR MATERIAL MODULES
-import { MatButtonModule, MatCheckboxModule, MatExpansionModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
 
 // DIRECTIVES
 import { AutofocusDirective } from './_shared/directives/autofocus.directive';
@@ -59,6 +59,7 @@ import 'hammerjs';
 import 'chartjs-plugin-zoom';
 import { PerformanceComponent } from './performance/performance.component';
 import { ProgressBarComponent } from './_shared/components/progress-bar/progress-bar.component';
+import { ProgressSpinnerComponent } from './_shared/components/progress-spinner/progress-spinner.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { ProgressBarComponent } from './_shared/components/progress-bar/progress
     ToastComponent,
     BlockAppUseComponent,
     PerformanceComponent,
-    ProgressBarComponent
+    ProgressBarComponent,
+    ProgressSpinnerComponent
   ],
   imports: [
     AppRoutingModule,
@@ -102,6 +104,7 @@ import { ProgressBarComponent } from './_shared/components/progress-bar/progress
     MatButtonModule,
     MatCheckboxModule,
     MatExpansionModule,
+    MatProgressSpinnerModule,
     NouisliderModule,
     ClickOutsideModule,
     ChartsModule

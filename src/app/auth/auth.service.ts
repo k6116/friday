@@ -117,8 +117,9 @@ export class AuthService {
             // if the token is not expired
             } else {
               // store the data in this service
-              this.loggedInUser = new User().deserialize(res.jarvisUser);
-              this.setLoggedIn(true);
+              console.log('within getInfoFromToken; token is valid');
+              // this.loggedInUser = new User().deserialize(res.jarvisUser);
+              // this.setLoggedIn(true);
             }
             // TEMP CODE to log the token status
             this.logTokenStatus();
@@ -205,7 +206,7 @@ export class AuthService {
 
   }
 
-
+  // TO-DO: get a new token on app refresh (if there is a token, because it should be considered a new session)
   resetToken() {
     // console.log('attempting to get a new token with a new expiration date');
     this.apiDataService.resetToken(this.loggedInUser)
@@ -342,7 +343,7 @@ export class AuthService {
   // TEMP CODE: to log the token status
   logTokenStatus() {
     if (this.token) {
-      // console.log(`token was issued at: ${this.tokenIssuedDate()}; expiring at: ${this.tokenExpirationDate()}`);
+      console.log(`token was issued at: ${this.tokenIssuedDate()}; expiring at: ${this.tokenExpirationDate()}`);
     }
   }
 
