@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, Output } from '@angular/core';
+import { Component, OnInit, ViewChild, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { Subscription } from 'rxjs/Subscription';
@@ -33,7 +33,7 @@ declare var $: any;
     ])
   ]
 })
-export class TopNavComponent implements OnInit, OnDestroy {
+export class TopNavComponent implements OnInit {
 
   loggedInUser: User;
   firstInitial: string;
@@ -54,8 +54,6 @@ export class TopNavComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute
   ) {
 
-    // TO-DO: try to find a simpler/cleaner way to hide the dropdown on click outside
-    // NOTE: ng4 click outside will only work outside (but within) the navbar component
     this.showDropDown = false;
 
   }
@@ -64,10 +62,6 @@ export class TopNavComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     console.log(`top nav component has been initialized`);
-
-    // console.log('testing user resolver (this.route.snapshot.data)');
-    // console.log(this.route.snapshot.data);
-    // this.loggedInUser = this.route.snapshot.data.loggedInUser.jarvisUser;
 
     this.loggedInUser = this.authService.loggedInUser;
 
@@ -87,20 +81,9 @@ export class TopNavComponent implements OnInit, OnDestroy {
     //   this.firstInitial = this.loggedInUser.fullName.substring(0, 1).toUpperCase();
     // });
 
-    // subscribe to the clickedClass property, to determine if the dropdown container should be closed if it is open
-    // this.subscription1 = this.appDataService.clickedClass.subscribe(
-    //   (clickedClass: string) => {
-    //     this.hideDropDown(clickedClass);
-    // });
-
     // set state to in to enable the angular animations
     this.state = 'in';
 
-  }
-
-
-  ngOnDestroy() {
-    this.subscription1.unsubscribe();
   }
 
   // when the identity area is clicked (logo and text), refresh the page directed to the main route
@@ -111,7 +94,6 @@ export class TopNavComponent implements OnInit, OnDestroy {
   // when the avatar icon is clicked, toggle the property which will either show or hide it using *ngIf
   onAvatarClick() {
     this.showDropDown = !this.showDropDown;
-    console.log(`avatar clicked; show dropdown is ${this.showDropDown}`);
   }
 
   onClickOutside(targetElement) {
@@ -119,8 +101,6 @@ export class TopNavComponent implements OnInit, OnDestroy {
   }
 
   onProfileButtonClick() {
-    // TEMP CODE: log the click to test the button
-    console.log('profile button clicked');
     this.showDropDown = false;
     this.showProfileModal = true;
     this.profileModal.getJobTitleList();
