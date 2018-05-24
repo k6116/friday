@@ -1,16 +1,16 @@
-  .card-header {
+  .card-header-custom {
     cursor: pointer;
     font-weight: normal;
   }
 
-  div.projectsHeader {
+  .card-header-custom tr:hover {
     background-color:rgb(72, 91, 101, 0.1)
   }
 
   .test-buttons {
     margin-top: 50px;
-    /* text-align: center; */
   }
+
   .btn-primary {
     color: #fff;
     background-color: rgb(108, 117, 125);;
@@ -20,10 +20,6 @@
   .divider {
     color: black;
   }
-
-  /* .card-header tr.active{
-    background-color: white;
-  } */
 
   .table tr.active td {
     background-color:#485b65 !important;

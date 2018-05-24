@@ -26,7 +26,7 @@
   <!--  -->
 
   <button class="btn btn-outline-dark btn-sm" data-toggle="tooltip" data-placement="top" title="Create new project">
-      <i class="fa fa-plus" data-toggle="modal" data-target="#projectsCreateModal" (click)="createProject()"></i>
+    <i class="fa fa-plus" data-toggle="modal" data-target="#projectsCreateModal" (click)="createProject()"></i>
   </button>
 
   <!-- ACCORDION START -->
@@ -51,14 +51,14 @@
         <tbody *ngFor="let project of projectList; let k = index">
 
         <!-- PROJECT LIST START -->
-          <tr [class.active]="k == selectedRow" (click)="onCollapseClick(project, k)">
+          <tr class="card-header-custom" [class.active]="k == selectedRow" (click)="onCollapseClick(project, k)">
             <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" >{{ (project['projectName'].length > 70) ? (project['projectName'] | slice:0:67) + '...' : (project['projectName']) }}</td>
             <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" >{{ project['projectType.projectTypeName'] }}</td>
             <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="!project.description">{{ project['description'] }}</td>
             <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="project.description">{{ (project['description'].length > 56) ? (project['description'] | slice:0:56) + '...' : (project['description']) }}</td>
             <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="!project.notes">{{ project['notes'] }}</td>
             <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="project.notes">{{ (project['notes'].length > 56) ? (project['notes'] | slice:0:56) + '...' : (project['notes']) }}</td>
-            <!-- Edit Button -->
+            <!-- Edit and Delete Button - Show only if user is the project creator -->
             <td>
               <i *ngIf="loggedInUser.id===project.createdBy" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)"></i>
             </td>
@@ -69,7 +69,6 @@
         <!-- PROJECT LIST END -->
 
         <!-- COLLAPSABLE CARD-BODY START-->
-        <!-- <ng-container *ngIf="!editButtonClicked"> -->
           <tr id="collapse{{k}}" class="collapse border-warning" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
             <td class="card-body main-card-body align-middle" colspan="6">
               <div class="card-deck">
@@ -120,7 +119,6 @@
               </div>
             </td>
           </tr>
-        <!-- </ng-container> -->
         <!-- COLLAPSABLE CARD-BODY END -->
 
         </tbody>

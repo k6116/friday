@@ -23,10 +23,7 @@ export class ProjectsSetupsComponent implements OnInit {
   showProjectsEditModal: boolean;
   showProjectsCreateModal: boolean;
   display: boolean;
-  alertToggle: boolean;
   cardNPI: any;
-  collapseOpen: boolean;
-  editButtonClicked: boolean;
   selectedRow: any;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
@@ -95,14 +92,9 @@ export class ProjectsSetupsComponent implements OnInit {
         return;
       }
       this.loggedInUser = user;
-      console.log(this.loggedInUser);
       this.getUserProjectList();
       this.getProjectAccessRequestsList();
     });
-
-    this.alertToggle = false;
-    this.collapseOpen = false;
-    this.editButtonClicked = false;
   }
 
   selectProject(project: any) {
@@ -164,12 +156,14 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   onCollapseClick(project: any, k) {
-    console.log('onCollapseClick');
-    console.log('selected row: ', k);
-
     if ( this.selectedRow === k) {
-      this.selectedRow = null;
+      // Card-Header inactive before card-body closes. TO-DO: Ask others for better way than timeout!
+      setTimeout(() => {
+        this.selectedRow = null;
+      }, 400);
+
     } else {
+      // Assign projectList values to cardNPI values
         this.selectedRow = k;
         for (let i = 0; i < this.cardNPI.length; i++) {
           for (let j = 0; j < Object.keys(project).length; j++) {
@@ -179,7 +173,6 @@ export class ProjectsSetupsComponent implements OnInit {
           }
         }
       }
-
   }
 
   requestResponse(request: any, reply: string) {
@@ -192,13 +185,6 @@ export class ProjectsSetupsComponent implements OnInit {
           console.log(err);
         }
       );
-    this.alertToggle = !this.alertToggle;
-  }
-
-  collapseToggle() {
-    this.collapseOpen = !this.collapseOpen;
-    this.editButtonClicked = !this.editButtonClicked;
-    console.log('Edit Button clicked', this.editButtonClicked);
   }
 
 }
