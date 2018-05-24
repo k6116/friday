@@ -21,10 +21,20 @@
     color: black;
   }
 
-  .card-header {
+  /* .card-header tr.active{
     background-color: white;
+  } */
+
+  .table tr.active td {
+    background-color:#485b65 !important;
+    color: white;
+  }
+
+  .main-card-body {
+    background-color:#485b65 !important;
   }
 
   .card-body:hover {
     background: white;
   }
+

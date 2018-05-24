@@ -5,9 +5,7 @@
     <!-- HEADER -->
   <div class="row row-custom">
     <div class="col-xs-12 col-custom">
-      <h1 class="page-header-text">
-        My Projects List
-      </h1>
+      <h1 class="page-header-text">My Projects</h1>
     </div>
   </div>
   
@@ -44,6 +42,8 @@
             <th width="10%" scope="col">Project Type</th>
             <th width="30%"scope="col">Description</th>
             <th width="30%"scope="col">Notes</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <!-- PROJECT HEADER END -->
@@ -51,28 +51,31 @@
         <tbody *ngFor="let project of projectList; let k = index">
 
         <!-- PROJECT LIST START -->
-          <tr class="card-header" [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick(project)">
-            <td>{{ (project['projectName'].length > 70) ? (project['projectName'] | slice:0:67) + '...' : (project['projectName']) }}</td>
-            <td>{{ project['projectType.projectTypeName'] }}</td>
-            <td *ngIf="!project.description">{{ project['description'] }}</td>
-            <td *ngIf="project.description">{{ (project['description'].length > 56) ? (project['description'] | slice:0:56) + '...' : (project['description']) }}</td>
-            <td *ngIf="!project.notes">{{ project['notes'] }}</td>
-            <td *ngIf="project.notes">{{ (project['notes'].length > 56) ? (project['notes'] | slice:0:56) + '...' : (project['notes']) }}</td>
+          <tr [class.active]="k == selectedRow" (click)="onCollapseClick(project, k)">
+            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" >{{ (project['projectName'].length > 70) ? (project['projectName'] | slice:0:67) + '...' : (project['projectName']) }}</td>
+            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" >{{ project['projectType.projectTypeName'] }}</td>
+            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="!project.description">{{ project['description'] }}</td>
+            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="project.description">{{ (project['description'].length > 56) ? (project['description'] | slice:0:56) + '...' : (project['description']) }}</td>
+            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="!project.notes">{{ project['notes'] }}</td>
+            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="project.notes">{{ (project['notes'].length > 56) ? (project['notes'] | slice:0:56) + '...' : (project['notes']) }}</td>
             <!-- Edit Button -->
-            <td class="edit" (click)="collapseToggle()">
-              <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)"></i>
+            <td>
+              <i *ngIf="loggedInUser.id===project.createdBy" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)"></i>
+            </td>
+            <td>
+              <i *ngIf="loggedInUser.id===project.createdBy" class="fa fa-trash-o fa-lg" (click)="onTrashClick()"></i>
             </td>
           </tr>
         <!-- PROJECT LIST END -->
 
         <!-- COLLAPSABLE CARD-BODY START-->
-        <ng-container *ngIf="collapseOpen">
-          <tr id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
-            <td class="card-body align-middle" colspan="5">
+        <!-- <ng-container *ngIf="!editButtonClicked"> -->
+          <tr id="collapse{{k}}" class="collapse border-warning" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
+            <td class="card-body main-card-body align-middle" colspan="6">
               <div class="card-deck">
 
-                <div class="card border-0 mb-3">
-                  <div class="card-body border-right">
+                <div class="card border mb-3">
+                  <div class="card-body">
                     <h5 class="card-title">Basic Info</h5>
                     <table class="table table-sm">
                         <tbody>
@@ -85,21 +88,21 @@
                   </div>
                 </div>
 
-                <div class="card border-top-0 mb-3">
+                <div class="card border mb-3">
                   <div class="card-body">
                     <h5 class="card-title">Project Team</h5>
                     <table class="table table-sm">
                       <tbody>
                         <tr>
-                          <td>Tawanchai Schmitz</td>
-                          <td>Applications Engineer</td>
+                          <td>{{ loggedInUser.fullName }}</td>
+                          <td>Engineer</td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                 </div>
 
-                <div class="card border-0 mb-3">
+                <div class="card border mb-3">
                     <div class="card-body">
                       <h5 class="card-title">Action Items</h5>
                       <ng-container *ngFor="let request of projectAccessRequestsList">
@@ -117,7 +120,7 @@
               </div>
             </td>
           </tr>
-        </ng-container>
+        <!-- </ng-container> -->
         <!-- COLLAPSABLE CARD-BODY END -->
 
         </tbody>

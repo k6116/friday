@@ -26,6 +26,8 @@ export class ProjectsSetupsComponent implements OnInit {
   alertToggle: boolean;
   cardNPI: any;
   collapseOpen: boolean;
+  editButtonClicked: boolean;
+  selectedRow: any;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
@@ -93,12 +95,14 @@ export class ProjectsSetupsComponent implements OnInit {
         return;
       }
       this.loggedInUser = user;
+      console.log(this.loggedInUser);
       this.getUserProjectList();
       this.getProjectAccessRequestsList();
     });
 
     this.alertToggle = false;
     this.collapseOpen = false;
+    this.editButtonClicked = false;
   }
 
   selectProject(project: any) {
@@ -107,7 +111,6 @@ export class ProjectsSetupsComponent implements OnInit {
     setTimeout(() => {
       this.projectsEditModalComponent.populateForm();
     }, 0);
-    console.log('edit button clicked');
   }
 
   getUserProjectList() {
@@ -139,6 +142,7 @@ export class ProjectsSetupsComponent implements OnInit {
 
   createProject() {
     this.showProjectsCreateModal = true;
+
     setTimeout(() => {
       this.projectsCreateModalComponent.resetForm();
     }, 0);
@@ -159,17 +163,23 @@ export class ProjectsSetupsComponent implements OnInit {
     this.getUserProjectList();
   }
 
-  onCollapseClick(project: any) {
-    this.collapseOpen = !this.collapseOpen;
-    console.log('Collapse clicked, collapseOpen', this.collapseOpen);
+  onCollapseClick(project: any, k) {
+    console.log('onCollapseClick');
+    console.log('selected row: ', k);
 
-    for (let i = 0; i < this.cardNPI.length; i++) {
-      for (let j = 0; j < Object.keys(project).length; j++) {
-        if (this.cardNPI[i].alias === Object.keys(project)[j]) {
-          this.cardNPI[i].value = Object.values(project)[j];
+    if ( this.selectedRow === k) {
+      this.selectedRow = null;
+    } else {
+        this.selectedRow = k;
+        for (let i = 0; i < this.cardNPI.length; i++) {
+          for (let j = 0; j < Object.keys(project).length; j++) {
+            if (this.cardNPI[i].alias === Object.keys(project)[j]) {
+              this.cardNPI[i].value = Object.values(project)[j];
+            }
+          }
         }
       }
-    }
+
   }
 
   requestResponse(request: any, reply: string) {
@@ -187,6 +197,8 @@ export class ProjectsSetupsComponent implements OnInit {
 
   collapseToggle() {
     this.collapseOpen = !this.collapseOpen;
+    this.editButtonClicked = !this.editButtonClicked;
+    console.log('Edit Button clicked', this.editButtonClicked);
   }
 
 }

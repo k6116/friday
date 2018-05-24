@@ -96,7 +96,8 @@ function getUserProjectList(req, res) {
 
   const sql = `
     SELECT DISTINCT
-      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes,
+      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes, 
+      P1.CreatedBy as createdBy, P1.CreationDate as createdAt, P1.LastUpdatedBy as updatedBy, P1.LastUpdateDate as updatedAt,
       P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
     FROM
       projects.Projects P1
