@@ -15,6 +15,7 @@ import { MatButtonModule, MatCheckboxModule, MatExpansionModule, MatProgressSpin
 // DIRECTIVES
 import { AutofocusDirective } from './_shared/directives/autofocus.directive';
 import { FteInputRestrictDirective } from './_shared/directives/fte-input-restrict.directive';
+import { ClickOutsideDirective } from './_shared/directives/click-outside.directive';
 
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
@@ -53,14 +54,15 @@ import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/pro
 import { ChartsModule } from 'ng2-charts';
 import { ToastComponent } from './toast/toast.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
+import { PerformanceComponent } from './performance/performance.component';
+import { ProgressBarComponent } from './_shared/components/progress-bar/progress-bar.component';
+import { ProgressSpinnerComponent } from './_shared/components/progress-spinner/progress-spinner.component';
 
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
-import { PerformanceComponent } from './performance/performance.component';
-import { ProgressBarComponent } from './_shared/components/progress-bar/progress-bar.component';
-import { ProgressSpinnerComponent } from './_shared/components/progress-spinner/progress-spinner.component';
-import { ClickOutsideDirective } from './_shared/directives/click-outside.directive';
+
+
 
 @NgModule({
   declarations: [

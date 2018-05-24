@@ -93,7 +93,7 @@ export class AppComponent implements OnInit {
     // update the last activity property with a new timestamp
     this.authService.updateLastActivity();
     // emit the clicked class to the data service for a click outside type solution
-    this.appDataService.clickedClass.emit(event.target.className);
+    // this.appDataService.clickedClass.emit(event.target.className);
     // send the event to the click tracking service to log in the database if appropriate
     this.clickTrackingService.logClickWithAttribute(event);
   }

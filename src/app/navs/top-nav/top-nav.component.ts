@@ -88,10 +88,10 @@ export class TopNavComponent implements OnInit, OnDestroy {
     // });
 
     // subscribe to the clickedClass property, to determine if the dropdown container should be closed if it is open
-    this.subscription1 = this.appDataService.clickedClass.subscribe(
-      (clickedClass: string) => {
-        this.hideDropDown(clickedClass);
-    });
+    // this.subscription1 = this.appDataService.clickedClass.subscribe(
+    //   (clickedClass: string) => {
+    //     this.hideDropDown(clickedClass);
+    // });
 
     // set state to in to enable the angular animations
     this.state = 'in';
@@ -111,17 +111,34 @@ export class TopNavComponent implements OnInit, OnDestroy {
   // when the avatar icon is clicked, toggle the property which will either show or hide it using *ngIf
   onAvatarClick() {
     this.showDropDown = !this.showDropDown;
+    console.log(`avatar clicked; show dropdown is ${this.showDropDown}`);
   }
 
   // hide the drop down container if the clicked class is not one inside the container
   // note: this is the current 'click outside' solution,
   // that will close it if the user clicks anywhere else other than in the container itself
-  hideDropDown(clickedClass: string) {
-    if (this.showDropDown) {
-      if (clickedClass.split(' ')[0] !== 'topnav-menu') {
-        this.showDropDown = false;
-      }
+  // hideDropDown(clickedClass: string) {
+  //   if (this.showDropDown) {
+  //     if (clickedClass.split(' ')[0] !== 'topnav-menu') {
+  //       this.showDropDown = false;
+  //     }
+  //   }
+  // }
+
+  onClickOutside(targetElement) {
+    console.log(`clicked outside avatar dropdown`);
+    console.log(targetElement);
+    console.log($(targetElement));
+    const $clickedEl = $(targetElement);
+    const $dropdownEl = $('div.org-dropdown-control');
+    // if ($('div.topnav-menu.app-menu-dropdown').contains($(targetElement))) {
+    //   console.log('dropdown was clicked (or an element inside it');
+    // }
+    if (!$(targetElement).closest($('div.topnav-menu.app-menu-dropdown')).length) {
+      console.log('avatar was not clicked');
+      this.showDropDown = false;
     }
+    // this.showDropDown = false;
   }
 
 

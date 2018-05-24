@@ -25,7 +25,7 @@
       </div>
       
       
-      <div *ngIf="showDropDown" [@conditionState]="state" class="topnav-menu app-menu-dropdown-cont">
+      <div *ngIf="showDropDown" [@conditionState]="state" class="topnav-menu app-menu-dropdown-cont" (appClickOutside)="onClickOutside($event)">
         <div class="topnav-menu app-menu-dropdown-name">
           {{ loggedInUser?.fullName }}
         </div>
