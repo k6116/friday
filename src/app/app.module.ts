@@ -60,6 +60,7 @@ import 'chartjs-plugin-zoom';
 import { PerformanceComponent } from './performance/performance.component';
 import { ProgressBarComponent } from './_shared/components/progress-bar/progress-bar.component';
 import { ProgressSpinnerComponent } from './_shared/components/progress-spinner/progress-spinner.component';
+import { ClickOutsideDirective } from './_shared/directives/click-outside.directive';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { ProgressSpinnerComponent } from './_shared/components/progress-spinner/
     BlockAppUseComponent,
     PerformanceComponent,
     ProgressBarComponent,
-    ProgressSpinnerComponent
+    ProgressSpinnerComponent,
+    ClickOutsideDirective
   ],
   imports: [
     AppRoutingModule,
