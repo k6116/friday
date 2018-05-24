@@ -114,37 +114,14 @@ export class TopNavComponent implements OnInit, OnDestroy {
     console.log(`avatar clicked; show dropdown is ${this.showDropDown}`);
   }
 
-  // hide the drop down container if the clicked class is not one inside the container
-  // note: this is the current 'click outside' solution,
-  // that will close it if the user clicks anywhere else other than in the container itself
-  // hideDropDown(clickedClass: string) {
-  //   if (this.showDropDown) {
-  //     if (clickedClass.split(' ')[0] !== 'topnav-menu') {
-  //       this.showDropDown = false;
-  //     }
-  //   }
-  // }
-
   onClickOutside(targetElement) {
-    console.log(`clicked outside avatar dropdown`);
-    console.log(targetElement);
-    console.log($(targetElement));
-    const $clickedEl = $(targetElement);
-    const $dropdownEl = $('div.org-dropdown-control');
-    // if ($('div.topnav-menu.app-menu-dropdown').contains($(targetElement))) {
-    //   console.log('dropdown was clicked (or an element inside it');
-    // }
-    if (!$(targetElement).closest($('div.topnav-menu.app-menu-dropdown')).length) {
-      console.log('avatar was not clicked');
-      this.showDropDown = false;
-    }
-    // this.showDropDown = false;
+    this.showDropDown = false;
   }
-
 
   onProfileButtonClick() {
     // TEMP CODE: log the click to test the button
     console.log('profile button clicked');
+    this.showDropDown = false;
     this.showProfileModal = true;
     this.profileModal.getJobTitleList();
   }

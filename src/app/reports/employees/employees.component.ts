@@ -334,6 +334,11 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   }
 
 
+  onClickOutside(clickedElement) {
+    this.displayOrgDropDown = false;
+  }
+
+
   flattenNestedOrgData(org: any): any {
 
     const flatOrgData: any[] = [];

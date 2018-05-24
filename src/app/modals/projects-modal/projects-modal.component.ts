@@ -372,7 +372,14 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   onCancelClicked() {
-    console.log('cancel button clicked');
+    this.closeModal();
+  }
+
+  onClickOutside(clickedElement) {
+    this.closeModal();
+  }
+
+  closeModal() {
     this.outerDivState = 'out';
     this.innerDivState = 'out';
     this.cancel.emit(true);

@@ -22,7 +22,7 @@
           </div>
         </div>
 
-        <div *ngIf="displayOrgDropDown" class="org-dropdown-cont" (scroll)="onScroll($event)">
+        <div *ngIf="displayOrgDropDown" class="org-dropdown-cont" (scroll)="onScroll($event)" (appClickOutside)="onClickOutside($event)" [exception]="'div.org-dropdown-control'">
           <div class="org-dropdown-cont-inner">
             <app-org-dropdown [employees]="nestedOrgData" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)"></app-org-dropdown>
           </div>
