@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     private appDataService: AppDataService,
     private authService: AuthService,
-    private clickTrackingService: ClickTrackingService
+    private clickTrackingService: ClickTrackingService,
   ) {
 
     // set the timer interval in minutes, used to check for user activity
@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
 
     // check for browser compatibility
-    const browserCheck = this.broswerIsCompatible();
+    const browserCheck = this.browserIsCompatible();
 
     // if the browser is not compatible, navigate (redirect) to the block page
     if (!browserCheck) {
@@ -74,11 +74,10 @@ export class AppComponent implements OnInit {
       console.log(`app component has been initialized; current route is: ${this.router.url}`);
     }, 0);
 
-
   }
 
   // returns true or false depending on whether they are using Chrome version 65.0 or later
-  broswerIsCompatible(): boolean {
+  browserIsCompatible(): boolean {
     return bowser.name === 'Chrome' && +bowser.version >= 65;
   }
 

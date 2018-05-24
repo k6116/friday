@@ -63,11 +63,9 @@ export class ApiDataService {
   }
 
   getEmployeeData(managerEmailAddress: string) {
-
     return this.http.get(`/api/employeeList/${managerEmailAddress}`)
     .timeout(this.timeout)
     .map((response: Response) => response.json());
-
   }
 
   // update FTE data
@@ -77,6 +75,14 @@ export class ApiDataService {
     return this.http.post(`/api/ftedata/${userID}`, JSON.stringify(fteData), options)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
+  }
+
+  deleteFteProject(projectID: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+    return this.http.post(`/api/ftedata/deleteProject/${userID}`, JSON.stringify(projectID), options)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
   }
 
   getOrgData(emailAddress: string) {
@@ -189,7 +195,19 @@ export class ApiDataService {
   }
 
   getPublicProjectTypes(userID: number) {
-    return this.http.get(`/api/getPublicProjectTypes/${userID}}`)
+    return this.http.get(`/api/getPublicProjectTypes/${userID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectAccessTeamList(userID: number, managerEmailAddress: string) {
+    return this.http.get(`/api/getProjectAccessTeamList/${userID}/${managerEmailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectAccessList(userID: number) {
+    return this.http.get(`/api/getProjectAccessList/${userID}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
@@ -201,5 +219,19 @@ export class ApiDataService {
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
+
+  sendRequestProjectEmail(userID: number, ownerID: number, projectName: string) {
+    return this.http.post(`/api/sendRequestProjectEmail/${userID}/${ownerID}/${projectName}`, null)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string) {
+    return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}`, null)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+
 
 }

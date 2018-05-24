@@ -13,6 +13,7 @@ router.post('/resetToken', controllers.auth.resetToken);
 // FTE data controller
 router.get('/ftedata/:userID', controllers.fteData.getFteData);
 router.post('/ftedata/:userID', controllers.fteData.update);
+router.post('/ftedata/deleteProject/:userID', controllers.fteData.deleteProject);
 
 // PROJECT CONTROLLER
 router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
@@ -37,9 +38,13 @@ router.post('/clickTracking/:userID', controllers.clickTracking.insert);
 
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
+router.post('/sendRequestProjectEmail/:userID/:ownerID/:projectName', controllers.email.sendRequestProject); 
+router.post('/sendProjectApprovalEmail/:userID/:ownerID/:projectName', controllers.email.sendProjectApproval);
 
 //PROJECT ACCESS CONTROLLER
 router.get('/getProjectAccessRequestsList/:userID', controllers.projectAccess.getProjectAccessRequestsList);
+router.get('/getProjectAccessTeamList/:userID/:managerEmailAddress', controllers.projectAccess.getProjectAccessTeamList);
+router.get('/getProjectAccessList/:userID', controllers.projectAccess.getProjectAccessList);
 router.get('/getPublicProjectTypes/:userID', controllers.projectAccess.getPublicProjectTypes);
 router.post('/submitProjectAccessRequest/:userID', controllers.projectAccess.insertProjectAccessRequest);
 router.post('/responseProjectAccessRequest/:userID/:reply', controllers.projectAccess.updateProjectAccessRequest);

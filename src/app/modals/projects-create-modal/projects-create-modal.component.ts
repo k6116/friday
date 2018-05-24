@@ -19,7 +19,7 @@ export class ProjectsCreateModalComponent implements OnInit {
 
   form: FormGroup;
   userID: any;
-  userEmailAddress: string;
+  userEmail: string;
   projectTypesList: any;
   userPLMData: any;
 
@@ -36,8 +36,11 @@ export class ProjectsCreateModalComponent implements OnInit {
   ngOnInit() {
      // get the user id
      this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
-     this.userEmailAddress = this.authService.loggedInUser ? this.authService.loggedInUser.email : null;
-     this.getUserPLMData();
+     this.userEmail = this.authService.loggedInUser ? this.authService.loggedInUser.email : null;
+
+     if (!this.appDataService.userPLMData) {
+      this.getUserPLMData(this.userEmail);
+     }
   }
 
   resetForm() {
@@ -48,19 +51,6 @@ export class ProjectsCreateModalComponent implements OnInit {
       projectDescription: [null],
       projectNotes: [null],
     });
-  }
-
-  getUserPLMData() {
-    this.apiDataService.getUserPLMData(this.userEmailAddress)
-    .subscribe(
-      res => {
-        console.log(res);
-        this.userPLMData = res;
-      },
-      err => {
-        console.log(err);
-      }
-    );
   }
 
   getProjectTypesList() {
@@ -85,7 +75,7 @@ export class ProjectsCreateModalComponent implements OnInit {
 
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
-    project.projectOrgManager = this.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+    project.projectOrgManager = this.appDataService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
 
     this.apiDataService.createProject(project, this.userID)
     .subscribe(
@@ -98,6 +88,19 @@ export class ProjectsCreateModalComponent implements OnInit {
       }
     );
 
+  }
+
+  getUserPLMData(userEmailAddress: string) {
+    this.apiDataService.getUserPLMData(userEmailAddress)
+    .subscribe(
+      res => {
+        console.log('User PLM Data Retrieved');
+        this.appDataService.userPLMData = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
 }

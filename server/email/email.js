@@ -18,8 +18,15 @@ function setSchedules() {
 // │    └──────────────────── minute (0 - 59)
 // └───────────────────────── second (0 - 59, OPTIONAL)
 
-// '0 6 1 2,5,8,11 *'
-schedule.scheduleJob(('15 17 15 2,5,8,11 *'), () => {
+//TODO: If ENV = PROD then use quarterly schedule
+let sched = '';
+if (1 == 0) {
+  sched = '0 6 1 2,5,8,11 *'; // Quarterly Schedule for PROD
+} else {
+  sched = '23 14 30 2,5,8,11 *'; // By the Minute testing for Non-PROD
+}
+
+schedule.scheduleJob((sched), () => {
     console.log('node-schedule event fired at: ' + moment().format('dddd, MMMM Do YYYY, h:mm:ss a'));
     axios
       .post(`http://localhost:3000/api/sendFTEReminder`)
