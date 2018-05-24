@@ -96,14 +96,15 @@ function getUserProjectList(req, res) {
 
   const sql = `
     SELECT DISTINCT
-      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes,
+      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes, 
+      P1.CreatedBy as createdBy, P1.CreationDate as createdAt, P1.LastUpdatedBy as updatedBy, P1.LastUpdateDate as updatedAt,
       P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
     FROM
       projects.Projects P1
       LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
-      LEFT JOIN resources.ProjectEmployees P3 ON P1.CreatedBy = P3.EmployeeID
+      LEFT JOIN resources.ProjectEmployees P3 ON P1.ProjectID = P3.ProjectID
     WHERE
-      P1.CreatedBy = '${userID}'
+      P1.CreatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {

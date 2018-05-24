@@ -1,17 +1,36 @@
-  h6.mb-0 {
+  .card-header-custom {
     cursor: pointer;
+    font-weight: normal;
   }
 
-  div.projectsHeader {
+  .card-header-custom tr:hover {
     background-color:rgb(72, 91, 101, 0.1)
   }
 
   .test-buttons {
     margin-top: 50px;
-    text-align: center;
   }
+
   .btn-primary {
     color: #fff;
     background-color: rgb(108, 117, 125);;
     border-color: rgb(108, 117, 125);;
   }
+
+  .divider {
+    color: black;
+  }
+
+  .table tr.active td {
+    background-color:#485b65 !important;
+    color: white;
+  }
+
+  .main-card-body {
+    background-color:#485b65 !important;
+  }
+
+  .card-body:hover {
+    background: white;
+  }
+
