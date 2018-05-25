@@ -1,12 +1,51 @@
 
 <!-- temp page content for testing routes -->
 <div class="container-fluid">
+
+    <!-- <div class="row row-custom">
+      <div class="col-sm">
+        <div>
+            <button class="btn btn-primary" (click)="loadChart()">Load Chart</button>
+        </div>
+      </div>
+    </div> -->
+      
   <div class="row row-custom">
-    <div class="col-xs-12 col-custom">
-      <h2 class="page-header-text">
-        Projects Reports Page
-        <input type="text" class="form-control">
-      </h2>
+
+    <div class="col-sm">
+      <div *ngIf="displayTopFTEProjectList">
+        <h1>Top FTE Projects List</h1>
+        <div class="table-container">
+          <table class="table table-sm table-hover">
+            <thead>
+              <tr>
+                <th width="30%" scope="col">Project Name</th>
+                <th width="10%" scope="col">Project Type</th>
+                <th width="10%" scope="col">Priority</th>
+                <th width="10%" scope="col">Total FTE</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let project of topFTEProjectList">
+              <tr (click)="onProjectClick(project)">
+                <td>{{ project.projectName }}</td>
+                <td>{{ project.projectTypeName }}</td>
+                <td>{{ project.priorityName }}</td>
+                <td>{{ project.totalFTE }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+
+    <div class="col-sm fte-history-chart">
+        <div id="FTEHistory"></div>
+    </div>
+
+    <div class="col-sm fte-history-chart">
+        <h1>HI</h1>
+    </div> 
+
   </div>
+
 </div>

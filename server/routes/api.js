@@ -49,6 +49,10 @@ router.get('/getJobTitleList', controllers.profile.show);
 router.post('/updateProfile/:userID', controllers.profile.update);
 // router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
 
+// REPORTS PROJECT CONTROLLER
+router.get('/getProjectFTEHistory/:projectID', controllers.reportsProject.getProjectFTEHistory);
+router.get('/getTopFTEProjectList/', controllers.reportsProject.getTopFTEProjectList);
+
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified

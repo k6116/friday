@@ -220,4 +220,16 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getProjectFTEHistory(projectID: number) {
+    return this.http.get(`/api/getProjectFTEHistory/${projectID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getTopFTEProjectList() {
+    return this.http.get(`/api/getTopFTEProjectList/`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
 }
