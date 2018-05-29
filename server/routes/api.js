@@ -52,6 +52,7 @@ router.post('/updateProfile/:userID', controllers.profile.update);
 // REPORTS PROJECT CONTROLLER
 router.get('/getProjectFTEHistory/:projectID', controllers.reportsProject.getProjectFTEHistory);
 router.get('/getTopFTEProjectList/', controllers.reportsProject.getTopFTEProjectList);
+router.get('/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.reportsProject.getProjectEmployeeFTEList);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 

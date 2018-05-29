@@ -11,7 +11,8 @@ function getProjectFTEHistory(req, res) {
 
   const sql = `
     SELECT
-      P.ProjectName as projectName, PT.ProjectTypeName as projectTypeName, SUM(PE.FTE) as totalMonthlyFTE, MONTH(PE.FiscalDate) as fiscalMonth, YEAR(PE.FiscalDate) as fiscalYear
+      P.ProjectName as projectName, PT.ProjectTypeName as projectTypeName, SUM(PE.FTE) as totalMonthlyFTE,
+      PE.FiscalDate as fiscalDate, MONTH(PE.FiscalDate) as fiscalMonth, YEAR(PE.FiscalDate) as fiscalYear
     FROM
       resources.ProjectEmployees PE
       LEFT JOIN projects.Projects P ON PE.ProjectID = P.ProjectID
@@ -67,7 +68,39 @@ function getTopFTEProjectList(req, res) {
     });
 }
 
+function getProjectEmployeeFTEList(req, res) {
+
+  const projectID = req.params.projectID;
+  const fiscalDate = req.params.fiscalDate;
+
+  const sql = `
+    SELECT
+      P.ProjectName as projectName, E.FullName as fullName, JT.JobTitleName as jobTitleName, JTS.JobTitleSubName as jobTitleSubName, PE.FTE as fte
+    FROM
+      resources.ProjectEmployees PE
+      LEFT JOIN projects.Projects P ON PE.ProjectID = P.ProjectID
+      LEFT JOIN accesscontrol.Employees E ON PE.EmployeeID = E.EmployeeID
+      LEFT JOIN accesscontrol.JobTitle JT ON E.JobTitleID = JT.JobTitleID
+      LEFT JOIN accesscontrol.JobTitleSub JTS ON E.JobTitleSubID = JTS.JobTitleSubID
+    WHERE
+      P.ProjectID = '${projectID}' and FiscalDate = '${fiscalDate}'
+    `
+
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(data => {
+      console.log("returning project employee FTE list");
+      res.json(data);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 module.exports = {
   getProjectFTEHistory: getProjectFTEHistory,
-  getTopFTEProjectList: getTopFTEProjectList
+  getTopFTEProjectList: getTopFTEProjectList,
+  getProjectEmployeeFTEList: getProjectEmployeeFTEList
 }

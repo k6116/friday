@@ -14,7 +14,7 @@
 
     <div class="col-sm">
       <div *ngIf="displayTopFTEProjectList">
-        <h1>Top FTE Projects List</h1>
+        <h2>Top FTE Projects List</h2>
         <div class="table-container">
           <table class="table table-sm table-hover">
             <thead>
@@ -42,10 +42,29 @@
         <div id="FTEHistory"></div>
     </div>
 
-    <div class="col-sm fte-history-chart">
-        <h1>HI</h1>
-    </div> 
-
+    <div class="col-sm">
+        <div *ngIf="displayProjectEmployeeList">
+          <h2>{{ selectedFiscalMonth }} {{ selectedFiscalYear }} | Employee FTEs</h2>
+          <div class="table-container">
+            <table class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th width="20%" scope="col">Employee Name</th>
+                  <th width="40%" scope="col">JobTitle</th>
+                  <th width="10%" scope="col">FTE</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let employee of projectEmployeeData">
+                <tr>
+                  <td>{{ employee.fullName }}</td>
+                  <td>{{ employee.jobTitleName }} - {{ employee.jobTitleSubName }}</td>
+                  <td>{{ employee.fte }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
   </div>
 
 </div>

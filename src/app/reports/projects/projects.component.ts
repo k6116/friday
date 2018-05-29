@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 
 import * as Highcharts from 'highcharts';
+// import Annotations from 'highcharts/modules/annotations';
 
 @Component({
   selector: 'app-projects-reports',
@@ -11,10 +12,15 @@ import * as Highcharts from 'highcharts';
 export class ProjectsReportsComponent implements OnInit {
 
     topFTEProjectList: any;
+    projectEmployeeData: any;
     totalMonthlyFTE: any;
     fiscalDate: any;
     selectedProject: any;
+    selectedFiscalDate: any;
+    selectedFiscalMonth: any;
+    selectedFiscalYear: any;
     displayTopFTEProjectList: boolean;
+    displayProjectEmployeeList: boolean;
 
     constructor(
         private apiDataService: ApiDataService
@@ -22,6 +28,7 @@ export class ProjectsReportsComponent implements OnInit {
 
     ngOnInit() {
         this.displayTopFTEProjectList = false;
+        this.displayProjectEmployeeList = false;
 
         this.apiDataService.getTopFTEProjectList()
             .subscribe(
@@ -53,10 +60,26 @@ export class ProjectsReportsComponent implements OnInit {
                     //     obj[i] = res[i]; return obj;
                     // }, {});
                     this.fiscalDate = Object.keys(res)
-                    .map(i => new Array(res[i].fiscalMonth + ' - ' + res[i].fiscalYear, res[i].totalMonthlyFTE));
+                    .map(i => new Array(res[i].fiscalDate, res[i].totalMonthlyFTE));
 
                     console.log('fiscalDate', this.fiscalDate);
                     this.projectFTEHistoryChart();
+                },
+                err => {
+                    console.log(err);
+                }
+        );
+    }
+
+    getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
+
+        this.displayProjectEmployeeList = true;
+
+        this.apiDataService.getProjectEmployeeFTEList(projectID, fiscalDate)
+            .subscribe(
+                res => {
+                    console.log('Project FTE Employee Data: ', res);
+                    this.projectEmployeeData = res;
                 },
                 err => {
                     console.log(err);
@@ -103,6 +126,12 @@ export class ProjectsReportsComponent implements OnInit {
                             click: function(e) {
                                const p = e.point;
                                console.log('x: ' + p.name + ', y: ' + p.y);
+                               this.selectedFiscalDate = p.name;
+                               const date = new Date(this.selectedFiscalDate);
+                               const locale = 'en-us';
+                               this.selectedFiscalMonth = date.toLocaleString(locale, {month: 'long'});
+                               this.selectedFiscalYear = date.getFullYear();
+                               this.getProjectEmployeeFTEList(this.selectedProject.projectID, p.name);
                             //    this.myComponentMethod(p.category,p.series.name);
                             }.bind(this)
                         }
@@ -114,6 +143,17 @@ export class ProjectsReportsComponent implements OnInit {
             name: this.selectedProject.projectName,
             data: this.fiscalDate,
             }],
+
+            // annotations: [{
+            //     labels: [{
+            //         point: 'max',
+            //         text: 'Max'
+            //     }, {
+            //         point: 'min',
+            //         text: 'Min',
+            //         backgroundColor: 'white'
+            //     }]
+            // }]
 
         });
 

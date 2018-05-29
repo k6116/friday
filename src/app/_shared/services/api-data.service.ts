@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import 'rxjs/add/operator/timeout';
 import 'rxjs/add/operator/map';
+import { AnonymousSubscription } from 'rxjs/Subscription';
 
 
 @Injectable()
@@ -90,7 +91,6 @@ export class ApiDataService {
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
-
 
   getProjects() {
     return this.http.get('api/projects')
@@ -228,6 +228,12 @@ export class ApiDataService {
 
   getTopFTEProjectList() {
     return this.http.get(`/api/getTopFTEProjectList/`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
+    return this.http.get(`/api/getProjectEmployeeFTEList/${projectID}/${fiscalDate}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
