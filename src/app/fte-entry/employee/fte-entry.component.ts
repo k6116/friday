@@ -333,13 +333,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       return value === true;
     });
 
-    // validate totals boxes for historic quarters (must = 1)
-    const oldQuartersValid = this.monthlyTotals.slice(0, firstEditableMonth).every ( value => {
-      return value === 1;
-    });
-
     // validate totals boxes for current quarter (must = 1)
-    const currentQuarterValid = this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 2).every( value => {
+    const currentQuarterValid = this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).every( value => {
       return value === 1;
     });
 
@@ -349,7 +344,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     });
 
     // only save if all quarters are valid
-    if (oldQuartersValid && currentQuarterValid && futureQuartersValid) {
+    if (currentQuarterValid && futureQuartersValid) {
       const fteData = this.FTEFormGroup.value.FTEFormArray;
       const t0 = performance.now();
       // call the api data service to send the put request
@@ -368,7 +363,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       );
     } else if (!currentQuarterValid) {
       const invalidValues = [];
-      this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 2).forEach( value => {
+      this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).forEach( value => {
         if (value !== 1) {
           invalidValues.push(value);
         }
@@ -384,8 +379,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       });
       this.appDataService.raiseToast('error', `FTE values in future quarters must not total to more than 1.
       Please correct the ${invalidValues.length} months in future quarters and try again.`);
-    } else if (!oldQuartersValid) {
-      this.appDataService.raiseToast('error', 'Your historic FTE values are invalid. Please contact the administrators.');
     } else {
       this.appDataService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
     }
@@ -659,6 +652,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
             FTEFormArray.controls.splice(index, 1);
             this.updateMonthlyTotals();
             this.setMonthlyTotalsBorder();
+            console.log('stuff was updated');
             this.appDataService.raiseToast('success', deleteResponse.message);
             deleteActionSubscription.unsubscribe();
           },
