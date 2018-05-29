@@ -243,16 +243,14 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     // initialize a temporary variable, set to zero
     let total = 0;
 
-    // set the outer form array of projeccts and months
-    const fteTable = this.FTEFormGroup.value.FTEFormArray;
+    // set the outer form array of projects and months
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
 
     // loop through each project
-    fteTable.forEach((project, i) => {
-      // loop through each month
-      project.forEach((month, j) => {
-        // if the month matches the month that was updated, update the total
-        if (j === index) {
-          total += +month.fte;
+    FTEFormArray.controls.forEach( project => {
+      project['controls'].forEach( (month, i) => {
+        if (i === index) {
+          total += +month.value.fte;
         }
       });
     });
@@ -271,14 +269,13 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     // initialize a temporary array with zeros to hold the totals
     let totals = new Array(36).fill(0);
 
-    // set the outer form array of projeccts and months
-    const fteTable = this.FTEFormGroup.value.FTEFormArray;
+    // set the outer form array of projects and months
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
 
     // loop through each project
-    fteTable.forEach((project, i) => {
-      // loop through each month
-      project.forEach((month, j) => {
-        totals[j] += +month.fte;
+    FTEFormArray.controls.forEach( project => {
+      project['controls'].forEach( (month, i) => {
+        totals[i] += +month.value.fte;
       });
     });
 
@@ -696,12 +693,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     this.fteMonthVisible = this.fteMonthVisible.fill(true, posStart, posStart + posDelta);
 
     this.checkIfNoProjectsVisible();
-
-    // TEMP CODE: workaround for rendering issue for column headers (months)
-    // let scrollTop = $('div.table-scrollable').scrollTop();
-    // $('div.table-scrollable').scrollTop(scrollTop - 1);
-    // scrollTop = $('div.table-scrollable').scrollTop();
-    // $('div.table-scrollable').scrollTop(scrollTop + 1);
 
   }
 
