@@ -16,12 +16,8 @@
     <!-- begin row for FTE entry table -->
     <div class="row row-custom top-margin">
 
-        <div *ngIf="!displayFTETable" class="col-sm col-custom fte-table-container">
-            <p>no FTE data for the selected period</p>
-        </div>
-
         <!-- block for FTE entry div table -->
-        <div *ngIf="displayFTETable" class="col-sm col-custom fte-table-container">
+        <div class="col-sm col-custom fte-table-container">
             <form [formGroup]="FTEFormGroup">
 
                 <div class="fte-table" formArrayName="FTEFormArray">
@@ -51,7 +47,7 @@
                         </div>
                     </div>
 
-                    <div class="fte-table-body">
+                    <div *ngIf="displayFTETable" class="fte-table-body">
                         <!-- loop through each project, one row per project -->
                         <ng-container *ngFor="let project of projects; let i = index">
                             <div class="fte-table-row" [formGroupName]="i" [style.display]="(fteProjectVisible[i]) ? 'table-row' : 'none'">
