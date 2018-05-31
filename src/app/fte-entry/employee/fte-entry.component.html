@@ -3,6 +3,30 @@
 
 <div *ngIf="display" class="container-fluid">
 
+    <div class="row row-custom">
+        <div class="col-sm col-custom col-underlined">
+            <h1 class="page-header-text">My FTEs</h1>
+        </div>
+    </div>
+
+    <div class="row row-custom">
+        <div class="col-sm col-custom">
+            <button class="btn btn-primary btn-fte-toolbar" (click)="onAddProjectClick()">
+                <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
+            </button>
+            <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
+                <i class="fa fa-table"></i>&nbsp;&nbsp;Export
+            </button>
+            <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
+            <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveClick()">
+                <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+            </button>
+            <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-eraser"></i>&nbsp;&nbsp;Reset
+            </button>
+        </div>
+    </div>
+
     <!-- block for slider -->
     <div class="col-sm col-custom col-slider" (click)="showSliderDisabledToast()">
         <table class="slider-header">
@@ -13,8 +37,9 @@
         <nouislider [config]="mainSliderConfig" [tooltips]="[ false, false ]" [(ngModel)]="sliderRange" [disabled]="sliderDisabled" (update)="onSliderUpdate($event)" (change)="onSliderChange($event)"></nouislider>
     </div>
 
+    
     <!-- begin row for FTE entry table -->
-    <div class="row row-custom top-margin">
+    <div class="row row-custom">
 
         <!-- block for FTE entry div table -->
         <div class="col-sm col-custom fte-table-container">
@@ -89,12 +114,5 @@
             </form>
         </div> <!-- end div that controls entire FTE entry table visibility -->
     </div> <!-- end row for FTE entry table -->
-
-    <div class="test-buttons">
-        <button class="btn btn-primary" (click)="onAddProjectClick()">Add Project</button>
-        <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
-        <button class="btn btn-primary" (click)="onSaveClick()">Save</button>
-        <button class="btn btn-primary" (click)="exportXLSX()">Export</button>
-    </div>
 
 </div> <!-- end FTE component container div -->
