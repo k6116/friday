@@ -150,26 +150,39 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       this.showProjectsModal = false;
     }, 500);
 
-    const newProject = new UserFTEs;
-    newProject.userID = this.loggedInUser.id;
-    newProject.projectID = selectedProject.ProjectID;
-    newProject.projectName = selectedProject.ProjectName;
-
-    // loop through the already-built months array and initialize null FTEs for each month in this new project
-    newProject.allocations = new Array<AllocationsArray>();
-    this.months.forEach( month => {
-      const newMonth = new AllocationsArray;
-      newMonth.month = moment(month).utc().format();
-      newMonth.fte = null;
-      newMonth.recordID = null;
-      newProject.allocations.push(newMonth);
+    // verify selectedProject has not already been added
+    const flatFteArray = this.FTEFormGroup.value.FTEFormArray;
+    const currentProjectsList = [];
+    flatFteArray.forEach( project => {
+      currentProjectsList.push(project[0].projectID);
     });
+    const alreadyExists = currentProjectsList.find( value => {
+      return value === selectedProject.ProjectID;
+    });
+    if (!alreadyExists) {
+      const newProject = new UserFTEs;
+      newProject.userID = this.loggedInUser.id;
+      newProject.projectID = selectedProject.ProjectID;
+      newProject.projectName = selectedProject.ProjectName;
 
-    // this.userFTEs.push(newProject); // push to the userFTEs object and rebuild the form
-    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-    this.addProjectToFteForm(FTEFormArray, newProject, true);
-    this.sliderDisabled = true;
-    this.displayFTETable = true;
+      // loop through the already-built months array and initialize null FTEs for each month in this new project
+      newProject.allocations = new Array<AllocationsArray>();
+      this.months.forEach( month => {
+        const newMonth = new AllocationsArray;
+        newMonth.month = moment(month).utc().format();
+        newMonth.fte = null;
+        newMonth.recordID = null;
+        newProject.allocations.push(newMonth);
+      });
+
+      const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+      this.addProjectToFteForm(FTEFormArray, newProject, true);
+      this.sliderDisabled = true;
+      this.displayFTETable = true;
+    } else {
+      this.appDataService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
+    }
+
   }
 
   onModalCancelClick() {
