@@ -99,8 +99,68 @@ function getProjectEmployeeFTEList(req, res) {
     });
 }
 
+function getQuarterlyEmployeeFTETotals(req, res) {
+
+  const employeeID = req.params.employeeID;
+  const fiscalQuarter = req.params.fiscalQuarter;
+  const fiscalYear = req.params.fiscalYear
+
+  switch(fiscalQuarter) {
+    case '1':
+      mo1 = 11;
+      mo2 = 12;
+      mo3 = 1;
+      break;
+    case '2':
+      mo1 = 2;
+      mo2 = 3;
+      mo3 = 4;
+      break;
+    case '3':
+      mo1 = 5;
+      mo2 = 6;
+      mo3 = 7;
+      break;
+    case '4':
+      mo1 = 8;
+      mo2 = 9;
+      mo3 = 10;
+      break;
+  }
+
+  const sql = `
+    SELECT
+      P.ProjectName as name, SUM(PE.FTE) as y
+    FROM
+      resources.ProjectEmployees PE
+      LEFT JOIN projects.Projects P ON PE.ProjectID = P.ProjectID
+      LEFT JOIN accesscontrol.Employees E ON PE.EmployeeID = E.EmployeeID
+    WHERE
+      E.EmployeeID = '${employeeID}'
+      AND (MONTH(PE.FiscalDate) = '${mo1}' OR MONTH(PE.FiscalDate) = '${mo2}' OR MONTH(PE.FiscalDate) = '${mo3}')
+      AND YEAR(PE.FiscalDate) = ${fiscalYear}
+    GROUP BY
+      P.ProjectName
+    `
+
+  console.log(sql)
+
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(data => {
+      console.log("returning quarterly employee FTE totals");
+      res.json(data);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 module.exports = {
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,
-  getProjectEmployeeFTEList: getProjectEmployeeFTEList
+  getProjectEmployeeFTEList: getProjectEmployeeFTEList,
+  getQuarterlyEmployeeFTETotals: getQuarterlyEmployeeFTETotals
 }

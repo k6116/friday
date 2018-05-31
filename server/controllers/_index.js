@@ -8,5 +8,5 @@ module.exports = {
   projectAccess: require('./projectAccessController'),
   profile: require('./profileController'),
   project: require('./projectController'),
-  reportsProject: require('./reportsProjectController')
+  reports: require('./reportsController')
 }

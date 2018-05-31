@@ -238,4 +238,11 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getQuarterlyEmployeeFTETotals(employeeID: number, fiscalQuarter: number, fiscalYear: number) {
+    return this.http.get(`/api/getQuarterlyEmployeeFTETotals/${employeeID}/${fiscalQuarter}/${fiscalYear}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+
 }
