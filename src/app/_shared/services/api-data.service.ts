@@ -220,6 +220,18 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  sendRequestProjectEmail(userID: number, ownerID: number, projectName: string) {
+    return this.http.post(`/api/sendRequestProjectEmail/${userID}/${ownerID}/${projectName}`, null)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+  }
+
+  sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string) {
+      return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}`, null)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   getProjectFTEHistory(projectID: number) {
     return this.http.get(`/api/getProjectFTEHistory/${projectID}`)
       .timeout(this.timeout)
@@ -243,6 +255,5 @@ export class ApiDataService {
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
-
 
 }
