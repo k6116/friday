@@ -13,6 +13,7 @@ import { EmployeesReportsComponent } from './reports/employees/employees.compone
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
 import { AuthGuardService } from './auth/auth-guard.service';
+import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
 import { TestComponent } from './test/test.component';
 import { PerformanceComponent } from './performance/performance.component';
 
@@ -28,7 +29,8 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     children: [
       { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full', canActivate: [AuthGuardService] },
-      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService] },
+      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
+        canActivate: [AuthGuardService], canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService] },
       { path: 'reports/projects', component: ProjectsReportsComponent, canActivate: [AuthGuardService] },

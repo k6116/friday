@@ -3,19 +3,29 @@ div.col-custom.col-slider {
   padding: 0 10px;
 }
 
-.top-margin {
-  margin-top: 30px;
-}
-
 .test-buttons {
-  margin-top: 50px;
-  text-align: center;
+  margin-top: 25px;
+  padding-left: 10px;
+  padding-bottom: 20px;
 }
 
 .btn-primary {
   color: #fff;
-  background-color: rgb(108, 117, 125);;
+  background-color: rgb(108, 117, 125);
   border-color: rgb(108, 117, 125);;
+}
+
+.btn-fte-toolbar {
+  width: 90px;
+  height: 35px;
+}
+
+.btn-fte-toolbar:hover {
+  background-color: rgb(138, 147, 155);
+}
+
+.col-underlined {
+  border-bottom: 1px solid #dee2e6
 }
 
 table.slider-header {
@@ -57,7 +67,10 @@ div.fte-table-container {
   /* forces the table container to be a consistent height and width, even when no FTE values exist for the selected period */
   height: 500px;
   width: 100%;
-  overflow: scroll;
+  overflow: auto;
+  /* border: 8px solid white; */
+  border-radius: 2px;
+  background-color: rgb(245, 245, 245);
 }
 
 div.fte-table {
@@ -88,14 +101,13 @@ div.fte-table-cell.quarter-spacer {
   min-width: unset;
   width: 5px;
   min-width: 5px;
+  background-color: rgb(245, 245, 245);
 }
 
 div.fte-table-header div.fte-table-row div.fte-table-cell.quarter-spacer-header {
   min-width: unset;
   width: 5px;
   min-width: 5px;
-  /* border-bottom: 1px solid rgb(130, 130, 130); */
-  /* background-color: rgb(64, 125, 174, 0.1); */
 }
 
 div.fte-table-cell {
@@ -192,6 +204,7 @@ div.fte-table-body div.fte-table-row div.fte-table-cell.icon {
   /* trash icons in the body are sticky towards the left-scroll */
   background-color: rgb(245, 245, 245);
   position: sticky;
+  text-align: center;
   left: 0px;
   min-width: 30px;
   max-width: 30px;

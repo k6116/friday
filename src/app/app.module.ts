@@ -28,6 +28,9 @@ import { AuthGuardService } from './auth/auth-guard.service';
 import { ToolsService } from './_shared/services/tools.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
 
+// GUARDS
+import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
+
 // COMPONENTS
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
@@ -109,7 +112,8 @@ import { PerformanceComponent } from './performance/performance.component';
     AuthService,
     AuthGuardService,
     ToolsService,
-    ClickTrackingService
+    ClickTrackingService,
+    UnsavedChangesGuard
   ],
   bootstrap: [AppComponent]
 })
