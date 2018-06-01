@@ -9,5 +9,6 @@ module.exports = {
   email: require('./emailController'),
   projectAccess: require('./projectAccessController'),
   profile: require('./profileController'),
-  project: require('./projectController')
+  project: require('./projectController'),
+  reports: require('./reportsController')
 }
