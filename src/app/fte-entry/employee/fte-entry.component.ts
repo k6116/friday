@@ -2,14 +2,17 @@ import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef }
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { DecimalPipe } from '@angular/common';
+import { HostListener } from '@angular/core';
 import { NouisliderModule } from 'ng2-nouislider';
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { ToolsService } from '../../_shared/services/tools.service';
+import { ComponentCanDeactivate } from '../../_shared/unsaved-changes-guard.guard';
 import { UserFTEs, AllocationsArray} from './fte-model';
 import { utils, write, WorkBook } from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -44,7 +47,7 @@ declare const $: any;
     ])
   ]
 })
-export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
+export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
   // initialize variables
   deleteModalSubscription: Subscription;
@@ -94,6 +97,13 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       this.changeDetectorRef.detectChanges();
     }, 200);
 
+  }
+
+  @HostListener('window:beforeunload')
+  canDeactivate(): Observable<boolean> | boolean {
+    // returning true will navigate without confirmation
+    return !this.FTEFormGroup.dirty;
+    // returning false will show a confirm dialog before navigating away
   }
 
   ngOnInit() {
@@ -429,15 +439,15 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   buildFteEditableArray() {
     // build a boolean array of FTE entry months that are editable, based on current month
     const startMonth = this.months[0];
-    let currentMonth = moment().utc().startOf('month');
+    let currentMonth = moment.utc().startOf('month');
     const secondMonthInQuarter = [2, 5, 8, 11];
     const thirdMonthInQuarter = [0, 3, 6, 9];
 
     // we want current fiscal quarter to be editable as long as we are in that FQ,
     // so adjust the current month to allow all months in the current quarter to be editable
-    if (moment(currentMonth).month() in thirdMonthInQuarter) {
+    if (thirdMonthInQuarter.includes(moment(currentMonth).month())) {
       currentMonth = moment(currentMonth).subtract(2, 'months');
-    } else if (moment(currentMonth).month() in secondMonthInQuarter) {
+    } else if (secondMonthInQuarter.includes(moment(currentMonth).month())) {
       currentMonth = moment(currentMonth).subtract(1, 'month');
     }
 
