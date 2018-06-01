@@ -335,7 +335,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
     // validate totals boxes for historic quarters (must = 1)
     const oldQuartersValid = this.monthlyTotals.slice(0, firstEditableMonth).every ( value => {
-      return value === 1;
+      // return value === 1;
+      return true;
     });
 
     // validate totals boxes for current quarter (must = 1)
