@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 export interface ComponentCanDeactivate {
@@ -10,11 +10,8 @@ export interface ComponentCanDeactivate {
 export class UnsavedChangesGuard implements CanDeactivate<ComponentCanDeactivate> {
   canDeactivate(component: ComponentCanDeactivate): boolean | Observable<boolean> {
     // if there are no pending changes, just allow deactivation; else confirm first
-    return component.canDeactivate() ?
-      true :
-      // NOTE: this warning message will only be shown when navigating elsewhere within your angular app;
-      // when navigating away from your angular app, the browser will show a generic warning message
-      // see http://stackoverflow.com/a/42207299/7307355
-      confirm('Are you sure you want to leave?  Changes you made may not be saved.');
+    return component.canDeactivate() ? true : confirm('Are you sure you want to leave?  Changes you made may not be saved.');
+      // NOTE: warning message only shows when navigating within the app
+      // reload, back button, etc all show a browser-specific warning message see http://stackoverflow.com/a/42207299/7307355
   }
 }

@@ -99,6 +99,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   }
 
+  // canDeactivate checks if the user has unsaved changes in the form and informs the router whether the user can leave
+  // HostListener decorator is used to also pick up browser-level changes like refresh, close tab, etc
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
     // returning true will navigate without confirmation
@@ -107,8 +109,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   ngOnInit() {
-
-
     this.setSliderConfig(); // initalize slider config
 
     // get logged in user's info
@@ -161,10 +161,10 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     }, 500);
 
     // verify selectedProject has not already been added
-    const flatFteArray = this.FTEFormGroup.value.FTEFormArray;
+    const fteFormArray = this.FTEFormGroup.controls.FTEFormArray;
     const currentProjectsList = [];
-    flatFteArray.forEach( project => {
-      currentProjectsList.push(project[0].projectID);
+    fteFormArray['controls'].forEach( project => {
+      currentProjectsList.push(project.projectID);
     });
     const alreadyExists = currentProjectsList.find( value => {
       return value === selectedProject.ProjectID;
