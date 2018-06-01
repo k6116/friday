@@ -139,7 +139,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     );
 
    this.buildMonthsArray();
-   this.buildFteEditableArray();
    this.fteFormChangeListener();
 
 
@@ -412,6 +411,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       res => {
         this.userFTEs = res.nested;
         this.userFTEsFlat = res.flat;
+        this.buildFteEditableArray();
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
         // this.projects = this.userFTEs;
@@ -642,7 +642,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   onTrashClick(index: number) {
-
     console.log('user clicked to delete project index ' + index);
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
@@ -684,10 +683,32 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       } else {
         console.log('delete aborted');
       }
-
       deleteModalSubscription.unsubscribe();
     });
+  }
 
+  onResetClick() {
+    // emit confirmation modal
+    this.appDataService.confirmModalData.emit(
+      {
+        title: 'Confirm Reset',
+        message: `Are you sure you want to reset the form?  Unsaved changes may be lost.`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 193, 27)',
+        display: true
+      }
+    );
+    // wait for response to reset confirm modal
+    const resetModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+      if (res) {
+        this.fteComponentInit();
+        this.appDataService.raiseToast('success', 'Your FTE form has been reset');
+      } else {
+        console.log('reset aborted');
+        this.appDataService.raiseToast('warn', 'Reset was aborted');
+      }
+      resetModalSubscription.unsubscribe();
+    });
   }
 
   onSliderChange(value: any) {  // event only fires when slider handle is dropped
