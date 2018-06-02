@@ -703,6 +703,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     const resetModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
       if (res) {
         this.fteComponentInit();
+        this.FTEFormGroup.markAsUntouched();
         this.appDataService.raiseToast('success', 'Your FTE form has been reset');
       } else {
         console.log('reset aborted');
