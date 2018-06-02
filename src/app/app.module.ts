@@ -41,7 +41,7 @@ import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.compon
 import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
 import { TopNavComponent } from './navs/top-nav/top-nav.component';
 import { SideNavComponent } from './navs/side-nav/side-nav.component';
-import { ProjectsReportsComponent } from './reports/projects/projects.component';
+import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
@@ -75,7 +75,7 @@ import { PerformanceComponent } from './performance/performance.component';
     FteInputRestrictDirective,
     TopNavComponent,
     SideNavComponent,
-    ProjectsReportsComponent,
+    TopProjectsReportsComponent,
     EmployeesReportsComponent,
     ProjectsSetupsComponent,
     FteEntryTeamComponent,

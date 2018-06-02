@@ -49,9 +49,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           expanded: false,
           subItems: [
             {
-              title: 'Projects',
+              title: 'Top Projects',
               alias: 'projects',
-              path: 'main/reports/projects',
+              path: 'main/reports/top-projects',
               parentAlias: 'reports',
               active: false
             },
