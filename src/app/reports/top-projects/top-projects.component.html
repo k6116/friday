@@ -1,5 +1,5 @@
-<!-- temp page content for testing routes -->
-<div class="container-fluid">
+
+<div *ngIf="displayTopFTEProjectList" class="container-fluid">
 
     <!-- <div class="row row-custom">
       <div class="col-sm">
@@ -8,32 +8,34 @@
         </div>
       </div>
     </div> -->
+  <div class="row row-custom">
+    <div class="col-sm col-custom col-text-header">
+      <h2 class="page-header-text">Top FTE Projects</h2>
+    </div>
+  </div>
       
   <div class="row row-custom">
 
     <div class="col-sm">
-      <div *ngIf="displayTopFTEProjectList">
-        <h2>Top FTE Projects List</h2>
-        <div class="table-container">
-          <table class="table table-sm table-hover">
-            <thead>
-              <tr>
-                <th width="30%" scope="col">Project Name</th>
-                <th width="10%" scope="col">Project Type</th>
-                <th width="10%" scope="col">Priority</th>
-                <th width="10%" scope="col">Total FTE</th>
-              </tr>
-            </thead>
-            <tbody *ngFor="let project of topFTEProjectList">
-              <tr (click)="onProjectClick(project)">
-                <td>{{ project.projectName }}</td>
-                <td>{{ project.projectTypeName }}</td>
-                <td>{{ project.priorityName }}</td>
-                <td>{{ project.totalFTE }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="table-container">
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th width="30%" scope="col">Project Name</th>
+              <th width="10%" scope="col">Project Type</th>
+              <th width="10%" scope="col">Priority</th>
+              <th width="10%" scope="col">Total FTE</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let project of topFTEProjectList">
+            <tr (click)="onProjectClick(project)">
+              <td>{{ project.projectName }}</td>
+              <td>{{ project.projectTypeName }}</td>
+              <td>{{ project.priorityName }}</td>
+              <td>{{ project.totalFTE }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
