@@ -30,23 +30,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           title: 'FTE Entry',
           iconClass: 'nc-calendar-add',
           alias: 'fteEntry',
+          path: 'main/fte-entry/employee',
           expanded: false,
-          subItems: [
-            {
-              title: 'Me',
-              alias: 'me',
-              path: 'main/fte-entry/employee',
-              parentAlias: 'fteEntry',
-              active: false
-            },
-            {
-              title: 'My Team',
-              alias: 'myTeam',
-              path: 'main/fte-entry/team',
-              parentAlias: 'fteEntry',
-              active: false
-            }
-          ]
+          active: false
         },
         {
           title: 'Projects',

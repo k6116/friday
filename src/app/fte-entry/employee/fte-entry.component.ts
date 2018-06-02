@@ -104,7 +104,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
     // returning true will navigate without confirmation
-    return !this.FTEFormGroup.dirty;
+    return this.FTEFormGroup.untouched;
     // returning false will show a confirm dialog before navigating away
   }
 
@@ -374,6 +374,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           console.log(`save fte values took ${t1 - t0} milliseconds`);
           this.appDataService.raiseToast('success', res.message);
           this.resetProjectFlags();
+          this.FTEFormGroup.markAsUntouched();
         },
         err => {
           console.log(err);
