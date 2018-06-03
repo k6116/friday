@@ -8,16 +8,14 @@
   <div class="row row-custom">
     <div class="col-sm-2 col-custom">
       <label>Time Period:</label>
-      <select name="time-period-selector" class="form-control">
-        <option value="current-quarter">Current Quarter</option>
-        <option value="current-year">Current Fiscal Year</option>
-        <option value="all-time">All Time</option>
+      <select name="time-period-selector" class="form-control" (change)="getFteSummaryData($event.target.value)">
+        <option *ngFor="let times of timePeriods" [value]="times.option">{{times.text}}</option>
       </select>
     </div>
   </div>
 
   <div class="row row-custom">
-    <div class="col-sm">
+    <div class="col-sm-6">
         <div id="container"></div>
     </div>
   </div>

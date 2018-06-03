@@ -6,6 +6,8 @@ import { User } from '../../_shared/models/user.model';
 import * as Highcharts from 'highcharts';
 
 declare var require: any;
+declare const $: any;
+const moment = require('moment');
 require('highcharts/modules/annotations')(Highcharts);
 
 @Component({
@@ -17,7 +19,13 @@ export class MyFteSummaryComponent implements OnInit {
 
   loggedInUser: User; // object for logged in user's info
   fteSummaryData: any;
+  chart: any;
   chartOptions: any;
+  timePeriods = [
+    {option: 1, text: 'Current Quarter'},
+    {option: 2, text: 'Current Fiscal Year'},
+    {option: 3, text: 'All Time'}
+  ];
 
   constructor(
     private apiDataService: ApiDataService,
@@ -32,13 +40,17 @@ export class MyFteSummaryComponent implements OnInit {
         return;
       }
       this.loggedInUser = user;
-      this.getFteSummaryData();  // initialize the FTE entry component
+      this.getFteSummaryData(1);  // initialize the FTE entry component
     });
 
   }
 
 
-  getFteSummaryData() {
+  getFteSummaryData(option: number) {
+    console.log(`user selected option ${option}`);
+    if (this.chart) {
+      this.chart.destroy();
+    }
     // Retrieve Top FTE Project List
     this.apiDataService.getMyFteSummary(this.loggedInUser.id)
     .subscribe(
@@ -65,10 +77,11 @@ export class MyFteSummaryComponent implements OnInit {
 
   plotFteSummaryData() {
     this.chartOptions = {
+      credits: {
+        text: 'jarvis.is.keysight.com',
+        href: 'https://jarvis.is.keysight.com'
+      },
       chart: {
-          // plotBackgroundColor: null,
-          // plotBorderWidth: null,
-          plotShadow: false,
           type: 'pie'
       },
       title: {
@@ -94,7 +107,7 @@ export class MyFteSummaryComponent implements OnInit {
       }]
     };
 
-    Highcharts.chart('container', this.chartOptions);
+    this.chart = Highcharts.chart('container', this.chartOptions);
   }
 
 }
