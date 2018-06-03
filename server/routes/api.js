@@ -55,6 +55,7 @@ router.post('/updateProfile/:userID', controllers.profile.update);
 // router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
 
 // REPORTS PROJECT CONTROLLER
+router.get('/reports/getMyFteSummary/:employeeID', controllers.reports.getMyFteSummary);
 router.get('/getProjectFTEHistory/:projectID', controllers.reports.getProjectFTEHistory);
 router.get('/getTopFTEProjectList/', controllers.reports.getTopFTEProjectList);
 router.get('/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.reports.getProjectEmployeeFTEList);

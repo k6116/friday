@@ -5,6 +5,37 @@ const moment = require('moment');
 const Treeize = require('treeize');
 
 
+
+function getMyFteSummary(req, res) {
+
+  const employeeID = req.params.employeeID;
+
+  const sql = `
+    SELECT
+      P.ProjectName AS name,
+      SUM(PE.FTE) AS FTE
+    FROM
+      resources.ProjectEmployees PE
+      LEFT JOIN projects.Projects P ON PE.ProjectID = P.ProjectID
+    WHERE
+      PE.EmployeeID = 58
+    GROUP BY
+      P.ProjectName
+    `
+
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(data => {
+      console.log("returning MyFTESummary");
+      res.json(data);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 function getProjectFTEHistory(req, res) {
 
   const projectID = req.params.projectID;
@@ -159,6 +190,7 @@ function getQuarterlyEmployeeFTETotals(req, res) {
 }
 
 module.exports = {
+  getMyFteSummary: getMyFteSummary,
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,
   getProjectEmployeeFTEList: getProjectEmployeeFTEList,

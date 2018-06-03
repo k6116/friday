@@ -232,6 +232,17 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+
+
+
+
+  // REPORTS API ROUTES
+  getMyFteSummary(employeeID: number) {
+    return this.http.get(`/api/reports/getMyFteSummary/${employeeID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   getProjectFTEHistory(projectID: number) {
     return this.http.get(`/api/getProjectFTEHistory/${projectID}`)
       .timeout(this.timeout)

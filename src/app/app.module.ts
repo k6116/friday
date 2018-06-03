@@ -60,6 +60,7 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
 import { PerformanceComponent } from './performance/performance.component';
+import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { PerformanceComponent } from './performance/performance.component';
     ProjectsRosterModalComponent,
     ToastComponent,
     BlockAppUseComponent,
-    PerformanceComponent
+    PerformanceComponent,
+    MyFteSummaryComponent
   ],
   imports: [
     AppRoutingModule,
