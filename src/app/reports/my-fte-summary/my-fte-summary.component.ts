@@ -75,6 +75,10 @@ export class MyFteSummaryComponent implements OnInit {
 
 
   plotFteSummaryData(period: string) {
+    const timePeriod = this.timePeriods.find( obj => {
+      return obj.period === period;
+    });
+
     this.chartOptions = {
       credits: {
         text: 'jarvis.is.keysight.com',
@@ -86,8 +90,13 @@ export class MyFteSummaryComponent implements OnInit {
       title: {
           text: `${this.loggedInUser.fullName}'s Historic FTEs by project`
       },
+      subtitle: {
+        text: `${timePeriod.text}`
+      },
       tooltip: {
-          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+          pointFormat:
+            `FTEs Recorded: <b>{point.FTE}</b><br />
+            {series.name}: <b>{point.percentage:.1f}%</b>`
       },
       plotOptions: {
           pie: {
@@ -100,7 +109,7 @@ export class MyFteSummaryComponent implements OnInit {
           }
       },
       series: [{
-          name: 'FTE Allocation',
+          name: 'Percent of Total',
           colorByPoint: true,
           data: this.fteSummaryData
       }]
