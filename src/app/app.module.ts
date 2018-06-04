@@ -61,6 +61,7 @@ import 'hammerjs';
 import 'chartjs-plugin-zoom';
 import { PerformanceComponent } from './performance/performance.component';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
+import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.c
     ToastComponent,
     BlockAppUseComponent,
     PerformanceComponent,
-    MyFteSummaryComponent
+    MyFteSummaryComponent,
+    TeamFteSummaryComponent
   ],
   imports: [
     AppRoutingModule,
