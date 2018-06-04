@@ -8,7 +8,10 @@ import * as Highcharts from 'highcharts';
 declare var require: any;
 declare const $: any;
 const moment = require('moment');
-require('highcharts/modules/annotations')(Highcharts);
+
+// need to look into this.  requiring specific highcharts modules in this fashion can
+// cause cross-component conflicts with 'issvg of undefined' error
+// require('highcharts/modules/annotations')(Highcharts);
 
 @Component({
   selector: 'app-my-fte-summary',
@@ -19,12 +22,11 @@ export class MyFteSummaryComponent implements OnInit {
 
   loggedInUser: User; // object for logged in user's info
   fteSummaryData: any;
-  chart: any;
   chartOptions: any;
   timePeriods = [
-    {option: 1, text: 'Current Quarter'},
-    {option: 2, text: 'Current Fiscal Year'},
-    {option: 3, text: 'All Time'}
+    {period: 'current-quarter', text: 'Current Quarter'},
+    {period: 'current-fy', text: 'Current Fiscal Year'},
+    {period: 'all-time', text: 'All Time'}
   ];
 
   constructor(
@@ -40,19 +42,16 @@ export class MyFteSummaryComponent implements OnInit {
         return;
       }
       this.loggedInUser = user;
-      this.getFteSummaryData(1);  // initialize the FTE entry component
+      this.getFteSummaryData('current-quarter');  // initialize the FTE entry component
     });
 
   }
 
 
-  getFteSummaryData(option: number) {
-    console.log(`user selected option ${option}`);
-    if (this.chart) {
-      this.chart.destroy();
-    }
+  getFteSummaryData(period: string) {
+
     // Retrieve Top FTE Project List
-    this.apiDataService.getMyFteSummary(this.loggedInUser.id)
+    this.apiDataService.getMyFteSummary(this.loggedInUser.id, period)
     .subscribe(
       res => {
         this.fteSummaryData = res;  // get summary data from db
@@ -66,7 +65,7 @@ export class MyFteSummaryComponent implements OnInit {
           project.y = project.FTE / totalFtes;
         });
         console.log(this.fteSummaryData);
-        this.plotFteSummaryData();
+        this.plotFteSummaryData(period);
       },
       err => {
         console.log(err);
@@ -75,7 +74,7 @@ export class MyFteSummaryComponent implements OnInit {
   }
 
 
-  plotFteSummaryData() {
+  plotFteSummaryData(period: string) {
     this.chartOptions = {
       credits: {
         text: 'jarvis.is.keysight.com',
@@ -107,7 +106,7 @@ export class MyFteSummaryComponent implements OnInit {
       }]
     };
 
-    this.chart = Highcharts.chart('container', this.chartOptions);
+    Highcharts.chart('container', this.chartOptions);
   }
 
 }

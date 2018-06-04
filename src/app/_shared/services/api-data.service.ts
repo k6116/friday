@@ -237,8 +237,8 @@ export class ApiDataService {
 
 
   // REPORTS API ROUTES
-  getMyFteSummary(employeeID: number) {
-    return this.http.get(`/api/reports/getMyFteSummary/${employeeID}`)
+  getMyFteSummary(employeeID: number, period: string) {
+    return this.http.get(`/api/reports/getMyFteSummary/${employeeID}/${period}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
