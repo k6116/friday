@@ -25,6 +25,9 @@ export class TeamFteSummaryComponent implements OnInit {
     {period: 'current-fy', text: 'Current Fiscal Year'},
     {period: 'all-time', text: 'All Time'}
   ];
+  userPlmData: any;
+  subEmployees: any;
+  subEmployeeList: any;
 
   constructor(
     private apiDataService: ApiDataService,
@@ -40,6 +43,16 @@ export class TeamFteSummaryComponent implements OnInit {
       }
       this.loggedInUser = user;
       this.getTeamSummaryData('current-quarter');  // initialize the FTE entry component
+      this.getTeam(this.loggedInUser.email);
+    });
+  }
+
+  getTeam(userEmail: string) {
+    this.apiDataService.getUserPLMData(userEmail).subscribe( res => {
+      this.userPlmData = res[0];
+      this.apiDataService.getFlatSubEmployees(this.userPlmData.SUPERVISOR_EMAIL_ADDRESS).subscribe( res2 => {
+        console.log(res2);
+      });
     });
   }
 

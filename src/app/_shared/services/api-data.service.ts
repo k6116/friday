@@ -233,10 +233,21 @@ export class ApiDataService {
   }
 
 
-
+  // ORG API ROUTES
+  getFlatSubEmployees(managerEmailAddress: string) {
+    return this.http.get(`/api/org/flatSubEmployees/${managerEmailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
 
 
   // REPORTS API ROUTES
+  getAggregatedSubordinateFTE(managerEmailAddress: string) {
+    return this.http.get(`/api/reports/aggregatedSubordinateFte/${managerEmailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   getMyFteSummary(employeeID: number, period: string) {
     return this.http.get(`/api/reports/getMyFteSummary/${employeeID}/${period}`)
       .timeout(this.timeout)

@@ -28,6 +28,7 @@ router.post('/deleteProject/:userID', controllers.project.deleteProject);
 
 // ORG TREE DATA
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
+router.get('/org/flatSubEmployees/:managerEmailAddress', controllers.employeeList.getFlatSubEmployees);
 
 // ORG CONTROLLER
 router.get('/org/:emailAddress', controllers.org.show);
@@ -55,6 +56,7 @@ router.post('/updateProfile/:userID', controllers.profile.update);
 // router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
 
 // REPORTS PROJECT CONTROLLER
+router.get('/reports/aggregatedSubordinateFte/:managerEmailAddress', controllers.reports.getAggregatedSubordinateFte);
 router.get('/reports/getMyFteSummary/:employeeID/:period', controllers.reports.getMyFteSummary);
 router.get('/getProjectFTEHistory/:projectID', controllers.reports.getProjectFTEHistory);
 router.get('/getTopFTEProjectList/', controllers.reports.getTopFTEProjectList);

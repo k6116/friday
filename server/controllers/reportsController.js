@@ -5,6 +5,22 @@ const moment = require('moment');
 const Treeize = require('treeize');
 
 
+function getAggregatedSubordinateFte(req, res) {
+  const managerEmailAddress = req.params.managerEmailAddress;
+
+  const sql = `exec resources.aggregateSubordinateFTE '${managerEmailAddress}'`
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      console.log("returning user PLM data");
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
 
 function getMyFteSummary(req, res) {
 
@@ -237,6 +253,7 @@ function getQuarterlyEmployeeFTETotals(req, res) {
 }
 
 module.exports = {
+  getAggregatedSubordinateFte: getAggregatedSubordinateFte,
   getMyFteSummary: getMyFteSummary,
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,
