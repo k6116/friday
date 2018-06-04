@@ -66,6 +66,8 @@ function getMyFteSummary(req, res) {
       PE.FiscalDate BETWEEN '${startDate}' AND '${endDate}'
     GROUP BY
       P.ProjectName
+    ORDER BY
+      FTE DESC
     `
 
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })

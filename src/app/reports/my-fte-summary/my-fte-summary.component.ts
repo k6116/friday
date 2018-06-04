@@ -8,6 +8,8 @@ import * as Highcharts from 'highcharts';
 declare var require: any;
 declare const $: any;
 const moment = require('moment');
+require('highcharts/modules/pareto.js')(Highcharts);
+require('highcharts/modules/parallel-coordinates.js');
 
 // need to look into this.  requiring specific highcharts modules in this fashion can
 // cause cross-component conflicts with 'issvg of undefined' error
@@ -23,6 +25,7 @@ export class MyFteSummaryComponent implements OnInit {
   loggedInUser: User; // object for logged in user's info
   fteSummaryData: any;
   chartOptions: any;
+  paretoChartOptions: any;
   timePeriods = [
     {period: 'current-quarter', text: 'Current Quarter'},
     {period: 'current-fy', text: 'Current Fiscal Year'},
@@ -65,7 +68,8 @@ export class MyFteSummaryComponent implements OnInit {
           project.y = project.FTE / totalFtes;
         });
         console.log(this.fteSummaryData);
-        this.plotFteSummaryData(period);
+        this.plotFteSummaryPie(period);
+        this.plotFteSummaryPareto(period);
       },
       err => {
         console.log(err);
@@ -74,7 +78,7 @@ export class MyFteSummaryComponent implements OnInit {
   }
 
 
-  plotFteSummaryData(period: string) {
+  plotFteSummaryPie(period: string) {
     const timePeriod = this.timePeriods.find( obj => {
       return obj.period === period;
     });
@@ -115,7 +119,67 @@ export class MyFteSummaryComponent implements OnInit {
       }]
     };
 
-    Highcharts.chart('container', this.chartOptions);
+    Highcharts.chart('pie', this.chartOptions);
+  }
+
+  plotFteSummaryPareto(period: string) {
+    const timePeriod = this.timePeriods.find( obj => {
+      return obj.period === period;
+    });
+
+    const names = [];
+    const values = [];
+    this.fteSummaryData.forEach( project => {
+      names.push(project.name);
+      values.push(project.FTE);
+    });
+
+    this.paretoChartOptions = {
+      credits: {
+        text: 'jarvis.is.keysight.com',
+        href: 'https://jarvis.is.keysight.com'
+      },
+      chart: {
+        renderTo: 'pareto',
+        type: 'column'
+      },
+      title: {
+        text: `${this.loggedInUser.fullName}'s Historic FTE Pareto`
+      },
+      subtitle: {
+        text: `${timePeriod.text}`
+      },
+      xAxis: {
+        categories: names
+      },
+      yAxis: [{
+        title: {text: 'FTEs'}
+      },
+      {
+        title: {text: ''},
+        minPadding: 0,
+        maxPadding: 0,
+        max: 100,
+        min: 0,
+        opposite: true,
+        labels: {format: '{value}%'}
+      }],
+      series: [{
+        type: 'pareto',
+        name: 'Pareto',
+        yAxis: 1,
+        zIndex: 10,
+        baseSeries: 1
+      },
+      {
+        name: 'FTEs Recorded',
+        type: 'column',
+        colorByPoint: true,
+        zIndex: 2,
+        data: values
+      }]
+    };
+    Highcharts.chart('pareto', this.paretoChartOptions);
   }
 
 }
