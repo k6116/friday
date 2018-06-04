@@ -9,7 +9,7 @@ declare var require: any;
 declare const $: any;
 const moment = require('moment');
 require('highcharts/modules/pareto.js')(Highcharts);
-require('highcharts/modules/parallel-coordinates.js');
+
 
 // need to look into this.  requiring specific highcharts modules in this fashion can
 // cause cross-component conflicts with 'issvg of undefined' error
@@ -24,7 +24,7 @@ export class MyFteSummaryComponent implements OnInit {
 
   loggedInUser: User; // object for logged in user's info
   fteSummaryData: any;
-  chartOptions: any;
+  pieChartOptions: any;
   paretoChartOptions: any;
   timePeriods = [
     {period: 'current-quarter', text: 'Current Quarter'},
@@ -83,7 +83,7 @@ export class MyFteSummaryComponent implements OnInit {
       return obj.period === period;
     });
 
-    this.chartOptions = {
+    this.pieChartOptions = {
       credits: {
         text: 'jarvis.is.keysight.com',
         href: 'https://jarvis.is.keysight.com'
@@ -119,7 +119,7 @@ export class MyFteSummaryComponent implements OnInit {
       }]
     };
 
-    Highcharts.chart('pie', this.chartOptions);
+    Highcharts.chart('pie', this.pieChartOptions);
   }
 
   plotFteSummaryPareto(period: string) {
