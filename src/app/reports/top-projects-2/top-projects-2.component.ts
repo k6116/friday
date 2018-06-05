@@ -18,7 +18,8 @@ require('highcharts/highcharts-more.js')(Highcharts);
 export class TopProjects2Component implements OnInit {
 
   loggedInUser: User; // object for logged in user's info
-  bubbleData: any;
+  rawBubbleData: any;
+  bubbleData = [];
   bubbleChartOptions: any;
   projectRoster: any;
   displayRosterTable = false;
@@ -42,7 +43,34 @@ export class TopProjects2Component implements OnInit {
 
   getBubbleFteData() {
     this.apiDataService.getAggregatedFteData().subscribe( res => {
-      this.bubbleData = res;
+      this.rawBubbleData = res;
+
+      this.rawBubbleData.forEach( project => {
+        // compute project complexity score
+        let score = 1;
+        let color = '#aaaaaa';
+        if (project.fiveYearRev) {
+          score += Math.round(Math.log10(project.fiveYearRev));
+        }
+        if (project.PriorityName === 'Anchor') {
+          score += 3;
+          color = '#ff0000';
+        } else if (project.PriorityName === 'Flex') {
+          score += 1;
+          color = '#00ff00';
+        }
+
+        const tempProj = {
+          x: score,
+          y: project.employeeCount,
+          z: project.fteTotals,
+          projectID: project.projectID,
+          projectName: project.projectName,
+          color: color
+        };
+        this.bubbleData.push(tempProj);
+      });
+
       console.log(this.bubbleData);
       this.plotBubbleFteData(this.bubbleData);
     });
@@ -63,14 +91,14 @@ export class TopProjects2Component implements OnInit {
         enabled: false
       },
       title: {
-        text: 'Top Keysight projects by employee count and FTEs'
+        text: 'Top Keysight projects by FTE, vs Employee Count and Complexity'
       },
       subtitle: {
         text: 'Time Period: All historic data'
       },
       xAxis: {
         gridLineWidth: 1,
-        title: {text: 'Sequence Num'},
+        title: {text: 'Complexity Score'},
         labels: {format: '{value}'},
       },
       yAxis: {
@@ -83,8 +111,8 @@ export class TopProjects2Component implements OnInit {
       tooltip: {
         useHTML: true,
         headerFormat: '<table>',
-        pointFormat: '<tr><th colspan="2"><h3>{point.ProjectName}</h3></th></tr>' +
-          '<tr><th>Seq Num:</th><td>{point.x}</td></tr>' +
+        pointFormat: '<tr><th colspan="2"><h3>{point.projectName}</h3></th></tr>' +
+          '<tr><th>Complexity:</th><td>{point.x}</td></tr>' +
           '<tr><th># of Employees:</th><td>{point.y}</td></tr>' +
           '<tr><th># FTEs Allocated:</th><td>{point.z}</td></tr>',
         footerFormat: '</table>',
@@ -95,7 +123,7 @@ export class TopProjects2Component implements OnInit {
           cursor: 'pointer',
           dataLabels: {
             enabled: true,
-            format: '{point.ProjectName}'
+            format: '{point.projectName}'
           },
           point: {
             events: {
