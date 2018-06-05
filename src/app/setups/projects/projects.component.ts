@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../auth/auth.service';
@@ -25,9 +25,17 @@ export class ProjectsSetupsComponent implements OnInit {
   display: boolean;
   cardNPI: any;
   selectedRow: any;
+  projectRoster: any;
+  disableDelete: boolean;
+  pKeyName: string;
+  pKeyValue: number;
+  pKeyRefList: any;
+  showDetails: boolean;
+  projectID: number;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
+  @Output() deleteSuccess = new EventEmitter<boolean>();
 
   constructor(
     private apiDataService: ApiDataService,
@@ -156,11 +164,12 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   onCollapseClick(project: any, k) {
+    console.log('projectID: ', project.id);
     if ( this.selectedRow === k) {
       // Card-Header inactive before card-body closes. TO-DO: Ask others for better way than timeout!
-      setTimeout(() => {
-        this.selectedRow = null;
-      }, 400);
+      // setTimeout(() => {
+      //   this.selectedRow = null;
+      // }, 400);
 
     } else {
       // Assign projectList values to cardNPI values
@@ -173,6 +182,8 @@ export class ProjectsSetupsComponent implements OnInit {
           }
         }
       }
+
+    this.getProjectRoster(project.id);
   }
 
   requestResponse(request: any, reply: string) {
@@ -185,6 +196,65 @@ export class ProjectsSetupsComponent implements OnInit {
           console.log(err);
         }
       );
+  }
+
+  getProjectRoster(projectID: number) {
+    console.log('getting project roster');
+    console.log('ProjectID is: ', projectID);
+    this.apiDataService.getProjectRoster(projectID)
+    .subscribe(
+      res => {
+        console.log('project roster:');
+        console.log(res);
+        if (res.length) {
+          this.projectRoster = res[0];
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  // onDeleteButtonClick: check if project can be deleted.
+  // Project can only be delted if user is the creator AND if they are not used in other tables
+  getPrimaryKeyRefs(projectID: number) {
+    this.pKeyName = 'ProjectID';
+    this.projectID = projectID;
+    this.apiDataService.getPrimaryKeyRefs(this.pKeyName, this.projectID, this.loggedInUser.id)
+      .subscribe(
+        res => {
+          // console.log(res);
+          this.pKeyRefList = res;
+          if (this.pKeyRefList.length === 0) {
+            this.disableDelete = false;
+          } else {
+            this.disableDelete = true;
+            this.showDetails = false;
+          }
+        },
+        err => {
+          console.log(err);
+        }
+      );
+  }
+
+  onDetailsClick() {
+    this.showDetails = !this.showDetails;
+  }
+
+  onDeleteProjectClick() {
+    const project = [{projectID: this.projectID}];
+
+    this.apiDataService.deleteProject(project[0], this.loggedInUser.id)
+    .subscribe(
+      res => {
+        this.deleteSuccess.emit(true);
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
 }
