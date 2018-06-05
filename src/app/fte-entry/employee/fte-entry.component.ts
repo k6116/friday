@@ -374,6 +374,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           console.log(`save fte values took ${t1 - t0} milliseconds`);
           this.appDataService.raiseToast('success', res.message);
           this.resetProjectFlags();
+          this.fteComponentInit();  // re-fetch the data to get newly inserted recordIDs
           this.FTEFormGroup.markAsUntouched();
         },
         err => {
@@ -498,7 +499,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
       // attempt to find a record/object for this project and month
       const foundEntry = this.userFTEsFlat.find(userFTE => {
-        return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+        if (newProject) {
+          return false;
+        } else {
+          return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+        }
       });
 
       projFormArray.push(
