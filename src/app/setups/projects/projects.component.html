@@ -62,13 +62,13 @@
   <!-- Request Alerts -->
   <table class="table" width="50%">
     <ng-container *ngFor="let request of projectAccessRequestsList">
-      <tr>
+      <tr *ngIf="request.requestStatus=='Submitted'">
         <td class="align-middle" width="25%">
           {{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}
         </td>
         <td>
-          <button type="button" class="btn btn-outline-success btn-sm" (click)="requestResponse(request, 'Approved')">Approve</button>
-          <button type="button" class="btn btn-outline-danger btn-sm" (click)="requestResponse(request, 'Denied')">Deny</button>
+          <button type="button" class="btn btn-outline btn-sm" (click)="requestResponse(request, 'Approved')">Approve <i class="fa fa-thumbs-up"></i></button>
+          <button type="button" class="btn btn-outline btn-sm" (click)="requestResponse(request, 'Denied')">Deny <i class="fa fa-thumbs-down"></i></button>
         </td>
       </tr>
     </ng-container>
@@ -122,7 +122,7 @@
         <!-- COLLAPSABLE CARD-BODY START-->
         
           <tr class="table-container" id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
-            <td class="card-body main-card-body align-middle" colspan="3">
+            <td class="card-body main-card-body align-middle" colspan="6">
               <div class="card-deck">
 
                 <div class="card border mb-3 table-container">
@@ -153,11 +153,62 @@
                     </table>
                   </div>
                 </div>
-              </div>
-            </td>
 
-            <td class="card-body main-card-body align-middle" colspan="1">
-              <!-- <div class="card-deck"> -->
+              <div class="card border mb-3 table-container">
+                <div class="card-body">
+                  <h5 class="card-title">Schedule</h5>
+                  <table class="table table-sm">
+                    <tbody>
+                      <tr>
+                        <td>CON</td>
+                        <td>06/05/2018</td>
+                      </tr>
+                      <tr>
+                        <td>INV</td>
+                        <td>06/05/2018</td>
+                      </tr>
+                      <tr>
+                        <td>DEF</td>
+                        <td>06/05/2018</td>
+                      </tr>
+                      <tr>
+                        <td>HQ</td>
+                        <td>06/05/2018</td>
+                      </tr>
+                      <tr>
+                        <td>RSR</td>
+                        <td>06/05/2018</td>
+                      </tr>
+                      <tr>
+                        <td>SHP</td>
+                        <td>06/05/2018</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="card border mb-3 table-container">
+                <div class="card-body">
+                  <h5 class="card-title">Version Control</h5>
+                  <table>
+                    <tr colspan="2">
+                      <td>Created By</td>
+                      <td>Tawanchai Schmitz</td> 
+                      <td>06/01/2018</td>                   
+                    </tr>
+                    <tr>
+                      <td>Last Updated</td>   
+                      <td>Tawanchai Schmitz</td>  
+                      <td>06/01/2018</td>                      
+                    </tr>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+            </td>
+            <!-- <td class="card-body main-card-body align-middle" colspan="1">
 
                 <div class="card border mb-3 table-container">
                   <div class="card-body">
@@ -201,10 +252,9 @@
                   </div>
                 </div>
 
-              <!-- </div> -->
-            </td>
+            </td> -->
 
-            <td class="card-body main-card-body align-middle" colspan="2" rowspan="2"></td>
+            <!-- <td class="card-body main-card-body align-middle" colspan="2" rowspan="2"></td> -->
             
           </tr>
 

@@ -32,6 +32,7 @@ export class ProjectsSetupsComponent implements OnInit {
   pKeyRefList: any;
   showDetails: boolean;
   projectID: number;
+  requestResponseFlag: boolean;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
@@ -127,6 +128,7 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   getProjectAccessRequestsList() {
+    this.requestResponseFlag = true;
     this.apiDataService.getProjectAccessRequestsList(this.loggedInUser.id)
       .subscribe(
         res => {
@@ -187,6 +189,7 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   requestResponse(request: any, reply: string) {
+    this.requestResponseFlag = false;
     this.apiDataService.responseProjectAccessRequest(request, reply, this.loggedInUser.id)
       .subscribe(
         res => {
@@ -196,6 +199,7 @@ export class ProjectsSetupsComponent implements OnInit {
           console.log(err);
         }
       );
+    this.getProjectAccessRequestsList();
   }
 
   getProjectRoster(projectID: number) {
