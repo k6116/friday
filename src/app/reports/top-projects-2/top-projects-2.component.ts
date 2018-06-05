@@ -20,6 +20,8 @@ export class TopProjects2Component implements OnInit {
   loggedInUser: User; // object for logged in user's info
   bubbleData: any;
   bubbleChartOptions: any;
+  projectRoster: any;
+  displayRosterTable = false;
 
   constructor(
     private apiDataService: ApiDataService,
@@ -90,14 +92,32 @@ export class TopProjects2Component implements OnInit {
       },
       plotOptions: {
         series: {
+          cursor: 'pointer',
           dataLabels: {
             enabled: true,
             format: '{point.ProjectName}'
+          },
+          point: {
+            events: {
+              click: function(e) {
+                const p = e.point;
+                this.displayRosterTable = false;
+                this.showProjectRoster(p.projectID);
+              }.bind(this)
+            }
           }
         }
       },
       series: [{data: data}]
     };
     Highcharts.chart('bubble', this.bubbleChartOptions);
+  }
+
+  showProjectRoster(projectID: number) {
+    this.apiDataService.getProjectRoster(projectID).subscribe( res => {
+      this.projectRoster = res[0].teamMembers;
+      console.log(this.projectRoster);
+      this.displayRosterTable = true;
+    });
   }
 }

@@ -6,8 +6,38 @@
   </div>
 
   <div class="row row-custom">
-    <div class="col-sm-6">
+    <div class="col-sm">
       <div id="bubble"></div>
+    </div>
+  </div>
+
+  <!-- roster table -->
+  <div *ngIf="displayRosterTable">
+    <div class="row row-custom">
+      <div class="col-sm col-custom col-text-header">
+        <h2 class="page-header-text">Project Roster</h2>
+      </div>
+    </div>
+
+    <div class="row row-custom">
+      <div class="col-sm">
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <td>Employee Name</td>
+              <td>FTE</td>
+              <td>Job Title</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let member of projectRoster">
+              <td>{{member.name}}</td>
+              <td>{{member.fte}}</td>
+              <td>{{member.jobTitle}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 

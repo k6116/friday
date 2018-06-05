@@ -29,10 +29,13 @@ function getAggregatedFteData(req, res) {
       CAST(ROW_NUMBER() OVER(ORDER BY COUNT(DISTINCT T1.EmployeeID) ASC) AS int) AS x,
       COUNT(DISTINCT T1.EmployeeID) as y,
       SUM(T1.FTE) as z,
-      T2.ProjectName
+      T2.ProjectName,
+      T2.ProjectID AS projectID
     FROM resources.ProjectEmployees T1
       LEFT JOIN projects.Projects T2 ON T1.ProjectID = T2.ProjectID
-    GROUP BY T2.ProjectName
+    GROUP BY
+      T2.ProjectName,
+      T2.ProjectID
     ORDER BY x
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
