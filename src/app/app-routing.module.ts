@@ -9,6 +9,7 @@ import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.compon
 import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
+import { TopProjects2Component } from './reports/top-projects-2/top-projects-2.component';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
@@ -38,6 +39,7 @@ const routes: Routes = [
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent, canActivate: [AuthGuardService] },
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent, canActivate: [AuthGuardService] },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent, canActivate: [AuthGuardService] },
+      { path: 'reports/top-projects-2', component: TopProjects2Component, canActivate: [AuthGuardService] },
       { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
     ]
   },

@@ -22,6 +22,32 @@ function getAggregatedSubordinateFte(req, res) {
     });
 }
 
+function getAggregatedFteData(req, res) {
+
+  const sql = `
+    SELECT
+      CAST(ROW_NUMBER() OVER(ORDER BY COUNT(DISTINCT T1.EmployeeID) ASC) AS int) AS x,
+      COUNT(DISTINCT T1.EmployeeID) as y,
+      SUM(T1.FTE) as z,
+      T2.ProjectName
+    FROM resources.ProjectEmployees T1
+      LEFT JOIN projects.Projects T2 ON T1.ProjectID = T2.ProjectID
+    GROUP BY T2.ProjectName
+    ORDER BY x
+  `
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      console.log("returning user PLM data");
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 function getMyFteSummary(req, res) {
 
   const employeeID = req.params.employeeID;
@@ -254,6 +280,7 @@ function getQuarterlyEmployeeFTETotals(req, res) {
 
 module.exports = {
   getAggregatedSubordinateFte: getAggregatedSubordinateFte,
+  getAggregatedFteData: getAggregatedFteData,
   getMyFteSummary: getMyFteSummary,
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,

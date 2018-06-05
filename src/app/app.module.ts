@@ -62,6 +62,7 @@ import 'chartjs-plugin-zoom';
 import { PerformanceComponent } from './performance/performance.component';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
+import { TopProjects2Component } from './reports/top-projects-2/top-projects-2.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +95,8 @@ import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-sum
     BlockAppUseComponent,
     PerformanceComponent,
     MyFteSummaryComponent,
-    TeamFteSummaryComponent
+    TeamFteSummaryComponent,
+    TopProjects2Component
   ],
   imports: [
     AppRoutingModule,

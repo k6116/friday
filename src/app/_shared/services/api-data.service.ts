@@ -244,6 +244,12 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getAggregatedFteData() {
+    return this.http.get(`/api/reports/aggregatedFteData/`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   getMyFteSummary(employeeID: number, period: string) {
     return this.http.get(`/api/reports/getMyFteSummary/${employeeID}/${period}`)
       .timeout(this.timeout)
