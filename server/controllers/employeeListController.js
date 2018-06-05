@@ -19,24 +19,7 @@ function show(req, res) {
     });
 }
 
-function getFlatSubEmployees(req, res) {
-  const managerEmailAddress = req.params.managerEmailAddress;
-
-  const sql = `exec resources.getFlatSubEmployees '${managerEmailAddress}'`
-  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
-    .then(org => {
-      console.log("returning user PLM data");
-      res.json(org);
-    })
-    .catch(error => {
-      res.status(400).json({
-        title: 'Error (in catch)',
-        error: {message: error}
-      })
-    });
-}
 
 module.exports = {
-  show: show,
-  getFlatSubEmployees: getFlatSubEmployees
+  show: show
 }

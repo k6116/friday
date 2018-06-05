@@ -28,7 +28,6 @@ router.post('/deleteProject/:userID', controllers.project.deleteProject);
 
 // ORG TREE DATA
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
-router.get('/org/flatSubEmployees/:managerEmailAddress', controllers.employeeList.getFlatSubEmployees);
 
 // ORG CONTROLLER
 router.get('/org/:emailAddress', controllers.org.show);

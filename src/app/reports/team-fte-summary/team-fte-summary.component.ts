@@ -18,16 +18,15 @@ require('highcharts/modules/pareto.js')(Highcharts);
 export class TeamFteSummaryComponent implements OnInit {
 
   loggedInUser: User; // object for logged in user's info
-  fteSummaryData: any;
   paretoChartOptions: any;
+  userPlmData: any;
+  teamSummaryData: any;
   timePeriods = [
     {period: 'current-quarter', text: 'Current Quarter'},
     {period: 'current-fy', text: 'Current Fiscal Year'},
     {period: 'all-time', text: 'All Time'}
   ];
-  userPlmData: any;
-  subEmployees: any;
-  subEmployeeList: any;
+
 
   constructor(
     private apiDataService: ApiDataService,
@@ -42,43 +41,18 @@ export class TeamFteSummaryComponent implements OnInit {
         return;
       }
       this.loggedInUser = user;
-      this.getTeamSummaryData('current-quarter');  // initialize the FTE entry component
-      this.getTeam(this.loggedInUser.email);
-    });
-  }
-
-  getTeam(userEmail: string) {
-    this.apiDataService.getUserPLMData(userEmail).subscribe( res => {
-      this.userPlmData = res[0];
-      this.apiDataService.getFlatSubEmployees(this.userPlmData.SUPERVISOR_EMAIL_ADDRESS).subscribe( res2 => {
-        console.log(res2);
-      });
+      this.getTeamSummaryData('current-quarter');
     });
   }
 
   getTeamSummaryData(period: string) {
-
-    // Retrieve Top FTE Project List
-    this.apiDataService.getMyFteSummary(this.loggedInUser.id, period)
-    .subscribe(
-      res => {
-        this.fteSummaryData = res;  // get summary data from db
-
-        // convert FTE values into percentages
-        let totalFtes = 0;
-        this.fteSummaryData.forEach( project => {
-          totalFtes += +project.FTE;
-        });
-        this.fteSummaryData.forEach( project => {
-          project.y = project.FTE / totalFtes;
-        });
-        console.log(this.fteSummaryData);
+    this.apiDataService.getUserPLMData(this.loggedInUser.email).subscribe( res => {
+      this.userPlmData = res[0];
+      this.apiDataService.getAggregatedSubordinateFTE(this.userPlmData.SUPERVISOR_EMAIL_ADDRESS).subscribe( res2 => {
+        this.teamSummaryData = res2;
         this.plotFteSummaryPareto(period);
-      },
-      err => {
-        console.log(err);
-      }
-    );
+      });
+    });
   }
 
   plotFteSummaryPareto(period: string) {
@@ -88,9 +62,9 @@ export class TeamFteSummaryComponent implements OnInit {
 
     const names = [];
     const values = [];
-    this.fteSummaryData.forEach( project => {
+    this.teamSummaryData.forEach( project => {
       names.push(project.name);
-      values.push(project.FTE);
+      values.push(project.fteTotals);
     });
 
     this.paretoChartOptions = {
@@ -103,7 +77,7 @@ export class TeamFteSummaryComponent implements OnInit {
         type: 'column'
       },
       title: {
-        text: `${this.loggedInUser.fullName}'s Historic FTE Pareto`
+        text: `My Team's FTE Pareto`
       },
       subtitle: {
         text: `${timePeriod.text}`

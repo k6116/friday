@@ -234,11 +234,7 @@ export class ApiDataService {
 
 
   // ORG API ROUTES
-  getFlatSubEmployees(managerEmailAddress: string) {
-    return this.http.get(`/api/org/flatSubEmployees/${managerEmailAddress}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
+
 
 
   // REPORTS API ROUTES
