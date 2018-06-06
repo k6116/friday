@@ -26,6 +26,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   userPlmData: any;
   teamSummaryData: any;
   displaySelectedProjectRoster: boolean;
+  selectedProject: string;
   selectedProjectRoster: any;
   timePeriods = [
     {period: 'current-quarter', text: 'Current Quarter'},
@@ -92,14 +93,6 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.teamSummaryData.sort( (a, b) => {
       return b.totalFtes - a.totalFtes;
     });
-
-    // parse project names and FTEs from the nested object into flat arrays for pareto chart
-    // const names = [];
-    // const values = [];
-    // this.teamSummaryData.forEach( project => {
-    //   names.push(project.projectName);
-    //   values.push(project.totalFtes);
-    // });
 
     const projectNames = [];
     const columnData = [];
@@ -174,6 +167,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.teamSummaryData.forEach( project => {
       // find the project that was clicked
       if (project.projectID === projectID) {
+        this.selectedProject = project.projectName;
         this.selectedProjectRoster = project.teamMembers;
       }
     });
