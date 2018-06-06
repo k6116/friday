@@ -61,6 +61,7 @@ import { ProgressSpinnerComponent } from './_shared/components/progress-spinner/
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
+import { ChatComponent } from './chat/chat.component';
 
 
 
@@ -96,7 +97,8 @@ import 'chartjs-plugin-zoom';
     PerformanceComponent,
     ProgressBarComponent,
     ProgressSpinnerComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
+    ChatComponent
   ],
   imports: [
     AppRoutingModule,

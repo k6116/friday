@@ -15,6 +15,7 @@ export class TestComponent implements OnInit {
   private url = 'http://localhost:3000';
   private socket;
   messages: string[] = [];
+  inputText: string;
 
   constructor () {
 
@@ -23,6 +24,8 @@ export class TestComponent implements OnInit {
   ngOnInit() {
 
     this.socket = io();
+
+    this.inputText = 'asdfsd';
 
     this.socket.on('news', function (data) {
       console.log(data);
@@ -33,6 +36,7 @@ export class TestComponent implements OnInit {
       console.log(messages);
       this.messages = messages;
       $('#messages').append($('<li>').text(messages[messages.length - 1]));
+      // this.message.nativeElement.value = '';
     });
 
   }
@@ -43,6 +47,7 @@ export class TestComponent implements OnInit {
     console.log('messages array');
     console.log(this.messages);
     this.socket.emit('message', this.messages);
+    this.inputText = '';
     // console.log(`send message button clicked: ${this.message}`);
     // console.log(this.message.nativeElement.value);
     // console.log('socket:');
