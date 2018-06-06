@@ -12,18 +12,20 @@ const moment = require('moment');
 require('highcharts/highcharts-more.js')(Highcharts);
 
 @Component({
-  selector: 'app-top-projects-2',
-  templateUrl: './top-projects-2.component.html',
-  styleUrls: ['./top-projects-2.component.css', '../../_shared/styles/common.css']
+  selector: 'app-top-projects-bubble',
+  templateUrl: './top-projects-bubble.component.html',
+  styleUrls: ['./top-projects-bubble.component.css', '../../_shared/styles/common.css']
 })
-export class TopProjects2Component implements OnInit, OnDestroy {
+export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
 
   loggedInUser: User; // object for logged in user's info
   fteDataSubscription: Subscription;
   rosterDataSubscription: Subscription;
   bubbleChart: any;
   rawBubbleData: any;
-  bubbleData = [];
+  anchorBubbleData = [];
+  flexBubbleData = [];
+  otherBubbleData = [];
   bubbleChartOptions: any;
   projectRoster: any;
   displayRosterTable = false;
@@ -62,37 +64,39 @@ export class TopProjects2Component implements OnInit, OnDestroy {
       this.rawBubbleData = res;
 
       this.rawBubbleData.forEach( project => {
-        // compute project complexity score
+        // compute project complexity score (mock right now)
         let score = 1;
-        let color = '#aaaaaa';
         if (project.fiveYearRev) {
           score += Math.round(Math.log10(project.fiveYearRev));
         }
         if (project.PriorityName === 'Anchor') {
           score += 3;
-          color = '#ff0000';
         } else if (project.PriorityName === 'Flex') {
           score += 1;
-          color = '#00ff00';
         }
-
         const tempProj = {
           x: score,
           y: project.employeeCount,
           z: project.fteTotals,
           projectID: project.projectID,
-          projectName: project.projectName,
-          color: color
+          projectName: project.projectName
         };
-        this.bubbleData.push(tempProj);
+
+        if (project.PriorityName === 'Anchor') {
+          this.anchorBubbleData.push(tempProj);
+        } else if (project.PriorityName === 'Flex') {
+          this.flexBubbleData.push(tempProj);
+        } else {
+          this.otherBubbleData.push(tempProj);
+        }
+
       });
 
-      console.log(this.bubbleData);
-      this.plotBubbleFteData(this.bubbleData);
+      this.plotBubbleFteData();
     });
   }
 
-  plotBubbleFteData(data: any) {
+  plotBubbleFteData() {
     this.bubbleChartOptions = {
       credits: {
         text: 'jarvis.is.keysight.com',
@@ -104,7 +108,7 @@ export class TopProjects2Component implements OnInit, OnDestroy {
         zoomType: 'xy'
       },
       legend: {
-        enabled: false
+        enabled: true
       },
       title: {
         text: 'Top Keysight projects by FTE, vs Employee Count and Complexity'
@@ -152,7 +156,19 @@ export class TopProjects2Component implements OnInit, OnDestroy {
           }
         }
       },
-      series: [{data: data}]
+      series: [{
+        name: 'Anchor',
+        data: this.anchorBubbleData,
+        color: '#cc1111'
+      }, {
+        name: 'Flex',
+        data: this.flexBubbleData,
+        color: '#2222bb'
+      }, {
+        name: 'Other',
+        data: this.otherBubbleData,
+        color: '#8a8a8a'
+      }]
     };
     this.bubbleChart = Highcharts.chart('bubble', this.bubbleChartOptions);
   }
