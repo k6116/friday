@@ -65,7 +65,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   getTeamSummaryData(period: string) {
     this.plmSubscription = this.apiDataService.getUserPLMData(this.loggedInUser.email).subscribe( res => {
       this.userPlmData = res[0];
-      this.paretoChartSubscription = this.apiDataService.getSubordinateProjectRoster(this.userPlmData.SUPERVISOR_EMAIL_ADDRESS)
+      this.paretoChartSubscription = this.apiDataService.getSubordinateProjectRoster(this.userPlmData.SUPERVISOR_EMAIL_ADDRESS, period)
       .subscribe( res2 => {
         this.teamSummaryData = res2;
         // total up the number of FTEs contributed to each project
@@ -137,7 +137,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         baseSeries: 1
       },
       {
-        name: 'FTEs Recorded',
+        name: 'Team FTEs Recorded',
         type: 'column',
         colorByPoint: true,
         zIndex: 2,

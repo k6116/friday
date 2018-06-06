@@ -56,7 +56,7 @@ router.post('/updateProfile/:userID', controllers.profile.update);
 
 // REPORTS PROJECT CONTROLLER
 router.get('/reports/aggregatedSubordinateFte/:managerEmailAddress', controllers.reports.getAggregatedSubordinateFte);  // TO BE DELETED
-router.get('/reports/subordinateProjectRoster/:managerEmailAddress', controllers.reports.getSubordinateProjectRoster);
+router.get('/reports/subordinateProjectRoster/:managerEmailAddress/:period', controllers.reports.getSubordinateProjectRoster);
 router.get('/reports/aggregatedFteData', controllers.reports.getAggregatedFteData);
 router.get('/reports/getMyFteSummary/:employeeID/:period', controllers.reports.getMyFteSummary);
 router.get('/getProjectFTEHistory/:projectID', controllers.reports.getProjectFTEHistory);

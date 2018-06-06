@@ -244,8 +244,8 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
-  getSubordinateProjectRoster(managerEmailAddress: string) {
-    return this.http.get(`/api/reports/subordinateProjectRoster/${managerEmailAddress}`)
+  getSubordinateProjectRoster(managerEmailAddress: string, period: string) {
+    return this.http.get(`/api/reports/subordinateProjectRoster/${managerEmailAddress}/${period}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

@@ -5,6 +5,50 @@ const moment = require('moment');
 const Treeize = require('treeize');
 
 
+function translateTimePeriods(period) {
+  // compute start and end date for FTE Summary query based on period
+  let startMonth;
+  let endMonth;
+  switch (period) {
+    case 'current-quarter': {
+      startMonth = moment.utc().startOf('month');
+      const secondMonthInQuarter = [2, 5, 8, 11];
+      const thirdMonthInQuarter = [0, 3, 6, 9];
+
+      // we want current fiscal quarter to be editable as long as we are in that FQ,
+      // so adjust the current month to allow all months in the current quarter to be editable
+      if (thirdMonthInQuarter.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).subtract(2, 'months');
+      } else if (secondMonthInQuarter.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).subtract(1, 'month');
+      }
+      endMonth = moment(startMonth).add(3, 'months');
+      break;
+    }
+    case 'current-fy': {
+      startMonth = moment.utc().startOf('month');
+      const monthsInLastFiscalYear = [10, 11];
+
+      if (monthsInLastFiscalYear.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).set('month', 10);  // set month to Nov
+      } else {  // the beginning of the fiscal year was in last calendar year
+        startMonth = moment(startMonth).set('month', 10);
+        startMonth = moment(startMonth).set('year', (moment(startMonth).year() - 1));
+      }
+      endMonth = moment(startMonth).add(1, 'year');
+      break;
+    }
+    case 'all-time': {
+      startMonth = moment.utc().startOf('year').set('year', 1900);
+      endMonth = moment.utc().startOf('year').set('year', 9000);
+      break;
+    }
+  }
+
+  // return the computed start and end dates
+  return [moment(startMonth).format('MM/DD/YYYY'), moment(endMonth).format('MM/DD/YYYY')];
+}
+
 function getAggregatedSubordinateFte(req, res) {  // TO BE DELETED
   const managerEmailAddress = req.params.managerEmailAddress;
 
@@ -24,8 +68,9 @@ function getAggregatedSubordinateFte(req, res) {  // TO BE DELETED
 
 function getSubordinateProjectRoster(req, res) {
   const managerEmailAddress = req.params.managerEmailAddress;
-
-  const sql = `EXEC resources.getSubordinateProjectRoster '${managerEmailAddress}'`
+  const period = req.params.period;
+  const datePeriod = translateTimePeriods(period);
+  const sql = `EXEC resources.getSubordinateProjectRoster '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
       const subordinateProjectTeamTree = new Treeize();
