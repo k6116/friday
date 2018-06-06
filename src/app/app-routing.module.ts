@@ -8,7 +8,10 @@ import { MainComponent } from './main/main.component';
 import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.component';
 import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
-import { ProjectsReportsComponent } from './reports/projects/projects.component';
+import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
+import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
+import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
+import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
@@ -33,7 +36,10 @@ const routes: Routes = [
         canActivate: [AuthGuardService], canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService] },
-      { path: 'reports/projects', component: ProjectsReportsComponent, canActivate: [AuthGuardService] },
+      { path: 'reports/my-fte-summary', component: MyFteSummaryComponent, canActivate: [AuthGuardService] },
+      { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent, canActivate: [AuthGuardService] },
+      { path: 'reports/top-projects', component: TopProjectsReportsComponent, canActivate: [AuthGuardService] },
+      { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent, canActivate: [AuthGuardService] },
       { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
     ]
   },

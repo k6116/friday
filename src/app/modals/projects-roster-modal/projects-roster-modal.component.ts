@@ -23,6 +23,7 @@ export class ProjectsRosterModalComponent implements OnInit {
   project: any;
   projectRoster: any;
   projectID: number;
+  projectHasMembers: boolean;
 
 
   constructor(
@@ -30,10 +31,12 @@ export class ProjectsRosterModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.projectHasMembers = false;
   }
 
   getProjectRoster() {
     console.log('getting project roster');
+    this.projectHasMembers = false;
     this.apiDataService.getProjectRoster(this.project.ProjectID)
     .subscribe(
       res => {
@@ -41,6 +44,9 @@ export class ProjectsRosterModalComponent implements OnInit {
         console.log(res);
         if (res.length) {
           this.projectRoster = res[0];
+          if (Object.keys(this.projectRoster).includes('teamMembers')) {
+            this.projectHasMembers = true;
+          }
         }
       },
       err => {

@@ -41,7 +41,7 @@ import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.compon
 import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
 import { TopNavComponent } from './navs/top-nav/top-nav.component';
 import { SideNavComponent } from './navs/side-nav/side-nav.component';
-import { ProjectsReportsComponent } from './reports/projects/projects.component';
+import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
@@ -60,6 +60,9 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
 import { PerformanceComponent } from './performance/performance.component';
+import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
+import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
+import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +78,7 @@ import { PerformanceComponent } from './performance/performance.component';
     FteInputRestrictDirective,
     TopNavComponent,
     SideNavComponent,
-    ProjectsReportsComponent,
+    TopProjectsReportsComponent,
     EmployeesReportsComponent,
     ProjectsSetupsComponent,
     FteEntryTeamComponent,
@@ -90,7 +93,10 @@ import { PerformanceComponent } from './performance/performance.component';
     ProjectsRosterModalComponent,
     ToastComponent,
     BlockAppUseComponent,
-    PerformanceComponent
+    PerformanceComponent,
+    MyFteSummaryComponent,
+    TeamFteSummaryComponent,
+    TopProjectsBubbleComponent
   ],
   imports: [
     AppRoutingModule,

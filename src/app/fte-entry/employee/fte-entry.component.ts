@@ -104,7 +104,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
     // returning true will navigate without confirmation
-    return !this.FTEFormGroup.dirty;
+    return this.FTEFormGroup.untouched;
     // returning false will show a confirm dialog before navigating away
   }
 
@@ -374,6 +374,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           console.log(`save fte values took ${t1 - t0} milliseconds`);
           this.appDataService.raiseToast('success', res.message);
           this.resetProjectFlags();
+          this.fteComponentInit();  // re-fetch the data to get newly inserted recordIDs
+          this.FTEFormGroup.markAsUntouched();
         },
         err => {
           console.log(err);
@@ -497,7 +499,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
       // attempt to find a record/object for this project and month
       const foundEntry = this.userFTEsFlat.find(userFTE => {
-        return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+        if (newProject) {
+          return false;
+        } else {
+          return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+        }
       });
 
       projFormArray.push(
@@ -702,6 +708,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     const resetModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
       if (res) {
         this.fteComponentInit();
+        this.FTEFormGroup.markAsUntouched();
         this.appDataService.raiseToast('success', 'Your FTE form has been reset');
       } else {
         console.log('reset aborted');
