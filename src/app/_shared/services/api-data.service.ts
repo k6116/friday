@@ -234,7 +234,11 @@ export class ApiDataService {
 
 
   // ORG API ROUTES
-
+  getSubordinatesFlat(emailAddress: string) {  // TO BE DELETED
+    return this.http.get(`/api/org/subordinatesFlat/${emailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
 
 
   // REPORTS API ROUTES

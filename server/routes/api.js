@@ -30,6 +30,7 @@ router.post('/deleteProject/:userID', controllers.project.deleteProject);
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
 
 // ORG CONTROLLER
+router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
 router.get('/org/:emailAddress', controllers.org.show);
 router.get('/projects', controllers.project.getAll)
 
