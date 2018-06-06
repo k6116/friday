@@ -1,0 +1,16 @@
+
+h2.page-header-text.chat-app-title {
+    margin-bottom: 20px;
+}
+
+input.form-control.chat-message {
+    width: 250px;
+}
+
+button.btn.btn-primary.chat-send-button {
+    margin-left: 20px;
+}
+
+div.chat-messages-cont {
+    margin-top: 25px;
+}

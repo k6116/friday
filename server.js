@@ -86,7 +86,7 @@ if (env === 'dev') {
 
   // create a node server for https on port 443
   const port1 = 443;
-  https.createServer(sslOptions, app)
+  server = https.createServer(sslOptions, app)
     .listen(port1, () => {
       console.log(`node server listening on port: ${port1}`);
     });
@@ -103,15 +103,11 @@ if (env === 'dev') {
 
 }
 
-// console.log(server);
+// testing websockets
 var io = require('socket.io')(server);
 
-io.on('connection', function (socket) {
+io.on('connection', socket => {
   console.log('a user connected');
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
   socket.on('message', function (message) {
     io.emit('message', message);
   });

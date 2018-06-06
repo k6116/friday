@@ -57,12 +57,11 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import { PerformanceComponent } from './performance/performance.component';
 import { ProgressBarComponent } from './_shared/components/progress-bar/progress-bar.component';
 import { ProgressSpinnerComponent } from './_shared/components/progress-spinner/progress-spinner.component';
+import { ChatComponent } from './chat/chat.component';
 
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
-import { ChatComponent } from './chat/chat.component';
-
 
 
 @NgModule({

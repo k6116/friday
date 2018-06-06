@@ -14,6 +14,7 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 
 import { AuthGuardService } from './auth/auth-guard.service';
 import { TestComponent } from './test/test.component';
+import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
 import { UserResolverService } from './_shared/services/user-resolver.service';
 
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'block', component: BlockAppUseComponent },
   { path: 'test', component: TestComponent },
+  { path: 'chat', component: ChatComponent },
   { path: 'perf', component: PerformanceComponent },
   { path: 'login', component: LoginComponent },
   {

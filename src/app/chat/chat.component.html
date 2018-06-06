@@ -1,3 +1,17 @@
-<p>
-  chat works!
-</p>
+
+<div class="container-fluid">
+    <div class="row row-custom">
+      <div class="col-xs-12 col-custom">
+        <h2 class="page-header-text chat-app-title">
+          Example Chat App Using WebSockets and Socket.io
+        </h2>
+        <form class="form-inline">
+          <input class="form-control chat-message" [(ngModel)]="inputText" type="text" name="first" (keyup.enter)="onSendMessageClick()" appAutofocus>
+          <button class="btn btn-primary chat-send-button" type="button" (click)="onSendMessageClick()">Send Message</button>
+        </form>
+        <div class="chat-messages-cont" id="messages">
+          <!-- chat messages go here -->
+        </div>
+      </div>
+    </div>
+  </div>
