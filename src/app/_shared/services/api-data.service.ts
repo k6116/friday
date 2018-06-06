@@ -220,6 +220,42 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  sendRequestProjectEmail(userID: number, ownerID: number, projectName: string) {
+    return this.http.post(`/api/sendRequestProjectEmail/${userID}/${ownerID}/${projectName}`, null)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+  }
+
+  sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string) {
+      return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}`, null)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+
+  // ORG API ROUTES
+
+
+
+  // REPORTS API ROUTES
+  getAggregatedSubordinateFTE(managerEmailAddress: string) {
+    return this.http.get(`/api/reports/aggregatedSubordinateFte/${managerEmailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getAggregatedFteData() {
+    return this.http.get(`/api/reports/aggregatedFteData/`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getMyFteSummary(employeeID: number, period: string) {
+    return this.http.get(`/api/reports/getMyFteSummary/${employeeID}/${period}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   getProjectFTEHistory(projectID: number) {
     return this.http.get(`/api/getProjectFTEHistory/${projectID}`)
       .timeout(this.timeout)
@@ -243,6 +279,5 @@ export class ApiDataService {
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
-
 
 }

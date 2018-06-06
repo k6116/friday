@@ -5,6 +5,132 @@ const moment = require('moment');
 const Treeize = require('treeize');
 
 
+function getAggregatedSubordinateFte(req, res) {
+  const managerEmailAddress = req.params.managerEmailAddress;
+
+  const sql = `exec resources.aggregateSubordinateFTE '${managerEmailAddress}'`
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      console.log("returning user PLM data");
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+function getAggregatedFteData(req, res) {
+
+  const sql = `
+    SELECT
+      COUNT(DISTINCT T1.EmployeeID) as employeeCount,
+      SUM(T1.FTE) AS fteTotals,
+      T2.ProjectName AS projectName,
+      T2.ProjectID AS projectID,
+      T2.FiveYearNetRevenue AS fiveYearRev,
+      T3.PriorityName
+    FROM resources.ProjectEmployees T1
+      LEFT JOIN projects.Projects T2 ON T1.ProjectID = T2.ProjectID
+      LEFT JOIN projects.Priority T3 on T2.PriorityID = T3.PriorityID
+    GROUP BY
+      T2.ProjectName,
+      T2.ProjectID,
+      T2.FiveYearNetRevenue,
+      T3.PriorityName
+  `
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      console.log("returning user PLM data");
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+function getMyFteSummary(req, res) {
+
+  const employeeID = req.params.employeeID;
+  const period = req.params.period;
+
+  // compute start and end date for FTE Summary query based on period
+  let startMonth;
+  let endMonth;
+  switch (period) {
+    case 'current-quarter': {
+      startMonth = moment.utc().startOf('month');
+      const secondMonthInQuarter = [2, 5, 8, 11];
+      const thirdMonthInQuarter = [0, 3, 6, 9];
+
+      // we want current fiscal quarter to be editable as long as we are in that FQ,
+      // so adjust the current month to allow all months in the current quarter to be editable
+      if (thirdMonthInQuarter.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).subtract(2, 'months');
+      } else if (secondMonthInQuarter.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).subtract(1, 'month');
+      }
+      endMonth = moment(startMonth).add(3, 'months');
+      break;
+    }
+    case 'current-fy': {
+      startMonth = moment.utc().startOf('month');
+      const monthsInLastFiscalYear = [10, 11];
+
+      if (monthsInLastFiscalYear.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).set('month', 10);  // set month to Nov
+      } else {  // the beginning of the fiscal year was in last calendar year
+        startMonth = moment(startMonth).set('month', 10);
+        startMonth = moment(startMonth).set('year', (moment(startMonth).year() - 1));
+      }
+      endMonth = moment(startMonth).add(1, 'year');
+      break;
+    }
+    case 'all-time': {
+      startMonth = moment.utc().startOf('year').set('year', 1900);
+      endMonth = moment.utc().startOf('year').set('year', 9000);
+      break;
+    }
+  }
+
+  const startDate = moment(startMonth).format('MM/DD/YYYY');
+  const endDate = moment(endMonth).format('MM/DD/YYYY');
+
+  const sql = `
+    SELECT
+      P.ProjectName AS name,
+      SUM(PE.FTE) AS FTE
+    FROM
+      resources.ProjectEmployees PE
+      LEFT JOIN projects.Projects P ON PE.ProjectID = P.ProjectID
+    WHERE
+      PE.EmployeeID = '${employeeID}'
+      AND
+      PE.FiscalDate BETWEEN '${startDate}' AND '${endDate}'
+    GROUP BY
+      P.ProjectName
+    ORDER BY
+      FTE DESC
+    `
+
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(data => {
+      console.log("returning MyFTESummary");
+      res.json(data);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 function getProjectFTEHistory(req, res) {
 
   const projectID = req.params.projectID;
@@ -159,6 +285,9 @@ function getQuarterlyEmployeeFTETotals(req, res) {
 }
 
 module.exports = {
+  getAggregatedSubordinateFte: getAggregatedSubordinateFte,
+  getAggregatedFteData: getAggregatedFteData,
+  getMyFteSummary: getMyFteSummary,
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,
   getProjectEmployeeFTEList: getProjectEmployeeFTEList,

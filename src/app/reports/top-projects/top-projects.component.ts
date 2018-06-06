@@ -7,11 +7,11 @@ declare var require: any;
 require('highcharts/modules/annotations')(Highcharts);
 
 @Component({
-  selector: 'app-projects-reports',
-  templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.css', '../../_shared/styles/common.css']
+  selector: 'app-reports-topprojects',
+  templateUrl: './top-projects.component.html',
+  styleUrls: ['./top-projects.component.css', '../../_shared/styles/common.css']
 })
-export class ProjectsReportsComponent implements OnInit {
+export class TopProjectsReportsComponent implements OnInit {
 
     topFTEProjectList: any;
     projectEmployeeData: any;

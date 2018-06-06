@@ -36,6 +36,11 @@ router.get('/projects', controllers.project.getAll)
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);
 
+// EMAIL CONTROLLER
+router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
+router.post('/sendRequestProjectEmail/:userID/:ownerID/:projectName', controllers.email.sendRequestProject); 
+router.post('/sendProjectApprovalEmail/:userID/:ownerID/:projectName', controllers.email.sendProjectApproval);
+
 //PROJECT ACCESS CONTROLLER
 router.get('/getProjectAccessRequestsList/:userID', controllers.projectAccess.getProjectAccessRequestsList);
 router.get('/getProjectAccessTeamList/:userID/:managerEmailAddress', controllers.projectAccess.getProjectAccessTeamList);
@@ -50,6 +55,9 @@ router.post('/updateProfile/:userID', controllers.profile.update);
 // router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
 
 // REPORTS PROJECT CONTROLLER
+router.get('/reports/aggregatedSubordinateFte/:managerEmailAddress', controllers.reports.getAggregatedSubordinateFte);
+router.get('/reports/aggregatedFteData', controllers.reports.getAggregatedFteData);
+router.get('/reports/getMyFteSummary/:employeeID/:period', controllers.reports.getMyFteSummary);
 router.get('/getProjectFTEHistory/:projectID', controllers.reports.getProjectFTEHistory);
 router.get('/getTopFTEProjectList/', controllers.reports.getTopFTEProjectList);
 router.get('/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.reports.getProjectEmployeeFTEList);

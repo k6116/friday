@@ -33,9 +33,8 @@ function getProjectRoster(req, res) {
     SELECT 
       T1.ProjectID as 'projectID',
       T1.ProjectName as 'projectName',
-      T1.[Description] as 'description',
       T3.FullName as 'teamMembers:name',
-      T2.FTE as 'teamMembers:fte',
+      SUM(T2.FTE) as 'teamMembers:fte',
       T4.JobTitleName + ' - ' + T5.JobTitleSubName as 'teamMembers:jobTitle'
     FROM 
       projects.Projects T1
@@ -45,7 +44,12 @@ function getProjectRoster(req, res) {
       LEFT JOIN accesscontrol.JobTitleSub T5 ON T3.JobTitleSubID = T5.JobTitleSubID
     WHERE 
       T1.ProjectID = ${projectID}
-      AND T2.FiscalDate = '${month}'
+    GROUP BY
+      T1.ProjectID,
+      T1.ProjectName,
+      T1.[Description],
+      T3.FullName,
+      (T4.JobTitleName + ' - ' + T5.JobTitleSubName)
   `
 
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
