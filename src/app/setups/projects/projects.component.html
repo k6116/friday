@@ -59,8 +59,8 @@
     </div>
   </div>
   
-  <!-- Request Alerts -->
-  <table class="table" width="50%">
+  <!-- Request Alerts as Table-->
+  <!-- <table class="table" width="50%">
     <ng-container *ngFor="let request of projectAccessRequestsList">
       <tr *ngIf="request.requestStatus=='Submitted'">
         <td class="align-middle" width="25%">
@@ -72,10 +72,26 @@
         </td>
       </tr>
     </ng-container>
-  </table>
+  </table> -->
   <!--  -->
 
-  <button class="btn btn-outline-dark btn-sm" data-toggle="tooltip" data-placement="top" title="Create new project" (click)="createProject()">
+  <div class="card" style="display: inline-block; margin-bottom: 1rem;">
+      <div class="card-header">
+          Your Action Items:
+        </div>
+    <ng-container *ngFor="let request of projectAccessRequestsList">
+      <div class="card-body" *ngIf="request.requestStatus=='Submitted'">
+        <p class="card-text">{{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}
+          <span class="float-right">
+            <button type="button" class="btn btn-outline btn-sm" (click)="requestResponse(request, 'Approved')">Approve <i class="fa fa-thumbs-up"></i></button>
+            <button type="button" class="btn btn-outline btn-sm" (click)="requestResponse(request, 'Denied')">Deny <i class="fa fa-thumbs-down"></i></button>
+          </span>
+        </p>
+      </div>
+    </ng-container>
+    </div>
+
+  <button class="btn btn-outline-dark btn-sm" style="display: block" data-toggle="tooltip" data-placement="top" title="Create new project" (click)="createProject()">
     <i class="fa fa-plus" data-toggle="modal" data-target="#projectsCreateModal"></i>
   </button>
 
@@ -188,7 +204,7 @@
                 </div>
               </div>
 
-              <div class="card border mb-3 table-container">
+              <!-- <div class="card border mb-3 table-container">
                 <div class="card-body">
                   <h5 class="card-title">Version Control</h5>
                   <table>
@@ -204,57 +220,10 @@
                     </tr>
                   </table>
                 </div>
-              </div>
+              </div> -->
 
             </div>
             </td>
-            <!-- <td class="card-body main-card-body align-middle" colspan="1">
-
-                <div class="card border mb-3 table-container">
-                  <div class="card-body">
-                    <h5 class="card-title">Action Items</h5>
-                    <table>
-                      <tr>
-                        <th>CON</th>
-                        <th>INV</th>
-                        <th>DEF</th>
-                        <th>HQ</th>
-                        <th>RSR</th>
-                        <th>SHP</th>                        
-                      </tr>
-                      <tr>
-                        <td>06/01/2018</td>
-                        <td>06/01/2018</td>
-                        <td>06/01/2018</td>
-                        <td>06/01/2018</td>
-                        <td>06/01/2018</td>
-                        <td>06/01/2018</td>                        
-                      </tr>
-                    </table>
-                  </div>
-                </div>
-
-                <div class="card border mb-3 table-container">
-                  <div class="card-body">
-                    <h5 class="card-title">Version Control</h5>
-                    <table>
-                      <tr colspan="2">
-                        <td>Created By</td>
-                        <td>Tawanchai Schmitz</td> 
-                        <td>06/01/2018</td>                   
-                      </tr>
-                      <tr>
-                        <td>Last Updated</td>   
-                        <td>Tawanchai Schmitz</td>  
-                        <td>06/01/2018</td>                      
-                      </tr>
-                    </table>
-                  </div>
-                </div>
-
-            </td> -->
-
-            <!-- <td class="card-body main-card-body align-middle" colspan="2" rowspan="2"></td> -->
             
           </tr>
 

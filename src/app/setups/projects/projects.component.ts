@@ -253,7 +253,8 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataService.deleteProject(project[0], this.loggedInUser.id)
     .subscribe(
       res => {
-        this.deleteSuccess.emit(true);
+        // this.deleteSuccess.emit(true);
+        this.onDeleteSuccess();
       },
       err => {
         console.log(err);
