@@ -9,6 +9,9 @@
           <input class="form-control chat-message" [(ngModel)]="inputText" type="text" name="first" (keyup.enter)="onSendMessageClick()" appAutofocus>
           <button class="btn btn-primary chat-send-button" type="button" (click)="onSendMessageClick()">Send Message</button>
         </form>
+        <div class="online-users">
+
+        </div>
         <div class="chat-messages-cont" id="messages">
           <!-- chat messages go here -->
         </div>

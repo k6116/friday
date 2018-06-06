@@ -105,10 +105,13 @@ var io = require('socket.io')(server);
 
 io.on('connection', socket => {
   console.log('a user connected');
-  socket.on('message', function (message) {
+  socket.on('message', message => {
     io.emit('message', message);
   });
-  socket.on('disconnect', function(){
+  socket.on('activeUsers', activeUsers => {
+    io.emit('activeUsers', activeUsers);
+  });
+  socket.on('disconnect', () => {
     console.log('a user disconnected');
   });
 });

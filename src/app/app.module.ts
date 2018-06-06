@@ -29,6 +29,8 @@ import { AuthGuardService } from './auth/auth-guard.service';
 import { ToolsService } from './_shared/services/tools.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
 import { UserResolverService } from './_shared/services/user-resolver.service';
+import { WebsocketService } from './_shared/services/websocket.service';
+import { ChatService } from './_shared/services/chat.service';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -121,7 +123,9 @@ import 'chartjs-plugin-zoom';
     AuthGuardService,
     ToolsService,
     ClickTrackingService,
-    UserResolverService
+    UserResolverService,
+    WebsocketService,
+    ChatService
   ],
   bootstrap: [AppComponent]
 })

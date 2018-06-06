@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { ChatService } from '../_shared/services/chat.service';
 import * as io from 'socket.io-client';
 import * as faker from 'faker';
 import * as moment from 'moment';
@@ -18,8 +19,9 @@ export class ChatComponent implements OnInit {
   socket;
   inputText: string;
   userName: string;
+  activeUsers: string;
 
-  constructor () {
+  constructor (private chatService: ChatService) {
 
   }
 
@@ -34,6 +36,10 @@ export class ChatComponent implements OnInit {
     // listen for emits for 'message'
     this.socket.on('message', message => {
       $('#messages').append($('<p>').text(message));
+    });
+
+    this.chatService.messages.subscribe(msg => {
+      console.log(msg);
     });
 
   }
