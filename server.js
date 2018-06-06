@@ -11,10 +11,6 @@ const dotevnv = require('dotenv').config()
 // create the express application
 const app = express();
 
-
-// const httpServer = require('http').Server(app);
-
-
 // set the ssl options object, reading keys and certs from the filesystem
 var sslOptions = {
   key: fs.readFileSync('./etc/ssl/jarvis.key'),
@@ -47,12 +43,13 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-
 // get environment/instance (dev, test, or prod)
 const env = process.env.ENVIRONMENT;
 
-// start development server
+// declare variable for socket.io use
 var server;
+
+// start development server
 if (env === 'dev') {
 
   const port1 = 3000;
