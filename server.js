@@ -8,6 +8,13 @@ const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
 const dotevnv = require('dotenv').config()
 
+// create the express application
+const app = express();
+
+
+// const httpServer = require('http').Server(app);
+
+
 // set the ssl options object, reading keys and certs from the filesystem
 var sslOptions = {
   key: fs.readFileSync('./etc/ssl/jarvis.key'),
@@ -22,9 +29,6 @@ var sslOptions = {
 
 // connect to the database(s)
 sequelize.connect();
-
-// create the express application
-const app = express();
 
 // set body parsers
 // need to set bodyParser limit to allow a large number of projects.  Default is 1mb, which can only support ~15 projects
@@ -48,10 +52,11 @@ app.get('*', (req, res) => {
 const env = process.env.ENVIRONMENT;
 
 // start development server
+var server;
 if (env === 'dev') {
 
   const port1 = 3000;
-  http.createServer(app)
+  server = http.createServer(app)
     .listen(port1, () => {
       console.log(`node server listening on port: ${port1}`);
     });
@@ -61,14 +66,14 @@ if (env === 'dev') {
 
   // create a node server for https on port 443
   const port1 = 440;
-  https.createServer(sslOptions, app)
+  server = https.createServer(sslOptions, app)
     .listen(port1, () => {
       console.log(`node server listening on port: ${port1}`);
     });
 
   // create a second node server to forward http (port 80) requests to https (port 443)
   const port2 = 80;
-  http.createServer((req, res) => {
+  server = http.createServer((req, res) => {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
   })
@@ -97,5 +102,17 @@ if (env === 'dev') {
   });
 
 }
+
+// console.log(server);
+var io = require('socket.io')(server);
+
+io.on('connection', function (socket) {
+  console.log('a user connected');
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+});
+
 
 
