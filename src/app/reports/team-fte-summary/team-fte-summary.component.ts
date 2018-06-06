@@ -25,6 +25,8 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   paretoChartOptions: any;
   userPlmData: any;
   teamSummaryData: any;
+  displaySelectedProjectRoster: boolean;
+  selectedProjectRoster: any;
   timePeriods = [
     {period: 'current-quarter', text: 'Current Quarter'},
     {period: 'current-fy', text: 'Current Fiscal Year'},
@@ -45,6 +47,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         return;
       }
       this.loggedInUser = user;
+      this.displaySelectedProjectRoster = false;
       this.getTeamSummaryData('current-quarter');
     });
   }
@@ -91,11 +94,22 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     });
 
     // parse project names and FTEs from the nested object into flat arrays for pareto chart
-    const names = [];
-    const values = [];
+    // const names = [];
+    // const values = [];
+    // this.teamSummaryData.forEach( project => {
+    //   names.push(project.projectName);
+    //   values.push(project.totalFtes);
+    // });
+
+    const projectNames = [];
+    const columnData = [];
     this.teamSummaryData.forEach( project => {
-      names.push(project.projectName);
-      values.push(project.totalFtes);
+      columnData.push({
+        name: project.projectName,
+        projectID: project.projectID,
+        y: project.totalFtes
+      });
+      projectNames.push(project.projectName);
     });
 
 
@@ -115,7 +129,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         text: `${timePeriod.text}`
       },
       xAxis: {
-        categories: names
+        categories: projectNames
       },
       yAxis: [{
         title: {text: 'FTEs'}
@@ -141,9 +155,29 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         type: 'column',
         colorByPoint: true,
         zIndex: 2,
-        data: values
+        data: columnData,
+        point: {
+          events: {
+            click: function(e) {
+              const p = e.point;
+              this.displaySelectedProjectRoster = false;
+              this.showSubordinateTeamRoster(p.projectID);
+            }.bind(this)
+          }
+        }
       }]
     };
     this.paretoChart = Highcharts.chart('pareto', this.paretoChartOptions);
+  }
+
+  showSubordinateTeamRoster(projectID: number) {
+    this.teamSummaryData.forEach( project => {
+      // find the project that was clicked
+      if (project.projectID === projectID) {
+        this.selectedProjectRoster = project.teamMembers;
+      }
+    });
+    console.log(this.selectedProjectRoster);
+    this.displaySelectedProjectRoster = true;
   }
 }
