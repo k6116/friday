@@ -58,43 +58,29 @@
       <h1 class="page-header-text">My Projects</h1>
     </div>
   </div>
-  
-  <!-- Request Alerts as Table-->
-  <!-- <table class="table" width="50%">
-    <ng-container *ngFor="let request of projectAccessRequestsList">
-      <tr *ngIf="request.requestStatus=='Submitted'">
-        <td class="align-middle" width="25%">
-          {{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}
-        </td>
-        <td>
-          <button type="button" class="btn btn-outline btn-sm" (click)="requestResponse(request, 'Approved')">Approve <i class="fa fa-thumbs-up"></i></button>
-          <button type="button" class="btn btn-outline btn-sm" (click)="requestResponse(request, 'Denied')">Deny <i class="fa fa-thumbs-down"></i></button>
-        </td>
-      </tr>
-    </ng-container>
-  </table> -->
-  <!--  -->
 
-  <div class="card" style="display: inline-block; margin-bottom: 1rem;">
+  <div class="card" style="display: inline-block; margin-bottom: 1rem;" *ngIf="requestResponseFlag">
       <div class="card-header">
           Your Action Items:
         </div>
     <ng-container *ngFor="let request of projectAccessRequestsList">
       <div class="card-body" *ngIf="request.requestStatus=='Submitted'">
-        <p class="card-text">{{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}
+        <p class="card-text" style="line-height: 32px">{{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}&nbsp;&nbsp;
           <span class="float-right">
-            <button type="button" class="btn btn-outline btn-sm" (click)="requestResponse(request, 'Approved')">Approve <i class="fa fa-thumbs-up"></i></button>
-            <button type="button" class="btn btn-outline btn-sm" (click)="requestResponse(request, 'Denied')">Deny <i class="fa fa-thumbs-down"></i></button>
+            <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="requestResponse(request, 'Approved')"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Accept</button>
+            <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="requestResponse(request, 'Denied')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Deny</button>
           </span>
         </p>
       </div>
     </ng-container>
     </div>
 
-  <button class="btn btn-outline-dark btn-sm" style="display: block" data-toggle="tooltip" data-placement="top" title="Create new project" (click)="createProject()">
-    <i class="fa fa-plus" data-toggle="modal" data-target="#projectsCreateModal"></i>
+  <button class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="tooltip" data-placement="top" title="Create new project" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
+    <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
   </button>
 
+  <br>
+  
   <!-- ACCORDION START -->
   <div class="accordion" id="accordionProjectList">
     <div class="card">

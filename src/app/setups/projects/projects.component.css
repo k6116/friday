@@ -17,6 +17,11 @@
     border-color: rgb(108, 117, 125);;
   }
 
+  .btn-fte-toolbar {
+    width: 90px;
+    height: 35px;
+  }
+
   .divider {
     color: black;
   }

@@ -127,14 +127,22 @@ export class ProjectsSetupsComponent implements OnInit {
       );
   }
 
+  // List of all requests that have been made to join a project.
+  //  Gets called onInit and requestResponse()
   getProjectAccessRequestsList() {
-    this.requestResponseFlag = true;
     this.apiDataService.getProjectAccessRequestsList(this.loggedInUser.id)
       .subscribe(
         res => {
           // console.log(res);
           this.projectAccessRequestsList = res;
           console.log('ProjectAccessRequest: ', this.projectAccessRequestsList);
+          for (let i = 0; i < this.projectAccessRequestsList.length; i++) {
+            console.log('You are in for');
+            if ( this.projectAccessRequestsList[i].requestStatus === 'Submitted') {
+              this.requestResponseFlag = true;
+              console.log('You are in if');
+            }
+          }
         },
         err => {
           console.log(err);
@@ -188,6 +196,7 @@ export class ProjectsSetupsComponent implements OnInit {
     this.getProjectRoster(project.id);
   }
 
+  // Accept or deny a request
   requestResponse(request: any, reply: string) {
     this.requestResponseFlag = false;
     this.apiDataService.responseProjectAccessRequest(request, reply, this.loggedInUser.id)
