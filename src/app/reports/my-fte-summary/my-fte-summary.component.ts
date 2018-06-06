@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
 import { User } from '../../_shared/models/user.model';
+import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
 
@@ -20,9 +21,12 @@ require('highcharts/modules/pareto.js')(Highcharts);
   templateUrl: './my-fte-summary.component.html',
   styleUrls: ['./my-fte-summary.component.css', '../../_shared/styles/common.css']
 })
-export class MyFteSummaryComponent implements OnInit {
+export class MyFteSummaryComponent implements OnInit, OnDestroy {
 
   loggedInUser: User; // object for logged in user's info
+  summarySubscription: Subscription;
+  pieChart: any;
+  paretoChart: any;
   fteSummaryData: any;
   pieChartOptions: any;
   paretoChartOptions: any;
@@ -47,14 +51,24 @@ export class MyFteSummaryComponent implements OnInit {
       this.loggedInUser = user;
       this.getFteSummaryData('current-quarter');  // initialize the FTE entry component
     });
-
   }
 
+  ngOnDestroy() {
+    if (this.summarySubscription) {
+      this.summarySubscription.unsubscribe();
+    }
+    if (this.pieChart) {
+      this.pieChart.destroy();
+    }
+    if (this.paretoChart) {
+      this.paretoChart.destroy();
+    }
+  }
 
   getFteSummaryData(period: string) {
 
     // Retrieve Top FTE Project List
-    this.apiDataService.getMyFteSummary(this.loggedInUser.id, period)
+    this.summarySubscription = this.apiDataService.getMyFteSummary(this.loggedInUser.id, period)
     .subscribe(
       res => {
         this.fteSummaryData = res;  // get summary data from db
@@ -119,7 +133,7 @@ export class MyFteSummaryComponent implements OnInit {
       }]
     };
 
-    Highcharts.chart('pie', this.pieChartOptions);
+    this.pieChart = Highcharts.chart('pie', this.pieChartOptions);
   }
 
   plotFteSummaryPareto(period: string) {
@@ -179,7 +193,7 @@ export class MyFteSummaryComponent implements OnInit {
         data: values
       }]
     };
-    Highcharts.chart('pareto', this.paretoChartOptions);
+    this.paretoChart = Highcharts.chart('pareto', this.paretoChartOptions);
   }
 
 }

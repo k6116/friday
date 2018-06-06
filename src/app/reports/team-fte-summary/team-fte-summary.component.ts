@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
 import { User } from '../../_shared/models/user.model';
+import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
 
@@ -15,8 +16,11 @@ require('highcharts/modules/pareto.js')(Highcharts);
   templateUrl: './team-fte-summary.component.html',
   styleUrls: ['./team-fte-summary.component.css', '../../_shared/styles/common.css']
 })
-export class TeamFteSummaryComponent implements OnInit {
+export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
+  paretoChart: any;
+  paretoChartSubscription: Subscription;
+  plmSubscription: Subscription;
   loggedInUser: User; // object for logged in user's info
   paretoChartOptions: any;
   userPlmData: any;
@@ -45,10 +49,24 @@ export class TeamFteSummaryComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    // clean up the subscriptions
+    if (this.plmSubscription) {
+      this.plmSubscription.unsubscribe();
+    }
+    if (this.paretoChartSubscription) {
+      this.paretoChartSubscription.unsubscribe();
+    }
+    if (this.paretoChart) {
+      this.paretoChart.destroy();
+    }
+  }
+
   getTeamSummaryData(period: string) {
-    this.apiDataService.getUserPLMData(this.loggedInUser.email).subscribe( res => {
+    this.plmSubscription = this.apiDataService.getUserPLMData(this.loggedInUser.email).subscribe( res => {
       this.userPlmData = res[0];
-      this.apiDataService.getAggregatedSubordinateFTE(this.userPlmData.SUPERVISOR_EMAIL_ADDRESS).subscribe( res2 => {
+      this.paretoChartSubscription = this.apiDataService.getAggregatedSubordinateFTE(this.userPlmData.SUPERVISOR_EMAIL_ADDRESS)
+      .subscribe( res2 => {
         this.teamSummaryData = res2;
         this.plotFteSummaryPareto(period);
       });
@@ -112,6 +130,6 @@ export class TeamFteSummaryComponent implements OnInit {
         data: values
       }]
     };
-    Highcharts.chart('pareto', this.paretoChartOptions);
+    this.paretoChart = Highcharts.chart('pareto', this.paretoChartOptions);
   }
 }

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
 import { User } from '../../_shared/models/user.model';
-
+import { Subscription } from 'rxjs/Subscription';
 import * as Highcharts from 'highcharts';
+
 
 declare var require: any;
 declare const $: any;
@@ -15,9 +16,12 @@ require('highcharts/highcharts-more.js')(Highcharts);
   templateUrl: './top-projects-2.component.html',
   styleUrls: ['./top-projects-2.component.css', '../../_shared/styles/common.css']
 })
-export class TopProjects2Component implements OnInit {
+export class TopProjects2Component implements OnInit, OnDestroy {
 
   loggedInUser: User; // object for logged in user's info
+  fteDataSubscription: Subscription;
+  rosterDataSubscription: Subscription;
+  bubbleChart: any;
   rawBubbleData: any;
   bubbleData = [];
   bubbleChartOptions: any;
@@ -41,8 +45,20 @@ export class TopProjects2Component implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this.fteDataSubscription) {
+      this.fteDataSubscription.unsubscribe();
+    }
+    if (this.rosterDataSubscription) {
+      this.rosterDataSubscription.unsubscribe();
+    }
+    if (this.bubbleChart) {
+      this.bubbleChart.destroy();
+    }
+  }
+
   getBubbleFteData() {
-    this.apiDataService.getAggregatedFteData().subscribe( res => {
+    this.fteDataSubscription = this.apiDataService.getAggregatedFteData().subscribe( res => {
       this.rawBubbleData = res;
 
       this.rawBubbleData.forEach( project => {
@@ -98,7 +114,7 @@ export class TopProjects2Component implements OnInit {
       },
       xAxis: {
         gridLineWidth: 1,
-        title: {text: 'Complexity Score'},
+        title: {text: 'Complexity Score (mock)'},
         labels: {format: '{value}'},
       },
       yAxis: {
@@ -138,11 +154,11 @@ export class TopProjects2Component implements OnInit {
       },
       series: [{data: data}]
     };
-    Highcharts.chart('bubble', this.bubbleChartOptions);
+    this.bubbleChart = Highcharts.chart('bubble', this.bubbleChartOptions);
   }
 
   showProjectRoster(projectID: number) {
-    this.apiDataService.getProjectRoster(projectID).subscribe( res => {
+    this.rosterDataSubscription = this.apiDataService.getProjectRoster(projectID).subscribe( res => {
       this.projectRoster = res[0].teamMembers;
       console.log(this.projectRoster);
       this.displayRosterTable = true;
