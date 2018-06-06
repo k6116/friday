@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as io from 'socket.io-client';
+
+declare var $: any;
 
 @Component({
   selector: 'app-test',
@@ -8,8 +10,11 @@ import * as io from 'socket.io-client';
 })
 export class TestComponent implements OnInit {
 
+  @ViewChild('message') message: ElementRef;
+
   private url = 'http://localhost:3000';
   private socket;
+  messages: string[] = [];
 
   constructor () {
 
@@ -24,13 +29,26 @@ export class TestComponent implements OnInit {
       // this.socket.emit('my other event', { my: 'data' });
     });
 
+    this.socket.on('message', function (messages) {
+      console.log(messages);
+      this.messages = messages;
+      $('#messages').append($('<li>').text(messages[messages.length - 1]));
+    });
+
   }
 
   onSendMessageClick() {
-    console.log('send message button clicked');
-    console.log('socket:');
-    console.log(this.socket);
-    this.socket.emit('my other event', 'hello bill');
+    const text = this.message.nativeElement.value;
+    this.messages.push(text);
+    console.log('messages array');
+    console.log(this.messages);
+    this.socket.emit('message', this.messages);
+    // console.log(`send message button clicked: ${this.message}`);
+    // console.log(this.message.nativeElement.value);
+    // console.log('socket:');
+    // console.log(this.socket);
+    // this.socket.emit('my other event', 'hello bill');
+    // this.socket.emit('message', 'some text message');
   }
 
 

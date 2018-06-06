@@ -5,8 +5,12 @@
         <h2 class="page-header-text">
           Test Component
         </h2>
-        <input type="text" class="form-control">
+        <input #message type="text" class="form-control">
         <button type="button" (click)="onSendMessageClick()">Send Message</button>
+        <p *ngFor="let message of messages; let i=index">
+            {{ message }}
+        </p>
+        <div id="messages"></div>
       </div>
     </div>
   </div>
