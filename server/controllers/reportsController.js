@@ -5,7 +5,7 @@ const moment = require('moment');
 const Treeize = require('treeize');
 
 
-function getAggregatedSubordinateFte(req, res) {
+function getAggregatedSubordinateFte(req, res) {  // TO BE DELETED
   const managerEmailAddress = req.params.managerEmailAddress;
 
   const sql = `exec resources.aggregateSubordinateFTE '${managerEmailAddress}'`
@@ -13,6 +13,26 @@ function getAggregatedSubordinateFte(req, res) {
     .then(org => {
       console.log("returning user PLM data");
       res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+function getSubordinateProjectRoster(req, res) {
+  const managerEmailAddress = req.params.managerEmailAddress;
+
+  const sql = `EXEC resources.getSubordinateProjectRoster '${managerEmailAddress}'`
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      const subordinateProjectTeamTree = new Treeize();
+      subordinateProjectTeamTree.grow(org);
+      const subordinateProjectTeam = subordinateProjectTeamTree.getData();
+      console.log("returning user PLM data");
+      res.json(subordinateProjectTeam);
     })
     .catch(error => {
       res.status(400).json({
@@ -285,8 +305,9 @@ function getQuarterlyEmployeeFTETotals(req, res) {
 }
 
 module.exports = {
-  getAggregatedSubordinateFte: getAggregatedSubordinateFte,
+  getAggregatedSubordinateFte: getAggregatedSubordinateFte, // TO BE DELETED
   getAggregatedFteData: getAggregatedFteData,
+  getSubordinateProjectRoster: getSubordinateProjectRoster,
   getMyFteSummary: getMyFteSummary,
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,

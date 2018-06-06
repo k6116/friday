@@ -238,8 +238,14 @@ export class ApiDataService {
 
 
   // REPORTS API ROUTES
-  getAggregatedSubordinateFTE(managerEmailAddress: string) {
+  getAggregatedSubordinateFTE(managerEmailAddress: string) {  // TO BE DELETED
     return this.http.get(`/api/reports/aggregatedSubordinateFte/${managerEmailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getSubordinateProjectRoster(managerEmailAddress: string) {
+    return this.http.get(`/api/reports/subordinateProjectRoster/${managerEmailAddress}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

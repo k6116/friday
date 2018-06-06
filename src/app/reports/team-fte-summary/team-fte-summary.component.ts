@@ -65,9 +65,16 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   getTeamSummaryData(period: string) {
     this.plmSubscription = this.apiDataService.getUserPLMData(this.loggedInUser.email).subscribe( res => {
       this.userPlmData = res[0];
-      this.paretoChartSubscription = this.apiDataService.getAggregatedSubordinateFTE(this.userPlmData.SUPERVISOR_EMAIL_ADDRESS)
+      this.paretoChartSubscription = this.apiDataService.getSubordinateProjectRoster(this.userPlmData.SUPERVISOR_EMAIL_ADDRESS)
       .subscribe( res2 => {
         this.teamSummaryData = res2;
+        // total up the number of FTEs contributed to each project
+        this.teamSummaryData.forEach( project => {
+          project.teamMembers.forEach( employee => {
+            project.totalFtes += employee.fte;
+          });
+        });
+        console.log(this.teamSummaryData);
         this.plotFteSummaryPareto(period);
       });
     });
@@ -78,12 +85,19 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       return obj.period === period;
     });
 
+    // sort the projects by highest total team FTEs
+    this.teamSummaryData.sort( (a, b) => {
+      return b.totalFtes - a.totalFtes;
+    });
+
+    // parse project names and FTEs from the nested object into flat arrays for pareto chart
     const names = [];
     const values = [];
     this.teamSummaryData.forEach( project => {
-      names.push(project.name);
-      values.push(project.fteTotals);
+      names.push(project.projectName);
+      values.push(project.totalFtes);
     });
+
 
     this.paretoChartOptions = {
       credits: {
