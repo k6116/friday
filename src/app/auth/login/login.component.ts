@@ -7,6 +7,7 @@ import { AuthService } from '../auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { User } from '../../_shared/models/user.model';
+import { WebsocketService } from '../../_shared/services/websocket.service';
 
 import * as moment from 'moment';
 
@@ -46,7 +47,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private appDataService: AppDataService,
     private authService: AuthService,
     private toolsService: ToolsService,
-    private clickTrackingService: ClickTrackingService
+    private clickTrackingService: ClickTrackingService,
+    private websocketService: WebsocketService
   ) {
   }
 
@@ -131,6 +133,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
           // route to the main page
           this.router.navigateByUrl('/main');
+
+          // send the logged in user object to all other clients via websocket
+          this.websocketService.sendUsers(this.authService.loggedInUser);
 
         },
         err => {

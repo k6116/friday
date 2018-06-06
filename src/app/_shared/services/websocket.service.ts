@@ -1,46 +1,51 @@
 import { Injectable } from '@angular/core';
-import * as io from 'socket.io-client';
-import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-// import * as Rx from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
+import * as io from 'socket.io-client';
 
 @Injectable()
 export class WebsocketService {
 
-  // Our socket connection
+  private url = 'http://localhost:3000';  // don't need this, it will be set by default
   private socket;
 
-  constructor() { }
-
-  connect(): Subject<MessageEvent> {
-    // If you aren't familiar with environment variables then
-    // you can hard code `environment.ws_url` as `http://localhost:5000`
+  constructor() {
     this.socket = io();
+  }
 
-    // We define our observable which will observe any incoming messages
-    // from our socket.io server.
-    const observable = new Observable(observer1 => {
+  sendMessage(message) {
+    this.socket.emit('message', message);
+  }
+
+  getMessages() {
+    const observable = new Observable(observer => {
+      // this.socket = io();
       this.socket.on('message', (data) => {
-        console.log('Received message from Websocket Server');
-        observer1.next(data);
+        observer.next(data);
       });
       return () => {
         this.socket.disconnect();
       };
     });
+    return observable;
+  }
 
-    // We define our Observer which will listen to messages
-    // from our other components and send messages back to our
-    // socket server whenever the `next()` method is called.
-    const observer = {
-      next: (data: Object) => {
-        this.socket.emit('message', JSON.stringify(data));
-      },
-    };
+  sendUsers(activeUsers) {
+    // this.socket = io();
+    this.socket.emit('activeUsers', activeUsers);
+  }
 
-    // we return our Rx.Subject which is a combination
-    // of both an observer and observable.
-    return Subject.create(observer, observable);
+  getUsers() {
+    const observable = new Observable(observer => {
+      // this.socket = io();
+      this.socket.on('activeUsers', (data) => {
+        observer.next(data);
+      });
+      return () => {
+        this.socket.disconnect();
+      };
+    });
+    return observable;
   }
 
 }

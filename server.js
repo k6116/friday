@@ -109,6 +109,8 @@ io.on('connection', socket => {
     io.emit('message', message);
   });
   socket.on('activeUsers', activeUsers => {
+    console.log('emitting active user')
+    console.log(activeUsers);
     io.emit('activeUsers', activeUsers);
   });
   socket.on('disconnect', () => {

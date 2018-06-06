@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ChatService } from '../_shared/services/chat.service';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { WebsocketService } from '../_shared/services/websocket.service';
+import { Subscription } from 'rxjs/Subscription';
 import * as io from 'socket.io-client';
 import * as faker from 'faker';
 import * as moment from 'moment';
@@ -11,7 +12,7 @@ declare var $: any;
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css', '../_shared/styles/common.css']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 
   @ViewChild('message') message: ElementRef;
 
@@ -20,8 +21,12 @@ export class ChatComponent implements OnInit {
   inputText: string;
   userName: string;
   activeUsers: string;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
-  constructor (private chatService: ChatService) {
+  constructor (
+    private websocketService: WebsocketService
+    ) {
 
   }
 
@@ -31,17 +36,33 @@ export class ChatComponent implements OnInit {
     this.userName = faker.name.firstName().toLowerCase() + faker.random.number().toString().substring(0, 2);
 
     // open a client socket
-    this.socket = io();
+    // this.socket = io();
 
-    // listen for emits for 'message'
-    this.socket.on('message', message => {
+    // // listen for emits for 'message'
+    // this.socket.on('message', message => {
+    //   $('#messages').append($('<p>').text(message));
+    // });
+
+    // this.chatService.messages.subscribe(msg => {
+    //   console.log(msg);
+    // });
+
+    this.subscription1 = this.websocketService.getMessages().subscribe(message => {
+      console.log('message received:');
+      console.log(message);
       $('#messages').append($('<p>').text(message));
     });
 
-    this.chatService.messages.subscribe(msg => {
-      console.log(msg);
+    this.subscription2 = this.websocketService.getUsers().subscribe(users => {
+      console.log('users received:');
+      console.log(users);
     });
 
+  }
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   // send message button click
@@ -49,8 +70,16 @@ export class ChatComponent implements OnInit {
 
     // get the current time
     const currentTime = moment().format('ddd h:mm:ss a');
+
     // emit the message
-    this.socket.emit('message', `${this.userName} (${currentTime}): ${this.inputText}`);
+    // this.socket.emit('message', `${this.userName} (${currentTime}): ${this.inputText}`);
+
+    // emit the message
+    this.websocketService.sendMessage(`${this.userName} (${currentTime}): ${this.inputText}`);
+
+    // emit the message
+    this.websocketService.sendUsers({userName: 'chuetzle', fullName: 'Bill Schuetzle'});
+
     // clear the input
     this.inputText = '';
 

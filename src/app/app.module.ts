@@ -30,7 +30,6 @@ import { ToolsService } from './_shared/services/tools.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
 import { UserResolverService } from './_shared/services/user-resolver.service';
 import { WebsocketService } from './_shared/services/websocket.service';
-import { ChatService } from './_shared/services/chat.service';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -124,8 +123,7 @@ import 'chartjs-plugin-zoom';
     ToolsService,
     ClickTrackingService,
     UserResolverService,
-    WebsocketService,
-    ChatService
+    WebsocketService
   ],
   bootstrap: [AppComponent]
 })
