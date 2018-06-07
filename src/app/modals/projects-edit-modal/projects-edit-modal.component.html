@@ -31,23 +31,6 @@
           </div>
         </form>
       </div>
-      <div *ngIf="showPendingRequests" class="modal-footer">
-        <div class="container">
-          <div *ngFor="let request of projectAccessRequestsList" class="row">
-            <div *ngIf="request.projectID === projectData.id" >
-              <div class="col">
-                {{ request['user.fullName'] }} 
-              </div>
-              <div class="col">
-                <button type="button" class="btn btn-success btn-block" (click)="requestResponse(request, 'Approved')">Approve</button>
-              </div>
-              <div class="col">
-                <button type="button" class="btn btn-danger btn-block" (click)="requestResponse(request, 'Denied')">Deny</button>
-              </div>
-            </div>
-          </div>
-      </div>
-        </div>
       <div *ngIf="disableDelete" class="modal-footer">
         <tr *ngFor="let table of pKeyRefList">
           <td>Table: {{ table.TableName }} | Count: {{ table.NumOfRows }}</td>

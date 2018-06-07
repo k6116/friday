@@ -30,23 +30,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           title: 'FTE Entry',
           iconClass: 'nc-calendar-add',
           alias: 'fteEntry',
+          path: 'main/fte-entry/employee',
           expanded: false,
-          subItems: [
-            {
-              title: 'Me',
-              alias: 'me',
-              path: 'main/fte-entry/employee',
-              parentAlias: 'fteEntry',
-              active: false
-            },
-            {
-              title: 'My Team',
-              alias: 'myTeam',
-              path: 'main/fte-entry/team',
-              parentAlias: 'fteEntry',
-              active: false
-            }
-          ]
+          active: false
         },
         {
           title: 'Projects',
@@ -63,9 +49,30 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           expanded: false,
           subItems: [
             {
-              title: 'Projects',
-              alias: 'projects',
-              path: 'main/reports/projects',
+              title: 'My FTE Summary',
+              alias: 'reports-my-fte-summary',
+              path: 'main/reports/my-fte-summary',
+              parentAlias: 'reports',
+              active: false
+            },
+            {
+              title: 'Team FTE Summary',
+              alias: 'reports-team-fte-summary',
+              path: 'main/reports/team-fte-summary',
+              parentAlias: 'reports',
+              active: false
+            },
+            {
+              title: 'Top Projects',
+              alias: 'reports-top-projects',
+              path: 'main/reports/top-projects',
+              parentAlias: 'reports',
+              active: false
+            },
+            {
+              title: 'Top Projects Bubble',
+              alias: 'reports-top-projects-bubble',
+              path: 'main/reports/top-projects-bubble',
               parentAlias: 'reports',
               active: false
             },

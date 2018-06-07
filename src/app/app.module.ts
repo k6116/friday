@@ -31,6 +31,9 @@ import { ClickTrackingService } from './_shared/services/click-tracking.service'
 import { UserResolverService } from './_shared/services/user-resolver.service';
 import { WebsocketService } from './_shared/services/websocket.service';
 
+// GUARDS
+import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
+
 // COMPONENTS
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
@@ -41,7 +44,7 @@ import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.compon
 import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
 import { TopNavComponent } from './navs/top-nav/top-nav.component';
 import { SideNavComponent } from './navs/side-nav/side-nav.component';
-import { ProjectsReportsComponent } from './reports/projects/projects.component';
+import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
@@ -63,7 +66,9 @@ import { ChatComponent } from './chat/chat.component';
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
-
+import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
+import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
+import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +84,7 @@ import 'chartjs-plugin-zoom';
     FteInputRestrictDirective,
     TopNavComponent,
     SideNavComponent,
-    ProjectsReportsComponent,
+    TopProjectsReportsComponent,
     EmployeesReportsComponent,
     ProjectsSetupsComponent,
     FteEntryTeamComponent,
@@ -98,7 +103,10 @@ import 'chartjs-plugin-zoom';
     ProgressBarComponent,
     ProgressSpinnerComponent,
     ClickOutsideDirective,
-    ChatComponent
+    ChatComponent,
+    MyFteSummaryComponent,
+    TeamFteSummaryComponent,
+    TopProjectsBubbleComponent
   ],
   imports: [
     AppRoutingModule,
@@ -123,8 +131,10 @@ import 'chartjs-plugin-zoom';
     ToolsService,
     ClickTrackingService,
     UserResolverService,
-    WebsocketService
+    WebsocketService,
+    UnsavedChangesGuard
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+//   "swig-email-templates": "^5.0.1",    "node-schedule": "^1.3.0", "nodemailer": "^4.6.4",  "axios": "^0.18.0",

@@ -1,12 +1,16 @@
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
+const dotevnv = require('dotenv').config()
+
 const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
-const dotevnv = require('dotenv').config()
+const email = require('./server/email/email');
+
 
 // create the express application
 const app = express();
@@ -123,4 +127,7 @@ io.on('connection', socket => {
 });
 
 
+
+//SET EMAIL SCHEDULES
+email.setSchedules();
 

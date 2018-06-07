@@ -1,0 +1,71 @@
+
+<div *ngIf="displayTopFTEProjectList" class="container-fluid">
+
+    <!-- <div class="row row-custom">
+      <div class="col-sm">
+        <div>
+            <button class="btn btn-primary" (click)="loadChart()">Load Chart</button>
+        </div>
+      </div>
+    </div> -->
+  <div class="row row-custom">
+    <div class="col-sm col-custom col-text-header">
+      <h2 class="page-header-text">Top FTE Projects</h2>
+    </div>
+  </div>
+      
+  <div class="row row-custom">
+
+    <div class="col-sm">
+      <div class="table-container">
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th width="30%" scope="col">Project Name</th>
+              <th width="10%" scope="col">Project Type</th>
+              <th width="10%" scope="col">Priority</th>
+              <th width="10%" scope="col">Total FTE</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let project of topFTEProjectList">
+            <tr (click)="onProjectClick(project)">
+              <td>{{ project.projectName }}</td>
+              <td>{{ project.projectTypeName }}</td>
+              <td>{{ project.priorityName }}</td>
+              <td>{{ project.totalFTE }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-sm fte-history-chart">
+        <div id="FTEHistory"></div>
+    </div>
+
+    <div class="col-sm">
+        <div *ngIf="displayProjectEmployeeList">
+          <h2>{{ selectedFiscalMonth }} {{ selectedFiscalYear }} | Employee FTEs</h2>
+          <div class="table-container">
+            <table class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th width="20%" scope="col">Employee Name</th>
+                  <th width="40%" scope="col">JobTitle</th>
+                  <th width="10%" scope="col">FTE</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let employee of projectEmployeeData">
+                <tr>
+                  <td>{{ employee.fullName }}</td>
+                  <td>{{ employee.jobTitleName }} - {{ employee.jobTitleSubName }}</td>
+                  <td>{{ employee.fte }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  </div>
+
+</div>

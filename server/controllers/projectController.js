@@ -33,9 +33,8 @@ function getProjectRoster(req, res) {
     SELECT 
       T1.ProjectID as 'projectID',
       T1.ProjectName as 'projectName',
-      T1.[Description] as 'description',
       T3.FullName as 'teamMembers:name',
-      T2.FTE as 'teamMembers:fte',
+      SUM(T2.FTE) as 'teamMembers:fte',
       T4.JobTitleName + ' - ' + T5.JobTitleSubName as 'teamMembers:jobTitle'
     FROM 
       projects.Projects T1
@@ -45,7 +44,12 @@ function getProjectRoster(req, res) {
       LEFT JOIN accesscontrol.JobTitleSub T5 ON T3.JobTitleSubID = T5.JobTitleSubID
     WHERE 
       T1.ProjectID = ${projectID}
-      AND T2.FiscalDate = '${month}'
+    GROUP BY
+      T1.ProjectID,
+      T1.ProjectName,
+      T1.[Description],
+      T3.FullName,
+      (T4.JobTitleName + ' - ' + T5.JobTitleSubName)
   `
 
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
@@ -96,14 +100,15 @@ function getUserProjectList(req, res) {
 
   const sql = `
     SELECT DISTINCT
-      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes,
+      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes, 
+      P1.CreatedBy as createdBy, P1.CreationDate as createdAt, P1.LastUpdatedBy as updatedBy, P1.LastUpdateDate as updatedAt,
       P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
     FROM
       projects.Projects P1
       LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
-      LEFT JOIN resources.ProjectEmployees P3 ON P1.CreatedBy = P3.EmployeeID
+      LEFT JOIN resources.ProjectEmployees P3 ON P1.ProjectID = P3.ProjectID
     WHERE
-      P1.CreatedBy = '${userID}'
+      P1.CreatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {

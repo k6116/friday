@@ -2,15 +2,17 @@ import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef }
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { DecimalPipe } from '@angular/common';
+import { HostListener } from '@angular/core';
 import { NouisliderModule } from 'ng2-nouislider';
 import { Subscription } from 'rxjs/Subscription';
-import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
 
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { ToolsService } from '../../_shared/services/tools.service';
+import { ComponentCanDeactivate } from '../../_shared/unsaved-changes-guard.guard';
 import { UserFTEs, AllocationsArray} from './fte-model';
 import { utils, write, WorkBook } from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -45,7 +47,7 @@ declare const $: any;
     ])
   ]
 })
-export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
+export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
   // initialize variables
   deleteModalSubscription: Subscription;
@@ -72,7 +74,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   showProjectsModal: boolean;
   projectList: any;
   timer: any;
-  showProgressBar: boolean;  // triggers indefinate progress bar
 
   constructor(
     private fb: FormBuilder,
@@ -81,8 +82,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     private appDataService: AppDataService,
     private toolsService: ToolsService,
     private decimalPipe: DecimalPipe,
-    private changeDetectorRef: ChangeDetectorRef,
-    private route: ActivatedRoute
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
@@ -99,53 +99,29 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
   }
 
+  // canDeactivate checks if the user has unsaved changes in the form and informs the router whether the user can leave
+  // HostListener decorator is used to also pick up browser-level changes like refresh, close tab, etc
+  @HostListener('window:beforeunload')
+  canDeactivate(): Observable<boolean> | boolean {
+    // returning true will navigate without confirmation
+    return this.FTEFormGroup.untouched;
+    // returning false will show a confirm dialog before navigating away
+  }
+
   ngOnInit() {
-
-    console.log(`fte entry component has been initialized`);
-
-    // console.log('testing user resolver within fte entry component (this.route.snapshot.data)');
-    // console.log(this.route.snapshot.data);
-    // this.loggedInUser = this.route.snapshot.data.loggedInUser.jarvisUser;
-
-    this.loggedInUser = this.authService.loggedInUser;
-
-    this.showProgressBar = true;
-    setTimeout(() => {
-      this.fteComponentInit();  // initialize the FTE entry component
-    }, 0);
-
     this.setSliderConfig(); // initalize slider config
 
-
     // get logged in user's info
-    // this.authService.getLoggedInUser((user, err) => {
-    //   if (err) {
-    //     // console.log(`error getting logged in user: ${err}`);
-    //     return;
-    //   }
-    //   console.log('logged in user data received in main component:');
-    //   console.log(user);
-    //   this.loggedInUser = user;
-    //   this.fteComponentInit();  // initialize the FTE entry component
-    // });
-
-   this.buildMonthsArray();
-   this.buildFteEditableArray();
-   this.fteFormChangeListener();
-
-   setTimeout(() => {
-     this.getProjectsForCards();
-   }, 2000);
-
-  }
-
-  ngOnDestroy() {
-    clearInterval(this.timer);
-    this.changeDetectorRef.detach();
-  }
-
-
-  getProjectsForCards() {
+    this.authService.getLoggedInUser((user, err) => {
+      if (err) {
+        // console.log(`error getting logged in user: ${err}`);
+        return;
+      }
+      // console.log('logged in user data received in main component:');
+      // console.log(user);
+      this.loggedInUser = user;
+      this.fteComponentInit();  // initialize the FTE entry component
+    });
 
     this.apiDataService.getProjects()
     .subscribe(
@@ -162,6 +138,15 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       }
     );
 
+   this.buildMonthsArray();
+   this.fteFormChangeListener();
+
+
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.timer);
+    this.changeDetectorRef.detach();
   }
 
   onAddProjectClick() {
@@ -174,26 +159,39 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       this.showProjectsModal = false;
     }, 500);
 
-    const newProject = new UserFTEs;
-    newProject.userID = this.loggedInUser.id;
-    newProject.projectID = selectedProject.ProjectID;
-    newProject.projectName = selectedProject.ProjectName;
-
-    // loop through the already-built months array and initialize null FTEs for each month in this new project
-    newProject.allocations = new Array<AllocationsArray>();
-    this.months.forEach( month => {
-      const newMonth = new AllocationsArray;
-      newMonth.month = moment(month).utc().format();
-      newMonth.fte = null;
-      newMonth.recordID = null;
-      newProject.allocations.push(newMonth);
+    // verify selectedProject has not already been added
+    const fteFormArray = this.FTEFormGroup.controls.FTEFormArray;
+    const currentProjectsList = [];
+    fteFormArray['controls'].forEach( project => {
+      currentProjectsList.push(project.projectID);
     });
+    const alreadyExists = currentProjectsList.find( value => {
+      return value === selectedProject.ProjectID;
+    });
+    if (!alreadyExists) {
+      const newProject = new UserFTEs;
+      newProject.userID = this.loggedInUser.id;
+      newProject.projectID = selectedProject.ProjectID;
+      newProject.projectName = selectedProject.ProjectName;
 
-    // this.userFTEs.push(newProject); // push to the userFTEs object and rebuild the form
-    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-    this.addProjectToFteForm(FTEFormArray, newProject, true);
-    this.sliderDisabled = true;
-    this.displayFTETable = true;
+      // loop through the already-built months array and initialize null FTEs for each month in this new project
+      newProject.allocations = new Array<AllocationsArray>();
+      this.months.forEach( month => {
+        const newMonth = new AllocationsArray;
+        newMonth.month = moment(month).utc().format();
+        newMonth.fte = null;
+        newMonth.recordID = null;
+        newProject.allocations.push(newMonth);
+      });
+
+      const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+      this.addProjectToFteForm(FTEFormArray, newProject, true);
+      this.sliderDisabled = true;
+      this.displayFTETable = true;
+    } else {
+      this.appDataService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
+    }
+
   }
 
   onModalCancelClick() {
@@ -267,16 +265,14 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     // initialize a temporary variable, set to zero
     let total = 0;
 
-    // set the outer form array of projeccts and months
-    const fteTable = this.FTEFormGroup.value.FTEFormArray;
+    // set the outer form array of projects and months
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
 
     // loop through each project
-    fteTable.forEach((project, i) => {
-      // loop through each month
-      project.forEach((month, j) => {
-        // if the month matches the month that was updated, update the total
-        if (j === index) {
-          total += +month.fte;
+    FTEFormArray.controls.forEach( project => {
+      project['controls'].forEach( (month, i) => {
+        if (i === index) {
+          total += +month.value.fte;
         }
       });
     });
@@ -295,14 +291,13 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     // initialize a temporary array with zeros to hold the totals
     let totals = new Array(36).fill(0);
 
-    // set the outer form array of projeccts and months
-    const fteTable = this.FTEFormGroup.value.FTEFormArray;
+    // set the outer form array of projects and months
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
 
     // loop through each project
-    fteTable.forEach((project, i) => {
-      // loop through each month
-      project.forEach((month, j) => {
-        totals[j] += +month.fte;
+    FTEFormArray.controls.forEach( project => {
+      project['controls'].forEach( (month, i) => {
+        totals[i] += +month.value.fte;
       });
     });
 
@@ -357,13 +352,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       return value === true;
     });
 
-    // validate totals boxes for historic quarters (must = 1)
-    const oldQuartersValid = this.monthlyTotals.slice(0, firstEditableMonth).every ( value => {
-      return value === 1;
-    });
-
     // validate totals boxes for current quarter (must = 1)
-    const currentQuarterValid = this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 2).every( value => {
+    const currentQuarterValid = this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).every( value => {
       return value === 1;
     });
 
@@ -373,7 +363,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     });
 
     // only save if all quarters are valid
-    if (oldQuartersValid && currentQuarterValid && futureQuartersValid) {
+    if (currentQuarterValid && futureQuartersValid) {
       const fteData = this.FTEFormGroup.value.FTEFormArray;
       const t0 = performance.now();
       // call the api data service to send the put request
@@ -384,6 +374,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
           console.log(`save fte values took ${t1 - t0} milliseconds`);
           this.appDataService.raiseToast('success', res.message);
           this.resetProjectFlags();
+          this.fteComponentInit();  // re-fetch the data to get newly inserted recordIDs
+          this.FTEFormGroup.markAsUntouched();
         },
         err => {
           console.log(err);
@@ -392,7 +384,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       );
     } else if (!currentQuarterValid) {
       const invalidValues = [];
-      this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 2).forEach( value => {
+      this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).forEach( value => {
         if (value !== 1) {
           invalidValues.push(value);
         }
@@ -408,8 +400,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       });
       this.appDataService.raiseToast('error', `FTE values in future quarters must not total to more than 1.
       Please correct the ${invalidValues.length} months in future quarters and try again.`);
-    } else if (!oldQuartersValid) {
-      this.appDataService.raiseToast('error', 'Your historic FTE values are invalid. Please contact the administrators.');
     } else {
       this.appDataService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
     }
@@ -418,29 +408,17 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
   fteComponentInit() {
     // get FTE data
-    console.log('starting to get fte data');
-    const t0 = performance.now();
-    // show the google material style indefinate progress bar
-    // this.showProgressBar = true;
     this.apiDataService.getFteData(this.loggedInUser.id)
     .subscribe(
       res => {
-        // hide the progress bar
-        this.showProgressBar = false;
-        setTimeout(() => {
-          const t3 = performance.now();
-          this.userFTEs = res.nested;
-          this.userFTEsFlat = res.flat;
-          this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
-          this.display = true;  // ghetto way to force rendering after FTE data is fetched
-          // this.projects = this.userFTEs;
-          const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-          this.projects = FTEFormArray.controls;
-          const t4 = performance.now();
-          console.log(`fte form rendering time: ${t4 - t3} milliseconds`);
-        }, 100);
-        const t1 = performance.now();
-        console.log(`get fte data successfull; took ${t1 - t0} milliseconds`);
+        this.userFTEs = res.nested;
+        this.userFTEsFlat = res.flat;
+        this.buildFteEditableArray();
+        this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+        this.display = true;  // ghetto way to force rendering after FTE data is fetched
+        // this.projects = this.userFTEs;
+        const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+        this.projects = FTEFormArray.controls;
       },
       err => {
         console.error(err);
@@ -463,15 +441,15 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   buildFteEditableArray() {
     // build a boolean array of FTE entry months that are editable, based on current month
     const startMonth = this.months[0];
-    let currentMonth = moment().utc().startOf('month');
+    let currentMonth = moment.utc().startOf('month');
     const secondMonthInQuarter = [2, 5, 8, 11];
     const thirdMonthInQuarter = [0, 3, 6, 9];
 
     // we want current fiscal quarter to be editable as long as we are in that FQ,
     // so adjust the current month to allow all months in the current quarter to be editable
-    if (moment(currentMonth).month() in thirdMonthInQuarter) {
+    if (thirdMonthInQuarter.includes(moment(currentMonth).month())) {
       currentMonth = moment(currentMonth).subtract(2, 'months');
-    } else if (moment(currentMonth).month() in secondMonthInQuarter) {
+    } else if (secondMonthInQuarter.includes(moment(currentMonth).month())) {
       currentMonth = moment(currentMonth).subtract(1, 'month');
     }
 
@@ -521,7 +499,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
 
       // attempt to find a record/object for this project and month
       const foundEntry = this.userFTEsFlat.find(userFTE => {
-        return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+        if (newProject) {
+          return false;
+        } else {
+          return proj.projectID === userFTE.projectID && moment(month).unix() === moment(userFTE['allocations:month']).unix();
+        }
       });
 
       projFormArray.push(
@@ -666,7 +648,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
   }
 
   onTrashClick(index: number) {
-
     console.log('user clicked to delete project index ' + index);
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
@@ -696,6 +677,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
             FTEFormArray.controls.splice(index, 1);
             this.updateMonthlyTotals();
             this.setMonthlyTotalsBorder();
+            console.log('stuff was updated');
             this.appDataService.raiseToast('success', deleteResponse.message);
             deleteActionSubscription.unsubscribe();
           },
@@ -707,10 +689,33 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
       } else {
         console.log('delete aborted');
       }
-
       deleteModalSubscription.unsubscribe();
     });
+  }
 
+  onResetClick() {
+    // emit confirmation modal
+    this.appDataService.confirmModalData.emit(
+      {
+        title: 'Confirm Reset',
+        message: `Are you sure you want to reset the form?  Unsaved changes may be lost.`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 193, 27)',
+        display: true
+      }
+    );
+    // wait for response to reset confirm modal
+    const resetModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+      if (res) {
+        this.fteComponentInit();
+        this.FTEFormGroup.markAsUntouched();
+        this.appDataService.raiseToast('success', 'Your FTE form has been reset');
+      } else {
+        console.log('reset aborted');
+        this.appDataService.raiseToast('warn', 'Reset was aborted');
+      }
+      resetModalSubscription.unsubscribe();
+    });
   }
 
   onSliderChange(value: any) {  // event only fires when slider handle is dropped
@@ -739,12 +744,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy {
     this.fteMonthVisible = this.fteMonthVisible.fill(true, posStart, posStart + posDelta);
 
     this.checkIfNoProjectsVisible();
-
-    // TEMP CODE: workaround for rendering issue for column headers (months)
-    // let scrollTop = $('div.table-scrollable').scrollTop();
-    // $('div.table-scrollable').scrollTop(scrollTop - 1);
-    // scrollTop = $('div.table-scrollable').scrollTop();
-    // $('div.table-scrollable').scrollTop(scrollTop + 1);
 
   }
 

@@ -5,7 +5,13 @@ import { AppDataService } from '../../_shared/services/app-data.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
 
+import * as Highcharts from 'highcharts';
+
+declare var require: any;
 declare var $: any;
+
+require('highcharts/modules/exporting')(Highcharts);
+require('highcharts/modules/export-data')(Highcharts);
 
 @Component({
   selector: 'app-employees-reports',
@@ -23,6 +29,9 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   displayResults: boolean;
   employeeElements: any;
   dropDownDisplayedEmployee: string;
+  quarterlyEmployeeFTETotals: any;
+  currentFiscalQuarter: number;
+  currentFiscalYear: number;
 
   // temp properties for testing
   manager: any;
@@ -76,7 +85,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
       // get logged in user's info
       this.authService.getLoggedInUser((user, err) => {
         // this.getNestedOrgData(user.email);
-        this.getNestedOrgData('ron_nersesian@keysight.com');
+        // this.getNestedOrgData('ron_nersesian@keysight.com');
+        this.getNestedOrgData('pat_harper@keysight.com');
       });
     }
 
@@ -160,8 +170,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   onclickedEmployee(employee) {
     this.displayOrgDropDown = false;
     this.displayedEmployee = employee;
-    // console.log('displayed employee');
-    // console.log(this.displayedEmployee);
+    console.log('displayed employee');
+    console.log(this.displayedEmployee);
 
     this.manager = this.getManager(this.nestedOrgData, employee);
     // console.log('manager:');
@@ -189,6 +199,12 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
     // console.log('manager data:');
     // console.log(manager);
+
+    setTimeout(() => {
+      console.log('Employee ' + this.displayedEmployee.employeeID);
+      this.getQuarterlyEmployeeFTETotals();
+    }, 0);
+
   }
 
 
@@ -440,5 +456,71 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     return empArr.length ? empArr.join(', ') : '';
   }
 
+  getQuarterlyEmployeeFTETotals() {
+
+    // Convert current month to fiscal quarter
+    const date = new Date();
+
+    if (date.getMonth() === 10 || date.getMonth() === 11 || date.getMonth() === 0) {
+      this.currentFiscalQuarter = 1;
+    } else if (date.getMonth() === 1 || date.getMonth() === 2 || date.getMonth() === 3) {
+      this.currentFiscalQuarter = 2;
+    } else if (date.getMonth() === 4 || date.getMonth() === 5 || date.getMonth() === 6) {
+      this.currentFiscalQuarter = 3;
+    } else if (date.getMonth() === 7 || date.getMonth() === 8 || date.getMonth() === 9) {
+      this.currentFiscalQuarter = 4;
+    }
+
+    this.currentFiscalYear = date.getFullYear();
+
+    // Retrieve employee FTE aggregate data for a specific quarter and year
+    this.apiDataService.getQuarterlyEmployeeFTETotals(this.displayedEmployee.employeeID, this.currentFiscalQuarter, this.currentFiscalYear)
+      .subscribe(
+        res => {
+          this.quarterlyEmployeeFTETotals = res;
+          console.log('Project FTE List: ',  this.quarterlyEmployeeFTETotals);
+          this.employeeProjectChart();
+        },
+        err => {
+          console.log(err);
+        }
+      );
+  }
+
+  employeeProjectChart() {
+
+    // Employee FTE in Pie Chart
+    Highcharts.chart('employeeProjectChart', {
+      chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie'
+      },
+      title: {
+          text: this.displayedEmployee.fullName + 'Current Quarter FTE'
+      },
+      tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      plotOptions: {
+          pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                  enabled: true,
+                  format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                  // style: {
+                  //     color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                  // }
+              }
+          }
+      },
+      series: [{
+          data: this.quarterlyEmployeeFTETotals
+      }]
+    });
+
+  }
 
 }

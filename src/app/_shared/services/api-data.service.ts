@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import 'rxjs/add/operator/timeout';
 import 'rxjs/add/operator/map';
+import { AnonymousSubscription } from 'rxjs/Subscription';
 
 
 @Injectable()
@@ -103,7 +104,6 @@ export class ApiDataService {
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
-
 
   getProjects() {
     return this.http.get('api/projects')
@@ -229,6 +229,66 @@ export class ApiDataService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/responseProjectAccessRequest/${userID}/${reply}`, JSON.stringify(request), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  sendRequestProjectEmail(userID: number, ownerID: number, projectName: string) {
+    return this.http.post(`/api/sendRequestProjectEmail/${userID}/${ownerID}/${projectName}`, null)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+  }
+
+  sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string) {
+      return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}`, null)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+
+  // ORG API ROUTES
+
+
+
+  // REPORTS API ROUTES
+  getAggregatedSubordinateFTE(managerEmailAddress: string) {
+    return this.http.get(`/api/reports/aggregatedSubordinateFte/${managerEmailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getAggregatedFteData() {
+    return this.http.get(`/api/reports/aggregatedFteData/`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getMyFteSummary(employeeID: number, period: string) {
+    return this.http.get(`/api/reports/getMyFteSummary/${employeeID}/${period}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectFTEHistory(projectID: number) {
+    return this.http.get(`/api/getProjectFTEHistory/${projectID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getTopFTEProjectList() {
+    return this.http.get(`/api/getTopFTEProjectList/`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
+    return this.http.get(`/api/getProjectEmployeeFTEList/${projectID}/${fiscalDate}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getQuarterlyEmployeeFTETotals(employeeID: number, fiscalQuarter: number, fiscalYear: number) {
+    return this.http.get(`/api/getQuarterlyEmployeeFTETotals/${employeeID}/${fiscalQuarter}/${fiscalYear}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

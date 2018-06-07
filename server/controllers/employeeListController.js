@@ -1,5 +1,6 @@
 
 const Sequelize = require('sequelize');
+const sequelize = require('../db/sequelize').sequelize;
 const sequelize2017 = require('../db/sequelize').sequelize2017;
 
 function show(req, res) {
@@ -18,6 +19,7 @@ function show(req, res) {
     });
 }
 
+
 module.exports = {
-  show: show,
+  show: show
 }

@@ -4,12 +4,12 @@
   <div>
     {{ project?.ProjectName }}
   </div>
-  <div *ngIf="projectRoster" class="projects-roster-modal-team-members">
+  <div *ngIf="projectHasMembers" class="projects-roster-modal-team-members">
     <div class="projects-roster-modal-team-member" *ngFor="let teamMember of projectRoster.teamMembers">
       {{ teamMember.name }}
     </div>
   </div>
-  <div *ngIf="!projectRoster" class="projects-roster-modal-no-team-members">
+  <div *ngIf="!projectHasMembers" class="projects-roster-modal-no-team-members">
     No Team Members
   </div>
   <a class="projects-roster-modal close-button" (click)="onCloseClick()">close</a>

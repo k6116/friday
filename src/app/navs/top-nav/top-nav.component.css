@@ -34,7 +34,7 @@
 
 .app-logo-img {
   height: 50px;
-  width: 130px;
+  width: 140px;
 }
 
 .app-title-cont {
@@ -57,8 +57,8 @@
   font-weight: 600;
   color: #fde772;
   display: inline;
-  padding-left: 0px;
-  line-height: 83px;
+  padding-left: 3px;
+  line-height: 93px;
 }
 
 
