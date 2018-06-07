@@ -24,12 +24,12 @@
   <!-- block for chart -->
   <div class="row row-custom" [hidden]="chartIsLoading">
     <!-- highcharts div -->
-    <div class="col-sm-6">
+    <div class="col-sm-7">
         <div id="pie"></div>
     </div>
 
     <!-- subordinate/peer roster if user clicks a project -->
-    <div *ngIf="displaySummaryTable" class="col-sm-6">
+    <div *ngIf="displaySummaryTable" class="col-sm-5">
       <h3>My FTEs on {{selectedProject.name}}:</h3>
       <table class="table table-bordered table-sm">
         <thead>

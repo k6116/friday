@@ -141,7 +141,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         text: this.userIsManager ? `My Team's Projects` : `My Peers' Projects`
       },
       subtitle: {
-        text: `${timePeriod.text}`
+        text: `Time Period: ${timePeriod.text}`
       },
       xAxis: {
         categories: projectNames

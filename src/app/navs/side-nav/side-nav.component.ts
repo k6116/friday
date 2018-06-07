@@ -63,16 +63,16 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               active: false
             },
             {
-              title: 'Top Projects',
-              alias: 'reports-top-projects',
-              path: 'main/reports/top-projects',
+              title: 'Top Projects Bubble',
+              alias: 'reports-top-projects-bubble',
+              path: 'main/reports/top-projects-bubble',
               parentAlias: 'reports',
               active: false
             },
             {
-              title: 'Top Projects Bubble',
-              alias: 'reports-top-projects-bubble',
-              path: 'main/reports/top-projects-bubble',
+              title: 'Top Projects',
+              alias: 'reports-top-projects',
+              path: 'main/reports/top-projects',
               parentAlias: 'reports',
               active: false
             },

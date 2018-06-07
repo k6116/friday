@@ -22,7 +22,8 @@ function translateTimePeriods(period) {
       } else if (secondMonthInQuarter.includes(moment(startMonth).month())) {
         startMonth = moment(startMonth).subtract(1, 'month');
       }
-      endMonth = moment(startMonth).add(3, 'months');
+      // subtracting 1 day, because SQL BETWEEN is inclusive
+      endMonth = moment(startMonth).add(3, 'months').subtract(1, 'day');
       break;
     }
     case 'current-fy': {
@@ -35,7 +36,8 @@ function translateTimePeriods(period) {
         startMonth = moment(startMonth).set('month', 10);
         startMonth = moment(startMonth).set('year', (moment(startMonth).year() - 1));
       }
-      endMonth = moment(startMonth).add(1, 'year');
+      // subtracting 1 day, because SQL BETWEEN is inclusive
+      endMonth = moment(startMonth).add(1, 'year').subtract(1, 'day');
       break;
     }
     case 'all-time': {
