@@ -104,8 +104,14 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
     // returning true will navigate without confirmation
-    return this.FTEFormGroup.untouched;
     // returning false will show a confirm dialog before navigating away
+    if ($('#confirm-modal').is(':visible')) {
+      // if the user is about to be routed away due to inactivity timeout, always allow deactivation
+      return true;
+    } else {
+      // otherwise, allow immediate deactivation only if the form is untouched
+      return this.FTEFormGroup.untouched;
+    }
   }
 
   ngOnInit() {
