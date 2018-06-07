@@ -10,6 +10,10 @@ export class WebsocketService {
   private socket;
 
   constructor() {
+    // this.socket = io();
+  }
+
+  connect() {
     this.socket = io();
   }
 
@@ -22,9 +26,9 @@ export class WebsocketService {
       this.socket.on('message', (data) => {
         observer.next(data);
       });
-      return () => {
-        this.socket.disconnect();
-      };
+      // return () => {
+      //   this.socket.disconnect();
+      // };
     });
     return observable;
   }
@@ -38,9 +42,6 @@ export class WebsocketService {
       this.socket.on('loggedInUser', (data) => {
         observer.next(data);
       });
-      return () => {
-        this.socket.disconnect();
-      };
     });
     return observable;
   }
@@ -54,9 +55,6 @@ export class WebsocketService {
       this.socket.on('loggedOutUser', (data) => {
         observer.next(data);
       });
-      return () => {
-        this.socket.disconnect();
-      };
     });
     return observable;
   }

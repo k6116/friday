@@ -106,8 +106,6 @@ if (env === 'dev') {
 
 // testing websockets
 
-var users = [];
-
 var io = require('socket.io')(server);
 
 io.on('connection', socket => {
