@@ -111,11 +111,11 @@ io.on('connection', socket => {
   socket.on('message', message => {
     io.emit('message', message);
   });
-  socket.on('activeUsers', activeUsers => {
-    // console.log('emitting active user')
-    // console.log(activeUsers);
-    users.push(activeUsers);
-    io.emit('activeUsers', activeUsers);
+  socket.on('loggedInUser', loggedInUser => {
+    io.emit('loggedInUser', loggedInUser);
+  });
+  socket.on('loggedOutUser', loggedOutUser => {
+    io.emit('loggedOutUser', loggedOutUser);
   });
   socket.on('disconnect', () => {
     console.log('a user disconnected');

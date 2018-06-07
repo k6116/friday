@@ -29,13 +29,29 @@ export class WebsocketService {
     return observable;
   }
 
-  sendUsers(activeUsers) {
-    this.socket.emit('activeUsers', activeUsers);
+  sendLoggedInUser(loggedInUser) {
+    this.socket.emit('loggedInUser', loggedInUser);
   }
 
-  getUsers() {
+  getLoggedInUser() {
     const observable = new Observable(observer => {
-      this.socket.on('activeUsers', (data) => {
+      this.socket.on('loggedInUser', (data) => {
+        observer.next(data);
+      });
+      return () => {
+        this.socket.disconnect();
+      };
+    });
+    return observable;
+  }
+
+  sendLoggedOutUser(loggedOutUser) {
+    this.socket.emit('loggedOutUser', loggedOutUser);
+  }
+
+  getLoggedOutUser() {
+    const observable = new Observable(observer => {
+      this.socket.on('loggedOutUser', (data) => {
         observer.next(data);
       });
       return () => {

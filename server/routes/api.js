@@ -9,6 +9,8 @@ var controllers = require('../controllers/_index.js');
 router.post('/login', controllers.auth.authenticate);
 router.get('/getInfoFromToken', controllers.auth.getInfoFromToken);
 router.post('/resetToken', controllers.auth.resetToken);
+router.get('/getLoggedInUsers', controllers.auth.getLoggedInUsers);
+router.get('/logout/:userName', controllers.auth.logout);
 
 // FTE data controller
 router.get('/ftedata/:userID', controllers.fteData.getFteData);

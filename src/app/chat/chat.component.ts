@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { WebsocketService } from '../_shared/services/websocket.service';
 import { Subscription } from 'rxjs/Subscription';
+import { ApiDataService } from '../_shared/services/api-data.service';
 import * as io from 'socket.io-client';
 import * as faker from 'faker';
 import * as moment from 'moment';
+import * as _ from 'lodash';
 
 declare var $: any;
 
@@ -23,10 +25,15 @@ export class ChatComponent implements OnInit, OnDestroy {
   activeUsers: string;
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
+  subscription4: Subscription;
   userMessage: string;
+  messages: any[] = [];
+  loggedInUsers: any;
 
   constructor (
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private apiDataService: ApiDataService
     ) {
 
   }
@@ -44,15 +51,28 @@ export class ChatComponent implements OnInit, OnDestroy {
     //   $('#messages').append($('<p>').text(message));
     // });
 
+    // get logged in users from the server as array of objects
+    this.getLoggedInUsers();
+
     this.subscription1 = this.websocketService.getMessages().subscribe(message => {
-      $('#messages').append($('<p>').text(message));
+      this.messages.push(message);
+      _.reverse(this.messages);
     });
 
-    this.subscription2 = this.websocketService.getUsers().subscribe(users => {
+    this.subscription2 = this.websocketService.getLoggedInUser().subscribe(users => {
       this.userMessage = `${users['fullName']} just logged in`;
       setTimeout(() => {
         this.userMessage = '';
       }, 3000);
+      this.getLoggedInUsers();
+    });
+
+    this.subscription3 = this.websocketService.getLoggedOutUser().subscribe(user => {
+      this.userMessage = `${user['fullName']} just logged out`;
+      setTimeout(() => {
+        this.userMessage = '';
+      }, 3000);
+      this.getLoggedInUsers();
     });
 
   }
@@ -60,6 +80,23 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
+  }
+
+  getLoggedInUsers() {
+
+    this.apiDataService.getLoggedInUsers()
+      .subscribe(
+        res => {
+          console.log('logged in users');
+          console.log(res);
+          this.loggedInUsers = res;
+        },
+        err => {
+          console.error('error getting logged in users');
+        }
+      );
+
   }
 
   // send message button click

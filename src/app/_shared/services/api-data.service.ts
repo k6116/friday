@@ -45,6 +45,19 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getLoggedInUsers() {
+    return this.http.get(`/api/getLoggedInUsers`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  logout(userName) {
+    return this.http.get(`/api/logout/${userName}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+
   // get all users (index)
   getUserData() {
     const token = localStorage.getItem('jarvisToken') ? '?token=' + localStorage.getItem('jarvisToken') : '';

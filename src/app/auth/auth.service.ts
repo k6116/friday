@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { User } from '../_shared/models/user.model';
 import { ApiDataService } from '../_shared/services/api-data.service';
 import { AppDataService } from '../_shared/services/app-data.service';
+import { WebsocketService } from '../_shared/services/websocket.service';
 
 import * as moment from 'moment';
 import { Subscriber } from 'rxjs/Subscriber';
@@ -25,7 +26,8 @@ export class AuthService {
     private http: Http,
     private router: Router,
     private apiDataService: ApiDataService,
-    private appDataService: AppDataService
+    private appDataService: AppDataService,
+    private websocketService: WebsocketService
   ) {
 
     // set the warning modal to appear 5 minutes before auto-logout
@@ -111,9 +113,7 @@ export class AuthService {
             this.token = res.token;
             // if the token is expired, clear the user data/cache (properties in this service) and token, and re-route to the login page
             if (this.tokenIsExpired()) {
-              this.clearUserCache();
-              this.clearToken();
-              this.routeToLogin(true);
+              this.logout(true);
             // if the token is not expired
             } else {
               // store the data in this service
@@ -134,17 +134,13 @@ export class AuthService {
               }
             }
             // regardless of the cause, clear the user data/cache (properties in this service) and token, and re-route to the login page
-            this.clearUserCache();
-            this.clearToken();
-            this.routeToLogin(true);
+            this.logout(true);
           }
         );
     // if there is no 'jarvisToken' in local storage
     } else {
       // clear the user data/cache (properties in this service) and token, and re-route to the login page
-      this.clearUserCache();
-      this.clearToken();
-      this.routeToLogin(false);
+      this.logout(false);
     }
 
   }
@@ -170,9 +166,7 @@ export class AuthService {
     // if the token is expired, log the user out and display a message on the login page
     if (this.tokenIsExpired()) {
       // console.log('logging out due to expired token');
-      this.clearUserCache();
-      this.clearToken();
-      this.routeToLogin(true);
+      this.logout(true);
     // if there is a logged in user and there has been activity within the last 60 seconds
     // go the the server to get them a new token with pushed out expiration date
     // NOTE: the numInactivitySeconds or numInactivityMinutes should be synched with the timer interval in the app component
@@ -220,7 +214,7 @@ export class AuthService {
           // reset the timer so that it will be synched with the token expiration, at least within a second or two
           this.appDataService.resetTimer.emit(true);
           // TEMP CODE to log the token status
-          this.logTokenStatus();
+          // this.logTokenStatus();
         },
         err => {
           console.error('reset token error:');
@@ -308,14 +302,42 @@ export class AuthService {
   }
 
 
+  clearLoggedInUserOnServer() {
+
+    // make an api call to clear the user from the server cache (loggedInUsers array)
+    if (this.loggedInUser) {
+
+      // send the logged in user object to all other clients via websocket
+      this.websocketService.sendLoggedOutUser(this.loggedInUser);
+
+      this.apiDataService.logout(this.loggedInUser.userName)
+        .subscribe(
+          res => {
+            console.log('success on logout from the auth service');
+            console.log(res);
+          },
+          err => {
+            console.error('error on logout from the auth service');
+          }
+        );
+    }
+
+  }
+
+
+  logout(displayMessage: boolean) {
+    this.clearLoggedInUserOnServer();
+    this.clearUserCache();
+    this.clearToken();
+    this.routeToLogin(displayMessage);
+  }
+
+
   // route to the login component/page (for manual or automatic logout)
   routeToLogin(displayMessage: boolean) {
 
     // don't re-route if the user is already on the login page
     if (this.router.url !== '/login' && this.router.url !== '/') {
-
-      // remove the token in local storage
-      this.clearToken();
 
       // hide the extend session modal if it is displayed
       if (this.modalIsDisplayed) {
@@ -367,7 +389,7 @@ export class AuthService {
         this.resetToken();
       } else {
         this.modalIsDisplayed = undefined;
-        this.routeToLogin(false);
+        this.logout(false);
       }
       this.confirmModalResponseSubscription.unsubscribe();
     });

@@ -5,9 +5,13 @@ const ldapAuth = require('ldapAuth-fork');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
+const _ = require('lodash');
 
 const tokenSecret = 'rutabega';  // set the secret code word for enconding and decoding the token with jwt
 const expirationTime = 60 * 60 * 0.5  // units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
+
+// TEMP CODE: testing websockets
+ var loggedInUsers = [];
 
 
 function authenticate(req, res) {
@@ -91,6 +95,7 @@ function authenticate(req, res) {
                 expiringAt: decodedToken2.exp
               }
             });
+            loggedInUsers.push(jarvisUser);
           // if this is not an existing jarvis user, add a record to the Employees table before sending the response
           } else {
 
@@ -123,6 +128,8 @@ function authenticate(req, res) {
                 newUser: true,
                 token: token
               });
+
+              loggedInUsers.push(savedUser);
 
             })
         
@@ -284,10 +291,31 @@ function index(req, res) {
 
 }
 
+function getLoggedInUsers(req, res) {
+
+  res.json(loggedInUsers);
+
+}
+
+function logout(req, res) {
+
+  var userName = req.params.userName;
+  console.log(`user name: ${userName}`);
+
+  _.remove(loggedInUsers, user => {
+    return user.userName === userName;
+  });
+
+  res.json(`user ${userName} has been removed from the array of logged in users`);
+
+}
+
 
 module.exports = {
   authenticate: authenticate,
   getInfoFromToken: getInfoFromToken,
   resetToken: resetToken,
-  index: index
+  index: index,
+  getLoggedInUsers: getLoggedInUsers,
+  logout: logout
 }

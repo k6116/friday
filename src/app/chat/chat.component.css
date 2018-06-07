@@ -1,4 +1,9 @@
 
+
+div.row.websockets-row {
+    margin-bottom: 25px;
+}
+
 h2.page-header-text.chat-app-title {
     margin-bottom: 20px;
 }
@@ -21,4 +26,32 @@ div.online-user {
     margin-top: 10px;
     line-height: 40px;
     padding: 0 25px;
+}
+
+div.notifications-col {
+    width: 95%;
+    height: 100px;
+    border: 1px solid lightgrey;
+    padding: 10px;
+}
+
+div.chats-col, div.loggedin-col {
+    height: 300px;
+    border: 1px solid lightgrey;
+    padding: 10px;
+    overflow-y: auto;
+    width: 45%;
+}
+
+div.chats-col {
+    margin-right: 5%
+}
+
+div.header-text-cont {
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+div.content-cont.chats {
+    margin-bottom: 5px;
 }

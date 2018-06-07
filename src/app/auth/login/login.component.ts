@@ -135,7 +135,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl('/main');
 
           // send the logged in user object to all other clients via websocket
-          this.websocketService.sendUsers(this.authService.loggedInUser);
+          this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
 
         },
         err => {
