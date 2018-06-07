@@ -19,7 +19,6 @@ export class WebsocketService {
 
   getMessages() {
     const observable = new Observable(observer => {
-      // this.socket = io();
       this.socket.on('message', (data) => {
         observer.next(data);
       });
@@ -31,13 +30,11 @@ export class WebsocketService {
   }
 
   sendUsers(activeUsers) {
-    // this.socket = io();
     this.socket.emit('activeUsers', activeUsers);
   }
 
   getUsers() {
     const observable = new Observable(observer => {
-      // this.socket = io();
       this.socket.on('activeUsers', (data) => {
         observer.next(data);
       });

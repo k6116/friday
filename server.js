@@ -101,6 +101,9 @@ if (env === 'dev') {
 }
 
 // testing websockets
+
+var users = [];
+
 var io = require('socket.io')(server);
 
 io.on('connection', socket => {
@@ -109,8 +112,9 @@ io.on('connection', socket => {
     io.emit('message', message);
   });
   socket.on('activeUsers', activeUsers => {
-    console.log('emitting active user')
-    console.log(activeUsers);
+    // console.log('emitting active user')
+    // console.log(activeUsers);
+    users.push(activeUsers);
     io.emit('activeUsers', activeUsers);
   });
   socket.on('disconnect', () => {

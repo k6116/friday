@@ -14,3 +14,11 @@ button.btn.btn-primary.chat-send-button {
 div.chat-messages-cont {
     margin-top: 25px;
 }
+
+div.online-user {
+    height: 40px;
+    border: 1px solid lightgrey;
+    margin-top: 10px;
+    line-height: 40px;
+    padding: 0 25px;
+}

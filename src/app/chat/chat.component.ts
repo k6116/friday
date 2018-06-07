@@ -23,6 +23,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   activeUsers: string;
   subscription1: Subscription;
   subscription2: Subscription;
+  userMessage: string;
 
   constructor (
     private websocketService: WebsocketService
@@ -43,19 +44,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     //   $('#messages').append($('<p>').text(message));
     // });
 
-    // this.chatService.messages.subscribe(msg => {
-    //   console.log(msg);
-    // });
-
     this.subscription1 = this.websocketService.getMessages().subscribe(message => {
-      console.log('message received:');
-      console.log(message);
       $('#messages').append($('<p>').text(message));
     });
 
     this.subscription2 = this.websocketService.getUsers().subscribe(users => {
-      console.log('users received:');
-      console.log(users);
+      this.userMessage = `${users['fullName']} just logged in`;
+      setTimeout(() => {
+        this.userMessage = '';
+      }, 3000);
     });
 
   }
@@ -76,9 +73,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     // emit the message
     this.websocketService.sendMessage(`${this.userName} (${currentTime}): ${this.inputText}`);
-
-    // emit the message
-    this.websocketService.sendUsers({userName: 'chuetzle', fullName: 'Bill Schuetzle'});
 
     // clear the input
     this.inputText = '';
