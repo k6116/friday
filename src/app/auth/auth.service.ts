@@ -29,7 +29,7 @@ export class AuthService {
   ) {
 
     // set the warning modal to appear 5 minutes before auto-logout
-    this.warnBeforeExpiration = 1;
+    this.warnBeforeExpiration = 5;
   }
 
 
