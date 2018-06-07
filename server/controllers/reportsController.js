@@ -49,23 +49,6 @@ function translateTimePeriods(period) {
   return [moment(startMonth).format('MM/DD/YYYY'), moment(endMonth).format('MM/DD/YYYY')];
 }
 
-function getAggregatedSubordinateFte(req, res) {  // TO BE DELETED
-  const managerEmailAddress = req.params.managerEmailAddress;
-
-  const sql = `exec resources.aggregateSubordinateFTE '${managerEmailAddress}'`
-  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
-    .then(org => {
-      console.log("returning user PLM data");
-      res.json(org);
-    })
-    .catch(error => {
-      res.status(400).json({
-        title: 'Error (in catch)',
-        error: {message: error}
-      })
-    });
-}
-
 function getSubordinateProjectRoster(req, res) {
   const managerEmailAddress = req.params.managerEmailAddress;
   const period = req.params.period;
@@ -309,7 +292,6 @@ function getQuarterlyEmployeeFTETotals(req, res) {
 }
 
 module.exports = {
-  getAggregatedSubordinateFte: getAggregatedSubordinateFte, // TO BE DELETED
   getAggregatedFteData: getAggregatedFteData,
   getSubordinateProjectRoster: getSubordinateProjectRoster,
   getMyFteSummary: getMyFteSummary,

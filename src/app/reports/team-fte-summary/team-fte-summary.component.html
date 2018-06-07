@@ -20,7 +20,7 @@
     </div>
 
     <div *ngIf="displaySelectedProjectRoster" class="col-sm-6">
-      <h3>Team Members for {{selectedProject}}:</h3>
+      <h3>{{userIsManager ? 'My Team Members' : 'My Peers'}} on {{selectedProject}}:</h3>
       <table class="table table-bordered table-sm">
         <thead>
           <tr>

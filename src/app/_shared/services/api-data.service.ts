@@ -16,7 +16,7 @@ export class ApiDataService {
     private http: Http
   ) {
     // set the timeout to 15 seconds
-    this.timeout = 90000;
+    this.timeout = 100 * 60 * 30;
   }
 
 
@@ -56,20 +56,15 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
-  // get FTE data
+  // ----- FTE SECTION ----- //
+  // get FTE data from db
   getFteData(userID: number) {
     return this.http.get(`/api/ftedata/${userID}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
 
-  getEmployeeData(managerEmailAddress: string) {
-    return this.http.get(`/api/employeeList/${managerEmailAddress}`)
-    .timeout(this.timeout)
-    .map((response: Response) => response.json());
-  }
-
-  // update FTE data
+  // update existing FTE records
   updateFteData(fteData: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
@@ -78,10 +73,17 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  // delete an entire project from a user's FTE table
   deleteFteProject(projectID: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/ftedata/deleteProject/${userID}`, JSON.stringify(projectID), options)
+    .timeout(this.timeout)
+    .map((response: Response) => response.json());
+  }
+
+  getEmployeeData(managerEmailAddress: string) {
+    return this.http.get(`/api/employeeList/${managerEmailAddress}`)
     .timeout(this.timeout)
     .map((response: Response) => response.json());
   }
@@ -234,7 +236,7 @@ export class ApiDataService {
 
 
   // ORG API ROUTES
-  getSubordinatesFlat(emailAddress: string) {  // TO BE DELETED
+  getSubordinatesFlat(emailAddress: string) {
     return this.http.get(`/api/org/subordinatesFlat/${emailAddress}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
@@ -242,12 +244,6 @@ export class ApiDataService {
 
 
   // REPORTS API ROUTES
-  getAggregatedSubordinateFTE(managerEmailAddress: string) {  // TO BE DELETED
-    return this.http.get(`/api/reports/aggregatedSubordinateFte/${managerEmailAddress}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
   getSubordinateProjectRoster(managerEmailAddress: string, period: string) {
     return this.http.get(`/api/reports/subordinateProjectRoster/${managerEmailAddress}/${period}`)
       .timeout(this.timeout)

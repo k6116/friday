@@ -18,12 +18,16 @@ require('highcharts/modules/pareto.js')(Highcharts);
 })
 export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
+  loggedInUser: User; // object for logged in user's info
+  userPlmData: any;
+  plmSubscription: Subscription;
+  userIsManager: boolean;
+  userIsManagerSubscription: Subscription;
+
   paretoChart: any;
   paretoChartSubscription: Subscription;
-  plmSubscription: Subscription;
-  loggedInUser: User; // object for logged in user's info
   paretoChartOptions: any;
-  userPlmData: any;
+
   teamSummaryData: any;
   displaySelectedProjectRoster: boolean;
   selectedProject: string;
@@ -33,6 +37,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     {period: 'current-fy', text: 'Current Fiscal Year'},
     {period: 'all-time', text: 'All Time'}
   ];
+
 
 
   constructor(
@@ -49,7 +54,16 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       }
       this.loggedInUser = user;
       this.displaySelectedProjectRoster = false;
-      this.getTeamSummaryData('current-quarter');
+
+      // find out if user is a manager, too
+      this.userIsManagerSubscription = this.apiDataService.getSubordinatesFlat(this.loggedInUser.email).subscribe( res => {
+        if (res.length > 1) {
+          this.userIsManager = true;
+        } else {
+          this.userIsManager = false;
+        }
+        this.getTeamSummaryData('current-quarter');
+      });
     });
   }
 
@@ -64,12 +78,18 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     if (this.paretoChart) {
       this.paretoChart.destroy();
     }
+    if (this.userIsManagerSubscription) {
+      this.userIsManagerSubscription.unsubscribe();
+    }
   }
 
   getTeamSummaryData(period: string) {
     this.plmSubscription = this.apiDataService.getUserPLMData(this.loggedInUser.email).subscribe( res => {
       this.userPlmData = res[0];
-      this.paretoChartSubscription = this.apiDataService.getSubordinateProjectRoster(this.userPlmData.SUPERVISOR_EMAIL_ADDRESS, period)
+      // if user is a manager, roll up their subordinates' projects
+      // if not, then roll up their manager's projects (their peers, for individual contributors)
+      const queryEmail = this.userIsManager ? this.userPlmData.EMAIL_ADDRESS : this.userPlmData.SUPERVISOR_EMAIL_ADDRESS;
+      this.paretoChartSubscription = this.apiDataService.getSubordinateProjectRoster(queryEmail, period)
       .subscribe( res2 => {
         this.teamSummaryData = res2;
         // total up the number of FTEs contributed to each project
@@ -116,7 +136,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         type: 'column'
       },
       title: {
-        text: `My Team's FTE Pareto`
+        text: this.userIsManager ? `My Team's Projects` : `My Peers' Projects`
       },
       subtitle: {
         text: `${timePeriod.text}`
@@ -144,7 +164,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         baseSeries: 1
       },
       {
-        name: 'Team FTEs Recorded',
+        name: 'Total Team FTEs',
         type: 'column',
         colorByPoint: true,
         zIndex: 2,
