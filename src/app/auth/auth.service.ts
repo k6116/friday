@@ -122,7 +122,7 @@ export class AuthService {
               // this.setLoggedIn(true);
             }
             // TEMP CODE to log the token status
-            this.logTokenStatus();
+            // this.logTokenStatus();
           },
           err => {
             // parse the error _body into an error object to access the info
@@ -161,7 +161,7 @@ export class AuthService {
     // TEMP CODE: to test the timer is working properly
     // console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
     // console.log(`time since last activity: ${numInactivityMins} (minutes); ${numInactivitySeconds} (seconds)`);
-    this.logTokenStatus();
+    // this.logTokenStatus();
 
     // if the token is expired, log the user out and display a message on the login page
     if (this.tokenIsExpired()) {

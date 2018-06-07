@@ -55,8 +55,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.getLoggedInUsers();
 
     this.subscription1 = this.websocketService.getMessages().subscribe(message => {
-      this.messages.push(message);
-      _.reverse(this.messages);
+      this.messages.unshift(message);
+      // _.reverse(this.messages);
     });
 
     this.subscription2 = this.websocketService.getLoggedInUser().subscribe(users => {
