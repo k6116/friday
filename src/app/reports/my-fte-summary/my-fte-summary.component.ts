@@ -25,6 +25,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
 
   loggedInUser: User; // object for logged in user's info
   summarySubscription: Subscription;
+  chartIsLoading = true;
   pieChart: any;
   paretoChart: any;
   fteSummaryData: any;
@@ -66,7 +67,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   }
 
   getFteSummaryData(period: string) {
-
+    this.chartIsLoading = true;
     // Retrieve Top FTE Project List
     this.summarySubscription = this.apiDataService.getMyFteSummary(this.loggedInUser.id, period)
     .subscribe(
@@ -134,6 +135,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
     };
 
     this.pieChart = Highcharts.chart('pie', this.pieChartOptions);
+    this.chartIsLoading = false;
   }
 
   plotFteSummaryPareto(period: string) {

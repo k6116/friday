@@ -1,10 +1,12 @@
 <div class="container-fluid">
+  <!-- page header row -->
   <div class="row row-custom">
     <div class="col-sm col-custom col-text-header">
       <h2 class="page-header-text">My FTE Summary</h2>
     </div>
   </div>
 
+  <!-- block for time period drop-down selector -->
   <div class="row row-custom">
     <div class="col-sm-2 col-custom">
       <label>Time Period:</label>
@@ -14,7 +16,13 @@
     </div>
   </div>
 
-  <div class="row row-custom">
+  <!-- block for spinner if chart is loading -->
+  <div *ngIf="chartIsLoading" class="row row-custom">
+    Chart is loading...&nbsp;&nbsp;&nbsp;<div class="loading-spinner"></div>
+  </div>
+
+  <!-- block for charts -->
+  <div class="row row-custom" [hidden]="chartIsLoading">
     <div class="col-sm-6">
         <div id="pie"></div>
     </div>

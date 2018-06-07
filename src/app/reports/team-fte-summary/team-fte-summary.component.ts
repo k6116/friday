@@ -24,6 +24,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   userIsManager: boolean;
   userIsManagerSubscription: Subscription;
 
+  chartIsLoading = true;
   paretoChart: any;
   paretoChartSubscription: Subscription;
   paretoChartOptions: any;
@@ -84,6 +85,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   }
 
   getTeamSummaryData(period: string) {
+    this.chartIsLoading = true;
     this.plmSubscription = this.apiDataService.getUserPLMData(this.loggedInUser.email).subscribe( res => {
       this.userPlmData = res[0];
       // if user is a manager, roll up their subordinates' projects
@@ -181,6 +183,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       }]
     };
     this.paretoChart = Highcharts.chart('pareto', this.paretoChartOptions);
+    this.chartIsLoading = false;
   }
 
   showSubordinateTeamRoster(projectID: number) {

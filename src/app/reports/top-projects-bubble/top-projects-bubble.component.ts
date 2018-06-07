@@ -21,6 +21,7 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
   loggedInUser: User; // object for logged in user's info
   fteDataSubscription: Subscription;
   rosterDataSubscription: Subscription;
+  chartIsLoading = true;
   bubbleChart: any;
   rawBubbleData: any;
   anchorBubbleData = [];
@@ -171,6 +172,7 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
       }]
     };
     this.bubbleChart = Highcharts.chart('bubble', this.bubbleChartOptions);
+    this.chartIsLoading = false;
   }
 
   showProjectRoster(projectID: number) {
