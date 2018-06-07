@@ -84,6 +84,14 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               active: false
             }
           ]
+        },
+        {
+          title: 'WebSockets',
+          iconClass: 'nc-socket',
+          alias: 'websockets',
+          path: 'main/chat',
+          expanded: false,
+          active: false
         }
       ];
 

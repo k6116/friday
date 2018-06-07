@@ -26,7 +26,6 @@ const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'block', component: BlockAppUseComponent },
   { path: 'test', component: TestComponent },
-  { path: 'chat', component: ChatComponent },
   { path: 'perf', component: PerformanceComponent },
   { path: 'login', component: LoginComponent },
   {
@@ -43,6 +42,7 @@ const routes: Routes = [
       { path: 'reports/top-projects', component: TopProjectsReportsComponent, canActivate: [AuthGuardService] },
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent, canActivate: [AuthGuardService] },
       { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
+      { path: 'chat', component: ChatComponent, canActivate: [AuthGuardService] },
     ]
   },
   { path: '**', redirectTo: '/login' }
