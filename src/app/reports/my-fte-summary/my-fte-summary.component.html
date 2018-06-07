@@ -21,14 +21,31 @@
     Chart is loading...&nbsp;&nbsp;&nbsp;<div class="loading-spinner"></div>
   </div>
 
-  <!-- block for charts -->
+  <!-- block for chart -->
   <div class="row row-custom" [hidden]="chartIsLoading">
+    <!-- highcharts div -->
     <div class="col-sm-6">
         <div id="pie"></div>
     </div>
-    <div class="col-sm-6">
-      <div id="pareto"></div>
-    </div>
-  </div>
 
+    <!-- subordinate/peer roster if user clicks a project -->
+    <div *ngIf="displaySummaryTable" class="col-sm-6">
+      <h3>My FTEs on {{selectedProject.name}}:</h3>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <td>Month</td>
+            <td>FTE</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of selectedProject.entries">
+            <td>{{entry.date | date: 'MMM-yyyy'}}</td>
+            <td>{{entry.fte}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>  <!-- end row -->
 </div>

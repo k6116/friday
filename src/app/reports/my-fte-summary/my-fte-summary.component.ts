@@ -9,7 +9,6 @@ import * as Highcharts from 'highcharts';
 declare var require: any;
 declare const $: any;
 const moment = require('moment');
-require('highcharts/modules/pareto.js')(Highcharts);
 
 
 // need to look into this.  requiring specific highcharts modules in this fashion can
@@ -27,10 +26,11 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   summarySubscription: Subscription;
   chartIsLoading = true;
   pieChart: any;
-  paretoChart: any;
   fteSummaryData: any;
   pieChartOptions: any;
-  paretoChartOptions: any;
+
+  selectedProject: any;
+  displaySummaryTable: boolean;
   timePeriods = [
     {period: 'current-quarter', text: 'Current Quarter'},
     {period: 'current-fy', text: 'Current Fiscal Year'},
@@ -43,6 +43,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.displaySummaryTable = false;
     // get logged in user's info
     this.authService.getLoggedInUser((user, err) => {
       if (err) {
@@ -61,9 +62,6 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
     if (this.pieChart) {
       this.pieChart.destroy();
     }
-    if (this.paretoChart) {
-      this.paretoChart.destroy();
-    }
   }
 
   getFteSummaryData(period: string) {
@@ -75,16 +73,18 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
         this.fteSummaryData = res;  // get summary data from db
 
         // convert FTE values into percentages
-        let totalFtes = 0;
+        let periodTotal = 0;
         this.fteSummaryData.forEach( project => {
-          totalFtes += +project.FTE;
+          project.entries.forEach( entry => {
+            project.fteTotal += entry.fte;
+            periodTotal += entry.fte;
+          });
         });
         this.fteSummaryData.forEach( project => {
-          project.y = project.FTE / totalFtes;
+          project.y = project.fteTotal / periodTotal;
         });
         console.log(this.fteSummaryData);
         this.plotFteSummaryPie(period);
-        this.plotFteSummaryPareto(period);
       },
       err => {
         console.log(err);
@@ -110,11 +110,11 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
           text: `${this.loggedInUser.fullName}'s Historic FTEs by project`
       },
       subtitle: {
-        text: `${timePeriod.text}`
+        text: `Time Period: ${timePeriod.text}`
       },
       tooltip: {
           pointFormat:
-            `FTEs Recorded: <b>{point.FTE}</b><br />
+            `FTEs in Period: <b>{point.fteTotal}</b><br />
             {series.name}: <b>{point.percentage:.1f}%</b>`
       },
       plotOptions: {
@@ -128,9 +128,18 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
           }
       },
       series: [{
-          name: 'Percent of Total',
+          name: 'Percent of Period',
           colorByPoint: true,
-          data: this.fteSummaryData
+          data: this.fteSummaryData,
+          point: {
+            events: {
+              click: function(e) {
+                const p = e.point;
+                this.displaySummaryTable = false;
+                this.showSummaryTable(p.projectID);
+              }.bind(this)
+            }
+          }
       }]
     };
 
@@ -138,64 +147,13 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
     this.chartIsLoading = false;
   }
 
-  plotFteSummaryPareto(period: string) {
-    const timePeriod = this.timePeriods.find( obj => {
-      return obj.period === period;
-    });
-
-    const names = [];
-    const values = [];
+  showSummaryTable(projectID: number) {
     this.fteSummaryData.forEach( project => {
-      names.push(project.name);
-      values.push(project.FTE);
+      // find the project that was clicked
+      if (project.projectID === projectID) {
+        this.selectedProject = project;
+      }
     });
-
-    this.paretoChartOptions = {
-      credits: {
-        text: 'jarvis.is.keysight.com',
-        href: 'https://jarvis.is.keysight.com'
-      },
-      chart: {
-        renderTo: 'pareto',
-        type: 'column'
-      },
-      title: {
-        text: `${this.loggedInUser.fullName}'s Historic FTE Pareto`
-      },
-      subtitle: {
-        text: `${timePeriod.text}`
-      },
-      xAxis: {
-        categories: names
-      },
-      yAxis: [{
-        title: {text: 'FTEs'}
-      },
-      {
-        title: {text: ''},
-        minPadding: 0,
-        maxPadding: 0,
-        max: 100,
-        min: 0,
-        opposite: true,
-        labels: {format: '{value}%'}
-      }],
-      series: [{
-        type: 'pareto',
-        name: 'Pareto',
-        yAxis: 1,
-        zIndex: 10,
-        baseSeries: 1
-      },
-      {
-        name: 'FTEs Recorded',
-        type: 'column',
-        colorByPoint: true,
-        zIndex: 2,
-        data: values
-      }]
-    };
-    this.paretoChart = Highcharts.chart('pareto', this.paretoChartOptions);
+    this.displaySummaryTable = true;
   }
-
 }

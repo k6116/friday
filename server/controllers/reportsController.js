@@ -111,7 +111,11 @@ function getMyFteSummary(req, res) {
   const sql = `
     SELECT
       P.ProjectName AS name,
-      SUM(PE.FTE) AS FTE
+      P.projectID,
+      0 AS fteTotal, -- for putting project FTE total
+      0 AS y,        -- for putting project percent of period FTE total
+      PE.FiscalDate AS 'entries:date',
+      PE.FTE AS 'entries:fte'
     FROM
       resources.ProjectEmployees PE
       LEFT JOIN projects.Projects P ON PE.ProjectID = P.ProjectID
@@ -119,16 +123,16 @@ function getMyFteSummary(req, res) {
       PE.EmployeeID = '${employeeID}'
       AND
       PE.FiscalDate BETWEEN '${datePeriod[0]}' AND '${datePeriod[1]}'
-    GROUP BY
-      P.ProjectName
     ORDER BY
-      FTE DESC
+      name,
+      [entries:date]
     `
-
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(data => {
-      console.log("returning MyFTESummary");
-      res.json(data);
+      const myFteTree = new Treeize();
+      myFteTree.grow(data);
+      const myFtes = myFteTree.getData();
+      res.json(myFtes);
     })
     .catch(error => {
       res.status(400).json({
