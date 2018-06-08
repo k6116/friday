@@ -1,10 +1,17 @@
   .card-header-custom {
     cursor: pointer;
     font-weight: normal;
+    display: flex;
+    line-height: 3rem;
   }
 
-  .card-header-custom tr:hover {
+  .card-header-custom:hover {
     background-color:rgb(72, 91, 101, 0.1)
+  }
+
+  .active div {
+    background-color:#485b65;
+    color: white;
   }
 
   .test-buttons {
@@ -22,15 +29,6 @@
     height: 35px;
   }
 
-  .divider {
-    color: black;
-  }
-
-  .table tr.active td {
-    background-color:#485b65 !important;
-    color: white;
-  }
-
   .main-card-body {
     background-color:#485b65 !important;
   }
@@ -39,3 +37,44 @@
     background: white;
   }
 
+  .first-half {
+    float: left;
+    width: 50%;
+  }
+  .second-half {
+    float: right;
+    width: 50%;
+  }
+  
+  .header-project-table {
+    padding-top: 10px;
+    margin-left: -21px;
+    margin-right: -20px;
+  }
+  
+  /* .row-project-table { */
+    /* position: relative; */
+    /* border-top-style: solid; */
+    /* border-left-style: solid; */
+    /* border-right-style: solid; */
+    /* border-bottom-style: solid; */
+    /* border-width: 1px; */
+    /* border-color: rgb(0, 0, 0, 0.19); */
+    /* padding-top: 5px; */
+    /* padding-bottom: 5px; */
+    /* margin-left: 0px; */
+    /* margin-right: 0px; */
+  /* } */
+  
+  /* .hoverDiv {background: #fff;} */
+  /* .row-project-hover:hover {
+    cursor: pointer;
+    background: #fff;
+  } */
+  
+  /* highlight active row*/
+  /* .highlight-active {
+    background-color:#ffffff !important; */
+    /* color: white; */
+  /* } */
+  

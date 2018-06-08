@@ -20,35 +20,31 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button *ngIf="!disableDelete" type="button" class="btn btn-outline-danger" data-dismiss="modal" [disabled]="disableDelete" (click)="onDeleteProjectClick()">Delete</button>
+          <button *ngIf="!disableDelete" type="button" class="btn btn-outline-danger" data-dismiss="modal" [disabled]="disableDelete" (click)="onDeleteProjectClick()" (deleteSuccess)="onDeleteSuccess()">Delete</button>
           <button *ngIf="disableDelete" type="button" class="btn btn-outline-secondary" (click)="onDetailsClick()">Details</button>
           <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
         </div>
       </div>
     </div>
-</div>
+  </div>
   <!--  -->
 
   <!-- Deny Request Modal -->
-<div class="modal" tabindex="-1" role="dialog" id="requestDenyModal">
+  <div class="modal" tabindex="-1" role="dialog" id="requestDenyModal">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
+      <div class="modal-content" style="padding: 30px; width:150%">
 
-        <div class="modal-header">
-          <h5>Reason for deny:</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-
-        <div class="modal-body">
-          <input>
-          <button type="button" class="btn btn-outline-danger" data-dismiss="modal" (click)="requestResponse(request, 'Denied')">Send</button>
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Add a comment" aria-label="Recipient's username" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="requestResponse(request, 'Denied')"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;Send</button>&nbsp;
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+          </div>
         </div>
         
       </div>
     </div>
-</div>
+  </div>
   <!--  -->
 
 <div class="container-fluid">
@@ -58,167 +54,175 @@
       <h1 class="page-header-text">My Projects</h1>
     </div>
   </div>
-  <hr>
   <!--  -->
 
   <!-- Request Alerts -->
-  <table class="table" width="50%">
+  <div class="card" style="display: inline-block; margin-bottom: 1rem;" *ngIf="requestResponseFlag">
+      <div class="card-header">
+          People are requesting access to your projects:
+        </div>
     <ng-container *ngFor="let request of projectAccessRequestsList">
-      <tr>
-        <td class="align-middle" width="25%">
-          {{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}
-        </td>
-        <td>
-          <button type="button" class="btn btn-outline-success btn-sm" (click)="requestResponse(request, 'Approved')">Approve</button>
-          <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#requestDenyModal">Deny</button>
-        </td>
-      </tr>
+      <div class="card-body" *ngIf="request.requestStatus=='Submitted'">
+        <p class="card-text" style="line-height: 32px">{{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}&nbsp;&nbsp;
+          <span class="float-right">
+            <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="requestResponse(request, 'Approved')"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Accept</button>
+            <!-- <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="requestResponse(request, 'Denied')"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Deny</button> -->
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-toggle="modal" data-target="#requestDenyModal"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Deny</button>
+          </span>
+        </p>
+      </div>
     </ng-container>
-  </table>
+  </div>
   <!--  -->
 
   <!-- Create New Project Button -->
-  <button class="btn btn-outline-dark btn-sm" data-toggle="modal" data-target="#projectsCreateModal" (click)="createProject()">
-    <i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Create new project"></i>
+  <button class="btn btn-primary btn-fte-toolbar" style="display: block" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
+    <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
   </button>
+  <!--  -->
 
+  <br>
+  
   <!-- ACCORDION START -->
   <div class="accordion" id="accordionProjectList">
     <div class="card">
-      <div class="col-xs-6">
       <table class="table table-hover">
 
         <!-- PROJECT HEADER START -->    
         <thead>
           <tr>
-            <th width="30%" scope="col">Project Name</th>
-            <th width="10%" scope="col">Project Type</th>
-            <th width="30%"scope="col">Description</th>
-            <th width="30%"scope="col">Notes</th>
+            <th width="30%">Project Name</th>
+            <th width="10%">Project Type</th>
+            <th width="30%">Description</th>
+            <th width="30%">Notes</th>
             <th></th>
             <th></th>
           </tr>
         </thead>
         <!-- PROJECT HEADER END -->
         
-        <tbody *ngFor="let project of projectList; let k = index">
+        <ng-container *ngFor="let project of projectList; let k = index" class="table-container">
 
         <!-- PROJECT LIST START -->
-          <tr class="card-header-custom" [class.active]="k == selectedRow" (click)="onCollapseClick(project, k)">
-            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" >{{ (project['projectName'].length > 70) ? (project['projectName'] | slice:0:67) + '...' : (project['projectName']) }}</td>
-            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" >{{ project['projectType.projectTypeName'] }}</td>
-            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="!project.description">{{ project['description'] }}</td>
-            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="project.description">{{ (project['description'].length > 56) ? (project['description'] | slice:0:56) + '...' : (project['description']) }}</td>
-            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="!project.notes">{{ project['notes'] }}</td>
-            <td [attr.id]="k" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" *ngIf="project.notes">{{ (project['notes'].length > 56) ? (project['notes'] | slice:0:56) + '...' : (project['notes']) }}</td>
-            <!-- Edit and Delete Button - Show only if user is the project creator -->
-            <td>
-              <i *ngIf="loggedInUser.id===project.createdBy" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="editProject(project)"></i>
-            </td>
-            <td>
-              <i *ngIf="loggedInUser.id===project.createdBy" class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal" (click)="onTrashClick(project.id)"></i>
-            </td>
-          </tr>
+          <tbody>
+            <tr class="card-header-custom" [class.active]="k == selectedRow" [attr.id]="k">
+              <td data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick(project, k)">{{ (project['projectName'].length > 70) ? (project['projectName'] | slice:0:67) + '...' : (project['projectName']) }}</td>
+              <td data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick(project, k)">{{ project['projectType.projectTypeName'] }}</td>
+              <td data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick(project, k)" *ngIf="!project.description">{{ project['description'] }}</td>
+              <td data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick(project, k)" *ngIf="project.description">{{ (project['description'].length > 20) ? (project['description'] | slice:0:20) + '...' : (project['description']) }}</td>
+              <td data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick(project, k)" *ngIf="!project.notes">{{ project['notes'] }}</td>
+              <td data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" (click)="onCollapseClick(project, k)" *ngIf="project.notes">{{ (project['notes'].length > 20) ? (project['notes'] | slice:0:20) + '...' : (project['notes']) }}</td>
+              <!-- Edit and Delete Button - Show only if user is the project creator -->
+              <td>
+                <i *ngIf="loggedInUser.id===project.createdBy" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="selectProject(project)"></i>
+              </td>
+              <td>
+                <i *ngIf="loggedInUser.id===project.createdBy" class="fa fa-trash-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#deleteModal" (click)="getPrimaryKeyRefs(project.id)"></i>
+              </td>
+            </tr>
+          
         <!-- PROJECT LIST END -->
 
         <!-- COLLAPSABLE CARD-BODY START-->
-          <tr id="collapse{{k}}" class="collapse border-warning" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
-
-            <td class="card-body main-card-body align-middle" colspan="4" rowspan="2">
+        
+          <tr class="table-container" id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
+            <td class="card-body main-card-body align-middle" colspan="6">
               <div class="card-deck">
 
-                <div class="card border mb-3">
+                <div class="card border mb-3 table-container">
                   <div class="card-body">
                     <h5 class="card-title">Basic Info</h5>
                     <table class="table table-sm">
-                        <tbody>
+                        <!-- <tbody> -->
                           <tr *ngFor="let rows of cardNPI">
                             <td>{{ rows.title }}</td>
                             <td>{{ rows.value }}</td>
                           </tr>
-                        </tbody>
+                        <!-- </tbody> -->
                     </table>
                   </div>
                 </div>
 
-                <div class="card border mb-3">
+                <div class="card border mb-3 table-container">
                   <div class="card-body">
                     <h5 class="card-title">Project Team</h5>
                     <table class="table table-sm">
                       <tbody>
-                        <tr>
-                          <td>{{ loggedInUser.fullName }}</td>
-                          <td>Engineer</td>
+                        <!-- <tr>{{ projectRoster?.projectID }}</tr> -->
+                        <tr *ngFor="let teamMember of projectRoster?.teamMembers">
+                          <td>{{ teamMember.name }}</td>
+                          <td>{{ teamMember.jobTitle }}</td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                 </div>
 
-              </div>
-            </td>
-
-            <td class="card-body main-card-body" colspan="2">
-              <div class="card-block">
-
-                <div class="card border mb-3">
-                  <div class="card-body">
-                    <h5 class="card-title">Schedule</h5>
-                    <table>
+              <div class="card border mb-3 table-container">
+                <div class="card-body">
+                  <h5 class="card-title">Schedule</h5>
+                  <table class="table table-sm">
+                    <tbody>
                       <tr>
-                        <th>CON</th>
-                        <th>INV</th>
-                        <th>DEF</th>
-                        <th>HQ</th>
-                        <th>RSR</th>
-                        <th>SHP</th>                        
+                        <td>CON</td>
+                        <td>06/05/2018</td>
                       </tr>
                       <tr>
-                        <td>06/01/2018</td>
-                        <td>06/01/2018</td>
-                        <td>06/01/2018</td>
-                        <td>06/01/2018</td>
-                        <td>06/01/2018</td>
-                        <td>06/01/2018</td>                        
+                        <td>INV</td>
+                        <td>06/05/2018</td>
                       </tr>
-                    </table>
-                  </div>
+                      <tr>
+                        <td>DEF</td>
+                        <td>06/05/2018</td>
+                      </tr>
+                      <tr>
+                        <td>HQ</td>
+                        <td>06/05/2018</td>
+                      </tr>
+                      <tr>
+                        <td>RSR</td>
+                        <td>06/05/2018</td>
+                      </tr>
+                      <tr>
+                        <td>SHP</td>
+                        <td>06/05/2018</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-
-                <div class="card border mb-3">
-                  <div class="card-body">
-                    <h5 class="card-title">Version Control</h5>
-                    <table>
-                      <tr colspan="2">
-                        <td>Created By</td>
-                        <td>Tawanchai Schmitz</td> 
-                        <td>06/01/2018</td>                   
-                      </tr>
-                      <tr>
-                        <td>Last Updated</td>   
-                        <td>Tawanchai Schmitz</td>  
-                        <td>06/01/2018</td>                      
-                      </tr>
-                    </table>
-                  </div>
-                </div>
-
               </div>
-            </td>
 
-            <td class="card-body main-card-body" colspan="2">
-                
+              <!-- <div class="card border mb-3 table-container">
+                <div class="card-body">
+                  <h5 class="card-title">Version Control</h5>
+                  <table>
+                    <tr colspan="2">
+                      <td>Created By</td>
+                      <td>Tawanchai Schmitz</td> 
+                      <td>06/01/2018</td>                   
+                    </tr>
+                    <tr>
+                      <td>Last Updated</td>   
+                      <td>Tawanchai Schmitz</td>  
+                      <td>06/01/2018</td>                      
+                    </tr>
+                  </table>
+                </div>
+              </div> -->
+
+            </div>
             </td>
             
           </tr>
+
+          <tr>
+            
+          </tr>
+        
         <!-- COLLAPSABLE CARD-BODY END -->
-
-        </tbody>
-
+      </tbody>
+        </ng-container>
       </table>
-      </div>
     </div>
   </div>
-  <!--  -->
-
 </div>

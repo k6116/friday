@@ -174,16 +174,12 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   onCollapseClick(project: any, k) {
-    console.log('projectID: ', project.id);
+    // k is index of projectList; selected row gets highlighted
     if ( this.selectedRow === k) {
-      // Card-Header inactive before card-body closes. TO-DO: Ask others for better way than timeout!
-      // setTimeout(() => {
-      //   this.selectedRow = null;
-      // }, 400);
-
+      this.selectedRow = null;
     } else {
-      // Assign projectList values to cardNPI values
         this.selectedRow = k;
+      // Assign projectList values to cardNPI values
         for (let i = 0; i < this.cardNPI.length; i++) {
           for (let j = 0; j < Object.keys(project).length; j++) {
             if (this.cardNPI[i].alias === Object.keys(project)[j]) {
