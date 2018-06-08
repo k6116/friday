@@ -155,15 +155,17 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         maxPadding: 0,
         max: 100,
         min: 0,
-        opposite: true,
-        labels: {format: '{value}%'}
+        opposite: true
       }],
       series: [{
         type: 'pareto',
         name: 'Pareto',
         yAxis: 1,
         zIndex: 10,
-        baseSeries: 1
+        baseSeries: 1,
+        tooltip: {
+          valueSuffix: '%'
+        }
       },
       {
         name: 'Total Team FTEs',

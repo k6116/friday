@@ -8,7 +8,7 @@
 
   <!-- block for time period drop-down selector -->
   <div class="row row-custom">
-    <div class="col-sm-2 col-custom">
+    <div class="col-sm-3 col-custom">
       <label>Time Period:</label>
       <select name="time-period-selector" class="form-control" (change)="getTeamSummaryData($event.target.value)">
         <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
