@@ -27,9 +27,6 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   chartIsLoading = true;
   fteSummaryData: any;
 
-  pieChart: any;
-  pieChartOptions: any;
-
   timeSeriesChart: any;
   timeSeriesOptions: any;
 
@@ -60,9 +57,6 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
     if (this.summarySubscription) {
       this.summarySubscription.unsubscribe();
     }
-    if (this.pieChart) {
-      this.pieChart.destroy();
-    }
     if (this.timeSeriesChart) {
       this.timeSeriesChart.destroy();
     }
@@ -86,8 +80,6 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
         });
 
         this.fteSummaryData.forEach( project => {
-          // convert project totals into percentages for pie chart
-          project.y = project.fteTotal / periodTotal;
           // parse FTE data from nested json object into timestamp:fte array pairs for Highcharts
           const singleProjectData = [];
           project.entries.forEach( entry => {
@@ -96,7 +88,6 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
           project.data = singleProjectData;
         });
         this.plotTimeSeries(period);
-        this.plotFteSummaryPie(period);
       },
       err => {
         console.log(err);
@@ -112,7 +103,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
     this.timeSeriesOptions = {
       chart: {
         type: 'spline',
-        height: 370
+        height: 500
       },
       title: {
         text: `${this.loggedInUser.fullName}'s Historic FTEs by project`
@@ -136,48 +127,6 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
     };
     this.timeSeriesChart = Highcharts.chart('timeSeries', this.timeSeriesOptions);
     this.chartIsLoading = false;
-  }
-
-  plotFteSummaryPie(period: string) {
-    const timePeriod = this.timePeriods.find( obj => {
-      return obj.period === period;
-    });
-
-    this.pieChartOptions = {
-      credits: {
-        text: 'jarvis.is.keysight.com',
-        href: 'https://jarvis.is.keysight.com'
-      },
-      chart: {
-        type: 'pie',
-        height: 300
-      },
-      title: {
-        text: `${this.loggedInUser.fullName}'s Project Allocation Percentages`
-      },
-      subtitle: {
-        text: `Time Period: ${timePeriod.text}`
-      },
-      tooltip: {
-        pointFormat:
-          `FTEs in Period: <b>{point.fteTotal}</b><br />
-          {series.name}: <b>{point.percentage:.1f}%</b>`
-      },
-      plotOptions: {
-        pie: {
-          dataLabels: {
-            distance: -40
-          }
-        }
-      },
-      series: [{
-        name: 'Percent of Period',
-        colorByPoint: true,
-        data: this.fteSummaryData
-      }]
-    };
-
-    this.pieChart = Highcharts.chart('pie', this.pieChartOptions);
   }
 
 }

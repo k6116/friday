@@ -95,10 +95,16 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       .subscribe( res2 => {
         this.teamSummaryData = res2;
         // total up the number of FTEs contributed to each project
+        let teamwideTotal = 0;
         this.teamSummaryData.forEach( project => {
           project.teamMembers.forEach( employee => {
             project.totalFtes += employee.fte;
+            teamwideTotal += employee.fte;
           });
+        });
+        // convert each project's total FTEs to a percentage of the teamwide FTEs
+        this.teamSummaryData.forEach( project => {
+          project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
         });
         console.log(this.teamSummaryData);
         this.plotFteSummaryPareto(period);
@@ -117,14 +123,16 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     });
 
     const projectNames = [];
-    const columnData = [];
+    const projectFTEs = [];
+    const teamwidePercents = [];
     this.teamSummaryData.forEach( project => {
-      columnData.push({
+      projectFTEs.push({
         name: project.projectName,
         projectID: project.projectID,
         y: project.totalFtes
       });
       projectNames.push(project.projectName);
+      teamwidePercents.push(project.teamwidePercents);
     });
 
 
@@ -133,10 +141,10 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         text: 'jarvis.is.keysight.com',
         href: 'https://jarvis.is.keysight.com'
       },
-      chart: {
-        renderTo: 'pareto',
-        type: 'column'
-      },
+      // chart: {
+      //   renderTo: 'pareto',
+      //   type: 'column'
+      // },
       title: {
         text: this.userIsManager ? `My Team's Projects` : `My Peers' Projects`
       },
@@ -146,43 +154,59 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       xAxis: {
         categories: projectNames
       },
-      yAxis: [{
-        title: {text: 'FTEs'}
-      },
-      {
-        title: {text: ''},
-        minPadding: 0,
-        maxPadding: 0,
-        max: 100,
-        min: 0,
-        opposite: true
-      }],
-      series: [{
-        type: 'pareto',
-        name: 'Pareto',
-        yAxis: 1,
-        zIndex: 10,
-        baseSeries: 1,
-        tooltip: {
-          valueSuffix: '%'
+      yAxis: [
+        { // primary y-axis
+          title: {text: 'FTEs'}
+        },
+          { // secondary y-axis
+          title: {text: 'Percent of Team'},
+          labels: {format: '{value}%'},
+          min: 0,
+          max: 100,
+          opposite: true
         }
+      ],
+      tooltip: {
+        shared: true
       },
-      {
-        name: 'Total Team FTEs',
-        type: 'column',
-        colorByPoint: true,
-        zIndex: 2,
-        data: columnData,
-        point: {
-          events: {
-            click: function(e) {
-              const p = e.point;
-              this.displaySelectedProjectRoster = false;
-              this.showSubordinateTeamRoster(p.projectID);
-            }.bind(this)
+      series: [
+        {
+          name: 'Total Team FTEs',
+          type: 'column',
+          data: projectFTEs,
+          tooltip: {
+            pointFormat: `{series.name}: <b>{point.y:.1f}</b><br />`
+          },
+          point: {
+            events: {
+              click: function(e) {  // function if user clicks a point to display team members on selected project
+                const p = e.point;
+                this.displaySelectedProjectRoster = false;
+                this.showSubordinateTeamRoster(p.projectID);
+              }.bind(this)
+            }
+          }
+        },
+        {
+          name: 'Percent of Team',
+          type: 'spline',
+          zIndex: 2,
+          yAxis: 1,  // use secondary y-axis for the spline plot
+          data: teamwidePercents,
+          tooltip: {
+            pointFormat: `{series.name}: <b>{point.y:.1f}%</b>`
+          },
+          point: {
+            events: {
+              click: function(e) {  // function if user clicks a point to display team members on selected project
+                const p = e.point;
+                this.displaySelectedProjectRoster = false;
+                this.showSubordinateTeamRoster(p.projectID);
+              }.bind(this)
+            }
           }
         }
-      }]
+      ]
     };
     this.paretoChart = Highcharts.chart('pareto', this.paretoChartOptions);
     this.chartIsLoading = false;
