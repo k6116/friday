@@ -1,24 +1,48 @@
 
 div.login-cont {
-  width: 400px;
-  height: 350px;
-  border: 1px solid rgb(177, 177, 177);
+  width: 420px;
+  height: 450px;
   border-radius: 5px;
-  margin: auto;
+  margin: 0 auto;
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
+  top: 100px;
   bottom: 0;
+  background-color: white;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+}
+
+label.login-form-label {
+  font-weight: 500;
 }
 
 div.login-cont-inner {
   margin-top: 30px;
 }
 
+.login-logo-cont {
+  margin: 30px 60px;
+}
+
+img.login-logo-img {
+  width: 140px;
+}
+
 div.form-group-login {
+  position: relative;
   width: 300px;
   margin: 20px auto;
+}
+
+input.form-control.login-input {
+  padding-left: 35px;
+}
+
+i.login-form-icon {
+  position: absolute;
+  left: 10px;
+  top: 40px;
 }
 
 div.form-group-login.form-group-login-button {
@@ -32,6 +56,8 @@ button.btn-login {
 .login-cont-inner-message {
   width: 300px;
   margin: 30px auto;
+  /* background-color: #f7efef;
+  padding: 8px 10px; */
 }
 
 i.login-message-icon {

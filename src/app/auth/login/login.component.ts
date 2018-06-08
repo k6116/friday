@@ -15,7 +15,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css', '../../_shared/styles/common.css']
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     const t0 = performance.now();
 
     // show the spinner
-    this.showProgressSpinner = true;
+    // this.showProgressSpinner = true;
 
     // call the api data service to authenticate the user credentials
     this.apiDataService.authenticate(user)
@@ -129,7 +129,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.getNestedOrgData('ethan_hunt@keysight.com');
 
           // hide the spinner
-          this.showProgressSpinner = false;
+          // this.showProgressSpinner = false;
 
           // route to the main page
           this.router.navigateByUrl('/main');
@@ -148,7 +148,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           console.error(err);
 
           // hide the spinner
-          this.showProgressSpinner = false;
+          // this.showProgressSpinner = false;
 
           // display the appropriate message depending on the type of error (timeout, invalid credentials, etc.)
           this.handleErrorMessage(err);
@@ -211,7 +211,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
     // otherwise, this should be a failed login (invalid credentials)
     } else {
-      this.displayMessage('Invalid user name or password', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+      this.displayMessage('Invalid user name or password.  Note: Use your windows credentials to login.',
+        'fa-exclamation-triangle', 'rgb(139, 0, 0)');
     }
   }
 

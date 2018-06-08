@@ -24,6 +24,19 @@ input.form-control.chat-message {
 
 button.btn.btn-primary.chat-send-button {
     margin-left: 20px;
+    color: #fff;
+    background-color: rgb(108, 117, 125);
+    border-color: rgb(108, 117, 125);
+    /* width: 90px; */
+    height: 35px;
+}
+  
+button.btn.btn-primary.chat-send-button:hover {
+    background-color: rgb(138, 147, 155);
+}
+
+i.btn-icon {
+    margin-right: 5px;
 }
 
 div.chat-messages-cont {

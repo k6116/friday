@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { WebsocketService } from '../_shared/services/websocket.service';
 import { Subscription } from 'rxjs/Subscription';
 import { ApiDataService } from '../_shared/services/api-data.service';
+import { AuthService } from '../auth/auth.service';
 import * as io from 'socket.io-client';
 import * as faker from 'faker';
 import * as moment from 'moment';
@@ -33,7 +34,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   constructor (
     private websocketService: WebsocketService,
-    private apiDataService: ApiDataService
+    private apiDataService: ApiDataService,
+    private authService: AuthService
     ) {
 
   }
@@ -42,6 +44,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     // create and store a fake user name using the faker library
     this.userName = faker.name.firstName().toLowerCase() + faker.random.number().toString().substring(0, 2);
+    this.userName = this.authService.loggedInUser.userName + faker.random.number().toString().substring(0, 2);
 
     // open a client socket
     // this.socket = io();

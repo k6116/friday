@@ -155,118 +155,138 @@ Generated using nucleoapp.com
 -------------------------*/
 
 .nc-analytics-88::before {
+  content: "\ea04";
+}
+
+.nc-bars-rotate::before {
   content: "\ea01";
 }
 
 .nc-board-29::before {
-  content: "\ea02";
-}
-
-.nc-calendar-add::before {
-  content: "\ea04";
-}
-
-.nc-calendar-check-59::before {
   content: "\ea03";
 }
 
-.nc-calendar-grid-61::before {
+.nc-calendar-add::before {
+  content: "\ea02";
+}
+
+.nc-calendar-check-59::before {
   content: "\ea05";
 }
 
-.nc-chart-3::before {
+.nc-calendar-grid-61::before {
   content: "\ea08";
 }
 
-.nc-chart-bar-33::before {
+.nc-chart-3::before {
   content: "\ea06";
 }
 
-.nc-chat-46::before {
+.nc-chart-bar-33::before {
   content: "\ea07";
 }
 
-.nc-chat-round-content::before {
+.nc-chat-46::before {
   content: "\ea09";
 }
 
-.nc-circle-09::before {
+.nc-chat-round-content::before {
   content: "\ea0a";
 }
 
-.nc-circle-10::before {
+.nc-circle-09::before {
   content: "\ea0b";
 }
 
-.nc-circle-remove::before {
+.nc-circle-10::before {
   content: "\ea0c";
 }
 
-.nc-dashboard-29::before {
+.nc-circle-remove::before {
   content: "\ea0d";
 }
 
-.nc-dashboard-30::before {
+.nc-dashboard-29::before {
   content: "\ea0e";
 }
 
-.nc-dashboard-half::before {
+.nc-dashboard-30::before {
   content: "\ea0f";
 }
 
-.nc-event-create::before {
+.nc-dashboard-half::before {
   content: "\ea10";
 }
 
-.nc-eye-17::before {
+.nc-dots-06::before {
   content: "\ea11";
 }
 
-.nc-gantt::before {
+.nc-dots-07::before {
   content: "\ea12";
 }
 
-.nc-hanger-clothes::before {
+.nc-event-create::before {
   content: "\ea13";
 }
 
-.nc-metrics::before {
+.nc-eye-17::before {
   content: "\ea14";
 }
 
-.nc-opening-times::before {
+.nc-gantt::before {
   content: "\ea15";
 }
 
-.nc-pencil::before {
+.nc-hanger-clothes::before {
   content: "\ea16";
 }
 
-.nc-recipe-book-46::before {
+.nc-lock::before {
   content: "\ea17";
 }
 
-.nc-recipe-book-47::before {
+.nc-metrics::before {
   content: "\ea18";
 }
 
-.nc-recipe::before {
-  content: "\ea19";
-}
-
-.nc-rim::before {
+.nc-opening-times::before {
   content: "\ea1a";
 }
 
-.nc-settings-gear-63::before {
+.nc-pencil::before {
+  content: "\ea19";
+}
+
+.nc-recipe-book-46::before {
   content: "\ea1b";
 }
 
-.nc-socket::before {
+.nc-recipe-book-47::before {
+  content: "\ea1c";
+}
+
+.nc-recipe::before {
   content: "\ea1d";
 }
 
+.nc-rim::before {
+  content: "\ea1e";
+}
+
+.nc-settings-gear-63::before {
+  content: "\ea1f";
+}
+
+.nc-single-05::before {
+  content: "\ea20";
+}
+
+.nc-socket::before {
+  content: "\ea21";
+}
+
 .nc-wash::before {
-  content: "\ea1c";
+  content: "\ea22";
 }
 

@@ -9,24 +9,30 @@
 
     <div class="login-cont-inner">
 
+      <div class="login-logo-cont">
+        <img class="login-logo-img" src="../assets/jarvislogo_login.png">
+      </div>
+
       <div class="form-group form-group-login">
 
-        <label>User Name</label>
-        <input #userNameVC [(ngModel)]="userName" type="text" class="form-control login-user-name" (keyup.enter)="onLoginKeyEnter()" appAutofocus>
+        <label class="login-form-label">User Name</label>
+        <input #userNameVC [(ngModel)]="userName" type="text" class="form-control login-input login-user-name" (keyup.enter)="onLoginKeyEnter()" appAutofocus>
+        <i class="login-form-icon nc-icon nc-single-05"></i>
         
       </div>
 
       <div class="form-group form-group-login">
 
-        <label>Password</label>
-        <input #passwordVC [(ngModel)]="password" type="password" class="form-control password" (keyup.enter)="onLoginKeyEnter()">
+        <label class="login-form-label">Password</label>
+        <input #passwordVC [(ngModel)]="password" type="password" class="form-control login-input login-password" (keyup.enter)="onLoginKeyEnter()">
+        <i class="login-form-icon nc-icon nc-lock"></i>
         
       </div>
 
       <div class="form-group form-group-login form-group-login-button">
 
         <button type="button" class="btn btn-primary btn-login" [attr.data-clicktrack]="'page: Login, clickedOn: Login Button, text: ' + userName" (click)="onLoginClick()">Login</button>
-        
+ 
       </div>
 
     </div>
