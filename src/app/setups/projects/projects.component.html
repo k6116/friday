@@ -32,15 +32,19 @@
   <!-- Deny Request Modal -->
   <div class="modal" tabindex="-1" role="dialog" id="requestDenyModal">
     <div class="modal-dialog" role="document">
-      <div class="modal-content" style="padding: 30px; width:150%">
-
+      <div class="modal-content" style="width:150%">
+        <div class="modal-header" style="border-bottom: none; height: 2rem;">
+          <h5 class="title">Please add a comment</h5>
+        </div>
+        <div class="modal-body">
         <div class="input-group">
           <input type="text" class="form-control" placeholder="Add a comment" aria-label="Recipient's username" aria-describedby="basic-addon2">
           <div class="input-group-append">
-            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="requestResponse(request, 'Denied')"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;Send</button>&nbsp;
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="requestResponse(request, 'Denied')"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
             <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
           </div>
         </div>
+      </div>
         
       </div>
     </div>
@@ -103,10 +107,10 @@
         <div class="col-1">
           <div class="row">
             <div class="col-6">
-              <div><h6>1</h6></div>
+              <div><h6></h6></div>
             </div>
             <div class="col-6">
-              <div><h6>2</h6></div>
+              <div><h6></h6></div>
             </div>
           </div>
         </div>
@@ -179,9 +183,9 @@
                         <h5 class="card-title">Project Team</h5>
                         <table class="table table-sm">
                           <tbody>
-                            <tr>
-                              <td>{{ loggedInUser.fullName }}</td>
-                              <td>Engineer</td>
+                            <tr *ngFor="let teamMember of projectRoster?.teamMembers">
+                              <td>{{ teamMember.name }}</td>
+                              <td>{{ teamMember.jobTitle }}</td>
                             </tr>
                           </tbody>
                         </table>
@@ -281,11 +285,8 @@
                   <!-- </div> -->
                 <!-- </div> -->
                 <!--Second Half End-->
-                
-                <!-- <blockquote class="blockquote mb-0"> -->
                   <footer class="blockquote-footer" style="padding-top: inherit">Last Updated: Tawanchai Schmitz, 06/01/2018</footer>
                   <!-- <footer class="blockquote-footer">Created By: Tawanchai Schmitz, 06/01/2018</footer> -->
-                <!-- </blockquote> -->
 
               </div>
 

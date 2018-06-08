@@ -3,6 +3,9 @@
     font-weight: normal;
     display: flex;
     line-height: 3rem;
+    border-bottom-style: solid !important;
+    border-bottom: #e6e6e6;
+    border-bottom-width: 1px;
   }
 
   .card-header-custom:hover {
