@@ -193,6 +193,7 @@ function updateProject(req, res) {
           projectName: project.projectName,
           projectTypeID: project.projectTypeID,
           description: project.projectDescription,
+          notes: project.notes,
           createdBy: userID,
           createdAt: today,
           updatedBy: userID,

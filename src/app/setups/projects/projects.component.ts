@@ -13,30 +13,25 @@ import { User } from '../../_shared/models/user.model';
 })
 export class ProjectsSetupsComponent implements OnInit {
 
-  projectName: string;
-  projectType: number;
-  projectDescription: string;
   projectList: any;
   projectData: any;
   projectAccessRequestsList: any;
   loggedInUser: User;
   showProjectsEditModal: boolean;
   showProjectsCreateModal: boolean;
-  display: boolean;
   cardNPI: any;
   selectedRow: any;
   projectRoster: any;
   disableDelete: boolean;
-  pKeyName: string;
-  pKeyValue: number;
   pKeyRefList: any;
   showDetails: boolean;
   projectID: number;
   requestResponseFlag: boolean;
+  request: any;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
-  @Output() deleteSuccess = new EventEmitter<boolean>();
+  // @Output() deleteSuccess = new EventEmitter<boolean>();
 
   constructor(
     private apiDataService: ApiDataService,
@@ -116,43 +111,40 @@ export class ProjectsSetupsComponent implements OnInit {
 
   getUserProjectList() {
     this.apiDataService.getUserProjectList(this.loggedInUser.id)
-      .subscribe(
-        res => {
-          console.log('Project List: ', res);
-          this.projectList = res;
-        },
-        err => {
-          console.log(err);
-        }
-      );
+    .subscribe(
+      res => {
+        console.log('Project List: ', res);
+        this.projectList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
   // List of all requests that have been made to join a project.
   //  Gets called onInit and requestResponse()
   getProjectAccessRequestsList() {
     this.apiDataService.getProjectAccessRequestsList(this.loggedInUser.id)
-      .subscribe(
-        res => {
-          // console.log(res);
-          this.projectAccessRequestsList = res;
-          console.log('ProjectAccessRequest: ', this.projectAccessRequestsList);
-          for (let i = 0; i < this.projectAccessRequestsList.length; i++) {
-            console.log('You are in for');
-            if ( this.projectAccessRequestsList[i].requestStatus === 'Submitted') {
-              this.requestResponseFlag = true;
-              console.log('You are in if');
-            }
+    .subscribe(
+      res => {
+        // console.log(res);
+        this.projectAccessRequestsList = res;
+        console.log('ProjectAccessRequest: ', this.projectAccessRequestsList);
+        for (let i = 0; i < this.projectAccessRequestsList.length; i++) {
+          if ( this.projectAccessRequestsList[i].requestStatus === 'Submitted') {
+            this.requestResponseFlag = true;
           }
-        },
-        err => {
-          console.log(err);
         }
-      );
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
   createProject() {
     this.showProjectsCreateModal = true;
-
     setTimeout(() => {
       this.projectsCreateModalComponent.resetForm();
     }, 0);
@@ -179,7 +171,7 @@ export class ProjectsSetupsComponent implements OnInit {
       this.selectedRow = null;
     } else {
         this.selectedRow = k;
-      // Assign projectList values to cardNPI values
+        // Assign projectList values to cardNPI values
         for (let i = 0; i < this.cardNPI.length; i++) {
           for (let j = 0; j < Object.keys(project).length; j++) {
             if (this.cardNPI[i].alias === Object.keys(project)[j]) {
@@ -193,23 +185,27 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   // Accept or deny a request
-  requestResponse(request: any, reply: string) {
+  requestResponse(request: any, reply: string, replyComment: string) {
     this.requestResponseFlag = false;
-    this.apiDataService.responseProjectAccessRequest(request, reply, this.loggedInUser.id)
-      .subscribe(
-        res => {
-          console.log(res);
-        },
-        err => {
-          console.log(err);
-        }
-      );
+    this.apiDataService.responseProjectAccessRequest(request, reply, replyComment, this.loggedInUser.id)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
     this.getProjectAccessRequestsList();
   }
 
+  onDenyClick(request: any) {
+    // So that request can be used in request-denied modal
+    this.request = request;
+  }
+
   getProjectRoster(projectID: number) {
-    console.log('getting project roster');
-    console.log('ProjectID is: ', projectID);
     this.apiDataService.getProjectRoster(projectID)
     .subscribe(
       res => {
@@ -228,9 +224,9 @@ export class ProjectsSetupsComponent implements OnInit {
   // onDeleteButtonClick: check if project can be deleted.
   // Project can only be delted if user is the creator AND if they are not used in other tables
   getPrimaryKeyRefs(projectID: number) {
-    this.pKeyName = 'ProjectID';
+    const pKeyName = 'ProjectID';
     this.projectID = projectID;
-    this.apiDataService.getPrimaryKeyRefs(this.pKeyName, this.projectID, this.loggedInUser.id)
+    this.apiDataService.getPrimaryKeyRefs(pKeyName, this.projectID, this.loggedInUser.id)
       .subscribe(
         res => {
           // console.log(res);
