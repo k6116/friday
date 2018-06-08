@@ -1,23 +1,29 @@
 
 <div class="container-fluid">
-    <div class="row websockets-row">
+
+    <div class="row row-custom page-header-row">
       <div class="col-xs-12">
-        <h2 class="page-header-text chat-app-title">
+        <div class="chat-app-title">
           WebSockets and Socket.io Examples
-        </h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="row row-custom websockets-row">
+      <div class="col-xs-12">
         <form class="form-inline">
           <input class="form-control chat-message" [(ngModel)]="inputText" type="text" name="first" (keyup.enter)="onSendMessageClick()" appAutofocus>
           <button class="btn btn-primary chat-send-button" type="button" (click)="onSendMessageClick()">Send Message</button>
         </form>
       </div>
     </div>
-    <div class="row websockets-row">
+    <div class="row row-custom websockets-row">
       <div class="col-xs-12 notifications-col">
         <div class="header-text-cont">Notifications</div>
         <div class="content-cont notifications">{{ userMessage }}</div>
       </div>
     </div>
-    <div class="row websockets-row">
+    <div class="row row-custom websockets-row">
       <div class="col-xs-6 chats-col">
         <div class="header-text-cont">Chat</div>
         <div *ngFor="let message of messages" class="content-cont chats">
