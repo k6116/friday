@@ -58,7 +58,7 @@ router.post('/updateProfile/:userID', controllers.profile.update);
 // REPORTS PROJECT CONTROLLER
 router.get('/reports/subordinateProjectRoster/:managerEmailAddress/:period', controllers.reports.getSubordinateProjectRoster);
 router.get('/reports/aggregatedFteData', controllers.reports.getAggregatedFteData);
-router.get('/reports/getMyFteSummary/:employeeID/:period', controllers.reports.getMyFteSummary);
+router.get('/reports/myFteSummary/:employeeID/:period', controllers.reports.getMyFteSummary);
 router.get('/getProjectFTEHistory/:projectID', controllers.reports.getProjectFTEHistory);
 router.get('/getTopFTEProjectList/', controllers.reports.getTopFTEProjectList);
 router.get('/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.reports.getProjectEmployeeFTEList);

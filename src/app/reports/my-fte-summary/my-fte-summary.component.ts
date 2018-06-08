@@ -25,12 +25,14 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   loggedInUser: User; // object for logged in user's info
   summarySubscription: Subscription;
   chartIsLoading = true;
-  pieChart: any;
   fteSummaryData: any;
+
+  pieChart: any;
   pieChartOptions: any;
 
-  selectedProject: any;
-  displaySummaryTable: boolean;
+  timeSeriesChart: any;
+  timeSeriesOptions: any;
+
   timePeriods = [
     {period: 'current-quarter', text: 'Current Quarter'},
     {period: 'current-fy', text: 'Current Fiscal Year'},
@@ -43,7 +45,6 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.displaySummaryTable = false;
     // get logged in user's info
     this.authService.getLoggedInUser((user, err) => {
       if (err) {
@@ -62,6 +63,9 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
     if (this.pieChart) {
       this.pieChart.destroy();
     }
+    if (this.timeSeriesChart) {
+      this.timeSeriesChart.destroy();
+    }
   }
 
   getFteSummaryData(period: string) {
@@ -72,7 +76,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
       res => {
         this.fteSummaryData = res;  // get summary data from db
 
-        // convert FTE values into percentages
+        // total up the individual monthly FTEs into a project total
         let periodTotal = 0;
         this.fteSummaryData.forEach( project => {
           project.entries.forEach( entry => {
@@ -80,10 +84,18 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
             periodTotal += entry.fte;
           });
         });
+
         this.fteSummaryData.forEach( project => {
+          // convert project totals into percentages for pie chart
           project.y = project.fteTotal / periodTotal;
+          // parse FTE data from nested json object into timestamp:fte array pairs for Highcharts
+          const singleProjectData = [];
+          project.entries.forEach( entry => {
+            singleProjectData.push([moment(entry.date).valueOf(), entry.fte]);
+          });
+          project.data = singleProjectData;
         });
-        console.log(this.fteSummaryData);
+        this.plotTimeSeries(period);
         this.plotFteSummaryPie(period);
       },
       err => {
@@ -92,6 +104,39 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
     );
   }
 
+  plotTimeSeries(period: string) {
+    const timePeriod = this.timePeriods.find( obj => {
+      return obj.period === period;
+    });
+
+    this.timeSeriesOptions = {
+      chart: {
+        type: 'spline',
+        height: 370
+      },
+      title: {
+        text: `${this.loggedInUser.fullName}'s Historic FTEs by project`
+      },
+      subtitle: {
+        text: `Time Period: ${timePeriod.text}`
+      },
+      xAxis: {
+        type: 'datetime'
+      },
+      yAxis: {
+        title: {
+          text: 'Monthly FTEs Recorded'
+        }
+      },
+      tooltip: {
+        crosshairs: true,
+        shared: true
+      },
+      series: this.fteSummaryData
+    };
+    this.timeSeriesChart = Highcharts.chart('timeSeries', this.timeSeriesOptions);
+    this.chartIsLoading = false;
+  }
 
   plotFteSummaryPie(period: string) {
     const timePeriod = this.timePeriods.find( obj => {
@@ -104,56 +149,35 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
         href: 'https://jarvis.is.keysight.com'
       },
       chart: {
-          type: 'pie'
+        type: 'pie',
+        height: 300
       },
       title: {
-          text: `${this.loggedInUser.fullName}'s Historic FTEs by project`
+        text: `${this.loggedInUser.fullName}'s Project Allocation Percentages`
       },
       subtitle: {
         text: `Time Period: ${timePeriod.text}`
       },
       tooltip: {
-          pointFormat:
-            `FTEs in Period: <b>{point.fteTotal}</b><br />
-            {series.name}: <b>{point.percentage:.1f}%</b>`
+        pointFormat:
+          `FTEs in Period: <b>{point.fteTotal}</b><br />
+          {series.name}: <b>{point.percentage:.1f}%</b>`
       },
       plotOptions: {
-          pie: {
-              allowPointSelect: true,
-              cursor: 'pointer',
-              dataLabels: {
-                  enabled: false
-              },
-              showInLegend: true
+        pie: {
+          dataLabels: {
+            distance: -40
           }
+        }
       },
       series: [{
-          name: 'Percent of Period',
-          colorByPoint: true,
-          data: this.fteSummaryData,
-          point: {
-            events: {
-              click: function(e) {
-                const p = e.point;
-                this.displaySummaryTable = false;
-                this.showSummaryTable(p.projectID);
-              }.bind(this)
-            }
-          }
+        name: 'Percent of Period',
+        colorByPoint: true,
+        data: this.fteSummaryData
       }]
     };
 
     this.pieChart = Highcharts.chart('pie', this.pieChartOptions);
-    this.chartIsLoading = false;
   }
 
-  showSummaryTable(projectID: number) {
-    this.fteSummaryData.forEach( project => {
-      // find the project that was clicked
-      if (project.projectID === projectID) {
-        this.selectedProject = project;
-      }
-    });
-    this.displaySummaryTable = true;
-  }
 }

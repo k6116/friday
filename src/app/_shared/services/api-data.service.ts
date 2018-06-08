@@ -257,7 +257,7 @@ export class ApiDataService {
   }
 
   getMyFteSummary(employeeID: number, period: string) {
-    return this.http.get(`/api/reports/getMyFteSummary/${employeeID}/${period}`)
+    return this.http.get(`/api/reports/myFteSummary/${employeeID}/${period}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
