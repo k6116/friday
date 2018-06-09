@@ -118,11 +118,13 @@ export class AuthService {
             } else {
               // store the data in this service
               console.log('within getInfoFromToken; token is valid');
-              // this.loggedInUser = new User().deserialize(res.jarvisUser);
-              // this.setLoggedIn(true);
+              this.loggedInUser = new User().deserialize(res.jarvisUser);
+              this.setLoggedIn(true);
+              // reset the token
+              this.resetToken();
             }
             // TEMP CODE to log the token status
-            // this.logTokenStatus();
+            this.logTokenStatus();
           },
           err => {
             // parse the error _body into an error object to access the info
@@ -161,7 +163,7 @@ export class AuthService {
     // TEMP CODE: to test the timer is working properly
     // console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
     // console.log(`time since last activity: ${numInactivityMins} (minutes); ${numInactivitySeconds} (seconds)`);
-    // this.logTokenStatus();
+    this.logTokenStatus();
 
     // if the token is expired, log the user out and display a message on the login page
     if (this.tokenIsExpired()) {
@@ -175,7 +177,7 @@ export class AuthService {
       this.apiDataService.resetToken(this.loggedInUser)
         .subscribe(
           res => {
-            // console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
+            console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
             // update the token info in memory
             this.token = res.token;
             // remove and reset the token in local storage
