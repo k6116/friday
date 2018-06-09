@@ -1,4 +1,4 @@
-open ftp://ftpuser:1small%23queequeg*@wcosofw2.cos.is.keysight.com/ -rawsettings ProxyPort=0
+open ftp://ftpuser:1small#queequeg$@wcosofw2.cos.is.keysight.com/ -rawsettings ProxyPort=0
 
 lcd C:\webdev\jarvis-rt
 cd /jarvis-rt
