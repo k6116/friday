@@ -1,7 +1,7 @@
 
 div.login-cont {
   width: 420px;
-  height: 450px;
+  height: 500px;
   border-radius: 5px;
   margin: 0 auto;
   position: absolute;
@@ -22,11 +22,24 @@ div.login-cont-inner {
 }
 
 .login-logo-cont {
-  margin: 30px 60px;
+  margin-left: 60px;
+  height: 50px;
+  display: inline-block;
 }
 
 img.login-logo-img {
-  width: 140px;
+  width: 130px;
+}
+
+div.login-subtitle {
+  display: inline-block;
+  margin-left: 5px;
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #d8bd2c;
+  top: 9px;
+  position: relative;
 }
 
 div.form-group-login {
@@ -43,6 +56,10 @@ i.login-form-icon {
   position: absolute;
   left: 10px;
   top: 40px;
+}
+
+div.login-remember-me-cont {
+  margin: 0 60px;
 }
 
 div.form-group-login.form-group-login-button {
@@ -62,7 +79,12 @@ button.btn-login {
 
 i.login-message-icon {
   margin-right: 15px;
-  font-size: 22px;
+  font-size: 25px;
   position: relative;
   top: 2px;
+}
+
+td.login-notice-message {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  line-height: 19px;
 }

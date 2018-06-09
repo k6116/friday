@@ -15,7 +15,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css', '../../_shared/styles/common.css']
+  styleUrls: ['./login.component.css', '../../_shared/styles/common.css', '../../_shared/styles/toggle-button.css']
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
@@ -35,6 +35,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   iconClass: string;
   iconColor: string;
 
+  // toggle slider state
+  rememberMeState: boolean;
+
   // spinner display
   showProgressSpinner: boolean;
 
@@ -53,6 +56,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
+    // TEMP CODE: to test setting state of remember me toggle
+    this.rememberMeState = true;
 
     // set the focus on the user name input
     this.userNameVC.nativeElement.focus();
@@ -232,6 +238,14 @@ export class LoginComponent implements OnInit, OnDestroy {
         console.error('error getting nested org data');
       }
     );
+  }
+
+  // onToggleChange(event) {
+  //   console.log(event);
+  // }
+
+  onRememberMeChange(event) {
+    console.log(`remember me toggle slider changed to ${event.checked}`);
   }
 
 

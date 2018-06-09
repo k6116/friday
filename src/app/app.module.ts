@@ -10,7 +10,7 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { ClickOutsideModule } from 'ng4-click-outside';
 
 // ANGULAR MATERIAL MODULES
-import { MatButtonModule, MatCheckboxModule, MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
+import { MatSlideToggleModule, MatButtonModule, MatCheckboxModule, MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
 
 // DIRECTIVES
 import { AutofocusDirective } from './_shared/directives/autofocus.directive';
@@ -116,6 +116,7 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
     ReactiveFormsModule,
     HttpModule,
     MatButtonModule,
+    MatSlideToggleModule,
     MatCheckboxModule,
     MatExpansionModule,
     MatProgressSpinnerModule,

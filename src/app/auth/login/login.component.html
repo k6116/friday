@@ -13,10 +13,14 @@
         <img class="login-logo-img" src="../assets/jarvislogo_login.png">
       </div>
 
+      <div class="login-subtitle">
+        Resources
+      </div>
+
       <div class="form-group form-group-login">
 
         <label class="login-form-label">User Name</label>
-        <input #userNameVC [(ngModel)]="userName" type="text" class="form-control login-input login-user-name" (keyup.enter)="onLoginKeyEnter()" appAutofocus>
+        <input #userNameVC [(ngModel)]="userName" type="text" class="form-control login-input login-user-name" (keyup.enter)="onLoginKeyEnter()">
         <i class="login-form-icon nc-icon nc-single-05"></i>
         
       </div>
@@ -29,10 +33,17 @@
         
       </div>
 
+      <div class="login-remember-me-cont">
+        <mat-slide-toggle color="Primary" [checked]="rememberMeState" (change)="onRememberMeChange($event)">Remember Me</mat-slide-toggle>
+        <!-- <button type="button" class="btn btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" (click)="onToggleChange($event)">
+          <div class="handle"></div>
+        </button> -->
+      </div>
+
       <div class="form-group form-group-login form-group-login-button">
 
         <button type="button" class="btn btn-primary btn-login" [attr.data-clicktrack]="'page: Login, clickedOn: Login Button, text: ' + userName" (click)="onLoginClick()">Login</button>
- 
+
       </div>
 
     </div>
@@ -44,7 +55,7 @@
           <td>
             <i *ngIf="showMessage" [class]="'fa fa-lg login-message-icon ' + iconClass" [style.color]="iconColor" aria-hidden="true"></i>
           </td>
-          <td>
+          <td class="login-notice-message">
             {{ loginMessage }}
           </td>
         </tr>
