@@ -1,6 +1,6 @@
 
 div.login-cont {
-  width: 420px;
+  width: 450px;
   height: 500px;
   border-radius: 5px;
   margin: 0 auto;
@@ -22,7 +22,7 @@ div.login-cont-inner {
 }
 
 .login-logo-cont {
-  margin-left: 60px;
+  margin-left: 75px;
   height: 50px;
   display: inline-block;
 }
@@ -59,7 +59,7 @@ i.login-form-icon {
 }
 
 div.login-remember-me-cont {
-  margin: 0 60px;
+  margin: 0 75px;
 }
 
 div.form-group-login.form-group-login-button {

@@ -30,6 +30,7 @@ import { ToolsService } from './_shared/services/tools.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
 import { UserResolverService } from './_shared/services/user-resolver.service';
 import { WebsocketService } from './_shared/services/websocket.service';
+import { CookiesService } from './_shared/services/cookies.service';
 
 // GUARDS
 import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
@@ -133,6 +134,7 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
     ClickTrackingService,
     UserResolverService,
     WebsocketService,
+    CookiesService,
     UnsavedChangesGuard
   ],
   bootstrap: [AppComponent]

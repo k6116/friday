@@ -8,6 +8,7 @@ import { ToolsService } from '../../_shared/services/tools.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { User } from '../../_shared/models/user.model';
 import { WebsocketService } from '../../_shared/services/websocket.service';
+import { CookiesService } from '../../_shared/services/cookies.service';
 
 import * as moment from 'moment';
 
@@ -36,7 +37,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   iconColor: string;
 
   // toggle slider state
-  rememberMeState: boolean;
+  rememberMe: boolean;
 
   // spinner display
   showProgressSpinner: boolean;
@@ -51,17 +52,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private toolsService: ToolsService,
     private clickTrackingService: ClickTrackingService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private cookiesService: CookiesService
   ) {
   }
 
   ngOnInit() {
 
-    // TEMP CODE: to test setting state of remember me toggle
-    this.rememberMeState = true;
-
-    // set the focus on the user name input
-    this.userNameVC.nativeElement.focus();
+    // check the cookies for the jrt_username cookie, if it is there set the username
+    // this means that the user had previously logged in with 'Remember Me' selected
+    this.checkRememberMeCookie();
 
     // check for the autoLogout object; if it exists display the message
     if (this.appDataService.autoLogout$) {
@@ -72,6 +72,26 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+  }
+
+  // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)
+  checkRememberMeCookie() {
+    const userName = this.cookiesService.getCookie('jrt_username');
+    if (userName) {
+      this.userName = userName;
+      this.rememberMe = true;
+    } else {
+    }
+    this.setInputFocus(userName ? true : false);
+  }
+
+  // set focus on either the username or password input depending on whether username is populated from the cookie
+  setInputFocus(hasUserName: boolean) {
+    if (hasUserName) {
+      this.passwordVC.nativeElement.focus();
+    } else {
+      this.userNameVC.nativeElement.focus();
+    }
   }
 
   onLoginKeyEnter() {
@@ -113,6 +133,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           // TEMP CODE: to log the response
           // console.log('authentication was successfull:');
           // console.log(res);
+
+          // set or clear the username cookie depending on whether remember me is selected
+          this.setCookie();
 
           // store data in the auth service related to the logged in user
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
@@ -161,6 +184,15 @@ export class LoginComponent implements OnInit, OnDestroy {
 
         }
       );
+  }
+
+  // set or delete the jrt_username cookie when the user logs in
+  setCookie() {
+    if (this.rememberMe) {
+      this.cookiesService.setCookie('jrt_username', this.userName, 365);
+    } else {
+      this.cookiesService.deleteCookie('jrt_username');
+    }
   }
 
 
@@ -240,12 +272,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     );
   }
 
-  // onToggleChange(event) {
-  //   console.log(event);
-  // }
-
+  // when the slide toggle is changed, update the rememberMe property (boolean)
   onRememberMeChange(event) {
-    console.log(`remember me toggle slider changed to ${event.checked}`);
+    this.rememberMe = event.checked;
   }
 
 
