@@ -6,8 +6,9 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
 const _ = require('lodash');
+const dotevnv = require('dotenv').config()
 
-const tokenSecret = 'rutabega';  // set the secret code word for enconding and decoding the token with jwt
+const tokenSecret = process.env.JWT_SECRET;  // get the secret code word for enconding and decoding the token with jwt
 const expirationTime = 60 * 60 * 0.5  // set the token expiration time to 30 minutes - units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
 
 // TEMP CODE: testing websockets
