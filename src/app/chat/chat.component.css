@@ -35,6 +35,11 @@ button.btn.btn-primary.chat-send-button:hover {
     background-color: rgb(138, 147, 155);
 }
 
+button.btn:focus, button.btn:active {
+    outline: none;
+    box-shadow: none;
+}
+
 i.btn-icon {
     margin-right: 5px;
 }

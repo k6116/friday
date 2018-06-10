@@ -355,7 +355,7 @@ export class AuthService {
         this.appDataService.autoLogout$ = {
           message: 'For security you have been logged out',
           iconClass: 'fa-info-circle',
-          iconColor: 'rgb(239, 108, 0)'
+          iconColor: 'rgb(87, 168, 255)'
         };
       }
 
