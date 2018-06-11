@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 
 import * as Highcharts from 'highcharts';
@@ -12,12 +12,11 @@ require('highcharts/modules/annotations')(Highcharts);
   templateUrl: './top-projects.component.html',
   styleUrls: ['./top-projects.component.css', '../../_shared/styles/common.css']
 })
-export class TopProjectsReportsComponent implements OnInit {
+export class TopProjectsReportsComponent implements OnInit, OnDestroy {
 
   topFTEProjectList: any;
   projectEmployeeData: any;
-  totalMonthlyFTE: any;
-  fiscalDate: any;
+  historicFteData = [];
   selectedProject: any;
   selectedFiscalDate: string;
   // selectedFiscalMonth: any;
@@ -29,6 +28,7 @@ export class TopProjectsReportsComponent implements OnInit {
   isProjectSelected: any;
   // chart infrastructure vars
   chartIsLoading = true;
+  lineChart: any;
 
   constructor(
     private apiDataService: ApiDataService
@@ -56,29 +56,51 @@ export class TopProjectsReportsComponent implements OnInit {
     );
   }
 
+  ngOnDestroy() {
+    if (this.lineChart) {
+      this.lineChart.destroy();
+    }
+  }
+
   onProjectClick(project: any, index: number) {
     this.selectedProject = project;
-    // Retrieve historical FTE data for a given project
-    this.apiDataService.getProjectFTEHistory(this.selectedProject.projectID)
-    .subscribe(
-      res => {
-        // highlight selected row
-        console.log('old value', this.isProjectSelected[index]);
-        this.isProjectSelected[index] = !this.isProjectSelected[index];
-        console.log('new value', this.isProjectSelected[index]);
-        console.log('Project FTE History Data: ', res);
-        // Convert table to array for HighChart data series format
-        // also, convert fiscal date from js datetime to unix (ms) timestamp for proper plotting in highcharts
-        this.fiscalDate = Object.keys(res)
-        .map(i => new Array(moment(res[i].fiscalDate).valueOf(), res[i].totalMonthlyFTE));
 
-        console.log('fiscalDate', this.fiscalDate);
-        this.projectFTEHistoryChart();
-      },
-      err => {
-        console.log(err);
-      }
-    );
+    // if project is being deselected, deselect the row, remove the project data, and re-render the chart
+    if (this.isProjectSelected[index]) {
+      this.isProjectSelected[index] = false;
+      // remove the project data
+      this.historicFteData.forEach( proj => {
+        if (proj.projectIndex === index) {
+          this.historicFteData.splice(this.historicFteData.indexOf(proj), 1);
+        }
+      });
+      this.plotFteHistoryChart();
+    } else {
+      // Retrieve historical FTE data for a given project
+      this.apiDataService.getProjectFTEHistory(this.selectedProject.projectID)
+      .subscribe(
+        res => {
+          // highlight selected row
+          this.isProjectSelected[index] = true;
+          // Convert table to array for HighChart data series format
+          // also, convert fiscal date from js datetime to unix (ms) timestamp for proper plotting in highcharts
+          const fiscalDate = Object.keys(res)
+          .map(i => new Array(moment(res[i].fiscalDate).valueOf(), res[i].totalMonthlyFTE));
+
+          this.historicFteData.push({
+            projectIndex: index,
+            projectName: project.projectName,
+            data: fiscalDate
+          });
+          console.log('fiscalDate', fiscalDate);
+          console.log(this.historicFteData);
+          this.plotFteHistoryChart();
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    }
   }
 
   getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
@@ -96,9 +118,12 @@ export class TopProjectsReportsComponent implements OnInit {
     );
   }
 
-  projectFTEHistoryChart() {
+  plotFteHistoryChart() {
+    if (this.lineChart) {
+      this.lineChart.destroy();
+    }
     this.options = {
-      title: {text: `${this.selectedProject.projectName} FTE History`},
+      title: {text: `Top Projects FTE History`},
       subtitle: { text: 'Time Period: All historic data'},
       xAxis: {
         type: 'datetime'
@@ -111,6 +136,10 @@ export class TopProjectsReportsComponent implements OnInit {
       //   align: 'right',
       //   verticalAlign: 'middle'
       // },
+      tooltip: {
+        crosshairs: true,
+        shared: true
+      },
       plotOptions: {
         series: {
           turboThreshold: 3000,
@@ -125,24 +154,15 @@ export class TopProjectsReportsComponent implements OnInit {
             }
           }
         }
-      },
-      series: [{
-        name: this.selectedProject.projectName,
-        data: this.fiscalDate,
-      }],
-      // annotations: [{
-      //   labels: [{
-      //     point: {
-      //       xAxis: 0,
-      //       yAxis: 0,
-      //       x: 1,
-      //       y: 1
-      //     },
-      //     text: 'Arbois'
-      //   }]
-      // }]
+      }
     };
-    Highcharts.chart('FTEHistory', this.options);
+    this.lineChart = Highcharts.chart('FTEHistory', this.options);
+    this.historicFteData.forEach( project => {
+      this.lineChart.addSeries({
+        name: project.projectName,
+        data: project.data
+      });
+    });
   }
 
 }
