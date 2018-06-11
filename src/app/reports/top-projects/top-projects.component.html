@@ -3,17 +3,7 @@
 
   <div class="row row-custom">
     <div class="col-sm col-custom col-text-header">
-      <h2 class="page-header-text">Top FTE Projects</h2>
-    </div>
-  </div>
-
-  <!-- block for time period drop-down selector -->
-  <div class="row row-custom">
-    <div class="col-sm-3 col-custom">
-      <label>Time Period:</label>
-      <select name="time-period-selector" class="form-control" (change)="getFteSummaryData($event.target.value)">
-        <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
-      </select>
+      <h2 class="page-header-text">Top Keysight Projects</h2>
     </div>
   </div>
 
@@ -35,8 +25,8 @@
             <th width="10%" scope="col">Total FTE</th>
           </tr>
         </thead>
-        <tbody *ngFor="let project of topFTEProjectList">
-          <tr (click)="onProjectClick(project)">
+        <tbody>
+          <tr *ngFor="let project of topFTEProjectList; let i = index" (click)="onProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
             <td>{{ project.projectName }}</td>
             <td>{{ project.projectTypeName }}</td>
             <td>{{ project.priorityName }}</td>

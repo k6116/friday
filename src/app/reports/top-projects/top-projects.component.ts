@@ -26,13 +26,9 @@ export class TopProjectsReportsComponent implements OnInit {
   displayProjectEmployeeList: boolean;
   options: any;
 
+  isProjectSelected: any;
   // chart infrastructure vars
-  chartIsLoading = false;
-  timePeriods = [
-    {period: 'current-quarter', text: 'Current Quarter'},
-    {period: 'current-fy', text: 'Current Fiscal Year'},
-    {period: 'all-time', text: 'All Time'}
-  ];
+  chartIsLoading = true;
 
   constructor(
     private apiDataService: ApiDataService
@@ -50,6 +46,9 @@ export class TopProjectsReportsComponent implements OnInit {
         console.log('Top FTE Project List Data: ', res);
         this.topFTEProjectList = res;
         this.displayTopFTEProjectList = true;
+        this.chartIsLoading = false;
+        // initialize an array row state, whether the project is displayed in the chart or not
+        this.isProjectSelected = new Array(this.topFTEProjectList.length).fill(false);
       },
       err => {
         console.log(err);
@@ -57,12 +56,16 @@ export class TopProjectsReportsComponent implements OnInit {
     );
   }
 
-  onProjectClick(project: any) {
+  onProjectClick(project: any, index: number) {
     this.selectedProject = project;
     // Retrieve historical FTE data for a given project
     this.apiDataService.getProjectFTEHistory(this.selectedProject.projectID)
     .subscribe(
       res => {
+        // highlight selected row
+        console.log('old value', this.isProjectSelected[index]);
+        this.isProjectSelected[index] = !this.isProjectSelected[index];
+        console.log('new value', this.isProjectSelected[index]);
         console.log('Project FTE History Data: ', res);
         // Convert table to array for HighChart data series format
         // also, convert fiscal date from js datetime to unix (ms) timestamp for proper plotting in highcharts
