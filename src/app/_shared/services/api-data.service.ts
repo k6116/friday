@@ -214,10 +214,10 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
-  responseProjectAccessRequest(request: any, reply: string, userID: number) {
+  responseProjectAccessRequest(request: any, reply: string, replyComment: string, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(`/api/responseProjectAccessRequest/${userID}/${reply}`, JSON.stringify(request), options)
+    return this.http.post(`/api/responseProjectAccessRequest/${userID}/${reply}/${replyComment}`, JSON.stringify(request), options)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

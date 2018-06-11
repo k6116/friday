@@ -192,6 +192,7 @@ function updateProjectAccessRequest(req, res) {
   const request = req.body;
   const userID = req.params.userID;
   const reply = req.params.reply;
+  const replyComment = req.params.replyComment;
   const today = new Date();
 
   return sequelize.transaction((t) => {
@@ -202,7 +203,7 @@ function updateProjectAccessRequest(req, res) {
           requestStatus: reply,
           respondedBy: userID,
           respondedAt: today,
-          responseNotes: 'Replied'
+          responseNotes: replyComment,
         },
         {
           where: {id: request.id},
