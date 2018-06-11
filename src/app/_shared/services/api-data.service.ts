@@ -263,19 +263,19 @@ export class ApiDataService {
   }
 
   getProjectFTEHistory(projectID: number) {
-    return this.http.get(`/api/getProjectFTEHistory/${projectID}`)
+    return this.http.get(`/api/reports/getProjectFTEHistory/${projectID}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
 
   getTopFTEProjectList() {
-    return this.http.get(`/api/getTopFTEProjectList/`)
+    return this.http.get(`/api/reports/getTopFTEProjectList/`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
 
   getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
-    return this.http.get(`/api/getProjectEmployeeFTEList/${projectID}/${fiscalDate}`)
+    return this.http.get(`/api/reports/getProjectEmployeeFTEList/${projectID}/${fiscalDate}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

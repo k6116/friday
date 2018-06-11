@@ -141,10 +141,9 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         text: 'jarvis.is.keysight.com',
         href: 'https://jarvis.is.keysight.com'
       },
-      // chart: {
-      //   renderTo: 'pareto',
-      //   type: 'column'
-      // },
+      chart: {
+        height: 500
+      },
       title: {
         text: this.userIsManager ? `My Team's Projects` : `My Peers' Projects`
       },
@@ -195,15 +194,6 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
           data: teamwidePercents,
           tooltip: {
             pointFormat: `{series.name}: <b>{point.y:.1f}%</b>`
-          },
-          point: {
-            events: {
-              click: function(e) {  // function if user clicks a point to display team members on selected project
-                const p = e.point;
-                this.displaySelectedProjectRoster = false;
-                this.showSubordinateTeamRoster(p.projectID);
-              }.bind(this)
-            }
           }
         }
       ]

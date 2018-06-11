@@ -59,9 +59,9 @@ router.post('/updateProfile/:userID', controllers.profile.update);
 router.get('/reports/subordinateProjectRoster/:managerEmailAddress/:period', controllers.reports.getSubordinateProjectRoster);
 router.get('/reports/aggregatedFteData', controllers.reports.getAggregatedFteData);
 router.get('/reports/myFteSummary/:employeeID/:period', controllers.reports.getMyFteSummary);
-router.get('/getProjectFTEHistory/:projectID', controllers.reports.getProjectFTEHistory);
-router.get('/getTopFTEProjectList/', controllers.reports.getTopFTEProjectList);
-router.get('/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.reports.getProjectEmployeeFTEList);
+router.get('/reports/getProjectFTEHistory/:projectID', controllers.reports.getProjectFTEHistory);
+router.get('/reports/getTopFTEProjectList/', controllers.reports.getTopFTEProjectList);
+router.get('/reports/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.reports.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.reports.getQuarterlyEmployeeFTETotals);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
