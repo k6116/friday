@@ -1,14 +1,20 @@
   .card-header-custom {
     cursor: pointer;
     font-weight: normal;
+    display: flex;
+    line-height: 3rem;
+    border-bottom-style: solid !important;
+    border-bottom: #e6e6e6;
+    border-bottom-width: 1px;
   }
 
-  .card-header-custom tr:hover {
+  .card-header-custom:hover {
     background-color:rgb(72, 91, 101, 0.1)
   }
 
-  .test-buttons {
-    margin-top: 50px;
+  .active div {
+    background-color:#485b65;
+    color: white;
   }
 
   .btn-primary {
@@ -17,20 +23,14 @@
     border-color: rgb(108, 117, 125);;
   }
 
-  .divider {
-    color: black;
+  .btn-fte-toolbar {
+    width: 90px;
+    height: 35px;
   }
-
-  .table tr.active td {
-    background-color:#485b65 !important;
-    color: white;
+  
+  .header-project-table {
+    padding-top: 10px;
+    margin-left: -21px;
+    margin-right: -20px;
   }
-
-  .main-card-body {
-    background-color:#485b65 !important;
-  }
-
-  .card-body:hover {
-    background: white;
-  }
-
+  

@@ -1,0 +1,19 @@
+.btn-fte-toolbar {
+    width: 90px;
+    height: 35px;
+  }
+
+  .btn-primary {
+    color: #fff;
+    background-color: rgb(108, 117, 125);;
+    border-color: rgb(108, 117, 125);;
+  }
+
+  /* .centered-modal {
+    display: flex !important;
+  }
+
+  .centered-modal .modal-dialog {
+      margin: auto;
+      width: 30rem;
+  } */
