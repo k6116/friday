@@ -88,3 +88,9 @@ td.login-notice-message {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   line-height: 19px;
 }
+
+svg.login-animated-svg {
+  position: absolute;
+  top: -6px;
+  left: 35px;
+}
