@@ -329,6 +329,30 @@ function getProjectSchedule(req, res) {
     });
 }
 
+function getProjectTypeDisplayFields(req, res) {
+
+  models.ProjectTypeDisplayFields.findAll({
+    attributes: ['projectField'],
+    raw: true,
+    include: [
+      {
+        model: models.ProjectTypes,
+        attributes: ['projectTypeName'],
+      }
+    ]
+  })
+  .then(ProjectTypeDisplayFields => {
+    console.log('WORKED')
+    res.json(ProjectTypeDisplayFields);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+
+  });
+}
 
 module.exports = {
   getAll: getAll,
@@ -340,5 +364,6 @@ module.exports = {
   deleteProject: deleteProject,
   getPrimaryKeyRefs: getPrimaryKeyRefs,
   getProjectTypesList: getProjectTypesList,
-  getProjectSchedule: getProjectSchedule
+  getProjectSchedule: getProjectSchedule,
+  getProjectTypeDisplayFields: getProjectTypeDisplayFields
 }

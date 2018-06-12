@@ -246,6 +246,11 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getProjectTypeDisplayFields() {
+    return this.http.get(`/api/getProjectTypeDisplayFields/`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
 
   // ORG API ROUTES
 

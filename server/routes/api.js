@@ -26,6 +26,7 @@ router.post('/createProject/:userID', controllers.project.insertProject);
 router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/deleteProject/:userID', controllers.project.deleteProject);
 router.get('/getProjectSchedule/:projectName', controllers.project.getProjectSchedule);
+router.get('/getProjectTypeDisplayFields/', controllers.project.getProjectTypeDisplayFields);
 
 // ORG TREE DATA
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);

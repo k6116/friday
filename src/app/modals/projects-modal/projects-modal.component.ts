@@ -48,6 +48,7 @@ declare var $: any;
 })
 export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
+  projects: any;
   outerDivState: string;
   innerDivState: string;
   filterString: string;
@@ -74,7 +75,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   projectAccessDeniedList: any;
   projectData: any;
 
-  @Input() projects: any;
+  // @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
 
@@ -538,6 +539,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         console.log(err);
       }
     );
+  }
+
+  onRequestUpdateSuccess() {
+    // refresh project access list to update the request buttons
+    this.getProjectAccessList();
   }
 
 }

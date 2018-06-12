@@ -9,5 +9,6 @@ module.exports = {
   JobTitleJunction: require('./profile.js').JobTitleJunction,
   Projects: require('./project.js').Projects,
   ProjectTypes: require('./project.js').ProjectTypes,
+  ProjectTypeDisplayFields: require('./project.js').ProjectTypeDisplayFields,
   ProjectAccessRequests: require('./project.js').ProjectAccessRequests
 }

@@ -14,7 +14,7 @@ declare var $: any;
 export class ProjectsAccessModalComponent implements OnInit {
 
   @Input() projectData: any;
-  @Output() requestSuccess = new EventEmitter<boolean>();
+  @Output() requestUpdateSuccess = new EventEmitter<boolean>();
 
   userID: any;
 
@@ -36,7 +36,7 @@ export class ProjectsAccessModalComponent implements OnInit {
       .subscribe(
         res => {
           console.log(res);
-          this.requestSuccess.emit(true);
+          this.requestUpdateSuccess.emit(true);
         },
         err => {
           console.log(err);
@@ -47,7 +47,7 @@ export class ProjectsAccessModalComponent implements OnInit {
       .subscribe(
         res => {
           console.log(res);
-          this.requestSuccess.emit(true);
+          this.requestUpdateSuccess.emit(true);
         },
         err => {
           console.log(err);
@@ -58,7 +58,7 @@ export class ProjectsAccessModalComponent implements OnInit {
       .subscribe(
         res => {
           console.log(res);
-          this.requestSuccess.emit(true);
+          this.requestUpdateSuccess.emit(true);
         },
         err => {
           console.log(err);
