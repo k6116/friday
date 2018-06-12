@@ -226,8 +226,8 @@ export class ApiDataService {
     .map((response: Response) => response.json());
   }
 
-  sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string) {
-      return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}`, null)
+  sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string, approved: boolean, comment: string) {
+      return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}/${approved}/${comment}`, null)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
