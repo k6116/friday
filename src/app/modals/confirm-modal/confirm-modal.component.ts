@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation, Output, Input, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { AppDataService } from '../../_shared/services/app-data.service';
 
@@ -13,9 +13,6 @@ declare var $: any;
 })
 export class ConfirmModalComponent implements OnInit, OnDestroy {
 
-  // @Output() confirmYesClick = new EventEmitter<any>();
-  // @Output() confirmCancelClick = new EventEmitter<any>();
-
   modal: any;
   subscription1: Subscription;
 
@@ -26,16 +23,15 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    console.log('confirm modal component has been initialized');
-
     this.subscription1 = this.appDataService.confirmModalData.subscribe(
       (object: any) => {
+        // set the modal property (object) which will have all the info to render the modal (title, buttons, etc.)
         this.modal = object;
-        // console.log('confirm modal object:');
-        // console.log(this.modal);
-        if (this.modal.hasOwnProperty('display')) {
-          this.displayModal(this.modal.display);
-        }
+        // display the modal
+        $('#confirm-modal').modal({
+          backdrop: this.modal.allowOutsideClickDismiss ? true : 'static',
+          keyboard: this.modal.allowEscKeyDismiss
+        });
     });
 
   }
@@ -44,20 +40,8 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
     this.subscription1.unsubscribe();
   }
 
-  displayModal(display: boolean) {
-    if (display) {
-      $('#confirm-modal').modal();
-    } else {
-      $('#confirm-modal').modal('hide');
-    }
-  }
-
-  onYesButtonClick() {
-    this.appDataService.confirmModalResponse.emit(true);
-  }
-
-  onCancelButtonClick() {
-    this.appDataService.confirmModalResponse.emit(false);
+  onModalButtonClick(emit) {
+    this.appDataService.confirmModalResponse.emit(emit);
   }
 
 

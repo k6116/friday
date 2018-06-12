@@ -664,7 +664,20 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         message: `Are you sure you want to permanently delete all FTE values for project ${deletedProject.projectName}?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
-        display: true
+        allowOutsideClickDismiss: false,
+        allowEscKeyDismiss: false,
+        buttons: [
+          {
+            text: 'Yes',
+            bsClass: 'btn-success',
+            emit: true
+          },
+          {
+            text: 'Cancel',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
       }
     );
 
