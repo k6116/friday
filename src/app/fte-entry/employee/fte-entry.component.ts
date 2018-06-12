@@ -118,16 +118,21 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.setSliderConfig(); // initalize slider config
 
     // get logged in user's info
-    this.authService.getLoggedInUser((user, err) => {
-      if (err) {
-        // console.log(`error getting logged in user: ${err}`);
-        return;
-      }
-      // console.log('logged in user data received in main component:');
-      // console.log(user);
-      this.loggedInUser = user;
-      this.fteComponentInit();  // initialize the FTE entry component
-    });
+    // this.authService.getLoggedInUser((user, err) => {
+    //   if (err) {
+    //     // console.log(`error getting logged in user: ${err}`);
+    //     return;
+    //   }
+    //   // console.log('logged in user data received in main component:');
+    //   // console.log(user);
+    //   this.loggedInUser = user;
+    //   this.fteComponentInit();  // initialize the FTE entry component
+    // });
+
+    // get logged in user's info
+    this.loggedInUser = this.authService.loggedInUser;
+
+    this.fteComponentInit();  // initialize the FTE entry component
 
     this.apiDataService.getProjects()
     .subscribe(

@@ -7,6 +7,8 @@ import { AuthService } from '../auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { User } from '../../_shared/models/user.model';
+import { WebsocketService } from '../../_shared/services/websocket.service';
+import { CookiesService } from '../../_shared/services/cookies.service';
 
 import * as moment from 'moment';
 
@@ -14,7 +16,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css', '../../_shared/styles/common.css', '../../_shared/styles/toggle-button.css']
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
@@ -34,6 +36,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   iconClass: string;
   iconColor: string;
 
+  // toggle slider state
+  rememberMe: boolean;
+
+  // spinner display
+  showProgressSpinner: boolean;
+  showPendingLoginAnimation: boolean;
+
   // subscriptions
   subscription1: Subscription;
 
@@ -43,14 +52,17 @@ export class LoginComponent implements OnInit, OnDestroy {
     private appDataService: AppDataService,
     private authService: AuthService,
     private toolsService: ToolsService,
-    private clickTrackingService: ClickTrackingService
+    private clickTrackingService: ClickTrackingService,
+    private websocketService: WebsocketService,
+    private cookiesService: CookiesService
   ) {
   }
 
   ngOnInit() {
 
-    // set the focus on the user name input
-    this.userNameVC.nativeElement.focus();
+    // check the cookies for the jrt_username cookie, if it is there set the username
+    // this means that the user had previously logged in with 'Remember Me' selected
+    this.checkRememberMeCookie();
 
     // check for the autoLogout object; if it exists display the message
     if (this.appDataService.autoLogout$) {
@@ -61,6 +73,26 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+  }
+
+  // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)
+  checkRememberMeCookie() {
+    const userName = this.cookiesService.getCookie('jrt_username');
+    if (userName) {
+      this.userName = userName;
+      this.rememberMe = true;
+    } else {
+    }
+    this.setInputFocus(userName ? true : false);
+  }
+
+  // set focus on either the username or password input depending on whether username is populated from the cookie
+  setInputFocus(hasUserName: boolean) {
+    if (hasUserName) {
+      this.passwordVC.nativeElement.focus();
+    } else {
+      this.userNameVC.nativeElement.focus();
+    }
   }
 
   onLoginKeyEnter() {
@@ -88,6 +120,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     // start timer for authentication time
     const t0 = performance.now();
 
+    // show the animated svg
+    this.showPendingLoginAnimation = true;
+
     // call the api data service to authenticate the user credentials
     this.apiDataService.authenticate(user)
       .subscribe(
@@ -99,6 +134,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           // TEMP CODE: to log the response
           // console.log('authentication was successfull:');
           // console.log(res);
+
+          // set or clear the username cookie depending on whether remember me is selected
+          this.setCookie();
 
           // store data in the auth service related to the logged in user
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
@@ -120,8 +158,14 @@ export class LoginComponent implements OnInit, OnDestroy {
           //  this.getNestedOrgData(res.jarvisUser.email);
           this.getNestedOrgData('ethan_hunt@keysight.com');
 
+          // hide the animated svg
+          this.showPendingLoginAnimation = false;
+
           // route to the main page
           this.router.navigateByUrl('/main');
+
+          // send the logged in user object to all other clients via websocket
+          this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
 
         },
         err => {
@@ -133,11 +177,23 @@ export class LoginComponent implements OnInit, OnDestroy {
           console.error('authentication failed:');
           console.error(err);
 
+          // hide the animated svg
+          this.showPendingLoginAnimation = false;
+
           // display the appropriate message depending on the type of error (timeout, invalid credentials, etc.)
           this.handleErrorMessage(err);
 
         }
       );
+  }
+
+  // set or delete the jrt_username cookie when the user logs in
+  setCookie() {
+    if (this.rememberMe) {
+      this.cookiesService.setCookie('jrt_username', this.userName, 365);
+    } else {
+      this.cookiesService.deleteCookie('jrt_username');
+    }
   }
 
 
@@ -194,7 +250,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
     // otherwise, this should be a failed login (invalid credentials)
     } else {
-      this.displayMessage('Invalid user name or password', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+      this.displayMessage('Invalid user name or password.  Note: Use your windows credentials to login.',
+        'fa-exclamation-triangle', 'rgb(139, 0, 0)');
     }
   }
 
@@ -214,6 +271,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         console.error('error getting nested org data');
       }
     );
+  }
+
+  // when the slide toggle is changed, update the rememberMe property (boolean)
+  onRememberMeChange(event) {
+    this.rememberMe = event.checked;
   }
 
 

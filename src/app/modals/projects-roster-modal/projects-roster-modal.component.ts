@@ -18,12 +18,15 @@ export class ProjectsRosterModalComponent implements OnInit {
       this.getProjectRoster();
     }
   }
+
   @Output() close = new EventEmitter<boolean>();
 
   project: any;
   projectRoster: any;
   projectID: number;
   projectHasMembers: boolean;
+  numTeamMembers: number;
+  showRosterContents: boolean;
 
 
   constructor(
@@ -46,8 +49,13 @@ export class ProjectsRosterModalComponent implements OnInit {
           this.projectRoster = res[0];
           if (Object.keys(this.projectRoster).includes('teamMembers')) {
             this.projectHasMembers = true;
+            this.numTeamMembers = this.projectRoster.teamMembers.length;
+          } else {
+            this.projectHasMembers = false;
+            this.numTeamMembers = 0;
           }
         }
+        this.showRosterContents = true;
       },
       err => {
         console.log(err);
@@ -56,16 +64,24 @@ export class ProjectsRosterModalComponent implements OnInit {
   }
 
   onCloseClick() {
+    console.log('projects roster modal closed due to x button click');
+    this.projectRoster = undefined;
+    this.showRosterContents = false;
     // emit true to the projects modal to close the modal
     this.close.emit(true);
   }
 
   onClickedOutside(event: Event) {
 
+    this.showRosterContents = false;
+    this.projectRoster = undefined;
+    console.log('projects roster modal click outside event triggered');
+
     // if the modal is displayed, and should be closed (exception for same button), close the modal
     const modalIsDisplayed = this.modalIsDisplayed();
     const shouldBeClosed = this.shouldBeClosed(event);
     if (modalIsDisplayed && shouldBeClosed) {
+      console.log('projects roster modal closed due to click outside');
       // emit true to the projects modal to close the modal
       this.close.emit(true);
     }

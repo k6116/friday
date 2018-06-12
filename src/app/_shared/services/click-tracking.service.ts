@@ -91,7 +91,7 @@ export class ClickTrackingService {
       this.apiDataService.logClick(clickObj, userID)
       .subscribe(
         res => {
-          // console.log(res);  // click tracking record was inserted successfully
+          console.log(res);  // click tracking record was inserted successfully
         },
         err => {
           console.error(err);

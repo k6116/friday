@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { AppDataService } from './_shared/services/app-data.service';
 import { AuthService } from './auth/auth.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
+import { WebsocketService } from './_shared/services/websocket.service';
 
 import * as bowser from 'bowser';
 declare var $: any;
@@ -34,6 +35,7 @@ export class AppComponent implements OnInit {
     private appDataService: AppDataService,
     private authService: AuthService,
     private clickTrackingService: ClickTrackingService,
+    private websocketService: WebsocketService
   ) {
 
     // set the timer interval in minutes, used to check for user activity
@@ -42,6 +44,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    console.log(`app component has been initialized`);
+
+    // connect to the websocket
+    this.websocketService.connect();
 
     // check for browser compatibility
     const browserCheck = this.browserIsCompatible();
@@ -91,7 +98,7 @@ export class AppComponent implements OnInit {
     // update the last activity property with a new timestamp
     this.authService.updateLastActivity();
     // emit the clicked class to the data service for a click outside type solution
-    this.appDataService.clickedClass.emit(event.target.className);
+    // this.appDataService.clickedClass.emit(event.target.className);
     // send the event to the click tracking service to log in the database if appropriate
     this.clickTrackingService.logClickWithAttribute(event);
   }
