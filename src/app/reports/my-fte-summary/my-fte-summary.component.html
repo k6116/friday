@@ -6,16 +6,6 @@
     </div>
   </div>
 
-  <!-- block for time period drop-down selector -->
-  <div class="row row-custom">
-    <div class="col-sm-3 col-custom">
-      <label>Time Period:</label>
-      <select name="time-period-selector" class="form-control" (change)="getFteSummaryData($event.target.value)">
-        <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
-      </select>
-    </div>
-  </div>
-
   <!-- block for spinner if chart is loading -->
   <div *ngIf="chartIsLoading" class="row row-custom">
     Chart is loading...&nbsp;&nbsp;&nbsp;<div class="loading-spinner"></div>
@@ -23,9 +13,16 @@
 
   <!-- block for time series chart -->
   <div class="row row-custom" [hidden]="chartIsLoading">
-    <!-- highcharts div -->
     <div class="col-sm">
-        <div id="timeSeries"></div>
+      <!-- date-switcher div -->
+      <div class="chart-date-switcher form-inline">
+        <label class="chart-date-switcher-label">Range:</label>
+        <select name="time-period-selector" class="form-control date-switcher-selector" (change)="getFteSummaryData($event.target.value)">
+          <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
+        </select>
+      </div>
+      <!-- highcharts div -->
+      <div id="timeSeries"></div>
     </div>
   </div>
 

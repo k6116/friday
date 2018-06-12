@@ -96,3 +96,23 @@ div.loading-spinner {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
+/* standardized chart date-switcher css */
+div.chart-date-switcher {
+  position: absolute;
+  top: 14px;
+  left: 30px;
+  z-index: 1;
+}
+
+label.chart-date-switcher-label {
+  margin-right: 10px;
+}
+
+select.form-control.date-switcher-selector{
+  max-height: 30px;
+  font-size: 13px;
+  padding-left: 4px;
+  padding-top: 4px;
+}
