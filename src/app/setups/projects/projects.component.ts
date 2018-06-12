@@ -187,10 +187,25 @@ export class ProjectsSetupsComponent implements OnInit {
   // Accept or deny a request
   requestResponse(request: any, reply: string, replyComment: string) {
     this.requestResponseFlag = false;
+
     this.apiDataService.responseProjectAccessRequest(request, reply, replyComment, this.loggedInUser.id)
     .subscribe(
       res => {
+
+        // send email
+        this.apiDataService.sendProjectApprovalEmail(request['user.id'], this.loggedInUser.id,
+        request['project.projectName'], reply === 'Approved' ? true : false, replyComment).subscribe(
+          eSnd => {
+            this.appDataService.raiseToast('success',
+            `Email on Approval Decision delivered to ${request['user.fullName']}.`);
+            this.getProjectAccessRequestsList();
+          },
+          err => {
+            console.log(err);
+          }
+        );
         console.log(res);
+
       },
       err => {
         console.log(err);
