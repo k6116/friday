@@ -74,13 +74,6 @@ export class AppComponent implements OnInit {
         this.resetTimer();
     });
 
-    // TEMP CODE: log the init and current path
-    // NOTE: this could be used to redirect to main or login if they go directly to a different path
-    // the setTimeout with zero is needed here (could try to put it in afterViewInit though)
-    setTimeout(() => {
-      console.log(`app component has been initialized; current route is: ${this.router.url}`);
-    }, 0);
-
   }
 
   // returns true or false depending on whether they are using Chrome version 65.0 or later

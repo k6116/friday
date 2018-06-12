@@ -42,7 +42,7 @@ const routes: Routes = [
       { path: 'reports/top-projects', component: TopProjectsReportsComponent, canActivate: [AuthGuardService] },
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent, canActivate: [AuthGuardService] },
       { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
-      { path: 'chat', component: ChatComponent, canActivate: [AuthGuardService] },
+      { path: 'chat', component: ChatComponent },
     ]
   },
   { path: '**', redirectTo: '/login' }

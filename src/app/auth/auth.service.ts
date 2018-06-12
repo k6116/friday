@@ -110,6 +110,7 @@ export class AuthService {
       this.apiDataService.getInfoFromToken(token)
         .subscribe(
           res => {
+            // update the token info in memory
             this.token = res.token;
             // if the token is expired, clear the user data/cache (properties in this service) and token, and re-route to the login page
             if (this.tokenIsExpired()) {
@@ -331,6 +332,7 @@ export class AuthService {
     this.clearLoggedInUserOnServer();
     this.clearUserCache();
     this.clearToken();
+    this.appDataService.appLoadPath = undefined;
     this.routeToLogin(displayMessage);
   }
 

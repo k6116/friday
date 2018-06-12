@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
@@ -54,7 +54,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private toolsService: ToolsService,
     private clickTrackingService: ClickTrackingService,
     private websocketService: WebsocketService,
-    private cookiesService: CookiesService
+    private cookiesService: CookiesService,
+    private route: ActivatedRoute
   ) {
   }
 
@@ -161,8 +162,13 @@ export class LoginComponent implements OnInit, OnDestroy {
           // hide the animated svg
           this.showPendingLoginAnimation = false;
 
-          // route to the main page
-          this.router.navigateByUrl('/main');
+          // route to the main page or the page that the user was attempting to go to before getting booted back to the login page
+          if (this.appDataService.appLoadPath) {
+            this.router.navigateByUrl(this.appDataService.appLoadPath);
+          } else {
+            this.router.navigateByUrl('/main');
+          }
+
 
           // send the logged in user object to all other clients via websocket
           this.websocketService.sendLoggedInUser(this.authService.loggedInUser);

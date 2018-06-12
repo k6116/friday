@@ -28,6 +28,7 @@ export class ProjectsSetupsComponent implements OnInit {
   projectID: number;
   requestResponseFlag: boolean;
   request: any;
+  replyComment: string;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
