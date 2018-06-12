@@ -238,28 +238,25 @@ function responseProjectAccessRequest(req, res) {
 function updateProjectAccessRequest(req, res) {
 
   // get the project object from the request body
-  const projectData = req.body;
-  const userID = req.params.userID;
-  const action = req.params.action;
-  const actionComment = req.params.actionComment;
+  const requestData = req.body;
   const today = new Date();
 
-  console.log(projectData);
+  console.log(requestData.requestID);
 
   return sequelize.transaction((t) => {
 
     return models.ProjectAccessRequests
       .update(
         {
-          requestStatus: action,
+          requestStatus: requestData.requestStatus,
           requestedAt: today,
-          requestNotes: actionComment,
+          requestNotes: requestData.requestNotes,
           respondedBy: null,
           respondedAt: null,
           responseNotes: null,
         },
         {
-          where: {id: projectData.requestID},
+          where: {id: requestData.requestID},
           transaction: t
         }
       )
@@ -273,7 +270,7 @@ function updateProjectAccessRequest(req, res) {
     }).then(() => {
 
       res.json({
-        message: `The requestID '${projectData.requestID}' has been updated successfully`
+        message: `The requestID '${requestData.requestID}' has been updated successfully`
       })
 
     }).catch(error => {

@@ -52,7 +52,7 @@ router.get('/getProjectAccessList/:userID', controllers.projectAccess.getProject
 router.get('/getPublicProjectTypes/:userID', controllers.projectAccess.getPublicProjectTypes);
 router.post('/submitProjectAccessRequest/:userID', controllers.projectAccess.insertProjectAccessRequest);
 router.post('/responseProjectAccessRequest/:userID/:reply/:replyComment', controllers.projectAccess.responseProjectAccessRequest);
-router.post('/updateProjectAccessRequest/:userID/:action/:actionComment', controllers.projectAccess.updateProjectAccessRequest);
+router.post('/updateProjectAccessRequest/:userID', controllers.projectAccess.updateProjectAccessRequest);
 
 // Profile Controller
 router.get('/getJobTitleList', controllers.profile.show);

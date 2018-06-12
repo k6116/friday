@@ -233,10 +233,10 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
-  updateProjectAccessRequest(projectData: any, action: string, actionComment: string, userID: number) {
+  updateProjectAccessRequest(requestData: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(`/api/updateProjectAccessRequest/${userID}/${action}/${actionComment}`, JSON.stringify(projectData), options)
+    return this.http.post(`/api/updateProjectAccessRequest/${userID}`, JSON.stringify(requestData), options)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

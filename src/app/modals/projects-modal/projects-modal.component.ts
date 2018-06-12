@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
   HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
+import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
@@ -48,7 +49,6 @@ declare var $: any;
 })
 export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
-  projects: any;
   outerDivState: string;
   innerDivState: string;
   filterString: string;
@@ -75,7 +75,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   projectAccessDeniedList: any;
   projectData: any;
 
-  // @Input() projects: any;
+  @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
 
@@ -287,21 +287,60 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
-  onProjectAccessClick(project: any, requestStatus: string) {
-    const newProjectData = project;
+  onProjectAccessClick(project: any, action: string) {
 
-    // push request status data into projectData
-    newProjectData.requestStatus = requestStatus;
+    const requestData = {
+      requestID: null,
+      requestStatus: null,
+      requestNotes: null
+    };
 
-    // push response notes data into projectData
     for (let i = 0; i < this.projectAccessList.length; i++) {
-      if (this.projectAccessList[i].projectID === newProjectData.ProjectID) {
-        newProjectData.responseNotes = this.projectAccessList[i].responseNotes;
-        newProjectData.requestID = this.projectAccessList[i].id;
+      if (this.projectAccessList[i].projectID === project.ProjectID) {
+        requestData.requestID = this.projectAccessList[i].id;
       }
     }
 
-    this.projectData = newProjectData;
+    if (action === 'Request') {
+      requestData.requestStatus = 'Submitted';
+      requestData.requestNotes = 'Requesting access';
+    } else if (action === 'Submitted') {
+      requestData.requestStatus = 'Cancelled';
+      requestData.requestNotes = 'Cancelling request access';
+    } else if (action === 'Denied') {
+      requestData.requestStatus = 'Submitted';
+      requestData.requestNotes = 'Resubmitting request access';
+    }
+    console.log('awefawefawef', requestData);
+    // emit confirmation modal after they click delete button
+    this.appDataService.confirmModalData.emit(
+      {
+        title: `Confirm ${action}`,
+        message: `Are you sure you want to update the request status to ${requestData.requestStatus}?`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 193, 27)',
+        display: true
+      }
+    );
+
+    const updateModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+      if (res) {
+        // if they click ok, grab the deleted project info and exec db call to delete
+        const deleteActionSubscription =
+        this.apiDataService.updateProjectAccessRequest(requestData, this.userID)
+          .subscribe(
+            apiRes => {
+              console.log(apiRes);
+            },
+            err => {
+              console.log(err);
+            }
+          );
+      } else {
+        console.log('delete aborted');
+      }
+      updateModalSubscription.unsubscribe();
+    });
   }
 
   // since the modals are a single element, need to move the position to align with the button before displaying
