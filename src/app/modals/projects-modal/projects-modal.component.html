@@ -54,9 +54,7 @@
               <h5 class="card-title">{{ project.ProjectTypeName }}</h5>
               <p class="card-text">{{ project.Description }}</p>
             </div>
-            <div class="card-buttons-underlay">
-
-            </div>
+            <div class="card-buttons-underlay"></div>
             <div class="card-buttons">
               <div class="card-button info" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Project Info', 'info', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('info', project.ProjectID)" (click)="onProjectInfoClick($event.target)">
                 <i class="fa fa-info" aria-hidden="true"></i>
