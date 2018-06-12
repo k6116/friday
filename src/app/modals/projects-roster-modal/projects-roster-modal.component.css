@@ -2,8 +2,8 @@
 /* outer container */
 
 div.projects-roster-modal-outer-cont {
-  height: 300px;
-  width: 225px;
+  max-height: 500px;
+  width: 350px;
   background-color: white;
   z-index: 200;
   display: inline-block;
@@ -12,6 +12,7 @@ div.projects-roster-modal-outer-cont {
   left: 0;
   box-shadow: 0 2px 10px rgba(0,0,0,.2);
   padding: 15px 20px;
+  /* overflow-y: auto; this will prevent triangle from displaying */
 }
 
 /* left or right triangle */
@@ -46,4 +47,51 @@ a.projects-roster-modal.close-button {
   display: block;
   color: blue;
   cursor: pointer;
+}
+
+div.projects-roster-project-name {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px
+}
+
+p.projects-roster-subtitle {
+  font-size: 15px;
+}
+
+p.projects-roster-subtitle.subtitle1 {
+  margin-bottom: 0px;
+}
+
+.projects-roster-modal-team-members {
+  overflow-y: auto;
+  max-height: 375px;
+}
+
+div.projects-roster-modal-team-member {
+  border-bottom: 1px solid lightgrey;
+  padding: 5px 0;
+}
+
+div.projects-roster-modal-team-member:first-child {
+  border-top: 1px solid lightgrey;
+}
+
+td.projects-roster-team-member-icon-cell {
+  padding-right: 8px;
+  vertical-align: middle;
+}
+
+i.projects-roster-team-member-icon {
+  font-size: 20px;
+  color: rgb(136, 136, 136);
+}
+
+td.projects-roster-team-member-name-cell {
+  padding: 0 8px;
+  font-weight: 500;
+}
+
+td.projects-roster-team-member-jobtitle-cell {
+  padding: 0 8px;
 }
