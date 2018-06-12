@@ -5,9 +5,14 @@ const ldapAuth = require('ldapAuth-fork');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
+const _ = require('lodash');
+const dotevnv = require('dotenv').config()
 
-const tokenSecret = 'rutabega';  // set the secret code word for enconding and decoding the token with jwt
-const expirationTime = 60 * 60 * 0.5  // units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
+const tokenSecret = process.env.JWT_SECRET;  // get the secret code word for enconding and decoding the token with jwt
+const expirationTime = 60 * 60 * 0.5  // set the token expiration time to 30 minutes - units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
+
+// TEMP CODE: testing websockets
+ var loggedInUsers = [];
 
 
 function authenticate(req, res) {
@@ -49,7 +54,6 @@ function authenticate(req, res) {
         console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
         
         // build an encrypted token using the jsonwebtoken module
-        // set it to expire in 1 hour
         const token = jwt.sign(
           {
             userName: ldapUser.cn,
@@ -91,6 +95,7 @@ function authenticate(req, res) {
                 expiringAt: decodedToken2.exp
               }
             });
+            loggedInUsers.push(jarvisUser);
           // if this is not an existing jarvis user, add a record to the Employees table before sending the response
           } else {
 
@@ -123,6 +128,8 @@ function authenticate(req, res) {
                 newUser: true,
                 token: token
               });
+
+              loggedInUsers.push(savedUser);
 
             })
         
@@ -273,6 +280,71 @@ function resetToken(req, res) {
 }
 
 
+
+function resetTokenWithToken(req, res) {
+
+  // extract the token from the query parameters/string (after the ? in the url)
+  const token = req.query.token;
+
+  jwt.verify(token, tokenSecret, (err, decoded) => {
+    // if the token was successfully decoded
+    if (decoded) {
+
+      // use the user name in the decoded token to get the employee record from the Jarvis database
+      models.User.findOne({
+        where: {userName: decoded.userName}
+      }).then(jarvisUser => {
+
+        // create a new token
+        const token = jwt.sign(
+          {
+            userName: jarvisUser.userName,
+            email: jarvisUser.email, 
+            rememberMe: true
+          }, 
+          tokenSecret, 
+          {expiresIn: expirationTime}
+        );
+
+        // decode the token to get the issued at and expired at datetimes
+        jwt.verify(token, tokenSecret, (err, decoded) => {
+          // if the decode was successfull
+          if (decoded) {
+
+            // send back a response with the ldap user object, jarvis user object, new user (no), and jwt token
+            res.json({
+              jarvisUser: jarvisUser,
+              newUser: false,
+              token: {
+                signedToken: token,
+                issuedAt: decoded.iat,
+                expiringAt: decoded.exp
+              }
+            });
+
+          // if the decode failed (this should not happen, if it does there is probably a bug in the code)
+          } else if (err) {
+            console.log('token is invalid (weird because we just created it!)');
+          }
+        })
+
+      })
+    
+    // if the token was not successfully decoded this means either it is expired or was modified thus couldn't be decoded
+    } else if (err) {
+
+      // send back a response with an error status code
+      return res.status(401).json({
+        title: 'the token is not valid (is expired or was tampered with)',
+        error: err
+      });
+
+    }
+  })
+
+}
+
+
 // return all users in the Employees table
 function index(req, res) {
 
@@ -284,10 +356,31 @@ function index(req, res) {
 
 }
 
+function getLoggedInUsers(req, res) {
+
+  res.json(loggedInUsers);
+
+}
+
+function logout(req, res) {
+
+  var userName = req.params.userName;
+  console.log(`user name: ${userName}`);
+
+  _.remove(loggedInUsers, user => {
+    return user.userName === userName;
+  });
+
+  res.json(`user ${userName} has been removed from the array of logged in users`);
+
+}
+
 
 module.exports = {
   authenticate: authenticate,
   getInfoFromToken: getInfoFromToken,
   resetToken: resetToken,
-  index: index
+  index: index,
+  getLoggedInUsers: getLoggedInUsers,
+  logout: logout
 }

@@ -1,24 +1,65 @@
 
 div.login-cont {
-  width: 400px;
-  height: 350px;
-  border: 1px solid rgb(177, 177, 177);
+  width: 450px;
+  height: 500px;
   border-radius: 5px;
-  margin: auto;
+  margin: 0 auto;
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
+  top: 100px;
   bottom: 0;
+  background-color: white;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+}
+
+label.login-form-label {
+  font-weight: 500;
 }
 
 div.login-cont-inner {
   margin-top: 30px;
 }
 
+.login-logo-cont {
+  margin-left: 75px;
+  height: 50px;
+  display: inline-block;
+}
+
+img.login-logo-img {
+  width: 130px;
+}
+
+div.login-subtitle {
+  display: inline-block;
+  margin-left: 5px;
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #d8bd2c;
+  top: 9px;
+  position: relative;
+}
+
 div.form-group-login {
+  position: relative;
   width: 300px;
   margin: 20px auto;
+}
+
+input.form-control.login-input {
+  padding-left: 35px;
+}
+
+i.login-form-icon {
+  position: absolute;
+  left: 10px;
+  top: 40px;
+}
+
+div.login-remember-me-cont {
+  margin: 0 75px;
 }
 
 div.form-group-login.form-group-login-button {
@@ -32,11 +73,24 @@ button.btn-login {
 .login-cont-inner-message {
   width: 300px;
   margin: 30px auto;
+  /* background-color: #f7efef;
+  padding: 8px 10px; */
 }
 
 i.login-message-icon {
   margin-right: 15px;
-  font-size: 22px;
+  font-size: 25px;
   position: relative;
   top: 2px;
+}
+
+td.login-notice-message {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  line-height: 19px;
+}
+
+svg.login-animated-svg {
+  position: absolute;
+  top: -6px;
+  left: 35px;
 }

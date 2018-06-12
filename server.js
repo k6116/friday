@@ -1,31 +1,34 @@
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
+const dotevnv = require('dotenv').config()
+
 const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
 const email = require('./server/email/email');
 
-// set the ssl options object, reading keys and certs from the filesystem
-// NOTE: for use on the web server uncomment this block
-// var sslOptions = {
-//   key: fs.readFileSync('./etc/ssl/jarvis.key'),
-//   cert: fs.readFileSync('./etc/ssl/jarvis.crt'),
-//   requestCert: true,
-//   ca: [
-//     fs.readFileSync('./etc/ssl/Keysight_Intermediate.crt'),
-//     fs.readFileSync('./etc/ssl/Keysight_Root.crt')
-//   ],
-//   rejectUnauthorized: false 
-// };
-
-// connect to the database(s)
-sequelize.connect();
 
 // create the express application
 const app = express();
+
+// set the ssl options object, reading keys and certs from the filesystem
+var sslOptions = {
+  key: fs.readFileSync('./etc/ssl/jarvis.key'),
+  cert: fs.readFileSync('./etc/ssl/jarvis.crt'),
+  requestCert: true,
+  ca: [
+    fs.readFileSync('./etc/ssl/Keysight_Intermediate.crt'),
+    fs.readFileSync('./etc/ssl/Keysight_Root.crt')
+  ],
+  rejectUnauthorized: false 
+};
+
+// connect to the database(s)
+sequelize.connect();
 
 // set body parsers
 // need to set bodyParser limit to allow a large number of projects.  Default is 1mb, which can only support ~15 projects
@@ -44,25 +47,85 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
+// get environment/instance (dev, test, or prod)
+const env = process.env.ENVIRONMENT;
 
-// create a node server for https on port 3000 (localhost) or 443 (server)
-// NOTE: for use on the web server change to https, add the sslOptions, and change to port 443:  https.createServer(sslOptions, app)
-const port1 = 3000;
-http.createServer(app)
-  .listen(port1, () => {
-    console.log(`node server listening on port: ${port1}`);
+// declare variable for socket.io use
+var server;
+
+// start development server
+if (env === 'dev') {
+
+  const port1 = 3000;
+  server = http.createServer(app)
+    .listen(port1, () => {
+      console.log(`node server listening on port: ${port1}`);
+    });
+
+// start test server
+} else if (env === 'test') {
+
+  // create a node server for https on port 443
+  const port1 = 440;
+  server = https.createServer(sslOptions, app)
+    .listen(port1, () => {
+      console.log(`node server listening on port: ${port1}`);
+    });
+
+  // create a second node server to forward http (port 80) requests to https (port 443)
+  const port2 = 80;
+  server = http.createServer((req, res) => {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+  })
+  .listen(80, () => {
+    console.log(`node server listening on port: ${port2}`);
   });
+
+// start production server
+} else if (env === 'prod') {
+
+  // create a node server for https on port 443
+  const port1 = 443;
+  server = https.createServer(sslOptions, app)
+    .listen(port1, () => {
+      console.log(`node server listening on port: ${port1}`);
+    });
+
+  // create a second node server to forward http (port 80) requests to https (port 443)
+  const port2 = 80;
+  http.createServer((req, res) => {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+  })
+  .listen(80, () => {
+    console.log(`node server listening on port: ${port2}`);
+  });
+
+}
+
+// testing websockets
+
+var io = require('socket.io')(server);
+
+io.on('connection', socket => {
+  console.log('a user connected');
+  socket.on('message', message => {
+    io.emit('message', message);
+  });
+  socket.on('loggedInUser', loggedInUser => {
+    io.emit('loggedInUser', loggedInUser);
+  });
+  socket.on('loggedOutUser', loggedOutUser => {
+    io.emit('loggedOutUser', loggedOutUser);
+  });
+  socket.on('disconnect', () => {
+    console.log('a user disconnected');
+  });
+});
+
+
 
 //SET EMAIL SCHEDULES
 email.setSchedules();
 
-// create a second node server for to forward http (port 80) requests to https (port 443)
-// NOTE: for use on the web server uncomment this block
-// const port2 = 80;
-// http.createServer((req, res) => {
-//   res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-//   res.end();
-// })
-// .listen(80, () => {
-//   console.log(`node server listening on port: ${port2}`);
-// });

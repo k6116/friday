@@ -1,0 +1,43 @@
+
+<div class="container-fluid">
+
+    <div class="row row-custom page-header-row">
+      <div class="col-xs-12">
+        <div class="chat-app-title">
+          WebSockets and Socket.io Examples
+        </div>
+      </div>
+    </div>
+
+    <div class="row row-custom websockets-row">
+      <div class="col-xs-12">
+        <form class="form-inline">
+          <input class="form-control chat-message" [(ngModel)]="inputText" type="text" name="first" (keyup.enter)="onSendMessageClick()" appAutofocus>
+          <button class="btn btn-primary chat-send-button" type="button" (click)="onSendMessageClick()">
+            <i class="fa fa-paper-plane-o btn-icon" aria-hidden="true"></i>
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="row row-custom websockets-row">
+      <div class="col-xs-12 notifications-col">
+        <div class="header-text-cont">Notifications</div>
+        <div class="content-cont notifications">{{ userMessage }}</div>
+      </div>
+    </div>
+    <div class="row row-custom websockets-row">
+      <div class="col-xs-6 chats-col">
+        <div class="header-text-cont">Chat</div>
+        <div *ngFor="let message of messages" class="content-cont chats">
+          {{ message }}
+        </div>
+      </div>
+      <div class="col-xs-6 loggedin-col">
+        <div class="header-text-cont">Who's Logged In</div>
+        <div *ngFor="let loggedInUser of loggedInUsers" class="content-cont loggedin-users">
+          {{ loggedInUser.fullName }}
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,4 +1,8 @@
 
+div.modal-header-cont {
+  width: 100%;
+}
+
 i.modal-header-icon {
   display: inline-block;
   padding: 10px;

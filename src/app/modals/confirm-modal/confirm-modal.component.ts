@@ -26,6 +26,8 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+    console.log('confirm modal component has been initialized');
+
     this.subscription1 = this.appDataService.confirmModalData.subscribe(
       (object: any) => {
         this.modal = object;

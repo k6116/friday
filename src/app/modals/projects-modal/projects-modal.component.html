@@ -1,5 +1,5 @@
 <div class="projects-modal-outer-cont" [@modalStateOuter]="outerDivState">
-  <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState">
+  <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState" (appClickOutside)="onClickOutside($event)">
     <div class="projects-modal-body">
 
       <div class="projects-filter-cont">
@@ -54,6 +54,7 @@
               <h5 class="card-title">{{ project.ProjectTypeName }}</h5>
               <p class="card-text">{{ project.Description }}</p>
             </div>
+            <div class="card-buttons-underlay"></div>
             <div class="card-buttons">
               <div class="card-button info" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Project Info', 'info', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('info', project.ProjectID)" (click)="onProjectInfoClick($event.target)">
                 <i class="fa fa-info" aria-hidden="true"></i>
@@ -61,9 +62,9 @@
               <div class="card-button roster" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Project Roster', 'roster', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('roster', project.ProjectID)" (click)="onProjectRosterClick($event.target)">
                 <i class="fa fa-user-circle-o" aria-hidden="true"></i>
               </div>
-              <div class="card-button other" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Something Else', 'other', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('other', project.ProjectID)">
+              <!-- <div class="card-button other" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Something Else', 'other', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('other', project.ProjectID)">
                 <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-              </div>
+              </div> -->
             </div>
             <div class="card-footer">
                 <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectAccessApprovedList?.indexOf(project.ProjectID)!=-1 || projectAccessTeamList?.indexOf(project.ProjectID)!=-1" class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>

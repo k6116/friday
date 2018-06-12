@@ -57,7 +57,7 @@ export class PerformanceComponent implements OnInit {
 
 
   public chartLegend: true;
-  public chartType: string = 'line';
+  public chartType = 'line';
 
   constructor ( private apiDataService: ApiDataService) {
 
@@ -124,7 +124,7 @@ export class PerformanceComponent implements OnInit {
             const sumAvg = Math.floor(sum);  // convert to integer
             console.log(`full cycle took ${sumAvg} milliseconds`);
 
-            this.cycleChartLabels.push('T' + (this.cycleChartLabels.length + 1).toString() + '(' + this.cycles.toString() + ')');        
+            this.cycleChartLabels.push('T' + (this.cycleChartLabels.length + 1).toString() + '(' + this.cycles.toString() + ')');
             this.cycleChartData[0].data.push(sumAvg);
             this.completedCycles = sumAvg;
             this.startEnabled = true;

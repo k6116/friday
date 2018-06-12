@@ -30,7 +30,7 @@ export class ApiDataService {
   }
 
   // decode the jwt token to get the user info, issued and expiration dates
-  getInfoFromToken(token) {
+  getInfoFromToken(token): Observable<any> {
     const queryString = '?token=' + token;
     return this.http.get(`/api/getInfoFromToken${queryString}`)
       .timeout(this.timeout)
@@ -45,6 +45,19 @@ export class ApiDataService {
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
+
+  getLoggedInUsers() {
+    return this.http.get(`/api/getLoggedInUsers`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  logout(userName) {
+    return this.http.get(`/api/logout/${userName}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
 
   // get all users (index)
   getUserData() {

@@ -84,6 +84,14 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               active: false
             }
           ]
+        },
+        {
+          title: 'WebSockets',
+          iconClass: 'nc-socket',
+          alias: 'websockets',
+          path: 'main/chat',
+          expanded: false,
+          active: false
         }
       ];
 
@@ -92,6 +100,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit() {
+
+    console.log('side nav component has been initialized');
 
     // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
     const path = this.router.url.slice(1, this.router.url.length);

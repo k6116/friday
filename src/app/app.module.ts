@@ -10,11 +10,12 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { ClickOutsideModule } from 'ng4-click-outside';
 
 // ANGULAR MATERIAL MODULES
-import { MatButtonModule, MatCheckboxModule, MatExpansionModule } from '@angular/material';
+import { MatSlideToggleModule, MatButtonModule, MatCheckboxModule, MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
 
 // DIRECTIVES
 import { AutofocusDirective } from './_shared/directives/autofocus.directive';
 import { FteInputRestrictDirective } from './_shared/directives/fte-input-restrict.directive';
+import { ClickOutsideDirective } from './_shared/directives/click-outside.directive';
 
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
@@ -27,6 +28,9 @@ import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { ToolsService } from './_shared/services/tools.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
+import { UserResolverService } from './_shared/services/user-resolver.service';
+import { WebsocketService } from './_shared/services/websocket.service';
+import { CookiesService } from './_shared/services/cookies.service';
 
 // GUARDS
 import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
@@ -55,11 +59,14 @@ import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/pro
 import { ChartsModule } from 'ng2-charts';
 import { ToastComponent } from './toast/toast.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
+import { PerformanceComponent } from './performance/performance.component';
+import { ProgressBarComponent } from './_shared/components/progress-bar/progress-bar.component';
+import { ProgressSpinnerComponent } from './_shared/components/progress-spinner/progress-spinner.component';
+import { ChatComponent } from './chat/chat.component';
 
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
-import { PerformanceComponent } from './performance/performance.component';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
@@ -94,6 +101,10 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
     ToastComponent,
     BlockAppUseComponent,
     PerformanceComponent,
+    ProgressBarComponent,
+    ProgressSpinnerComponent,
+    ClickOutsideDirective,
+    ChatComponent,
     MyFteSummaryComponent,
     TeamFteSummaryComponent,
     TopProjectsBubbleComponent
@@ -106,8 +117,10 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
     ReactiveFormsModule,
     HttpModule,
     MatButtonModule,
+    MatSlideToggleModule,
     MatCheckboxModule,
     MatExpansionModule,
+    MatProgressSpinnerModule,
     NouisliderModule,
     ClickOutsideModule,
     ChartsModule
@@ -119,6 +132,9 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
     AuthGuardService,
     ToolsService,
     ClickTrackingService,
+    UserResolverService,
+    WebsocketService,
+    CookiesService,
     UnsavedChangesGuard
   ],
   bootstrap: [AppComponent]
