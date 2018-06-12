@@ -49,7 +49,7 @@ router.get('/getProjectAccessTeamList/:userID/:managerEmailAddress', controllers
 router.get('/getProjectAccessList/:userID', controllers.projectAccess.getProjectAccessList);
 router.get('/getPublicProjectTypes/:userID', controllers.projectAccess.getPublicProjectTypes);
 router.post('/submitProjectAccessRequest/:userID', controllers.projectAccess.insertProjectAccessRequest);
-router.post('/responseProjectAccessRequest/:userID/:reply', controllers.projectAccess.updateProjectAccessRequest);
+router.post('/responseProjectAccessRequest/:userID/:reply/:replyComment', controllers.projectAccess.updateProjectAccessRequest);
 
 // Profile Controller
 router.get('/getJobTitleList', controllers.profile.show);

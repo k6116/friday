@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener} from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
@@ -103,5 +103,23 @@ export class ProjectsCreateModalComponent implements OnInit {
     );
   }
 
-}
+  // formValidation() {
+  //   'use strict';
+  //   window.addEventListener('load', function() {
+  //     // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  //     const forms = document.getElementsByClassName('needs-validation');
 
+  //     // Loop over them and prevent submission
+  //     const validation = Array.prototype.filter.call(forms, function(form) {
+  //       form.addEventListener('submit', function(event) {
+  //         if (form.checkValidity() === false) {
+  //           event.preventDefault();
+  //           event.stopPropagation();
+  //         }
+  //         form.classList.add('was-validated');
+  //       }, false);
+  //     });
+  //   }, false);
+  // }
+
+}

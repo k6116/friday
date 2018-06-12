@@ -154,19 +154,6 @@ export class ProjectsEditModalComponent implements OnInit {
     }
   }
 
-  requestResponse(request: any, reply: string) {
-    this.apiDataService.responseProjectAccessRequest(request, reply, this.userID)
-      .subscribe(
-        res => {
-          console.log(res);
-        },
-        err => {
-          console.log(err);
-        }
-      );
-  }
-
-
   // onCancelClicked() {
   //   console.log('cancel button clicked');
   // }
