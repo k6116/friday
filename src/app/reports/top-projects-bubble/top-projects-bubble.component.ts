@@ -5,11 +5,10 @@ import { User } from '../../_shared/models/user.model';
 import { Subscription } from 'rxjs/Subscription';
 import * as Highcharts from 'highcharts';
 
-
 declare var require: any;
 declare const $: any;
 const moment = require('moment');
-require('highcharts/highcharts-more.js')(Highcharts);
+require('highcharts/highcharts-more.js')(Highcharts); // requiring highcharts-more for bubble chart
 
 @Component({
   selector: 'app-top-projects-bubble',
@@ -19,17 +18,19 @@ require('highcharts/highcharts-more.js')(Highcharts);
 export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
 
   loggedInUser: User; // object for logged in user's info
-  fteDataSubscription: Subscription;
-  rosterDataSubscription: Subscription;
+  fteDataSubscription: Subscription;  // for fetching summarized FTE data from db for bubble chart
+  rosterDataSubscription: Subscription; // for fetching individual project team rosters from db
+
   chartIsLoading = true;
   bubbleChart: any;
+  bubbleChartOptions: any;
   rawBubbleData: any;
   anchorBubbleData = [];
   flexBubbleData = [];
   otherBubbleData = [];
-  bubbleChartOptions: any;
+
   projectRoster: any;
-  displayRosterTable = false;
+  displayRosterTable = false; // display boolean for displaying roster table
 
   constructor(
     private apiDataService: ApiDataService,
@@ -83,6 +84,7 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
           projectName: project.projectName
         };
 
+        // push anchor and flex project priorities into separate data series
         if (project.PriorityName === 'Anchor') {
           this.anchorBubbleData.push(tempProj);
         } else if (project.PriorityName === 'Flex') {

@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
+import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
 
@@ -14,21 +15,24 @@ require('highcharts/modules/annotations')(Highcharts);
 })
 export class TopProjectsReportsComponent implements OnInit, OnDestroy {
 
-  topFTEProjectList: any;
-  projectEmployeeData: any;
-  historicFteData = [];
-  selectedProject: any;
-  selectedFiscalDate: string;
-  // selectedFiscalMonth: any;
-  // selectedFiscalYear: any;
-  displayTopFTEProjectList: boolean;
-  displayProjectEmployeeList: boolean;
-  options: any;
+  displayTopFTEProjectList: boolean;  // display boolean for top FTE table
+  topFTEProjectList: any; // for top FTE projects table
+  topFteProjectSubscription: Subscription;
+  isProjectSelected: any; // for toggling projects when clicking the top FTE table
 
-  isProjectSelected: any;
-  // chart infrastructure vars
+  projectEmployeeData: any; // for rendering project roster (TO BE OBSOLETED)
+  projectEmployeeSubscription: Subscription;
+  selectedProject: any; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
+  selectedFiscalDate: string; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
+  displayProjectEmployeeList: boolean;  // display boolean for project roster (TO BE OBSOLETED)
+
+  // chart-related variables
   chartIsLoading = true;
   lineChart: any;
+  lineChartOptions: any;  // for setting chart options
+  historicFteData = []; // for populating historic FTE data to plot in chart
+  historicFteSubscription: Subscription;
+
 
   constructor(
     private apiDataService: ApiDataService
@@ -40,7 +44,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
     this.displayProjectEmployeeList = false;
 
     // Retrieve Top FTE Project List
-    this.apiDataService.getTopFTEProjectList()
+    this.topFteProjectSubscription = this.apiDataService.getTopFTEProjectList()
     .subscribe(
       res => {
         console.log('Top FTE Project List Data: ', res);
@@ -60,6 +64,15 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
     if (this.lineChart) {
       this.lineChart.destroy();
     }
+    if (this.topFteProjectSubscription) {
+      this.topFteProjectSubscription.unsubscribe();
+    }
+    if (this.projectEmployeeSubscription) {
+      this.projectEmployeeSubscription.unsubscribe();
+    }
+    if (this.historicFteSubscription) {
+      this.historicFteSubscription.unsubscribe();
+    }
   }
 
   onProjectClick(project: any, index: number) {
@@ -77,7 +90,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
       this.plotFteHistoryChart();
     } else {
       // Retrieve historical FTE data for a given project
-      this.apiDataService.getProjectFTEHistory(this.selectedProject.projectID)
+      this.historicFteSubscription = this.apiDataService.getProjectFTEHistory(this.selectedProject.projectID)
       .subscribe(
         res => {
           // highlight selected row
@@ -103,10 +116,11 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // function for getting the project roster onClick in the plot.  (TO BE OBSOLETED)
   getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
     this.displayProjectEmployeeList = true;
     // Retrieve all employee FTE logs for a given project
-    this.apiDataService.getProjectEmployeeFTEList(projectID, fiscalDate)
+    this.projectEmployeeSubscription = this.apiDataService.getProjectEmployeeFTEList(projectID, fiscalDate)
     .subscribe(
       res => {
         // console.log('Project FTE Employee Data: ', res);
@@ -119,10 +133,15 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
   }
 
   plotFteHistoryChart() {
+    // if chart already exists, destroy it before re-drawing
     if (this.lineChart) {
       this.lineChart.destroy();
     }
-    this.options = {
+    this.lineChartOptions = {
+      credits: {
+        text: 'jarvis.is.keysight.com',
+        href: 'https://jarvis.is.keysight.com'
+      },
       title: {text: `Top Projects FTE History`},
       subtitle: { text: 'Time Period: All historic data'},
       xAxis: {
@@ -131,11 +150,6 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
       yAxis:  {
         title: {text: 'FTEs Allocated'}
       },
-      // legend: {
-      //   layout: 'vertical',
-      //   align: 'right',
-      //   verticalAlign: 'middle'
-      // },
       tooltip: {
         crosshairs: true,
         shared: true
@@ -145,7 +159,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
           turboThreshold: 3000,
           cursor: 'pointer',
           point: {
-            events: {
+            events: { // TODO: change click event to show project-time event statistics instead of roster
               click: function(e) {
                 const p = e.point;
                 this.selectedFiscalDate = moment(p.x).toISOString();
@@ -156,7 +170,8 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
         }
       }
     };
-    this.lineChart = Highcharts.chart('FTEHistory', this.options);
+    this.lineChart = Highcharts.chart('FTEHistory', this.lineChartOptions);
+    // loop through the historic FTE data object and plot each object as an independent series
     this.historicFteData.forEach( project => {
       this.lineChart.addSeries({
         name: project.projectName,

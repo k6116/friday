@@ -19,17 +19,17 @@ require('highcharts/modules/pareto.js')(Highcharts);
 export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
   loggedInUser: User; // object for logged in user's info
-  userPlmData: any;
-  plmSubscription: Subscription;
-  userIsManager: boolean;
-  userIsManagerSubscription: Subscription;
+  userPlmData: any; // for logged in user's PLM info
+  plmSubscription: Subscription;  // for fetching PLM data
+  userIsManager: boolean; // store if the user is a manager (has subordinates) or not
+  userIsManagerSubscription: Subscription;  // for fetching subordinate info
 
-  chartIsLoading = true;
-  paretoChart: any;
-  paretoChartSubscription: Subscription;
-  paretoChartOptions: any;
+  chartIsLoading = true;  // display boolean for "Loading" spinner
+  paretoChart: any; // chart obj
+  paretoChartOptions: any;  // chart options
+  paretoChartSubscription: Subscription;  // for subordinates roster under a given project
 
-  teamSummaryData: any;
+  teamSummaryData: any; // for teamwide FTE summary data
   displaySelectedProjectRoster: boolean;
   selectedProject: string;
   selectedProjectRoster: any;
@@ -38,8 +38,6 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     {period: 'current-fy', text: 'Current Fiscal Year'},
     {period: 'all-time', text: 'All Time'}
   ];
-
-
 
   constructor(
     private apiDataService: ApiDataService,
@@ -106,13 +104,13 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         this.teamSummaryData.forEach( project => {
           project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
         });
-        console.log(this.teamSummaryData);
         this.plotFteSummaryPareto(period);
       });
     });
   }
 
   plotFteSummaryPareto(period: string) {
+    // get the requested time period string's index
     const timePeriod = this.timePeriods.find( obj => {
       return obj.period === period;
     });
@@ -122,6 +120,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       return b.totalFtes - a.totalFtes;
     });
 
+    // translate data from nested obj into flat arrays for highcharts pareto plotting
     const projectNames = [];
     const projectFTEs = [];
     const teamwidePercents = [];
@@ -134,7 +133,6 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       projectNames.push(project.projectName);
       teamwidePercents.push(project.teamwidePercents);
     });
-
 
     this.paretoChartOptions = {
       credits: {
@@ -204,13 +202,12 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
   showSubordinateTeamRoster(projectID: number) {
     this.teamSummaryData.forEach( project => {
-      // find the project that was clicked
+      // find the project that was clicked and store into selectedProject vars for display
       if (project.projectID === projectID) {
         this.selectedProject = project.projectName;
         this.selectedProjectRoster = project.teamMembers;
       }
     });
-    console.log(this.selectedProjectRoster);
     this.displaySelectedProjectRoster = true;
   }
 }

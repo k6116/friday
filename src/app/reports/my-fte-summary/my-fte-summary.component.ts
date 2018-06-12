@@ -101,6 +101,10 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
     });
 
     this.timeSeriesOptions = {
+      credits: {
+        text: 'jarvis.is.keysight.com',
+        href: 'https://jarvis.is.keysight.com'
+      },
       chart: {
         type: 'spline',
         height: 500
