@@ -60,16 +60,19 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   numProjectsToDisplay: number;
   showInfoModal: boolean;
   showRosterModal: boolean;
+  showAccessModal: boolean;
   clickedProjectForInfoModal: any;
   clickedProjectForRosterModal: any;
   userID: any;
   userEmail: string;
   userPLMData: any;
   publicProjectTypes: any;
+  projectAccessList: any;
   projectAccessTeamList: any;
   projectAccessApprovedList: any;
   projectAccessSubmittedList: any;
   projectAccessDeniedList: any;
+  projectData: any;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -281,6 +284,23 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
+  onProjectAccessClick(project: any, requestStatus: string) {
+    const newProjectData = project;
+
+    // push request status data into projectData
+    newProjectData.requestStatus = requestStatus;
+
+    // push response notes data into projectData
+    for (let i = 0; i < this.projectAccessList.length; i++) {
+      if (this.projectAccessList[i].projectID === newProjectData.ProjectID) {
+        newProjectData.responseNotes = this.projectAccessList[i].responseNotes;
+        newProjectData.requestID = this.projectAccessList[i].id;
+      }
+    }
+
+    this.projectData = newProjectData;
+  }
+
   // since the modals are a single element, need to move the position to align with the button before displaying
   // returns an object with left and top properties
   calculateModalPosition(element, modalSelector: string): any {
@@ -476,6 +496,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     .subscribe(
       res => {
 
+        this.projectAccessList = res;
+
         // Convert into an array of Approved ProjectIDs
         this.projectAccessApprovedList = Object.keys(res)
           .filter(i => res[i].requestStatus === 'Approved')
@@ -503,12 +525,14 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         this.projectAccessDeniedList = Object.keys(this.projectAccessDeniedList)
           .map(i => this.projectAccessDeniedList[i].projectID);
 
-        console.log('Approved List');
-        console.log(this.projectAccessApprovedList);
-        console.log('Submitted List');
-        console.log(this.projectAccessSubmittedList);
-        console.log('Denied List');
-        console.log(this.projectAccessDeniedList);
+        console.log('Access List');
+        console.log(this.projectAccessList);
+        // console.log('Approved List');
+        // console.log(this.projectAccessApprovedList);
+        // console.log('Submitted List');
+        // console.log(this.projectAccessSubmittedList);
+        // console.log('Denied List');
+        // console.log(this.projectAccessDeniedList);
       },
       err => {
         console.log(err);

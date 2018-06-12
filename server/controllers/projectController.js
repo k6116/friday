@@ -312,6 +312,24 @@ function getProjectTypesList(req, res) {
   });
 }
 
+function getProjectSchedule(req, res) {
+
+  const projectName = req.params.projectName;
+
+  sequelize.query('EXECUTE reports.SchedulesNew :projectName, null', {replacements: {projectName: projectName}, type: sequelize.QueryTypes.SELECT})
+    .then(org => {
+      console.log("returning project schedule");
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+
 module.exports = {
   getAll: getAll,
   getProjectRoster: getProjectRoster,
@@ -321,5 +339,6 @@ module.exports = {
   updateProject: updateProject,
   deleteProject: deleteProject,
   getPrimaryKeyRefs: getPrimaryKeyRefs,
-  getProjectTypesList: getProjectTypesList
+  getProjectTypesList: getProjectTypesList,
+  getProjectSchedule: getProjectSchedule
 }

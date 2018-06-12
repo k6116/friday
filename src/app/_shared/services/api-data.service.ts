@@ -220,6 +220,14 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  updateProjectAccessRequest(projectData: any, action: string, actionComment: string, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/updateProjectAccessRequest/${userID}/${action}/${actionComment}`, JSON.stringify(projectData), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   sendRequestProjectEmail(userID: number, ownerID: number, projectName: string) {
     return this.http.post(`/api/sendRequestProjectEmail/${userID}/${ownerID}/${projectName}`, null)
     .timeout(this.timeout)
@@ -228,6 +236,12 @@ export class ApiDataService {
 
   sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string) {
       return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}`, null)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectSchedule(projectName: string) {
+    return this.http.get(`/api/getProjectSchedule/${projectName}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

@@ -186,7 +186,7 @@ function insertProjectAccessRequest(req, res) {
 }
 
 
-function updateProjectAccessRequest(req, res) {
+function responseProjectAccessRequest(req, res) {
 
   // get the project object from the request body
   const request = req.body;
@@ -210,10 +210,10 @@ function updateProjectAccessRequest(req, res) {
           transaction: t
         }
       )
-      .then(updateProjectAccessRequest => {
+      .then(responseProjectAccessRequest => {
 
-        console.log('Updated Project Access Request')
-        console.log(updateProjectAccessRequest);
+        console.log('Updated Project Access Response')
+        console.log(responseProjectAccessRequest);
 
       })
 
@@ -235,6 +235,59 @@ function updateProjectAccessRequest(req, res) {
 
 }
 
+function updateProjectAccessRequest(req, res) {
+
+  // get the project object from the request body
+  const projectData = req.body;
+  const userID = req.params.userID;
+  const action = req.params.action;
+  const actionComment = req.params.actionComment;
+  const today = new Date();
+
+  console.log(projectData);
+
+  return sequelize.transaction((t) => {
+
+    return models.ProjectAccessRequests
+      .update(
+        {
+          requestStatus: action,
+          requestedAt: today,
+          requestNotes: actionComment,
+          respondedBy: null,
+          respondedAt: null,
+          responseNotes: null,
+        },
+        {
+          where: {id: projectData.requestID},
+          transaction: t
+        }
+      )
+      .then(updateProjectAccessRequest => {
+
+        console.log('Updated Project Access Request')
+        console.log(updateProjectAccessRequest);
+
+      })
+
+    }).then(() => {
+
+      res.json({
+        message: `The requestID '${projectData.requestID}' has been updated successfully`
+      })
+
+    }).catch(error => {
+
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
+
+    })
+
+}
+
 
 module.exports = {
   getPublicProjectTypes: getPublicProjectTypes,
@@ -242,5 +295,6 @@ module.exports = {
   getProjectAccessTeamList: getProjectAccessTeamList,
   getProjectAccessList: getProjectAccessList,
   insertProjectAccessRequest: insertProjectAccessRequest,
+  responseProjectAccessRequest: responseProjectAccessRequest,
   updateProjectAccessRequest: updateProjectAccessRequest
 }

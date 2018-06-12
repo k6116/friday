@@ -28,6 +28,7 @@ export class ProjectsSetupsComponent implements OnInit {
   projectID: number;
   requestResponseFlag: boolean;
   request: any;
+  projectSchedule: any;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
@@ -101,7 +102,7 @@ export class ProjectsSetupsComponent implements OnInit {
     });
   }
 
-  selectProject(project: any) {
+  editProject(project: any) {
     this.showProjectsEditModal = true;
     this.projectData = project;
     setTimeout(() => {
@@ -180,8 +181,8 @@ export class ProjectsSetupsComponent implements OnInit {
           }
         }
       }
-
     this.getProjectRoster(project.id);
+    this.getProjectSchedule(project.projectName);
   }
 
   // Accept or deny a request
@@ -262,5 +263,21 @@ export class ProjectsSetupsComponent implements OnInit {
       }
     );
   }
+
+  getProjectSchedule(projectName: string) {
+
+    this.apiDataService.getProjectSchedule(projectName)
+    .subscribe(
+      res => {
+        console.log('project schedule:');
+        console.log(res);
+        this.projectSchedule = res[0];
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
 
 }

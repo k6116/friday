@@ -52,6 +52,7 @@ import { ProjectsInfoModalComponent } from './modals/projects-info-modal/project
 import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
 import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/projects-roster-modal.component';
+import { ProjectsAccessModalComponent } from './modals/projects-access-modal/projects-access-modal.component';
 import { ChartsModule } from 'ng2-charts';
 import { ToastComponent } from './toast/toast.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
@@ -91,6 +92,7 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
     ProjectsCreateModalComponent,
     ProjectsInfoModalComponent,
     ProjectsRosterModalComponent,
+    ProjectsAccessModalComponent,
     ToastComponent,
     BlockAppUseComponent,
     PerformanceComponent,

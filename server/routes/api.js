@@ -25,6 +25,7 @@ router.get('/getUserProjectList/:userID', controllers.project.getUserProjectList
 router.post('/createProject/:userID', controllers.project.insertProject);
 router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/deleteProject/:userID', controllers.project.deleteProject);
+router.get('/getProjectSchedule/:projectName', controllers.project.getProjectSchedule);
 
 // ORG TREE DATA
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
@@ -47,7 +48,8 @@ router.get('/getProjectAccessTeamList/:userID/:managerEmailAddress', controllers
 router.get('/getProjectAccessList/:userID', controllers.projectAccess.getProjectAccessList);
 router.get('/getPublicProjectTypes/:userID', controllers.projectAccess.getPublicProjectTypes);
 router.post('/submitProjectAccessRequest/:userID', controllers.projectAccess.insertProjectAccessRequest);
-router.post('/responseProjectAccessRequest/:userID/:reply/:replyComment', controllers.projectAccess.updateProjectAccessRequest);
+router.post('/responseProjectAccessRequest/:userID/:reply/:replyComment', controllers.projectAccess.responseProjectAccessRequest);
+router.post('/updateProjectAccessRequest/:userID/:action/:actionComment', controllers.projectAccess.updateProjectAccessRequest);
 
 // Profile Controller
 router.get('/getJobTitleList', controllers.profile.show);
