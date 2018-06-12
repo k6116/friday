@@ -31,22 +31,33 @@ import { AuthService } from '../../auth/auth.service';
     ) {}
 
     ngOnInit() {
+
+      console.log('profile modal has been initialized');
+
       this.editToggle = false;
       this.getUserProfile();
     }
 
     getUserProfile() {
-      this.authService.getLoggedInUser((user, err) => {
-        if (err) {
-          return;
-        }
-        this.loggedInUser = user;
-        this.userName = this.loggedInUser.fullName;
+      // this.authService.getLoggedInUser((user, err) => {
+      //   if (err) {
+      //     return;
+      //   }
+      //   this.loggedInUser = user;
+      //   this.userName = this.loggedInUser.fullName;
 
-        // Must be assigned here so on profile modal popup the most recent values show up in the comboboxes
-        this.jobTitleID = this.loggedInUser.jobTitleID;
-        this.jobTitleSubID = this.loggedInUser.jobTitleSubID;
-      });
+      //   // Must be assigned here so on profile modal popup the most recent values show up in the comboboxes
+      //   this.jobTitleID = this.loggedInUser.jobTitleID;
+      //   this.jobTitleSubID = this.loggedInUser.jobTitleSubID;
+      // });
+
+      this.loggedInUser = this.authService.loggedInUser;
+      this.userName = this.loggedInUser.fullName;
+
+      // Must be assigned here so on profile modal popup the most recent values show up in the comboboxes
+      this.jobTitleID = this.loggedInUser.jobTitleID;
+      this.jobTitleSubID = this.loggedInUser.jobTitleSubID;
+
     }
 
     // will be called on profile button click in top-nav

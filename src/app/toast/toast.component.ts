@@ -17,6 +17,9 @@ export class ToastComponent implements OnInit, OnDestroy {
   toastShow = false;
 
   ngOnInit() {
+
+    console.log('toast component has been initialized');
+
     this.toastSubscription = this.appDataService.toast.subscribe( toast => {
       this.toastType = `toast toast-${toast.type}`;
       this.toastText = toast.text;

@@ -18,7 +18,9 @@ import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
 import { TestComponent } from './test/test.component';
+import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
+import { UserResolverService } from './_shared/services/user-resolver.service';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -27,11 +29,10 @@ const routes: Routes = [
   { path: 'perf', component: PerformanceComponent },
   { path: 'login', component: LoginComponent },
   {
-    path: 'main',
-    component: MainComponent,
-    canActivate: [AuthGuardService],
+    path: 'main', component: MainComponent, canActivate: [AuthGuardService], resolve: { loggedInUser: UserResolverService },
     children: [
       { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full', canActivate: [AuthGuardService] },
+      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService] },
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
         canActivate: [AuthGuardService], canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },
@@ -41,6 +42,7 @@ const routes: Routes = [
       { path: 'reports/top-projects', component: TopProjectsReportsComponent, canActivate: [AuthGuardService] },
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent, canActivate: [AuthGuardService] },
       { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
+      { path: 'chat', component: ChatComponent, canActivate: [AuthGuardService] },
     ]
   },
   { path: '**', redirectTo: '/login' }

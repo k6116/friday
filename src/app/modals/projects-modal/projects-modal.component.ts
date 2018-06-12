@@ -266,6 +266,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onProjectRosterClick(element) {
 
+    // TO-DO: don't show the modal until the roster data has been retreived
+
     // get the position to display based on the clicked element (button)
     const position = this.calculateModalPosition(element, 'div.projects-roster-modal-outer-cont');
 
@@ -393,7 +395,14 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   onCancelClicked() {
-    console.log('cancel button clicked');
+    this.closeModal();
+  }
+
+  onClickOutside(clickedElement) {
+    this.closeModal();
+  }
+
+  closeModal() {
     this.outerDivState = 'out';
     this.innerDivState = 'out';
     this.cancel.emit(true);

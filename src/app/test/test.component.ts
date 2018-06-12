@@ -12,7 +12,7 @@ export class TestComponent implements OnInit {
 
 constructor (private apiDataService: ApiDataService) {
 
-}
+  }
 
   ngOnInit() {
 

@@ -18,19 +18,12 @@
 
 .app-ident {
   cursor: pointer;
-  margin-left: -40px
 }
 
 .app-logo-cont {
   float: left;
   line-height: 65px;
 }
-
-/* .app-logo {
-  width: 32px;
-  top: 3px;
-  position: relative;
-} */
 
 .app-logo-img {
   height: 50px;
@@ -57,8 +50,10 @@
   font-weight: 600;
   color: #fde772;
   display: inline;
-  padding-left: 3px;
-  line-height: 93px;
+  padding-left: 5px;
+  line-height: 65px;
+  position: relative;
+  top: 9px;
 }
 
 
