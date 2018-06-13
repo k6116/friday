@@ -61,7 +61,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   numProjectsToDisplay: number;
   showInfoModal: boolean;
   showRosterModal: boolean;
-  showAccessModal: boolean;
   clickedProjectForInfoModal: any;
   clickedProjectForRosterModal: any;
   userID: any;
@@ -289,18 +288,21 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onProjectAccessClick(project: any, action: string) {
 
+    // create requestData object for passing into controller
     const requestData = {
       requestID: null,
       requestStatus: null,
       requestNotes: null
     };
 
+    // find requestID and append it to requestData
     for (let i = 0; i < this.projectAccessList.length; i++) {
       if (this.projectAccessList[i].projectID === project.ProjectID) {
         requestData.requestID = this.projectAccessList[i].id;
       }
     }
 
+    // depending on action, update requestData elements
     if (action === 'Request') {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Requesting access';
@@ -311,8 +313,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Resubmitting request access';
     }
-    console.log('awefawefawef', requestData);
-    // emit confirmation modal after they click delete button
+
+    // emit confirmation modal after they click request button
     this.appDataService.confirmModalData.emit(
       {
         title: `Confirm ${action}`,
@@ -337,7 +339,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
             }
           );
       } else {
-        console.log('delete aborted');
+        console.log('request confirm aborted');
       }
       updateModalSubscription.unsubscribe();
     });
