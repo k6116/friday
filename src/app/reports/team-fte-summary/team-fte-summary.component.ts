@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
-import { User } from '../../_shared/models/user.model';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
@@ -18,7 +17,6 @@ require('highcharts/modules/pareto.js')(Highcharts);
 })
 export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
-  loggedInUser: User; // object for logged in user's info
   userPlmData: any; // for logged in user's PLM info
   plmSubscription: Subscription;  // for fetching PLM data
   userIsManager: boolean; // store if the user is a manager (has subordinates) or not
@@ -45,25 +43,18 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // get logged in user's info
-    this.authService.getLoggedInUser((user, err) => {
-      if (err) {
-        // console.log(`error getting logged in user: ${err}`);
-        return;
-      }
-      this.loggedInUser = user;
-      this.displaySelectedProjectRoster = false;
+    this.displaySelectedProjectRoster = false;
 
-      // find out if user is a manager, too
-      this.userIsManagerSubscription = this.apiDataService.getSubordinatesFlat(this.loggedInUser.email).subscribe( res => {
-        if (res.length > 1) {
-          this.userIsManager = true;
-        } else {
-          this.userIsManager = false;
-        }
-        this.getTeamSummaryData('current-quarter');
-      });
+    // find out if user is a manager, too
+    this.userIsManagerSubscription = this.apiDataService.getSubordinatesFlat(this.authService.loggedInUser.email).subscribe( res => {
+      if (res.length > 1) {
+        this.userIsManager = true;
+      } else {
+        this.userIsManager = false;
+      }
+      this.getTeamSummaryData('current-quarter');
     });
+
   }
 
   ngOnDestroy() {
@@ -84,7 +75,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
   getTeamSummaryData(period: string) {
     this.chartIsLoading = true;
-    this.plmSubscription = this.apiDataService.getUserPLMData(this.loggedInUser.email).subscribe( res => {
+    this.plmSubscription = this.apiDataService.getUserPLMData(this.authService.loggedInUser.email).subscribe( res => {
       this.userPlmData = res[0];
       // if user is a manager, roll up their subordinates' projects
       // if not, then roll up their manager's projects (their peers, for individual contributors)

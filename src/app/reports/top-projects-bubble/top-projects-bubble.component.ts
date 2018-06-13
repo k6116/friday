@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
-import { User } from '../../_shared/models/user.model';
 import { Subscription } from 'rxjs/Subscription';
 import * as Highcharts from 'highcharts';
 
@@ -17,7 +16,6 @@ require('highcharts/highcharts-more.js')(Highcharts); // requiring highcharts-mo
 })
 export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
 
-  loggedInUser: User; // object for logged in user's info
   fteDataSubscription: Subscription;  // for fetching summarized FTE data from db for bubble chart
   rosterDataSubscription: Subscription; // for fetching individual project team rosters from db
 
@@ -38,15 +36,7 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // get logged in user's info
-    this.authService.getLoggedInUser((user, err) => {
-      if (err) {
-        // console.log(`error getting logged in user: ${err}`);
-        return;
-      }
-      this.loggedInUser = user;
-      this.getBubbleFteData();
-    });
+    this.getBubbleFteData();
   }
 
   ngOnDestroy() {

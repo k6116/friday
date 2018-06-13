@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
-import { User } from '../../_shared/models/user.model';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
@@ -22,7 +21,6 @@ const moment = require('moment');
 })
 export class MyFteSummaryComponent implements OnInit, OnDestroy {
 
-  loggedInUser: User; // object for logged in user's info
   summarySubscription: Subscription;
   chartIsLoading = true;
   fteSummaryData: any;
@@ -42,15 +40,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // get logged in user's info
-    this.authService.getLoggedInUser((user, err) => {
-      if (err) {
-        // console.log(`error getting logged in user: ${err}`);
-        return;
-      }
-      this.loggedInUser = user;
-      this.getFteSummaryData('current-quarter');  // initialize the FTE entry component
-    });
+    this.getFteSummaryData('current-quarter');
   }
 
   ngOnDestroy() {
@@ -65,7 +55,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   getFteSummaryData(period: string) {
     this.chartIsLoading = true;
     // Retrieve Top FTE Project List
-    this.summarySubscription = this.apiDataService.getMyFteSummary(this.loggedInUser.id, period)
+    this.summarySubscription = this.apiDataService.getMyFteSummary(this.authService.loggedInUser.id, period)
     .subscribe(
       res => {
         this.fteSummaryData = res;  // get summary data from db
@@ -110,7 +100,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
         height: 500
       },
       title: {
-        text: `${this.loggedInUser.fullName}'s Historic FTEs by project`
+        text: `${this.authService.loggedInUser.fullName}'s Historic FTEs by project`
       },
       subtitle: {
         text: `Time Period: ${timePeriod.text}`

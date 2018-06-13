@@ -7,7 +7,6 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
-import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../auth/auth.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
@@ -66,7 +65,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   userFTEsFlat: any;  // array to store user FTE data (flattened/non-treeized version)
   display: boolean; // TODO: find a better solution to FTE display timing issue
   displayFTETable = false;
-  loggedInUser: User; // object for logged in user's info
   projects: any;  // for aliasing formarray
   months: string[] = [];
   monthlyTotals: number[];
@@ -117,21 +115,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   ngOnInit() {
     this.setSliderConfig(); // initalize slider config
 
-    // get logged in user's info
-    // this.authService.getLoggedInUser((user, err) => {
-    //   if (err) {
-    //     // console.log(`error getting logged in user: ${err}`);
-    //     return;
-    //   }
-    //   // console.log('logged in user data received in main component:');
-    //   // console.log(user);
-    //   this.loggedInUser = user;
-    //   this.fteComponentInit();  // initialize the FTE entry component
-    // });
-
-    // get logged in user's info
-    this.loggedInUser = this.authService.loggedInUser;
-
     this.fteComponentInit();  // initialize the FTE entry component
 
     this.apiDataService.getProjects()
@@ -181,7 +164,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     });
     if (!alreadyExists) {
       const newProject = new UserFTEs;
-      newProject.userID = this.loggedInUser.id;
+      newProject.userID = this.authService.loggedInUser.id;
       newProject.projectID = selectedProject.ProjectID;
       newProject.projectName = selectedProject.ProjectName;
 
@@ -378,7 +361,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       const fteData = this.FTEFormGroup.value.FTEFormArray;
       const t0 = performance.now();
       // call the api data service to send the put request
-      this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
+      this.apiDataService.updateFteData(fteData, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           const t1 = performance.now();
@@ -419,7 +402,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   fteComponentInit() {
     // get FTE data
-    this.apiDataService.getFteData(this.loggedInUser.id)
+    this.apiDataService.getFteData(this.authService.loggedInUser.id)
     .subscribe(
       res => {
         this.userFTEs = res.nested;
@@ -681,7 +664,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           projectID: deletedProject.projectID,
           projectName: deletedProject.projectName
         };
-        const deleteActionSubscription = this.apiDataService.deleteFteProject(toBeDeleted, this.loggedInUser.id).subscribe(
+        const deleteActionSubscription = this.apiDataService.deleteFteProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
           deleteResponse => {
             this.fteProjectVisible.splice(index, 1);
             this.fteProjectDeletable.splice(index, 1);
