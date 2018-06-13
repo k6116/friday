@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { AppDataService } from './_shared/services/app-data.service';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './_shared/services/auth.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
 import { WebsocketService } from './_shared/services/websocket.service';
 

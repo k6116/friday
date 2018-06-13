@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import { User } from '../_shared/models/user.model';
-import { ApiDataService } from '../_shared/services/api-data.service';
-import { AppDataService } from '../_shared/services/app-data.service';
-import { WebsocketService } from '../_shared/services/websocket.service';
+
+import { User } from '../models/user.model';
+import { ApiDataAuthService } from './api-data/_index';
+import { AppDataService } from './app-data.service';
+import { WebsocketService } from './websocket.service';
 
 import * as moment from 'moment';
 import { Subscriber } from 'rxjs/Subscriber';
@@ -25,7 +26,7 @@ export class AuthService {
   constructor(
     private http: Http,
     private router: Router,
-    private apiDataService: ApiDataService,
+    private apiDataAuthService: ApiDataAuthService,
     private appDataService: AppDataService,
     private websocketService: WebsocketService
   ) {
@@ -82,7 +83,7 @@ export class AuthService {
       if (token) {
         // console.log('logged in user does not exist in memory, getting from token instead');
         const t0 = performance.now();
-        this.apiDataService.getInfoFromToken(token)
+        this.apiDataAuthService.getInfoFromToken(token)
           .subscribe(
             res => {
               const t1 = performance.now();
@@ -107,7 +108,7 @@ export class AuthService {
     const token = localStorage.getItem('jarvisToken');
     // if the token exists (if is doesn't the token constant will be set to null)
     if (token) {
-      this.apiDataService.getInfoFromToken(token)
+      this.apiDataAuthService.getInfoFromToken(token)
         .subscribe(
           res => {
             // update the token info in memory
@@ -175,7 +176,7 @@ export class AuthService {
     // NOTE: the numInactivitySeconds or numInactivityMinutes should be synched with the timer interval in the app component
     } else if (this.loggedInUser && numInactivitySeconds < 60) {
       // console.log('attempting to get a new token with a new expiration date');
-      this.apiDataService.resetToken(this.loggedInUser)
+      this.apiDataAuthService.resetToken(this.loggedInUser)
         .subscribe(
           res => {
             console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
@@ -206,7 +207,7 @@ export class AuthService {
   // TO-DO: get a new token on app refresh (if there is a token, because it should be considered a new session)
   resetToken() {
     // console.log('attempting to get a new token with a new expiration date');
-    this.apiDataService.resetToken(this.loggedInUser)
+    this.apiDataAuthService.resetToken(this.loggedInUser)
       .subscribe(
         res => {
           // update the token info in memory
@@ -313,7 +314,7 @@ export class AuthService {
       // send the logged in user object to all other clients via websocket
       this.websocketService.sendLoggedOutUser(this.loggedInUser);
 
-      this.apiDataService.logout(this.loggedInUser.userName)
+      this.apiDataAuthService.logout(this.loggedInUser.userName)
         .subscribe(
           res => {
             console.log('success on logout from the auth service');

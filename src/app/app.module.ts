@@ -24,12 +24,14 @@ import { FilterPipe } from './_shared/pipes/filter.pipe';
 // SERVICES
 import { ApiDataService, AppDataService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
-import { AuthService } from './auth/auth.service';
-import { AuthGuardService } from './auth/auth-guard.service';
-import { ApiDataAuthService, ApiDataEmailService, ApiDataProjectsService, ApiDataOrgService } from './_shared/services/api-data/_index';
+import { AuthService } from './_shared/services/auth.service';
+import { AuthGuardService } from './_shared/guards/auth.guard';
+import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
+  ApiDataFteService, ApiDataOrgService, ApiDataProjectAccessService, ApiDataProjectService,
+  ApiDataReportService} from './_shared/services/api-data/_index';
 
 // GUARDS
-import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
+import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -123,11 +125,16 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
   ],
   providers: [
     ApiDataService,
-    AppDataService,
     ApiDataAuthService,
+    ApiDataClickTrackingService,
     ApiDataEmailService,
-    ApiDataProjectsService,
+    ApiDataEmployeeService,
+    ApiDataFteService,
     ApiDataOrgService,
+    ApiDataProjectAccessService,
+    ApiDataProjectService,
+    ApiDataReportService,
+    AppDataService,
     AuthService,
     AuthGuardService,
     ToolsService,
@@ -140,4 +147,3 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-//   "swig-email-templates": "^5.0.1",    "node-schedule": "^1.3.0", "nodemailer": "^4.6.4",  "axios": "^0.18.0",

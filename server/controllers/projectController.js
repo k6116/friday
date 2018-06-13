@@ -4,6 +4,9 @@ const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
 
+
+// TO-DO MIKE: use template string for sql instead of + concat
+
 function getAll(req, res) {
    
     // console.log('reached project controller');
@@ -311,6 +314,8 @@ function getProjectTypesList(req, res) {
 
   });
 }
+
+// TO-DO PAUL: remove getUserPLMData, move some others to proper controller
 
 module.exports = {
   getAll: getAll,

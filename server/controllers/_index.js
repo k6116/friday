@@ -1,8 +1,8 @@
 
 module.exports = {
   auth: require('./authController'),
-  fteData: require('./fteDataController'),
-  employeeList: require('./employeeListController'),
+  fte: require('./fteController'),
+  employee: require('./employeeController'),
   org: require('./orgController'),
   clickTracking: require('./clickTrackingController'),
   project: require('./projectController'),
@@ -10,5 +10,5 @@ module.exports = {
   projectAccess: require('./projectAccessController'),
   profile: require('./profileController'),
   project: require('./projectController'),
-  reports: require('./reportsController')
+  report: require('./reportController')
 }

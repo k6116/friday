@@ -18,7 +18,7 @@ export class ApiDataAuthService {
   }
 
   // attempt to authenticate the user credentials using windows login and ldap
-  authenticate(user: any) {
+  authenticate(user: any): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post('/api/login', JSON.stringify(user), options)
@@ -35,7 +35,7 @@ export class ApiDataAuthService {
   }
 
   // reset / get a new token with pushed out expiration date
-  resetToken(user: any) {
+  resetToken(user: any): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/resetToken`, JSON.stringify(user), options)
@@ -43,13 +43,15 @@ export class ApiDataAuthService {
       .map((response: Response) => response.json());
   }
 
-  getLoggedInUsers() {
+  // TEMP CODE: for websockets testing
+  getLoggedInUsers(): Observable<any> {
     return this.http.get(`/api/getLoggedInUsers`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
 
-  logout(userName) {
+  // TEMP CODE: for websockets testing
+  logout(userName): Observable<any> {
     return this.http.get(`/api/logout/${userName}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());

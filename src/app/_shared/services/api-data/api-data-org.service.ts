@@ -15,7 +15,7 @@ export class ApiDataOrgService {
     this.timeout = 15000;
   }
 
-  getOrgData(emailAddress: string) {
+  getOrgData(emailAddress: string): Observable<any> {
     return this.http.get(`/api/org/${emailAddress}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
