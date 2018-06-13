@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+// import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
@@ -9,6 +9,7 @@ import { ClickTrackingService } from '../../_shared/services/click-tracking.serv
 import { User } from '../../_shared/models/user.model';
 import { WebsocketService } from '../../_shared/services/websocket.service';
 import { CookiesService } from '../../_shared/services/cookies.service';
+import { ApiDataAuthService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 
 import * as moment from 'moment';
 
@@ -48,8 +49,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private apiDataService: ApiDataService,
+    // private apiDataService: ApiDataService,
     private appDataService: AppDataService,
+    private apiDataOrgService: ApiDataOrgService,
+    private apiDataAuthService: ApiDataAuthService,
     private authService: AuthService,
     private toolsService: ToolsService,
     private clickTrackingService: ClickTrackingService,
@@ -125,7 +128,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.showPendingLoginAnimation = true;
 
     // call the api data service to authenticate the user credentials
-    this.apiDataService.authenticate(user)
+    this.apiDataAuthService.authenticate(user)
       .subscribe(
         res => {
 
@@ -264,7 +267,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // get and store the nested org data upon successfull login
   getNestedOrgData(email: string) {
     this.appDataService.nestedOrgDataRequested = true;
-    this.apiDataService.getOrgData(email)
+    this.apiDataOrgService.getOrgData(email)
     .subscribe(
       res => {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');

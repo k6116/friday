@@ -22,15 +22,11 @@ import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
 
 // SERVICES
-import { ApiDataService } from './_shared/services/api-data.service';
-import { AppDataService } from './_shared/services/app-data.service';
+import { ApiDataService, AppDataService, ClickTrackingService, CookiesService,
+  ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
 import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/auth-guard.service';
-import { ToolsService } from './_shared/services/tools.service';
-import { ClickTrackingService } from './_shared/services/click-tracking.service';
-import { UserResolverService } from './_shared/services/user-resolver.service';
-import { WebsocketService } from './_shared/services/websocket.service';
-import { CookiesService } from './_shared/services/cookies.service';
+import { ApiDataAuthService, ApiDataEmailService, ApiDataProjectsService, ApiDataOrgService } from './_shared/services/api-data/_index';
 
 // GUARDS
 import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
@@ -128,6 +124,10 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
   providers: [
     ApiDataService,
     AppDataService,
+    ApiDataAuthService,
+    ApiDataEmailService,
+    ApiDataProjectsService,
+    ApiDataOrgService,
     AuthService,
     AuthGuardService,
     ToolsService,
