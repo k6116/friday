@@ -7,11 +7,11 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../_shared/services/auth.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { ToolsService } from '../../_shared/services/tools.service';
-import { ComponentCanDeactivate } from '../../_shared/unsaved-changes-guard.guard';
+import { ComponentCanDeactivate } from '../../_shared/guards/unsaved-changes.guard';
 import { UserFTEs, AllocationsArray} from './fte-model';
 import { utils, write, WorkBook } from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -653,7 +653,20 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         message: `Are you sure you want to permanently delete all FTE values for project ${deletedProject.projectName}?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
-        display: true
+        allowOutsideClickDismiss: false,
+        allowEscKeyDismiss: false,
+        buttons: [
+          {
+            text: 'Yes',
+            bsClass: 'btn-success',
+            emit: true
+          },
+          {
+            text: 'Cancel',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
       }
     );
 

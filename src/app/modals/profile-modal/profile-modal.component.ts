@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostBinding, Output, EventEmitter } from 
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { TopNavComponent } from '../../navs/top-nav/top-nav.component';
 import { User } from '../../_shared/models/user.model';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../_shared/services/auth.service';
 
 @Component({
     selector: 'app-profile-modal',

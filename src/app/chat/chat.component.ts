@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { WebsocketService } from '../_shared/services/websocket.service';
 import { Subscription } from 'rxjs/Subscription';
-import { ApiDataService } from '../_shared/services/api-data.service';
-import { AuthService } from '../auth/auth.service';
+import { ApiDataAuthService } from '../_shared/services/api-data/_index';
+import { AuthService } from '../_shared/services/auth.service';
 import * as io from 'socket.io-client';
 import * as faker from 'faker';
 import * as moment from 'moment';
@@ -34,7 +34,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   constructor (
     private websocketService: WebsocketService,
-    private apiDataService: ApiDataService,
+    private apiDataAuthService: ApiDataAuthService,
     private authService: AuthService
     ) {
 
@@ -88,7 +88,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   getLoggedInUsers() {
 
-    this.apiDataService.getLoggedInUsers()
+    this.apiDataAuthService.getLoggedInUsers()
       .subscribe(
         res => {
           console.log('logged in users');

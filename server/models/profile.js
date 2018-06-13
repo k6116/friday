@@ -2,6 +2,10 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize').sequelize;
 
+
+// TO-DO PAUL: rename to jobTitle.js
+// may need profile as well for future use
+
 // const Employees = sequelize.define('employees',
 //     {
 //         id: { type: Sequelize.INTEGER, field: 'EmployeeID', primaryKey: true, autoIncrement: true },

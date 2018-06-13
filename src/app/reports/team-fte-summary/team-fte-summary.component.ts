@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
-import { AuthService } from '../../auth/auth.service';
+import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import { AuthService } from '../../_shared/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
@@ -42,6 +43,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
   constructor(
     private apiDataService: ApiDataService,
+    private apiDataOrgService: ApiDataOrgService,
     private authService: AuthService
   ) { }
 
@@ -49,7 +51,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.displaySelectedProjectRoster = false;
 
     // find out if user is a manager, too
-    this.userIsManagerSubscription = this.apiDataService.getOrgData(this.authService.loggedInUser.email).subscribe( res => {
+    this.userIsManagerSubscription = this.apiDataOrgService.getOrgData(this.authService.loggedInUser.email).subscribe( res => {
       // parse the json response. we only want the top level user, so use only the first index
       const userOrgData = JSON.parse('[' + res[0].json + ']')[0];
       this.userIsManager = userOrgData.numEmployees > 0 ? true : false;
@@ -81,7 +83,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   }
 
   getTeam(email: string) {
-    this.apiDataService.getOrgData(email)
+    this.apiDataOrgService.getOrgData(email)
     .subscribe(
       res => {
         this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];

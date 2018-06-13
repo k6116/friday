@@ -20,45 +20,6 @@ export class ApiDataService {
   }
 
 
-  // attempt to authenticate the user credentials using windows login and ldap
-  authenticate(user: any) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-    return this.http.post('/api/login', JSON.stringify(user), options)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  // decode the jwt token to get the user info, issued and expiration dates
-  getInfoFromToken(token): Observable<any> {
-    const queryString = '?token=' + token;
-    return this.http.get(`/api/getInfoFromToken${queryString}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  // reset / get a new token with pushed out expiration date
-  resetToken(user: any) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/resetToken`, JSON.stringify(user), options)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getLoggedInUsers() {
-    return this.http.get(`/api/getLoggedInUsers`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  logout(userName) {
-    return this.http.get(`/api/logout/${userName}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-
   // get all users (index)
   getUserData() {
     const token = localStorage.getItem('jarvisToken') ? '?token=' + localStorage.getItem('jarvisToken') : '';
@@ -93,18 +54,6 @@ export class ApiDataService {
     return this.http.post(`/api/ftedata/deleteProject/${userID}`, JSON.stringify(projectID), options)
     .timeout(this.timeout)
     .map((response: Response) => response.json());
-  }
-
-  getEmployeeData(managerEmailAddress: string) {
-    return this.http.get(`/api/employeeList/${managerEmailAddress}`)
-    .timeout(this.timeout)
-    .map((response: Response) => response.json());
-  }
-
-  getOrgData(emailAddress: string) {
-    return this.http.get(`/api/org/${emailAddress}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
   }
 
   getProjects() {
@@ -241,8 +190,8 @@ export class ApiDataService {
     .map((response: Response) => response.json());
   }
 
-  sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string) {
-      return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}`, null)
+  sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string, approved: boolean, comment: string) {
+      return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}/${approved}/${comment}`, null)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

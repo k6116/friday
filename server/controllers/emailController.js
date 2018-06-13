@@ -179,6 +179,8 @@ function sendProjectApproval(req, res) {
   const userID = req.params.userID;
   const ownerID = req.params.ownerID;
   const projectName = req.params.projectName;
+  const approved = req.params.approved;
+  const comment = req.params.comment;
 
   models.User.findOne({
     attributes: ['fullName','email'],
@@ -207,15 +209,22 @@ function sendProjectApproval(req, res) {
 
       if (userOwner) {     
 
-       templates.render('approve-project.html', null, function(err, html, text, subject) {      
+        var template = 'approve-project.html';
+        var msg = 'Project Participation Granted';
+        if (approved === 'false') {  
+          template = 'deny-project.html';
+          msg = 'Project Participation Denied'; 
+        }
+
+       templates.render(template, null, function(err, html, text, subject) {      
         
         let mailOptions = {
           from: '"Jarvis" <jarvis@no-reply.com>',
           to: userRequestor.email,
           bcc: userOwner.email,
-          subject: 'Project Participation Granted',
+          subject: msg,
           text: text,
-          html: html.replace('{requestor}', userRequestor.fullName).replace('{project}', projectName),
+          html: html.replace('{requestor}', userRequestor.fullName).replace('{project}', projectName).replace('{comment}', comment),
           attachments: [{
             filename: 'jarvisLogo.png',
             path: templatePath + '/jarvisLogo.png',

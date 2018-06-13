@@ -4,7 +4,7 @@ import { trigger, state, style, transition, animate, keyframes, group } from '@a
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../_shared/services/auth.service';
 
 declare var $: any;
 
@@ -429,6 +429,16 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.apiDataService.submitProjectAccessRequest(project, this.userID)
     .subscribe(
       res => {
+
+        // send email
+        this.apiDataService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
+          eRes => {
+            this.appDataService.raiseToast('success', 'Request Access Email Delivered.');
+          },
+          err => {
+            console.log(err);
+          }
+        );
         console.log(res);
       },
       err => {

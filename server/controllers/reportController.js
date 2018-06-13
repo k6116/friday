@@ -4,6 +4,7 @@ const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
 
+// TO-DO PAUL: create reports folder with separate controller files
 
 function translateTimePeriods(period) {
   // compute start and end date for FTE Summary query based on period

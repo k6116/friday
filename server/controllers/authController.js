@@ -129,6 +129,7 @@ function authenticate(req, res) {
                 token: token
               });
 
+              // TEMP CODE: testing websockets
               loggedInUsers.push(savedUser);
 
             })
@@ -356,12 +357,14 @@ function index(req, res) {
 
 }
 
+// TEMP CODE: testing websockets
 function getLoggedInUsers(req, res) {
 
   res.json(loggedInUsers);
 
 }
 
+// TEMP CODE: testing websockets
 function logout(req, res) {
 
   var userName = req.params.userName;

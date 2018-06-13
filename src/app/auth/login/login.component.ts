@@ -1,14 +1,15 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+// import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../_shared/services/auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { User } from '../../_shared/models/user.model';
 import { WebsocketService } from '../../_shared/services/websocket.service';
 import { CookiesService } from '../../_shared/services/cookies.service';
+import { ApiDataAuthService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 
 import * as moment from 'moment';
 
@@ -16,7 +17,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css', '../../_shared/styles/common.css', '../../_shared/styles/toggle-button.css']
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
@@ -48,13 +49,16 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private apiDataService: ApiDataService,
+    // private apiDataService: ApiDataService,
     private appDataService: AppDataService,
+    private apiDataOrgService: ApiDataOrgService,
+    private apiDataAuthService: ApiDataAuthService,
     private authService: AuthService,
     private toolsService: ToolsService,
     private clickTrackingService: ClickTrackingService,
     private websocketService: WebsocketService,
-    private cookiesService: CookiesService
+    private cookiesService: CookiesService,
+    private route: ActivatedRoute
   ) {
   }
 
@@ -124,7 +128,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.showPendingLoginAnimation = true;
 
     // call the api data service to authenticate the user credentials
-    this.apiDataService.authenticate(user)
+    this.apiDataAuthService.authenticate(user)
       .subscribe(
         res => {
 
@@ -161,8 +165,13 @@ export class LoginComponent implements OnInit, OnDestroy {
           // hide the animated svg
           this.showPendingLoginAnimation = false;
 
-          // route to the main page
-          this.router.navigateByUrl('/main');
+          // route to the main page or the page that the user was attempting to go to before getting booted back to the login page
+          if (this.appDataService.appLoadPath) {
+            this.router.navigateByUrl(this.appDataService.appLoadPath);
+          } else {
+            this.router.navigateByUrl('/main');
+          }
+
 
           // send the logged in user object to all other clients via websocket
           this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
@@ -258,7 +267,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // get and store the nested org data upon successfull login
   getNestedOrgData(email: string) {
     this.appDataService.nestedOrgDataRequested = true;
-    this.apiDataService.getOrgData(email)
+    this.apiDataOrgService.getOrgData(email)
     .subscribe(
       res => {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');

@@ -4,11 +4,14 @@ const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
 
+
+// TO-DO MIKE: use template string for sql instead of + concat
+
 function getAll(req, res) {
    
     // console.log('reached project controller');
 
-    var sql = 'SELECT p.ProjectID, substring(p.ProjectName,1,30) as \'ProjectName\', substring(p.Description,1,500) as \'Description\', e.FullName, p.CreationDate, t.ProjectTypeName ';
+    var sql = 'SELECT p.ProjectID, substring(p.ProjectName,1,30) as \'ProjectName\', substring(p.Description,1,500) as \'Description\', e.FullName, p.CreationDate, t.ProjectTypeName, p.CreatedBy ';
     sql = sql + 'FROM  projects.Projects p INNER JOIN projects.ProjectTypes t ';
     sql = sql + 'ON p.ProjectTypeID = t.ProjectTypeID '
     sql = sql + 'INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID '
@@ -311,6 +314,8 @@ function getProjectTypesList(req, res) {
 
   });
 }
+
+// TO-DO PAUL: remove getUserPLMData, move some others to proper controller
 
 module.exports = {
   getAll: getAll,

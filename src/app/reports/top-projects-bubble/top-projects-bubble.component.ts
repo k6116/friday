@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../_shared/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 import * as Highcharts from 'highcharts';
 
