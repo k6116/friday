@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../auth/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
+// import { resolve } from 'path';
 
 declare var require: any;
 declare const $: any;
@@ -17,10 +18,12 @@ require('highcharts/modules/pareto.js')(Highcharts);
 })
 export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
-  userPlmData: any; // for logged in user's PLM info
-  plmSubscription: Subscription;  // for fetching PLM data
+  // userPlmData: any; // for logged in user's PLM info
+  // plmSubscription: Subscription;  // for fetching PLM data
   userIsManager: boolean; // store if the user is a manager (has subordinates) or not
   userIsManagerSubscription: Subscription;  // for fetching subordinate info
+
+  teamOrgStructure: any;
 
   chartIsLoading = true;  // display boolean for "Loading" spinner
   paretoChart: any; // chart obj
@@ -46,22 +49,26 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.displaySelectedProjectRoster = false;
 
     // find out if user is a manager, too
-    this.userIsManagerSubscription = this.apiDataService.getSubordinatesFlat(this.authService.loggedInUser.email).subscribe( res => {
-      if (res.length > 1) {
-        this.userIsManager = true;
+    this.userIsManagerSubscription = this.apiDataService.getOrgData(this.authService.loggedInUser.email).subscribe( res => {
+      // parse the json response. we only want the top level user, so use only the first index
+      const userOrgData = JSON.parse('[' + res[0].json + ']')[0];
+      this.userIsManager = userOrgData.numEmployees > 0 ? true : false;
+      if (this.userIsManager) {
+        this.getTeam(this.authService.loggedInUser.email);
+        this.getTeamFtePareto(this.authService.loggedInUser.email, 'current-quarter');
       } else {
-        this.userIsManager = false;
+        this.getTeam(userOrgData.supervisorEmailAddress);
+        this.getTeamFtePareto(userOrgData.supervisorEmailAddress, 'current-quarter');
       }
-      this.getTeamSummaryData('current-quarter');
     });
 
   }
 
   ngOnDestroy() {
     // clean up the subscriptions
-    if (this.plmSubscription) {
-      this.plmSubscription.unsubscribe();
-    }
+    // if (this.plmSubscription) {
+    //   this.plmSubscription.unsubscribe();
+    // }
     if (this.paretoChartSubscription) {
       this.paretoChartSubscription.unsubscribe();
     }
@@ -73,32 +80,66 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     }
   }
 
-  getTeamSummaryData(period: string) {
-    this.chartIsLoading = true;
-    this.plmSubscription = this.apiDataService.getUserPLMData(this.authService.loggedInUser.email).subscribe( res => {
-      this.userPlmData = res[0];
-      // if user is a manager, roll up their subordinates' projects
-      // if not, then roll up their manager's projects (their peers, for individual contributors)
-      const queryEmail = this.userIsManager ? this.userPlmData.EMAIL_ADDRESS : this.userPlmData.SUPERVISOR_EMAIL_ADDRESS;
-      this.paretoChartSubscription = this.apiDataService.getSubordinateProjectRoster(queryEmail, period)
-      .subscribe( res2 => {
-        this.teamSummaryData = res2;
-        // total up the number of FTEs contributed to each project
-        let teamwideTotal = 0;
-        this.teamSummaryData.forEach( project => {
-          project.teamMembers.forEach( employee => {
-            project.totalFtes += employee.fte;
-            teamwideTotal += employee.fte;
-          });
+  getTeam(email: string) {
+    this.apiDataService.getOrgData(email)
+    .subscribe(
+      res => {
+        this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
+        console.log(this.teamOrgStructure);
+      },
+      err => {
+        console.error('error getting nested org data');
+      }
+    );
+  }
+
+  getTeamFtePareto(email: string, period: string) {
+    this.paretoChartSubscription = this.apiDataService.getSubordinateProjectRoster(email, period)
+    .subscribe( res => {
+      this.teamSummaryData = res;
+      // total up the number of FTEs contributed to each project
+      let teamwideTotal = 0;
+      this.teamSummaryData.forEach( project => {
+        project.teamMembers.forEach( employee => {
+          project.totalFtes += employee.fte;
+          teamwideTotal += employee.fte;
         });
-        // convert each project's total FTEs to a percentage of the teamwide FTEs
-        this.teamSummaryData.forEach( project => {
-          project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
-        });
-        this.plotFteSummaryPareto(period);
       });
+      // convert each project's total FTEs to a percentage of the teamwide FTEs
+      this.teamSummaryData.forEach( project => {
+        project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
+      });
+      console.log(this.teamSummaryData);
+      this.plotFteSummaryPareto(period);
     });
   }
+
+  // getTeamSummaryData(period: string) {
+  //   this.chartIsLoading = true;
+  //   this.plmSubscription = this.apiDataService.getUserPLMData(this.authService.loggedInUser.email).subscribe( res => {
+  //     this.userPlmData = res[0];
+  //     // if user is a manager, roll up their subordinates' projects
+  //     // if not, then roll up their manager's projects (their peers, for individual contributors)
+  //     const queryEmail = this.userIsManager ? this.userPlmData.EMAIL_ADDRESS : this.userPlmData.SUPERVISOR_EMAIL_ADDRESS;
+  //     this.paretoChartSubscription = this.apiDataService.getSubordinateProjectRoster(queryEmail, period)
+  //     .subscribe( res2 => {
+  //       this.teamSummaryData = res2;
+  //       // total up the number of FTEs contributed to each project
+  //       let teamwideTotal = 0;
+  //       this.teamSummaryData.forEach( project => {
+  //         project.teamMembers.forEach( employee => {
+  //           project.totalFtes += employee.fte;
+  //           teamwideTotal += employee.fte;
+  //         });
+  //       });
+  //       // convert each project's total FTEs to a percentage of the teamwide FTEs
+  //       this.teamSummaryData.forEach( project => {
+  //         project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
+  //       });
+  //       this.plotFteSummaryPareto(period);
+  //     });
+  //   });
+  // }
 
   plotFteSummaryPareto(period: string) {
     // get the requested time period string's index
