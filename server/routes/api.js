@@ -43,7 +43,7 @@ router.post('/clickTracking/:userID', controllers.clickTracking.insert);
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
 router.post('/sendRequestProjectEmail/:userID/:ownerID/:projectName', controllers.email.sendRequestProject); 
-router.post('/sendProjectApprovalEmail/:userID/:ownerID/:projectName', controllers.email.sendProjectApproval);
+router.post('/sendProjectApprovalEmail/:userID/:ownerID/:projectName/:approved/:comment', controllers.email.sendProjectApproval);
 
 //PROJECT ACCESS CONTROLLER
 router.get('/getProjectAccessRequestsList/:userID', controllers.projectAccess.getProjectAccessRequestsList);

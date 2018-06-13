@@ -491,6 +491,16 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.apiDataService.submitProjectAccessRequest(project, this.userID)
     .subscribe(
       res => {
+
+        // send email
+        this.apiDataService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
+          eRes => {
+            this.appDataService.raiseToast('success', 'Request Access Email Delivered.');
+          },
+          err => {
+            console.log(err);
+          }
+        );
         console.log(res);
       },
       err => {
