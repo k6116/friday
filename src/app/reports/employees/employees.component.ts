@@ -3,7 +3,8 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
-import { AuthService } from '../../auth/auth.service';
+import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import { AuthService } from '../../_shared/services/auth.service';
 
 import * as Highcharts from 'highcharts';
 
@@ -45,6 +46,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   constructor(
     private appDataService: AppDataService,
     private apiDataService: ApiDataService,
+    private apiDataOrgService: ApiDataOrgService,
     private authService: AuthService
   ) {
 
@@ -104,7 +106,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
 
   getNestedOrgData(email: string) {
-    this.apiDataService.getOrgData(email)
+    this.apiDataOrgService.getOrgData(email)
     .subscribe(
       res => {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');
