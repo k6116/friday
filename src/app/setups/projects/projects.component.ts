@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../_shared/services/auth.service';
 import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
 import { User } from '../../_shared/models/user.model';
@@ -28,6 +28,7 @@ export class ProjectsSetupsComponent implements OnInit {
   projectID: number;
   requestResponseFlag: boolean;
   request: any;
+  replyComment: string;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;

@@ -1,3 +1,6 @@
+
+// TO-DO BILL: move passwords to .env file
+
 const config = {
   dbname: "Jarvis_Resources",
   host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',

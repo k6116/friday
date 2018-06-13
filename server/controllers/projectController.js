@@ -316,6 +316,8 @@ function getProjectTypesList(req, res) {
   });
 }
 
+// TO-DO PAUL: remove getUserPLMData, move some others to proper controller
+
 module.exports = {
   getAll: getAll,
   getProjectRoster: getProjectRoster,

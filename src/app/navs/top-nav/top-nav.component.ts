@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { Subscription } from 'rxjs/Subscription';
 import { User } from '../../_shared/models/user.model';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../_shared/services/auth.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { ProfileModalComponent } from '../../modals/profile-modal/profile-modal.component';

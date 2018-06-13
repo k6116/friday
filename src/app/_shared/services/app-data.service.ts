@@ -26,6 +26,8 @@ export class AppDataService {
   nestedOrgDataRequested: boolean;
   nestedOrgDataCached: boolean;
 
+  appLoadPath: string;  // the url that was hit on app load/refresh, stored for deep linking if user is not authenticated
+
   constructor() { }
 
   raiseToast( toastType: 'success' | 'warn' | 'error', toastText: string) {

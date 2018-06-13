@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../_shared/services/auth.service';
 
 @Component({
   selector: 'app-main',
