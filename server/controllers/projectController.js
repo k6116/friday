@@ -4,24 +4,25 @@ const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
 
-
-// TO-DO MIKE: use template string for sql instead of + concat
-
 function getAll(req, res) {
-   
-    // console.log('reached project controller');
 
-    var sql = 'SELECT p.ProjectID, substring(p.ProjectName,1,30) as \'ProjectName\', substring(p.Description,1,500) as \'Description\', e.FullName, p.CreationDate, t.ProjectTypeName, p.CreatedBy ';
-    sql = sql + 'FROM  projects.Projects p INNER JOIN projects.ProjectTypes t ';
-    sql = sql + 'ON p.ProjectTypeID = t.ProjectTypeID '
-    sql = sql + 'INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID '
-    // sql = sql + 'WHERE Active = 1 AND len(p.Description) > 0 '
-    sql = sql + 'ORDER BY p.ProjectName '
+    const sql = `
+     SELECT 
+        p.ProjectID, 
+        substring(p.ProjectName,1,30) as \'ProjectName\', 
+        substring(p.Description,1,500) as \'Description\', 
+        e.FullName, 
+        p.CreationDate, 
+        t.ProjectTypeName, 
+        p.CreatedBy
+    FROM  
+        projects.Projects p INNER JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
+        INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
+    ORDER BY 
+        p.ProjectName`
     
     sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
-    .then(p => {
-    // console.log("Returning Projects");
-    // console.log(p);
+    .then(p => {    
      res.json(p);
     })
 
