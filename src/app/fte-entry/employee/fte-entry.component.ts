@@ -7,9 +7,8 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
-import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../_shared/services/auth.service';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataProjectService, ApiDataFteService } from '../../_shared/services/api-data/_index';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ComponentCanDeactivate } from '../../_shared/guards/unsaved-changes.guard';
@@ -66,7 +65,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   userFTEsFlat: any;  // array to store user FTE data (flattened/non-treeized version)
   display: boolean; // TODO: find a better solution to FTE display timing issue
   displayFTETable = false;
-  loggedInUser: User; // object for logged in user's info
   projects: any;  // for aliasing formarray
   months: string[] = [];
   monthlyTotals: number[];
@@ -78,7 +76,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private apiDataService: ApiDataService,
+    private apiDataProjectService: ApiDataProjectService,
+    private apiDataFteService: ApiDataFteService,
     private appDataService: AppDataService,
     private toolsService: ToolsService,
     private decimalPipe: DecimalPipe,
@@ -104,31 +103,22 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
     // returning true will navigate without confirmation
-    return this.FTEFormGroup.untouched;
     // returning false will show a confirm dialog before navigating away
+    if ($('#confirm-modal').is(':visible')) {
+      // if the user is about to be routed away due to inactivity timeout, always allow deactivation
+      return true;
+    } else {
+      // otherwise, allow immediate deactivation only if the form is untouched
+      return this.FTEFormGroup.untouched;
+    }
   }
 
   ngOnInit() {
     this.setSliderConfig(); // initalize slider config
 
-    // get logged in user's info
-    // this.authService.getLoggedInUser((user, err) => {
-    //   if (err) {
-    //     // console.log(`error getting logged in user: ${err}`);
-    //     return;
-    //   }
-    //   // console.log('logged in user data received in main component:');
-    //   // console.log(user);
-    //   this.loggedInUser = user;
-    //   this.fteComponentInit();  // initialize the FTE entry component
-    // });
-
-    // get logged in user's info
-    this.loggedInUser = this.authService.loggedInUser;
-
     this.fteComponentInit();  // initialize the FTE entry component
 
-    this.apiDataService.getProjects()
+    this.apiDataProjectService.getProjects()
     .subscribe(
       res => {
         console.log('get project data successfull:');
@@ -175,7 +165,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     });
     if (!alreadyExists) {
       const newProject = new UserFTEs;
-      newProject.userID = this.loggedInUser.id;
+      newProject.userID = this.authService.loggedInUser.id;
       newProject.projectID = selectedProject.ProjectID;
       newProject.projectName = selectedProject.ProjectName;
 
@@ -372,7 +362,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       const fteData = this.FTEFormGroup.value.FTEFormArray;
       const t0 = performance.now();
       // call the api data service to send the put request
-      this.apiDataService.updateFteData(fteData, this.loggedInUser.id)
+      this.apiDataFteService.updateUserData(fteData, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           const t1 = performance.now();
@@ -413,7 +403,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   fteComponentInit() {
     // get FTE data
-    this.apiDataService.getFteData(this.loggedInUser.id)
+    this.apiDataFteService.indexUserData(this.authService.loggedInUser.id)
     .subscribe(
       res => {
         this.userFTEs = res.nested;
@@ -661,7 +651,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.appDataService.confirmModalData.emit(
       {
         title: 'Confirm Deletion',
-        message: `Are you sure you want to permanently delete all FTE values for project ${deletedProject.projectName}?`,
+        message: `Are you sure you want to permanently delete all of your FTE values for project ${deletedProject.projectName}?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
         allowOutsideClickDismiss: false,
@@ -688,7 +678,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           projectID: deletedProject.projectID,
           projectName: deletedProject.projectName
         };
-        const deleteActionSubscription = this.apiDataService.deleteFteProject(toBeDeleted, this.loggedInUser.id).subscribe(
+        const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
           deleteResponse => {
             this.fteProjectVisible.splice(index, 1);
             this.fteProjectDeletable.splice(index, 1);
@@ -719,7 +709,20 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         message: `Are you sure you want to reset the form?  Unsaved changes may be lost.`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
-        display: true
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Yes',
+            bsClass: 'btn-success',
+            emit: true
+          },
+          {
+            text: 'Cancel',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
       }
     );
     // wait for response to reset confirm modal

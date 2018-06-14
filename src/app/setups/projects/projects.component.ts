@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
@@ -35,6 +36,7 @@ export class ProjectsSetupsComponent implements OnInit {
   // @Output() deleteSuccess = new EventEmitter<boolean>();
 
   constructor(
+    private apiDataProjectService: ApiDataProjectService,
     private apiDataService: ApiDataService,
     private appDataService: AppDataService,
     private authService: AuthService,
@@ -222,7 +224,7 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   getProjectRoster(projectID: number) {
-    this.apiDataService.getProjectRoster(projectID)
+    this.apiDataProjectService.getProjectRoster(projectID)
     .subscribe(
       res => {
         console.log('project roster:');

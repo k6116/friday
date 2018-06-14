@@ -15,9 +15,9 @@ router.get('/getLoggedInUsers', controllers.auth.getLoggedInUsers);
 router.get('/logout/:userName', controllers.auth.logout);
 
 // FTE CONTROLLER
-router.get('/ftedata/:userID', controllers.fte.getFteData);
-router.post('/ftedata/:userID', controllers.fte.update);
-router.post('/ftedata/deleteProject/:userID', controllers.fte.deleteProject);
+router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
+router.delete('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProject);
+router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
 
 // PROJECT CONTROLLER
 router.get('/projects', controllers.project.getAll)
@@ -35,6 +35,7 @@ router.post('/deleteProject/:userID', controllers.project.deleteProject);
 router.get('/employeeList/:managerEmailAddress', controllers.employee.show);
 
 // ORG CONTROLLER
+router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
 router.get('/org/:emailAddress', controllers.org.show);
 
 // CLICK TRACKING CONTROLLER
@@ -59,12 +60,13 @@ router.post('/updateProfile/:userID', controllers.profile.update);
 // router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
 
 // REPORTS PROJECT CONTROLLER
-router.get('/reports/aggregatedSubordinateFte/:managerEmailAddress', controllers.report.getAggregatedSubordinateFte);
-router.get('/reports/aggregatedFteData', controllers.report.getAggregatedFteData);
-router.get('/reports/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
-router.get('/getProjectFTEHistory/:projectID', controllers.report.getProjectFTEHistory);
-router.get('/getTopFTEProjectList/', controllers.report.getTopFTEProjectList);
-router.get('/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
+router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
+router.get('/report/getSubordinateFtes/:managerEmailAddress/:period', controllers.report.getSubordinateFtes);
+router.get('/report/getAggregatedFteData', controllers.report.getAggregatedFteData);
+router.get('/report/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
+router.get('/report/getProjectFTEHistory/:projectID', controllers.report.getProjectFTEHistory);
+router.get('/report/getTopFTEProjectList/', controllers.report.getTopFTEProjectList);
+router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token

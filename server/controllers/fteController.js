@@ -6,7 +6,7 @@ const Treeize = require('treeize');
 const moment = require('moment');
 
 
-function getFteData(req, res) {
+function indexUserData(req, res) {
 
     const userID = req.params.userID;
     sequelize.query('EXECUTE resources.DisplayFTE :userID', {replacements: {userID: userID}, type: sequelize.QueryTypes.SELECT})
@@ -27,7 +27,7 @@ function getFteData(req, res) {
 
 }
 
-function deleteProject(req, res) {
+function destroyUserProject(req, res) {
   const userID = req.params.userID;
   const toBeDeletedID = req.body.projectID;
   const toBeDeletedName = req.body.projectName;
@@ -53,22 +53,17 @@ function deleteProject(req, res) {
 
 }
 
-function update(req, res) {
+function updateUserData(req, res) {
 
   const formData = req.body;
   const userID = req.params.userID;
   const updatedValues = [];
-
-  // console.log('form data:');
-  // console.log(formData);
 
   // combine all project arrays into a single array
   const allFormData = [];
   formData.forEach(projectArr => {
     allFormData.push(...projectArr);
   });
-  // console.log('combined form data:');
-  // console.log(allFormData);
 
   // build arrays of objects for insert and update
   const insertData = [];
@@ -198,7 +193,7 @@ function update(req, res) {
 }
 
 module.exports = {
-    getFteData: getFteData,
-    update: update,
-    deleteProject: deleteProject
+  indexUserData: indexUserData,
+  destroyUserProject: destroyUserProject,
+  updateUserData: updateUserData,
 }

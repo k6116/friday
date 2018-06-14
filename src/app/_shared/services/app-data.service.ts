@@ -3,6 +3,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 @Injectable()
 export class AppDataService {
 
+  apiDataTimeout = 100 * 60 * 15; // set the api data service timeout to 15 seconds
   loggedInUser = new EventEmitter<any>();
   loggedInUser$: any;
 

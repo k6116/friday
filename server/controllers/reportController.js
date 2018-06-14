@@ -6,13 +6,80 @@ const Treeize = require('treeize');
 
 // TO-DO PAUL: create reports folder with separate controller files
 
-function getAggregatedSubordinateFte(req, res) {
-  const managerEmailAddress = req.params.managerEmailAddress;
+function translateTimePeriods(period) {
+  // compute start and end date for FTE Summary query based on period
+  let startMonth;
+  let endMonth;
+  switch (period) {
+    case 'current-quarter': {
+      startMonth = moment.utc().startOf('month');
+      const secondMonthInQuarter = [2, 5, 8, 11];
+      const thirdMonthInQuarter = [0, 3, 6, 9];
 
-  const sql = `exec resources.aggregateSubordinateFTE '${managerEmailAddress}'`
+      // we want current fiscal quarter to be editable as long as we are in that FQ,
+      // so adjust the current month to allow all months in the current quarter to be editable
+      if (thirdMonthInQuarter.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).subtract(2, 'months');
+      } else if (secondMonthInQuarter.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).subtract(1, 'month');
+      }
+      // subtracting 1 day, because SQL BETWEEN is inclusive
+      endMonth = moment(startMonth).add(3, 'months').subtract(1, 'day');
+      break;
+    }
+    case 'current-fy': {
+      startMonth = moment.utc().startOf('month');
+      const monthsInLastFiscalYear = [10, 11];
+
+      if (monthsInLastFiscalYear.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).set('month', 10);  // set month to Nov
+      } else {  // the beginning of the fiscal year was in last calendar year
+        startMonth = moment(startMonth).set('month', 10);
+        startMonth = moment(startMonth).set('year', (moment(startMonth).year() - 1));
+      }
+      // subtracting 1 day, because SQL BETWEEN is inclusive
+      endMonth = moment(startMonth).add(1, 'year').subtract(1, 'day');
+      break;
+    }
+    case 'all-time': {
+      startMonth = moment.utc().startOf('year').set('year', 1900);
+      endMonth = moment.utc().startOf('year').set('year', 9000);
+      break;
+    }
+  }
+
+  // return the computed start and end dates
+  return [moment(startMonth).format('MM/DD/YYYY'), moment(endMonth).format('MM/DD/YYYY')];
+}
+
+function getSubordinateProjectRoster(req, res) {
+  const managerEmailAddress = req.params.managerEmailAddress;
+  const period = req.params.period;
+  const datePeriod = translateTimePeriods(period);
+  const sql = `EXEC resources.getSubordinateProjectRoster '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
+      const subordinateProjectTeamTree = new Treeize();
+      subordinateProjectTeamTree.grow(org);
+      const subordinateProjectTeam = subordinateProjectTeamTree.getData();
       console.log("returning user PLM data");
+      res.json(subordinateProjectTeam);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+function getSubordinateFtes(req, res) {
+  const managerEmailAddress = req.params.managerEmailAddress;
+  const period = req.params.period;
+  const datePeriod = translateTimePeriods(period);
+  const sql = `EXEC resources.getSubordinateFtes '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
       res.json(org);
     })
     .catch(error => {
@@ -60,69 +127,32 @@ function getMyFteSummary(req, res) {
   const employeeID = req.params.employeeID;
   const period = req.params.period;
 
-  // compute start and end date for FTE Summary query based on period
-  let startMonth;
-  let endMonth;
-  switch (period) {
-    case 'current-quarter': {
-      startMonth = moment.utc().startOf('month');
-      const secondMonthInQuarter = [2, 5, 8, 11];
-      const thirdMonthInQuarter = [0, 3, 6, 9];
-
-      // we want current fiscal quarter to be editable as long as we are in that FQ,
-      // so adjust the current month to allow all months in the current quarter to be editable
-      if (thirdMonthInQuarter.includes(moment(startMonth).month())) {
-        startMonth = moment(startMonth).subtract(2, 'months');
-      } else if (secondMonthInQuarter.includes(moment(startMonth).month())) {
-        startMonth = moment(startMonth).subtract(1, 'month');
-      }
-      endMonth = moment(startMonth).add(3, 'months');
-      break;
-    }
-    case 'current-fy': {
-      startMonth = moment.utc().startOf('month');
-      const monthsInLastFiscalYear = [10, 11];
-
-      if (monthsInLastFiscalYear.includes(moment(startMonth).month())) {
-        startMonth = moment(startMonth).set('month', 10);  // set month to Nov
-      } else {  // the beginning of the fiscal year was in last calendar year
-        startMonth = moment(startMonth).set('month', 10);
-        startMonth = moment(startMonth).set('year', (moment(startMonth).year() - 1));
-      }
-      endMonth = moment(startMonth).add(1, 'year');
-      break;
-    }
-    case 'all-time': {
-      startMonth = moment.utc().startOf('year').set('year', 1900);
-      endMonth = moment.utc().startOf('year').set('year', 9000);
-      break;
-    }
-  }
-
-  const startDate = moment(startMonth).format('MM/DD/YYYY');
-  const endDate = moment(endMonth).format('MM/DD/YYYY');
-
+  const datePeriod = translateTimePeriods(period);
   const sql = `
     SELECT
       P.ProjectName AS name,
-      SUM(PE.FTE) AS FTE
+      P.projectID,
+      0 AS fteTotal, -- for putting project FTE total
+      0 AS y,        -- for putting project percent of period FTE total
+      PE.FiscalDate AS 'entries:date',
+      PE.FTE AS 'entries:fte'
     FROM
       resources.ProjectEmployees PE
       LEFT JOIN projects.Projects P ON PE.ProjectID = P.ProjectID
     WHERE
       PE.EmployeeID = '${employeeID}'
       AND
-      PE.FiscalDate BETWEEN '${startDate}' AND '${endDate}'
-    GROUP BY
-      P.ProjectName
+      PE.FiscalDate BETWEEN '${datePeriod[0]}' AND '${datePeriod[1]}'
     ORDER BY
-      FTE DESC
+      name,
+      [entries:date]
     `
-
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(data => {
-      console.log("returning MyFTESummary");
-      res.json(data);
+      const myFteTree = new Treeize();
+      myFteTree.grow(data);
+      const myFtes = myFteTree.getData();
+      res.json(myFtes);
     })
     .catch(error => {
       res.status(400).json({
@@ -286,8 +316,9 @@ function getQuarterlyEmployeeFTETotals(req, res) {
 }
 
 module.exports = {
-  getAggregatedSubordinateFte: getAggregatedSubordinateFte,
   getAggregatedFteData: getAggregatedFteData,
+  getSubordinateProjectRoster: getSubordinateProjectRoster,
+  getSubordinateFtes: getSubordinateFtes,
   getMyFteSummary: getMyFteSummary,
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,

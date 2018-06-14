@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiDataService } from '../_shared/services/api-data.service';
+import { ApiDataProjectService } from '../_shared/services/api-data/_index';
 import * as moment from 'moment';
 import { BaseChartDirective } from 'ng2-charts';
 
@@ -59,7 +59,7 @@ export class PerformanceComponent implements OnInit {
   public chartLegend: true;
   public chartType = 'line';
 
-  constructor ( private apiDataService: ApiDataService) {
+  constructor ( private apiDataProjectService: ApiDataProjectService) {
 
   }
 
@@ -104,7 +104,7 @@ export class PerformanceComponent implements OnInit {
 
       const t0 = performance.now();
 
-      this.apiDataService.getProjects()
+      this.apiDataProjectService.getProjects()
       .subscribe(
         res => {
           const t1 = performance.now();
