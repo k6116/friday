@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataReportService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
@@ -35,7 +35,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private apiDataService: ApiDataService
+    private apiDataReportService: ApiDataReportService
   ) { }
 
   ngOnInit() {
@@ -44,7 +44,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
     this.displayProjectEmployeeList = false;
 
     // Retrieve Top FTE Project List
-    this.topFteProjectSubscription = this.apiDataService.getTopFTEProjectList()
+    this.topFteProjectSubscription = this.apiDataReportService.getTopFTEProjectList()
     .subscribe(
       res => {
         console.log('Top FTE Project List Data: ', res);
@@ -90,7 +90,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
       this.plotFteHistoryChart();
     } else {
       // Retrieve historical FTE data for a given project
-      this.historicFteSubscription = this.apiDataService.getProjectFTEHistory(this.selectedProject.projectID)
+      this.historicFteSubscription = this.apiDataReportService.getProjectFTEHistory(this.selectedProject.projectID)
       .subscribe(
         res => {
           // highlight selected row
@@ -120,7 +120,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
   getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
     this.displayProjectEmployeeList = true;
     // Retrieve all employee FTE logs for a given project
-    this.projectEmployeeSubscription = this.apiDataService.getProjectEmployeeFTEList(projectID, fiscalDate)
+    this.projectEmployeeSubscription = this.apiDataReportService.getProjectEmployeeFTEList(projectID, fiscalDate)
     .subscribe(
       res => {
         // console.log('Project FTE Employee Data: ', res);

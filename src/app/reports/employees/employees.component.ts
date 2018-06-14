@@ -2,8 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AppDataService } from '../../_shared/services/app-data.service';
-import { ApiDataService } from '../../_shared/services/api-data.service';
-import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import { ApiDataOrgService, ApiDataReportService } from '../../_shared/services/api-data/_index';
 import { AuthService } from '../../_shared/services/auth.service';
 
 import * as Highcharts from 'highcharts';
@@ -45,7 +44,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   constructor(
     private appDataService: AppDataService,
-    private apiDataService: ApiDataService,
+    private apiDataReportService: ApiDataReportService,
     private apiDataOrgService: ApiDataOrgService,
     private authService: AuthService
   ) {
@@ -476,7 +475,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     this.currentFiscalYear = date.getFullYear();
 
     // Retrieve employee FTE aggregate data for a specific quarter and year
-    this.apiDataService.getQuarterlyEmployeeFTETotals(this.displayedEmployee.employeeID, this.currentFiscalQuarter, this.currentFiscalYear)
+    this.apiDataReportService.getQuarterlyEmployeeFTETotals(this.displayedEmployee.employeeID,
+      this.currentFiscalQuarter, this.currentFiscalYear)
       .subscribe(
         res => {
           this.quarterlyEmployeeFTETotals = res;

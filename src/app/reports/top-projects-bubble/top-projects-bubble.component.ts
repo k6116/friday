@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataReportService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { AuthService } from '../../_shared/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 import * as Highcharts from 'highcharts';
@@ -31,7 +31,8 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
   displayRosterTable = false; // display boolean for displaying roster table
 
   constructor(
-    private apiDataService: ApiDataService,
+    private apiDataReportService: ApiDataReportService,
+    private apiDataProjectService: ApiDataProjectService,
     private authService: AuthService
   ) { }
 
@@ -52,7 +53,7 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
   }
 
   getBubbleFteData() {
-    this.fteDataSubscription = this.apiDataService.getAggregatedFteData().subscribe( res => {
+    this.fteDataSubscription = this.apiDataReportService.getAggregatedFteData().subscribe( res => {
       this.rawBubbleData = res;
 
       this.rawBubbleData.forEach( project => {
@@ -168,7 +169,7 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
   }
 
   showProjectRoster(projectID: number) {
-    this.rosterDataSubscription = this.apiDataService.getProjectRoster(projectID).subscribe( res => {
+    this.rosterDataSubscription = this.apiDataProjectService.getProjectRoster(projectID).subscribe( res => {
       this.projectRoster = res[0].teamMembers;
       console.log(this.projectRoster);
       this.displayRosterTable = true;

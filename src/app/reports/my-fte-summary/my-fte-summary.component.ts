@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
+import { ApiDataReportService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
@@ -35,8 +35,8 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private apiDataService: ApiDataService,
-    private authService: AuthService
+    private authService: AuthService,
+    private apiDataReportService: ApiDataReportService
   ) { }
 
   ngOnInit() {
@@ -55,7 +55,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   getFteSummaryData(period: string) {
     this.chartIsLoading = true;
     // Retrieve Top FTE Project List
-    this.summarySubscription = this.apiDataService.getMyFteSummary(this.authService.loggedInUser.id, period)
+    this.summarySubscription = this.apiDataReportService.getMyFteSummary(this.authService.loggedInUser.id, period)
     .subscribe(
       res => {
         this.fteSummaryData = res;  // get summary data from db

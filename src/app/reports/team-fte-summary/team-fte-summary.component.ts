@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
-import { ApiDataService } from '../../_shared/services/api-data.service';
-import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import { ApiDataOrgService, ApiDataReportService } from '../../_shared/services/api-data/_index';
 import { AuthService } from '../../_shared/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -42,8 +41,8 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private apiDataService: ApiDataService,
     private apiDataOrgService: ApiDataOrgService,
+    private apiDataReportService: ApiDataReportService,
     private authService: AuthService
   ) { }
 
@@ -96,7 +95,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   }
 
   getTeamFtePareto(email: string, period: string) {
-    this.paretoChartSubscription = this.apiDataService.getSubordinateProjectRoster(email, period)
+    this.paretoChartSubscription = this.apiDataReportService.getSubordinateProjectRoster(email, period)
     .subscribe( res => {
       this.teamSummaryData = res;
       // total up the number of FTEs contributed to each project

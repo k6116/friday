@@ -109,11 +109,6 @@ export class ApiDataService {
     .map((response: Response) => response.json());
   }
 
-  getProjectRoster(projectID: number) {
-    return this.http.get(`/api/getProjectRoster/${projectID}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
 
   submitProjectAccessRequest(project: number, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
@@ -175,48 +170,5 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
-
-  // REPORTS API ROUTES
-  getSubordinateProjectRoster(managerEmailAddress: string, period: string) {
-    return this.http.get(`/api/reports/subordinateProjectRoster/${managerEmailAddress}/${period}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getAggregatedFteData() {
-    return this.http.get(`/api/reports/aggregatedFteData/`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getMyFteSummary(employeeID: number, period: string) {
-    return this.http.get(`/api/reports/myFteSummary/${employeeID}/${period}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getProjectFTEHistory(projectID: number) {
-    return this.http.get(`/api/reports/getProjectFTEHistory/${projectID}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getTopFTEProjectList() {
-    return this.http.get(`/api/reports/getTopFTEProjectList/`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
-    return this.http.get(`/api/reports/getProjectEmployeeFTEList/${projectID}/${fiscalDate}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getQuarterlyEmployeeFTETotals(employeeID: number, fiscalQuarter: number, fiscalYear: number) {
-    return this.http.get(`/api/getQuarterlyEmployeeFTETotals/${employeeID}/${fiscalQuarter}/${fiscalYear}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
 
 }
