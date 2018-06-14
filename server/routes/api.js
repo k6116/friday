@@ -15,9 +15,9 @@ router.get('/getLoggedInUsers', controllers.auth.getLoggedInUsers);
 router.get('/logout/:userName', controllers.auth.logout);
 
 // FTE CONTROLLER
-router.get('/ftedata/:userID', controllers.fte.getFteData);
-router.post('/ftedata/:userID', controllers.fte.update);
-router.post('/ftedata/deleteProject/:userID', controllers.fte.deleteProject);
+router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
+router.delete('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProject);
+router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
 
 // PROJECT CONTROLLER
 router.get('/projects', controllers.project.getAll)

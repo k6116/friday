@@ -362,7 +362,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       const fteData = this.FTEFormGroup.value.FTEFormArray;
       const t0 = performance.now();
       // call the api data service to send the put request
-      this.apiDataFteService.updateFteData(fteData, this.authService.loggedInUser.id)
+      this.apiDataFteService.updateUserData(fteData, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           const t1 = performance.now();
@@ -403,7 +403,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   fteComponentInit() {
     // get FTE data
-    this.apiDataFteService.getFteData(this.authService.loggedInUser.id)
+    this.apiDataFteService.indexUserData(this.authService.loggedInUser.id)
     .subscribe(
       res => {
         this.userFTEs = res.nested;
@@ -678,7 +678,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           projectID: deletedProject.projectID,
           projectName: deletedProject.projectName
         };
-        const deleteActionSubscription = this.apiDataFteService.deleteFteProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
+        const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
           deleteResponse => {
             this.fteProjectVisible.splice(index, 1);
             this.fteProjectDeletable.splice(index, 1);
