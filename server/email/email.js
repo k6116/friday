@@ -2,7 +2,7 @@
 const schedule = require('node-schedule');
 const moment = require('moment');
 const axios = require("axios");
-
+const env = process.env.ENVIRONMENT;
 
 function setSchedules() {
 
@@ -18,17 +18,12 @@ function setSchedules() {
 // │    └──────────────────── minute (0 - 59)
 // └───────────────────────── second (0 - 59, OPTIONAL)
 
-// TO-DO: If ENV = PROD then use quarterly schedule
-// TO-DO MIKE: use the .env file (process.env.ENVIRONMENT)
 let sched = '';
-if (1 == 0) {
-  sched = '0 6 1 2,5,8,11 *'; // Quarterly Schedule for PROD
+if (env === 'prod') {
+  sched = '0 10 1,2,3,4,5,6,7 2,5,8,11 1'; // PROD Schedule: 10AM on First Monday of each Designated Month
 } else {
-  sched = '23 14 30 2,5,8,11 *'; // By the Minute testing for Non-PROD
+  sched = '23 14 30 2,5,8,11 *'; // DEV Schedule: Can Alter for By-The-Minute-Testing
 }
-
-// NOTE: enter quarterly fte values reminder email will be sent out either first day of quarter, or if possible first monday of quarter (10am)
-// TO-DO MIKE: check out recurrance rules with node schedule to see if first monday is possible 
 
 schedule.scheduleJob((sched), () => {
     console.log('node-schedule event fired at: ' + moment().format('dddd, MMMM Do YYYY, h:mm:ss a'));
