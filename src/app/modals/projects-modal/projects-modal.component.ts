@@ -77,8 +77,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    const newHeight = $('div.projects-modal-body').height() - 170;
-    $('div.project-table-cont').height(newHeight);
+    this.resizeProjectCardsContainer();
   }
 
   constructor(
@@ -92,6 +91,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+
+    this.resizeProjectCardsContainer();
 
     this.outerDivState = 'out';
     this.innerDivState = 'out';
@@ -129,9 +130,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
-    const newHeight = $('div.projects-modal-body').height() - 170;
-    $('div.project-table-cont').height(newHeight);
+  }
 
+  resizeProjectCardsContainer() {
+    const newHeight = $('div.projects-modal-inner-cont').height() - 170;
+    $('div.project-table-cont').height(newHeight);
   }
 
   onSelectedProject(selProject: any) {
@@ -282,6 +285,36 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     $(`.card-button.roster[data-id=${this.clickedProjectForRosterModal.ProjectID}]`).tooltip('hide');
 
   }
+
+  onProjectTestClick(element) {
+
+    // emit confirmation modal after they click delete button
+    this.appDataService.confirmModalData.emit(
+      {
+        title: 'Title',
+        message: `Message?`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 193, 27)',
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Yes',
+            bsClass: 'btn-success',
+            emit: true
+          },
+          {
+            text: 'Cancel',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
+      }
+    );
+
+  }
+
+
 
   // since the modals are a single element, need to move the position to align with the button before displaying
   // returns an object with left and top properties

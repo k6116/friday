@@ -47,6 +47,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   // subscriptions
   subscription1: Subscription;
 
+  // array of background images and randomly selected background image
+  backgroundImages: string[];
+  backgroundImage: string;
+
   constructor(
     private router: Router,
     // private apiDataService: ApiDataService,
@@ -60,6 +64,17 @@ export class LoginComponent implements OnInit, OnDestroy {
     private cookiesService: CookiesService,
     private route: ActivatedRoute
   ) {
+
+    this.backgroundImages = [
+      '/assets/login_images/blue_mountains_sydney.jpg',
+      '/assets/login_images/garden_of_the_gods.jpg',
+      '/assets/login_images/himeji_castle_kobe.jpg',
+      '/assets/login_images/penang.jpg',
+      '/assets/login_images/point_bonita.jpg',
+      '/assets/login_images/singapore.jpg',
+      '/assets/login_images/yosemite.jpg'
+    ];
+
   }
 
   ngOnInit() {
@@ -74,9 +89,18 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
     }
 
+    // set random background image
+    this.setBackgroundImage();
+
   }
 
   ngOnDestroy() {
+  }
+
+  // set random background image
+  setBackgroundImage() {
+    const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
+    this.backgroundImage = `url(${this.backgroundImages[imageIndex]})`;
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)
