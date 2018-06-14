@@ -17,12 +17,12 @@ require('highcharts/modules/pareto.js')(Highcharts);
 })
 export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
-  // userPlmData: any; // for logged in user's PLM info
-  // plmSubscription: Subscription;  // for fetching PLM data
   userIsManager: boolean; // store if the user is a manager (has subordinates) or not
   userIsManagerSubscription: Subscription;  // for fetching subordinate info
+  managerEmail: string;
 
   teamOrgStructure: any;
+  getOrgSubscription: Subscription;
 
   chartIsLoading = true;  // display boolean for "Loading" spinner
   paretoChart: any; // chart obj
@@ -37,7 +37,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   dataCounter = 0;
 
   teamSummaryData: any; // for teamwide FTE summary data
-  displaySelectedProjectRoster: boolean;
+  displaySelectedProjectRoster = false;
   selectedProject: string;
   selectedProjectRoster: any;
   timePeriods = [
@@ -53,63 +53,72 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.displaySelectedProjectRoster = false;
-
-    // find out if user is a manager, too
+    // find out if user is a manager and store it for future display use
     this.userIsManagerSubscription = this.apiDataOrgService.getOrgData(this.authService.loggedInUser.email).subscribe( res => {
       // parse the json response. we only want the top level user, so use only the first index
       const userOrgData = JSON.parse('[' + res[0].json + ']')[0];
       this.userIsManager = userOrgData.numEmployees > 0 ? true : false;
       if (this.userIsManager) {
-        this.getTeam(this.authService.loggedInUser.email);
-        this.getTeamFtePareto(this.authService.loggedInUser.email, 'current-quarter');
-        this.getTeamFteData(this.authService.loggedInUser.email, 'current-quarter');
+        this.managerEmail = this.authService.loggedInUser.email;
       } else {
-        this.getTeam(userOrgData.supervisorEmailAddress);
-        this.getTeamFtePareto(userOrgData.supervisorEmailAddress, 'current-quarter');
-        this.getTeamFteData(userOrgData.supervisorEmailAddress, 'current-quarter');
+        this.managerEmail = userOrgData.supervisorEmailAddress;
       }
-
-      this.dataCompleteSubscription = this.dataIsComplete.subscribe( event => {
-        if (event) {
-          this.dataCounter++;
-        }
-        if (this.dataCounter === 2) {
-          this.dataCounter = 0;
-          this.dataCompleteSubscription.unsubscribe();
-          this.showTeamFteTable();
-        }
-      });
+      // then initialize the data for the report
+      this.componentDataInit('current-quarter');
     });
-
   }
 
   ngOnDestroy() {
     // clean up the subscriptions
-    // if (this.plmSubscription) {
-    //   this.plmSubscription.unsubscribe();
-    // }
+    if (this.userIsManagerSubscription) {
+      this.userIsManagerSubscription.unsubscribe();
+    }
+    if (this.getOrgSubscription) {
+      this.getOrgSubscription.unsubscribe();
+    }
+    if (this.teamFteSubscription) {
+      this.teamFteSubscription.unsubscribe();
+    }
+    if (this.dataCompleteSubscription) {
+      this.dataCompleteSubscription.unsubscribe();
+    }
     if (this.paretoChartSubscription) {
       this.paretoChartSubscription.unsubscribe();
     }
     if (this.paretoChart) {
       this.paretoChart.destroy();
     }
-    if (this.userIsManagerSubscription) {
-      this.userIsManagerSubscription.unsubscribe();
-    }
-    if (this.dataCompleteSubscription) {
-      this.dataCompleteSubscription.unsubscribe();
-    }
+  }
+
+  componentDataInit(period: string) {
+
+    this.dataCounter = 0;
+    this.displaySelectedProjectRoster = false;
+    this.chartIsLoading = true;
+
+    this.getTeam(this.managerEmail);
+    this.getTeamFtePareto(this.managerEmail, period);
+    this.getTeamFteData(this.managerEmail, period);
+
+    this.dataCompleteSubscription = this.dataIsComplete.subscribe( event => {
+      if (event) {
+        this.dataCounter++;
+      }
+      if (this.dataCounter === 2) {
+        this.dataCounter = 0;
+        this.dataCompleteSubscription.unsubscribe();
+        this.showTeamFteTable();
+      }
+    });
   }
 
   getTeam(email: string) {
-    this.apiDataOrgService.getOrgData(email)
+    // get list of subordinates
+    this.getOrgSubscription = this.apiDataOrgService.getOrgData(email)
     .subscribe(
       res => {
         this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
-        console.log(this.teamOrgStructure);
-        this.dataIsComplete.emit(true);
+        this.dataIsComplete.emit(true); // send a message to listener that this piece of data has arrived
       },
       err => {
         console.error('error getting nested org data');
@@ -118,15 +127,16 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   }
 
   getTeamFteData(email: string, period: string) {
-    this.paretoChartSubscription = this.apiDataReportService.getSubordinateFtes(email, period)
+    // get sum of FTEs for selected time period for all subordinates (may be missing team members if they have no entries)
+    this.teamFteSubscription = this.apiDataReportService.getSubordinateFtes(email, period)
     .subscribe( res => {
       this.teamFteData = res;
-      console.log(this.teamFteData);
       this.dataIsComplete.emit(true);
     });
   }
 
   getTeamFtePareto(email: string, period: string) {
+    // get nested project pareto with list of team members and their FTEs underneath each project
     this.paretoChartSubscription = this.apiDataReportService.getSubordinateProjectRoster(email, period)
     .subscribe( res => {
       this.teamSummaryData = res;
@@ -148,6 +158,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   }
 
   showTeamFteTable() {
+    // once data has all arrived, show the data
     // loop through the team roster and look for matches in the teamFtes data pull
     this.teamOrgStructure.employees.forEach( employee => {
       employee.fte = 0;
@@ -159,36 +170,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       });
     });
     this.chartIsLoading = false;
-    console.log('made it here');
-    console.log(this.teamOrgStructure);
   }
-
-  // getTeamSummaryData(period: string) {
-  //   this.chartIsLoading = true;
-  //   this.plmSubscription = this.apiDataService.getUserPLMData(this.authService.loggedInUser.email).subscribe( res => {
-  //     this.userPlmData = res[0];
-  //     // if user is a manager, roll up their subordinates' projects
-  //     // if not, then roll up their manager's projects (their peers, for individual contributors)
-  //     const queryEmail = this.userIsManager ? this.userPlmData.EMAIL_ADDRESS : this.userPlmData.SUPERVISOR_EMAIL_ADDRESS;
-  //     this.paretoChartSubscription = this.apiDataService.getSubordinateProjectRoster(queryEmail, period)
-  //     .subscribe( res2 => {
-  //       this.teamSummaryData = res2;
-  //       // total up the number of FTEs contributed to each project
-  //       let teamwideTotal = 0;
-  //       this.teamSummaryData.forEach( project => {
-  //         project.teamMembers.forEach( employee => {
-  //           project.totalFtes += employee.fte;
-  //           teamwideTotal += employee.fte;
-  //         });
-  //       });
-  //       // convert each project's total FTEs to a percentage of the teamwide FTEs
-  //       this.teamSummaryData.forEach( project => {
-  //         project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
-  //       });
-  //       this.plotFteSummaryPareto(period);
-  //     });
-  //   });
-  // }
 
   plotFteSummaryPareto(period: string) {
     // get the requested time period string's index
