@@ -4,7 +4,6 @@ import { AuthService } from '../../_shared/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
-// import { resolve } from 'path';
 
 declare var require: any;
 declare const $: any;
@@ -29,6 +28,13 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   paretoChart: any; // chart obj
   paretoChartOptions: any;  // chart options
   paretoChartSubscription: Subscription;  // for subordinates roster under a given project
+
+  teamFteData: any;
+  teamFteSubscription: Subscription;
+
+  dataCompleteSubscription: Subscription;
+  dataIsComplete = new EventEmitter;
+  dataCounter = 0;
 
   teamSummaryData: any; // for teamwide FTE summary data
   displaySelectedProjectRoster: boolean;
@@ -57,10 +63,23 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       if (this.userIsManager) {
         this.getTeam(this.authService.loggedInUser.email);
         this.getTeamFtePareto(this.authService.loggedInUser.email, 'current-quarter');
+        this.getTeamFteData(this.authService.loggedInUser.email, 'current-quarter');
       } else {
         this.getTeam(userOrgData.supervisorEmailAddress);
         this.getTeamFtePareto(userOrgData.supervisorEmailAddress, 'current-quarter');
+        this.getTeamFteData(userOrgData.supervisorEmailAddress, 'current-quarter');
       }
+
+      this.dataCompleteSubscription = this.dataIsComplete.subscribe( event => {
+        if (event) {
+          this.dataCounter++;
+        }
+        if (this.dataCounter === 2) {
+          this.dataCounter = 0;
+          this.dataCompleteSubscription.unsubscribe();
+          this.showTeamFteTable();
+        }
+      });
     });
 
   }
@@ -79,6 +98,9 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     if (this.userIsManagerSubscription) {
       this.userIsManagerSubscription.unsubscribe();
     }
+    if (this.dataCompleteSubscription) {
+      this.dataCompleteSubscription.unsubscribe();
+    }
   }
 
   getTeam(email: string) {
@@ -87,11 +109,21 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       res => {
         this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
         console.log(this.teamOrgStructure);
+        this.dataIsComplete.emit(true);
       },
       err => {
         console.error('error getting nested org data');
       }
     );
+  }
+
+  getTeamFteData(email: string, period: string) {
+    this.paretoChartSubscription = this.apiDataReportService.getSubordinateFtes(email, period)
+    .subscribe( res => {
+      this.teamFteData = res;
+      console.log(this.teamFteData);
+      this.dataIsComplete.emit(true);
+    });
   }
 
   getTeamFtePareto(email: string, period: string) {
@@ -113,6 +145,22 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       console.log(this.teamSummaryData);
       this.plotFteSummaryPareto(period);
     });
+  }
+
+  showTeamFteTable() {
+    // loop through the team roster and look for matches in the teamFtes data pull
+    this.teamOrgStructure.employees.forEach( employee => {
+      employee.fte = 0;
+      this.teamFteData.forEach( teamFte => {
+        // if there's a match, copy the value into the team org structure.  otherwise it will be initialized to 0
+        if (employee.emailAddress === teamFte.EMAIL_ADDRESS) {
+          employee.fte = teamFte.fte;
+        }
+      });
+    });
+    this.chartIsLoading = false;
+    console.log('made it here');
+    console.log(this.teamOrgStructure);
   }
 
   // getTeamSummaryData(period: string) {
@@ -230,7 +278,6 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       ]
     };
     this.paretoChart = Highcharts.chart('pareto', this.paretoChartOptions);
-    this.chartIsLoading = false;
   }
 
   showSubordinateTeamRoster(projectID: number) {

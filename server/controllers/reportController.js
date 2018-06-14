@@ -73,6 +73,23 @@ function getSubordinateProjectRoster(req, res) {
     });
 }
 
+function getSubordinateFtes(req, res) {
+  const managerEmailAddress = req.params.managerEmailAddress;
+  const period = req.params.period;
+  const datePeriod = translateTimePeriods(period);
+  const sql = `EXEC resources.getSubordinateFtes '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 function getAggregatedFteData(req, res) {
 
   const sql = `
@@ -301,6 +318,7 @@ function getQuarterlyEmployeeFTETotals(req, res) {
 module.exports = {
   getAggregatedFteData: getAggregatedFteData,
   getSubordinateProjectRoster: getSubordinateProjectRoster,
+  getSubordinateFtes: getSubordinateFtes,
   getMyFteSummary: getMyFteSummary,
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,
