@@ -193,7 +193,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (this.appDataService.appLoadPath) {
             this.router.navigateByUrl(this.appDataService.appLoadPath);
           } else {
-            this.router.navigateByUrl('/main');
+            this.router.navigateByUrl('/main/dashboard');
           }
 
 

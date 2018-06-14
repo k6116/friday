@@ -27,6 +27,14 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       // build an object that represents the sidebar menu structure, to be rendered in the html
       this.menuStructure = [
         {
+          title: 'Dashboard',
+          iconClass: 'nc-dashboard-half',
+          alias: 'dashboard',
+          path: 'main/dashboard',
+          expanded: false,
+          active: false
+        },
+        {
           title: 'FTE Entry',
           iconClass: 'nc-calendar-add',
           alias: 'fteEntry',
@@ -250,8 +258,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     const $el = $(`div.sidenav-menu-item.${alias}`);
     // find the menu item using the alias
     const foundMenuItem = this.getMenuObject(alias);
-    // set/calculate the height - will be 55 pixels collapses, and 55 + 40 times the number of subitems (and extra 3px)
-    const height = expand ? 55 + 3 + (foundMenuItem.subItems.length * 40) : 55;
+    // set/calculate the height
+    // will be 55 pixels collapsed, and 55 + 40 times the number of subitems (and extra 20px for bottom margin)
+    const height = expand ? 55 + 20 + (foundMenuItem.subItems.length * 40) : 55;
     // if animation is desired, set the transition css otherwise clear it
     if (animate) {
       $el.css('transition', 'height .35s ease-out');

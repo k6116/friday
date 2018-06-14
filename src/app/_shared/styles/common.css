@@ -22,6 +22,7 @@
 /* customized bootstrap column */
 div.col-custom {
   padding: 0;
+  width: 100%;
 }
 
 /* customized boostrap form group */
@@ -72,11 +73,18 @@ input.form-control:focus {
 
 
 /* standardized page header css */
-h2.page-header-text {
+/* h2.page-header-text {
   font-size: 30px;
   font-weight: 600;
   margin-top: -30px;
   color: darkred;
+} */
+
+h2.page-header-text {
+  font-size: 23px;
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 3px solid rgb(193, 193, 193);
 }
 
 div.col-text-header {
