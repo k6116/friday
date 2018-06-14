@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
 import { AuthService } from '../../_shared/services/auth.service';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataProjectService, ApiDataFteService } from '../../_shared/services/api-data/_index';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ComponentCanDeactivate } from '../../_shared/guards/unsaved-changes.guard';
@@ -76,7 +76,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private apiDataService: ApiDataService,
+    private apiDataProjectService: ApiDataProjectService,
+    private apiDataFteService: ApiDataFteService,
     private appDataService: AppDataService,
     private toolsService: ToolsService,
     private decimalPipe: DecimalPipe,
@@ -117,7 +118,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
     this.fteComponentInit();  // initialize the FTE entry component
 
-    this.apiDataService.getProjects()
+    this.apiDataProjectService.getProjects()
     .subscribe(
       res => {
         console.log('get project data successfull:');
@@ -361,7 +362,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       const fteData = this.FTEFormGroup.value.FTEFormArray;
       const t0 = performance.now();
       // call the api data service to send the put request
-      this.apiDataService.updateFteData(fteData, this.authService.loggedInUser.id)
+      this.apiDataFteService.updateFteData(fteData, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           const t1 = performance.now();
@@ -402,7 +403,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   fteComponentInit() {
     // get FTE data
-    this.apiDataService.getFteData(this.authService.loggedInUser.id)
+    this.apiDataFteService.getFteData(this.authService.loggedInUser.id)
     .subscribe(
       res => {
         this.userFTEs = res.nested;
@@ -650,7 +651,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.appDataService.confirmModalData.emit(
       {
         title: 'Confirm Deletion',
-        message: `Are you sure you want to permanently delete all FTE values for project ${deletedProject.projectName}?`,
+        message: `Are you sure you want to permanently delete all of your FTE values for project ${deletedProject.projectName}?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
         allowOutsideClickDismiss: false,
@@ -677,7 +678,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           projectID: deletedProject.projectID,
           projectName: deletedProject.projectName
         };
-        const deleteActionSubscription = this.apiDataService.deleteFteProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
+        const deleteActionSubscription = this.apiDataFteService.deleteFteProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
           deleteResponse => {
             this.fteProjectVisible.splice(index, 1);
             this.fteProjectDeletable.splice(index, 1);
@@ -708,7 +709,20 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         message: `Are you sure you want to reset the form?  Unsaved changes may be lost.`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
-        display: true
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Yes',
+            bsClass: 'btn-success',
+            emit: true
+          },
+          {
+            text: 'Cancel',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
       }
     );
     // wait for response to reset confirm modal

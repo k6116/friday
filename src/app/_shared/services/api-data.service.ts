@@ -30,37 +30,8 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
-  // ----- FTE SECTION ----- //
-  // get FTE data from db
-  getFteData(userID: number) {
-    return this.http.get(`/api/ftedata/${userID}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
 
-  // update existing FTE records
-  updateFteData(fteData: any, userID: number) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/ftedata/${userID}`, JSON.stringify(fteData), options)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
 
-  // delete an entire project from a user's FTE table
-  deleteFteProject(projectID: any, userID: number) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/ftedata/deleteProject/${userID}`, JSON.stringify(projectID), options)
-    .timeout(this.timeout)
-    .map((response: Response) => response.json());
-  }
-
-  getProjects() {
-    return this.http.get('api/projects')
-    .timeout(this.timeout)
-    .map((response: Response) => response.json());
-  }
 
   // for click tracking
   logClick(clickData: any, userID: number) {
