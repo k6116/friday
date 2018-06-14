@@ -20,7 +20,6 @@ router.post('/ftedata/deleteProject/:userID', controllers.fteData.deleteProject)
 // PROJECT CONTROLLER
 router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
 router.get('/getUserPLMData/:userEmailAddress', controllers.project.getUserPLMData);
-// router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
 router.get('/getProjectTypesList/', controllers.project.getProjectTypesList);
 router.get('/getPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.project.getPrimaryKeyRefs);
 router.get('/getUserProjectList/:userID', controllers.project.getUserProjectList);
@@ -29,6 +28,10 @@ router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/deleteProject/:userID', controllers.project.deleteProject);
 router.get('/getProjectSchedule/:projectName', controllers.project.getProjectSchedule);
 router.get('/getProjectTypeDisplayFields/', controllers.project.getProjectTypeDisplayFields);
+router.get('/getProjectRoles/', controllers.project.getProjectRoles);
+router.post('/insertProjectEmployeeRole/:userID', controllers.project.insertProjectEmployeeRole);
+router.post('/updateProjectEmployeeRole/:userID', controllers.project.updateProjectEmployeeRole);
+
 
 // ORG TREE DATA
 router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);

@@ -73,6 +73,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   projectAccessSubmittedList: any;
   projectAccessDeniedList: any;
   projectData: any;
+  projectRolesList: any;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -128,6 +129,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     this.getUserPLMData(this.userEmail);
     this.getPublicProjectTypes();
+    this.getProjectRoles();
   }
 
   ngAfterViewInit() {
@@ -601,10 +603,24 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     );
   }
 
+  getProjectRoles() {
+    this.apiDataService.getProjectRoles()
+    .subscribe(
+      res => {
+        console.log('Project Roles Retrieved');
+        this.projectRolesList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
   onRequestUpdateSuccess() {
     // refresh project access list to update the request buttons
     this.getProjectAccessList();
   }
+
 
 }
 

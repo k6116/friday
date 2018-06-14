@@ -265,6 +265,28 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getProjectRoles() {
+    return this.http.get(`/api/getProjectRoles/`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  insertProjectEmployeeRole(employeeProjectRoleData: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/insertProjectEmployeeRole/${userID}`, JSON.stringify(employeeProjectRoleData), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  updateProjectEmployeeRole(projectEmployeeRoleData: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/updateProjectEmployeeRole/${userID}`, JSON.stringify(projectEmployeeRoleData), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   // ORG API ROUTES
 
 

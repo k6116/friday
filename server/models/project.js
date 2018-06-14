@@ -72,7 +72,20 @@ const ProjectTypeDisplayFields = sequelize.define('projectTypeDisplayFields',
   },
   {
     schema: 'attr',
-    tableName: 'projectTypeDisplayFields',
+    tableName: 'ProjectTypeDisplayFields',
+    timestamps: false
+  }
+);
+
+const ProjectRoles = sequelize.define('projectRoles',
+  {
+    id: { type: Sequelize.INTEGER, field: 'ProjectRoleID', primaryKey: true, autoIncrement: true },
+    projectRole: { type: Sequelize.STRING, field: 'ProjectRole' },
+    description: { type: Sequelize.STRING, field: 'Description' }
+  },
+  {
+    schema: 'resources',
+    tableName: 'ProjectRoles',
     timestamps: false
   }
 );
@@ -91,6 +104,7 @@ module.exports = {
   Projects: Projects, 
   ProjectTypes: ProjectTypes,
   ProjectAccessRequests: ProjectAccessRequests,
-  ProjectTypeDisplayFields: ProjectTypeDisplayFields
+  ProjectTypeDisplayFields: ProjectTypeDisplayFields,
+  ProjectRoles: ProjectRoles,
 }
 

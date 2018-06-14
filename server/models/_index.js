@@ -1,7 +1,8 @@
 
 module.exports = {
   User: require('./user.js'),
-  ProjectEmployee: require('./projectEmployee.js'),
+  ProjectEmployee: require('./projectEmployee.js').ProjectEmployee,
+  ProjectEmployeeRoles: require('./projectEmployee.js').ProjectEmployeeRoles,
   Org: require('./org.js'),
   ClickTracking: require('./clickTracking.js'),
   JobTitle: require('./profile.js').JobTitle,
@@ -10,5 +11,6 @@ module.exports = {
   Projects: require('./project.js').Projects,
   ProjectTypes: require('./project.js').ProjectTypes,
   ProjectTypeDisplayFields: require('./project.js').ProjectTypeDisplayFields,
-  ProjectAccessRequests: require('./project.js').ProjectAccessRequests
+  ProjectAccessRequests: require('./project.js').ProjectAccessRequests,
+  ProjectRoles: require('./project.js').ProjectRoles
 }
