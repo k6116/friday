@@ -9,7 +9,7 @@ import { User } from '../../_shared/models/user.model';
 @Component({
   selector: 'app-projects-setups',
   templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.css', '../../_shared/styles/common.css'],
+  styleUrls: ['./projects.component.css', '../../_shared/styles/common.css']
 })
 export class ProjectsSetupsComponent implements OnInit {
 

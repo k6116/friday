@@ -1,5 +1,7 @@
 
 
+
+
 /* customized bootstrap fluid container (to accomodate navbar and sidebar) */
 .container-fluid {
   margin: 125px 100px 100px 250px;
@@ -74,6 +76,7 @@ h2.page-header-text {
   font-size: 30px;
   font-weight: 600;
   margin-top: -30px;
+  color: darkred;
 }
 
 div.col-text-header {

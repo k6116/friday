@@ -1,4 +1,10 @@
 
+
+h2.view-encap-test {
+  font-size: 20px;
+  color: green;
+}
+
 div.col-custom.col-slider {
   padding: 0 10px;
 }
