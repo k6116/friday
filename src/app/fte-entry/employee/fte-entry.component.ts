@@ -916,15 +916,15 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       const randomFile = avatarFiles[randomFileIndex];
       const randomProject: number = Math.floor((Math.random() * (3)));
       if (project.ProjectName === 'Deuce') {
-        project.avatar = `../assets/deuce.png`;
+        project.avatar = `../assets/project_avatars/deuce.png`;
       } else if (project.ProjectName === 'Arges50') {
-        project.avatar = `../assets/arges.png`;
+        project.avatar = `../assets/project_avatars/arges.png`;
       } else if (project.ProjectName === 'Baymax') {
-        project.avatar = `../assets/baymax.png`;
+        project.avatar = `../assets/project_avatars/baymax.png`;
       } else if (project.ProjectName === 'Minions') {
-        project.avatar = `../assets/minions.png`;
+        project.avatar = `../assets/project_avatars/minions.png`;
       } else if (randomProject === 0) {
-        project.avatar = `../assets/${randomFile}.png`;
+        project.avatar = `../assets/project_avatars/${randomFile}.png`;
       } else {
         project.avatar = null;
       }
