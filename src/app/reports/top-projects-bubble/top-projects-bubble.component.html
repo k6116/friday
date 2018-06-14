@@ -1,17 +1,24 @@
 <div class="container-fluid">
+  <!-- page header row -->
   <div class="row row-custom">
     <div class="col-sm col-custom col-text-header">
       <h2 class="page-header-text">Top Projects</h2>
     </div>
   </div>
 
-  <div class="row row-custom">
+  <!-- block for spinner if chart is loading -->
+  <div *ngIf="chartIsLoading" class="row row-custom">
+    Chart is loading...&nbsp;&nbsp;&nbsp;<div class="loading-spinner"></div>
+  </div>
+
+  <!-- block for chart -->
+  <div class="row row-custom" [hidden]="chartIsLoading">
     <div class="col-sm">
       <div id="bubble"></div>
     </div>
-  </div>
+  </div><br />
 
-  <!-- roster table -->
+  <!-- block for roster table (in a separate row) -->
   <div *ngIf="displayRosterTable">
     <div class="row row-custom">
       <div class="col-sm col-custom col-text-header">

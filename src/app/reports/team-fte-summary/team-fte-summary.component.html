@@ -1,23 +1,85 @@
 <div class="container-fluid">
+  <!-- page header row -->
   <div class="row row-custom">
     <div class="col-sm col-custom col-text-header">
-      <h2 class="page-header-text">My Team's FTE Summary</h2>
+      <h2 class="page-header-text">My Team's Projects</h2>
     </div>
   </div>
 
-  <div class="row row-custom">
-    <div class="col-sm-2 col-custom">
+  <!-- block for time period drop-down selector -->
+  <!-- <div class="row row-custom">
+    <div class="col-sm-3 col-custom">
       <label>Time Period:</label>
       <select name="time-period-selector" class="form-control" (change)="getTeamSummaryData($event.target.value)">
         <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
       </select>
     </div>
+  </div> -->
+
+  <!-- block for spinner if chart is loading -->
+  <div *ngIf="chartIsLoading" class="row row-custom">
+    Chart is loading...&nbsp;&nbsp;&nbsp;<div class="loading-spinner"></div>
   </div>
 
-  <div class="row row-custom">
-    <div class="col-sm-6">
-        <div id="pareto"></div>
+  <!-- block for team roster table and team pareto chart -->
+  <!-- using [hidden] so that chart obj is still in DOM so it can be rendered to in the background -->
+  <div class="row row-custom" [hidden]="chartIsLoading">
+    <!-- using ngIf to keep table data out of DOM until data arrives -->
+    <ng-container *ngIf="!chartIsLoading">
+      <!-- by default, show team FTE roster -->
+      <div *ngIf="!displaySelectedProjectRoster" class="col-sm-5">
+        <h3>{{userIsManager ? 'My Team Members' : 'My Peers under ' + teamOrgStructure.fullName}}:</h3>
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <td>Employee Name</td>
+              <td>FTE</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let member of teamOrgStructure.employees">
+              <td>{{member.fullName}}</td>
+              <td>{{member.fte}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- team-specific FTE roster if user clicks a project -->
+      <div *ngIf="displaySelectedProjectRoster" class="col-sm-5">
+        <h3>{{userIsManager ? 'My Team Members' : 'My Peers'}} on {{selectedProject}}:</h3>
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <td>Employee Name</td>
+              <td>FTE</td>
+              <td>Job Title</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let member of selectedProjectRoster">
+              <td>{{member.name}}</td>
+              <td>{{member.fte}}</td>
+              <td>{{member.jobTitle}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+
+   <!-- block for pareto chart -->
+    <div class="col-sm-7">
+      <!-- date-switcher div -->
+      <div class="chart-date-switcher form-inline">
+          <label class="chart-date-switcher-label">Range:</label>
+          <select name="time-period-selector" class="form-control date-switcher-selector" (change)="componentDataInit($event.target.value)">
+            <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
+          </select>
+        </div>
+      <!-- highcharts div -->
+      <div id="pareto"></div>
     </div>
+
   </div>
 
 </div>

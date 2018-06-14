@@ -16,7 +16,7 @@ export class ApiDataService {
     private http: Http
   ) {
     // set the timeout to 15 seconds
-    this.timeout = 90000;
+    this.timeout = 100 * 60 * 30;
   }
 
 
@@ -30,42 +30,8 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
-  // get FTE data
-  getFteData(userID: number) {
-    return this.http.get(`/api/ftedata/${userID}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getEmployeeData(managerEmailAddress: string) {
-    return this.http.get(`/api/employeeList/${managerEmailAddress}`)
-    .timeout(this.timeout)
-    .map((response: Response) => response.json());
-  }
-
-  // update FTE data
-  updateFteData(fteData: any, userID: number) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/ftedata/${userID}`, JSON.stringify(fteData), options)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  deleteFteProject(projectID: any, userID: number) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/ftedata/deleteProject/${userID}`, JSON.stringify(projectID), options)
-    .timeout(this.timeout)
-    .map((response: Response) => response.json());
-  }
 
 
-  getProjects() {
-    return this.http.get('api/projects')
-    .timeout(this.timeout)
-    .map((response: Response) => response.json());
-  }
 
   // for click tracking
   logClick(clickData: any, userID: number) {
@@ -143,11 +109,6 @@ export class ApiDataService {
     .map((response: Response) => response.json());
   }
 
-  getProjectRoster(projectID: number) {
-    return this.http.get(`/api/getProjectRoster/${projectID}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
 
   submitProjectAccessRequest(project: number, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
@@ -203,50 +164,11 @@ export class ApiDataService {
 
 
   // ORG API ROUTES
-
-
-
-  // REPORTS API ROUTES
-  getAggregatedSubordinateFTE(managerEmailAddress: string) {
-    return this.http.get(`/api/reports/aggregatedSubordinateFte/${managerEmailAddress}`)
+  getSubordinatesFlat(emailAddress: string) {
+    return this.http.get(`/api/org/subordinatesFlat/${emailAddress}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
 
-  getAggregatedFteData() {
-    return this.http.get(`/api/reports/aggregatedFteData/`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getMyFteSummary(employeeID: number, period: string) {
-    return this.http.get(`/api/reports/getMyFteSummary/${employeeID}/${period}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getProjectFTEHistory(projectID: number) {
-    return this.http.get(`/api/getProjectFTEHistory/${projectID}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getTopFTEProjectList() {
-    return this.http.get(`/api/getTopFTEProjectList/`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
-    return this.http.get(`/api/getProjectEmployeeFTEList/${projectID}/${fiscalDate}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-  getQuarterlyEmployeeFTETotals(employeeID: number, fiscalQuarter: number, fiscalYear: number) {
-    return this.http.get(`/api/getQuarterlyEmployeeFTETotals/${employeeID}/${fiscalQuarter}/${fiscalYear}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
 
 }

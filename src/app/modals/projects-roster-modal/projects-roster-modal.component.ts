@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 
 declare var $: any;
 
@@ -30,7 +31,8 @@ export class ProjectsRosterModalComponent implements OnInit {
 
 
   constructor(
-    private apiDataService: ApiDataService
+    private apiDataService: ApiDataService,
+    private apiDataProjectService: ApiDataProjectService
   ) { }
 
   ngOnInit() {
@@ -40,7 +42,7 @@ export class ProjectsRosterModalComponent implements OnInit {
   getProjectRoster() {
     console.log('getting project roster');
     this.projectHasMembers = false;
-    this.apiDataService.getProjectRoster(this.project.ProjectID)
+    this.apiDataProjectService.getProjectRoster(this.project.ProjectID)
     .subscribe(
       res => {
         console.log('project roster:');

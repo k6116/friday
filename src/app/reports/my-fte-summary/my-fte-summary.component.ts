@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
-import { User } from '../../_shared/models/user.model';
+import { ApiDataReportService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
@@ -9,7 +8,6 @@ import * as Highcharts from 'highcharts';
 declare var require: any;
 declare const $: any;
 const moment = require('moment');
-require('highcharts/modules/pareto.js')(Highcharts);
 
 
 // need to look into this.  requiring specific highcharts modules in this fashion can
@@ -23,13 +21,13 @@ require('highcharts/modules/pareto.js')(Highcharts);
 })
 export class MyFteSummaryComponent implements OnInit, OnDestroy {
 
-  loggedInUser: User; // object for logged in user's info
   summarySubscription: Subscription;
-  pieChart: any;
-  paretoChart: any;
+  chartIsLoading = true;
   fteSummaryData: any;
-  pieChartOptions: any;
-  paretoChartOptions: any;
+
+  timeSeriesChart: any;
+  timeSeriesOptions: any;
+
   timePeriods = [
     {period: 'current-quarter', text: 'Current Quarter'},
     {period: 'current-fy', text: 'Current Fiscal Year'},
@@ -37,53 +35,49 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private apiDataService: ApiDataService,
-    private authService: AuthService
+    private authService: AuthService,
+    private apiDataReportService: ApiDataReportService
   ) { }
 
   ngOnInit() {
-    // get logged in user's info
-    this.authService.getLoggedInUser((user, err) => {
-      if (err) {
-        // console.log(`error getting logged in user: ${err}`);
-        return;
-      }
-      this.loggedInUser = user;
-      this.getFteSummaryData('current-quarter');  // initialize the FTE entry component
-    });
+    this.getFteSummaryData('current-quarter');
   }
 
   ngOnDestroy() {
     if (this.summarySubscription) {
       this.summarySubscription.unsubscribe();
     }
-    if (this.pieChart) {
-      this.pieChart.destroy();
-    }
-    if (this.paretoChart) {
-      this.paretoChart.destroy();
+    if (this.timeSeriesChart) {
+      this.timeSeriesChart.destroy();
     }
   }
 
   getFteSummaryData(period: string) {
-
+    this.chartIsLoading = true;
     // Retrieve Top FTE Project List
-    this.summarySubscription = this.apiDataService.getMyFteSummary(this.loggedInUser.id, period)
+    this.summarySubscription = this.apiDataReportService.getMyFteSummary(this.authService.loggedInUser.id, period)
     .subscribe(
       res => {
         this.fteSummaryData = res;  // get summary data from db
 
-        // convert FTE values into percentages
-        let totalFtes = 0;
+        // total up the individual monthly FTEs into a project total
+        let periodTotal = 0;
         this.fteSummaryData.forEach( project => {
-          totalFtes += +project.FTE;
+          project.entries.forEach( entry => {
+            project.fteTotal += entry.fte;
+            periodTotal += entry.fte;
+          });
         });
+
         this.fteSummaryData.forEach( project => {
-          project.y = project.FTE / totalFtes;
+          // parse FTE data from nested json object into timestamp:fte array pairs for Highcharts
+          const singleProjectData = [];
+          project.entries.forEach( entry => {
+            singleProjectData.push([moment(entry.date).valueOf(), entry.fte]);
+          });
+          project.data = singleProjectData;
         });
-        console.log(this.fteSummaryData);
-        this.plotFteSummaryPie(period);
-        this.plotFteSummaryPareto(period);
+        this.plotTimeSeries(period);
       },
       err => {
         console.log(err);
@@ -91,109 +85,42 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
     );
   }
 
-
-  plotFteSummaryPie(period: string) {
+  plotTimeSeries(period: string) {
     const timePeriod = this.timePeriods.find( obj => {
       return obj.period === period;
     });
 
-    this.pieChartOptions = {
+    this.timeSeriesOptions = {
       credits: {
         text: 'jarvis.is.keysight.com',
         href: 'https://jarvis.is.keysight.com'
       },
       chart: {
-          type: 'pie'
+        type: 'spline',
+        height: 500
       },
       title: {
-          text: `${this.loggedInUser.fullName}'s Historic FTEs by project`
+        text: `${this.authService.loggedInUser.fullName}'s Historic FTEs by project`
       },
       subtitle: {
-        text: `${timePeriod.text}`
-      },
-      tooltip: {
-          pointFormat:
-            `FTEs Recorded: <b>{point.FTE}</b><br />
-            {series.name}: <b>{point.percentage:.1f}%</b>`
-      },
-      plotOptions: {
-          pie: {
-              allowPointSelect: true,
-              cursor: 'pointer',
-              dataLabels: {
-                  enabled: false
-              },
-              showInLegend: true
-          }
-      },
-      series: [{
-          name: 'Percent of Total',
-          colorByPoint: true,
-          data: this.fteSummaryData
-      }]
-    };
-
-    this.pieChart = Highcharts.chart('pie', this.pieChartOptions);
-  }
-
-  plotFteSummaryPareto(period: string) {
-    const timePeriod = this.timePeriods.find( obj => {
-      return obj.period === period;
-    });
-
-    const names = [];
-    const values = [];
-    this.fteSummaryData.forEach( project => {
-      names.push(project.name);
-      values.push(project.FTE);
-    });
-
-    this.paretoChartOptions = {
-      credits: {
-        text: 'jarvis.is.keysight.com',
-        href: 'https://jarvis.is.keysight.com'
-      },
-      chart: {
-        renderTo: 'pareto',
-        type: 'column'
-      },
-      title: {
-        text: `${this.loggedInUser.fullName}'s Historic FTE Pareto`
-      },
-      subtitle: {
-        text: `${timePeriod.text}`
+        text: `Time Period: ${timePeriod.text}`
       },
       xAxis: {
-        categories: names
+        type: 'datetime'
       },
-      yAxis: [{
-        title: {text: 'FTEs'}
+      yAxis: {
+        title: {
+          text: 'Monthly FTEs Recorded'
+        }
       },
-      {
-        title: {text: ''},
-        minPadding: 0,
-        maxPadding: 0,
-        max: 100,
-        min: 0,
-        opposite: true,
-        labels: {format: '{value}%'}
-      }],
-      series: [{
-        type: 'pareto',
-        name: 'Pareto',
-        yAxis: 1,
-        zIndex: 10,
-        baseSeries: 1
+      tooltip: {
+        crosshairs: true,
+        shared: true
       },
-      {
-        name: 'FTEs Recorded',
-        type: 'column',
-        colorByPoint: true,
-        zIndex: 2,
-        data: values
-      }]
+      series: this.fteSummaryData
     };
-    this.paretoChart = Highcharts.chart('pareto', this.paretoChartOptions);
+    this.timeSeriesChart = Highcharts.chart('timeSeries', this.timeSeriesOptions);
+    this.chartIsLoading = false;
   }
 
 }
