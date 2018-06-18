@@ -92,6 +92,13 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           path: 'main/chat',
           expanded: false,
           active: false
+        },
+        {
+          title: 'Admin',
+          alias: 'admin',
+          path: 'main/admin',
+          expanded: false,
+          active: false
         }
       ];
 

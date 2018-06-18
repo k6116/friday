@@ -1,0 +1,98 @@
+<div class="jumbotron">
+  <div class="row">
+
+    <div class="col-sm">
+      <h2>Job Titles</h2>
+      <form novalidate #f="ngForm">
+        <div class="input-group">
+          <input 
+            type="text"
+            name="filterString"
+            [(ngModel)]="filterString"
+            placeholder="Job Title">
+          <div class="input-group-append">
+            <button class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="modal" data-target="#createJobTitleModal"
+              [disabled]="f.value.lengthJobTitleList!==0">
+              <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
+            </button>
+          </div>
+        </div>
+        <br/>
+
+        <div class="list-group">
+          <!-- <ng-container *ngFor="let list of jobTitleList | filter : filterString : 'jobTitleName':{limitTo: numProjectsToDisplay, matchFuzzy: true}; let i = index"> -->
+          <ng-container *ngIf="(jobTitleList | filter : filterString : 'jobTitleName':{limitTo: numProjectsToDisplay, matchFuzzy: true}) as result">
+            <div *ngFor="let list of result">
+              <button type="button" class="list-group-item list-group-item-action" (click)="getJobTitleSubList(list.id, jobTitleList)">
+                <div class="row">
+                  <div class="col-10">
+                    {{ list.jobTitleName }}<span *ngIf="list.description">- {{list.description}}</span>
+                  </div>
+                  <div class="col-1">
+                    <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#jobTitleEditModal"></i>
+                  </div>
+                  <div class="col-1">
+                    <i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal"></i>
+                  </div>
+                </div>
+              </button>
+            </div>
+            <div name="lengthJobTitleList" [(ngModel)]="result.length" ngDefaultControl>Result = {{result.length}}</div>
+          </ng-container>
+        </div>
+      </form>
+      {{ f.value | json }}
+    </div>
+
+    <div class="col-sm">
+      <h2>Job Subtitles</h2>
+      <div class="input-group">
+        <input type="text" class="form-control">
+        
+        <div class="input-group-append">
+          <button class="btn btn-primary btn-fte-toolbar" style="display: block">
+            <i class="fa fa-plus"></i>&nbsp;&nbsp;Add
+          </button>
+        </div>
+      </div>
+      <br/>
+      <div class="list-group"> 
+        <ng-container *ngFor="let sublist of jobTitleSubList">
+          <button type="button" class="list-group-item list-group-item-action">{{sublist.jobTitleSubName}}</button>
+        </ng-container>
+      </div>
+    </div>
+
+  </div>
+  <!-- <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+  <hr class="my-4">
+  <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+  <p class="lead">
+    <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveClick()">
+      <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+    </button>
+  </p> -->
+</div>
+
+<!-- CreateJobTitle Modal -->
+<!-- Might be moved to it's own component -->
+<div class="modal" tabindex="-1" role="dialog" id="createJobTitleModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="width:150%">
+        <div class="modal-header" style="border-bottom: none; height: 2rem;">
+          <h5 class="title">Create a Job Title</h5>
+        </div>
+        <div class="modal-body">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Name" [(ngModel)]="jobTitleName">&nbsp;
+          <input type="text" class="form-control" placeholder="Description" [(ngModel)]="jobTitledescription">&nbsp;
+          <div class="input-group-append">
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onCreateJobTitleClick(jobTitleName, jobTitledescription)">OK</button>&nbsp;
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->

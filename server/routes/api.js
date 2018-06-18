@@ -54,6 +54,7 @@ router.post('/responseProjectAccessRequest/:userID/:reply/:replyComment', contro
 // Profile Controller
 router.get('/getJobTitleList', controllers.profile.show);
 router.post('/updateProfile/:userID', controllers.profile.update);
+router.post('/insertJobTitle', controllers.profile.insertJobTitle);
 // router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
 
 // REPORTS PROJECT CONTROLLER

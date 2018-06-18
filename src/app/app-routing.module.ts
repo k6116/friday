@@ -14,6 +14,7 @@ import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.c
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
+import { AdminComponent } from './admin/admin.component';
 
 import { AuthGuardService } from './auth/auth-guard.service';
 import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
@@ -43,6 +44,7 @@ const routes: Routes = [
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent, canActivate: [AuthGuardService] },
       { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
       { path: 'chat', component: ChatComponent, canActivate: [AuthGuardService] },
+      { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
     ]
   },
   { path: '**', redirectTo: '/login' }

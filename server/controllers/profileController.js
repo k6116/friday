@@ -7,7 +7,7 @@ function show(req, res) {
 
     models.JobTitle.findAll({
         order: [['jobTitleName', 'ASC']], 
-        attributes: ['id', 'jobTitleName'],
+        attributes: ['id', 'jobTitleName', 'description'],
         include: [{
             model: models.JobTitleJunction,
             attributes: ['jobTitleID'],
@@ -70,7 +70,49 @@ function update(req,res) {
       
 }
 
+function insertJobTitle(req, res) {
+
+    // get the project object from the request body
+    const jobTitleData = req.body;
+  
+    return sequelize.transaction((t) => {
+  
+      return models.JobTitle
+        .create(
+          {
+            jobTitleName: jobTitleData.jobTitleName,
+            description: jobTitleData.description,
+          },
+          {
+            transaction: t
+          }
+        )
+        .then(savedProject => {
+  
+        //   console.log('created new job title );
+  
+        })
+  
+      }).then(() => {
+  
+        res.json({
+          message: `The job title '${jobTitleData.jobTitleName}' has been added successfully`,
+        })
+  
+      }).catch(error => {
+  
+        console.log(error);
+        res.status(500).json({
+          title: 'update failed',
+          error: {message: error}
+        });
+  
+      })
+  
+  }
+
 module.exports = {
     show: show,
-    update: update
+    update: update,
+    insertJobTitle: insertJobTitle,
 }

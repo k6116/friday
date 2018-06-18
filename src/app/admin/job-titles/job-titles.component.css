@@ -1,0 +1,16 @@
+.btn-primary {
+    color: #fff;
+    background-color: rgb(108, 117, 125);;
+    border-color: rgb(108, 117, 125);;
+  }
+
+  .btn-fte-toolbar {
+    width: 90px;
+    height: 35px;
+  }
+
+  /* .list-group{
+    max-height: 500px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+} */
