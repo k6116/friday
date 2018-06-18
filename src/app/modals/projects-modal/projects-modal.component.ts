@@ -5,7 +5,7 @@ import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@ang
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../_shared/services/auth.service';
 
 declare var $: any;
 

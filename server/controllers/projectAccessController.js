@@ -4,47 +4,20 @@ const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
 
-// function getProjectAccessRequestsList(req, res) {
 
-//   const userID = req.params.userID;
-
-//   const sql = `
-//   SELECT
-//     P1.RequestID, P1.RequestStatus, P1.ProjectID, P1.RequestedBy, P1.RequestDate, P1.RequestNotes, P1.RespondedBy, P1.ResponseDate, P1.ResponseNotes,
-//     P2.ProjectName, P2.CreatedBy,
-//     E1.FullName
-//   FROM
-//     resources.ProjectAccessRequests P1
-//     LEFT JOIN projects.Projects P2 ON P1.ProjectID = P2.ProjectID
-//     LEFT JOIN accesscontrol.Employees E1 ON P1.RequestedBy = E1.EmployeeID
-//   WHERE
-//     P2.CreatedBy = '${userID}'
-//   `
-//   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
-//     .then(org => {
-//       console.log("returning project access requests list");
-//       res.json(org);
-//     })
-//     .catch(error => {
-//       res.status(400).json({
-//         title: 'Error (in catch)',
-//         error: {message: error}
-//       })
-//     });
-// }
-
+// TO-DO PAUL: try to combine into single project controller, or permissions?, and add comments
 
 function getPublicProjectTypes(req, res) {
 
   const userID = req.params.userID;
 
   const sql = `
-  SELECT
-    T1.LookupID, T1.LookupName, T1.LookupValue
-  FROM
-    other.Lookups T1
-  WHERE
-    T1.LookupName = 'Public Project Type'
+    SELECT
+      T1.LookupID, T1.LookupName, T1.LookupValue
+    FROM
+      other.Lookups T1
+    WHERE
+      T1.LookupName = 'Public Project Type'
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(publicProjectTypes => {

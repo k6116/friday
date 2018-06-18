@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { AppDataService } from './_shared/services/app-data.service';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './_shared/services/auth.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
 import { WebsocketService } from './_shared/services/websocket.service';
 
@@ -73,13 +73,6 @@ export class AppComponent implements OnInit {
         // console.log('subscription to resetTimer receivevd in the app component');
         this.resetTimer();
     });
-
-    // TEMP CODE: log the init and current path
-    // NOTE: this could be used to redirect to main or login if they go directly to a different path
-    // the setTimeout with zero is needed here (could try to put it in afterViewInit though)
-    setTimeout(() => {
-      console.log(`app component has been initialized; current route is: ${this.router.url}`);
-    }, 0);
 
   }
 

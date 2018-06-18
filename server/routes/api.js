@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 
 var controllers = require('../controllers/_index.js');
 
+// TO-DO ALL: rename controller functions to index, show, insert, update, destory if it fits
+
 // AUTH CONTROLLER 
 router.post('/login', controllers.auth.authenticate);
 router.get('/getInfoFromToken', controllers.auth.getInfoFromToken);
@@ -12,12 +14,13 @@ router.post('/resetToken', controllers.auth.resetToken);
 router.get('/getLoggedInUsers', controllers.auth.getLoggedInUsers);
 router.get('/logout/:userName', controllers.auth.logout);
 
-// FTE data controller
-router.get('/ftedata/:userID', controllers.fteData.getFteData);
-router.post('/ftedata/:userID', controllers.fteData.update);
-router.post('/ftedata/deleteProject/:userID', controllers.fteData.deleteProject);
+// FTE CONTROLLER
+router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
+router.delete('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProject);
+router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
 
 // PROJECT CONTROLLER
+router.get('/projects', controllers.project.getAll)
 router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
 router.get('/getUserPLMData/:userEmailAddress', controllers.project.getUserPLMData);
 router.get('/getProjectTypesList/', controllers.project.getProjectTypesList);
@@ -34,12 +37,12 @@ router.post('/insertProjectEmployeeRole/:userID', controllers.project.insertProj
 router.post('/updateProjectEmployeeRole/:userID', controllers.project.updateProjectEmployeeRole);
 
 
-// ORG TREE DATA
-router.get('/employeeList/:managerEmailAddress', controllers.employeeList.show);
+// EMPLOYEE CONTROLLER
+router.get('/employeeList/:managerEmailAddress', controllers.employee.show);
 
 // ORG CONTROLLER
+router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
 router.get('/org/:emailAddress', controllers.org.show);
-router.get('/projects', controllers.project.getAll)
 
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking/:userID', controllers.clickTracking.insert);
@@ -49,7 +52,7 @@ router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
 router.post('/sendRequestProjectEmail/:userID/:ownerID/:projectName', controllers.email.sendRequestProject); 
 router.post('/sendProjectApprovalEmail/:userID/:ownerID/:projectName/:approved/:comment', controllers.email.sendProjectApproval);
 
-//PROJECT ACCESS CONTROLLER
+// PROJECT ACCESS CONTROLLER
 router.get('/getProjectAccessRequestsList/:userID', controllers.projectAccess.getProjectAccessRequestsList);
 router.get('/getProjectAccessTeamList/:userID/:managerEmailAddress', controllers.projectAccess.getProjectAccessTeamList);
 router.get('/getProjectAccessList/:userID', controllers.projectAccess.getProjectAccessList);
@@ -58,25 +61,27 @@ router.post('/submitProjectAccessRequest/:userID', controllers.projectAccess.ins
 router.post('/responseProjectAccessRequest/:userID/:reply/:replyComment', controllers.projectAccess.responseProjectAccessRequest);
 router.post('/updateProjectAccessRequest/:userID', controllers.projectAccess.updateProjectAccessRequest);
 
-// Profile Controller
+// PROFILE CONTROLLER
 router.get('/getJobTitleList', controllers.profile.show);
 router.post('/updateProfile/:userID', controllers.profile.update);
 // router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
 
 // REPORTS PROJECT CONTROLLER
-router.get('/reports/aggregatedSubordinateFte/:managerEmailAddress', controllers.reports.getAggregatedSubordinateFte);
-router.get('/reports/aggregatedFteData', controllers.reports.getAggregatedFteData);
-router.get('/reports/getMyFteSummary/:employeeID/:period', controllers.reports.getMyFteSummary);
-router.get('/getProjectFTEHistory/:projectID', controllers.reports.getProjectFTEHistory);
-router.get('/getTopFTEProjectList/', controllers.reports.getTopFTEProjectList);
-router.get('/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.reports.getProjectEmployeeFTEList);
-router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.reports.getQuarterlyEmployeeFTETotals);
+router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
+router.get('/report/getSubordinateFtes/:managerEmailAddress/:period', controllers.report.getSubordinateFtes);
+router.get('/report/getAggregatedFteData', controllers.report.getAggregatedFteData);
+router.get('/report/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
+router.get('/report/getProjectFTEHistory/:projectID', controllers.report.getProjectFTEHistory);
+router.get('/report/getTopFTEProjectList/', controllers.report.getTopFTEProjectList);
+router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
+router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
 // NOTE: comment this out when you want to test routes using postman, chrome etc. without having to pass the token
+// TO-DO BILL: pull in the token secret from .env
 router.use('/', function(req, res, next) {
   // get the token out of the query string and verify it is valid.
   jwt.verify(req.query.token, 'rutabega', (err, decoded) => {

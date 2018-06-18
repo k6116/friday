@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiDataService } from '../../_shared/services/api-data.service';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../_shared/services/auth.service';
 
 import * as moment from 'moment';
 import * as bowser from 'bowser';
