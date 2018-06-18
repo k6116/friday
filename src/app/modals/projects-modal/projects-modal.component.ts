@@ -313,6 +313,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onProjectAccessClick(project: any, action: string) {
 
+    let confirmButton: any;
+
     this.clickOutsideException = 'div#confirm-modal';
 
     // create requestData object for passing into controller
@@ -333,12 +335,15 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     if (action === 'Request') {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Requesting access';
+      confirmButton = 'Request Access';
     } else if (action === 'Submitted') {
       requestData.requestStatus = 'Cancelled';
       requestData.requestNotes = 'Cancelling request access';
+      confirmButton = 'Rescind Access';
     } else if (action === 'Denied') {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Resubmitting request access';
+      confirmButton = 'Re-Request Access';
     }
 
     // emit confirmation modal after they click request button
@@ -348,7 +353,20 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         message: `Are you sure you want to update the request status to ${requestData.requestStatus}?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
-        display: true
+        allowOutsideClickDismiss: false,
+        allowEscKeyDismiss: false,
+        buttons: [
+          {
+            text: confirmButton,
+            bsClass: 'btn-success',
+            emit: true
+          },
+          {
+            text: 'Cancel',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
       }
     );
 
@@ -360,9 +378,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
           .subscribe(
             apiRes => {
               console.log(apiRes);
+              deleteActionSubscription.unsubscribe();
             },
             err => {
               console.log(err);
+              deleteActionSubscription.unsubscribe();
             }
           );
       } else {
