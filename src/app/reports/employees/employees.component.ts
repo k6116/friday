@@ -61,8 +61,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     if (this.appDataService.$nestedOrgData) {
       this.nestedOrgData = this.appDataService.$nestedOrgData;
       this.appDataService.nestedOrgDataCached = true;
-      // console.log('nested org data picked up in employee reports');
-      // console.log(this.nestedOrgData);
+      console.log('nested org data picked up in employee reports');
+      console.log(this.nestedOrgData);
       this.waitingForOrgData = false;
       this.setInitialDropDownEmployee();
       this.appDataService.nestedOrgDataRequested = undefined;
@@ -74,8 +74,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
           this.nestedOrgData = nestedOrgData;
           this.appDataService.$nestedOrgData = nestedOrgData;
           this.appDataService.nestedOrgDataCached = true;
-          // console.log('nested org data received in employee reports component via subscription');
-          // console.log(this.nestedOrgData);
+          console.log('nested org data received in employee reports component via subscription');
+          console.log(this.nestedOrgData);
           this.waitingForOrgData = false;
           this.setInitialDropDownEmployee();
           this.appDataService.nestedOrgDataRequested = undefined;
@@ -85,9 +85,9 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     if (!this.appDataService.nestedOrgDataRequested && !this.appDataService.nestedOrgDataCached) {
       // get logged in user's info
       this.authService.getLoggedInUser((user, err) => {
-        // this.getNestedOrgData(user.email);
+        this.getNestedOrgData(user.email);
         // this.getNestedOrgData('ron_nersesian@keysight.com');
-        this.getNestedOrgData('pat_harper@keysight.com');
+        // this.getNestedOrgData('pat_harper@keysight.com');
       });
     }
 
@@ -109,8 +109,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     .subscribe(
       res => {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');
-        // console.log('nested org object retrieved from api data service in employee reports component');
-        // console.log(nestedOrgData);
+        console.log('nested org object retrieved from api data service in employee reports component');
+        console.log(nestedOrgData);
         this.nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
         this.appDataService.$nestedOrgData = this.nestedOrgData;

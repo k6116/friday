@@ -68,6 +68,7 @@ router.get('/report/getProjectFTEHistory/:projectID', controllers.report.getProj
 router.get('/report/getTopFTEProjectList/', controllers.report.getTopFTEProjectList);
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
+router.get('/report/getDashboardFTEData/:employeeEmailAddress/:startDate/:endDate', controllers.report.getDashboardFTEData);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 

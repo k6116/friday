@@ -315,6 +315,34 @@ function getQuarterlyEmployeeFTETotals(req, res) {
     });
 }
 
+
+function getDashboardFTEData(req, res) {
+
+  const userEmailAddress = req.params.employeeEmailAddress;
+  const startDate = req.params.startDate;
+  const endDate = req.params.endDate;
+
+  sequelize.query('EXECUTE resources.DashboardFTEData :userEmailAddress, :startDate, :endDate', 
+    {replacements: {userEmailAddress: userEmailAddress, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
+    .then(dashboardData => {
+
+      const dashboardDataTree = new Treeize();
+      dashboardDataTree.grow(dashboardData);
+      const dashboardDataTreeized = dashboardDataTree.getData();
+
+      console.log("returning dashboard data");
+      res.json(dashboardDataTreeized);
+
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+}
+
 module.exports = {
   getAggregatedFteData: getAggregatedFteData,
   getSubordinateProjectRoster: getSubordinateProjectRoster,
@@ -323,5 +351,6 @@ module.exports = {
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,
   getProjectEmployeeFTEList: getProjectEmployeeFTEList,
-  getQuarterlyEmployeeFTETotals: getQuarterlyEmployeeFTETotals
+  getQuarterlyEmployeeFTETotals: getQuarterlyEmployeeFTETotals,
+  getDashboardFTEData: getDashboardFTEData
 }

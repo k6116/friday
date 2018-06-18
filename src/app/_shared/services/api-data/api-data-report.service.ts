@@ -62,4 +62,12 @@ export class ApiDataReportService {
       .timeout(this.appDataService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
+
+  getDashboardFTEData(employeeEmailAddress: string, startDate: string, endDate: string) {
+    return this.http.get(`/api/report/getDashboardFTEData/${employeeEmailAddress}/${startDate}/${endDate}`)
+      .timeout(this.appDataService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+
 }
