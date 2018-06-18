@@ -1,5 +1,5 @@
 <div class="projects-modal-outer-cont" [@modalStateOuter]="outerDivState">
-  <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState" (appClickOutside)="onClickOutside($event)">
+  <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState" (appClickOutside)="onClickOutside($event)" [exception]="clickOutsideException">
     <div class="projects-modal-body">
 
       <div class="projects-filter-cont">
@@ -88,29 +88,27 @@
 </div>
 
 <!-- Waiting to implement once click outside feature works with modals-->
-<!-- <div class="modal" tabindex="-1" role="dialog" id="projectRoleModal">
+<div class="modal" tabindex="-1" role="dialog" id="projectRoleModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content" style="width:150%">
         <div class="modal-header" style="border-bottom: none; height: 2rem;">
           <h5 class="title">Please select your project role</h5>
         </div>
         <div class="modal-body">
-          <div class="input-group">
             <form>
               <div class="form-group">
                 <label for="formGroupProjectRole">Project Role</label>
-                <select class="custom-select" id="formGroupProjectRole">
+                <select class="custom-select" id="formGroupProjectRole" (change)="selectProjectRole($event)">
                   <option>Select a Project Role...</option>
                   <option *ngFor="let role of projectRolesList">{{ role.projectRole }}</option>
                 </select>
               </div>
             </form>
-            <div class="input-group-append">
-              <button type="button" class="btn btn-primary btn-fte-toolbar"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
-              <button type="button" class="btn btn-primary btn-fte-toolbar"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onProjectRoleConfirm()"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
+              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
             </div>
-          </div>
         </div>
       </div>
     </div>
-  </div> -->
+  </div>

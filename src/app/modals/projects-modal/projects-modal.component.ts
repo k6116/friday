@@ -74,6 +74,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   projectAccessDeniedList: any;
   projectData: any;
   projectRolesList: any;
+  clickOutsideException: string;
+  selProject: any;
+  selProjectRole: any;
 
   @Input() projects: any;
   @Output() selectedProject = new EventEmitter<any>();
@@ -141,15 +144,35 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onSelectedProject(selProject: any) {
 
+    this.clickOutsideException = 'div#projectRoleModal';
+
+    this.selProject = selProject;
+
+  }
+
+  selectProjectRole(event: any) {
+    this.selProjectRole = event.target.value;
+  }
+
+  onProjectRoleConfirm() {
+
+    // add project role fields to selProject object to pass back to fte-entry component
+    this.selProject.ProjectRole = this.selProjectRole;
+    for (let i = 0; i < this.projectRolesList.length; i++) {
+      if (this.projectRolesList[i].projectRole === this.selProjectRole) {
+        this.selProject.ProjectRoleID = this.projectRolesList[i].id;
+      }
+    }
+
     console.log('Selected Project Id:');
-    console.log(selProject.ProjectID);
+    console.log(this.selProject);
 
     console.log('Selected Project:');
-    console.log(selProject.ProjectName);
+    console.log(this.selProject.ProjectName);
 
     this.outerDivState = 'out';
     this.innerDivState = 'out';
-    this.selectedProject.emit(selProject);
+    this.selectedProject.emit(this.selProject);
     this.outerDivState = 'out';
     this.innerDivState = 'out';
 
@@ -289,6 +312,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   onProjectAccessClick(project: any, action: string) {
+
+    this.clickOutsideException = 'div#confirm-modal';
 
     // create requestData object for passing into controller
     const requestData = {

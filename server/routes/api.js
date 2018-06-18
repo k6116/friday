@@ -29,6 +29,7 @@ router.post('/deleteProject/:userID', controllers.project.deleteProject);
 router.get('/getProjectSchedule/:projectName', controllers.project.getProjectSchedule);
 router.get('/getProjectTypeDisplayFields/', controllers.project.getProjectTypeDisplayFields);
 router.get('/getProjectRoles/', controllers.project.getProjectRoles);
+router.get('/getUserProjectRoles/:userID', controllers.project.getUserProjectRoles);
 router.post('/insertProjectEmployeeRole/:userID', controllers.project.insertProjectEmployeeRole);
 router.post('/updateProjectEmployeeRole/:userID', controllers.project.updateProjectEmployeeRole);
 

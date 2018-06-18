@@ -271,6 +271,12 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  getUserProjectRoles(userID: number) {
+    return this.http.get(`/api/getUserProjectRoles/${userID}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   insertProjectEmployeeRole(employeeProjectRoleData: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });

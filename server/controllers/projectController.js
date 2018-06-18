@@ -372,6 +372,34 @@ function getProjectRoles(req, res) {
   });
 }
 
+function getUserProjectRoles(req, res) {
+
+  const userID = req.params.userID;
+
+  models.ProjectEmployeeRoles.findAll({
+    where: {employeeID: userID},
+    attributes: ['id', 'projectID', 'employeeID', 'projectRoleID', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'],
+    raw: true,
+    include: [
+      {
+        model: models.ProjectRoles,
+        attributes: ['projectRole'],
+      }
+    ]
+  })
+  .then(getUserProjectRoles => {
+    console.log('WORKED')
+    res.json(getUserProjectRoles);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+
+  });
+}
+
 function insertProjectEmployeeRole(req, res) {
 
   // get the project object from the request body
@@ -482,6 +510,7 @@ module.exports = {
   getProjectSchedule: getProjectSchedule,
   getProjectTypeDisplayFields: getProjectTypeDisplayFields,
   getProjectRoles: getProjectRoles,
+  getUserProjectRoles: getUserProjectRoles,
   insertProjectEmployeeRole: insertProjectEmployeeRole,
   updateProjectEmployeeRole: updateProjectEmployeeRole
 }
