@@ -1,5 +1,5 @@
 <div class="projects-modal-outer-cont" [@modalStateOuter]="outerDivState">
-  <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState" (appClickOutside)="onClickOutside($event)">
+  <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState" (appClickOutside)="onClickOutside($event)" [exception]="clickOutsideException">
     <div class="projects-modal-body">
 
       <div class="projects-filter-cont">
@@ -38,7 +38,7 @@
         
         <app-projects-info-modal [style.display]="showInfoModal ? 'inline' : 'none'" [project]="clickedProjectForInfoModal" (close)="onProjectsInfoModalCloseClick()"></app-projects-info-modal>
         <app-projects-roster-modal [style.display]="showRosterModal ? 'inline' : 'none'" [selectedProject]="clickedProjectForRosterModal" (close)="onProjectsRosterModalCloseClick()"></app-projects-roster-modal>
-
+        
         <div class="cards-cont">
           
           <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{limitTo: numProjectsToDisplay, matchFuzzy: true, paginationFilter: paginateFilter}">
@@ -67,11 +67,14 @@
               </div> -->
             </div>
             <div class="card-footer">
-                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectAccessApprovedList?.indexOf(project.ProjectID)!=-1 || projectAccessTeamList?.indexOf(project.ProjectID)!=-1" class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
+                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectAccessApprovedList?.indexOf(project.ProjectID)!=-1 || projectAccessTeamList?.indexOf(project.ProjectID)!=-1"
+                  class="btn btn-outline-success project-select-button" data-toggle="modal" data-target="#projectRoleModal" (click)="onSelectedProject(project)">Select</button>
                 <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectAccessSubmittedList?.indexOf(project.ProjectID)===-1 && projectAccessApprovedList?.indexOf(project.ProjectID)===-1 && projectAccessDeniedList?.indexOf(project.ProjectID)===-1 && projectAccessTeamList?.indexOf(project.ProjectID)===-1"
-                  class="btn btn-outline-warning project-select-button" (click)="onRequestedProject(project)">Request Access</button>
-                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectAccessSubmittedList?.indexOf(project.ProjectID)!=-1 && projectAccessTeamList?.indexOf(project.ProjectID)===-1" class="btn btn-outline-info" [disabled]="true">Access Request Submitted...</button>
-                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectAccessDeniedList?.indexOf(project.ProjectID)!=-1 && projectAccessTeamList?.indexOf(project.ProjectID)===-1" class="btn btn-outline-danger" [disabled]="true">Access Request DENIED</button>
+                  class="btn btn-outline-warning project-select-button" (click)="onProjectAccessClick(project, 'Request')">Request Access</button>
+                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectAccessSubmittedList?.indexOf(project.ProjectID)!=-1 && projectAccessTeamList?.indexOf(project.ProjectID)===-1"
+                  class="btn btn-outline-info" (click)="onProjectAccessClick(project, 'Submitted')">Access Request Submitted...</button>
+                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectAccessDeniedList?.indexOf(project.ProjectID)!=-1 && projectAccessTeamList?.indexOf(project.ProjectID)===-1" 
+                  class="btn btn-outline-danger" (click)="onProjectAccessClick(project, 'Denied')">Access Request DENIED</button>
             </div>
           </div>
 
@@ -84,3 +87,28 @@
   </div>
 </div>
 
+<!-- Waiting to implement once click outside feature works with modals-->
+<div class="modal" tabindex="-1" role="dialog" id="projectRoleModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="width:150%">
+        <div class="modal-header" style="border-bottom: none; height: 2rem;">
+          <h5 class="title">Please select your project role</h5>
+        </div>
+        <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="formGroupProjectRole">Project Role</label>
+                <select class="custom-select" id="formGroupProjectRole" (change)="selectProjectRole($event)">
+                  <option>Select a Project Role...</option>
+                  <option *ngFor="let role of projectRolesList">{{ role.projectRole }}</option>
+                </select>
+              </div>
+            </form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onProjectRoleConfirm()"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
+              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>

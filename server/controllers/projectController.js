@@ -316,7 +316,190 @@ function getProjectTypesList(req, res) {
   });
 }
 
-// TO-DO PAUL: remove getUserPLMData, move some others to proper controller
+function getProjectSchedule(req, res) {
+
+  const projectName = req.params.projectName;
+
+  sequelize.query('EXECUTE reports.SchedulesNew :projectName, null', {replacements: {projectName: projectName}, type: sequelize.QueryTypes.SELECT})
+    .then(org => {
+      console.log("returning project schedule");
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+function getProjectTypeDisplayFields(req, res) {
+
+  models.ProjectTypeDisplayFields.findAll({
+    attributes: ['projectField'],
+    raw: true,
+    include: [
+      {
+        model: models.ProjectTypes,
+        attributes: ['projectTypeName'],
+      }
+    ]
+  })
+  .then(ProjectTypeDisplayFields => {
+    console.log('WORKED')
+    res.json(ProjectTypeDisplayFields);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+
+  });
+}
+
+function getProjectRoles(req, res) {
+
+  models.ProjectRoles.findAll({
+    attributes: ['id', 'projectRole'],
+  })
+  .then(ProjectRoles => {
+    console.log('WORKED')
+    res.json(ProjectRoles);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+
+  });
+}
+
+function getUserProjectRoles(req, res) {
+
+  const userID = req.params.userID;
+
+  models.ProjectEmployeeRoles.findAll({
+    where: {employeeID: userID},
+    attributes: ['id', 'projectID', 'employeeID', 'projectRoleID', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'],
+    raw: true,
+    include: [
+      {
+        model: models.ProjectRoles,
+        attributes: ['projectRole'],
+      }
+    ]
+  })
+  .then(getUserProjectRoles => {
+    console.log('WORKED')
+    res.json(getUserProjectRoles);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+
+  });
+}
+
+function insertProjectEmployeeRole(req, res) {
+
+  // get the project object from the request body
+  const employeeProjectRoleData = req.body;
+  const userID = req.params.userID;
+  const today = new Date();
+
+  return sequelize.transaction((t) => {
+
+    return models.ProjectEmployeeRoles
+      .create(
+        {
+          projectID: employeeProjectRoleData.projectID,
+          employeeID: userID,
+          projectRoleID: employeeProjectRoleData.projectRoleID,
+          createdBy: userID,
+          createdAt: today,
+          updatedBy: userID,
+          updatedAt: today
+        },
+        {
+          transaction: t
+        }
+      )
+      .then(insertProjectEmployeeRole => {
+
+        const projectEmployeeRoleID = insertProjectEmployeeRole.id;
+        console.log('created projectEmployeeRoleID is: ' + projectEmployeeRoleID);
+
+      })
+
+    }).then(() => {
+
+      res.json({
+        message: `Project Employee Role insert has been made successfully`,
+      })
+
+    }).catch(error => {
+
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
+
+    })
+}
+
+function updateProjectEmployeeRole(req, res) {
+
+  // get the project object from the request body
+  const employeeProjectRoleData = req.body;
+  const userID = req.params.userID;
+  const today = new Date();
+
+  return sequelize.transaction((t) => {
+
+    return models.ProjectEmployeeRoles
+      .update(
+        {
+          projectID: employeeProjectRoleData.projectID,
+          employeeID: userID,
+          projectRoleID: employeeProjectRoleData.projectRoleID,
+          createdBy: userID,
+          createdAt: today,
+          updatedBy: userID,
+          updatedAt: today
+        },
+        {
+          where: {projectID: employeeProjectRoleData.projectID, employeeID: userID},
+          transaction: t
+        }
+      )
+      .then(updateProjectEmployeeRole => {
+
+        console.log('Updated Project Employee Role')
+        console.log(updateProjectEmployeeRole);
+
+      })
+
+    }).then(() => {
+
+      res.json({
+        message: `The project employee role '${employeeProjectRoleData.projectRole}' has been updated successfully`
+      })
+
+    }).catch(error => {
+
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
+
+    })
+}
 
 module.exports = {
   getAll: getAll,
@@ -327,5 +510,11 @@ module.exports = {
   updateProject: updateProject,
   deleteProject: deleteProject,
   getPrimaryKeyRefs: getPrimaryKeyRefs,
-  getProjectTypesList: getProjectTypesList
+  getProjectTypesList: getProjectTypesList,
+  getProjectSchedule: getProjectSchedule,
+  getProjectTypeDisplayFields: getProjectTypeDisplayFields,
+  getProjectRoles: getProjectRoles,
+  getUserProjectRoles: getUserProjectRoles,
+  insertProjectEmployeeRole: insertProjectEmployeeRole,
+  updateProjectEmployeeRole: updateProjectEmployeeRole
 }

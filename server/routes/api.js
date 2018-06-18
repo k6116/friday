@@ -23,13 +23,19 @@ router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
 router.get('/projects', controllers.project.getAll)
 router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
 router.get('/getUserPLMData/:userEmailAddress', controllers.project.getUserPLMData);
-// router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
 router.get('/getProjectTypesList/', controllers.project.getProjectTypesList);
 router.get('/getPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.project.getPrimaryKeyRefs);
 router.get('/getUserProjectList/:userID', controllers.project.getUserProjectList);
 router.post('/createProject/:userID', controllers.project.insertProject);
 router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/deleteProject/:userID', controllers.project.deleteProject);
+router.get('/getProjectSchedule/:projectName', controllers.project.getProjectSchedule);
+router.get('/getProjectTypeDisplayFields/', controllers.project.getProjectTypeDisplayFields);
+router.get('/getProjectRoles/', controllers.project.getProjectRoles);
+router.get('/getUserProjectRoles/:userID', controllers.project.getUserProjectRoles);
+router.post('/insertProjectEmployeeRole/:userID', controllers.project.insertProjectEmployeeRole);
+router.post('/updateProjectEmployeeRole/:userID', controllers.project.updateProjectEmployeeRole);
+
 
 // EMPLOYEE CONTROLLER
 router.get('/employeeList/:managerEmailAddress', controllers.employee.show);
@@ -52,7 +58,8 @@ router.get('/getProjectAccessTeamList/:userID/:managerEmailAddress', controllers
 router.get('/getProjectAccessList/:userID', controllers.projectAccess.getProjectAccessList);
 router.get('/getPublicProjectTypes/:userID', controllers.projectAccess.getPublicProjectTypes);
 router.post('/submitProjectAccessRequest/:userID', controllers.projectAccess.insertProjectAccessRequest);
-router.post('/responseProjectAccessRequest/:userID/:reply/:replyComment', controllers.projectAccess.updateProjectAccessRequest);
+router.post('/responseProjectAccessRequest/:userID/:reply/:replyComment', controllers.projectAccess.responseProjectAccessRequest);
+router.post('/updateProjectAccessRequest/:userID', controllers.projectAccess.updateProjectAccessRequest);
 
 // PROFILE CONTROLLER
 router.get('/getJobTitleList', controllers.profile.show);
