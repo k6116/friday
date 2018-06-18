@@ -4,47 +4,20 @@ const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
 
-// function getProjectAccessRequestsList(req, res) {
 
-//   const userID = req.params.userID;
-
-//   const sql = `
-//   SELECT
-//     P1.RequestID, P1.RequestStatus, P1.ProjectID, P1.RequestedBy, P1.RequestDate, P1.RequestNotes, P1.RespondedBy, P1.ResponseDate, P1.ResponseNotes,
-//     P2.ProjectName, P2.CreatedBy,
-//     E1.FullName
-//   FROM
-//     resources.ProjectAccessRequests P1
-//     LEFT JOIN projects.Projects P2 ON P1.ProjectID = P2.ProjectID
-//     LEFT JOIN accesscontrol.Employees E1 ON P1.RequestedBy = E1.EmployeeID
-//   WHERE
-//     P2.CreatedBy = '${userID}'
-//   `
-//   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
-//     .then(org => {
-//       console.log("returning project access requests list");
-//       res.json(org);
-//     })
-//     .catch(error => {
-//       res.status(400).json({
-//         title: 'Error (in catch)',
-//         error: {message: error}
-//       })
-//     });
-// }
-
+// TO-DO PAUL: try to combine into single project controller, or permissions?, and add comments
 
 function getPublicProjectTypes(req, res) {
 
   const userID = req.params.userID;
 
   const sql = `
-  SELECT
-    T1.LookupID, T1.LookupName, T1.LookupValue
-  FROM
-    other.Lookups T1
-  WHERE
-    T1.LookupName = 'Public Project Type'
+    SELECT
+      T1.LookupID, T1.LookupName, T1.LookupValue
+    FROM
+      other.Lookups T1
+    WHERE
+      T1.LookupName = 'Public Project Type'
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(publicProjectTypes => {
@@ -186,7 +159,7 @@ function insertProjectAccessRequest(req, res) {
 }
 
 
-function updateProjectAccessRequest(req, res) {
+function responseProjectAccessRequest(req, res) {
 
   // get the project object from the request body
   const request = req.body;
@@ -210,10 +183,10 @@ function updateProjectAccessRequest(req, res) {
           transaction: t
         }
       )
-      .then(updateProjectAccessRequest => {
+      .then(responseProjectAccessRequest => {
 
-        console.log('Updated Project Access Request')
-        console.log(updateProjectAccessRequest);
+        console.log('Updated Project Access Response')
+        console.log(responseProjectAccessRequest);
 
       })
 
@@ -235,6 +208,56 @@ function updateProjectAccessRequest(req, res) {
 
 }
 
+function updateProjectAccessRequest(req, res) {
+
+  // get the project object from the request body
+  const requestData = req.body;
+  const today = new Date();
+
+  console.log(requestData.requestID);
+
+  return sequelize.transaction((t) => {
+
+    return models.ProjectAccessRequests
+      .update(
+        {
+          requestStatus: requestData.requestStatus,
+          requestedAt: today,
+          requestNotes: requestData.requestNotes,
+          respondedBy: null,
+          respondedAt: null,
+          responseNotes: null,
+        },
+        {
+          where: {id: requestData.requestID},
+          transaction: t
+        }
+      )
+      .then(updateProjectAccessRequest => {
+
+        console.log('Updated Project Access Request')
+        console.log(updateProjectAccessRequest);
+
+      })
+
+    }).then(() => {
+
+      res.json({
+        message: `The requestID '${requestData.requestID}' has been updated successfully`
+      })
+
+    }).catch(error => {
+
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
+
+    })
+
+}
+
 
 module.exports = {
   getPublicProjectTypes: getPublicProjectTypes,
@@ -242,5 +265,6 @@ module.exports = {
   getProjectAccessTeamList: getProjectAccessTeamList,
   getProjectAccessList: getProjectAccessList,
   insertProjectAccessRequest: insertProjectAccessRequest,
+  responseProjectAccessRequest: responseProjectAccessRequest,
   updateProjectAccessRequest: updateProjectAccessRequest
 }

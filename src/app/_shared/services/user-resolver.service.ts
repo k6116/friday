@@ -5,8 +5,8 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/observable/empty';
 
-import { AuthService } from '../../auth/auth.service';
-import { ApiDataService } from '../services/api-data.service';
+import { AuthService } from './auth.service';
+import { ApiDataAuthService } from './api-data/_index';
 import { User } from '../models/user.model';
 
 
@@ -16,7 +16,7 @@ export class UserResolverService implements Resolve<Observable<string>> {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private apiDataService: ApiDataService
+    private apiDataAuthService: ApiDataAuthService
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
@@ -28,7 +28,7 @@ export class UserResolverService implements Resolve<Observable<string>> {
       const token = localStorage.getItem('jarvisToken');
       if (token) {
         console.log('logged in user does not exist in memory, getting from token instead');
-        return this.apiDataService.getInfoFromToken(token);
+        return this.apiDataAuthService.getInfoFromToken(token);
       } else {
         // use router to reroute to login page or error page?
         console.error('returning empty observable due to no token');

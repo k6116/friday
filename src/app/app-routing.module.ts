@@ -16,8 +16,8 @@ import { EmployeesReportsComponent } from './reports/employees/employees.compone
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import { AdminComponent } from './admin/admin.component';
 
-import { AuthGuardService } from './auth/auth-guard.service';
-import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
+import { AuthGuardService } from './_shared/guards/auth.guard';
+import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 import { TestComponent } from './test/test.component';
 import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
@@ -32,18 +32,17 @@ const routes: Routes = [
   {
     path: 'main', component: MainComponent, canActivate: [AuthGuardService], resolve: { loggedInUser: UserResolverService },
     children: [
-      { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full', canActivate: [AuthGuardService] },
-      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canActivate: [AuthGuardService] },
-      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
-        canActivate: [AuthGuardService], canDeactivate: [UnsavedChangesGuard] },
-      { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [AuthGuardService] },
-      { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService] },
-      { path: 'reports/my-fte-summary', component: MyFteSummaryComponent, canActivate: [AuthGuardService] },
-      { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent, canActivate: [AuthGuardService] },
-      { path: 'reports/top-projects', component: TopProjectsReportsComponent, canActivate: [AuthGuardService] },
-      { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent, canActivate: [AuthGuardService] },
-      { path: 'reports/employees', component: EmployeesReportsComponent, canActivate: [AuthGuardService] },
-      { path: 'chat', component: ChatComponent, canActivate: [AuthGuardService] },
+      { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full' },
+      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent },
+      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canDeactivate: [UnsavedChangesGuard] },
+      { path: 'fte-entry/team', component: FteEntryTeamComponent },
+      { path: 'setups/projects', component: ProjectsSetupsComponent },
+      { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
+      { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
+      { path: 'reports/top-projects', component: TopProjectsReportsComponent },
+      { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent },
+      { path: 'reports/employees', component: EmployeesReportsComponent },
+      { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
     ]
   },

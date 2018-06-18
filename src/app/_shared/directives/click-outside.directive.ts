@@ -27,6 +27,7 @@ export class ClickOutsideDirective {
 
     // check if the 'exception' element was clicked on
     let clickedOnException = false;
+
     if (this.exception) {
       const $targetElement = $(targetElement);
       const $excludedElement = $(this.exception);

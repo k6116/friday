@@ -14,10 +14,12 @@ const transporter = nodemailer.createTransport({
   secure: false
 });
 
+const env = process.env.ENVIRONMENT;
 const templatePath = path.join(__dirname, '/..', 'email/templates');
 const templates = new EmailTemplates({
   root: templatePath
 });
+
 
 function sendFTEReminder(req, res) {
 
@@ -61,12 +63,10 @@ function sendFTEReminder(req, res) {
 
   templates.render('fte-reminder.html', null, function(err, html, text, subject) {
 
-    //TODO: If ENV = PROD then use entire email list
-    if (1 == 0) {
-      emails = emails;
-    } else {
-      emails = 'mike.galasso@non.keysight.com'
-    }
+    // prevent email blast from non-Prod
+    if (env === 'dev') {     
+        emails = '';
+    } 
 
     let mailOptions = {
       from: '"Jarvis" <jarvis@no-reply.com>',
@@ -76,8 +76,8 @@ function sendFTEReminder(req, res) {
       text: text,
       html: html.replace('{monthRange}',monthRange).replace('{quarter}',quarter).replace('{year}',moment().year().toString()),
       attachments: [{
-        filename: 'jarvisLogo.png',
-        path: templatePath + '/jarvisLogo.png',
+        filename: 'JarvisLogo.png',
+        path: templatePath + '../../src/assets/JarvisLogo.png',
         cid: 'unique@kreata.ee' //same cid value as in the html img src
       }]
     };
@@ -141,8 +141,8 @@ function sendRequestProject(req, res) {
           text: text,
           html: html.replace('{owner}', userOwner.fullName).replace('{requestor}', userRequestor.fullName).replace('{project}', projectName),
           attachments: [{
-            filename: 'jarvisLogo.png',
-            path: templatePath + '/jarvisLogo.png',
+            filename: 'JarvisLogo.png',
+            path: templatePath + '../../src/assets/JarvisLogo.png',
             cid: 'unique@kreata.ee' //same cid value as in the html img src
           }]
         };
@@ -179,6 +179,8 @@ function sendProjectApproval(req, res) {
   const userID = req.params.userID;
   const ownerID = req.params.ownerID;
   const projectName = req.params.projectName;
+  const approved = req.params.approved;
+  const comment = req.params.comment;
 
   models.User.findOne({
     attributes: ['fullName','email'],
@@ -207,18 +209,25 @@ function sendProjectApproval(req, res) {
 
       if (userOwner) {     
 
-       templates.render('approve-project.html', null, function(err, html, text, subject) {      
+        var template = 'approve-project.html';
+        var msg = 'Project Participation Granted';
+        if (approved === 'false') {  
+          template = 'deny-project.html';
+          msg = 'Project Participation Denied'; 
+        }
+
+       templates.render(template, null, function(err, html, text, subject) {      
         
         let mailOptions = {
           from: '"Jarvis" <jarvis@no-reply.com>',
           to: userRequestor.email,
           bcc: userOwner.email,
-          subject: 'Project Participation Granted',
+          subject: msg,
           text: text,
-          html: html.replace('{requestor}', userRequestor.fullName).replace('{project}', projectName),
+          html: html.replace('{requestor}', userRequestor.fullName).replace('{project}', projectName).replace('{comment}', comment),
           attachments: [{
-            filename: 'jarvisLogo.png',
-            path: templatePath + '/jarvisLogo.png',
+            filename: 'JarvisLogo.png',
+            path: templatePath + '../../src/assets/JarvisLogo.png',
             cid: 'unique@kreata.ee' //same cid value as in the html img src
           }]
         };

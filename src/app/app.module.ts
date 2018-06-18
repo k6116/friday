@@ -22,18 +22,16 @@ import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
 
 // SERVICES
-import { ApiDataService } from './_shared/services/api-data.service';
-import { AppDataService } from './_shared/services/app-data.service';
-import { AuthService } from './auth/auth.service';
-import { AuthGuardService } from './auth/auth-guard.service';
-import { ToolsService } from './_shared/services/tools.service';
-import { ClickTrackingService } from './_shared/services/click-tracking.service';
-import { UserResolverService } from './_shared/services/user-resolver.service';
-import { WebsocketService } from './_shared/services/websocket.service';
-import { CookiesService } from './_shared/services/cookies.service';
+import { ApiDataService, AppDataService, ClickTrackingService, CookiesService,
+  ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
+import { AuthService } from './_shared/services/auth.service';
+import { AuthGuardService } from './_shared/guards/auth.guard';
+import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
+  ApiDataFteService, ApiDataOrgService, ApiDataProjectAccessService, ApiDataProjectService,
+  ApiDataReportService} from './_shared/services/api-data/_index';
 
 // GUARDS
-import { UnsavedChangesGuard } from './_shared/unsaved-changes-guard.guard';
+import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -73,6 +71,7 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
 import { JobTitlesComponent } from './admin/job-titles/job-titles.component';
 import { AdminComponent } from './admin/admin.component';
 import { ProjectAttributesComponent } from './admin/project-attributes/project-attributes.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -113,7 +112,8 @@ import { ProjectAttributesComponent } from './admin/project-attributes/project-a
     TopProjectsBubbleComponent,
     JobTitlesComponent,
     AdminComponent,
-    ProjectAttributesComponent
+    ProjectAttributesComponent,
+    FooterComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -133,6 +133,15 @@ import { ProjectAttributesComponent } from './admin/project-attributes/project-a
   ],
   providers: [
     ApiDataService,
+    ApiDataAuthService,
+    ApiDataClickTrackingService,
+    ApiDataEmailService,
+    ApiDataEmployeeService,
+    ApiDataFteService,
+    ApiDataOrgService,
+    ApiDataProjectAccessService,
+    ApiDataProjectService,
+    ApiDataReportService,
     AppDataService,
     AuthService,
     AuthGuardService,
@@ -146,4 +155,3 @@ import { ProjectAttributesComponent } from './admin/project-attributes/project-a
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-//   "swig-email-templates": "^5.0.1",    "node-schedule": "^1.3.0", "nodemailer": "^4.6.4",  "axios": "^0.18.0",

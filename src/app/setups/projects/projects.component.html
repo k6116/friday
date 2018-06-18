@@ -180,8 +180,19 @@
                     <table class="table table-sm">
                       <tbody>
                         <tr *ngFor="let teamMember of projectRoster?.teamMembers">
-                          <td>{{ teamMember.name }}</td>
-                          <td>{{ teamMember.jobTitle }}</td>
+                          <td width="40%">{{ teamMember.name }}</td>
+                          <td width = "55%" *ngIf="!toggleEditProjectRole && teamMember.name===loggedInUser.fullName">{{ teamMember.jobTitle }}</td>
+                          <td width = "55%" *ngIf="toggleEditProjectRole && teamMember.name===loggedInUser.fullName">
+                              <form>
+                                <div class="form-group form-group-custom">
+                                  <select class="custom-select custom-select-project-role" (change)="selectProjectRoleChangeHandler($event, project)">
+                                    <option>Select a Job Title...</option>
+                                    <option *ngFor="let role of projectRolesList">{{ role.projectRole }}</option>
+                                  </select>
+                                </div>
+                              </form>
+                          </td>
+                          <td width = "5%"><i *ngIf="teamMember.name===loggedInUser.fullName" class="fa fa-pencil-square-o fa-sm" (click)="onProjectRoleEditClick()"></i></td>
                         </tr>
                       </tbody>
                     </table>
@@ -236,3 +247,5 @@
     
   </div>
 </div>
+
+<app-footer></app-footer>

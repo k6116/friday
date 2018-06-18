@@ -1,7 +1,8 @@
 import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../_shared/services/auth.service';
 import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
 import { User } from '../../_shared/models/user.model';
@@ -28,12 +29,18 @@ export class ProjectsSetupsComponent implements OnInit {
   projectID: number;
   requestResponseFlag: boolean;
   request: any;
+  projectSchedule: any;
+  toggleEditProjectRole: boolean;
+  projectRolesList: any;
+  projectRole: any;
+  replyComment: string;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
   // @Output() deleteSuccess = new EventEmitter<boolean>();
 
   constructor(
+    private apiDataProjectService: ApiDataProjectService,
     private apiDataService: ApiDataService,
     private appDataService: AppDataService,
     private authService: AuthService,
@@ -98,10 +105,11 @@ export class ProjectsSetupsComponent implements OnInit {
       this.loggedInUser = user;
       this.getUserProjectList();
       this.getProjectAccessRequestsList();
+      this.getProjectRoles();
     });
   }
 
-  selectProject(project: any) {
+  editProject(project: any) {
     this.showProjectsEditModal = true;
     this.projectData = project;
     setTimeout(() => {
@@ -180,17 +188,32 @@ export class ProjectsSetupsComponent implements OnInit {
           }
         }
       }
-
     this.getProjectRoster(project.id);
+    this.getProjectSchedule(project.projectName);
   }
 
   // Accept or deny a request
   requestResponse(request: any, reply: string, replyComment: string) {
     this.requestResponseFlag = false;
+
     this.apiDataService.responseProjectAccessRequest(request, reply, replyComment, this.loggedInUser.id)
     .subscribe(
       res => {
+
+        // send email
+        this.apiDataService.sendProjectApprovalEmail(request['user.id'], this.loggedInUser.id,
+        request['project.projectName'], reply === 'Approved' ? true : false, replyComment).subscribe(
+          eSnd => {
+            this.appDataService.raiseToast('success',
+            `Email on Approval Decision delivered to ${request['user.fullName']}.`);
+            this.getProjectAccessRequestsList();
+          },
+          err => {
+            console.log(err);
+          }
+        );
         console.log(res);
+
       },
       err => {
         console.log(err);
@@ -206,7 +229,7 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   getProjectRoster(projectID: number) {
-    this.apiDataService.getProjectRoster(projectID)
+    this.apiDataProjectService.getProjectRoster(projectID)
     .subscribe(
       res => {
         console.log('project roster:');
@@ -262,5 +285,65 @@ export class ProjectsSetupsComponent implements OnInit {
       }
     );
   }
+
+  getProjectSchedule(projectName: string) {
+
+    this.apiDataService.getProjectSchedule(projectName)
+    .subscribe(
+      res => {
+        console.log('project schedule:');
+        console.log(res);
+        this.projectSchedule = res[0];
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  getProjectRoles() {
+    this.apiDataService.getProjectRoles()
+    .subscribe(
+      res => {
+        console.log('Project Roles Retrieved');
+        this.projectRolesList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  onProjectRoleEditClick() {
+    this.toggleEditProjectRole = !this.toggleEditProjectRole;
+  }
+
+  selectProjectRoleChangeHandler(event: any, project: any) {
+
+    // create object for api post
+    const projectEmployeeRoleData = {
+      projectRoleID: null,
+      projectRole: null,
+      projectID: null
+    };
+    projectEmployeeRoleData.projectRole = event.target.value;
+    for (let i = 0; i < this.projectRolesList.length; i++) {
+      if (this.projectRolesList[i].projectRole === event.target.value) {
+        projectEmployeeRoleData.projectRoleID = this.projectRolesList[i].id;
+      }
+    }
+    projectEmployeeRoleData.projectID = project.id;
+
+    this.apiDataService.updateProjectEmployeeRole(projectEmployeeRoleData, this.loggedInUser.id)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
 
 }

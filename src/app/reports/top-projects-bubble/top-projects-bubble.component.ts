@@ -1,15 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ApiDataService } from '../../_shared/services/api-data.service';
-import { AuthService } from '../../auth/auth.service';
-import { User } from '../../_shared/models/user.model';
+import { ApiDataReportService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
+import { AuthService } from '../../_shared/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 import * as Highcharts from 'highcharts';
-
 
 declare var require: any;
 declare const $: any;
 const moment = require('moment');
-require('highcharts/highcharts-more.js')(Highcharts);
+require('highcharts/highcharts-more.js')(Highcharts); // requiring highcharts-more for bubble chart
 
 @Component({
   selector: 'app-top-projects-bubble',
@@ -18,33 +16,28 @@ require('highcharts/highcharts-more.js')(Highcharts);
 })
 export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
 
-  loggedInUser: User; // object for logged in user's info
-  fteDataSubscription: Subscription;
-  rosterDataSubscription: Subscription;
+  fteDataSubscription: Subscription;  // for fetching summarized FTE data from db for bubble chart
+  rosterDataSubscription: Subscription; // for fetching individual project team rosters from db
+
+  chartIsLoading = true;
   bubbleChart: any;
+  bubbleChartOptions: any;
   rawBubbleData: any;
   anchorBubbleData = [];
   flexBubbleData = [];
   otherBubbleData = [];
-  bubbleChartOptions: any;
+
   projectRoster: any;
-  displayRosterTable = false;
+  displayRosterTable = false; // display boolean for displaying roster table
 
   constructor(
-    private apiDataService: ApiDataService,
+    private apiDataReportService: ApiDataReportService,
+    private apiDataProjectService: ApiDataProjectService,
     private authService: AuthService
   ) { }
 
   ngOnInit() {
-    // get logged in user's info
-    this.authService.getLoggedInUser((user, err) => {
-      if (err) {
-        // console.log(`error getting logged in user: ${err}`);
-        return;
-      }
-      this.loggedInUser = user;
-      this.getBubbleFteData();
-    });
+    this.getBubbleFteData();
   }
 
   ngOnDestroy() {
@@ -60,7 +53,7 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
   }
 
   getBubbleFteData() {
-    this.fteDataSubscription = this.apiDataService.getAggregatedFteData().subscribe( res => {
+    this.fteDataSubscription = this.apiDataReportService.getAggregatedFteData().subscribe( res => {
       this.rawBubbleData = res;
 
       this.rawBubbleData.forEach( project => {
@@ -82,6 +75,7 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
           projectName: project.projectName
         };
 
+        // push anchor and flex project priorities into separate data series
         if (project.PriorityName === 'Anchor') {
           this.anchorBubbleData.push(tempProj);
         } else if (project.PriorityName === 'Flex') {
@@ -171,10 +165,11 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
       }]
     };
     this.bubbleChart = Highcharts.chart('bubble', this.bubbleChartOptions);
+    this.chartIsLoading = false;
   }
 
   showProjectRoster(projectID: number) {
-    this.rosterDataSubscription = this.apiDataService.getProjectRoster(projectID).subscribe( res => {
+    this.rosterDataSubscription = this.apiDataProjectService.getProjectRoster(projectID).subscribe( res => {
       this.projectRoster = res[0].teamMembers;
       console.log(this.projectRoster);
       this.displayRosterTable = true;
