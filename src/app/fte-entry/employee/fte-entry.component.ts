@@ -21,6 +21,7 @@ require('moment-fquarter');
 
 declare const require: any;
 declare const $: any;
+declare const introJs: any;
 
 @Component({
   selector: 'app-fte-entry',
@@ -72,6 +73,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   showProjectsModal: boolean;
   projectList: any;
   timer: any;
+
+  fteTutorialState = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -144,7 +147,27 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.changeDetectorRef.detach();
   }
 
+  tutorialPart1() {
+    this.fteTutorialState++;
+    const intro = introJs();
+    intro.setOptions({
+      steps: [
+        {intro: 'Welcome to Jarvis Resources!'},
+        {
+          intro: `First, let's add a project to your project list.  Click this button to add a project.`,
+          element: '#intro-add-project'
+        }
+      ],
+      overlayOpacity: 0.4
+    });
+    intro.start('.tutorial-part1');
+  }
+
   onAddProjectClick() {
+    if (this.fteTutorialState === 1) {
+      this.fteTutorialState++;
+      introJs().exit();
+    }
     this.showProjectsModal = true;
   }
 

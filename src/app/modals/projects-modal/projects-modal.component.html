@@ -1,10 +1,11 @@
 <div class="projects-modal-outer-cont" [@modalStateOuter]="outerDivState">
-  <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState" (appClickOutside)="onClickOutside($event)">
+  <!-- <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState" (appClickOutside)="onClickOutside($event)"> -->
+  <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState">
     <div class="projects-modal-body">
 
       <div class="projects-filter-cont">
 
-        <div class="projects-modal-filter">
+        <div class="projects-modal-filter tutorial-part2" id="intro-search-project">
           <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter" appAutofocus>
         </div>
 
@@ -39,7 +40,7 @@
         <app-projects-info-modal [style.display]="showInfoModal ? 'inline' : 'none'" [project]="clickedProjectForInfoModal" (close)="onProjectsInfoModalCloseClick()"></app-projects-info-modal>
         <app-projects-roster-modal [style.display]="showRosterModal ? 'inline' : 'none'" [selectedProject]="clickedProjectForRosterModal" (close)="onProjectsRosterModalCloseClick()"></app-projects-roster-modal>
 
-        <div class="cards-cont">
+        <div class="cards-cont tutorial-part2" id="intro-select-project">
           
           <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{limitTo: numProjectsToDisplay, matchFuzzy: true, paginationFilter: paginateFilter}">
             <div class="card-header-cont">

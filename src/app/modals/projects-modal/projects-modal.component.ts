@@ -7,6 +7,7 @@ import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
 declare var $: any;
+declare const introJs: any;
 
 @Component({
   selector: 'app-projects-modal',
@@ -72,6 +73,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   projectAccessDeniedList: any;
 
   @Input() projects: any;
+  @Input() fteTutorialState: number;
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
 
@@ -125,6 +127,10 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     this.getUserPLMData(this.userEmail);
     this.getPublicProjectTypes();
+
+    if (this.fteTutorialState === 2) {
+      this.fteTutorialPart2();
+    }
   }
 
   ngAfterViewInit() {
@@ -132,6 +138,26 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     const newHeight = $('div.projects-modal-body').height() - 170;
     $('div.project-table-cont').height(newHeight);
 
+  }
+
+  fteTutorialPart2() {
+    this.fteTutorialState++;
+    const intro = introJs();
+    intro.setOptions({
+      steps: [
+        {intro: 'This is the Add New Project menu'},
+        {
+          intro: `Use the search bar to find a project that you work on.  Misspellings are ok.`,
+          element: '#intro-search-project',
+        },
+        {
+          intro: `Find the project you've worked on, and press the "Select" button`,
+          element: '#intro-select-project',
+        }
+      ],
+      overlayOpacity: 0.4
+    });
+    intro.start('.tutorial-part2');
   }
 
   onSelectedProject(selProject: any) {

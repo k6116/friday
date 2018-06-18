@@ -1,5 +1,6 @@
 
-<app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()"></app-projects-modal>
+<app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" [fteTutorialState]="fteTutorialState"
+  (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()"></app-projects-modal>
 
 <div *ngIf="display" class="container-fluid">
 
@@ -11,7 +12,7 @@
 
   <div class="row row-custom">
     <div class="col-sm col-custom">
-      <button class="btn btn-primary btn-fte-toolbar" (click)="onAddProjectClick()">
+      <button class="btn btn-primary btn-fte-toolbar tutorial-part1" (click)="onAddProjectClick()" id="intro-add-project">
         <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
       </button>
       <!-- Don't Delete - useful buttons for later -->
@@ -24,6 +25,9 @@
       </button>
       <button class="btn btn-primary btn-fte-toolbar" (click)="onResetClick()">
         <i class="fa fa-eraser"></i>&nbsp;&nbsp;Reset
+      </button>
+      <button class="btn btn-primary btn-fte-toolbar" (click)="tutorialPart1()">
+        Tutorial
       </button>
     </div>
   </div>
