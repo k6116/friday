@@ -74,6 +74,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
+  @Output() tutorialStateEmitter = new EventEmitter<number>();
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
 
@@ -129,7 +130,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.getPublicProjectTypes();
 
     if (this.fteTutorialState === 2) {
-      this.fteTutorialPart2();
+      this.tutorialPart2();
     }
   }
 
@@ -140,8 +141,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
-  fteTutorialPart2() {
-    this.fteTutorialState++;
+  // fte tutorial part 2, passed over from parent component onAddProjectClick()
+  tutorialPart2() {
     const intro = introJs();
     intro.setOptions({
       steps: [
@@ -155,9 +156,14 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
           element: '#intro-select-project',
         }
       ],
-      overlayOpacity: 0.4
+      overlayOpacity: 0.4,
+      exitOnOverlayClick: false,
+      showStepNumbers: false,
+      keyboardNavigation: false
     });
-    intro.start('.tutorial-part2');
+    window.setTimeout( () => {
+      intro.start('.tutorial-part2');
+    }, 500);
   }
 
   onSelectedProject(selProject: any) {
@@ -173,6 +179,16 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.selectedProject.emit(selProject);
     this.outerDivState = 'out';
     this.innerDivState = 'out';
+
+    // if user selects a project while we're in the tutorial, end step2 and send the parent component the current state
+    if (this.fteTutorialState === 2) {
+      this.fteTutorialState++;
+      introJs().exit();
+      window.setTimeout( () => {
+        // setting timeout to allow parent component some time to render
+        this.tutorialStateEmitter.emit(this.fteTutorialState);
+      }, 500);
+    }
 
   }
 

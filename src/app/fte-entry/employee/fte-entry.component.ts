@@ -74,7 +74,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   projectList: any;
   timer: any;
 
-  fteTutorialState = 0;
+  fteTutorialState = 0; // for keeping track of which part of the tutorial we're in, and passing to child component
 
   constructor(
     private fb: FormBuilder,
@@ -147,32 +147,82 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.changeDetectorRef.detach();
   }
 
+  // define tutorial steps
+  // we need to break it into 3 individual tutorial parts, because we need to execute part2 within a child component
   tutorialPart1() {
+    this.fteTutorialState = 0;
     this.fteTutorialState++;
     const intro = introJs();
     intro.setOptions({
       steps: [
-        {intro: 'Welcome to Jarvis Resources!'},
         {
+          // no element means the tutorial step doesn't focus any particular element
+          intro: 'Welcome to Jarvis Resources!'
+        },
+        {
+          // define steps like this. element = HTML id for a specific element
           intro: `First, let's add a project to your project list.  Click this button to add a project.`,
           element: '#intro-add-project'
         }
       ],
-      overlayOpacity: 0.4
+      overlayOpacity: 0.4,
+      exitOnOverlayClick: false,
+      showStepNumbers: false,
+      keyboardNavigation: false
     });
-    intro.start('.tutorial-part1');
+    intro.start('.tutorial-part1'); // include a specific css class to run only a subset of steps
+  }
+
+  tutorialPart3(currentState: number) {
+    this.fteTutorialState = currentState;
+    const intro = introJs();
+    intro.setOptions({
+      steps: [
+        {
+          intro: `Great!  Now you can add FTEs (full-time employee) to show your contribution to this project.
+            Please enter a value between 0 and 1, representing the proportion of your time each month you spend
+            working on this project.`,
+          element: '#intro-add-ftes'
+        },
+        {
+          intro: `Your total FTEs in each month should sum to 1, representing 100% of your time being allocated each month.`,
+          element: '#intro-fte-total'
+        },
+        {
+          intro: `You can use the slider to view your past and future FTE entries.  Past values can't be changed anymore,
+            but future values can be forecasted if you wish.`,
+          element: '#intro-slider'
+        },
+        {
+          intro: `Don't forget to save your work!`,
+          element: '#intro-save'
+        },
+        {
+          intro: `That concludes the tutorial.  Thanks for using Jarvis Resources!`
+        }
+      ],
+      overlayOpacity: 0.4,
+      exitOnOverlayClick: false,
+      showStepNumbers: false,
+      keyboardNavigation: false
+    });
+    intro.start('.tutorial-part3');
   }
 
   onAddProjectClick() {
+    // if user selects add project while in the tutorial, kill part1 and hide the FTE entry elements due to
+    // introjs z-index css problems
     if (this.fteTutorialState === 1) {
       this.fteTutorialState++;
       introJs().exit();
+      this.display = false;
     }
     this.showProjectsModal = true;
   }
 
   onModalClosed(selectedProject: any) {
     console.log('on modal closed fired');
+    this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
     }, 500);
@@ -214,6 +264,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   onModalCancelClick() {
     console.log('on modal cancel fired');
+    this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
     }, 500);

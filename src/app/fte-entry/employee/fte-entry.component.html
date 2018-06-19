@@ -1,8 +1,8 @@
 
 <app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" [fteTutorialState]="fteTutorialState"
-  (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()"></app-projects-modal>
+  (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()" (tutorialStateEmitter)="tutorialPart3($event)"></app-projects-modal>
 
-<div *ngIf="display" class="container-fluid">
+<div [hidden]="!display" class="container-fluid">
 
   <div class="row row-custom">
     <div class="col-sm col-custom col-text-header">
@@ -20,20 +20,20 @@
         <i class="fa fa-table"></i>&nbsp;&nbsp;Export
       </button> -->
       <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
-      <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveClick()">
-        <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
-      </button>
       <button class="btn btn-primary btn-fte-toolbar" (click)="onResetClick()">
         <i class="fa fa-eraser"></i>&nbsp;&nbsp;Reset
       </button>
-      <button class="btn btn-primary btn-fte-toolbar" (click)="tutorialPart1()">
-        Tutorial
+      <button class="btn btn-save btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
+        <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+      </button>
+      <button class="btn btn-primary btn-help" (click)="tutorialPart1()">
+        <i class="fa fa-question"></i>
       </button>
     </div>
   </div>
 
   <!-- block for slider -->
-  <div class="col-sm col-custom col-slider" (click)="showSliderDisabledToast()">
+  <div class="col-sm col-custom col-slider tutorial-part3" (click)="showSliderDisabledToast()" id="intro-slider">
     <table class="slider-header">
       <tr class="slider-header-row">
         <td class="slider-header-cell" *ngFor="let year of fyLabelArray">{{year}}</td>
@@ -46,7 +46,7 @@
   <div class="row row-custom">
 
     <!-- block for FTE entry div table -->
-    <div class="col-sm col-custom fte-table-container">
+    <div class="col-sm col-custom fte-table-container tutorial-part3" id="intro-add-ftes">
       <form [formGroup]="FTEFormGroup">
 
         <div class="fte-table" formArrayName="FTEFormArray">
@@ -98,7 +98,7 @@
           </div>
 
           <div class="fte-table-footer">
-            <div class="fte-table-row">
+            <div class="fte-table-row tutorial-part3" id="intro-fte-total">
               <div class="fte-table-cell icon">&nbsp;</div> <!-- for trash icon -->
               <div class="fte-table-cell col-projects-totals">TOTAL</div>
               <ng-container *ngFor="let month of months; let z = index">

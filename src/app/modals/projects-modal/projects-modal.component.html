@@ -35,12 +35,12 @@
 
       
 
-      <div class="project-table-cont" (scroll)="onScroll()">   
+      <div class="project-table-cont tutorial-part2" (scroll)="onScroll()" id="intro-select-project">   
         
         <app-projects-info-modal [style.display]="showInfoModal ? 'inline' : 'none'" [project]="clickedProjectForInfoModal" (close)="onProjectsInfoModalCloseClick()"></app-projects-info-modal>
         <app-projects-roster-modal [style.display]="showRosterModal ? 'inline' : 'none'" [selectedProject]="clickedProjectForRosterModal" (close)="onProjectsRosterModalCloseClick()"></app-projects-roster-modal>
 
-        <div class="cards-cont tutorial-part2" id="intro-select-project">
+        <div class="cards-cont">
           
           <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{limitTo: numProjectsToDisplay, matchFuzzy: true, paginationFilter: paginateFilter}">
             <div class="card-header-cont">

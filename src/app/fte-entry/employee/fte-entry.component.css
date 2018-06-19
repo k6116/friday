@@ -1,4 +1,9 @@
 
+/* need to override introjs automatic setting of relative position to bring Totals Row to front */
+div.fte-table-row.tutorial-part3.introjs-showElement.introjs-relativePosition {
+  position: absolute !important;
+}
+
 div.col-custom.col-slider {
   padding: 0 10px;
 }
@@ -15,9 +20,19 @@ div.col-custom.col-slider {
   border-color: rgb(108, 117, 125);;
 }
 
+.btn-save {
+  color: #fff;
+  background-color: rgb(49, 78, 58);
+  border-color: rgb(108, 117, 125);;
+}
+
 .btn-fte-toolbar {
   width: 90px;
   height: 35px;
+}
+
+.btn-help {
+  float: right;
 }
 
 .btn-fte-toolbar:hover {

@@ -1,12 +1,8 @@
 
-/* need to override introjs z-index automatic setting with the modal */
+/* need to override introjs automatic parent positoining to bring filter box to front */
 div.introjs-fixParent {
   position: absolute !important;
-  z-index: 100 !important;
 }
-
-.introjs-relativePosition > input { position: relative; }
-.introjs-showElement > input { z-index: 9999999 !important; }
 
 /* modal containers */
 
