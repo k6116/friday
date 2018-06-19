@@ -241,6 +241,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       newProject.userID = this.authService.loggedInUser.id;
       newProject.projectID = selectedProject.ProjectID;
       newProject.projectName = selectedProject.ProjectName;
+      newProject.projectRole = selectedProject.ProjectRole;
+      newProject.projectRoleID = selectedProject.ProjectRoleID;
 
       // loop through the already-built months array and initialize null FTEs for each month in this new project
       newProject.allocations = new Array<AllocationsArray>();
@@ -581,6 +583,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
           projectID: [proj.projectID],
           projectName: [proj.projectName],
+          projectRoleID: [proj.projectRoleID],
           month: [month],
           fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
           newRecord: [foundEntry ? false : true],
