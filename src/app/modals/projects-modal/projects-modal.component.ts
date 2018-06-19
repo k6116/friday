@@ -176,11 +176,13 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   onSelectedProject(selProject: any) {
-
     this.clickOutsideException = 'div#projectRoleModal';
-
     this.selProject = selProject;
-
+    // if user selects project when in the tutorial, end this part and increment the state counter
+    if (this.fteTutorialState === 2) {
+      this.fteTutorialState++;
+      introJs().exit();
+    }
   }
 
   selectProjectRole(event: any) {
@@ -210,9 +212,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.innerDivState = 'out';
 
     // if user selects a project while we're in the tutorial, end step2 and send the parent component the current state
-    if (this.fteTutorialState === 2) {
-      this.fteTutorialState++;
-      introJs().exit();
+    if (this.fteTutorialState === 3) {
       window.setTimeout( () => {
         // setting timeout to allow parent component some time to render
         this.tutorialStateEmitter.emit(this.fteTutorialState);
