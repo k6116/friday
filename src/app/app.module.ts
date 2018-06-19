@@ -68,6 +68,7 @@ import 'chartjs-plugin-zoom';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -105,7 +106,8 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
     ChatComponent,
     MyFteSummaryComponent,
     TeamFteSummaryComponent,
-    TopProjectsBubbleComponent
+    TopProjectsBubbleComponent,
+    FooterComponent
   ],
   imports: [
     AppRoutingModule,

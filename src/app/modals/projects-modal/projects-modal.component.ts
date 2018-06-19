@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
   HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
+import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { AppDataService } from '../../_shared/services/app-data.service';
@@ -67,10 +68,16 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   userEmail: string;
   userPLMData: any;
   publicProjectTypes: any;
+  projectAccessList: any;
   projectAccessTeamList: any;
   projectAccessApprovedList: any;
   projectAccessSubmittedList: any;
   projectAccessDeniedList: any;
+  projectData: any;
+  projectRolesList: any;
+  clickOutsideException: string;
+  selProject: any;
+  selProjectRole: any;
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
@@ -128,7 +135,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     this.getUserPLMData(this.userEmail);
     this.getPublicProjectTypes();
+    this.getProjectRoles();
 
+    // when the project modal is initialized, if we are in tutorial part2, launch the tutorial
     if (this.fteTutorialState === 2) {
       this.tutorialPart2();
     }
@@ -168,15 +177,35 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onSelectedProject(selProject: any) {
 
+    this.clickOutsideException = 'div#projectRoleModal';
+
+    this.selProject = selProject;
+
+  }
+
+  selectProjectRole(event: any) {
+    this.selProjectRole = event.target.value;
+  }
+
+  onProjectRoleConfirm() {
+
+    // add project role fields to selProject object to pass back to fte-entry component
+    this.selProject.ProjectRole = this.selProjectRole;
+    for (let i = 0; i < this.projectRolesList.length; i++) {
+      if (this.projectRolesList[i].projectRole === this.selProjectRole) {
+        this.selProject.ProjectRoleID = this.projectRolesList[i].id;
+      }
+    }
+
     console.log('Selected Project Id:');
-    console.log(selProject.ProjectID);
+    console.log(this.selProject);
 
     console.log('Selected Project:');
-    console.log(selProject.ProjectName);
+    console.log(this.selProject.ProjectName);
 
     this.outerDivState = 'out';
     this.innerDivState = 'out';
-    this.selectedProject.emit(selProject);
+    this.selectedProject.emit(this.selProject);
     this.outerDivState = 'out';
     this.innerDivState = 'out';
 
@@ -323,6 +352,87 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // hide the tooltip
     $(`.card-button.roster[data-id=${this.clickedProjectForRosterModal.ProjectID}]`).tooltip('hide');
 
+  }
+
+  onProjectAccessClick(project: any, action: string) {
+
+    let confirmButton: any;
+
+    this.clickOutsideException = 'div#confirm-modal';
+
+    // create requestData object for passing into controller
+    const requestData = {
+      requestID: null,
+      requestStatus: null,
+      requestNotes: null
+    };
+
+    // find requestID and append it to requestData
+    for (let i = 0; i < this.projectAccessList.length; i++) {
+      if (this.projectAccessList[i].projectID === project.ProjectID) {
+        requestData.requestID = this.projectAccessList[i].id;
+      }
+    }
+
+    // depending on action, update requestData elements
+    if (action === 'Request') {
+      requestData.requestStatus = 'Submitted';
+      requestData.requestNotes = 'Requesting access';
+      confirmButton = 'Request Access';
+    } else if (action === 'Submitted') {
+      requestData.requestStatus = 'Cancelled';
+      requestData.requestNotes = 'Cancelling request access';
+      confirmButton = 'Rescind Access';
+    } else if (action === 'Denied') {
+      requestData.requestStatus = 'Submitted';
+      requestData.requestNotes = 'Resubmitting request access';
+      confirmButton = 'Re-Request Access';
+    }
+
+    // emit confirmation modal after they click request button
+    this.appDataService.confirmModalData.emit(
+      {
+        title: `Confirm ${action}`,
+        message: `Are you sure you want to update the request status to ${requestData.requestStatus}?`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 193, 27)',
+        allowOutsideClickDismiss: false,
+        allowEscKeyDismiss: false,
+        buttons: [
+          {
+            text: confirmButton,
+            bsClass: 'btn-success',
+            emit: true
+          },
+          {
+            text: 'Cancel',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
+      }
+    );
+
+    const updateModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+      if (res) {
+        // if they click ok, grab the deleted project info and exec db call to delete
+        const deleteActionSubscription =
+        this.apiDataService.updateProjectAccessRequest(requestData, this.userID)
+          .subscribe(
+            apiRes => {
+              console.log(apiRes);
+              deleteActionSubscription.unsubscribe();
+            },
+            err => {
+              console.log(err);
+              deleteActionSubscription.unsubscribe();
+            }
+          );
+      } else {
+        console.log('request confirm aborted');
+      }
+      updateModalSubscription.unsubscribe();
+    });
   }
 
   // since the modals are a single element, need to move the position to align with the button before displaying
@@ -537,6 +647,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     .subscribe(
       res => {
 
+        this.projectAccessList = res;
+
         // Convert into an array of Approved ProjectIDs
         this.projectAccessApprovedList = Object.keys(res)
           .filter(i => res[i].requestStatus === 'Approved')
@@ -564,18 +676,39 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         this.projectAccessDeniedList = Object.keys(this.projectAccessDeniedList)
           .map(i => this.projectAccessDeniedList[i].projectID);
 
-        console.log('Approved List');
-        console.log(this.projectAccessApprovedList);
-        console.log('Submitted List');
-        console.log(this.projectAccessSubmittedList);
-        console.log('Denied List');
-        console.log(this.projectAccessDeniedList);
+        console.log('Access List');
+        console.log(this.projectAccessList);
+        // console.log('Approved List');
+        // console.log(this.projectAccessApprovedList);
+        // console.log('Submitted List');
+        // console.log(this.projectAccessSubmittedList);
+        // console.log('Denied List');
+        // console.log(this.projectAccessDeniedList);
       },
       err => {
         console.log(err);
       }
     );
   }
+
+  getProjectRoles() {
+    this.apiDataService.getProjectRoles()
+    .subscribe(
+      res => {
+        console.log('Project Roles Retrieved');
+        this.projectRolesList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  onRequestUpdateSuccess() {
+    // refresh project access list to update the request buttons
+    this.getProjectAccessList();
+  }
+
 
 }
 

@@ -29,6 +29,10 @@ export class ProjectsSetupsComponent implements OnInit {
   projectID: number;
   requestResponseFlag: boolean;
   request: any;
+  projectSchedule: any;
+  toggleEditProjectRole: boolean;
+  projectRolesList: any;
+  projectRole: any;
   replyComment: string;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
@@ -101,10 +105,11 @@ export class ProjectsSetupsComponent implements OnInit {
       this.loggedInUser = user;
       this.getUserProjectList();
       this.getProjectAccessRequestsList();
+      this.getProjectRoles();
     });
   }
 
-  selectProject(project: any) {
+  editProject(project: any) {
     this.showProjectsEditModal = true;
     this.projectData = project;
     setTimeout(() => {
@@ -183,8 +188,8 @@ export class ProjectsSetupsComponent implements OnInit {
           }
         }
       }
-
     this.getProjectRoster(project.id);
+    this.getProjectSchedule(project.projectName);
   }
 
   // Accept or deny a request
@@ -280,5 +285,65 @@ export class ProjectsSetupsComponent implements OnInit {
       }
     );
   }
+
+  getProjectSchedule(projectName: string) {
+
+    this.apiDataService.getProjectSchedule(projectName)
+    .subscribe(
+      res => {
+        console.log('project schedule:');
+        console.log(res);
+        this.projectSchedule = res[0];
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  getProjectRoles() {
+    this.apiDataService.getProjectRoles()
+    .subscribe(
+      res => {
+        console.log('Project Roles Retrieved');
+        this.projectRolesList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  onProjectRoleEditClick() {
+    this.toggleEditProjectRole = !this.toggleEditProjectRole;
+  }
+
+  selectProjectRoleChangeHandler(event: any, project: any) {
+
+    // create object for api post
+    const projectEmployeeRoleData = {
+      projectRoleID: null,
+      projectRole: null,
+      projectID: null
+    };
+    projectEmployeeRoleData.projectRole = event.target.value;
+    for (let i = 0; i < this.projectRolesList.length; i++) {
+      if (this.projectRolesList[i].projectRole === event.target.value) {
+        projectEmployeeRoleData.projectRoleID = this.projectRolesList[i].id;
+      }
+    }
+    projectEmployeeRoleData.projectID = project.id;
+
+    this.apiDataService.updateProjectEmployeeRole(projectEmployeeRoleData, this.loggedInUser.id)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
 
 }

@@ -64,16 +64,47 @@ const ProjectAccessRequests = sequelize.define('projectAccessRequests',
   }
 );
 
+const ProjectTypeDisplayFields = sequelize.define('projectTypeDisplayFields',
+  {
+    id: { type: Sequelize.INTEGER, field: 'ProjectTypeDisplayFieldsID', primaryKey: true, autoIncrement: true },
+    projectTypeID: { type: Sequelize.STRING, field: 'ProjectTypeID' },
+    projectField: { type: Sequelize.STRING, field: 'ProjectField' }
+  },
+  {
+    schema: 'attr',
+    tableName: 'ProjectTypeDisplayFields',
+    timestamps: false
+  }
+);
+
+const ProjectRoles = sequelize.define('projectRoles',
+  {
+    id: { type: Sequelize.INTEGER, field: 'ProjectRoleID', primaryKey: true, autoIncrement: true },
+    projectRole: { type: Sequelize.STRING, field: 'ProjectRole' },
+    description: { type: Sequelize.STRING, field: 'Description' }
+  },
+  {
+    schema: 'resources',
+    tableName: 'ProjectRoles',
+    timestamps: false
+  }
+);
+
 ProjectTypes.hasMany(Projects, {foreignKey: 'id'});
 Projects.belongsTo(ProjectTypes, {foreignKey: 'projectTypeID'});
 
 Projects.hasMany(ProjectAccessRequests, {foreignKey: 'id'});
 ProjectAccessRequests.belongsTo(Projects, {foreignKey: 'projectID'});
 
+ProjectTypes.hasMany(ProjectTypeDisplayFields, {foreignKey: 'id'});
+ProjectTypeDisplayFields.belongsTo(ProjectTypes, {foreignKey: 'projectTypeID'});
+
 
 module.exports = {
   Projects: Projects, 
   ProjectTypes: ProjectTypes,
-  ProjectAccessRequests: ProjectAccessRequests
+  ProjectAccessRequests: ProjectAccessRequests,
+  ProjectTypeDisplayFields: ProjectTypeDisplayFields,
+  ProjectRoles: ProjectRoles,
 }
 

@@ -159,7 +159,7 @@ function insertProjectAccessRequest(req, res) {
 }
 
 
-function updateProjectAccessRequest(req, res) {
+function responseProjectAccessRequest(req, res) {
 
   // get the project object from the request body
   const request = req.body;
@@ -183,10 +183,10 @@ function updateProjectAccessRequest(req, res) {
           transaction: t
         }
       )
-      .then(updateProjectAccessRequest => {
+      .then(responseProjectAccessRequest => {
 
-        console.log('Updated Project Access Request')
-        console.log(updateProjectAccessRequest);
+        console.log('Updated Project Access Response')
+        console.log(responseProjectAccessRequest);
 
       })
 
@@ -208,6 +208,56 @@ function updateProjectAccessRequest(req, res) {
 
 }
 
+function updateProjectAccessRequest(req, res) {
+
+  // get the project object from the request body
+  const requestData = req.body;
+  const today = new Date();
+
+  console.log(requestData.requestID);
+
+  return sequelize.transaction((t) => {
+
+    return models.ProjectAccessRequests
+      .update(
+        {
+          requestStatus: requestData.requestStatus,
+          requestedAt: today,
+          requestNotes: requestData.requestNotes,
+          respondedBy: null,
+          respondedAt: null,
+          responseNotes: null,
+        },
+        {
+          where: {id: requestData.requestID},
+          transaction: t
+        }
+      )
+      .then(updateProjectAccessRequest => {
+
+        console.log('Updated Project Access Request')
+        console.log(updateProjectAccessRequest);
+
+      })
+
+    }).then(() => {
+
+      res.json({
+        message: `The requestID '${requestData.requestID}' has been updated successfully`
+      })
+
+    }).catch(error => {
+
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
+
+    })
+
+}
+
 
 module.exports = {
   getPublicProjectTypes: getPublicProjectTypes,
@@ -215,5 +265,6 @@ module.exports = {
   getProjectAccessTeamList: getProjectAccessTeamList,
   getProjectAccessList: getProjectAccessList,
   insertProjectAccessRequest: insertProjectAccessRequest,
+  responseProjectAccessRequest: responseProjectAccessRequest,
   updateProjectAccessRequest: updateProjectAccessRequest
 }
