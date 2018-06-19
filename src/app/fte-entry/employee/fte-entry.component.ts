@@ -480,6 +480,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.apiDataFteService.indexUserData(this.authService.loggedInUser.id)
     .subscribe(
       res => {
+        console.log(res.nested);
         this.userFTEs = res.nested;
         this.userFTEsFlat = res.flat;
         this.buildFteEditableArray();
@@ -580,7 +581,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
           projectID: [proj.projectID],
           projectName: [proj.projectName],
-          // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
           month: [month],
           fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
           newRecord: [foundEntry ? false : true],
@@ -590,9 +590,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       );
     });
     // cast the new project to an 'any', so we can assign arbitrary properties to each array
+    // used to parse the projectName in HTML without having to dive into the controls
     const tempProj: any = projFormArray;
     tempProj.projectID = proj.projectID;
-    tempProj.projectName = proj.projectName;  // used to parse the projectName in HTML without having to dive into the controls
+    tempProj.projectName = proj.projectName;
+    tempProj.projectRole = proj.projectRole;
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
   }
 

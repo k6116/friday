@@ -189,6 +189,19 @@ div.fte-table-footer div.fte-table-row div.fte-table-cell.col-projects-totals {
   font-weight: bold;
   z-index: 3;
 }
+
+div.fte-table-header div.fte-table-row div.fte-table-cell.col-projects-roles,
+div.fte-table-footer div.fte-table-row div.fte-table-cell.col-projects-roles {
+  /* css for cells that are the Projects and Totals headings */
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  left: 200px;
+  min-width: 150px;
+  text-align: left;
+  font-weight: bold;
+  z-index: 3;
+}
+
 div.fte-table-header div.fte-table-row div.fte-table-cell.icon,
 div.fte-table-footer div.fte-table-row div.fte-table-cell.icon {
   /* trash icons in the header are sticky towards the top-scroll */
@@ -210,6 +223,15 @@ div.fte-table-body div.fte-table-row div.fte-table-cell.col-project-name {
   position: sticky;
   left: 30px;
   min-width: 170px;
+  z-index: 1;
+}
+
+div.fte-table-body div.fte-table-row div.fte-table-cell.col-project-role {
+  /* css for cells in the body that also have the col-project-role class */
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  left: 200px;
+  min-width: 150px;
   z-index: 1;
 }
 
