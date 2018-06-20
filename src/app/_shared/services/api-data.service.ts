@@ -226,4 +226,12 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
+  deletejobTitle(jobTitleData: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/deletejobTitle`, JSON.stringify(jobTitleData), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
 }

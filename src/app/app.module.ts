@@ -20,6 +20,7 @@ import { ClickOutsideDirective } from './_shared/directives/click-outside.direct
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
+import { TitleCasePipe } from '@angular/common';
 
 // SERVICES
 import { ApiDataService, AppDataService, ClickTrackingService, CookiesService,
@@ -150,7 +151,8 @@ import { FooterComponent } from './footer/footer.component';
     UserResolverService,
     WebsocketService,
     CookiesService,
-    UnsavedChangesGuard
+    UnsavedChangesGuard,
+    TitleCasePipe
   ],
   bootstrap: [AppComponent]
 })

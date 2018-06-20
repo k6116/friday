@@ -1,4 +1,4 @@
 export interface JobTitleInterface {
-    jobTitleName: string;
-    lengthJobTitleList: number;
+    name: string;
+    description: string;
 }

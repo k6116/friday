@@ -1,57 +1,75 @@
-<div class="jumbotron" data-target="#jobTitles">
-    <div class="row">
-  
-      <div class="col-sm">
-        <h2>Project Types</h2>
-        <div class="input-group">
-          <input type="text" class="form-control">
-          <div class="input-group-append">
-            <button class="btn btn-primary btn-fte-toolbar" style="display: block">
-              <i class="fa fa-plus"></i>&nbsp;&nbsp;Add
-            </button>
-          </div>
-        </div>
-        <br/>
-        <div class="list-group">
-          <button type="button" class="list-group-item list-group-item-action">
-            Cras justo odio
-          </button>
-          <button type="button" class="list-group-item list-group-item-action">Dapibus ac facilisis in</button>
-          <button type="button" class="list-group-item list-group-item-action">Morbi leo risus</button>
-          <button type="button" class="list-group-item list-group-item-action">Porta ac consectetur ac</button>
-          <button type="button" class="list-group-item list-group-item-action" disabled>Vestibulum at eros</button>
-        </div>
-      </div>
-  
-      <div class="col-sm">
-        <h2>Project Attributes</h2>
-        <div class="input-group">
-          <input type="text" class="form-control">
-          <div class="input-group-append">
-            <button class="btn btn-primary btn-fte-toolbar" style="display: block">
-              <i class="fa fa-plus"></i>&nbsp;&nbsp;Add
-            </button>
-          </div>
-        </div>
-        <br/>
-        <div class="list-group">
-          <button type="button" class="list-group-item list-group-item-action">
-            Cras justo odio
-          </button>
-          <button type="button" class="list-group-item list-group-item-action">Dapibus ac facilisis in</button>
-          <button type="button" class="list-group-item list-group-item-action">Morbi leo risus</button>
-          <button type="button" class="list-group-item list-group-item-action">Porta ac consectetur ac</button>
-          <button type="button" class="list-group-item list-group-item-action" disabled>Vestibulum at eros</button>
-        </div>
-      </div>
-  
+<div class="jumbotron">
+<!-- Template Driven Form -->
+  <!-- 1. exproting ngForm to a public variable #f -->
+  <!-- 4. add ngSubmit event directive: pass onSubmit event with varible to .ts -->
+  <form novalidate (ngSubmit)="onSubmit(f)" #f="ngForm">
+    <label>
+      <span>Full name</span>
+  <!-- 2. ngModel binds the form value based on the name attributes value -->
+  <!--    [ngModel] one way binding -->
+  <!--    [(two-way binding)] -->
+      <input
+        type="text"
+        name="name"
+        ngModel="user.name"
+        #userName="ngModel"
+        required
+        placeholder="Your full name">
+    </label>
+    <div *ngIf="userName.errors?.required && userName.touched" class="error">
+      Name is required
     </div>
-    <!-- <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-    <hr class="my-4">
-    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-    <p class="lead">
-      <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveClick()">
-        <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
-      </button>
-    </p> -->
-  </div>
+  <!-- 3. ngModelGroup is a nested group of ngModel -->
+    <div ngModelGroup="account">
+      <label>
+        <span>Email address</span>
+        <input
+          type="email"
+          name="email"
+          ngModel
+          required
+          placeholder="Your email address">
+      </label>
+      <label>
+        <span>Confirm address</span>
+        <input
+          type="email"
+          name="confirm"
+          ngModel
+          required
+          placeholder="Confirm your email address">
+      </label>
+    </div>
+    <button type="submit" [disabled]="f.invalid">Sign up</button>
+  </form>
+  {{ f.value | json }}
+  {{ f.controls.name?.errors | json }}
+
+<!-- Reactive Form -->
+  <form novalidate>
+      <label>
+        <span>Full name</span>
+        <input
+          type="text"
+          name="name"
+          placeholder="Your full name">
+      </label>
+      <div>
+        <label>
+          <span>Email address</span>
+          <input
+            type="email"
+            name="email"
+            placeholder="Your email address">
+        </label>
+        <label>
+          <span>Confirm address</span>
+          <input
+            type="email"
+            name="confirm"
+            placeholder="Confirm your email address">
+        </label>
+      </div>
+      <button type="submit">Sign up</button>
+    </form>
+</div>
