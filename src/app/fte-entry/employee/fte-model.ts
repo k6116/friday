@@ -1,6 +1,8 @@
 export class UserFTEs {
     projectID: number;
     projectName: string;
+    projectRole: string;
+    projectRoleID: number;
     allocations: AllocationsArray[];
     userID: number;
 }

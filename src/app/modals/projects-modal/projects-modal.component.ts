@@ -9,6 +9,7 @@ import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
 declare var $: any;
+declare const introJs: any;
 
 @Component({
   selector: 'app-projects-modal',
@@ -80,6 +81,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   selProjectRole: any;
 
   @Input() projects: any;
+  @Input() fteTutorialState: number;
+  @Output() tutorialStateEmitter = new EventEmitter<number>();
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
 
@@ -137,6 +140,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.getUserPLMData(this.userEmail);
     this.getPublicProjectTypes();
     this.getProjectRoles();
+
+    // when the project modal is initialized, if we are in tutorial part2, launch the tutorial
+    if (this.fteTutorialState === 2) {
+      this.tutorialPart2();
+    }
   }
 
   ngAfterViewInit() {
@@ -146,12 +154,39 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
+  // fte tutorial part 2, passed over from parent component onAddProjectClick()
+  tutorialPart2() {
+    const intro = introJs();
+    intro.setOptions({
+      steps: [
+        {intro: 'This is the Add New Project menu'},
+        {
+          intro: `Use the search bar to find a project that you work on.  Misspellings are ok.`,
+          element: '#intro-search-project',
+        },
+        {
+          intro: `Find the project you've worked on, and press the "Select" button`,
+          element: '#intro-select-project',
+        }
+      ],
+      overlayOpacity: 0.4,
+      exitOnOverlayClick: false,
+      showStepNumbers: false,
+      keyboardNavigation: false
+    });
+    window.setTimeout( () => {
+      intro.start('.tutorial-part2');
+    }, 500);
+  }
+
   onSelectedProject(selProject: any) {
-
     this.clickOutsideException = 'div#projectRoleModal';
-
     this.selProject = selProject;
-
+    // if user selects project when in the tutorial, end this part and increment the state counter
+    if (this.fteTutorialState === 2) {
+      this.fteTutorialState++;
+      introJs().exit();
+    }
   }
 
   selectProjectRole(event: any) {
@@ -179,6 +214,14 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.selectedProject.emit(this.selProject);
     this.outerDivState = 'out';
     this.innerDivState = 'out';
+
+    // if user selects a project while we're in the tutorial, end step2 and send the parent component the current state
+    if (this.fteTutorialState === 3) {
+      window.setTimeout( () => {
+        // setting timeout to allow parent component some time to render
+        this.tutorialStateEmitter.emit(this.fteTutorialState);
+      }, 500);
+    }
 
   }
 

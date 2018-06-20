@@ -21,6 +21,7 @@ require('moment-fquarter');
 
 declare const require: any;
 declare const $: any;
+declare const introJs: any;
 
 @Component({
   selector: 'app-fte-entry',
@@ -72,6 +73,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   showProjectsModal: boolean;
   projectList: any;
   timer: any;
+
+  fteTutorialState = 0; // for keeping track of which part of the tutorial we're in, and passing to child component
 
   constructor(
     private fb: FormBuilder,
@@ -144,12 +147,82 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.changeDetectorRef.detach();
   }
 
+  // define tutorial steps
+  // we need to break it into 3 individual tutorial parts, because we need to execute part2 within a child component
+  tutorialPart1() {
+    this.fteTutorialState = 0;
+    this.fteTutorialState++;
+    const intro = introJs();
+    intro.setOptions({
+      steps: [
+        {
+          // no element means the tutorial step doesn't focus any particular element
+          intro: 'Welcome to Jarvis Resources!'
+        },
+        {
+          // define steps like this. element = HTML id for a specific element
+          intro: `First, let's add a project to your project list.  Click this button to add a project.`,
+          element: '#intro-add-project'
+        }
+      ],
+      overlayOpacity: 0.4,
+      exitOnOverlayClick: false,
+      showStepNumbers: false,
+      keyboardNavigation: false
+    });
+    intro.start('.tutorial-part1'); // include a specific css class to run only a subset of steps
+  }
+
+  tutorialPart3(currentState: number) {
+    this.fteTutorialState = currentState;
+    const intro = introJs();
+    intro.setOptions({
+      steps: [
+        {
+          intro: `Great!  Now you can add FTEs (full-time employee) to show your contribution to this project.
+            Please enter a value between 0 and 1, representing the proportion of your time each month you spend
+            working on this project.`,
+          element: '#intro-add-ftes'
+        },
+        {
+          intro: `Your total FTEs in each month should sum to 1, representing 100% of your time being allocated each month.`,
+          element: '#intro-fte-total'
+        },
+        {
+          intro: `You can use the slider to view your past and future FTE entries.  Past values can't be changed anymore,
+            but future values can be forecasted if you wish.`,
+          element: '#intro-slider'
+        },
+        {
+          intro: `Don't forget to save your work!`,
+          element: '#intro-save'
+        },
+        {
+          intro: `That concludes the tutorial.  Thanks for using Jarvis Resources!`
+        }
+      ],
+      overlayOpacity: 0.4,
+      exitOnOverlayClick: false,
+      showStepNumbers: false,
+      keyboardNavigation: false
+    });
+    intro.start('.tutorial-part3');
+  }
+
   onAddProjectClick() {
+    // if user selects add project while in the tutorial, kill part1 and hide the FTE entry elements due to
+    // introjs z-index css problems
+    if (this.fteTutorialState === 1) {
+      this.fteTutorialState++;
+      introJs().exit();
+      this.display = false;
+    }
     this.showProjectsModal = true;
   }
 
   onModalClosed(selectedProject: any) {
     console.log('on modal closed fired');
+    this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
     }, 500);
@@ -168,6 +241,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       newProject.userID = this.authService.loggedInUser.id;
       newProject.projectID = selectedProject.ProjectID;
       newProject.projectName = selectedProject.ProjectName;
+      newProject.projectRole = selectedProject.ProjectRole;
+      newProject.projectRoleID = selectedProject.ProjectRoleID;
 
       // loop through the already-built months array and initialize null FTEs for each month in this new project
       newProject.allocations = new Array<AllocationsArray>();
@@ -191,6 +266,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   onModalCancelClick() {
     console.log('on modal cancel fired');
+    this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
     }, 500);
@@ -406,6 +482,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.apiDataFteService.indexUserData(this.authService.loggedInUser.id)
     .subscribe(
       res => {
+        console.log(res.nested);
         this.userFTEs = res.nested;
         this.userFTEsFlat = res.flat;
         this.buildFteEditableArray();
@@ -506,7 +583,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
           projectID: [proj.projectID],
           projectName: [proj.projectName],
-          // month: [moment(month).format('YYYY-MM-DDTHH.mm.ss.SSS') + 'Z'],
+          projectRoleID: [proj.projectRoleID],
           month: [month],
           fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
           newRecord: [foundEntry ? false : true],
@@ -516,9 +593,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       );
     });
     // cast the new project to an 'any', so we can assign arbitrary properties to each array
+    // used to parse the projectName in HTML without having to dive into the controls
     const tempProj: any = projFormArray;
     tempProj.projectID = proj.projectID;
-    tempProj.projectName = proj.projectName;  // used to parse the projectName in HTML without having to dive into the controls
+    tempProj.projectName = proj.projectName;
+    tempProj.projectRole = proj.projectRole;
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
   }
 

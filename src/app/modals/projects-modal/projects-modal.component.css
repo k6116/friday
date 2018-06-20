@@ -1,4 +1,8 @@
 
+/* need to override introjs automatic parent positoining to bring filter box to front */
+div.introjs-fixParent {
+  position: absolute !important;
+}
 
 /* modal containers */
 
@@ -45,6 +49,7 @@ div.projects-filter-cont {
 
 input.projects-filter-input {
   width: 200px;
+  /* z-index: 101; */
 }
 
 
