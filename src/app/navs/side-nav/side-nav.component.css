@@ -1,7 +1,6 @@
 
 .sidenav-cont {
   position: fixed;
-  z-index: 4;
   width: 180px;
   border: 1px solid grey;
   height: 100%;
