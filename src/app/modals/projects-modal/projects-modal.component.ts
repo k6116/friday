@@ -3,7 +3,7 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ToolsService } from '../../_shared/services/tools.service';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService } from '../../_shared/services/api-data/_index';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
@@ -91,7 +91,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   constructor(
     private toolsService: ToolsService,
     private changeDetectorRef: ChangeDetectorRef,
-    private apiDataService: ApiDataService,
+    private apiDataEmployeeService: ApiDataEmployeeService,
+    private apiDataProjectService: ApiDataProjectService,
+    private apiDataPermissionService: ApiDataPermissionService,
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
@@ -374,7 +376,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       if (res) {
         // if they click ok, grab the deleted project info and exec db call to delete
         const deleteActionSubscription =
-        this.apiDataService.updateProjectAccessRequest(requestData, this.userID)
+        this.apiDataService.updateProjectPermissionRequest(requestData, this.userID)
           .subscribe(
             apiRes => {
               console.log(apiRes);
@@ -535,7 +537,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   onRequestedProject(project: any) {
-    this.apiDataService.submitProjectAccessRequest(project, this.userID)
+    this.apiDataService.insertProjectPermissionRequest(project, this.userID)
     .subscribe(
       res => {
 
@@ -557,13 +559,13 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   getUserPLMData(userEmailAddress: string) {
-    this.apiDataService.getUserPLMData(userEmailAddress)
+    this.apiDataEmployeeService.getUserPLMData(userEmailAddress)
     .subscribe(
       res => {
         console.log('User PLM Data Retrieved');
         this.appDataService.userPLMData = res;
-        this.getProjectAccessTeamList();
-        this.getProjectAccessList();
+        this.getProjectPermissionTeamList();
+        this.getProjectPermissionList();
       },
       err => {
         console.log(err);
@@ -584,9 +586,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     );
   }
 
-  getProjectAccessTeamList() {
+  getProjectPermissionTeamList() {
     const managerEmailAddress = this.appDataService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
-    this.apiDataService.getProjectAccessTeamList(this.userID, managerEmailAddress)
+    this.apiDataService.getProjectPermissionTeamList(this.userID, managerEmailAddress)
     .subscribe(
       res => {
         this.projectAccessTeamList = Object.keys(res).map(i => res[i].id);
@@ -599,8 +601,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     );
   }
 
-  getProjectAccessList() {
-    this.apiDataService.getProjectAccessList(this.userID)
+  getProjectPermissionList() {
+    this.apiDataService.getProjectPermissionList(this.userID)
     .subscribe(
       res => {
 
@@ -663,7 +665,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onRequestUpdateSuccess() {
     // refresh project access list to update the request buttons
-    this.getProjectAccessList();
+    this.getProjectPermissionList();
   }
 
 

@@ -104,7 +104,7 @@ export class ProjectsSetupsComponent implements OnInit {
       }
       this.loggedInUser = user;
       this.getUserProjectList();
-      this.getProjectAccessRequestsList();
+      this.getProjectRequestsList();
       this.getProjectRoles();
     });
   }
@@ -132,8 +132,8 @@ export class ProjectsSetupsComponent implements OnInit {
 
   // List of all requests that have been made to join a project.
   //  Gets called onInit and requestResponse()
-  getProjectAccessRequestsList() {
-    this.apiDataService.getProjectAccessRequestsList(this.loggedInUser.id)
+  getProjectPermissionRequestsList() {
+    this.apiDataService.getProjectPermissionRequestsList(this.loggedInUser.id)
     .subscribe(
       res => {
         // console.log(res);
@@ -196,7 +196,7 @@ export class ProjectsSetupsComponent implements OnInit {
   requestResponse(request: any, reply: string, replyComment: string) {
     this.requestResponseFlag = false;
 
-    this.apiDataService.responseProjectAccessRequest(request, reply, replyComment, this.loggedInUser.id)
+    this.apiDataService.updateProjectPermissionResponse(request, reply, replyComment, this.loggedInUser.id)
     .subscribe(
       res => {
 
@@ -206,7 +206,7 @@ export class ProjectsSetupsComponent implements OnInit {
           eSnd => {
             this.appDataService.raiseToast('success',
             `Email on Approval Decision delivered to ${request['user.fullName']}.`);
-            this.getProjectAccessRequestsList();
+            this.getProjectPermissionRequestsList();
           },
           err => {
             console.log(err);
@@ -220,7 +220,7 @@ export class ProjectsSetupsComponent implements OnInit {
       }
     );
 
-    this.getProjectAccessRequestsList();
+    this.getProjectPermissionRequestsList();
   }
 
   onDenyClick(request: any) {

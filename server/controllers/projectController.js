@@ -4,7 +4,7 @@ const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
 
-function getAll(req, res) {
+function indexProjects(req, res) {
 
     const sql = `
      SELECT 
@@ -28,7 +28,7 @@ function getAll(req, res) {
 
 }
 
-function getProjectRoster(req, res) {
+function indexProjectRoster(req, res) {
 
   const projectID = req.params.projectID;
   const month = moment().utc().startOf('month').format('YYYY-MM-DD')
@@ -60,7 +60,7 @@ function getProjectRoster(req, res) {
   .then(projectTeamData => {
     const projectTeamTree = new Treeize();
     projectTeamTree.grow(projectTeamData);
-    const projectTeam = projectTeamTree.getData();
+    const projectTeam = projectTeamTree.indexData();
     res.json(projectTeam);
   })
   .catch(error => {
@@ -72,33 +72,7 @@ function getProjectRoster(req, res) {
 
 }
 
-function getUserPLMData(req, res) {
-  const userEmailAddress = req.params.userEmailAddress;
-
-  const sql = `
-    SELECT
-      P1.PERSON_ID, P1.LAST_NAME, P1.FIRST_NAME, P1.EMAIL_ADDRESS, P1.SUPERVISOR_ID, P1.SUPERVISOR_LAST_NAME, P1.SUPERVISOR_FIRST_NAME, P2.EMAIL_ADDRESS AS SUPERVISOR_EMAIL_ADDRESS
-    FROM
-      vPER_ALL_PEOPLE_ORG P1 (NOLOCK)
-      LEFT JOIN vPER_ALL_PEOPLE_F P2 (NOLOCK) ON P1.SUPERVISOR_ID = P2.PERSON_ID
-    WHERE
-      P1.EMAIL_ADDRESS = '${userEmailAddress}'
-  `
-  sequelizePLM.query(sql, { type: sequelizePLM.QueryTypes.SELECT })
-    .then(org => {
-      console.log("returning user PLM data");
-      res.json(org);
-    })
-    .catch(error => {
-      res.status(400).json({
-        title: 'Error (in catch)',
-        error: {message: error}
-      })
-    });
-}
-
-
-function getUserProjectList(req, res) {
+function indexUserProjectList(req, res) {
 
   const userID = req.params.userID;
 
@@ -130,7 +104,7 @@ function getUserProjectList(req, res) {
 
 function insertProject(req, res) {
 
-  // get the project object from the request body
+  // index the project object from the request body
   const project = req.body;
   const userID = req.params.userID;
   const today = new Date();
@@ -154,7 +128,7 @@ function insertProject(req, res) {
           transaction: t
         }
       )
-      .then(savedProject => {
+      .then(newProject => {
 
         console.log('created project id is: ' + project.id);
 
@@ -181,7 +155,7 @@ function insertProject(req, res) {
 
 function updateProject(req, res) {
 
-  // get the project object from the request body
+  // index the project object from the request body
   const project = req.body;
   const userID = req.params.userID;
   const today = new Date();
@@ -234,9 +208,9 @@ function updateProject(req, res) {
 }
 
 
-function deleteProject(req, res) {
+function destroyProject(req, res) {
 
-  // get the project object and userID from the params
+  // index the project object and userID from the params
   const project = req.body;
   const userID = req.params.userID;
 
@@ -277,35 +251,15 @@ function deleteProject(req, res) {
 }
 
 
-function getPrimaryKeyRefs(req, res) {
-  
-  const pKeyName = req.params.pKeyName;
-  const pKeyValue = req.params.pKeyValue;
-  const userID = req.params.userID;
 
-  sequelize.query('EXECUTE ref.FindReferencedTables :pKeyName, :pKeyValue, :userID', {replacements: {pKeyName: pKeyName, pKeyValue: pKeyValue, userID: userID}, type: sequelize.QueryTypes.SELECT})
-    .then(org => {
-      console.log("returning primary key reference table list");
-      console.log('EXECUTE ref.FindReferencedTables :pKeyName, :pKeyValue, :userID', {replacements: {pKeyName: pKeyName, pKeyValue: pKeyValue, userID: userID}});
-      res.json(org);
-    })
-    .catch(error => {
-      res.status(400).json({
-        title: 'Error (in catch)',
-        error: {message: error}
-      })
-    });
-}
-
-
-function getProjectTypesList(req, res) {
+function indexProjectTypesList(req, res) {
 
   models.ProjectTypes.findAll({
     attributes: ['id', 'projectTypeName', 'description'],
   })
-  .then(project => {
-    console.log('WORKED')
-    res.json(project);
+  .then(projectType => {
+    console.log('Returning Project Type List')
+    res.json(projectType);
   })
   .catch(error => {
     res.status(400).json({
@@ -316,14 +270,14 @@ function getProjectTypesList(req, res) {
   });
 }
 
-function getProjectSchedule(req, res) {
+function indexProjectSchedule(req, res) {
 
   const projectName = req.params.projectName;
 
   sequelize.query('EXECUTE reports.SchedulesNew :projectName, null', {replacements: {projectName: projectName}, type: sequelize.QueryTypes.SELECT})
-    .then(org => {
+    .then(projectSchedule => {
       console.log("returning project schedule");
-      res.json(org);
+      res.json(projectSchedule);
     })
     .catch(error => {
       res.status(400).json({
@@ -333,7 +287,7 @@ function getProjectSchedule(req, res) {
     });
 }
 
-function getProjectTypeDisplayFields(req, res) {
+function indexProjectTypeDisplayFields(req, res) {
 
   models.ProjectTypeDisplayFields.findAll({
     attributes: ['projectField'],
@@ -358,7 +312,7 @@ function getProjectTypeDisplayFields(req, res) {
   });
 }
 
-function getProjectRoles(req, res) {
+function indexProjectRoles(req, res) {
 
   models.ProjectRoles.findAll({
     attributes: ['id', 'projectRole'],
@@ -376,7 +330,7 @@ function getProjectRoles(req, res) {
   });
 }
 
-function getUserProjectRoles(req, res) {
+function indexUserProjectRoles(req, res) {
 
   const userID = req.params.userID;
 
@@ -391,9 +345,9 @@ function getUserProjectRoles(req, res) {
       }
     ]
   })
-  .then(getUserProjectRoles => {
+  .then(indexUserProjectRoles => {
     console.log('WORKED')
-    res.json(getUserProjectRoles);
+    res.json(indexUserProjectRoles);
   })
   .catch(error => {
     res.status(400).json({
@@ -406,7 +360,7 @@ function getUserProjectRoles(req, res) {
 
 function insertProjectEmployeeRole(req, res) {
 
-  // get the project object from the request body
+  // index the project object from the request body
   const employeeProjectRoleData = req.body;
   const userID = req.params.userID;
   const today = new Date();
@@ -454,7 +408,7 @@ function insertProjectEmployeeRole(req, res) {
 
 function updateProjectEmployeeRole(req, res) {
 
-  // get the project object from the request body
+  // index the project object from the request body
   const employeeProjectRoleData = req.body;
   const userID = req.params.userID;
   const today = new Date();
@@ -502,19 +456,17 @@ function updateProjectEmployeeRole(req, res) {
 }
 
 module.exports = {
-  getAll: getAll,
-  getProjectRoster: getProjectRoster,
-  getUserPLMData: getUserPLMData,
-  getUserProjectList: getUserProjectList,
+  indexProjects: indexProjects,
+  indexProjectRoster: indexProjectRoster,
+  indexUserProjectList: indexUserProjectList,
   insertProject: insertProject,
   updateProject: updateProject,
-  deleteProject: deleteProject,
-  getPrimaryKeyRefs: getPrimaryKeyRefs,
-  getProjectTypesList: getProjectTypesList,
-  getProjectSchedule: getProjectSchedule,
-  getProjectTypeDisplayFields: getProjectTypeDisplayFields,
-  getProjectRoles: getProjectRoles,
-  getUserProjectRoles: getUserProjectRoles,
+  destroyProject: destroyProject,
+  indexProjectTypesList: indexProjectTypesList,
+  indexProjectSchedule: indexProjectSchedule,
+  indexProjectTypeDisplayFields: indexProjectTypeDisplayFields,
+  indexProjectRoles: indexProjectRoles,
+  indexUserProjectRoles: indexUserProjectRoles,
   insertProjectEmployeeRole: insertProjectEmployeeRole,
   updateProjectEmployeeRole: updateProjectEmployeeRole
 }
