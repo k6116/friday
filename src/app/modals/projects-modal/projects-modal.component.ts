@@ -3,7 +3,8 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ToolsService } from '../../_shared/services/tools.service';
-import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService } from '../../_shared/services/api-data/_index';
+import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
+  ApiDataEmailService } from '../../_shared/services/api-data/_index';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
@@ -67,11 +68,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   userEmail: string;
   userPLMData: any;
   publicProjectTypes: any;
-  projectAccessList: any;
-  projectAccessTeamList: any;
-  projectAccessApprovedList: any;
-  projectAccessSubmittedList: any;
-  projectAccessDeniedList: any;
+  projectPermissionList: any;
+  projectPermissionTeamList: any;
+  projectPermissionApprovedList: any;
+  projectPermissionSubmittedList: any;
+  projectPermissionDeniedList: any;
   projectData: any;
   projectRolesList: any;
   clickOutsideException: string;
@@ -94,6 +95,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     private apiDataEmployeeService: ApiDataEmployeeService,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataPermissionService: ApiDataPermissionService,
+    private apiDataEmailService: ApiDataEmailService,
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
@@ -313,7 +315,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
-  onProjectAccessClick(project: any, action: string) {
+  onProjectPermissionClick(project: any, action: string) {
 
     let confirmButton: any;
 
@@ -327,9 +329,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     };
 
     // find requestID and append it to requestData
-    for (let i = 0; i < this.projectAccessList.length; i++) {
-      if (this.projectAccessList[i].projectID === project.ProjectID) {
-        requestData.requestID = this.projectAccessList[i].id;
+    for (let i = 0; i < this.projectPermissionList.length; i++) {
+      if (this.projectPermissionList[i].projectID === project.ProjectID) {
+        requestData.requestID = this.projectPermissionList[i].id;
       }
     }
 
@@ -376,7 +378,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       if (res) {
         // if they click ok, grab the deleted project info and exec db call to delete
         const deleteActionSubscription =
-        this.apiDataService.updateProjectPermissionRequest(requestData, this.userID)
+        this.apiDataPermissionService.updateProjectPermissionRequest(requestData, this.userID)
           .subscribe(
             apiRes => {
               console.log(apiRes);
@@ -537,12 +539,12 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   onRequestedProject(project: any) {
-    this.apiDataService.insertProjectPermissionRequest(project, this.userID)
+    this.apiDataPermissionService.insertProjectPermissionRequest(project, this.userID)
     .subscribe(
       res => {
 
         // send email
-        this.apiDataService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
+        this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
           eRes => {
             this.appDataService.raiseToast('success', 'Request Access Email Delivered.');
           },
@@ -574,7 +576,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   getPublicProjectTypes() {
-    this.apiDataService.getPublicProjectTypes(this.userID)
+    this.apiDataPermissionService.getPublicProjectTypes(this.userID)
     .subscribe(
       res => {
         this.publicProjectTypes = Object.keys(res).map(i => res[i].LookupValue);
@@ -588,12 +590,12 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   getProjectPermissionTeamList() {
     const managerEmailAddress = this.appDataService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
-    this.apiDataService.getProjectPermissionTeamList(this.userID, managerEmailAddress)
+    this.apiDataPermissionService.getProjectPermissionTeamList(this.userID, managerEmailAddress)
     .subscribe(
       res => {
-        this.projectAccessTeamList = Object.keys(res).map(i => res[i].id);
+        this.projectPermissionTeamList = Object.keys(res).map(i => res[i].id);
         console.log('Team List');
-        console.log(this.projectAccessTeamList);
+        console.log(this.projectPermissionTeamList);
       },
       err => {
         console.log(err);
@@ -602,47 +604,47 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   getProjectPermissionList() {
-    this.apiDataService.getProjectPermissionList(this.userID)
+    this.apiDataPermissionService.getProjectPermissionList(this.userID)
     .subscribe(
       res => {
 
-        this.projectAccessList = res;
+        this.projectPermissionList = res;
 
         // Convert into an array of Approved ProjectIDs
-        this.projectAccessApprovedList = Object.keys(res)
+        this.projectPermissionApprovedList = Object.keys(res)
           .filter(i => res[i].requestStatus === 'Approved')
           .reduce((obj, i) => {
               obj[i] = res[i]; return obj;
             }, {});
-        this.projectAccessApprovedList = Object.keys(this.projectAccessApprovedList)
-          .map(i => this.projectAccessApprovedList[i].projectID);
+        this.projectPermissionApprovedList = Object.keys(this.projectPermissionApprovedList)
+          .map(i => this.projectPermissionApprovedList[i].projectID);
 
         // Convert into an array of Submitted ProjectIDs
-        this.projectAccessSubmittedList = Object.keys(res)
+        this.projectPermissionSubmittedList = Object.keys(res)
           .filter(i => res[i].requestStatus === 'Submitted')
           .reduce((obj, i) => {
               obj[i] = res[i]; return obj;
             }, {});
-        this.projectAccessSubmittedList = Object.keys(this.projectAccessSubmittedList)
-          .map(i => this.projectAccessSubmittedList[i].projectID);
+        this.projectPermissionSubmittedList = Object.keys(this.projectPermissionSubmittedList)
+          .map(i => this.projectPermissionSubmittedList[i].projectID);
 
         // Convert into an array of Denied ProjectIDs
-        this.projectAccessDeniedList = Object.keys(res)
+        this.projectPermissionDeniedList = Object.keys(res)
           .filter(i => res[i].requestStatus === 'Denied')
           .reduce((obj, i) => {
               obj[i] = res[i]; return obj;
             }, {});
-        this.projectAccessDeniedList = Object.keys(this.projectAccessDeniedList)
-          .map(i => this.projectAccessDeniedList[i].projectID);
+        this.projectPermissionDeniedList = Object.keys(this.projectPermissionDeniedList)
+          .map(i => this.projectPermissionDeniedList[i].projectID);
 
         console.log('Access List');
-        console.log(this.projectAccessList);
+        console.log(this.projectPermissionList);
         // console.log('Approved List');
-        // console.log(this.projectAccessApprovedList);
+        // console.log(this.projectPermissionApprovedList);
         // console.log('Submitted List');
-        // console.log(this.projectAccessSubmittedList);
+        // console.log(this.projectPermissionSubmittedList);
         // console.log('Denied List');
-        // console.log(this.projectAccessDeniedList);
+        // console.log(this.projectPermissionDeniedList);
       },
       err => {
         console.log(err);
@@ -651,7 +653,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   getProjectRoles() {
-    this.apiDataService.getProjectRoles()
+    this.apiDataProjectService.getProjectRoles()
     .subscribe(
       res => {
         console.log('Project Roles Retrieved');

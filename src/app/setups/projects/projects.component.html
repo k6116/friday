@@ -1,4 +1,4 @@
-<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" [projectAccessRequestsList]="projectAccessRequestsList" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
+<app-projects-edit-modal *ngIf="showProjectsEditModal" [projectData]="projectData" [projectPermissionRequestsList]="projectPermissionRequestsList" (updateSuccess)="onUpdateSuccess()" (deleteSuccess)="onDeleteSuccess()"></app-projects-edit-modal>
 <app-projects-create-modal *ngIf="showProjectsCreateModal" (createSuccess)="onCreateSuccess()"></app-projects-create-modal>
 
 <!-- Delete Confirmation Modal -->
@@ -66,7 +66,7 @@
       <div class="card-header">
         <div><h6>People are requesting access to your projects:</h6></div>
       </div>
-    <ng-container *ngFor="let request of projectAccessRequestsList">
+    <ng-container *ngFor="let request of projectPermissionRequestsList">
       <div class="card-body" *ngIf="request.requestStatus=='Submitted'">
         <p class="card-text" style="line-height: 32px; margin-left: 1px">{{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}&nbsp;&nbsp;
           <span class="float-right">
@@ -147,7 +147,7 @@
                 <div><i *ngIf="loggedInUser.id===project.createdBy" class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="editProject(project)"></i></div>
               </div>
               <div class="col-6">
-                <div><i *ngIf="loggedInUser.id===project.createdBy" class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal" (click)="onTrashClick(project.id)"></i></div>
+                <div><i *ngIf="loggedInUser.id===project.createdBy" class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal"></i></div>
               </div>
             </div>
           </div>

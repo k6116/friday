@@ -60,7 +60,7 @@ function indexProjectRoster(req, res) {
   .then(projectTeamData => {
     const projectTeamTree = new Treeize();
     projectTeamTree.grow(projectTeamData);
-    const projectTeam = projectTeamTree.indexData();
+    const projectTeam = projectTeamTree.getData();
     res.json(projectTeam);
   })
   .catch(error => {

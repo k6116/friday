@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiDataService } from '../_shared/services/api-data.service';
+import { ApiDataEmailService } from '../_shared/services/api-data/_index';
 
 
 @Component({
@@ -10,7 +10,7 @@ import { ApiDataService } from '../_shared/services/api-data.service';
 export class TestComponent implements OnInit {
 
 
-constructor (private apiDataService: ApiDataService) {
+constructor (private apiDataEmailService: ApiDataEmailService) {
 
   }
 
@@ -19,7 +19,7 @@ constructor (private apiDataService: ApiDataService) {
   }
 
   requestClick() {
-      this.apiDataService.sendRequestProjectEmail(125, 125, 'Some Project Name').subscribe(
+      this.apiDataEmailService.sendRequestProjectEmail(125, 125, 'Some Project Name').subscribe(
         res => {
 
         },
@@ -31,7 +31,7 @@ constructor (private apiDataService: ApiDataService) {
 
   approveClick() {
 
-    this.apiDataService.sendProjectApprovalEmail(125, 125, 'Some Project Name', false, 'Will need more User in 2nd Quarter').subscribe(
+    this.apiDataEmailService.sendProjectApprovalEmail(125, 125, 'Some Project Name', false, 'Will need more User in 2nd Quarter').subscribe(
       res => {
 
       },

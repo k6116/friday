@@ -31,8 +31,6 @@ export class ApiDataService {
   }
 
 
-
-
   // for click tracking
   logClick(clickData: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
@@ -47,22 +45,6 @@ export class ApiDataService {
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
-
-
-
-  sendRequestProjectEmail(userID: number, ownerID: number, projectName: string) {
-    return this.http.post(`/api/sendRequestProjectEmail/${userID}/${ownerID}/${projectName}`, null)
-    .timeout(this.timeout)
-    .map((response: Response) => response.json());
-  }
-
-  sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string, approved: boolean, comment: string) {
-      return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}/${approved}/${comment}`, null)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-
 
 
   // ORG API ROUTES

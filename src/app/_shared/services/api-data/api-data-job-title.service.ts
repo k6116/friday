@@ -15,7 +15,7 @@ export class ApiDataJobTitleService {
 
   getJobTitleList() {
     return this.http.get(`/api/indexJobTitle/`)
-    .timeout(this.timeout)
+    .timeout(this.appDataService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
@@ -23,7 +23,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/updateJobTitle/${userID}`, JSON.stringify(jobTitles), options)
-      .timeout(this.timeout)
+      .timeout(this.appDataService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 

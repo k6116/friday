@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
-import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
+  ApiDataMetaDataService, ApiDataEmailService } from '../../_shared/services/api-data/_index';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
@@ -14,10 +14,10 @@ import { User } from '../../_shared/models/user.model';
 })
 export class ProjectsSetupsComponent implements OnInit {
 
+  loggedInUser: User;
   projectList: any;
   projectData: any;
-  projectAccessRequestsList: any;
-  loggedInUser: User;
+  projectPermissionRequestsList: any;
   showProjectsEditModal: boolean;
   showProjectsCreateModal: boolean;
   cardNPI: any;
@@ -40,11 +40,15 @@ export class ProjectsSetupsComponent implements OnInit {
   // @Output() deleteSuccess = new EventEmitter<boolean>();
 
   constructor(
+    private apiDataEmployeeService: ApiDataEmployeeService,
     private apiDataProjectService: ApiDataProjectService,
-    private apiDataService: ApiDataService,
+    private apiDataPermissionService: ApiDataPermissionService,
+    private apiDataMetaDataService: ApiDataMetaDataService,
+    private apiDataEmailService: ApiDataEmailService,
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
+    this.loggedInUser = this.authService.loggedInUser;
     this.cardNPI = [
       {
         title: 'Project Status',
@@ -96,17 +100,9 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   ngOnInit() {
-    // get logged in user's info
-    this.authService.getLoggedInUser((user, err) => {
-      if (err) {
-        console.log(`error getting logged in user: ${err}`);
-        return;
-      }
-      this.loggedInUser = user;
-      this.getUserProjectList();
-      this.getProjectRequestsList();
-      this.getProjectRoles();
-    });
+    this.getUserProjectList();
+    this.getProjectPermissionRequestsList();
+    this.getProjectRoles();
   }
 
   editProject(project: any) {
@@ -118,7 +114,7 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   getUserProjectList() {
-    this.apiDataService.getUserProjectList(this.loggedInUser.id)
+    this.apiDataProjectService.getUserProjectList(this.authService.loggedInUser.id)
     .subscribe(
       res => {
         console.log('Project List: ', res);
@@ -133,14 +129,14 @@ export class ProjectsSetupsComponent implements OnInit {
   // List of all requests that have been made to join a project.
   //  Gets called onInit and requestResponse()
   getProjectPermissionRequestsList() {
-    this.apiDataService.getProjectPermissionRequestsList(this.loggedInUser.id)
+    this.apiDataPermissionService.getProjectPermissionRequestsList(this.authService.loggedInUser.id)
     .subscribe(
       res => {
         // console.log(res);
-        this.projectAccessRequestsList = res;
-        console.log('ProjectAccessRequest: ', this.projectAccessRequestsList);
-        for (let i = 0; i < this.projectAccessRequestsList.length; i++) {
-          if ( this.projectAccessRequestsList[i].requestStatus === 'Submitted') {
+        this.projectPermissionRequestsList = res;
+        console.log('projectPermissionRequest: ', this.projectPermissionRequestsList);
+        for (let i = 0; i < this.projectPermissionRequestsList.length; i++) {
+          if ( this.projectPermissionRequestsList[i].requestStatus === 'Submitted') {
             this.requestResponseFlag = true;
           }
         }
@@ -187,21 +183,22 @@ export class ProjectsSetupsComponent implements OnInit {
             }
           }
         }
-      }
-    this.getProjectRoster(project.id);
-    this.getProjectSchedule(project.projectName);
+      this.getProjectRoster(project.id);
+      this.getProjectSchedule(project.projectName);
+    }
+
   }
 
   // Accept or deny a request
   requestResponse(request: any, reply: string, replyComment: string) {
     this.requestResponseFlag = false;
 
-    this.apiDataService.updateProjectPermissionResponse(request, reply, replyComment, this.loggedInUser.id)
+    this.apiDataPermissionService.updateProjectPermissionResponse(request, reply, replyComment, this.authService.loggedInUser.id)
     .subscribe(
       res => {
 
         // send email
-        this.apiDataService.sendProjectApprovalEmail(request['user.id'], this.loggedInUser.id,
+        this.apiDataEmailService.sendProjectApprovalEmail(request['user.id'], this.authService.loggedInUser.id,
         request['project.projectName'], reply === 'Approved' ? true : false, replyComment).subscribe(
           eSnd => {
             this.appDataService.raiseToast('success',
@@ -249,7 +246,7 @@ export class ProjectsSetupsComponent implements OnInit {
   getPrimaryKeyRefs(projectID: number) {
     const pKeyName = 'ProjectID';
     this.projectID = projectID;
-    this.apiDataService.getPrimaryKeyRefs(pKeyName, this.projectID, this.loggedInUser.id)
+    this.apiDataMetaDataService.getPrimaryKeyRefs(pKeyName, this.projectID, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           // console.log(res);
@@ -274,7 +271,7 @@ export class ProjectsSetupsComponent implements OnInit {
   onDeleteProjectClick() {
     const project = [{projectID: this.projectID}];
 
-    this.apiDataService.deleteProject(project[0], this.loggedInUser.id)
+    this.apiDataProjectService.deleteProject(project[0], this.authService.loggedInUser.id)
     .subscribe(
       res => {
         // this.deleteSuccess.emit(true);
@@ -288,7 +285,7 @@ export class ProjectsSetupsComponent implements OnInit {
 
   getProjectSchedule(projectName: string) {
 
-    this.apiDataService.getProjectSchedule(projectName)
+    this.apiDataProjectService.getProjectSchedule(projectName)
     .subscribe(
       res => {
         console.log('project schedule:');
@@ -302,7 +299,7 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   getProjectRoles() {
-    this.apiDataService.getProjectRoles()
+    this.apiDataProjectService.getProjectRoles()
     .subscribe(
       res => {
         console.log('Project Roles Retrieved');
@@ -334,7 +331,7 @@ export class ProjectsSetupsComponent implements OnInit {
     }
     projectEmployeeRoleData.projectID = project.id;
 
-    this.apiDataService.updateProjectEmployeeRole(projectEmployeeRoleData, this.loggedInUser.id)
+    this.apiDataProjectService.updateProjectEmployeeRole(projectEmployeeRoleData, this.authService.loggedInUser.id)
     .subscribe(
       res => {
         console.log(res);
