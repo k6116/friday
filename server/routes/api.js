@@ -65,9 +65,9 @@ router.post('/updateProjectPermissionRequest/:userID', controllers.permission.up
 // JOB TITLE CONTROLLER
 router.get('/indexJobTitle', controllers.jobTitle.indexJobTitle);
 router.post('/updateJobTitle/:userID', controllers.jobTitle.updateJobTitle);
-router.post('/insertJobTitle', controllers.profile.insertJobTitle);
-router.post('/deleteJobTitle', controllers.profile.deleteJobTitle);
-router.post('/insertJobTitleSub', controllers.profile.insertJobTitleSub);
+router.post('/insertJobTitle', controllers.jobTitle.insertJobTitle);
+router.post('/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
+router.post('/insertJobTitleSub', controllers.jobTitle.insertJobTitleSub);
 
 // REPORTS PROJECT CONTROLLER
 router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
