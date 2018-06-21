@@ -15,6 +15,9 @@ import * as moment from 'moment';
 })
 export class ProjectsSetupsComponent implements OnInit {
 
+
+  // TO-DO PAUL: create model for at least projects
+
   loggedInUser: User;
   projectList: any;
   projectData: any;

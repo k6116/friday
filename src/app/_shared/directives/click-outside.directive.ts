@@ -12,13 +12,12 @@ export class ClickOutsideDirective {
 
   // take optional input for element selector, to ignore if clicked on
   // (not considered to be clicked outside) for example an icon when clicked shows or hides a div
+  // TO-DO BILL: accept an array of exceptions?  might need especially for intro.js
   @Input() exception: string;
 
-  @Output()
-  public appClickOutside = new EventEmitter<any>();
+  @Output() public appClickOutside = new EventEmitter<any>();
 
-  @HostListener('document:click', ['$event.target'])
-  public onClick(targetElement) {
+  @HostListener('document:click', ['$event.target']) public onClick(targetElement) {
     // NOTE: elementRef is the container element that the directive is placed on (that should be closed/hidden on click outside)
     // targetElement is the element that was clicked on
 
@@ -28,6 +27,7 @@ export class ClickOutsideDirective {
     // check if the 'exception' element was clicked on
     let clickedOnException = false;
 
+    // TO-DO BILL: add comments like for closest, etc.
     if (this.exception) {
       const $targetElement = $(targetElement);
       const $excludedElement = $(this.exception);

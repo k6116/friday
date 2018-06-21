@@ -74,6 +74,11 @@ div.dashboard-notifications {
   margin-top: 15px;
 }
 
+span.fte-progress-text {
+  font-weight: 500;
+  margin-right: 10px;
+}
+
 
 
 /* notifications table */

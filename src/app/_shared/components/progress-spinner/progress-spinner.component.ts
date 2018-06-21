@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProgressSpinnerComponent implements OnInit {
 
+  // TO-DO BILL: if we don't end up using this, remove
   constructor() { }
 
   ngOnInit() {

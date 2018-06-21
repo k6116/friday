@@ -24,6 +24,9 @@ export class DashboardComponent implements OnInit {
   chartOptions: any;
   showDashboard: boolean;
   highchartsButtons: any;
+  completedFTEs: string;
+  notCompletedFTEs: string;
+  completedFTEsCount: number;
 
   constructor(
     private appDataService: AppDataService,
@@ -399,6 +402,41 @@ export class DashboardComponent implements OnInit {
 
   renderFTEEntryProgress() {
 
+    const completedFTEsArr = [];
+    const notCompletedFTEsArr = [];
+
+    // build arrays of people that have completed or not completed their fte entries
+    this.dashboardFTEData.forEach(employee => {
+      let fteTotal = 0;
+      if (employee.hasOwnProperty('projects')) {
+        employee.projects.forEach(project => {
+          project.ftes.forEach(fteEntry => {
+            fteTotal += fteEntry.fte;
+          });
+        });
+        if (fteTotal === 3) {
+          completedFTEsArr.push(employee.name);
+        } else {
+          notCompletedFTEsArr.push(employee.name);
+        }
+      } else {
+        notCompletedFTEsArr.push(employee.name);
+      }
+    });
+
+    // build strings to display in the view
+    this.completedFTEs = completedFTEsArr.join(', ');
+    this.notCompletedFTEs = notCompletedFTEsArr.join(', ');
+
+    // set the count for the gauge
+    this.completedFTEsCount = completedFTEsArr.length;
+
+    console.log('completed ftes:');
+    console.log(this.completedFTEs);
+
+    console.log('not completed ftes:');
+    console.log(this.notCompletedFTEs);
+
     const chartOptions = {
       chart: {
         type: 'solidgauge',
@@ -428,7 +466,7 @@ export class DashboardComponent implements OnInit {
       // the value axis
       yAxis: {
         min: 0,
-        max: 22,
+        max: 26,
         // title: {
         //   text: 'Your Teams FTE Entry Progress',
         //   y: -70
@@ -456,7 +494,7 @@ export class DashboardComponent implements OnInit {
       },
       series: [{
         name: 'fteEntryProgress',
-        data: [12],
+        data: [3],
         dataLabels: {
           format: '<div style="text-align:center"><span style="font-size:25px;color:' +
             ('black') + '">{y}</span><br/>' +

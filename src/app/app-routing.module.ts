@@ -34,7 +34,6 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent },
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent },
