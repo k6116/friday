@@ -1,8 +1,6 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener} from '@angular/core';
-import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
-import { ToolsService } from '../../_shared/services/tools.service';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataEmployeeService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
@@ -25,7 +23,8 @@ export class ProjectsCreateModalComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private apiDataService: ApiDataService,
+    private apiDataProjectService: ApiDataProjectService,
+    private apiDataEmployeeService: ApiDataEmployeeService,
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
@@ -35,8 +34,8 @@ export class ProjectsCreateModalComponent implements OnInit {
 
   ngOnInit() {
      // get the user id
-     this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
-     this.userEmail = this.authService.loggedInUser ? this.authService.loggedInUser.email : null;
+     this.userID = this.authService.loggedInUser.id;
+     this.userEmail = this.authService.loggedInUser.email;
 
      if (!this.appDataService.userPLMData) {
       this.getUserPLMData(this.userEmail);
@@ -54,7 +53,7 @@ export class ProjectsCreateModalComponent implements OnInit {
   }
 
   getProjectTypesList() {
-    this.apiDataService.getProjectTypesList()
+    this.apiDataProjectService.getProjectTypesList()
     .subscribe(
       res => {
         // console.log(res);
@@ -77,7 +76,7 @@ export class ProjectsCreateModalComponent implements OnInit {
     const project = this.form.getRawValue();
     project.projectOrgManager = this.appDataService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
 
-    this.apiDataService.createProject(project, this.userID)
+    this.apiDataProjectService.createProject(project, this.userID)
     .subscribe(
       res => {
         console.log(res);
@@ -91,7 +90,7 @@ export class ProjectsCreateModalComponent implements OnInit {
   }
 
   getUserPLMData(userEmailAddress: string) {
-    this.apiDataService.getUserPLMData(userEmailAddress)
+    this.apiDataEmployeeService.getUserPLMData(userEmailAddress)
     .subscribe(
       res => {
         console.log('User PLM Data Retrieved');

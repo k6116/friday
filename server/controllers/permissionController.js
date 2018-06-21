@@ -5,9 +5,8 @@ const moment = require('moment');
 const Treeize = require('treeize');
 
 
-// TO-DO PAUL: try to combine into single project controller, or permissions?, and add comments
-
-function getPublicProjectTypes(req, res) {
+// Retreive the ProjectTypes that do not require Permission and are accessible to all users
+function indexPublicProjectTypes(req, res) {
 
   const userID = req.params.userID;
 
@@ -32,11 +31,12 @@ function getPublicProjectTypes(req, res) {
     });
 }
 
-function getProjectAccessRequestsList(req, res) {
+// Retrieve list of all projects created by current user in project Permission list
+function indexProjectPermissionRequestsList(req, res) {
 
   const userID = req.params.userID;
 
-  models.ProjectAccessRequests.findAll({
+  models.ProjectPermissionRequests.findAll({
     attributes: ['id', 'requestStatus', 'projectID', 'requestedBy', 'requestedAt', 'requestNotes'],
     raw: true,
     include: [
@@ -51,9 +51,9 @@ function getProjectAccessRequestsList(req, res) {
       }
   ]
   })
-  .then(ProjectAccessRequests => {
+  .then(ProjectPermissionRequests => {
     console.log('WORKED')
-    res.json(ProjectAccessRequests);
+    res.json(ProjectPermissionRequests);
   })
   .catch(error => {
     res.status(400).json({
@@ -64,22 +64,23 @@ function getProjectAccessRequestsList(req, res) {
   });
 }
 
-function getProjectAccessTeamList(req, res) {
+// Retrieve list of all projects that are created by employees under the same manager for current user
+// This list is used to give default Permission to team member's projects
+function indexProjectPermissionTeamList(req, res) {
 
   const managerEmailAddress = req.params.managerEmailAddress;
   const userID = req.params.userID;
 
   models.Projects.findAll({
     where: 
-    // {projectOrgManager: managerEmailAddress},
       {
         [Op.or]: [{projectOrgManager: managerEmailAddress}, {createdBy: userID}]
       },
     attributes: ['id', 'projectName'],
   })
-  .then(ProjectAccessTeamList => {
+  .then(ProjectPermissionTeamList => {
     console.log('WORKED')
-    res.json(ProjectAccessTeamList);
+    res.json(ProjectPermissionTeamList);
   })
   .catch(error => {
     res.status(400).json({
@@ -90,17 +91,18 @@ function getProjectAccessTeamList(req, res) {
   });
 }
 
-function getProjectAccessList(req, res) {
+// Retrieve list of all project Permission requests made by current user
+function indexProjectPermissionRequestedList(req, res) {
 
   const userID = req.params.userID;
 
-  models.ProjectAccessRequests.findAll({
+  models.ProjectPermissionRequests.findAll({
     where: {requestedBy: userID},
     attributes: ['id', 'requestStatus', 'projectID', 'requestedBy', 'requestedAt', 'requestNotes', 'respondedBy', 'respondedAt', 'responseNotes'],
   })
-  .then(ProjectAccessList => {
+  .then(ProjectPermissionList => {
     console.log('WORKED')
-    res.json(ProjectAccessList);
+    res.json(ProjectPermissionList);
   })
   .catch(error => {
     res.status(400).json({
@@ -111,7 +113,7 @@ function getProjectAccessList(req, res) {
   });
 }
 
-function insertProjectAccessRequest(req, res) {
+function insertProjectPermissionRequest(req, res) {
 
   // get the project object from the request body
   const project = req.body;
@@ -120,7 +122,7 @@ function insertProjectAccessRequest(req, res) {
 
   return sequelize.transaction((t) => {
 
-    return models.ProjectAccessRequests
+    return models.ProjectPermissionRequests
       .create(
         {
           requestStatus: 'Submitted',
@@ -133,9 +135,9 @@ function insertProjectAccessRequest(req, res) {
           transaction: t
         }
       )
-      .then(savedProjectAccessRequest => {
+      .then(savedProjectPermissionRequest => {
 
-        const requestId = savedProjectAccessRequest.id;
+        const requestId = savedProjectPermissionRequest.id;
         console.log('created request id is: ' + requestId);
 
       })
@@ -159,10 +161,10 @@ function insertProjectAccessRequest(req, res) {
 }
 
 
-function updateProjectAccessRequest(req, res) {
+function updateProjectPermissionResponse(req, res) {
 
   // get the project object from the request body
-  const request = req.body;
+  const requestData = req.body;
   const userID = req.params.userID;
   const reply = req.params.reply;
   const replyComment = req.params.replyComment;
@@ -170,7 +172,7 @@ function updateProjectAccessRequest(req, res) {
 
   return sequelize.transaction((t) => {
 
-    return models.ProjectAccessRequests
+    return models.ProjectPermissionRequests
       .update(
         {
           requestStatus: reply,
@@ -179,21 +181,71 @@ function updateProjectAccessRequest(req, res) {
           responseNotes: replyComment,
         },
         {
-          where: {id: request.id},
+          where: {id: requestData.id},
           transaction: t
         }
       )
-      .then(updateProjectAccessRequest => {
+      .then(updateProjectPermissionResponse => {
 
-        console.log('Updated Project Access Request')
-        console.log(updateProjectAccessRequest);
+        console.log('Updated Project Access Response')
+        console.log(updateProjectPermissionResponse);
 
       })
 
     }).then(() => {
 
       res.json({
-        message: `The requestID '${request.id}' has been updated successfully`
+        message: `The requestID '${requestData.id}' has been updated successfully`
+      })
+
+    }).catch(error => {
+
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
+
+    })
+
+}
+
+function updateProjectPermissionRequest(req, res) {
+
+  // get the project object from the request body
+  const requestData = req.body;
+  const today = new Date();
+
+  console.log(requestData.requestID);
+
+  return sequelize.transaction((t) => {
+
+    return models.ProjectPermissionRequests
+      .update(
+        {
+          requestStatus: requestData.requestStatus,
+          requestedAt: today,
+          requestNotes: requestData.requestNotes,
+          respondedBy: null,
+          respondedAt: null,
+          responseNotes: null,
+        },
+        {
+          where: {id: requestData.requestID},
+          transaction: t
+        }
+      )
+      .then(updateProjectPermissionRequest => {
+
+        console.log('Updated Project Access Request')
+        console.log(updateProjectPermissionRequest);
+
+      })
+
+    }).then(() => {
+
+      res.json({
+        message: `The requestID '${requestData.requestID}' has been updated successfully`
       })
 
     }).catch(error => {
@@ -210,10 +262,11 @@ function updateProjectAccessRequest(req, res) {
 
 
 module.exports = {
-  getPublicProjectTypes: getPublicProjectTypes,
-  getProjectAccessRequestsList: getProjectAccessRequestsList,
-  getProjectAccessTeamList: getProjectAccessTeamList,
-  getProjectAccessList: getProjectAccessList,
-  insertProjectAccessRequest: insertProjectAccessRequest,
-  updateProjectAccessRequest: updateProjectAccessRequest
+  indexPublicProjectTypes: indexPublicProjectTypes,
+  indexProjectPermissionRequestsList: indexProjectPermissionRequestsList,
+  indexProjectPermissionTeamList: indexProjectPermissionTeamList,
+  indexProjectPermissionRequestedList: indexProjectPermissionRequestedList,
+  insertProjectPermissionRequest: insertProjectPermissionRequest,
+  updateProjectPermissionResponse: updateProjectPermissionResponse,
+  updateProjectPermissionRequest: updateProjectPermissionRequest
 }

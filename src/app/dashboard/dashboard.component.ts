@@ -7,9 +7,9 @@ import { ToolsService } from '../_shared/services/tools.service';
 declare var require: any;
 
 import * as highcharts from 'highcharts';
-// require('highcharts/modules/data.js')(highcharts);
+require('highcharts/modules/data.js')(highcharts);
 require('highcharts/modules/drilldown.js')(highcharts);
-require('highcharts/modules/solid-gauge.js')(highcharts); // requiring highcharts-more for bubble chart
+require('highcharts/modules/solid-gauge.js')(highcharts);
 import * as moment from 'moment';
 import * as _ from 'lodash';
 

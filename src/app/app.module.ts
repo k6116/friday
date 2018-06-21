@@ -27,7 +27,7 @@ import { ApiDataService, AppDataService, ClickTrackingService, CookiesService,
 import { AuthService } from './_shared/services/auth.service';
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
-  ApiDataFteService, ApiDataOrgService, ApiDataProjectAccessService, ApiDataProjectService,
+  ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
   ApiDataReportService} from './_shared/services/api-data/_index';
 
 // GUARDS
@@ -69,6 +69,7 @@ import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.c
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     MyFteSummaryComponent,
     TeamFteSummaryComponent,
     TopProjectsBubbleComponent,
-    DashboardComponent
+    DashboardComponent,
+    FooterComponent
   ],
   imports: [
     AppRoutingModule,
@@ -132,8 +134,10 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     ApiDataEmailService,
     ApiDataEmployeeService,
     ApiDataFteService,
+    ApiDataJobTitleService,
+    ApiDataMetaDataService,
     ApiDataOrgService,
-    ApiDataProjectAccessService,
+    ApiDataPermissionService,
     ApiDataProjectService,
     ApiDataReportService,
     AppDataService,

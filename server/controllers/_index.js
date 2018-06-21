@@ -7,8 +7,9 @@ module.exports = {
   clickTracking: require('./clickTrackingController'),
   project: require('./projectController'),
   email: require('./emailController'),
-  projectAccess: require('./projectAccessController'),
-  profile: require('./profileController'),
+  permission: require('./permissionController'),
+  jobTitle: require('./jobTitleController'),
   project: require('./projectController'),
-  report: require('./reportController')
+  report: require('./reportController'),
+  metaData: require('./metaDataController')
 }

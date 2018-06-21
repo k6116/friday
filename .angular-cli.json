@@ -25,13 +25,15 @@
         "../node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
         "../node_modules/nouislider/distribute/nouislider.min.css",
         "../src/app/_shared/styles/nouislider-custom.css",
-        "../public/icons/nucleo/css/style.css"
+        "../public/icons/nucleo/css/style.css",
+        "../node_modules/intro.js/minified/introjs.min.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
         "../node_modules/fuse.js/dist/fuse.js",
-        "../node_modules/chart.js/dist/chart.bundle.js"
+        "../node_modules/chart.js/dist/chart.bundle.js",
+        "../node_modules/intro.js/minified/intro.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

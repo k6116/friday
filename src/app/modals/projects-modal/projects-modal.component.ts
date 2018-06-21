@@ -1,12 +1,15 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
   HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
+import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ToolsService } from '../../_shared/services/tools.service';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
+  ApiDataEmailService } from '../../_shared/services/api-data/_index';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
 declare var $: any;
+declare const introJs: any;
 
 @Component({
   selector: 'app-projects-modal',
@@ -66,12 +69,20 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   userEmail: string;
   userPLMData: any;
   publicProjectTypes: any;
-  projectAccessTeamList: any;
-  projectAccessApprovedList: any;
-  projectAccessSubmittedList: any;
-  projectAccessDeniedList: any;
+  projectPermissionList: any;
+  projectPermissionTeamList: any;
+  projectPermissionApprovedList: any;
+  projectPermissionSubmittedList: any;
+  projectPermissionDeniedList: any;
+  projectData: any;
+  projectRolesList: any;
+  clickOutsideException: string;
+  selProject: any;
+  selProjectRole: any;
 
   @Input() projects: any;
+  @Input() fteTutorialState: number;
+  @Output() tutorialStateEmitter = new EventEmitter<number>();
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
 
@@ -83,7 +94,10 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   constructor(
     private toolsService: ToolsService,
     private changeDetectorRef: ChangeDetectorRef,
-    private apiDataService: ApiDataService,
+    private apiDataEmployeeService: ApiDataEmployeeService,
+    private apiDataProjectService: ApiDataProjectService,
+    private apiDataPermissionService: ApiDataPermissionService,
+    private apiDataEmailService: ApiDataEmailService,
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
@@ -126,6 +140,12 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     this.getUserPLMData(this.userEmail);
     this.getPublicProjectTypes();
+    this.getProjectRoles();
+
+    // when the project modal is initialized, if we are in tutorial part2, launch the tutorial
+    if (this.fteTutorialState === 2) {
+      this.tutorialPart2();
+    }
   }
 
   ngAfterViewInit() {
@@ -137,19 +157,74 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     $('div.project-table-cont').height(newHeight);
   }
 
+  // fte tutorial part 2, passed over from parent component onAddProjectClick()
+  tutorialPart2() {
+    const intro = introJs();
+    intro.setOptions({
+      steps: [
+        {intro: 'This is the Add New Project menu'},
+        {
+          intro: `Use the search bar to find a project that you work on.  Misspellings are ok.`,
+          element: '#intro-search-project',
+        },
+        {
+          intro: `Find the project you've worked on, and press the "Select" button`,
+          element: '#intro-select-project',
+        }
+      ],
+      overlayOpacity: 0.4,
+      exitOnOverlayClick: false,
+      showStepNumbers: false,
+      keyboardNavigation: false
+    });
+    window.setTimeout( () => {
+      intro.start('.tutorial-part2');
+    }, 500);
+  }
+
   onSelectedProject(selProject: any) {
+    this.clickOutsideException = 'div#projectRoleModal';
+    this.selProject = selProject;
+    // if user selects project when in the tutorial, end this part and increment the state counter
+    if (this.fteTutorialState === 2) {
+      this.fteTutorialState++;
+      introJs().exit();
+    }
+  }
+
+  selectProjectRole(event: any) {
+    this.selProjectRole = event.target.value;
+  }
+
+  onProjectRoleConfirm() {
+
+    // add project role fields to selProject object to pass back to fte-entry component
+    this.selProject.ProjectRole = this.selProjectRole;
+    for (let i = 0; i < this.projectRolesList.length; i++) {
+      if (this.projectRolesList[i].projectRole === this.selProjectRole) {
+        this.selProject.ProjectRoleID = this.projectRolesList[i].id;
+      }
+    }
 
     console.log('Selected Project Id:');
-    console.log(selProject.ProjectID);
+    console.log(this.selProject);
 
     console.log('Selected Project:');
-    console.log(selProject.ProjectName);
+    console.log(this.selProject.ProjectName);
 
     this.outerDivState = 'out';
     this.innerDivState = 'out';
-    this.selectedProject.emit(selProject);
+    this.selectedProject.emit(this.selProject);
     this.outerDivState = 'out';
     this.innerDivState = 'out';
+
+    // if user selects a project while we're in the tutorial, end step2 and send the parent component the current state
+    if (this.fteTutorialState === 3) {
+      window.setTimeout( () => {
+        // setting timeout to allow parent component some time to render
+        this.tutorialStateEmitter.emit(this.fteTutorialState);
+      }, 500);
+    }
 
   }
 
@@ -286,20 +361,62 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
-  onProjectTestClick(element) {
+  onProjectPermissionClick(project: any, action: string) {
 
-    // emit confirmation modal after they click delete button
+    let confirmButton: any;
+    let firstRequest: boolean;
+    let message: string;
+
+    // this.clickOutsideException = 'div#confirm-modal';
+
+    // create requestData object for passing into controller
+    const requestData = {
+      requestID: null,
+      requestStatus: null,
+      requestNotes: null
+    };
+    console.log('proj perm list', this.projectPermissionList);
+    // find requestID and append it to requestData
+    for (let i = 0; i < this.projectPermissionList.length; i++) {
+      if (this.projectPermissionList[i].projectID === project.ProjectID) {
+        requestData.requestID = this.projectPermissionList[i].id;
+      }
+    }
+    if (requestData.requestID === null) {
+      firstRequest = true;
+      message = `Do you want to request access to the project "${project.projectName}"?`;
+    } else {
+      firstRequest = false;
+      message = `Do you want to update the request status to ${requestData.requestStatus}?`;
+    }
+
+    // depending on action, update requestData elements
+    if (action === 'Request') {
+      requestData.requestStatus = 'Submitted';
+      requestData.requestNotes = 'Requesting access';
+      confirmButton = 'Request Access';
+    } else if (action === 'Submitted') {
+      requestData.requestStatus = 'Cancelled';
+      requestData.requestNotes = 'Cancelling request access';
+      confirmButton = 'Rescind Access';
+    } else if (action === 'Denied') {
+      requestData.requestStatus = 'Submitted';
+      requestData.requestNotes = 'Resubmitting request access';
+      confirmButton = 'Re-Request Access';
+    }
+
+    // emit confirmation modal after they click request button
     this.appDataService.confirmModalData.emit(
       {
-        title: 'Title',
-        message: `Message?`,
+        title: `Confirm ${action}`,
+        message: message,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
-        allowOutsideClickDismiss: true,
-        allowEscKeyDismiss: true,
+        allowOutsideClickDismiss: false,
+        allowEscKeyDismiss: false,
         buttons: [
           {
-            text: 'Yes',
+            text: confirmButton,
             bsClass: 'btn-success',
             emit: true
           },
@@ -312,9 +429,43 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       }
     );
 
+    const updateModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+      if (res) {
+        if (firstRequest) {
+          const insertActionSubscription =
+          this.apiDataPermissionService.insertProjectPermissionRequest(project, this.userID)
+            .subscribe(
+              apiRes => {
+                console.log(apiRes);
+                this.onRequestUpdateSuccess();
+                insertActionSubscription.unsubscribe();
+              },
+              err => {
+                console.log(err);
+                insertActionSubscription.unsubscribe();
+              }
+            );
+        } else {
+          const updateActionSubscription =
+          this.apiDataPermissionService.updateProjectPermissionRequest(requestData, this.userID)
+            .subscribe(
+              apiRes => {
+                console.log(apiRes);
+                this.onRequestUpdateSuccess();
+                updateActionSubscription.unsubscribe();
+              },
+              err => {
+                console.log(err);
+                updateActionSubscription.unsubscribe();
+              }
+            );
+          }
+      } else {
+        console.log('request confirm aborted');
+      }
+      updateModalSubscription.unsubscribe();
+    });
   }
-
-
 
   // since the modals are a single element, need to move the position to align with the button before displaying
   // returns an object with left and top properties
@@ -459,12 +610,12 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   onRequestedProject(project: any) {
-    this.apiDataService.submitProjectAccessRequest(project, this.userID)
+    this.apiDataPermissionService.insertProjectPermissionRequest(project, this.userID)
     .subscribe(
       res => {
 
         // send email
-        this.apiDataService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
+        this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
           eRes => {
             this.appDataService.raiseToast('success', 'Request Access Email Delivered.');
           },
@@ -481,13 +632,13 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   getUserPLMData(userEmailAddress: string) {
-    this.apiDataService.getUserPLMData(userEmailAddress)
+    this.apiDataEmployeeService.getUserPLMData(userEmailAddress)
     .subscribe(
       res => {
         console.log('User PLM Data Retrieved');
         this.appDataService.userPLMData = res;
-        this.getProjectAccessTeamList();
-        this.getProjectAccessList();
+        this.getProjectPermissionTeamList();
+        this.getProjectPermissionList();
       },
       err => {
         console.log(err);
@@ -496,7 +647,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   getPublicProjectTypes() {
-    this.apiDataService.getPublicProjectTypes(this.userID)
+    this.apiDataPermissionService.getPublicProjectTypes(this.userID)
     .subscribe(
       res => {
         this.publicProjectTypes = Object.keys(res).map(i => res[i].LookupValue);
@@ -508,14 +659,14 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     );
   }
 
-  getProjectAccessTeamList() {
+  getProjectPermissionTeamList() {
     const managerEmailAddress = this.appDataService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
-    this.apiDataService.getProjectAccessTeamList(this.userID, managerEmailAddress)
+    this.apiDataPermissionService.getProjectPermissionTeamList(this.userID, managerEmailAddress)
     .subscribe(
       res => {
-        this.projectAccessTeamList = Object.keys(res).map(i => res[i].id);
+        this.projectPermissionTeamList = Object.keys(res).map(i => res[i].id);
         console.log('Team List');
-        console.log(this.projectAccessTeamList);
+        console.log(this.projectPermissionTeamList);
       },
       err => {
         console.log(err);
@@ -523,50 +674,73 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     );
   }
 
-  getProjectAccessList() {
-    this.apiDataService.getProjectAccessList(this.userID)
+  getProjectPermissionList() {
+    this.apiDataPermissionService.getProjectPermissionList(this.userID)
     .subscribe(
       res => {
 
+        this.projectPermissionList = res;
+
         // Convert into an array of Approved ProjectIDs
-        this.projectAccessApprovedList = Object.keys(res)
+        this.projectPermissionApprovedList = Object.keys(res)
           .filter(i => res[i].requestStatus === 'Approved')
           .reduce((obj, i) => {
               obj[i] = res[i]; return obj;
             }, {});
-        this.projectAccessApprovedList = Object.keys(this.projectAccessApprovedList)
-          .map(i => this.projectAccessApprovedList[i].projectID);
+        this.projectPermissionApprovedList = Object.keys(this.projectPermissionApprovedList)
+          .map(i => this.projectPermissionApprovedList[i].projectID);
 
         // Convert into an array of Submitted ProjectIDs
-        this.projectAccessSubmittedList = Object.keys(res)
+        this.projectPermissionSubmittedList = Object.keys(res)
           .filter(i => res[i].requestStatus === 'Submitted')
           .reduce((obj, i) => {
               obj[i] = res[i]; return obj;
             }, {});
-        this.projectAccessSubmittedList = Object.keys(this.projectAccessSubmittedList)
-          .map(i => this.projectAccessSubmittedList[i].projectID);
+        this.projectPermissionSubmittedList = Object.keys(this.projectPermissionSubmittedList)
+          .map(i => this.projectPermissionSubmittedList[i].projectID);
 
         // Convert into an array of Denied ProjectIDs
-        this.projectAccessDeniedList = Object.keys(res)
+        this.projectPermissionDeniedList = Object.keys(res)
           .filter(i => res[i].requestStatus === 'Denied')
           .reduce((obj, i) => {
               obj[i] = res[i]; return obj;
             }, {});
-        this.projectAccessDeniedList = Object.keys(this.projectAccessDeniedList)
-          .map(i => this.projectAccessDeniedList[i].projectID);
+        this.projectPermissionDeniedList = Object.keys(this.projectPermissionDeniedList)
+          .map(i => this.projectPermissionDeniedList[i].projectID);
 
-        console.log('Approved List');
-        console.log(this.projectAccessApprovedList);
-        console.log('Submitted List');
-        console.log(this.projectAccessSubmittedList);
-        console.log('Denied List');
-        console.log(this.projectAccessDeniedList);
+        console.log('Access List');
+        console.log(this.projectPermissionList);
+        // console.log('Approved List');
+        // console.log(this.projectPermissionApprovedList);
+        // console.log('Submitted List');
+        // console.log(this.projectPermissionSubmittedList);
+        // console.log('Denied List');
+        // console.log(this.projectPermissionDeniedList);
       },
       err => {
         console.log(err);
       }
     );
   }
+
+  getProjectRoles() {
+    this.apiDataProjectService.getProjectRoles()
+    .subscribe(
+      res => {
+        console.log('Project Roles Retrieved');
+        this.projectRolesList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  onRequestUpdateSuccess() {
+    // refresh project access list to update the request buttons
+    this.getProjectPermissionList();
+  }
+
 
 }
 

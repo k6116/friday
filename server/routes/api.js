@@ -20,19 +20,26 @@ router.delete('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProj
 router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
 
 // PROJECT CONTROLLER
-router.get('/projects', controllers.project.getAll)
-router.get('/getProjectRoster/:projectID', controllers.project.getProjectRoster);
-router.get('/getUserPLMData/:userEmailAddress', controllers.project.getUserPLMData);
-// router.get('/projects/projectlist', controllers.projectSelector.getProjectList);
-router.get('/getProjectTypesList/', controllers.project.getProjectTypesList);
-router.get('/getPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.project.getPrimaryKeyRefs);
-router.get('/getUserProjectList/:userID', controllers.project.getUserProjectList);
-router.post('/createProject/:userID', controllers.project.insertProject);
+router.get('/indexProjects', controllers.project.indexProjects)
+router.get('/indexProjectRoster/:projectID', controllers.project.indexProjectRoster);
+router.get('/indexUserProjectList/:userID', controllers.project.indexUserProjectList);
+router.get('/indexProjectTypesList/', controllers.project.indexProjectTypesList);
+router.post('/insertProject/:userID', controllers.project.insertProject);
 router.post('/updateProject/:userID', controllers.project.updateProject);
-router.post('/deleteProject/:userID', controllers.project.deleteProject);
+router.post('/destroyProject/:userID', controllers.project.destroyProject);
+router.get('/indexProjectSchedule/:projectName', controllers.project.indexProjectSchedule);
+router.get('/indexProjectTypeDisplayFields/', controllers.project.indexProjectTypeDisplayFields);
+router.get('/indexProjectRoles/', controllers.project.indexProjectRoles);
+router.get('/indexUserProjectRoles/:userID', controllers.project.indexUserProjectRoles);
+router.post('/insertProjectEmployeeRole/:userID', controllers.project.insertProjectEmployeeRole);
+router.post('/updateProjectEmployeeRole/:userID', controllers.project.updateProjectEmployeeRole);
+
+// META DATA CONTROLLER
+router.get('/indexPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.metaData.indexPrimaryKeyRefs);
 
 // EMPLOYEE CONTROLLER
 router.get('/employeeList/:managerEmailAddress', controllers.employee.show);
+router.get('/showUserPLMData/:userEmailAddress', controllers.employee.showUserPLMData);
 
 // ORG CONTROLLER
 router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
@@ -46,18 +53,18 @@ router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
 router.post('/sendRequestProjectEmail/:userID/:ownerID/:projectName', controllers.email.sendRequestProject); 
 router.post('/sendProjectApprovalEmail/:userID/:ownerID/:projectName/:approved/:comment', controllers.email.sendProjectApproval);
 
-// PROJECT ACCESS CONTROLLER
-router.get('/getProjectAccessRequestsList/:userID', controllers.projectAccess.getProjectAccessRequestsList);
-router.get('/getProjectAccessTeamList/:userID/:managerEmailAddress', controllers.projectAccess.getProjectAccessTeamList);
-router.get('/getProjectAccessList/:userID', controllers.projectAccess.getProjectAccessList);
-router.get('/getPublicProjectTypes/:userID', controllers.projectAccess.getPublicProjectTypes);
-router.post('/submitProjectAccessRequest/:userID', controllers.projectAccess.insertProjectAccessRequest);
-router.post('/responseProjectAccessRequest/:userID/:reply/:replyComment', controllers.projectAccess.updateProjectAccessRequest);
+// PERMISSION CONTROLLER
+router.get('/indexPublicProjectTypes/:userID', controllers.permission.indexPublicProjectTypes);
+router.get('/indexProjectPermissionRequestsList/:userID', controllers.permission.indexProjectPermissionRequestsList);
+router.get('/indexProjectPermissionTeamList/:userID/:managerEmailAddress', controllers.permission.indexProjectPermissionTeamList);
+router.get('/indexProjectPermissionRequestedList/:userID', controllers.permission.indexProjectPermissionRequestedList);
+router.post('/insertProjectPermissionRequest/:userID', controllers.permission.insertProjectPermissionRequest);
+router.post('/updateProjectPermissionResponse/:userID/:reply/:replyComment', controllers.permission.updateProjectPermissionResponse);
+router.post('/updateProjectPermissionRequest/:userID', controllers.permission.updateProjectPermissionRequest);
 
-// PROFILE CONTROLLER
-router.get('/getJobTitleList', controllers.profile.show);
-router.post('/updateProfile/:userID', controllers.profile.update);
-// router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
+// JOB TITLE CONTROLLER
+router.get('/indexJobTitle', controllers.jobTitle.indexJobTitle);
+router.post('/updateJobTitle/:userID', controllers.jobTitle.updateJobTitle);
 
 // REPORTS PROJECT CONTROLLER
 router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);

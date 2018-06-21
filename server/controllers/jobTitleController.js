@@ -3,7 +3,8 @@ const models = require('../models/_index');
 const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize');
 
-function show(req, res) {
+// Retrieve list of all job titles and the associated job title subs
+function indexJobTitle(req, res) {
 
     models.JobTitle.findAll({
         order: [['jobTitleName', 'ASC']], 
@@ -31,7 +32,8 @@ function show(req, res) {
     })
 }
 
-function update(req,res) {
+// Update user's job title and job title sub
+function updateJobTitle(req,res) {
     const jobTitles = req.body;
     const userID = req.params.userID;
     console.log(jobTitles);
@@ -48,7 +50,7 @@ function update(req,res) {
                     transaction: t
                 }
             )
-            .then(updateProfile => {
+            .then(updateJobTitle => {
                 console.log('Updated Profile');
             })
     
@@ -71,6 +73,6 @@ function update(req,res) {
 }
 
 module.exports = {
-    show: show,
-    update: update
+    indexJobTitle: indexJobTitle,
+    updateJobTitle: updateJobTitle
 }

@@ -3,22 +3,6 @@ const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize').sequelize;
 
 
-// TO-DO PAUL: rename to jobTitle.js
-// may need profile as well for future use
-
-// const Employees = sequelize.define('employees',
-//     {
-//         id: { type: Sequelize.INTEGER, field: 'EmployeeID', primaryKey: true, autoIncrement: true },
-//         jobTitleID: { type: Sequelize.INTEGER, field: 'JobTitleID' },
-//         jobTitleSubID: { type: Sequelize.INTEGER, field: 'JobTitleSubID' },    
-//     },
-//     {
-//         schema: 'accesscontrol',
-//         tableName: 'Employees',
-//         timestamps: false
-//     }
-// );
-
 const JobTitle = sequelize.define('jobTitle',
     {
         id: { type: Sequelize.INTEGER, field: 'JobTitleID', primaryKey: true, autoIncrement: true },
