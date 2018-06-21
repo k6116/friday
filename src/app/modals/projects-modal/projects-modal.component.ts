@@ -364,8 +364,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     let firstRequest: boolean;
     let message: string;
 
-    // this.clickOutsideException = 'div#confirm-modal';
-
     // create requestData object for passing into controller
     const requestData = {
       requestID: null,
@@ -378,13 +376,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       if (this.projectPermissionList[i].projectID === project.ProjectID) {
         requestData.requestID = this.projectPermissionList[i].id;
       }
-    }
-    if (requestData.requestID === null) {
-      firstRequest = true;
-      message = `Do you want to request access to the project "${project.projectName}"?`;
-    } else {
-      firstRequest = false;
-      message = `Do you want to update the request status to ${requestData.requestStatus}?`;
     }
 
     // depending on action, update requestData elements
@@ -400,6 +391,15 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Resubmitting request access';
       confirmButton = 'Re-Request Access';
+    }
+
+    // check if this is the first time the request is being made, then insert the row, otherwise update the row
+    if (requestData.requestID === null) {
+      firstRequest = true;
+      message = `Do you want to request access to the project "${project.ProjectName}"?`;
+    } else {
+      firstRequest = false;
+      message = `Do you want to update the request status to ${requestData.requestStatus}?`;
     }
 
     // emit confirmation modal after they click request button

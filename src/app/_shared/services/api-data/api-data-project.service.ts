@@ -100,4 +100,20 @@ export class ApiDataProjectService {
       .map((response: Response) => response.json());
   }
 
+  deleteProjectEmployeeRole(projectEmployeeRoleData: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/destroyProjectEmployeeRole/${userID}`, JSON.stringify(projectEmployeeRoleData), options)
+      .timeout(this.appDataService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  insertBulkProjectEmployeeRole(projectEmployeeRoleData: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/insertBulkProjectEmployeeRole/${userID}`, JSON.stringify(projectEmployeeRoleData), options)
+      .timeout(this.appDataService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 }
