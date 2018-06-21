@@ -14,8 +14,8 @@ export class ApiDataEmployeeService {
   ) { }
 
   getUserPLMData(userEmailAddress: string) {
-    return this.http.get(`/api/getUserPLMData/${userEmailAddress}`)
-      .timeout(this.timeout)
+    return this.http.get(`/api/showUserPLMData/${userEmailAddress}`)
+      .timeout(this.appDataService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 

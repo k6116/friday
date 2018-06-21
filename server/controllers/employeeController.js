@@ -1,6 +1,7 @@
 
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize').sequelize;
+const sequelizePLM = require('../db/sequelize').sequelizePLM;
 const sequelize2017 = require('../db/sequelize').sequelize2017;
 
 // TO-DO BILL: figure out if we need both employee and org controller (this should be for user data not org)

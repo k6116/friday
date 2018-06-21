@@ -6,6 +6,7 @@ import { AuthService } from '../../_shared/services/auth.service';
 import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
 import { User } from '../../_shared/models/user.model';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-projects-setups',
@@ -20,7 +21,6 @@ export class ProjectsSetupsComponent implements OnInit {
   projectPermissionRequestsList: any;
   showProjectsEditModal: boolean;
   showProjectsCreateModal: boolean;
-  cardNPI: any;
   selectedRow: any;
   selectdProject: any;
   projectRoster: any;
@@ -36,6 +36,8 @@ export class ProjectsSetupsComponent implements OnInit {
   replyComment: string;
   deleteModalMessage: string;
   deleteModalButtons: any;
+  projectTypeDisplayFields: any;
+  projectBasicInfo = [];
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
@@ -51,60 +53,13 @@ export class ProjectsSetupsComponent implements OnInit {
     private authService: AuthService,
   ) {
     this.loggedInUser = this.authService.loggedInUser;
-    this.cardNPI = [
-      {
-        title: 'Project Status',
-        alias: 'projectStatus',
-        value: ''
-      },
-      {
-        title: 'Oracle Item Number',
-        alias: 'oracleItemNumber',
-        value: ''
-      },
-      {
-        title: 'Project Number',
-        alias: 'projectNumber',
-        value: ''
-      },
-      {
-        title: 'Priority',
-        alias: 'priority',
-        value: ''
-      },
-      {
-        title: 'IBO',
-        alias: 'IBO',
-        value: ''
-      },
-      {
-        title: 'MU',
-        alias: 'MU',
-        value: ''
-      },
-      {
-        title: 'Organization',
-        alias: 'departmentID',
-        value: ''
-        },
-        {
-          title: 'Notes',
-          alias: 'notes',
-          value: ''
-        },
-        {
-          title: 'Description',
-          alias: 'description',
-          value: ''
-        },
-
-    ];
   }
 
   ngOnInit() {
     this.getUserProjectList();
     this.getProjectPermissionRequestsList();
     this.getProjectRoles();
+    this.getProjectTypeDisplayFields();
   }
 
   editProject(project: any) {
@@ -134,9 +89,8 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataPermissionService.getProjectPermissionRequestsList(this.authService.loggedInUser.id)
     .subscribe(
       res => {
-        // console.log(res);
         this.projectPermissionRequestsList = res;
-        console.log('projectPermissionRequest: ', this.projectPermissionRequestsList);
+        // console.log('projectPermissionRequest: ', this.projectPermissionRequestsList);
         for (let i = 0; i < this.projectPermissionRequestsList.length; i++) {
           if ( this.projectPermissionRequestsList[i].requestStatus === 'Submitted') {
             this.requestResponseFlag = true;
@@ -177,11 +131,16 @@ export class ProjectsSetupsComponent implements OnInit {
       this.selectedRow = null;
     } else {
         this.selectedRow = k;
-        // Assign projectList values to cardNPI values
-        for (let i = 0; i < this.cardNPI.length; i++) {
+        this.projectBasicInfo.length = 0;
+        // Assign projectList values to projectTypeDisplayFields object
+        for (let i = 0; i < this.projectTypeDisplayFields.length; i++) {
           for (let j = 0; j < Object.keys(project).length; j++) {
-            if (this.cardNPI[i].alias === Object.keys(project)[j]) {
-              this.cardNPI[i].value = Object.values(project)[j];
+            if (this.projectTypeDisplayFields[i]['projectType.projectTypeName'] === project['projectType.projectTypeName'] &&
+              this.projectTypeDisplayFields[i].projectField.toUpperCase() === Object.keys(project)[j].toUpperCase()) {
+                this.projectBasicInfo.push({
+                  field: Object.keys(project)[j],
+                  value: Object.values(project)[j]
+                });
             }
           }
         }
@@ -231,8 +190,7 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectRoster(projectID)
     .subscribe(
       res => {
-        console.log('project roster:');
-        console.log(res);
+        // console.log('project roster:', res);
         if (res.length) {
           this.projectRoster = res[0];
         }
@@ -243,15 +201,15 @@ export class ProjectsSetupsComponent implements OnInit {
     );
   }
 
-  // onDeleteButtonClick: check if project can be deleted.
-  // Project can only be delted if user is the creator AND if they are not used in other tables
+
+  // Get the primary key references for "ProjectID". This searches all Jarvis tables
   getPrimaryKeyRefs(projectID: number) {
     const pKeyName = 'ProjectID';
     this.projectID = projectID;
     this.apiDataMetaDataService.getPrimaryKeyRefs(pKeyName, this.projectID, this.authService.loggedInUser.id)
       .subscribe(
         res => {
-          console.log('PrimaryKeyRefs', res);
+          // console.log('PrimaryKeyRefs', res);
           this.pKeyRefList = res;
           if (this.pKeyRefList.length === 0) {
             this.deleteModalMessage = `Are you sure you want to delete "${this.selectdProject.projectName}"?`;
@@ -285,13 +243,6 @@ export class ProjectsSetupsComponent implements OnInit {
                     </tbody>
             `;
             for (let i = 0; i < this.pKeyRefList.length; i++) {
-              // this.deleteModalMessage = this.deleteModalMessage + `
-              //   <div class="row">
-              //     <div class="col">TableName:</div>
-              //     <div class="col">${this.pKeyRefList[i].TableName}</div>
-              //     <div class="col">RowCount:</div>
-              //     <div class="col">${this.pKeyRefList[i].NumOfRows}</div>
-              // `;
               this.deleteModalMessage = this.deleteModalMessage + `
                   <tr>
                     <td>${this.pKeyRefList[i].TableName}</td>
@@ -308,7 +259,6 @@ export class ProjectsSetupsComponent implements OnInit {
               }
             ];
           }
-          console.log('Modal Message: ' + this.deleteModalMessage);
           this.deleteModal();
         },
         err => {
@@ -322,9 +272,11 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectSchedule(projectName)
     .subscribe(
       res => {
-        console.log('project schedule:');
-        console.log(res);
-        this.projectSchedule = res[0];
+        // console.log('project schedule:', res);
+        this.projectSchedule = res;
+        for (let i = 0; i < this.projectSchedule.length; i++) {
+          this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
+        }
       },
       err => {
         console.log(err);
@@ -336,7 +288,7 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectRoles()
     .subscribe(
       res => {
-        console.log('Project Roles Retrieved');
+        // console.log('Project Roles Retrieved');
         this.projectRolesList = res;
       },
       err => {
@@ -404,7 +356,6 @@ export class ProjectsSetupsComponent implements OnInit {
     const deleteModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
       if (res) {
         // if they click ok, grab the deleted project info and exec db call to delete
-        const deleteActionSubscription =
         this.apiDataProjectService.deleteProject(projectData, this.authService.loggedInUser.id)
         .subscribe(
           del => {
@@ -420,6 +371,19 @@ export class ProjectsSetupsComponent implements OnInit {
       }
       deleteModalSubscription.unsubscribe();
     });
+  }
+
+  getProjectTypeDisplayFields() {
+    this.apiDataProjectService.getProjectTypeDisplayFields()
+    .subscribe(
+      res => {
+        // console.log(res);
+        this.projectTypeDisplayFields = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
 

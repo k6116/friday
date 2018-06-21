@@ -1,5 +1,4 @@
 const sequelize = require('../db/sequelize').sequelize;
-const sequelizePLM = require('../db/sequelize').sequelizePLM;
 const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
@@ -79,12 +78,15 @@ function indexUserProjectList(req, res) {
   const sql = `
     SELECT DISTINCT
       P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes, 
-      P1.CreatedBy as createdBy, P1.CreationDate as createdAt, P1.LastUpdatedBy as updatedBy, P1.LastUpdateDate as updatedAt,
+      P1.CreatedBy as createdBy, E1.FullName as createdByFullName, P1.CreationDate as createdAt,
+      P1.LastUpdatedBy as updatedBy, E2.FullName as updatedByFullName, P1.LastUpdateDate as updatedAt,
       P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
     FROM
       projects.Projects P1
       LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
       LEFT JOIN resources.ProjectEmployees P3 ON P1.ProjectID = P3.ProjectID
+      LEFT JOIN accesscontrol.Employees E1 ON P1.CreatedBy = E1.EmployeeID
+      LEFT JOIN accesscontrol.Employees E2 ON P1.LastUpdatedBy = E2.EmployeeID
     WHERE
       P1.CreatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
   `
@@ -454,6 +456,7 @@ function updateProjectEmployeeRole(req, res) {
 
     })
 }
+
 
 module.exports = {
   indexProjects: indexProjects,
