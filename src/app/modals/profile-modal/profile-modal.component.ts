@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy, HostBinding, Output, EventEmitter } from '@angular/core';
-import { ApiDataService } from '../../_shared/services/api-data.service';
-import { TopNavComponent } from '../../navs/top-nav/top-nav.component';
-import { User } from '../../_shared/models/user.model';
+import { ApiDataJobTitleService } from '../../_shared/services/api-data/_index';
 import { AuthService } from '../../_shared/services/auth.service';
 
 @Component({
@@ -26,7 +24,7 @@ import { AuthService } from '../../_shared/services/auth.service';
     newJobTitleID: number;
 
     constructor(
-        private apiDataService: ApiDataService,
+        private apiDataJobTitleService: ApiDataJobTitleService,
         private authService: AuthService,
     ) {}
 
@@ -39,17 +37,6 @@ import { AuthService } from '../../_shared/services/auth.service';
     }
 
     getUserProfile() {
-      // this.authService.getLoggedInUser((user, err) => {
-      //   if (err) {
-      //     return;
-      //   }
-      //   this.loggedInUser = user;
-      //   this.userName = this.loggedInUser.fullName;
-
-      //   // Must be assigned here so on profile modal popup the most recent values show up in the comboboxes
-      //   this.jobTitleID = this.loggedInUser.jobTitleID;
-      //   this.jobTitleSubID = this.loggedInUser.jobTitleSubID;
-      // });
 
       this.loggedInUser = this.authService.loggedInUser;
       this.userName = this.loggedInUser.fullName;
@@ -62,7 +49,7 @@ import { AuthService } from '../../_shared/services/auth.service';
 
     // will be called on profile button click in top-nav
     getJobTitleList() {
-      this.apiDataService.getJobTitleList()
+      this.apiDataJobTitleService.getJobTitleList()
         .subscribe(
           // pulls JobTitleID, JobTitleName and  all subtitles from Jarvis Employees table
           res => {
@@ -135,7 +122,7 @@ import { AuthService } from '../../_shared/services/auth.service';
       this.editToggle = !this.editToggle;
 
       // write new values to database
-      this.apiDataService.updateProfile(this.loggedInUser.id, this.newJobTitleData)
+      this.apiDataJobTitleService.updateJobTitle(this.loggedInUser.id, this.newJobTitleData)
         .subscribe(
           res => {
             console.log(res);

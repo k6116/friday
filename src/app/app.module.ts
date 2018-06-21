@@ -28,7 +28,7 @@ import { ApiDataService, AppDataService, ClickTrackingService, CookiesService,
 import { AuthService } from './_shared/services/auth.service';
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
-  ApiDataFteService, ApiDataOrgService, ApiDataProjectAccessService, ApiDataProjectService,
+  ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
   ApiDataReportService} from './_shared/services/api-data/_index';
 
 // GUARDS
@@ -139,8 +139,10 @@ import { FooterComponent } from './footer/footer.component';
     ApiDataEmailService,
     ApiDataEmployeeService,
     ApiDataFteService,
+    ApiDataJobTitleService,
+    ApiDataMetaDataService,
     ApiDataOrgService,
-    ApiDataProjectAccessService,
+    ApiDataPermissionService,
     ApiDataProjectService,
     ApiDataReportService,
     AppDataService,

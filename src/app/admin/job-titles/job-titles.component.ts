@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataJobTitleService } from '../../_shared/services/api-data/_index';
 import { TitleCasePipe } from '@angular/common';
 import { FormControl, FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 // import { JobTitleInterface } from './job-title-interface';
@@ -32,7 +32,7 @@ export class JobTitlesComponent implements OnInit {
   titles: FormGroup;
 
   constructor(
-    private apiDataService: ApiDataService,
+    private apiDataJobTitleService: ApiDataJobTitleService,
     private titlecasePipe: TitleCasePipe,
     private formBuilder: FormBuilder,
   ) {}
@@ -49,7 +49,7 @@ export class JobTitlesComponent implements OnInit {
   }
 
   getJobTitleList() {
-    this.apiDataService.getJobTitleList()
+    this.apiDataJobTitleService.getJobTitleList()
       .subscribe(
         res => {
           console.log('JobTitleList:', res);
@@ -90,7 +90,7 @@ export class JobTitlesComponent implements OnInit {
   onDeleteJobTitleClick() {
     const jobTitleData = [{jobTitleID: this.jobTitleID}];
 
-    this.apiDataService.deletejobTitle(jobTitleData[0])
+    this.apiDataJobTitleService.deletejobTitle(jobTitleData[0])
     .subscribe(
       res => {
         console.log('Job title has been deleted');
@@ -158,7 +158,7 @@ export class JobTitlesComponent implements OnInit {
     // const newJobTitle = this.titles.getRawValue();
     const newJobTitle = ({jobTitleName: this.name, description: this.description});
     console.log(newJobTitle);
-    this.apiDataService.insertJobTitle(newJobTitle)
+    this.apiDataJobTitleService.insertJobTitle(newJobTitle)
     .subscribe(
       res => {
         console.log(res);
