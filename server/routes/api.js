@@ -63,9 +63,11 @@ router.post('/updateProjectAccessRequest/:userID', controllers.projectAccess.upd
 
 // PROFILE CONTROLLER
 router.get('/getJobTitleList', controllers.profile.show);
+// router.get('/getJobTitleSubList', controllers.profile.show);
 router.post('/updateProfile/:userID', controllers.profile.update);
 router.post('/insertJobTitle', controllers.profile.insertJobTitle);
 router.post('/deleteJobTitle', controllers.profile.deleteJobTitle);
+router.post('/insertJobTitleSub', controllers.profile.insertJobTitleSub);
 // router.get('/getJobTitle/:jobTitleID', controllers.profile.show2);
 
 // REPORTS PROJECT CONTROLLER

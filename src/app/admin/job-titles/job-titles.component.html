@@ -87,21 +87,20 @@
         <div class="modal-body">
           <div class="input-group">
             <input type="text"  class="form-control" formControlName="name" placeholder="Job Title" required>&nbsp;
-            <!-- <input type="text" class="form-control" placeholder="Description" [(ngModel)]="jobTitledescription">&nbsp; -->
+            <input type="text" class="form-control" formControlName="description" placeholder="Description">&nbsp;
             <div class="input-group-append">
               <!-- To-Do: Figure out a way to close this modal. With data-dismiss it will also close on error. -->
-              <button type="submit" [disabled]="titles.invalid" class="btn btn-primary btn-fte-toolbar" (click)="onCreateJobTitleClick(name, jobTitledescription)">OK</button>&nbsp;
+              <button type="button" [disabled]="titles.invalid" class="btn btn-primary btn-fte-toolbar" (click)="onModalOKClick()">OK</button>&nbsp;
               <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
-              <div *ngIf="!jobTtitleExists" data-dismiss="modal"></div>
             </div>
           </div>
         </div>
         <!-- Show a footer if job title already exists -->
         <div class="modal-footer">
-          <div class="error" *ngIf="titles.get('name').hasError('required') && titles.get('name').touched">Name is required</div>
           <div>{{ titles.value | json }}</div>
           <div>{{ titles.get('name').errors | json }}</div> 
-          <p *ngIf="jobTtitleExists" class="footer">This job title already exists.</p>
+          <div style="color:red" *ngIf="jobTtitleExists" class="footer">This job title already exists.</div>
+          <!-- <div style="color:green" *ngIf="!jobTtitleExists" class="footer">Successfully added.</div> -->
         </div>
         <!--  -->
       </div>
