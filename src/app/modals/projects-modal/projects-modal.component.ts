@@ -361,8 +361,10 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   onProjectPermissionClick(project: any, action: string) {
 
     let confirmButton: any;
+    let firstRequest: boolean;
+    let message: string;
 
-    this.clickOutsideException = 'div#confirm-modal';
+    // this.clickOutsideException = 'div#confirm-modal';
 
     // create requestData object for passing into controller
     const requestData = {
@@ -370,12 +372,19 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       requestStatus: null,
       requestNotes: null
     };
-
+    console.log('proj perm list', this.projectPermissionList);
     // find requestID and append it to requestData
     for (let i = 0; i < this.projectPermissionList.length; i++) {
       if (this.projectPermissionList[i].projectID === project.ProjectID) {
         requestData.requestID = this.projectPermissionList[i].id;
       }
+    }
+    if (requestData.requestID === null) {
+      firstRequest = true;
+      message = `Do you want to request access to the project "${project.projectName}"?`;
+    } else {
+      firstRequest = false;
+      message = `Do you want to update the request status to ${requestData.requestStatus}?`;
     }
 
     // depending on action, update requestData elements
@@ -397,7 +406,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.appDataService.confirmModalData.emit(
       {
         title: `Confirm ${action}`,
-        message: `Are you sure you want to update the request status to ${requestData.requestStatus}?`,
+        message: message,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
         allowOutsideClickDismiss: false,
@@ -419,19 +428,35 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     const updateModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
       if (res) {
-        // if they click ok, grab the deleted project info and exec db call to delete
-        const deleteActionSubscription =
-        this.apiDataPermissionService.updateProjectPermissionRequest(requestData, this.userID)
-          .subscribe(
-            apiRes => {
-              console.log(apiRes);
-              deleteActionSubscription.unsubscribe();
-            },
-            err => {
-              console.log(err);
-              deleteActionSubscription.unsubscribe();
-            }
-          );
+        if (firstRequest) {
+          const insertActionSubscription =
+          this.apiDataPermissionService.insertProjectPermissionRequest(project, this.userID)
+            .subscribe(
+              apiRes => {
+                console.log(apiRes);
+                this.onRequestUpdateSuccess();
+                insertActionSubscription.unsubscribe();
+              },
+              err => {
+                console.log(err);
+                insertActionSubscription.unsubscribe();
+              }
+            );
+        } else {
+          const updateActionSubscription =
+          this.apiDataPermissionService.updateProjectPermissionRequest(requestData, this.userID)
+            .subscribe(
+              apiRes => {
+                console.log(apiRes);
+                this.onRequestUpdateSuccess();
+                updateActionSubscription.unsubscribe();
+              },
+              err => {
+                console.log(err);
+                updateActionSubscription.unsubscribe();
+              }
+            );
+          }
       } else {
         console.log('request confirm aborted');
       }

@@ -164,7 +164,7 @@ function insertProjectPermissionRequest(req, res) {
 function updateProjectPermissionResponse(req, res) {
 
   // get the project object from the request body
-  const request = req.body;
+  const requestData = req.body;
   const userID = req.params.userID;
   const reply = req.params.reply;
   const replyComment = req.params.replyComment;
@@ -181,7 +181,7 @@ function updateProjectPermissionResponse(req, res) {
           responseNotes: replyComment,
         },
         {
-          where: {id: request.id},
+          where: {id: requestData.id},
           transaction: t
         }
       )
@@ -195,7 +195,7 @@ function updateProjectPermissionResponse(req, res) {
     }).then(() => {
 
       res.json({
-        message: `The requestID '${request.id}' has been updated successfully`
+        message: `The requestID '${requestData.id}' has been updated successfully`
       })
 
     }).catch(error => {

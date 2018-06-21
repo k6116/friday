@@ -71,11 +71,11 @@
                 <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectPermissionApprovedList?.indexOf(project.ProjectID)!=-1 || projectPermissionTeamList?.indexOf(project.ProjectID)!=-1"
                   class="btn btn-outline-success project-select-button" data-toggle="modal" data-target="#projectRoleModal" (click)="onSelectedProject(project)">Select</button>
                 <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)===-1 && projectPermissionApprovedList?.indexOf(project.ProjectID)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)===-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
-                  class="btn btn-outline-warning project-select-button" (click)="onprojectPermissionClick(project, 'Request')">Request Access</button>
+                  class="btn btn-outline-warning project-select-button" (click)="onProjectPermissionClick(project, 'Request')">Request Access</button>
                 <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
-                  class="btn btn-outline-info" (click)="onprojectPermissionClick(project, 'Submitted')">Access Request Submitted...</button>
+                  class="btn btn-outline-info" (click)="onProjectPermissionClick(project, 'Submitted')">Access Request Submitted...</button>
                 <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1" 
-                  class="btn btn-outline-danger" (click)="onprojectPermissionClick(project, 'Denied')">Access Request DENIED</button>
+                  class="btn btn-outline-danger" (click)="onProjectPermissionClick(project, 'Denied')">Access Request DENIED</button>
             </div>
           </div>
 
