@@ -87,29 +87,32 @@ td.dashboard-notifications-type-icon-cell {
   vertical-align: middle;
 }
 
-i.fa.notification-type-icon {
-  font-size: 21px;
+i.notification-type-icon {
+  font-size: 24px;
+  font-weight: 600;
 }
 
-i.fa.notification-type-icon.notify-info {
-  color: rgb(57, 188, 31);
+i.notification-type-icon.notify-info {
+  color: blue;
 }
 
-i.fa.notification-type-icon.notify-alert {
-  color: rgb(208, 208, 39);;
+i.notification-type-icon.notify-alert {
+  color: green;
 }
 
-i.fa.notification-type-icon.notify-warning {
-  color: rgb(255, 114, 114);
+i.notification-type-icon.notify-warning {
+  color: red;
 }
 
 td.dashboard-notifications-text-cell {
   font-size: 14px;
+  vertical-align: middle;
 }
 
 td.dashboard-notifications-dismiss-icon-cell {
   width: 50px;
   text-align: right;
+  vertical-align: middle;
 }
 
 i.fa.notification-dismiss-icon {
