@@ -63,7 +63,7 @@ div.notifications-header-text {
   top: -3px;
 }
 
-i.nc-icon.notifications-icon {
+i.nc-icon.messages-icon {
   font-size: 22px;
 }
 
@@ -74,8 +74,49 @@ div.dashboard-notifications {
   margin-top: 15px;
 }
 
-i.notification-icon {
-  margin-right: 5px;
-  font-size: 20px;
-  color: green;
+
+
+/* notifications table */
+
+tr.dashboard-notifications-table-row:last-child  {
+  border-bottom: 1px solid rgb(222, 226, 230);
+}
+
+td.dashboard-notifications-type-icon-cell {
+  width: 50px;
+  vertical-align: middle;
+}
+
+i.fa.notification-type-icon {
+  font-size: 21px;
+}
+
+i.fa.notification-type-icon.notify-info {
+  color: rgb(57, 188, 31);
+}
+
+i.fa.notification-type-icon.notify-alert {
+  color: rgb(208, 208, 39);;
+}
+
+i.fa.notification-type-icon.notify-warning {
+  color: rgb(255, 114, 114);
+}
+
+td.dashboard-notifications-text-cell {
+  font-size: 14px;
+}
+
+td.dashboard-notifications-dismiss-icon-cell {
+  width: 50px;
+  text-align: right;
+}
+
+i.fa.notification-dismiss-icon {
+  font-size: 19px;
+}
+
+i.fa.notification-dismiss-icon:hover {
+  color: darkred;
+  cursor: pointer;
 }
