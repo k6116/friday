@@ -2,7 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
+  ApiDataMetaDataService, ApiDataEmailService } from '../../_shared/services/api-data/_index';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
@@ -16,7 +17,7 @@ declare var $: any;
 export class ProjectsEditModalComponent implements OnInit {
 
   @Input() projectData: any;
-  @Input() projectAccessRequestsList: any;
+  @Input() projectPermissionRequestsList: any;
   @Output() updateSuccess = new EventEmitter<boolean>();
   @Output() deleteSuccess = new EventEmitter<boolean>();
 
@@ -32,7 +33,11 @@ export class ProjectsEditModalComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private apiDataService: ApiDataService,
+    private apiDataEmployeeService: ApiDataEmployeeService,
+    private apiDataProjectService: ApiDataProjectService,
+    private apiDataPermissionService: ApiDataPermissionService,
+    private apiDataMetaDataService: ApiDataMetaDataService,
+    private apiDataEmailService: ApiDataEmailService,
     private appDataService: AppDataService,
     private authService: AuthService,
   ) {
@@ -50,11 +55,11 @@ export class ProjectsEditModalComponent implements OnInit {
   }
 
   getProjectData() {
-    console.log(this.projectAccessRequestsList);
+    console.log(this.projectPermissionRequestsList);
   }
 
   getProjectTypesList() {
-    this.apiDataService.getProjectTypesList()
+    this.apiDataProjectService.getProjectTypesList()
     .subscribe(
       res => {
         // console.log(res);
@@ -70,7 +75,7 @@ export class ProjectsEditModalComponent implements OnInit {
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
 
-    this.apiDataService.updateProject(project, this.userID)
+    this.apiDataProjectService.updateProject(project, this.userID)
     .subscribe(
       res => {
         // console.log(res);
@@ -86,7 +91,7 @@ export class ProjectsEditModalComponent implements OnInit {
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
 
-    this.apiDataService.deleteProject(project, this.userID)
+    this.apiDataProjectService.deleteProject(project, this.userID)
     .subscribe(
       res => {
         // console.log(res);
@@ -125,7 +130,7 @@ export class ProjectsEditModalComponent implements OnInit {
   getPrimaryKeyRefs() {
     this.pKeyValue = this.projectData.id;
 
-    this.apiDataService.getPrimaryKeyRefs(this.pKeyName, this.pKeyValue, this.userID)
+    this.apiDataMetaDataService.getPrimaryKeyRefs(this.pKeyName, this.pKeyValue, this.userID)
       .subscribe(
         res => {
           // console.log(res);
@@ -144,7 +149,7 @@ export class ProjectsEditModalComponent implements OnInit {
 
   handlePendingRequests() {
     const projectID = this.projectData.id;
-    const found = this.projectAccessRequestsList.some(function (el) {
+    const found = this.projectPermissionRequestsList.some(function (el) {
       return el.projectID === projectID;
     });
     if (found) {
@@ -153,10 +158,6 @@ export class ProjectsEditModalComponent implements OnInit {
       this.showPendingRequests = false;
     }
   }
-
-  // onCancelClicked() {
-  //   console.log('cancel button clicked');
-  // }
 
 }
 
