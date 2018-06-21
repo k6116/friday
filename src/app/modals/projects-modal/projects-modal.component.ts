@@ -19,12 +19,12 @@ declare var $: any;
         'background-color': 'rgba(0, 0, 0, 0.4)'
       })),
       transition('in => out', [
-        animate(500, style({
+        animate(250, style({
           'background-color': 'rgba(255, 255, 255, 0)'
         }))
       ]),
       transition('out => in', [
-        animate(500, style({
+        animate(250, style({
           'background-color': 'rgba(0, 0, 0, 0.4)'
         }))
       ])
@@ -34,12 +34,12 @@ declare var $: any;
         opacity: 1
       })),
       transition('in => out', [
-        animate(500, style({
+        animate(250, style({
           opacity: 0
         }))
       ]),
       transition('out => in', [
-        animate(500, style({
+        animate(250, style({
           opacity: 1
         }))
       ])

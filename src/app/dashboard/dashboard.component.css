@@ -1,0 +1,81 @@
+
+div.dashboard-notifications-col {
+  background-color: white;
+  /* min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto; */
+}
+
+div.col-dashboard.left-half {
+  padding-left: 0;
+  padding-right: 20px;
+}
+
+div.col-dashboard.right-half {
+  padding-left: 20px;
+  padding-right: 0;
+}
+
+text.highcharts-title {
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-weight: 500;
+}
+
+/* .highcharts-title {
+  fill: #434348;
+  font-weight: bold;
+  letter-spacing: 0.3em;
+  font-size: 3em;
+} */
+
+div.fte-progress {
+  background-color: white;
+  height: 250px;
+}
+
+div.fte-progress-cont {
+  position: absolute;
+  top: 265px;
+  height: 150px;
+  margin: 0 65px 0 50px;
+  overflow-y: auto;
+}
+
+div.fte-progress-incomplete {
+  margin-top: 10px;
+}
+
+div.dashboard-notifications-cont {
+  padding: 20px;
+}
+
+div.dashboard-header-cont {
+  border-bottom: 1px solid rgb(178, 178, 178);
+}
+
+div.notifications-header-text {
+  display: inline-block;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  margin-left: 10px;
+  position: relative;
+  top: -3px;
+}
+
+i.nc-icon.notifications-icon {
+  font-size: 22px;
+}
+
+div.dashboard-notifications {
+  overflow-y: auto;
+  min-height: 200px;
+  max-height: 300px;
+  margin-top: 15px;
+}
+
+i.notification-icon {
+  margin-right: 5px;
+  font-size: 20px;
+  color: green;
+}
