@@ -122,6 +122,7 @@ td.dashboard-notifications-dismiss-icon-cell {
 
 i.fa.notification-dismiss-icon {
   font-size: 19px;
+  color: grey;
 }
 
 i.fa.notification-dismiss-icon:hover {

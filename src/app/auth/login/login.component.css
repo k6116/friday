@@ -9,6 +9,20 @@ div.login-background-image {
   width: 100%;
 }
 
+div.login-background-image-details {
+  position: absolute;
+  right: 50px;
+  bottom: 50px;
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  opacity: 0.8;
+}
+
+div.login-background-image-details-title {
+  font-weight: 700;
+}
+
 div.login-cont {
   width: 450px;
   height: 500px;

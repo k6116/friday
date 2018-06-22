@@ -81,14 +81,12 @@ input.form-control:focus {
 } */
 
 h2.page-header-text {
-  font-size: 23px;
+  font-size: 24px;
   font-weight: 600;
-  padding-bottom: 10px;
-  border-bottom: 3px solid rgb(193, 193, 193);
-}
-
-div.col-text-header {
-  border-bottom: 1px solid #dee2e6
+  background-color: white;
+  padding: 10px 20px;
+  /* border: 1px solid grey; */
+  box-shadow: 0 2px 2px 0px rgba(33, 33, 33, 0.28);
 }
 
 

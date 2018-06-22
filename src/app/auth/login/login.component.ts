@@ -48,8 +48,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
 
   // array of background images and randomly selected background image
-  backgroundImages: string[];
-  backgroundImage: string;
+  backgroundImages: any[];
+  backgroundImage: any;
 
   constructor(
     private router: Router,
@@ -66,13 +66,41 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {
 
     this.backgroundImages = [
-      '/assets/login_images/blue_mountains_sydney.jpg',
-      '/assets/login_images/garden_of_the_gods.jpg',
-      '/assets/login_images/himeji_castle_kobe.jpg',
-      '/assets/login_images/penang.jpg',
-      '/assets/login_images/point_bonita.jpg',
-      '/assets/login_images/singapore.jpg',
-      '/assets/login_images/yosemite.jpg'
+      {
+        path: '/assets/login_images/blue_mountains_sydney.jpg',
+        title: 'Blue Mountains outside Sydney Australia',
+        subTitle: 'Key Sightings Winner: March, 2018'
+      },
+      {
+        path: '/assets/login_images/garden_of_the_gods.jpg',
+        title: 'Garden of the Gods, Colorado Springs',
+        subTitle: 'Key Sightings Winner: December, 2016'
+      },
+      {
+        path: '/assets/login_images/himeji_castle_kobe.jpg',
+        title: 'Himeji-Castle outside Kobe, Japan',
+        subTitle: 'Key Sightings Winner: April, 2018'
+      },
+      {
+        path: '/assets/login_images/penang.jpg',
+        title: 'View from Penang Hill at Night',
+        subTitle: 'Key Sightings Winner: March, 2018'
+      },
+      {
+        path: '/assets/login_images/point_bonita.jpg',
+        title: 'Point Bonita Lighthouse near San Francisco, California',
+        subTitle: 'Key Sightings Winner: December, 2016'
+      },
+      {
+        path: '/assets/login_images/singapore.jpg',
+        title: 'Singapore Skyline',
+        subTitle: 'Key Sightings Winner: May, 2018'
+      },
+      {
+        path: '/assets/login_images/yosemite.jpg',
+        title: 'Sunset in Yosemite National Park',
+        subTitle: 'Key Sightings Winner: November, 2017'
+      }
     ];
 
   }
@@ -100,7 +128,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   // set random background image
   setBackgroundImage() {
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
-    this.backgroundImage = `url(${this.backgroundImages[imageIndex]})`;
+    // this.backgroundImage = `url(${this.backgroundImages[imageIndex]})`;
+    this.backgroundImage = this.backgroundImages[imageIndex];
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)

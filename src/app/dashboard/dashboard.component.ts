@@ -26,7 +26,6 @@ export class DashboardComponent implements OnInit {
   highchartsButtons: any;
   completedFTEs: string;
   notCompletedFTEs: string;
-  completedFTEsCount: number;
 
   constructor(
     private appDataService: AppDataService,
@@ -428,14 +427,13 @@ export class DashboardComponent implements OnInit {
     this.completedFTEs = completedFTEsArr.join(', ');
     this.notCompletedFTEs = notCompletedFTEsArr.join(', ');
 
-    // set the count for the gauge
-    this.completedFTEsCount = completedFTEsArr.length;
-
     console.log('completed ftes:');
     console.log(this.completedFTEs);
 
     console.log('not completed ftes:');
     console.log(this.notCompletedFTEs);
+
+    console.log(this.dashboardFTEData.length);
 
     const chartOptions = {
       chart: {
@@ -466,22 +464,20 @@ export class DashboardComponent implements OnInit {
       // the value axis
       yAxis: {
         min: 0,
-        max: 26,
-        // title: {
-        //   text: 'Your Teams FTE Entry Progress',
-        //   y: -70
-        // },
+        max: this.dashboardFTEData.length,
         stops: [
-          [15, '#55BF3B'], // green
-          [10, '#DDDF0D'], // yellow
-          [5, '#DF5353'] // red
+          [.2, '#DF5353'], // red
+          [.5, '#DDDF0D'], // yellow
+          [.8, '#55BF3B'] // green
         ],
         lineWidth: 0,
-        minorTickInterval: null,
-        tickAmount: 2,
-        labels: {
-          y: 16
-        }
+        minorTicks: false
+        // minorTickInterval: 'auto'
+        // tickAmount: 2,
+        // tickInterval: 25
+        // labels: {
+        //   y: 16
+        // }
       },
       plotOptions: {
         solidgauge: {
@@ -494,14 +490,11 @@ export class DashboardComponent implements OnInit {
       },
       series: [{
         name: 'fteEntryProgress',
-        data: [3],
+        data: [completedFTEsArr.length],
         dataLabels: {
           format: '<div style="text-align:center"><span style="font-size:25px;color:' +
             ('black') + '">{y}</span><br/>' +
                '<span style="font-size:12px;color:silver">Completed</span></div>'
-        },
-        tooltip: {
-          valueSuffix: ' revolutions/min'
         }
       }]
     };
