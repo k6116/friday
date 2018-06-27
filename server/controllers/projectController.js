@@ -453,9 +453,6 @@ function destroyProjectEmployeeRole(req, res) {
 
 }
 
-
-
-
 function insertBulkProjectEmployeeRole(req, res) {
 
   // req.body object should include only fields: projectID and projectRoleID

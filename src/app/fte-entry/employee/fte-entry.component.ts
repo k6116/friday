@@ -241,8 +241,9 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       newProject.userID = this.authService.loggedInUser.id;
       newProject.projectID = selectedProject.ProjectID;
       newProject.projectName = selectedProject.ProjectName;
-      newProject.projectRole = selectedProject.ProjectRole;
-      newProject.projectRoleID = selectedProject.ProjectRoleID;
+      // newProject.projectRole = selectedProject.ProjectRole;
+      newProject.jobTitleID = selectedProject.JobTitleID;
+      newProject.jobSubTitleID = selectedProject.JobSubTitleID;
 
       // loop through the already-built months array and initialize null FTEs for each month in this new project
       newProject.allocations = new Array<AllocationsArray>();
@@ -437,6 +438,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     if (currentQuarterValid && futureQuartersValid) {
       const fteData = this.FTEFormGroup.value.FTEFormArray;
       const t0 = performance.now();
+      console.log('FTE DATA', fteData)
       // call the api data service to send the put request
       this.apiDataFteService.updateUserData(fteData, this.authService.loggedInUser.id)
       .subscribe(
@@ -583,7 +585,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
           projectID: [proj.projectID],
           projectName: [proj.projectName],
-          projectRoleID: [proj.projectRoleID],
+          jobTitleID: [proj.jobTitleID],
+          jobSubTitleID: [proj.jobSubTitleID],
           month: [month],
           fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
           newRecord: [foundEntry ? false : true],
@@ -597,7 +600,9 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     const tempProj: any = projFormArray;
     tempProj.projectID = proj.projectID;
     tempProj.projectName = proj.projectName;
-    tempProj.projectRole = proj.projectRole;
+    // tempProj.projectRole = proj.projectRole;
+    tempProj.jobTitleID = proj.jobTitleID;
+    tempProj.jobSubTitleID = proj.jobSubTitleID;
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
   }
 
