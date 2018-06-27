@@ -4,7 +4,8 @@ const sequelize = require('../db/sequelize').sequelize;
 
 const User = require('./user');
 const Projects = require('./project').Projects
-const ProjectRoles = require('./project').ProjectRoles
+const JobTitle = require('./jobTitle').JobTitle
+const JobSubTitle = require('./jobTitle').JobSubTitle
 
 const ProjectEmployee = sequelize.define('projectEmployee',
   {
@@ -28,7 +29,8 @@ const ProjectEmployeeRoles = sequelize.define('projectEmployeeRoles',
     id: { type: Sequelize.INTEGER, field: 'ProjectEmployeeRoleID', primaryKey: true, autoIncrement: true },
     projectID: { type: Sequelize.INTEGER, field: 'ProjectID' },
     employeeID: { type: Sequelize.INTEGER, field: 'EmployeeID' },
-    projectRoleID: { type: Sequelize.INTEGER, field: 'ProjectRoleID' },
+    jobTitleID: { type: Sequelize.INTEGER, field: 'JobTitleID' },
+    jobSubTitleID: { type: Sequelize.INTEGER, field: 'JobSubTitleID' },
     createdBy: { type: Sequelize.INTEGER, field: 'CreatedBy' },
     createdAt: { type: Sequelize.DATE, field: 'CreationDate' },
     updatedBy: { type: Sequelize.INTEGER, field: 'LastUpdatedBy' },
@@ -50,11 +52,14 @@ ProjectEmployee.belongsTo(User, {foreignKey: 'employeeID'});
 Projects.hasMany(ProjectEmployeeRoles, {foreignKey: 'id'});
 ProjectEmployeeRoles.belongsTo(Projects, {foreignKey: 'projectID'});
 
-User.hasMany(ProjectEmployeeRoles, {foreignKey: 'id'});
-ProjectEmployeeRoles.belongsTo(User, {foreignKey: 'employeeID'});
+// User.hasMany(ProjectEmployeeRoles, {foreignKey: 'id'});
+// ProjectEmployeeRoles.belongsTo(User, {foreignKey: 'employeeID'});
 
-ProjectRoles.hasMany(ProjectEmployeeRoles, {foreignKey: 'id'});
-ProjectEmployeeRoles.belongsTo(ProjectRoles, {foreignKey: 'projectRoleID'});
+JobTitle.hasMany(ProjectEmployeeRoles, {foreignKey: 'id'});
+ProjectEmployeeRoles.belongsTo(JobTitle, {foreignKey: 'jobTitleID'});
+
+JobSubTitle.hasMany(ProjectEmployeeRoles, {foreignKey: 'id'});
+ProjectEmployeeRoles.belongsTo(JobSubTitle, {foreignKey: 'jobSubTitleID'});
 
 module.exports = {
   ProjectEmployee: ProjectEmployee, 

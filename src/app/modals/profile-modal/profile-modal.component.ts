@@ -16,9 +16,9 @@ import { AuthService } from '../../_shared/services/auth.service';
     jobTitleIndex: any;
     jobTitleID: any;
     jobTitleName: any;
-    jobTitleSubList: any;
-    jobTitleSubID: any;
-    jobTitleSubName: any;
+    jobSubTitleList: any;
+    jobSubTitleID: any;
+    jobSubTitleName: any;
     editToggle: boolean;
     newJobTitleData: any;
     newJobTitleID: number;
@@ -43,7 +43,7 @@ import { AuthService } from '../../_shared/services/auth.service';
 
       // Must be assigned here so on profile modal popup the most recent values show up in the comboboxes
       this.jobTitleID = this.loggedInUser.jobTitleID;
-      this.jobTitleSubID = this.loggedInUser.jobTitleSubID;
+      this.jobSubTitleID = this.loggedInUser.jobSubTitleID;
 
     }
 
@@ -64,7 +64,7 @@ import { AuthService } from '../../_shared/services/auth.service';
               }
             }
             // Load the appropriate list of subtitles
-            this.getJobTitleSubList();
+            this.getJobSubTitleList();
 
           },
           err => {
@@ -87,38 +87,38 @@ import { AuthService } from '../../_shared/services/auth.service';
         }
       }
       // Load the appropriate list of subtitles
-      this.getJobTitleSubList();
+      this.getJobSubTitleList();
     }
 
-    getJobTitleSubList() {
-      this.jobTitleSubList = this.jobTitles[this.jobTitleIndex].jobTitleJunction.jobTitleSubs;
-      console.log('JobTitleSubList:', this.jobTitleSubList);
+    getJobSubTitleList() {
+      this.jobSubTitleList = this.jobTitles[this.jobTitleIndex].jobTitleMap.jobSubTitles;
+      console.log('JobSubTitleList:', this.jobSubTitleList);
 
       // loop through sublist to get matching name to ID
-      for (let i = 0; i < this.jobTitleSubList.length; i++) {
-        if (this.jobTitleSubList[i].id === this.jobTitleSubID) {
-           this.jobTitleSubName = this.jobTitleSubList[i].jobTitleSubName;
+      for (let i = 0; i < this.jobSubTitleList.length; i++) {
+        if (this.jobSubTitleList[i].id === this.jobSubTitleID) {
+           this.jobSubTitleName = this.jobSubTitleList[i].jobSubTitleName;
         }
       }
-      console.log('My Job Subtitle: ' + this.jobTitleSubName);
+      console.log('My Job Subtitle: ' + this.jobSubTitleName);
     }
 
-    selectJobTitleSubChangeHandler (event: any) {
+    selectJobSubTitleChangeHandler (event: any) {
       // get current subtitle whenever combobox value changes
-      this.jobTitleSubName = event.target.value;
+      this.jobSubTitleName = event.target.value;
 
       // find subtitle ID to subtitle name. It will be used when saving values to the database
-      for (let i = 0; i < this.jobTitleSubList.length; i++) {
-        if (this.jobTitleSubList[i].jobTitleSubName === this.jobTitleSubName) {
-           this.jobTitleSubID = this.jobTitleSubList[i].id;
+      for (let i = 0; i < this.jobSubTitleList.length; i++) {
+        if (this.jobSubTitleList[i].jobSubTitleName === this.jobSubTitleName) {
+           this.jobSubTitleID = this.jobSubTitleList[i].id;
         }
       }
-      console.log('My New Job Sutitle: ' + this.jobTitleSubName + ', ' + this.jobTitleSubID);
+      console.log('My New Job Sutitle: ' + this.jobSubTitleName + ', ' + this.jobSubTitleID);
     }
 
     onUpdateButtonClick() {
       // create json with new job titles to send to server
-      this.newJobTitleData = {'newJobTitleID': this.jobTitleID, 'newJobTitleSubID': this.jobTitleSubID};
+      this.newJobTitleData = {'newJobTitleID': this.jobTitleID, 'newJobSubTitleID': this.jobSubTitleID};
       this.editToggle = !this.editToggle;
 
       // write new values to database

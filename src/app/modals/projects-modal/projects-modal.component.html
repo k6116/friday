@@ -69,7 +69,7 @@
             </div>
             <div class="card-footer">
                 <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectPermissionApprovedList?.indexOf(project.ProjectID)!=-1 || projectPermissionTeamList?.indexOf(project.ProjectID)!=-1"
-                  class="btn btn-outline-success project-select-button" data-toggle="modal" data-target="#projectRoleModal" (click)="onSelectedProject(project)">Select</button>
+                  class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
                 <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)===-1 && projectPermissionApprovedList?.indexOf(project.ProjectID)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)===-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
                   class="btn btn-outline-warning project-select-button" (click)="onProjectPermissionClick(project, 'Request')">Request Access</button>
                 <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
@@ -87,29 +87,3 @@
     </div>
   </div>
 </div>
-
-<!-- Waiting to implement once click outside feature works with modals-->
-<div class="modal" tabindex="-1" role="dialog" id="projectRoleModal">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content" style="width:150%">
-        <div class="modal-header" style="border-bottom: none; height: 2rem;">
-          <h5 class="title">Please select your project role</h5>
-        </div>
-        <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label for="formGroupProjectRole">Project Role</label>
-                <select class="custom-select" id="formGroupProjectRole" (change)="selectProjectRole($event)">
-                  <option>Select a Project Role...</option>
-                  <option *ngFor="let role of projectRolesList">{{ role.projectRole }}</option>
-                </select>
-              </div>
-            </form>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onProjectRoleConfirm()"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
-              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
