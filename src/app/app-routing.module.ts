@@ -32,7 +32,6 @@ const routes: Routes = [
     path: 'main', component: MainComponent, canActivate: [AuthGuardService], resolve: { loggedInUser: UserResolverService },
     children: [
       { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full' },
-      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent },
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent },

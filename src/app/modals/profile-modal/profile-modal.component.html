@@ -20,9 +20,9 @@
           </div>
           <div class="form-group">
             <label for="formGroupJobSubtitle">Job Subtitle</label>
-            <select class="custom-select" [disabled]="!editToggle" (change)="selectJobTitleSubChangeHandler($event)">
+            <select class="custom-select" [disabled]="!editToggle" (change)="selectJobSubTitleChangeHandler($event)">
               <option selected>Select a Job Subtitle...</option>
-              <option *ngFor="let list of jobTitleSubList" [selected]="list.jobTitleSubName == jobTitleSubName">{{list.jobTitleSubName}}</option>
+              <option *ngFor="let list of jobSubTitleList" [selected]="list.jobSubTitleName == jobSubTitleName">{{list.jobSubTitleName}}</option>
             </select>
           </div>
         </form>

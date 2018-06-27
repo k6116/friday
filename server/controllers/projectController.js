@@ -38,13 +38,13 @@ function indexProjectRoster(req, res) {
       T1.ProjectName as 'projectName',
       T3.FullName as 'teamMembers:name',
       SUM(T2.FTE) as 'teamMembers:fte',
-      T4.JobTitleName + ' - ' + T5.JobTitleSubName as 'teamMembers:jobTitle'
+      T4.JobTitleName + ' - ' + T5.JobSubTitleName as 'teamMembers:jobTitle'
     FROM 
       projects.Projects T1
       LEFT JOIN resources.ProjectEmployees T2 ON T1.ProjectID = T2.ProjectID
       LEFT JOIN accesscontrol.Employees T3 ON T2.EmployeeID = T3.EmployeeID
       LEFT JOIN accesscontrol.JobTitle T4 ON T3.JobTitleID = T4.JobTitleID
-      LEFT JOIN accesscontrol.JobTitleSub T5 ON T3.JobTitleSubID = T5.JobTitleSubID
+      LEFT JOIN accesscontrol.JobSubTitle T5 ON T3.JobSubTitleID = T5.JobSubTitleID
     WHERE 
       T1.ProjectID = ${projectID}
     GROUP BY
@@ -52,7 +52,7 @@ function indexProjectRoster(req, res) {
       T1.ProjectName,
       T1.[Description],
       T3.FullName,
-      (T4.JobTitleName + ' - ' + T5.JobTitleSubName)
+      (T4.JobTitleName + ' - ' + T5.JobSubTitleName)
   `
 
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
@@ -314,52 +314,6 @@ function indexProjectTypeDisplayFields(req, res) {
   });
 }
 
-function indexProjectRoles(req, res) {
-
-  models.ProjectRoles.findAll({
-    attributes: ['id', 'projectRole'],
-  })
-  .then(ProjectRoles => {
-    console.log('WORKED')
-    res.json(ProjectRoles);
-  })
-  .catch(error => {
-    res.status(400).json({
-      title: 'Error (in catch)',
-      error: {message: error}
-    })
-
-  });
-}
-
-function indexUserProjectRoles(req, res) {
-
-  const userID = req.params.userID;
-
-  models.ProjectEmployeeRoles.findAll({
-    where: {employeeID: userID},
-    attributes: ['id', 'projectID', 'employeeID', 'projectRoleID', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'],
-    raw: true,
-    include: [
-      {
-        model: models.ProjectRoles,
-        attributes: ['projectRole'],
-      }
-    ]
-  })
-  .then(indexUserProjectRoles => {
-    console.log('WORKED')
-    res.json(indexUserProjectRoles);
-  })
-  .catch(error => {
-    res.status(400).json({
-      title: 'Error (in catch)',
-      error: {message: error}
-    })
-
-  });
-}
-
 function insertProjectEmployeeRole(req, res) {
 
   // index the project object from the request body
@@ -374,7 +328,8 @@ function insertProjectEmployeeRole(req, res) {
         {
           projectID: employeeProjectRoleData.projectID,
           employeeID: userID,
-          projectRoleID: employeeProjectRoleData.projectRoleID,
+          jobTitleID: employeeProjectRoleData.jobTitleID,
+          jobSubTitleID: employeeProjectRoleData.jobSubTitleID,
           createdBy: userID,
           createdAt: today,
           updatedBy: userID,
@@ -422,7 +377,8 @@ function updateProjectEmployeeRole(req, res) {
         {
           projectID: employeeProjectRoleData.projectID,
           employeeID: userID,
-          projectRoleID: employeeProjectRoleData.projectRoleID,
+          jobTitleID: employeeProjectRoleData.jobTitleID,
+          jobSubTitleID: employeeProjectRoleData.jobSubTitleID,
           createdBy: userID,
           createdAt: today,
           updatedBy: userID,
@@ -562,8 +518,6 @@ module.exports = {
   indexProjectTypesList: indexProjectTypesList,
   indexProjectSchedule: indexProjectSchedule,
   indexProjectTypeDisplayFields: indexProjectTypeDisplayFields,
-  indexProjectRoles: indexProjectRoles,
-  indexUserProjectRoles: indexUserProjectRoles,
   insertProjectEmployeeRole: insertProjectEmployeeRole,
   updateProjectEmployeeRole: updateProjectEmployeeRole,
   destroyProjectEmployeeRole: destroyProjectEmployeeRole,
