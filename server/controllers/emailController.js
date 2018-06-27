@@ -82,7 +82,6 @@ function sendFTEReminder(req, res) {
         cid: 'unique@kreata.ee' //same cid value as in the html img src
       }]
     };
-
    
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
