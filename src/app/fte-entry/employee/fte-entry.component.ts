@@ -438,7 +438,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     if (currentQuarterValid && futureQuartersValid) {
       const fteData = this.FTEFormGroup.value.FTEFormArray;
       const t0 = performance.now();
-      console.log('FTE DATA', fteData)
+
       // call the api data service to send the put request
       this.apiDataFteService.updateUserData(fteData, this.authService.loggedInUser.id)
       .subscribe(
