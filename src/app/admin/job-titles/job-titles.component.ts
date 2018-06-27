@@ -4,12 +4,6 @@ import { TitleCasePipe } from '@angular/common';
 import { FormControl, FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 // import { JobTitleInterface } from './job-title-interface';
 
-
-export interface Titles {
-  name: string;
-  description: string;
-}
-
 @Component({
   selector: 'app-job-titles',
   templateUrl: './job-titles.component.html',
@@ -19,6 +13,7 @@ export interface Titles {
 export class JobTitlesComponent implements OnInit {
   jobTitleList: any;
   jobTitleSubList: any;
+  jobTitleSubListJunction: any;
   numJobTitlesToDisplay: number;
   numJobTitleSubsToDisplay: number;
   jobTitleID: number;
@@ -28,8 +23,6 @@ export class JobTitlesComponent implements OnInit {
   jobTtitleExists: boolean;
   description: any;
   tagMap: any;
-  // FormBuilder
-  titles: FormGroup;
 
   constructor(
     private apiDataJobTitleService: ApiDataJobTitleService,
@@ -38,14 +31,8 @@ export class JobTitlesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Initialize FormBuilder
-    this.titles = this.formBuilder.group({
-      name: ['', [Validators.required]],
-      description: ['']
-    });
-
     this.getJobTitleList();
-
+    this.getJobTitleSubList();
   }
 
   getJobTitleList() {
@@ -62,141 +49,30 @@ export class JobTitlesComponent implements OnInit {
       );
   }
 
-  getJobTitleSubList(id: number, list: any) {
+  getJobTitleSubList() {
+    this.apiDataJobTitleService.getJobTitleSubList()
+    .subscribe(
+      res => {
+        console.log('getJobTitleSubList:', res);
+        this.jobTitleSubList = res;
+        this.numJobTitlesToDisplay = this.jobTitleList.length;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  getJobTitleSubListJunction(id: number, list: any) {
     console.log(list);
     this.jobTitleID = id;
     for (let i = 0; i < this.jobTitleList.length; i++) {
       if (this.jobTitleList[i].id === id) {
-        this.jobTitleSubList = this.jobTitleList[i].jobTitleJunction.jobTitleSubs;
-        this.numJobTitleSubsToDisplay = this.jobTitleSubList.length;
+        this.jobTitleSubListJunction = this.jobTitleList[i].jobTitleJunction.jobTitleSubs;
+        this.numJobTitleSubsToDisplay = this.jobTitleSubListJunction.length;
      }
     }
-
-    console.log('JobTitleSubList:', this.jobTitleSubList);
+    console.log('JobTitleSubList:', this.jobTitleSubListJunction);
   }
-
-  // Create Button on the main site
-  onCreateButtonClick(buttonName: string, filterString: string) {
-    // In order to re-use the same modal for JobTitle and JobSubtitle
-    this.modalTitle = buttonName;
-
-    // populate filterString to CreateJobTitle Modal
-    this.titles.controls['name'].patchValue(filterString);
-
-    console.log(this.modalTitle);
-    console.log(this.titles);
-  }
-
-  onDeleteJobTitleClick() {
-    const jobTitleData = [{jobTitleID: this.jobTitleID}];
-
-    this.apiDataJobTitleService.deletejobTitle(jobTitleData[0])
-    .subscribe(
-      res => {
-        console.log('Job title has been deleted');
-        this.getJobTitleList();
-        // this.deleteSuccess.emit(true);
-        // this.onDeleteSuccess();
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
-  onSubmit({ value, valid }: { value: Titles, valid: boolean }) {
-    console.log(value, valid);
-  }
-
-  onModalOKClick() {
-    this.name = this.titlecasePipe.transform(this.titles.controls['name'].value);
-    this.description = this.titles.controls['description'].value;
-
-    // Check for duplicates
-    // JobTitle
-    switch (this.modalTitle) {
-      case 'Job Title':
-        for (let i = 0; i < this.jobTitleList.length; i++) {
-          const jobTitle = this.jobTitleList[i];
-
-          if (jobTitle.jobTitleName === this.name) {
-            console.log('There is a match.');
-            this.jobTtitleExists = true;
-            break;
-          } else {
-            this.jobTtitleExists = false;
-            console.log('There is no match.');
-            this.insertJobTitle();
-          }
-        }
-        break;
-      // Job Subtitle
-      case 'Job Subtitle':
-      console.log('CASE Job Subtitle', this.jobTitleSubList);
-        for (let i = 0; i <= this.jobTitleSubList.length; i++) {
-          const jobTitle = this.jobTitleSubList[i];
-
-          if (jobTitle.jobTitleSubName === this.name) {
-            console.log('There is a match.');
-            this.jobTtitleExists = true;
-            return { jobTtitleExists: true };
-            // break;
-
-          } else {
-            this.jobTtitleExists = false;
-            console.log('There is no match for: ', this.name);
-            this.insertJobTitleSub();
-            // return null;
-          }
-        }
-        break;
-    }
-  }
-
-  insertJobTitle() {
-    // set the form data that will be sent in the body of the request
-    // const newJobTitle = this.titles.getRawValue();
-    const newJobTitle = ({jobTitleName: this.name, description: this.description});
-    console.log(newJobTitle);
-    this.apiDataJobTitleService.insertJobTitle(newJobTitle)
-    .subscribe(
-      res => {
-        console.log(res);
-        // this.createSuccess.emit(true);
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
-  insertJobTitleSub() {
-    // set the form data that will be sent in the body of the request
-    // const newJobTitle = this.titles.getRawValue();
-    const newJobTitle = ({jobTitleSubName: this.name, description: this.description});
-    console.log('newJobTitle: ', newJobTitle);
-    // this.apiDataService.insertJobTitleSub(newJobTitle)
-    // .subscribe(
-    //   res => {
-    //     console.log(res);
-    //     // this.createSuccess.emit(true);
-    //   },
-    //   err => {
-    //     console.log(err);
-    //   }
-    // );
-  }
-
-  // Creating a Map of Keys DOESN'T WORK
-  // keyMap() {
-  // let i = null;
-  // for (i = 0; this.jobTitleList.length > i; i++) {
-  //   this.tagMap[this.jobTitleList[i].jobTitleName] = this.jobTitleList[i];
-  // }
-  // }
-
-  // hasName() {
-  //   return this.tagMap[this.titles.controls['name'].value];
-  // }
 
 }

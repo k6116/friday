@@ -19,6 +19,12 @@ export class ApiDataJobTitleService {
     .map((response: Response) => response.json());
   }
 
+  getJobTitleSubList() {
+    return this.http.get(`/api/indexJobTitleSub/`)
+    .timeout(this.appDataService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
   updateJobTitle(userID: number, jobTitles: any) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});

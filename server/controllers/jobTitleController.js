@@ -20,9 +20,28 @@ function indexJobTitle(req, res) {
         
     })
 
-    .then(profile => {
+    .then(indexJobTitle => {
         console.log('WORKED!')
-        res.json(profile);
+        res.json(indexJobTitle);
+    })
+    .catch(error => {
+        res.status(400).json({
+            title: 'Error (in catch)',
+            error: {message: error}
+        })
+    })
+}
+
+function indexJobTitleSub(req, res) {
+
+    models.JobTitleSub.findAll({
+        order: [['jobTitleSubName', 'ASC']], 
+        attributes: ['id', 'jobTitleSubName', 'description']        
+    })
+
+    .then(indexJobTitleSub => {
+        console.log('WORKED!')
+        res.json(indexJobTitleSub);
     })
     .catch(error => {
         res.status(400).json({
@@ -190,6 +209,7 @@ function insertJobTitleSub(req, res) {
 
 module.exports = {
     indexJobTitle: indexJobTitle,
+    indexJobTitleSub: indexJobTitleSub,
     updateJobTitle: updateJobTitle,
     insertJobTitle: insertJobTitle,
     deleteJobTitle: deleteJobTitle,
