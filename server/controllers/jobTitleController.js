@@ -10,11 +10,11 @@ function indexJobTitle(req, res) {
         order: [['jobTitleName', 'ASC']], 
         attributes: ['id', 'jobTitleName', 'description'],
         include: [{
-            model: models.JobTitleJunction,
+            model: models.JobTitleMap,
             attributes: ['jobTitleID'],
             include: [{
-                model: models.JobTitleSub,
-                attributes: ['id', 'jobTitleSubName'],
+                model: models.JobSubTitle,
+                attributes: ['id', 'jobSubTitleName'],
             }]
         }],
         
@@ -62,7 +62,7 @@ function updateJobTitle(req,res) {
             .update(
                 {
                     jobTitleID: jobTitles.newJobTitleID,
-                    jobTitleSubID: jobTitles.newJobTitleSubID
+                    jobSubTitleID: jobTitles.newJobSubTitleID
                 },
                 {
                     where: {id: userID},

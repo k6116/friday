@@ -72,18 +72,6 @@ export class ApiDataProjectService {
       .map((response: Response) => response.json());
   }
 
-  getProjectRoles() {
-    return this.http.get(`/api/indexProjectRoles/`)
-      .timeout(this.appDataService.apiDataTimeout)
-      .map((response: Response) => response.json());
-  }
-
-  getUserProjectRoles(userID: number) {
-    return this.http.get(`/api/indexUserProjectRoles/${userID}`)
-      .timeout(this.appDataService.apiDataTimeout)
-      .map((response: Response) => response.json());
-  }
-
   insertProjectEmployeeRole(employeeProjectRoleData: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
