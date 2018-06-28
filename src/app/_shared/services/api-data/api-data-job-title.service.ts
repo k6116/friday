@@ -19,8 +19,8 @@ export class ApiDataJobTitleService {
     .map((response: Response) => response.json());
   }
 
-  getJobTitleSubList() {
-    return this.http.get(`/api/indexJobTitleSub/`)
+  getJobSubTitleList() {
+    return this.http.get(`/api/indexJobSubTitle/`)
     .timeout(this.appDataService.apiDataTimeout)
     .map((response: Response) => response.json());
   }

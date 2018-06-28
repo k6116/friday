@@ -52,12 +52,12 @@
             </div>
             <br/>
             <div class="list-group"> 
-              <ng-container *ngIf="(jobTitleSubList | filter : titles.value.name : 'jobTitleSubName':{limitTo: numJobTitlesToDisplay, matchFuzzy: true}) as filteredJobTitleSub">
+              <ng-container *ngIf="(jobTitleSubList | filter : titles.value.name : 'jobSubTitleName':{limitTo: numJobTitlesToDisplay, matchFuzzy: true}) as filteredJobTitleSub">
                 <div *ngFor="let sublist of filteredJobTitleSub">
                   <button type="button" class="list-group-item list-group-item-action">
                     <div class="row">
                       <div class="col-10">
-                        {{sublist.jobTitleSubName}}<span *ngIf="sublist.description"> - {{sublist.description}}</span>
+                        {{sublist.jobSubTitleName}}<span *ngIf="sublist.description"> - {{sublist.description}}</span>
                       </div>
                       <div class="col-1">
                         <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#jobTitleEditModal"></i>

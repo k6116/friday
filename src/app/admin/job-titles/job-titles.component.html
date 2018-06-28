@@ -4,6 +4,7 @@
     <!-- Job Title Section -->
     <div class="col-sm">
       <h2>Job Titles</h2>
+        <!-- Jobtitle Fuzzy Search Bar -->
         <div class="input-group">
           <input type="text"  class="form-control" name="jobTitleName" [(ngModel)]="jobTitleName" placeholder="Search Job Title">
           <div class="input-group-append">
@@ -13,10 +14,11 @@
           </div>
         </div>
         <br/>
+        <!-- List of all Jobtitles -->
         <div class="list-group">
           <ng-container *ngIf="(jobTitleList | filter : jobTitleName : 'jobTitleName':{limitTo: numJobTitlesToDisplay, matchFuzzy: true}) as filteredJobTitle">
             <div *ngFor="let list of filteredJobTitle">
-              <button type="button" class="list-group-item list-group-item-action" (click)="getJobTitleSubListJunction(list.id, jobTitleList)">
+              <button type="button" class="list-group-item list-group-item-action" (click)="getJobSubTitleListMap(list.id, jobTitleList)">
                 <div class="row">
                   <div class="col-10">
                     {{ list.jobTitleName }}<span *ngIf="list.description"> - {{list.description}}</span>
@@ -38,30 +40,58 @@
 
     <!-- Job Subtitle Section -->
     <div class="col-sm">
-        <h2>Job Subtitles</h2>
-        <div class="input-group">
-          <input type="text" class="form-control" name="jobTitleSubName" placeholder="Search Job Subtitle">
-          <div class="input-group-append">
-            <button #btnJobTitleSub name="Job Subtitle" class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="modal" data-target="#createJobTitleModal" (click)="onCreateButtonClick(btnJobTitleSub.name, titles.value.name)">
-              <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
-            </button>
-          </div>
+      <h2>Job Subtitles</h2>
+      <!-- Job Subtitle Fuzzy Search Bar -->
+      <div class="input-group">
+        <input type="text"  class="form-control" name="jobSubTitleName" [(ngModel)]="jobSubTitleName" placeholder="Search Job Subtitle">
+        <div class="input-group-append">
+          <button #btnJobSubTitle name="Job Subtitle" class="btn btn-primary btn-fte-toolbar" style="display: block" disabled>
+            <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
+          </button>
         </div>
-        <br/>
+      </div>
+      <br/>
+      <!-- List of Subtitles with checkbox: Show only when clicked on a specific job title -->
+      <div class="list-group" *ngIf="jobSubTitleListMap" >
+        <ng-container *ngIf="(jobSubTitleList | filter : jobSubTitleName : 'jobSubTitleName':{limitTo: numJobTitlesToDisplay, matchFuzzy: true}) as filteredJobSubTitle">
+          <!-- TO-DO CHAI: Add filtered list later with *ngFor="let sublist of filteredJobSubTitle" -->
+          <div *ngFor="let sublist of jobSubTitleListMap">
+          <button type="button" class="list-group-item list-group-item-action">
+            <div class="row">
+              <!-- Checkboxes -->
+              <div class="col-1">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <input type="checkbox" [checked]="sublist.checked">
+                  </div>
+                </div>
+              </div>
+              <!-- List of Names -->
+              <div class="col-11">
+                {{sublist.jobSubTitleName}}
+              </div>
+            </div>
+          </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- <div class="col-sm">
         <div class="list-group"> 
-          <ng-container *ngIf="(jobTitleSubList | filter : jobTitleSubName : 'jobTitleSubName':{limitTo: numJobTitlesToDisplay, matchFuzzy: true}) as filteredJobTitleSub">
-            <div *ngFor="let sublist of filteredJobTitleSub">
+          <ng-container *ngIf="(jobSubTitleList | filter : jobSubTitleName : 'jobSubTitleName':{limitTo: numJobSubTitlesToDisplay, matchFuzzy: true}) as filteredJobSubTitle">
+            <div *ngFor="let sublist of filteredJobSubTitle">
                 <button type="button" class="list-group-item list-group-item-action">
                   <div class="row">
                     <div class="col-1">
                       <div class="input-group-prepend">
                         <div class="input-group-text">
-                          <input type="checkbox" [checked]="sublist.jobTitleSubName==jobTitleSubListJunction.jobTitleSubName" aria-label="Checkbox for following text input">
+                          <input type="checkbox" *ngIf="jobSubTitleListMap" [checked]="sublist.jobSubTitleName==jobSubTitleListMap.jobSubTitleName" aria-label="Checkbox for following text input">
                         </div>
                       </div>
                     </div>
                     <div class="col-9">
-                      {{sublist.jobTitleSubName}}<span *ngIf="sublist.description"> - {{sublist.description}}</span>
+                      {{sublist.jobSubTitleName}}<span *ngIf="sublist.description"> - {{sublist.description}}</span>
                     </div>
                     <div class="col-1">
                       <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#jobTitleEditModal"></i>
@@ -74,7 +104,7 @@
             </div>
           </ng-container>
         </div>
-    </div>
+    </div> -->
   
   </div>
 </div>

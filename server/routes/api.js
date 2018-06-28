@@ -64,11 +64,11 @@ router.post('/updateProjectPermissionRequest/:userID', controllers.permission.up
 
 // JOB TITLE CONTROLLER
 router.get('/indexJobTitle', controllers.jobTitle.indexJobTitle);
-router.get('/indexJobTitleSub', controllers.jobTitle.indexJobTitleSub);
+router.get('/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
 router.post('/updateJobTitle/:userID', controllers.jobTitle.updateJobTitle);
 router.post('/insertJobTitle', controllers.jobTitle.insertJobTitle);
 router.post('/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
-router.post('/insertJobTitleSub', controllers.jobTitle.insertJobTitleSub);
+router.post('/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
 
 // REPORTS PROJECT CONTROLLER
 router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);

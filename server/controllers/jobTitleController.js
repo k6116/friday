@@ -32,16 +32,16 @@ function indexJobTitle(req, res) {
     })
 }
 
-function indexJobTitleSub(req, res) {
+function indexJobSubTitle(req, res) {
 
-    models.JobTitleSub.findAll({
-        order: [['jobTitleSubName', 'ASC']], 
-        attributes: ['id', 'jobTitleSubName', 'description']        
+    models.JobSubTitle.findAll({
+        order: [['jobSubTitleName', 'ASC']], 
+        attributes: ['id', 'jobSubTitleName', 'description']        
     })
 
-    .then(indexJobTitleSub => {
+    .then(indexJobSubTitle => {
         console.log('WORKED!')
-        res.json(indexJobTitleSub);
+        res.json(indexJobSubTitle);
     })
     .catch(error => {
         res.status(400).json({
@@ -168,17 +168,18 @@ function deleteJobTitle(req, res) {
 	})
 }
 
-function insertJobTitleSub(req, res) {
+function insertJobSubTitle(req, res) {
 
 	// get the project object from the request body
 	const jobTitleData = req.body;
 
 	return sequelize.transaction((t) => {
 
-		return models.JobTitleSub
+		return models.JobSubTitle
 			.create(
 				{
-					jobTitleSubName: jobTitleData.jobTitleName,
+                    // TO-DO CHAI: What is the naming?
+					jobSubTitleName: jobTitleData.jobTitleName,
 					description: jobTitleData.description,
 				},
 				{
@@ -192,7 +193,7 @@ function insertJobTitleSub(req, res) {
 	}).then(() => {
 
 		res.json({
-			message: `The job title '${jobTitleData.jobTitleSubName}' has been added successfully`,
+			message: `The job title '${jobTitleData.jobSubTitleName}' has been added successfully`,
 		})
 
 	}).catch(error => {
@@ -209,9 +210,9 @@ function insertJobTitleSub(req, res) {
 
 module.exports = {
     indexJobTitle: indexJobTitle,
-    indexJobTitleSub: indexJobTitleSub,
+    indexJobSubTitle: indexJobSubTitle,
     updateJobTitle: updateJobTitle,
     insertJobTitle: insertJobTitle,
     deleteJobTitle: deleteJobTitle,
-    insertJobTitleSub: insertJobTitleSub    
+    insertJobSubTitle: insertJobSubTitle    
 }

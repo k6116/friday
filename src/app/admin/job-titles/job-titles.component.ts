@@ -12,10 +12,10 @@ import { FormControl, FormGroup, Validators, FormBuilder, AbstractControl } from
 
 export class JobTitlesComponent implements OnInit {
   jobTitleList: any;
-  jobTitleSubList: any;
-  jobTitleSubListJunction: any;
+  jobSubTitleList: any;
+  jobSubTitleListMap: any;
   numJobTitlesToDisplay: number;
-  numJobTitleSubsToDisplay: number;
+  numJobSubTitlesToDisplay: number;
   jobTitleID: number;
   name: string;
   modalTitle: string;
@@ -32,7 +32,7 @@ export class JobTitlesComponent implements OnInit {
 
   ngOnInit() {
     this.getJobTitleList();
-    this.getJobTitleSubList();
+    this.getJobSubTitleList();
   }
 
   getJobTitleList() {
@@ -49,12 +49,12 @@ export class JobTitlesComponent implements OnInit {
       );
   }
 
-  getJobTitleSubList() {
-    this.apiDataJobTitleService.getJobTitleSubList()
+  getJobSubTitleList() {
+    this.apiDataJobTitleService.getJobSubTitleList()
     .subscribe(
       res => {
-        console.log('getJobTitleSubList:', res);
-        this.jobTitleSubList = res;
+        console.log('getJobSubTitleList:', res);
+        this.jobSubTitleList = res;
         this.numJobTitlesToDisplay = this.jobTitleList.length;
       },
       err => {
@@ -63,16 +63,22 @@ export class JobTitlesComponent implements OnInit {
     );
   }
 
-  getJobTitleSubListJunction(id: number, list: any) {
-    console.log(list);
+  getJobSubTitleListMap(id: number, list: any) {
+    console.log('List: ', list);
     this.jobTitleID = id;
+    this.jobSubTitleListMap = [
+      {id: this.jobSubTitleList.id},
+      {jobSubTitleName: this.jobSubTitleList.jobSubTitleName},
+      {description: this.jobSubTitleList.description},
+      {checked: false}];
     for (let i = 0; i < this.jobTitleList.length; i++) {
       if (this.jobTitleList[i].id === id) {
-        this.jobTitleSubListJunction = this.jobTitleList[i].jobTitleJunction.jobTitleSubs;
-        this.numJobTitleSubsToDisplay = this.jobTitleSubListJunction.length;
+        this.jobSubTitleListMap[i].checked = true;
+        // this.jobSubTitleListMap = this.jobTitleList[i].jobTitleMap.jobSubTitles;
+        this.numJobSubTitlesToDisplay = this.jobSubTitleListMap.length;
      }
     }
-    console.log('JobTitleSubList:', this.jobTitleSubListJunction);
+    console.log('jobSubTitleListMap:', this.jobSubTitleListMap);
   }
 
 }

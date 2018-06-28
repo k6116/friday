@@ -136,7 +136,7 @@ export class JobTitlesComponent implements OnInit {
         for (let i = 0; i <= this.jobTitleSubList.length; i++) {
           const jobTitle = this.jobTitleSubList[i];
 
-          if (jobTitle.jobTitleSubName === this.name) {
+          if (jobTitle.jobSubTitleName === this.name) {
             console.log('There is a match.');
             this.jobTtitleExists = true;
             return { jobTtitleExists: true };
@@ -173,7 +173,7 @@ export class JobTitlesComponent implements OnInit {
   insertJobTitleSub() {
     // set the form data that will be sent in the body of the request
     // const newJobTitle = this.titles.getRawValue();
-    const newJobTitle = ({jobTitleSubName: this.name, description: this.description});
+    const newJobTitle = ({jobSubTitleName: this.name, description: this.description});
     console.log('newJobTitle: ', newJobTitle);
     // this.apiDataService.insertJobTitleSub(newJobTitle)
     // .subscribe(
