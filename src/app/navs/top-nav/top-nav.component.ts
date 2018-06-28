@@ -118,8 +118,4 @@ export class TopNavComponent implements OnInit {
     this.appDataService.nestedOrgDataRequested = undefined;
   }
 
-  awef() {
-    console.log('awef works');
-  }
-
 }
