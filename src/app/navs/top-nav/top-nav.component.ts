@@ -103,7 +103,7 @@ export class TopNavComponent implements OnInit {
   onProfileButtonClick() {
     this.showDropDown = false;
     this.showProfileModal = true;
-    this.profileModal.getJobTitleList();
+    this.profileModal.ngOnInit();
   }
 
 
@@ -116,10 +116,6 @@ export class TopNavComponent implements OnInit {
 
   clearCacheOnLogout() {
     this.appDataService.nestedOrgDataRequested = undefined;
-  }
-
-  awef() {
-    console.log('awef works');
   }
 
 }
