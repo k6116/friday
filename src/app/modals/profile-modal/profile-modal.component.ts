@@ -22,6 +22,7 @@ import { AuthService } from '../../_shared/services/auth.service';
     editToggle: boolean;
     newJobTitleData: any;
     newJobTitleID: number;
+    subTitleEmpty: boolean;
 
     constructor(
         private apiDataJobTitleService: ApiDataJobTitleService,
@@ -34,6 +35,7 @@ import { AuthService } from '../../_shared/services/auth.service';
 
       this.editToggle = false;
       this.getUserProfile();
+      this.getJobTitleList();
     }
 
     getUserProfile() {
@@ -101,6 +103,10 @@ import { AuthService } from '../../_shared/services/auth.service';
         }
       }
       console.log('My Job Subtitle: ' + this.jobSubTitleName);
+
+      if (this.jobSubTitleList.length === 0) {
+        this.subTitleEmpty = true;
+      }
     }
 
     selectJobSubTitleChangeHandler (event: any) {
