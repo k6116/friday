@@ -16,6 +16,7 @@ const transporter = nodemailer.createTransport({
 
 const env = process.env.ENVIRONMENT;
 const templatePath = path.join(__dirname, '/..', 'email/templates');
+const logoPath = path.join(__dirname,'/../..','dist/assets')
 const templates = new EmailTemplates({
   root: templatePath
 });
@@ -77,11 +78,10 @@ function sendFTEReminder(req, res) {
       html: html.replace('{monthRange}',monthRange).replace('{quarter}',quarter).replace('{year}',moment().year().toString()),
       attachments: [{
         filename: 'JarvisLogo.png',
-        path: templatePath + '../../src/assets/JarvisLogo.png',
+        path: logoPath + '/JarvisLogo.png',
         cid: 'unique@kreata.ee' //same cid value as in the html img src
       }]
     };
-
    
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -142,7 +142,7 @@ function sendRequestProject(req, res) {
           html: html.replace('{owner}', userOwner.fullName).replace('{requestor}', userRequestor.fullName).replace('{project}', projectName),
           attachments: [{
             filename: 'JarvisLogo.png',
-            path: templatePath + '../../src/assets/JarvisLogo.png',
+            path: logoPath + '/JarvisLogo.png',
             cid: 'unique@kreata.ee' //same cid value as in the html img src
           }]
         };
@@ -227,7 +227,7 @@ function sendProjectApproval(req, res) {
           html: html.replace('{requestor}', userRequestor.fullName).replace('{project}', projectName).replace('{comment}', comment),
           attachments: [{
             filename: 'JarvisLogo.png',
-            path: templatePath + '../../src/assets/JarvisLogo.png',
+            path: logoPath + '/JarvisLogo.png',
             cid: 'unique@kreata.ee' //same cid value as in the html img src
           }]
         };

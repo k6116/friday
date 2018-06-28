@@ -11,47 +11,47 @@ const JobTitle = sequelize.define('jobTitle',
     },
 
     {
-        schema: 'accesscontrol',
+        schema: 'resources',
         tableName: 'JobTitle',
         timestamps: false
       }
     );
 
-const JobTitleSub = sequelize.define('jobTitleSub',
+const JobSubTitle = sequelize.define('jobSubTitle',
     {
-        id: { type: Sequelize.INTEGER, field: 'JobTitleSubID', primaryKey: true, autoIncrement: true },
-        jobTitleSubName: { type: Sequelize.STRING, field: 'JobTitleSubName' },
+        id: { type: Sequelize.INTEGER, field: 'JobSubTitleID', primaryKey: true, autoIncrement: true },
+        jobSubTitleName: { type: Sequelize.STRING, field: 'JobSubTitleName' },
         description: { type: Sequelize.STRING, field: 'Description' },
     },
     {
-        schema: 'accesscontrol',
-        tableName: 'JobTitleSub',
+        schema: 'resources',
+        tableName: 'JobSubTitle',
         timestamps: false
     }
 )
     
-const JobTitleJunction = sequelize.define( "jobTitleJunction",
+const JobTitleMap = sequelize.define( "jobTitleMap",
     {
         jobTitleID: { type: Sequelize.STRING, field: 'JobTitleID' },
-        jobTitleSubID: { type: Sequelize.STRING, field: 'JobTitleSubID' },
+        jobSubTitleID: { type: Sequelize.STRING, field: 'JobSubTitleID' },
     },
     {
-        schema: 'accesscontrol',
-        tableName: 'JobTitleJunction',
+        schema: 'resources',
+        tableName: 'JobTitleMap',
         timestamps: false
     }
 )
 
 // For junction tables without primary key
-JobTitleJunction.removeAttribute('id');
+JobTitleMap.removeAttribute('id');
 
-JobTitle.hasOne(JobTitleJunction, {foreignKey: 'JobTitleID', sourceKey: 'JobTitleID' });
-JobTitleJunction.hasMany(JobTitleSub, {foreignKey: 'JobTitleSubID', sourceKey: 'JobTitleSubID' });
+JobTitle.hasOne(JobTitleMap, {foreignKey: 'JobTitleID', sourceKey: 'JobTitleID' });
+JobTitleMap.hasMany(JobSubTitle, {foreignKey: 'JobSubTitleID', sourceKey: 'JobSubTitleID' });
 
 module.exports = {
     // Employees: Employees,
     JobTitle: JobTitle,
-    JobTitleSub: JobTitleSub,
-    JobTitleJunction: JobTitleJunction
+    JobSubTitle: JobSubTitle,
+    JobTitleMap: JobTitleMap
 }
     

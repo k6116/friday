@@ -77,19 +77,6 @@ const ProjectTypeDisplayFields = sequelize.define('projectTypeDisplayFields',
   }
 );
 
-const ProjectRoles = sequelize.define('projectRoles',
-  {
-    id: { type: Sequelize.INTEGER, field: 'ProjectRoleID', primaryKey: true, autoIncrement: true },
-    projectRole: { type: Sequelize.STRING, field: 'ProjectRole' },
-    description: { type: Sequelize.STRING, field: 'Description' }
-  },
-  {
-    schema: 'resources',
-    tableName: 'ProjectRoles',
-    timestamps: false
-  }
-);
-
 ProjectTypes.hasMany(Projects, {foreignKey: 'id'});
 Projects.belongsTo(ProjectTypes, {foreignKey: 'projectTypeID'});
 
@@ -105,6 +92,5 @@ module.exports = {
   ProjectTypes: ProjectTypes,
   ProjectPermissionRequests: ProjectPermissionRequests,
   ProjectTypeDisplayFields: ProjectTypeDisplayFields,
-  ProjectRoles: ProjectRoles,
 }
 

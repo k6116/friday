@@ -232,13 +232,13 @@ function getProjectEmployeeFTEList(req, res) {
 
   const sql = `
     SELECT
-      P.ProjectName as projectName, E.FullName as fullName, JT.JobTitleName as jobTitleName, JTS.JobTitleSubName as jobTitleSubName, PE.FTE as fte
+      P.ProjectName as projectName, E.FullName as fullName, JT.JobTitleName as jobTitleName, JTS.JobSubTitleName as jobSubTitleName, PE.FTE as fte
     FROM
       resources.ProjectEmployees PE
       LEFT JOIN projects.Projects P ON PE.ProjectID = P.ProjectID
       LEFT JOIN accesscontrol.Employees E ON PE.EmployeeID = E.EmployeeID
       LEFT JOIN accesscontrol.JobTitle JT ON E.JobTitleID = JT.JobTitleID
-      LEFT JOIN accesscontrol.JobTitleSub JTS ON E.JobTitleSubID = JTS.JobTitleSubID
+      LEFT JOIN accesscontrol.JobSubTitle JTS ON E.JobSubTitleID = JTS.JobSubTitleID
     WHERE
       P.ProjectID = '${projectID}' and FiscalDate = '${fiscalDate}'
     `

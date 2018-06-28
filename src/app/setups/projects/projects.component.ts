@@ -61,7 +61,6 @@ export class ProjectsSetupsComponent implements OnInit {
   ngOnInit() {
     this.getUserProjectList();
     this.getProjectPermissionRequestsList();
-    this.getProjectRoles();
     this.getProjectTypeDisplayFields();
   }
 
@@ -277,22 +276,9 @@ export class ProjectsSetupsComponent implements OnInit {
       res => {
         // console.log('project schedule:', res);
         this.projectSchedule = res;
-        for (let i = 0; i < this.projectSchedule.length; i++) {
-          this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
-        }
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
-  getProjectRoles() {
-    this.apiDataProjectService.getProjectRoles()
-    .subscribe(
-      res => {
-        // console.log('Project Roles Retrieved');
-        this.projectRolesList = res;
+        // for (let i = 0; i < this.projectSchedule.length; i++) {
+        //   this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
+        // }
       },
       err => {
         console.log(err);

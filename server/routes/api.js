@@ -29,10 +29,10 @@ router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/destroyProject/:userID', controllers.project.destroyProject);
 router.get('/indexProjectSchedule/:projectName', controllers.project.indexProjectSchedule);
 router.get('/indexProjectTypeDisplayFields/', controllers.project.indexProjectTypeDisplayFields);
-router.get('/indexProjectRoles/', controllers.project.indexProjectRoles);
-router.get('/indexUserProjectRoles/:userID', controllers.project.indexUserProjectRoles);
 router.post('/insertProjectEmployeeRole/:userID', controllers.project.insertProjectEmployeeRole);
 router.post('/updateProjectEmployeeRole/:userID', controllers.project.updateProjectEmployeeRole);
+router.post('/destroyProjectEmployeeRole/:userID', controllers.project.destroyProjectEmployeeRole);
+router.post('/insertBulkProjectEmployeeRole/:userID', controllers.project.insertBulkProjectEmployeeRole);
 
 // META DATA CONTROLLER
 router.get('/indexPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.metaData.indexPrimaryKeyRefs);

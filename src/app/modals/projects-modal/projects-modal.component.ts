@@ -75,10 +75,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   projectPermissionSubmittedList: any;
   projectPermissionDeniedList: any;
   projectData: any;
-  projectRolesList: any;
   clickOutsideException: string;
   selProject: any;
-  selProjectRole: any;
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
@@ -140,7 +138,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     this.getUserPLMData(this.userEmail);
     this.getPublicProjectTypes();
-    this.getProjectRoles();
 
     // when the project modal is initialized, if we are in tutorial part2, launch the tutorial
     if (this.fteTutorialState === 2) {
@@ -183,28 +180,12 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   onSelectedProject(selProject: any) {
-    this.clickOutsideException = 'div#projectRoleModal';
+
     this.selProject = selProject;
-    // if user selects project when in the tutorial, end this part and increment the state counter
-    if (this.fteTutorialState === 2) {
-      this.fteTutorialState++;
-      introJs().exit();
-    }
-  }
-
-  selectProjectRole(event: any) {
-    this.selProjectRole = event.target.value;
-  }
-
-  onProjectRoleConfirm() {
 
     // add project role fields to selProject object to pass back to fte-entry component
-    this.selProject.ProjectRole = this.selProjectRole;
-    for (let i = 0; i < this.projectRolesList.length; i++) {
-      if (this.projectRolesList[i].projectRole === this.selProjectRole) {
-        this.selProject.ProjectRoleID = this.projectRolesList[i].id;
-      }
-    }
+    this.selProject.JobTitleID = this.authService.loggedInUser.jobTitleID;
+    this.selProject.JobSubTitleID = this.authService.loggedInUser.jobSubTitleID;
 
     console.log('Selected Project Id:');
     console.log(this.selProject);
@@ -218,14 +199,19 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.outerDivState = 'out';
     this.innerDivState = 'out';
 
-    // if user selects a project while we're in the tutorial, end step2 and send the parent component the current state
-    if (this.fteTutorialState === 3) {
-      window.setTimeout( () => {
-        // setting timeout to allow parent component some time to render
-        this.tutorialStateEmitter.emit(this.fteTutorialState);
-      }, 500);
+    // if user selects project when in the tutorial, end this part and increment the state counter
+    if (this.fteTutorialState === 2) {
+      this.fteTutorialState++;
+      introJs().exit();
     }
 
+    //  // if user selects a project while we're in the tutorial, end step2 and send the parent component the current state
+    //  if (this.fteTutorialState === 3) {
+    //   window.setTimeout( () => {
+    //     // setting timeout to allow parent component some time to render
+    //     this.tutorialStateEmitter.emit(this.fteTutorialState);
+    //   }, 500);
+    // }
   }
 
   onPaginationLinkClick(link) {
@@ -367,8 +353,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     let firstRequest: boolean;
     let message: string;
 
-    // this.clickOutsideException = 'div#confirm-modal';
-
     // create requestData object for passing into controller
     const requestData = {
       requestID: null,
@@ -381,13 +365,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       if (this.projectPermissionList[i].projectID === project.ProjectID) {
         requestData.requestID = this.projectPermissionList[i].id;
       }
-    }
-    if (requestData.requestID === null) {
-      firstRequest = true;
-      message = `Do you want to request access to the project "${project.projectName}"?`;
-    } else {
-      firstRequest = false;
-      message = `Do you want to update the request status to ${requestData.requestStatus}?`;
     }
 
     // depending on action, update requestData elements
@@ -403,6 +380,15 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Resubmitting request access';
       confirmButton = 'Re-Request Access';
+    }
+
+    // check if this is the first time the request is being made, then insert the row, otherwise update the row
+    if (requestData.requestID === null) {
+      firstRequest = true;
+      message = `Do you want to request access to the project "${project.ProjectName}"?`;
+    } else {
+      firstRequest = false;
+      message = `Do you want to update the request status to ${requestData.requestStatus}?`;
     }
 
     // emit confirmation modal after they click request button
@@ -716,19 +702,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         // console.log(this.projectPermissionSubmittedList);
         // console.log('Denied List');
         // console.log(this.projectPermissionDeniedList);
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
-  getProjectRoles() {
-    this.apiDataProjectService.getProjectRoles()
-    .subscribe(
-      res => {
-        console.log('Project Roles Retrieved');
-        this.projectRolesList = res;
       },
       err => {
         console.log(err);

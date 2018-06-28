@@ -4,10 +4,12 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <img src="https://mdbootstrap.com/img/Photos/Avatars/img%20%281%29.jpg" alt="avatar" class="rounded-circle img-responsive">
+        <!-- <img src="https://mdbootstrap.com/img/Photos/Avatars/img%20%281%29.jpg" alt="avatar" class="rounded-circle img-responsive"> -->
+        <!-- <img src="../../../assets/jarvislogo_login.png" alt="avatar" class="rounded-circle img-responsive"> -->
+        <h4 class="mt-1 mb-2 text-center">{{ userName }}</h4>
       </div>
 
-      <h4 class="mt-1 mb-2 text-center">{{ userName }}</h4>
+      <!-- <h4 class="mt-1 mb-2 text-center">{{ userName }}</h4> -->
       
       <div class="modal-body">
         <form>
@@ -20,17 +22,17 @@
           </div>
           <div class="form-group">
             <label for="formGroupJobSubtitle">Job Subtitle</label>
-            <select class="custom-select" [disabled]="!editToggle" (change)="selectJobTitleSubChangeHandler($event)">
+            <select class="custom-select" [disabled]="!editToggle || subTitleEmpty" (change)="selectJobSubTitleChangeHandler($event)">
               <option selected>Select a Job Subtitle...</option>
-              <option *ngFor="let list of jobTitleSubList" [selected]="list.jobTitleSubName == jobTitleSubName">{{list.jobTitleSubName}}</option>
+              <option *ngFor="let list of jobSubTitleList" [selected]="list.jobSubTitleName == jobSubTitleName">{{list.jobSubTitleName}}</option>
             </select>
           </div>
         </form>
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-light" (click)="onEditButtonClick()">Edit</button>
-        <button type="button" class="btn btn-light" (click)="onUpdateButtonClick()" >Update</button>
+        <button type="button" class="btn btn-light" (click)="onEditButtonClick()" [disabled]="editToggle">Edit</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal" (click)="onUpdateButtonClick()" >Update</button>
       </div>
   
     </div>
