@@ -23,11 +23,15 @@
 .app-logo-cont {
   float: left;
   line-height: 65px;
+  height: 65px;
+  width: 130px;
+  overflow: hidden;
 }
 
 .app-logo-img {
-  height: 50px;
-  width: 140px;
+  height: 84px;
+  width: 200px;
+  margin: -35px 0 -32px -28px;
 }
 
 .app-title-cont {
@@ -53,7 +57,7 @@
   padding-left: 5px;
   line-height: 65px;
   position: relative;
-  top: 9px;
+  top: 14px;
 }
 
 
