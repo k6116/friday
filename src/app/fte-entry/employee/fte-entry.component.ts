@@ -812,7 +812,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
           deleteResponse => {
             // only delete from the projectemployeerole table if user is deleting a non-newlyAdded project
-            if (toBeDeleted.newlyAdded) {
+            if (!toBeDeleted.newlyAdded) {
               this.deleteProjectEmployeeRole(toBeDeleted);
             }
             this.fteProjectVisible.splice(index, 1);
