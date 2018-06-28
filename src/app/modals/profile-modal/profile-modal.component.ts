@@ -22,6 +22,7 @@ import { AuthService } from '../../_shared/services/auth.service';
     editToggle: boolean;
     newJobTitleData: any;
     newJobTitleID: number;
+    subTitleEmpty: boolean;
 
     constructor(
         private apiDataJobTitleService: ApiDataJobTitleService,
@@ -29,9 +30,6 @@ import { AuthService } from '../../_shared/services/auth.service';
     ) {}
 
     ngOnInit() {
-
-      console.log('profile modal has been initialized');
-
       this.editToggle = false;
       this.getUserProfile();
     }
@@ -44,11 +42,11 @@ import { AuthService } from '../../_shared/services/auth.service';
       // Must be assigned here so on profile modal popup the most recent values show up in the comboboxes
       this.jobTitleID = this.loggedInUser.jobTitleID;
       this.jobSubTitleID = this.loggedInUser.jobSubTitleID;
-
     }
 
-    // will be called on profile button click in top-nav
+    // called on profile button click on top-nav
     getJobTitleList() {
+      this.editToggle = false;
       this.apiDataJobTitleService.getJobTitleList()
         .subscribe(
           // pulls JobTitleID, JobTitleName and  all subtitles from Jarvis Employees table
@@ -101,6 +99,13 @@ import { AuthService } from '../../_shared/services/auth.service';
         }
       }
       console.log('My Job Subtitle: ' + this.jobSubTitleName);
+
+      // Disable the subtitle option if there's no subtitles
+      if (this.jobSubTitleList.length === 0) {
+        this.subTitleEmpty = true;
+      } else {
+        this.subTitleEmpty = false;
+      }
     }
 
     selectJobSubTitleChangeHandler (event: any) {
