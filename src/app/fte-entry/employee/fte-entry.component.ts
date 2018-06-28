@@ -8,13 +8,14 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
 import { AuthService } from '../../_shared/services/auth.service';
-import { ApiDataProjectService, ApiDataFteService } from '../../_shared/services/api-data/_index';
+import { ApiDataProjectService, ApiDataFteService, ApiDataJobTitleService } from '../../_shared/services/api-data/_index';
 import { AppDataService } from '../../_shared/services/app-data.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ComponentCanDeactivate } from '../../_shared/guards/unsaved-changes.guard';
 import { UserFTEs, AllocationsArray} from './fte-model';
 import { utils, write, WorkBook } from 'xlsx';
 import { saveAs } from 'file-saver';
+import { JAN } from '@angular/material';
 
 const moment = require('moment');
 require('moment-fquarter');
@@ -73,6 +74,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   showProjectsModal: boolean;
   projectList: any;
   timer: any;
+  jobTitleList: any;
 
   fteTutorialState = 0; // for keeping track of which part of the tutorial we're in, and passing to child component
 
@@ -81,6 +83,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     private authService: AuthService,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataFteService: ApiDataFteService,
+    private apiDataJobTitleService: ApiDataJobTitleService,
     private appDataService: AppDataService,
     private toolsService: ToolsService,
     private decimalPipe: DecimalPipe,
@@ -138,7 +141,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
    this.buildMonthsArray();
    this.fteFormChangeListener();
-
+   this.getJobTitleList();
 
   }
 
@@ -241,9 +244,21 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       newProject.userID = this.authService.loggedInUser.id;
       newProject.projectID = selectedProject.ProjectID;
       newProject.projectName = selectedProject.ProjectName;
-      // newProject.projectRole = selectedProject.ProjectRole;
       newProject.jobTitleID = selectedProject.JobTitleID;
       newProject.jobSubTitleID = selectedProject.JobSubTitleID;
+      newProject.newlyAdded = true;
+
+      // map the jobTitle and jobSubTitle IDs
+      for (let i = 0; i < this.jobTitleList.length; i++) {
+        for (let j = 0; j < this.jobTitleList[i].jobTitleMap.jobSubTitles.length; j++) {
+          if (this.jobTitleList[i].id === selectedProject.JobTitleID) {
+            if (this.jobTitleList[i].jobTitleMap.jobSubTitles[j].id === selectedProject.JobSubTitleID) {
+              newProject.jobTitle = this.jobTitleList[i].jobTitleName;
+              newProject.jobSubTitle = this.jobTitleList[i].jobTitleMap.jobSubTitles[j].jobSubTitleName;
+            }
+          }
+        }
+      }
 
       // loop through the already-built months array and initialize null FTEs for each month in this new project
       newProject.allocations = new Array<AllocationsArray>();
@@ -455,6 +470,32 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           this.appDataService.raiseToast('error', `${err.status}: ${err.statusText}`);
         }
       );
+
+      // Create an array of only newly added projects to add to the project-employee-role table
+      const newlyAddedProjects: any = [];
+      for (let i = 0; i < fteData.length; i++) {
+        if (fteData[i][0].newlyAdded === true) {
+          newlyAddedProjects.push({
+            projectID: fteData[i][0].projectID,
+            jobTitleID: this.authService.loggedInUser.jobTitleID,
+            jobSubTitleID: this.authService.loggedInUser.jobSubTitleID
+          });
+        }
+      }
+      // If array is empty, new roles don't have to be updated
+      if (newlyAddedProjects !== undefined || newlyAddedProjects.length !== 0) {
+        this.apiDataProjectService.insertBulkProjectEmployeeRole(newlyAddedProjects, this.authService.loggedInUser.id)
+        .subscribe(
+          res => {
+            console.log('Successfully inserted bulk data into project employee role table');
+          },
+          err => {
+            console.log(err);
+          }
+        );
+      }
+
+
     } else if (!currentQuarterValid) {
       const invalidValues = [];
       this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).forEach( value => {
@@ -484,7 +525,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.apiDataFteService.indexUserData(this.authService.loggedInUser.id)
     .subscribe(
       res => {
-        console.log(res.nested);
+        // console.log('indexUserData', res.nested);
         this.userFTEs = res.nested;
         this.userFTEsFlat = res.flat;
         this.buildFteEditableArray();
@@ -559,6 +600,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   addProjectToFteForm(FTEFormArray: FormArray, proj: UserFTEs, newProject: boolean) {
+
     // make each project visible to start
     this.fteProjectVisible.push(true);
     if (newProject) {
@@ -587,6 +629,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           projectName: [proj.projectName],
           jobTitleID: [proj.jobTitleID],
           jobSubTitleID: [proj.jobSubTitleID],
+          newlyAdded: [proj.newlyAdded],
           month: [month],
           fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
           newRecord: [foundEntry ? false : true],
@@ -601,8 +644,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     tempProj.projectID = proj.projectID;
     tempProj.projectName = proj.projectName;
     // tempProj.projectRole = proj.projectRole;
+    tempProj.jobTitle = proj.jobTitle;
     tempProj.jobTitleID = proj.jobTitleID;
+    tempProj.jobSubTitle = proj.jobSubTitle;
     tempProj.jobSubTitleID = proj.jobSubTitleID;
+    tempProj.newlyAdded = proj.newlyAdded;
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
   }
 
@@ -730,7 +776,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     console.log('user clicked to delete project index ' + index);
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
-
+console.log('deletedProject', deletedProject)
     // emit confirmation modal after they click delete button
     this.appDataService.confirmModalData.emit(
       {
@@ -760,10 +806,16 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         // if they click ok, grab the deleted project info and exec db call to delete
         const toBeDeleted = {
           projectID: deletedProject.projectID,
-          projectName: deletedProject.projectName
+          projectName: deletedProject.projectName,
+          newlyAdded: deletedProject.newlyAdded
         };
+
         const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
           deleteResponse => {
+            // only delete from the projectemployeerole table if user is deleting a non-newlyAdded project
+            if (toBeDeleted.newlyAdded) {
+              this.deleteProjectEmployeeRole(toBeDeleted);
+            }
             this.fteProjectVisible.splice(index, 1);
             this.fteProjectDeletable.splice(index, 1);
             FTEFormArray.controls.splice(index, 1);
@@ -1032,6 +1084,31 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     if (this.sliderDisabled) {
       this.appDataService.raiseToast('warn', `Please enter FTE values for project: ${name}`);
     }
+  }
+
+  getJobTitleList() {
+    this.apiDataJobTitleService.getJobTitleList()
+    .subscribe(
+      res => {
+        this.jobTitleList = res;
+        console.log('jobTitleList', res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+  }
+
+  deleteProjectEmployeeRole(projectID: any) {
+    this.apiDataProjectService.deleteProjectEmployeeRole(projectID, this.authService.loggedInUser.id)
+    .subscribe(
+      res => {
+        console.log('Successful deletion in project employee role table');
+      },
+      err => {
+        console.log(err);
+      });
   }
 
 }

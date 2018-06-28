@@ -420,8 +420,6 @@ function destroyProjectEmployeeRole(req, res) {
   const userID = req.params.userID;
   const today = new Date();
 
-  console.log(`deleting project with id: ${project.projectID}`);
-
   return sequelize.transaction((t) => {
 
     return models.ProjectEmployeeRoles
@@ -456,7 +454,7 @@ function destroyProjectEmployeeRole(req, res) {
 function insertBulkProjectEmployeeRole(req, res) {
 
   // req.body object should include only fields: projectID and projectRoleID
-  // e.g {projectID: 15, projectRoleID: 2}
+  // e.g {projectID: 15, jobTitleID: 2, jobSubTitleID: 10}
   const projectEmployeeRolesData = req.body;
   const userID = req.params.userID;
   const today = new Date();

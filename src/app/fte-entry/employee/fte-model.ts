@@ -8,6 +8,7 @@ export class UserFTEs {
     jobSubTitleID: number;
     allocations: AllocationsArray[];
     userID: number;
+    newlyAdded: boolean;
 }
 
 export class AllocationsArray {
