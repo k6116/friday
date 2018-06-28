@@ -103,7 +103,7 @@ export class TopNavComponent implements OnInit {
   onProfileButtonClick() {
     this.showDropDown = false;
     this.showProfileModal = true;
-    this.profileModal.ngOnInit();
+    this.profileModal.getJobTitleList();
   }
 
 
