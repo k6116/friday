@@ -43,8 +43,8 @@ function indexProjectRoster(req, res) {
       projects.Projects T1
       LEFT JOIN resources.ProjectEmployees T2 ON T1.ProjectID = T2.ProjectID
       LEFT JOIN accesscontrol.Employees T3 ON T2.EmployeeID = T3.EmployeeID
-      LEFT JOIN accesscontrol.JobTitle T4 ON T3.JobTitleID = T4.JobTitleID
-      LEFT JOIN accesscontrol.JobSubTitle T5 ON T3.JobSubTitleID = T5.JobSubTitleID
+      LEFT JOIN resources.JobTitle T4 ON T3.JobTitleID = T4.JobTitleID
+      LEFT JOIN resources.JobSubTitle T5 ON T3.JobSubTitleID = T5.JobSubTitleID
     WHERE 
       T1.ProjectID = ${projectID}
     GROUP BY

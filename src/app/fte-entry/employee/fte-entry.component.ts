@@ -776,7 +776,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     console.log('user clicked to delete project index ' + index);
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
-console.log('deletedProject', deletedProject)
     // emit confirmation modal after they click delete button
     this.appDataService.confirmModalData.emit(
       {
