@@ -3,6 +3,7 @@ const sequelizePLM = require('../db/sequelize').sequelizePLM;
 const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
+const sleep = require('system-sleep');
 
 // TO-DO PAUL: create reports folder with separate controller files
 
@@ -325,6 +326,9 @@ function getDashboardFTEData(req, res) {
   sequelize.query('EXECUTE resources.DashboardFTEData :userEmailAddress, :startDate, :endDate', 
     {replacements: {userEmailAddress: userEmailAddress, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
     .then(dashboardData => {
+
+      // TEMP CODE: for testing datadog alerts
+      sleep(5000);
 
       const dashboardDataTree = new Treeize();
       dashboardDataTree.grow(dashboardData);

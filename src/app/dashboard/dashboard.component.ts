@@ -58,7 +58,7 @@ export class DashboardComponent implements OnInit {
           console.log(res);
           this.dashboardFTEData = res;
           this.renderMYFTEsPieChart();
-          // this.renderMYFTEsColumnChart();
+          this.renderMYFTEsColumnChart();
           // this.renderFTEEntryProgress();
           this.showDashboard = true;
         },
@@ -269,6 +269,11 @@ export class DashboardComponent implements OnInit {
 
     // console.log('fte data for logged in user:');
     // console.log(fteData);
+
+    // if the user does not have any projects, exit here
+    if (!fteData.hasOwnProperty('projects')) {
+      return;
+    }
 
     // sum up total fte number across all the user's projects (will be for the current quarter always)
     let fteTotal = 0;
