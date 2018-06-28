@@ -16,7 +16,7 @@ router.get('/logout/:userName', controllers.auth.logout);
 
 // FTE CONTROLLER
 router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
-router.delete('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProject);
+router.post('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProject);
 router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
 
 // PROJECT CONTROLLER

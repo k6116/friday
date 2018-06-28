@@ -28,6 +28,7 @@ function indexUserData(req, res) {
 }
 
 function destroyUserProject(req, res) {
+  
   const userID = req.params.userID;
   const toBeDeletedID = req.body.projectID;
   const toBeDeletedName = req.body.projectName;
