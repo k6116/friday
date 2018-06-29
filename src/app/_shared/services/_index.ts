@@ -1,5 +1,5 @@
 export * from './api-data.service';
-export * from './app-data.service';
+export * from './cache.service';
 export * from './click-tracking.service';
 export * from './cookies.service';
 export * from './tools.service';

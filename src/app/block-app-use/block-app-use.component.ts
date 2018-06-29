@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { AppDataService } from '../_shared/services/app-data.service';
+import { CacheService } from '../_shared/services/cache.service';
 
 import * as bowser from 'bowser';
 
@@ -11,7 +11,7 @@ import * as bowser from 'bowser';
 export class BlockAppUseComponent implements OnInit, AfterViewInit {
 
   constructor(
-    private appDataService: AppDataService
+    private cacheService: CacheService
   ) { }
 
   ngOnInit() {
@@ -32,7 +32,7 @@ export class BlockAppUseComponent implements OnInit, AfterViewInit {
   openNoticeModal() {
 
     // emit an object to be picked up by the notice modal via subscription
-    this.appDataService.noticeModalData.emit(
+    this.cacheService.noticeModalData.emit(
       {
         title: 'Browser Not Supported',
         message: `Jarvis Resources will not work with ${bowser.name} version ${bowser.version}.  Please

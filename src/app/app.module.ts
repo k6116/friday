@@ -22,7 +22,7 @@ import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
 
 // SERVICES
-import { ApiDataService, AppDataService, ClickTrackingService, CookiesService,
+import { ApiDataService, CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { AuthGuardService } from './_shared/guards/auth.guard';
@@ -138,7 +138,7 @@ import { FooterComponent } from './footer/footer.component';
     ApiDataPermissionService,
     ApiDataProjectService,
     ApiDataReportService,
-    AppDataService,
+    CacheService,
     AuthService,
     AuthGuardService,
     ToolsService,

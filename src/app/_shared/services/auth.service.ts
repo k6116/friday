@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { User } from '../models/user.model';
 import { ApiDataAuthService } from './api-data/_index';
-import { AppDataService } from './app-data.service';
+import { CacheService } from './cache.service';
 import { WebsocketService } from './websocket.service';
 
 import * as moment from 'moment';
@@ -27,7 +27,7 @@ export class AuthService {
     private http: Http,
     private router: Router,
     private apiDataAuthService: ApiDataAuthService,
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private websocketService: WebsocketService
   ) {
 
@@ -186,7 +186,7 @@ export class AuthService {
             this.clearToken();
             this.setToken(res.token.signedToken);
             // reset the timer so that it will be synched with the token expiration, at least within a second or two
-            this.appDataService.resetTimer.emit(true);
+            this.cacheService.resetTimer.emit(true);
           },
           err => {
             console.error('reset token error:');
@@ -216,7 +216,7 @@ export class AuthService {
           this.clearToken();
           this.setToken(res.token.signedToken);
           // reset the timer so that it will be synched with the token expiration, at least within a second or two
-          this.appDataService.resetTimer.emit(true);
+          this.cacheService.resetTimer.emit(true);
           // TEMP CODE to log the token status
           // this.logTokenStatus();
         },
@@ -333,7 +333,7 @@ export class AuthService {
     this.clearLoggedInUserOnServer();
     this.clearUserCache();
     this.clearToken();
-    this.appDataService.appLoadPath = undefined;
+    this.cacheService.appLoadPath = undefined;
     this.routeToLogin(displayMessage);
   }
 
@@ -355,7 +355,7 @@ export class AuthService {
 
       // display a message on the login screen explaining that they were logged out automatically
       if (displayMessage) {
-        this.appDataService.autoLogout$ = {
+        this.cacheService.autoLogout$ = {
           message: 'For security you have been logged out',
           iconClass: 'fa-info-circle',
           iconColor: 'rgb(87, 168, 255)'
@@ -377,7 +377,7 @@ export class AuthService {
 
   displayExtendSessionModal() {
     // emit a message (object) to the confirm modal component with the title, message, etc. and tell it to display
-    this.appDataService.confirmModalData.emit(
+    this.cacheService.confirmModalData.emit(
       {
         title: 'Session Expiration',
         message: `Your session is about to expire.  Do you want to keep working?`,
@@ -388,7 +388,7 @@ export class AuthService {
     );
 
     // after emitting the modal, listen for the response
-    this.confirmModalResponseSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+    this.confirmModalResponseSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
       if (res) {
         this.modalIsDisplayed = undefined;
         this.resetToken();
@@ -403,7 +403,7 @@ export class AuthService {
 
   hideExtendSessionModal() {
     // emit a message (object) to the confirm modal component to hide it
-    this.appDataService.confirmModalData.emit(
+    this.cacheService.confirmModalData.emit(
       {
         display: false
       }
