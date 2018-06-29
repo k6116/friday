@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
-import { AppDataService } from '../app-data.service';
+import { CacheService } from '../cache.service';
 
 @Injectable()
 export class ApiDataEmailService {
@@ -9,18 +9,18 @@ export class ApiDataEmailService {
 
   constructor(
     private http: Http,
-    private appDataService: AppDataService
+    private cacheService: CacheService
   ) { }
 
   sendRequestProjectEmail(userID: number, ownerID: number, projectName: string) {
     return this.http.post(`/api/sendRequestProjectEmail/${userID}/${ownerID}/${projectName}`, null)
-    .timeout(this.appDataService.apiDataTimeout)
+    .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
   sendProjectApprovalEmail(userID: number, ownerID: number, projectName: string, approved: boolean, comment: string) {
       return this.http.post(`/api/sendProjectApprovalEmail/${userID}/${ownerID}/${projectName}/${approved}/${comment}`, null)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 

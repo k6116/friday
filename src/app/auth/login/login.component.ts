@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 // import { ApiDataService } from '../../_shared/services/api-data.service';
-import { AppDataService } from '../../_shared/services/app-data.service';
+import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     // private apiDataService: ApiDataService,
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private apiDataOrgService: ApiDataOrgService,
     private apiDataAuthService: ApiDataAuthService,
     private authService: AuthService,
@@ -69,8 +69,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.checkRememberMeCookie();
 
     // check for the autoLogout object; if it exists display the message
-    if (this.appDataService.autoLogout$) {
-      const autoLogout = this.appDataService.autoLogout$;
+    if (this.cacheService.autoLogout$) {
+      const autoLogout = this.cacheService.autoLogout$;
       this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
     }
 
@@ -153,10 +153,10 @@ export class LoginComponent implements OnInit, OnDestroy {
           // sessionStorage.setItem('jarvisToken', res.token.signedToken);
 
           // reset the timer so that it will be synched with the token expiration, at least within a second or two
-          this.appDataService.resetTimer.emit(true);
+          this.cacheService.resetTimer.emit(true);
 
           // clear the autologout object
-          this.appDataService.autoLogout$ = undefined;
+          this.cacheService.autoLogout$ = undefined;
 
           // get and store nested org data for this user, in anticipation of use and for performance
           //  this.getNestedOrgData(res.jarvisUser.email);
@@ -166,8 +166,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.showPendingLoginAnimation = false;
 
           // route to the main page or the page that the user was attempting to go to before getting booted back to the login page
-          if (this.appDataService.appLoadPath) {
-            this.router.navigateByUrl(this.appDataService.appLoadPath);
+          if (this.cacheService.appLoadPath) {
+            this.router.navigateByUrl(this.cacheService.appLoadPath);
           } else {
             this.router.navigateByUrl('/main');
           }
@@ -266,15 +266,15 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // get and store the nested org data upon successfull login
   getNestedOrgData(email: string) {
-    this.appDataService.nestedOrgDataRequested = true;
+    this.cacheService.nestedOrgDataRequested = true;
     this.apiDataOrgService.getOrgData(email)
     .subscribe(
       res => {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');
         // console.log('nested org object');
         // console.log(nestedOrgData);
-        this.appDataService.$nestedOrgData = nestedOrgData;
-        this.appDataService.nestedOrgData.emit(nestedOrgData);
+        this.cacheService.$nestedOrgData = nestedOrgData;
+        this.cacheService.nestedOrgData.emit(nestedOrgData);
       },
       err => {
         console.error('error getting nested org data');
