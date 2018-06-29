@@ -77,8 +77,8 @@ function sendFTEReminder(req, res) {
       text: text,
       html: html.replace('{monthRange}',monthRange).replace('{quarter}',quarter).replace('{year}',moment().year().toString()),
       attachments: [{
-        filename: 'JarvisLogo.png',
-        path: logoPath + '/JarvisLogo.png',
+        filename: 'JarvisLogo.svg',
+        path: logoPath + '/JarvisLogo.svg',
         cid: 'unique@kreata.ee' //same cid value as in the html img src
       }]
     };
@@ -141,8 +141,8 @@ function sendRequestProject(req, res) {
           text: text,
           html: html.replace('{owner}', userOwner.fullName).replace('{requestor}', userRequestor.fullName).replace('{project}', projectName),
           attachments: [{
-            filename: 'JarvisLogo.png',
-            path: logoPath + '/JarvisLogo.png',
+            filename: 'JarvisLogo.svg',
+            path: logoPath + '/JarvisLogo.svg',
             cid: 'unique@kreata.ee' //same cid value as in the html img src
           }]
         };
@@ -226,8 +226,8 @@ function sendProjectApproval(req, res) {
           text: text,
           html: html.replace('{requestor}', userRequestor.fullName).replace('{project}', projectName).replace('{comment}', comment),
           attachments: [{
-            filename: 'JarvisLogo.png',
-            path: logoPath + '/JarvisLogo.png',
+            filename: 'JarvisLogo.svg',
+            path: logoPath + '/JarvisLogo.svg',
             cid: 'unique@kreata.ee' //same cid value as in the html img src
           }]
         };
