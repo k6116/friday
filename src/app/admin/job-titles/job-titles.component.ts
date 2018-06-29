@@ -66,10 +66,10 @@ export class JobTitlesComponent implements OnInit {
     this.jobTitleID = id;
     let index: number;
     // Find index of jobtitle to use in subtitles loop
+    // TO-DO CHAI: Can I get this from the the html?
     for (let i = 0; i < this.jobTitleList.length; i++) {
       if (this.jobTitleList[i].id === id) {
         index = i;
-        console.log('INDEX ', i);
         break;
       }
     }
