@@ -18,7 +18,7 @@
         <div class="list-group">
           <ng-container *ngIf="(jobTitleList | filter : jobTitleName : 'jobTitleName':{limitTo: numJobTitlesToDisplay, matchFuzzy: true}) as filteredJobTitle">
             <div *ngFor="let list of filteredJobTitle">
-              <button type="button" class="list-group-item list-group-item-action" (click)="getJobSubTitleListMap(list.id, jobTitleList)">
+              <button type="button" class="list-group-item list-group-item-action" (click)="getJobSubTitleListMap(list.id)">
                 <div class="row">
                   <div class="col-10">
                     {{ list.jobTitleName }}<span *ngIf="list.description"> - {{list.description}}</span>
@@ -52,17 +52,17 @@
       </div>
       <br/>
       <!-- List of Subtitles with checkbox: Show only when clicked on a specific job title -->
-      <div class="list-group" *ngIf="jobSubTitleListMap" >
+      <div class="list-group">
         <ng-container *ngIf="(jobSubTitleList | filter : jobSubTitleName : 'jobSubTitleName':{limitTo: numJobTitlesToDisplay, matchFuzzy: true}) as filteredJobSubTitle">
           <!-- TO-DO CHAI: Add filtered list later with *ngFor="let sublist of filteredJobSubTitle" -->
-          <div *ngFor="let sublist of jobSubTitleListMap">
+          <div *ngFor="let sublist of jobSubTitleList">
           <button type="button" class="list-group-item list-group-item-action">
             <div class="row">
               <!-- Checkboxes -->
               <div class="col-1">
                 <div class="input-group-prepend">
                   <div class="input-group-text">
-                    <input type="checkbox" [checked]="sublist.checked">
+                    <input type="checkbox" [checked]="sublist.checked===true">
                   </div>
                 </div>
               </div>
