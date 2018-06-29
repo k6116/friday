@@ -238,8 +238,8 @@ function getProjectEmployeeFTEList(req, res) {
       resources.ProjectEmployees PE
       LEFT JOIN projects.Projects P ON PE.ProjectID = P.ProjectID
       LEFT JOIN accesscontrol.Employees E ON PE.EmployeeID = E.EmployeeID
-      LEFT JOIN accesscontrol.JobTitle JT ON E.JobTitleID = JT.JobTitleID
-      LEFT JOIN accesscontrol.JobSubTitle JTS ON E.JobSubTitleID = JTS.JobSubTitleID
+      LEFT JOIN resources.JobTitle JT ON E.JobTitleID = JT.JobTitleID
+      LEFT JOIN resources.JobSubTitle JTS ON E.JobSubTitleID = JTS.JobSubTitleID
     WHERE
       P.ProjectID = '${projectID}' and FiscalDate = '${fiscalDate}'
     `

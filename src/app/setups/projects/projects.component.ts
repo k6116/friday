@@ -276,9 +276,9 @@ export class ProjectsSetupsComponent implements OnInit {
       res => {
         // console.log('project schedule:', res);
         this.projectSchedule = res;
-        // for (let i = 0; i < this.projectSchedule.length; i++) {
-        //   this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
-        // }
+        for (let i = 0; i < this.projectSchedule.length; i++) {
+          this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
+        }
       },
       err => {
         console.log(err);
