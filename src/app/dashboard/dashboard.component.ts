@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit {
   dashboardFTEData: any;
   chartOptions: any;
   showDashboard: boolean;
+  showSpinner: boolean;
   highchartsButtons: any;
   completedFTEs: string;
   notCompletedFTEs: string;
@@ -36,6 +37,8 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.showSpinner = true;
 
     const currentTime = moment();
 
@@ -59,11 +62,14 @@ export class DashboardComponent implements OnInit {
           this.dashboardFTEData = res;
           this.renderMYFTEsPieChart();
           this.renderMYFTEsColumnChart();
-          // this.renderFTEEntryProgress();
+          this.renderFTEEntryProgress();
           this.showDashboard = true;
+          this.showSpinner = false;
         },
         err => {
           console.log(err);
+          this.showSpinner = false;
+          this.displayTimeoutError();
         }
       );
 
@@ -72,7 +78,36 @@ export class DashboardComponent implements OnInit {
 
   }
 
+
+  displayTimeoutError() {
+
+    // emit an object to the confirm modal component to display a bootstrap modal
+    this.appDataService.confirmModalData.emit(
+      {
+        title: 'Timeout Error',
+        message: `The server is not responding.  If you don't believe there is a problem with your network connection,
+           please contact support`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 27, 27)',
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Ok',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
+      }
+    );
+
+  }
+
   renderMYFTEsPieChart() {
+
+    // init chart data arrays
+    let seriesData = [];
+    const drilldownSeries = [];
 
     // filter to get only the logged in user's fte values
     const fteData = this.dashboardFTEData.filter(data => {
@@ -82,40 +117,44 @@ export class DashboardComponent implements OnInit {
     console.log('fte data for logged in user:');
     console.log(fteData);
 
-    // if the user does not have any projects, exit here
-    if (!fteData.hasOwnProperty('projects')) {
-      return;
-    }
-
     // sum up total fte number across all the user's projects (will be for the current quarter always)
     let fteTotal = 0;
-    fteData[0].projects.forEach(project => {
-      project.ftes.forEach(month => {
-        fteTotal += month.fte;
+    if (fteData[0].hasOwnProperty('projects')) {
+      fteData[0].projects.forEach(project => {
+        if (project.hasOwnProperty('ftes')) {
+          project.ftes.forEach(month => {
+            fteTotal += month.fte;
+          });
+        }
       });
-    });
+    }
 
-    // console.log(`total fte for the quarter is: ${fteTotal} (should be 3)`);
+    console.log(`total fte for the quarter is: ${fteTotal} (should be 3)`);
 
     // for each project, total up the ftes, calculate the percentages and push into the array
-    let seriesData = [];
-    fteData[0].projects.forEach(project => {
-      let projectFTETotal = 0;
-      project.ftes.forEach(month => {
-        projectFTETotal += month.fte;
+    if (fteData[0].hasOwnProperty('projects')) {
+      fteData[0].projects.forEach(project => {
+        let projectFTETotal = 0;
+        if (project.hasOwnProperty('ftes')) {
+          project.ftes.forEach(month => {
+            projectFTETotal += month.fte;
+          });
+          seriesData.push({
+            name: project.projectName,
+            y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 1),
+            drilldown: project.projectName
+          });
+        }
       });
-      seriesData.push({
-        name: project.projectName,
-        y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 1),
-        drilldown: project.projectName
-      });
-    });
+    }
 
     // sort the array by fte value in descending order
-    seriesData = _.reverse(_.sortBy(seriesData, ['y']));
+    if (seriesData.length) {
+      seriesData = _.reverse(_.sortBy(seriesData, ['y']));
+    }
 
-    // console.log('series data for your ftes:');
-    // console.log(seriesData);
+    console.log('series data for your ftes:');
+    console.log(seriesData);
 
     // show the first data point as sliced
     if (seriesData.length > 1) {
@@ -123,83 +162,57 @@ export class DashboardComponent implements OnInit {
       seriesData[0].selected = true;
     }
 
+
     // build the drilldown data
-    const drilldownSeries = [];
-    fteData[0].projects.forEach(project => {
+    if (fteData[0].hasOwnProperty('projects')) {
 
-      // get all team members data for this project into an array of objects (not-unique at this point)
-      // at the same time, get sum of FTEs for this project
-      // let projectFTESum = 0;
-      // const teamMembersData = [];
-      // project.ftes.forEach(month => {
-      //   month.teamMembers.forEach(teamMember => {
-      //     teamMembersData.push(teamMember);
-      //     projectFTESum += teamMember.fte;
-      //   });
-      // });
-      // console.log(`teamMembersData for ${project.projectName}`);
-      // console.log(teamMembersData);
+      fteData[0].projects.forEach(project => {
 
-      // console.log(`sum of ftes for ${project.projectName} is ${projectFTESum}`);
-
-
-      // build an array of unique team member names for this project
-      let teamMembers = [];
-      let projectFTESum = 0;
-      project.ftes.forEach(month => {
-        month.teamMembers.forEach(teamMember => {
-          teamMembers.push(teamMember.fullName);
-          projectFTESum += teamMember.fte;
-        });
-      });
-      teamMembers = _.uniq(teamMembers);
-      // console.log(`unique team members array for ${project.projectName}`);
-      // console.log(teamMembers);
-      // console.log(`sum of ftes for ${project.projectName} is ${projectFTESum}`);
-
-      // get the fte total and percent for each team member
-      const drillDownData = [];
-      teamMembers.forEach(teamMemberName => {
-        let teamMemberFTETotal = 0;
+        // build an array of unique team member names for this project
+        let teamMembers = [];
+        let projectFTESum = 0;
         project.ftes.forEach(month => {
           month.teamMembers.forEach(teamMember => {
-            if (teamMember.fullName === teamMemberName) {
-              teamMemberFTETotal += teamMember.fte;
-            }
+            teamMembers.push(teamMember.fullName);
+            projectFTESum += teamMember.fte;
           });
         });
-        drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 1)]);
+        teamMembers = _.uniq(teamMembers);
+
+        // get the fte total and percent for each team member
+        const drillDownData = [];
+        teamMembers.forEach(teamMemberName => {
+          let teamMemberFTETotal = 0;
+          project.ftes.forEach(month => {
+            month.teamMembers.forEach(teamMember => {
+              if (teamMember.fullName === teamMemberName) {
+                teamMemberFTETotal += teamMember.fte;
+              }
+            });
+          });
+          drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 1)]);
+        });
+
+        // TO-DO: push into an array of object first, then use _.sortBy to sort by fte percent descending
+        // then push into the arrays with just the values with no keys
+
+        // push in an object for each project/slice
+        drilldownSeries.push({
+          name: project.projectName,
+          id: project.projectName,
+          data: drillDownData
+        });
+
       });
 
-      // TO-DO: push into an array of object first, then use _.sortBy to sort by fte percent descending
-      // then push into the arrays with just the values with no keys
+    }
 
-      // push in an object for each project/slice
-      drilldownSeries.push({
-        name: project.projectName,
-        id: project.projectName,
-        data: drillDownData
-      });
-      // console.log(`drilldownSeries for ${project.projectName}`);
-      // console.log(drilldownSeries);
 
-      // store team members in an array of objects
-      // const projectDrillDownObj = [];
-      // teamMembers.forEach(teamMember => {
-      //   projectDrillDownObj.push({
-      //     name: teamMember,
-      //     fte: 0
-      //   });
-      // });
-      // console.log(`projectDrillDownObj for ${project.projectName}`);
-      // console.log(projectDrillDownObj);
+    console.log('drilldown data:');
+    console.log(drilldownSeries);
 
-      // with the format for drilldown which is unconventional array of arrays,
-      // will probably need to go through keys of objects to push into an array,
-      // then push that array into the "data": array
 
-    });
-
+    // set the chart options
     const chartOptions = {
       chart: {
         plotBackgroundColor: null,
@@ -252,6 +265,7 @@ export class DashboardComponent implements OnInit {
     };
 
 
+    // render the chart
     highcharts.chart('chart1', chartOptions);
 
     // console.log(this.chartOptions);
@@ -271,9 +285,9 @@ export class DashboardComponent implements OnInit {
     // console.log(fteData);
 
     // if the user does not have any projects, exit here
-    if (!fteData.hasOwnProperty('projects')) {
-      return;
-    }
+    // if (!fteData.hasOwnProperty('projects')) {
+    //   return;
+    // }
 
     // sum up total fte number across all the user's projects (will be for the current quarter always)
     let fteTotal = 0;
@@ -423,7 +437,8 @@ export class DashboardComponent implements OnInit {
             fteTotal += fteEntry.fte;
           });
         });
-        if (fteTotal === 3) {
+        console.log(`total fte for employee ${employee.name} is: ${fteTotal}`);
+        if (this.toolsService.roundTo(fteTotal, 0) === 3) {
           completedFTEsArr.push(employee.name);
         } else {
           notCompletedFTEsArr.push(employee.name);
@@ -590,6 +605,19 @@ export class DashboardComponent implements OnInit {
 
 
   }
+
+
+  renderStackedColumnChart() {
+
+
+
+
+
+
+
+  }
+
+
 
   fiscalQuarter(date: any) {
     const quarter = moment(date).add(2, 'months').quarter();

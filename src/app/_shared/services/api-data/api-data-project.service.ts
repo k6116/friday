@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
 import { AppDataService } from '../app-data.service';
+import { Observable } from 'rxjs/observable';
 
 @Injectable()
 export class ApiDataProjectService {
 
+  // TO-DO PAUL: in all api-data services, remove timeout declaration, and declare the return type
+  // to think about, can we just say 'getRoster' instead of 'getProjectRoster'
   timeout: number;
 
   constructor(
@@ -12,7 +15,7 @@ export class ApiDataProjectService {
     private appDataService: AppDataService
   ) { }
 
-  getProjects() {
+  getProjects(): Observable<any> {
     return this.http.get('api/indexProjects')
     .timeout(this.appDataService.apiDataTimeout)
     .map((response: Response) => response.json());
@@ -46,6 +49,7 @@ export class ApiDataProjectService {
       .map((response: Response) => response.json());
   }
 
+  // TO-DO BILL: change this from post to delete
   deleteProject(project: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });

@@ -3,6 +3,10 @@ import { Injectable, EventEmitter } from '@angular/core';
 @Injectable()
 export class AppDataService {
 
+
+  // TO-DO MIKE: rename app-data service to cache service EVERYWHERE!!
+  // app data service serves as a central data store (global variables, constants, emitters)
+
   apiDataTimeout = 100 * 60 * 15; // set the api data service timeout to 15 seconds
   loggedInUser = new EventEmitter<any>();
   loggedInUser$: any;
@@ -31,10 +35,12 @@ export class AppDataService {
 
   constructor() { }
 
+  // TO-DO BRYAN: create a toast service and move
   raiseToast( toastType: 'success' | 'warn' | 'error', toastText: string) {
     this.toast.emit({
       type: toastType,
       text: toastText
     });
   }
+
 }

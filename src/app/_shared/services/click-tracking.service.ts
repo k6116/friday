@@ -17,6 +17,8 @@ export class ClickTrackingService {
   ) { }
 
 
+  // TO-DO BILL: add more comments, in particular how to implement at the top
+
   logClickWithEvent(clickTrack: string) {
     this.logClick(clickTrack);
   }
@@ -28,6 +30,7 @@ export class ClickTrackingService {
     const $el = $(event.target);
 
     // get the data from the attribute
+    // explain what closest does and especially why
     const clickTrack = $el.closest('[data-clicktrack]').data('clicktrack');
 
     // if any data was found
@@ -41,6 +44,7 @@ export class ClickTrackingService {
   logClick(clickTrack: string) {
 
     // get the user id
+    // TO-DO BILL: don't need the ternary, since loggedInUser will always be there now with the resolver
     const userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
 
     // get the url path

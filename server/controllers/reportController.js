@@ -328,7 +328,7 @@ function getDashboardFTEData(req, res) {
     .then(dashboardData => {
 
       // TEMP CODE: for testing datadog alerts
-      sleep(5000);
+      // sleep(5000);
 
       const dashboardDataTree = new Treeize();
       dashboardDataTree.grow(dashboardData);

@@ -6,6 +6,7 @@ export class ToolsService {
 
   constructor() { }
 
+  // TO-DO BILL: add comments, remove dead code, fix spelling on sentance
 
   roundTo(number: number, decimalPlaces: number): number {
     if (decimalPlaces === 0) {
