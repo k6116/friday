@@ -339,7 +339,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // when the slide toggle is changed, update the rememberMe property (boolean)
   onRememberMeChange(event) {
-    this.rememberMe = event.checked;
+    console.log('on remember me change event triggered');
+    console.log(event.target.checked);
+    this.rememberMe = event.target.checked;
   }
 
 

@@ -151,13 +151,13 @@ export class ToolsService {
       eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen`.split(' ');
     const tensArr = `twenty thirty forty fifty sixty seventy eighty ninety`.split(' ');
 
-    if (num < 20) {
+    if (num >= 0 && num < 20) {
       return numbersArr[num];
     } else if (num < 100) {
       const digit = num % 10;
       return tensArr[Math.floor(num / 10) - 2] + (digit ? '-' + num[digit] : '');
     } else {
-      return undefined;
+      throw new RangeError('number must be between 0 and 99');
     }
 
   }
