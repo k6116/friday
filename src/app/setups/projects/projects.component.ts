@@ -336,6 +336,7 @@ export class ProjectsSetupsComponent implements OnInit {
         message: this.deleteModalMessage,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
         allowOutsideClickDismiss: true,
         allowEscKeyDismiss: true,
         buttons: this.deleteModalButtons

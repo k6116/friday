@@ -398,6 +398,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         message: message,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
         allowOutsideClickDismiss: false,
         allowEscKeyDismiss: false,
         buttons: [

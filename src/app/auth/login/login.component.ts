@@ -304,11 +304,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   handleErrorMessage(err: any) {
     // check for no response (net::ERR_CONNECTION_REFUSED etc.)
     if (err.status === 0) {
-      this.displayMessage('Server is not responding', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+      this.toolsService.displayTimeoutError();
+      this.displayMessage('The server is not responding', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
     // check for timeout error
     } else if (err.hasOwnProperty('name')) {
       if (err.name === 'TimeoutError') {
-        this.displayMessage('Server timed out', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+        this.toolsService.displayTimeoutError();
+        this.displayMessage('The server is not responding', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
       }
     // otherwise, this should be a failed login (invalid credentials)
     } else {

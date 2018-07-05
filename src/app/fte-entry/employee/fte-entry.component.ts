@@ -783,6 +783,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         message: `Are you sure you want to permanently delete all of your FTE values for project ${deletedProject.projectName}?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
         allowOutsideClickDismiss: false,
         allowEscKeyDismiss: false,
         buttons: [
@@ -844,6 +845,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         message: `Are you sure you want to reset the form?  Unsaved changes may be lost.`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
         allowOutsideClickDismiss: true,
         allowEscKeyDismiss: true,
         buttons: [

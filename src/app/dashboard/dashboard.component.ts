@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit {
         err => {
           console.log(err);
           this.showSpinner = false;
-          this.displayTimeoutError();
+          this.toolsService.displayTimeoutError();
         }
       );
 
@@ -78,30 +78,6 @@ export class DashboardComponent implements OnInit {
 
   }
 
-
-  displayTimeoutError() {
-
-    // emit an object to the confirm modal component to display a bootstrap modal
-    this.appDataService.confirmModalData.emit(
-      {
-        title: 'Timeout Error',
-        message: `The server is not responding.  If you don't believe there is a problem with your network connection,
-           please contact support`,
-        iconClass: 'fa-exclamation-triangle',
-        iconColor: 'rgb(193, 27, 27)',
-        allowOutsideClickDismiss: true,
-        allowEscKeyDismiss: true,
-        buttons: [
-          {
-            text: 'Ok',
-            bsClass: 'btn-secondary',
-            emit: false
-          }
-        ]
-      }
-    );
-
-  }
 
   renderMYFTEsPieChart() {
 

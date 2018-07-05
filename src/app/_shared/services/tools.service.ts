@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 import { FormArray } from '@angular/forms';
 
+import { AppDataService } from './app-data.service';
+
 @Injectable()
 export class ToolsService {
 
-  constructor() { }
+  constructor(
+    private appDataService: AppDataService
+  ) { }
 
   // TO-DO BILL: add comments, remove dead code, fix spelling on sentance
 
@@ -114,5 +118,49 @@ export class ToolsService {
   randomBetween(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+
+  displayTimeoutError() {
+
+    // emit an object to the confirm modal component to display a bootstrap modal
+    this.appDataService.confirmModalData.emit(
+      {
+        title: 'Timeout Error',
+        message: `The server is not responding.  If you don't believe there is a problem with your network connection,
+           please contact support.`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 27, 27)',
+        closeButton: true,
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Ok',
+            bsClass: 'btn-secondary',
+            emit: undefined
+          }
+        ]
+      }
+    );
+
+  }
+
+
+  numberToword(num: number) {
+
+    const numbersArr = `zero one two three four five six seven eight nine ten
+      eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen`.split(' ');
+    const tensArr = `twenty thirty forty fifty sixty seventy eighty ninety`.split(' ');
+
+    if (num < 20) {
+      return numbersArr[num];
+    } else if (num < 100) {
+      const digit = num % 10;
+      return tensArr[Math.floor(num / 10) - 2] + (digit ? '-' + num[digit] : '');
+    } else {
+      return undefined;
+    }
+
+  }
+
 
 }
