@@ -125,8 +125,8 @@ export class ToolsService {
     this.appDataService.confirmModalData.emit(
       {
         title: 'Timeout Error',
-        message: `The server is not responding.  If you don't believe there is a problem with your network connection,
-           please contact support.`,
+        message: `The server is not responding.  Please check your connection to the Keysight network.
+           If you don't believe there is a problem with your network connection, please contact support.`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 27, 27)',
         closeButton: true,

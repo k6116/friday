@@ -387,7 +387,7 @@ export class AuthService {
     this.appDataService.confirmModalData.emit(
       {
         title: 'Logout Warning',
-        message: `We have not heard from you in awhile.  For security you will be logged out in
+        message: `We haven't heard from you in awhile.  For security you will be logged out in
           ${this.toolsService.numberToword(this.warnBeforeExpiration)} minutes.  Do you want to keep working?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 27, 27)',
