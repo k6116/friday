@@ -93,6 +93,7 @@ div.form-group-login.form-group-login-button {
 
 button.btn-login {
   width: 300px;
+  height: 35px;
 }
 
 .login-cont-inner-message {
@@ -115,7 +116,6 @@ td.login-notice-message {
 }
 
 svg.login-animated-svg {
-  position: absolute;
-  top: -6px;
-  left: 35px;
+  position: relative;
+  top: -14px;
 }
