@@ -30,6 +30,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   userName: string;
   password: string;
 
+  // used to delay rendering of the page until background image is ready
+  showLoginPage: boolean;
+
   // properties used for the error message display (invalid login etc.)
   loginMessage: string;
   loginSuccess: boolean;
@@ -118,6 +121,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   setBackgroundImage() {
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
     this.backgroundImage = this.backgroundImages[imageIndex];
+    this.showLoginPage = true;
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)
