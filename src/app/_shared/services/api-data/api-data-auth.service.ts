@@ -45,6 +45,13 @@ export class ApiDataAuthService {
       .map((response: Response) => response.json());
   }
 
+  // get a list of the background image file names and captions
+  getLoginBackgroundImages(): Observable<any> {
+    return this.http.get(`/api/getLoginBackgroundImages`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
   // TEMP CODE: for websockets testing
   getLoggedInUsers(): Observable<any> {
     return this.http.get(`/api/getLoggedInUsers`)

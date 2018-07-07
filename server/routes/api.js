@@ -13,6 +13,7 @@ router.get('/getInfoFromToken', controllers.auth.getInfoFromToken);
 router.post('/resetToken', controllers.auth.resetToken);
 router.get('/getLoggedInUsers', controllers.auth.getLoggedInUsers);
 router.get('/logout/:userName', controllers.auth.logout);
+router.get('/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
 
 // FTE CONTROLLER
 router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);

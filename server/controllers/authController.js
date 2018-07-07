@@ -7,6 +7,8 @@ const moment = require('moment');
 const momentTz = require('moment-timezone');
 const _ = require('lodash');
 const dotevnv = require('dotenv').config()
+const fs = require('fs');
+const path = require('path');
 
 const tokenSecret = process.env.JWT_SECRET;  // get the secret code word for enconding and decoding the token with jwt
 const expirationTime = 60 * 30  // set the token expiration time to 30 minutes - units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
@@ -357,6 +359,28 @@ function index(req, res) {
 
 }
 
+
+function getLoginBackgroundImages(req, res) {
+
+  var imagesDir = path.join(__dirname, '../../dist/assets/login_images');
+  var metadataFile = path.join(__dirname, '../../dist/assets/login_images/_index.json');
+
+  var metaData = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
+
+  fs.readdir(imagesDir, (err, files) => {
+    if (err) {
+      console.log('could not read directory: ' + err);
+    } else {
+      res.json({
+        files: files,
+        images: metaData
+      });
+    }
+  });
+
+}
+
+
 // TEMP CODE: testing websockets
 function getLoggedInUsers(req, res) {
 
@@ -385,5 +409,6 @@ module.exports = {
   resetToken: resetToken,
   index: index,
   getLoggedInUsers: getLoggedInUsers,
-  logout: logout
+  logout: logout,
+  getLoginBackgroundImages: getLoginBackgroundImages
 }

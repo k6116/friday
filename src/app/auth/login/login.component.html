@@ -5,11 +5,11 @@
 <!-- confirm modal component -->
 <app-confirm-modal></app-confirm-modal>
 
-<div class="login-background-image" [style.background-image]="'url(' + backgroundImage.path + ')'"></div>
+<div class="login-background-image" [style.background-image]="'url(' + backgroundImage?.path + ')'"></div>
 
 <div class="login-background-image-details">
-  <div class="login-background-image-details-title">{{ backgroundImage.title }}</div>
-  <div class="login-background-image-details-subtitle">{{ backgroundImage.subTitle }}</div>
+  <div class="login-background-image-details-title">{{ backgroundImage?.title }}</div>
+  <div class="login-background-image-details-subtitle">{{ backgroundImage?.subTitle }}</div>
 </div>
 
 <div class="container-fluid">

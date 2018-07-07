@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
 
   // array of background images and randomly selected background image
-  backgroundImages: any[];
+  backgroundImages: any[] = [];
   backgroundImage: any;
 
   constructor(
@@ -65,44 +65,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute
   ) {
 
-    this.backgroundImages = [
-      {
-        path: '/assets/login_images/blue_mountains_sydney.jpg',
-        title: 'Blue Mountains outside Sydney Australia',
-        subTitle: 'Key Sightings Winner: March, 2018'
-      },
-      {
-        path: '/assets/login_images/garden_of_the_gods.jpg',
-        title: 'Garden of the Gods, Colorado Springs',
-        subTitle: 'Key Sightings Winner: December, 2016'
-      },
-      {
-        path: '/assets/login_images/himeji_castle_kobe.jpg',
-        title: 'Himeji-Castle outside Kobe, Japan',
-        subTitle: 'Key Sightings Winner: April, 2018'
-      },
-      {
-        path: '/assets/login_images/penang.jpg',
-        title: 'View from Penang Hill at Night',
-        subTitle: 'Key Sightings Winner: March, 2018'
-      },
-      {
-        path: '/assets/login_images/point_bonita.jpg',
-        title: 'Point Bonita Lighthouse near San Francisco, California',
-        subTitle: 'Key Sightings Winner: December, 2016'
-      },
-      {
-        path: '/assets/login_images/singapore.jpg',
-        title: 'Singapore Skyline',
-        subTitle: 'Key Sightings Winner: May, 2018'
-      },
-      {
-        path: '/assets/login_images/yosemite.jpg',
-        title: 'Sunset in Yosemite National Park',
-        subTitle: 'Key Sightings Winner: November, 2017'
-      }
-    ];
-
   }
 
   ngOnInit() {
@@ -117,18 +79,44 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
     }
 
-    // set random background image
-    this.setBackgroundImage();
+    // get background images from the server to display
+    this.getBackgroundImages();
 
   }
 
   ngOnDestroy() {
   }
 
+
+  getBackgroundImages() {
+
+    this.apiDataAuthService.getLoginBackgroundImages()
+      .subscribe(
+        res => {
+
+          res.images.forEach(image => {
+            if (res.files.indexOf(image.fileName) !== -1) {
+              this.backgroundImages.push({
+                path: `/assets/login_images/${image.fileName}`,
+                title: image.caption,
+                subTitle: `Key Sightings Winner: ${image.winnerDate}`
+              });
+            }
+          });
+
+          // set random background image
+          this.setBackgroundImage();
+        },
+        err => {
+          console.log(err);
+        }
+      );
+
+  }
+
   // set random background image
   setBackgroundImage() {
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
-    // this.backgroundImage = `url(${this.backgroundImages[imageIndex]})`;
     this.backgroundImage = this.backgroundImages[imageIndex];
   }
 
