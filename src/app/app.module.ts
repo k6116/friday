@@ -33,6 +33,10 @@ import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, A
 // GUARDS
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 
+// CHARTS
+import 'hammerjs';
+import 'chartjs-plugin-zoom';
+
 // COMPONENTS
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
@@ -61,10 +65,6 @@ import { PerformanceComponent } from './performance/performance.component';
 import { ProgressBarComponent } from './_shared/components/progress-bar/progress-bar.component';
 import { ProgressSpinnerComponent } from './_shared/components/progress-spinner/progress-spinner.component';
 import { ChatComponent } from './chat/chat.component';
-
-// CHARTS
-import 'hammerjs';
-import 'chartjs-plugin-zoom';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';

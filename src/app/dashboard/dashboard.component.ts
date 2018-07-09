@@ -3,6 +3,7 @@ import { AppDataService } from '../_shared/services/app-data.service';
 import { ApiDataOrgService, ApiDataReportService } from '../_shared/services/api-data/_index';
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
+import { DashboaordStackedColumnService } from './dashboaord-stacked-column.service';
 
 declare var require: any;
 
@@ -16,7 +17,8 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css', '../_shared/styles/common.css']
+  styleUrls: ['./dashboard.component.css', '../_shared/styles/common.css'],
+  providers: [DashboaordStackedColumnService]
 })
 export class DashboardComponent implements OnInit {
 
@@ -33,10 +35,12 @@ export class DashboardComponent implements OnInit {
     private apiDataReportService: ApiDataReportService,
     private apiDataOrgService: ApiDataOrgService,
     private authService: AuthService,
-    private toolsService: ToolsService
+    private toolsService: ToolsService,
+    private dashboaordStackedColumnService: DashboaordStackedColumnService
   ) { }
 
   ngOnInit() {
+
 
     this.showSpinner = true;
 
@@ -63,6 +67,7 @@ export class DashboardComponent implements OnInit {
           this.renderMYFTEsPieChart();
           this.renderMYFTEsColumnChart();
           this.renderFTEEntryProgress();
+          this.renderStackedColumnChart();
           this.showDashboard = true;
           this.showSpinner = false;
         },
@@ -585,11 +590,9 @@ export class DashboardComponent implements OnInit {
 
   renderStackedColumnChart() {
 
+    const chartOptions = this.dashboaordStackedColumnService.buildChartOptions(this.dashboardFTEData);
 
-
-
-
-
+    highcharts.chart('chart4', chartOptions);
 
   }
 
