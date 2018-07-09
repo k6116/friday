@@ -8,7 +8,7 @@
         <div class="input-group">
           <input type="text"  class="form-control" name="jobTitleName" [(ngModel)]="jobTitleName" placeholder="Search Job Title">
           <div class="input-group-append">
-            <button #btnJobTitle name="Job Title" class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="modal" data-target="#createJobTitleModal" (click)="onCreateButtonClick(btnJobTitle.name, titles.value.name)">
+            <button #btnJobTitle class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="modal" data-target="#createJobTitleModal">
               <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
             </button>
           </div>
@@ -53,15 +53,15 @@
       <br/>
       <!-- List of Subtitles with checkbox: Show only when clicked on a specific job title -->
       <div class="list-group">
-        <ng-container *ngIf="(jobSubTitleList | filter : jobSubTitleName : 'jobSubTitleName':{limitTo: numJobTitlesToDisplay, matchFuzzy: true}) as filteredJobSubTitle">
-          <div *ngFor="let sublist of filteredJobSubTitle">
-          <button type="button" class="list-group-item list-group-item-action">
+        <ng-container *ngIf="(jobSubTitleList | filter : jobSubTitleName : 'jobSubTitleName':{limitTo: numJobSubTitlesToDisplay, matchFuzzy: true}) as filteredJobSubTitle">
+          <div *ngFor="let sublist of filteredJobSubTitle; let i = index">
+          <button type="button" [disabled]="subTitlesInit" class="list-group-item list-group-item-action" (click)="onJobSubTitleButtonClick(sublist.id)">
             <div class="row">
               <!-- Checkboxes -->
               <div class="col-1">
                 <div class="input-group-prepend">
                   <div class="input-group-text">
-                    <input type="checkbox" [checked]="sublist.checked===true">
+                    <input name="checkbox" type="checkbox" [checked]="sublist.checked===true" (change)="onCheckboxChange(sublist.id)">
                   </div>
                 </div>
               </div>
@@ -97,9 +97,41 @@
           <h5 class="title">Are you sure you want to delete this job title?</h5>
         </div>
         <div class="modal-body">
-          <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="onDeleteJobTitleClick(jobTitleID)">OK</button>&nbsp;
+          <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="onDeleteJobTitleClick()" data-dismiss="modal">OK</button>&nbsp;
           <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Create Modal -->
+  <!-- Might be moved to it's own component -->
+  <div class="modal" tabindex="-1" role="dialog" id="createJobTitleModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="width:150%">
+        <div class="modal-header" style="border-bottom: none; height: 2rem;">
+          <h5 class="title">Create a New Job Title</h5>
+        </div>
+        <div class="modal-body">
+          <div class="input-group">
+            <input type="text" #jobTitle name="jobTitle" class="form-control" placeholder="Job Title">&nbsp;
+            <input type="text" #jobTitleDescription name="description" class="form-control" placeholder="Description">&nbsp;
+            <div class="input-group-append">
+              <!-- To-Do: Figure out a way to close this modal. With data-dismiss it will also close on error. -->
+              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onCreateJobTitleClick(jobTitle.value, jobTitleDescription.value)">OK</button>&nbsp;
+              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+            </div>
+          </div>
+        </div>
+        <!-- Show a footer if job title already exists -->
+        <div class="modal-footer">
+          <!-- <div>{{ titles.value | json }}</div> -->
+          <!-- <div>{{ titles.get('name').errors | json }}</div>  -->
+          <!-- <div style="color:red" *ngIf="jobTtitleExists" class="footer">This job title already exists.</div> -->
+          <!-- <div style="color:green" *ngIf="!jobTtitleExists" class="footer">Successfully added.</div> -->
+        </div>
+        <!--  -->
+      </div>
+    </div>
+  </div>
+  <!--  -->

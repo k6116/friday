@@ -95,7 +95,7 @@ function insertJobTitle(req, res) {
 
 	// get the project object from the request body
 	const jobTitleData = req.body;
-
+    console.log('jobTitleData to create JOB TITLES: ', jobTitleData);
 	return sequelize.transaction((t) => {
 
 		return models.JobTitle
@@ -109,7 +109,7 @@ function insertJobTitle(req, res) {
 				}
 			)
 			.then(savedJobTitle => {
-			//   console.log('created new job title: ', savedJobTitle );
+			//   console.log('created new job title: ', jobTitleData.jobTitleName);
 			})
 
 	}).then(() => {
@@ -208,11 +208,84 @@ function insertJobSubTitle(req, res) {
   
 }
 
+function insertJobTitleMap(req, res) {
+	const jobTitleMap = req.body;
+	console.log('MAPDATA:', jobTitleMap);
+	return sequelize.transaction((t) => {
+		return models.JobTitleMap
+			.create(
+				{
+					jobTitleID: jobTitleMap[0].jobTitleID,
+					jobSubTitleID: jobTitleMap[0].jobSubTitleID,
+				},
+				{
+					transaction: t
+				}
+			)
+			.then(savedJobTitle => {
+			//   console.log('created new job title: ', savedJobTitle );
+			})
+
+	}).then(() => {
+
+		res.json({
+			message: `The mapping '${jobTitleMap[0].jobTitleID}' -  '${jobTitleMap[0].jobSubTitleID}' has been added successfully`,
+		})
+
+	}).catch(error => {
+
+		console.log(error);
+		res.status(500).json({
+			title: 'update failed',
+			error: {message: error}
+		});
+
+	})
+  
+}
+
+function deleteJobTitleMap(req, res) {
+	const jobTitleMap = req.body;
+
+	return sequelize.transaction((t) => {
+    return models.JobTitleMap
+    .destroy(
+        {
+        where: {jobTitleID: jobTitleMap[0].jobTitleID, jobSubTitleID: jobTitleMap[0].jobSubTitleID},
+        transaction: t
+        }
+    )
+    .then(deletedRecordCount => {
+
+        console.log('number of jobTitles deleted:')
+        console.log(deletedRecordCount);
+
+    })
+
+	}).then(() => {
+
+    res.json({
+        message: `The job title mapping '${jobTitleMap[0].jobTitleID}' - '${jobTitleMap[0].jobSubTitleID}' has been deleted successfully`,
+    })
+
+	}).catch(error => {
+
+    console.log(error);
+    res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+    });
+
+	})
+}
+
 module.exports = {
     indexJobTitle: indexJobTitle,
     indexJobSubTitle: indexJobSubTitle,
     updateJobTitle: updateJobTitle,
     insertJobTitle: insertJobTitle,
     deleteJobTitle: deleteJobTitle,
-    insertJobSubTitle: insertJobSubTitle    
+		insertJobSubTitle: insertJobSubTitle,
+		insertJobTitleMap: insertJobTitleMap,
+		deleteJobTitleMap: deleteJobTitleMap    
 }

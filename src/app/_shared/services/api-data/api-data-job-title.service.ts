@@ -34,11 +34,11 @@ export class ApiDataJobTitleService {
   }
 
   // Admin
-  insertJobTitle(newJobTitle: any) {
+  insertJobTitle(jobTitleData: any) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(`/api/insertJobTitle`, JSON.stringify(newJobTitle), options)
-      .timeout(this.timeout)
+    return this.http.post(`/api/insertJobTitle`, JSON.stringify(jobTitleData), options)
+      .timeout(this.appDataService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -46,15 +46,31 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/insertJobTitleSub`, JSON.stringify(newJobTitle), options)
-      .timeout(this.timeout)
+      .timeout(this.appDataService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
-  deletejobTitle(jobTitleData: any) {
+  deleteJobTitle(jobTitleData: any) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(`/api/deletejobTitle`, JSON.stringify(jobTitleData), options)
-      .timeout(this.timeout)
+    return this.http.post(`/api/deleteJobTitle`, JSON.stringify(jobTitleData), options)
+      .timeout(this.appDataService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  insertJobTitleMap(mapData: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/insertJobTitleMap`, JSON.stringify(mapData), options)
+      .timeout(this.appDataService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  deletejobTitleMap(mapData: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/deletejobTitleMap`, JSON.stringify(mapData), options)
+      .timeout(this.appDataService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 

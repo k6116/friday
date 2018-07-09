@@ -22,6 +22,7 @@ export class JobTitlesComponent implements OnInit {
   jobTtitleExists: boolean;
   description: any;
   tagMap: any;
+  subTitlesInit: boolean;
 
   constructor(
     private apiDataJobTitleService: ApiDataJobTitleService,
@@ -30,6 +31,7 @@ export class JobTitlesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.subTitlesInit = true;
     this.getJobTitleList();
     this.getJobSubTitleList();
   }
@@ -54,7 +56,7 @@ export class JobTitlesComponent implements OnInit {
       res => {
         console.log('getJobSubTitleList:', res);
         this.jobSubTitleList = res;
-        this.numJobTitlesToDisplay = this.jobTitleList.length;
+        this.numJobSubTitlesToDisplay = this.jobSubTitleList.length;
       },
       err => {
         console.log(err);
@@ -63,6 +65,7 @@ export class JobTitlesComponent implements OnInit {
   }
 
   getJobSubTitleListMap(id: number) {
+    this.subTitlesInit = false;
     this.jobTitleID = id;
     let index: number;
     // Find index of jobtitle to use in subtitles loop
@@ -94,8 +97,85 @@ export class JobTitlesComponent implements OnInit {
         this.jobSubTitleList[k].checked = false;
       }
     }
-    console.log('INDEX: ', index);
     console.log('jobTitleList:', this.jobTitleList);
     console.log('jobSubTitleList', this.jobSubTitleList);
   }
+
+  onJobSubTitleButtonClick(index: number) {
+    // can't use index because of filter
+    console.log('INDEX', index);
+    console.log('STATUS of CHECKBOX:', this.jobSubTitleList[index].checked);
+  }
+
+  onCheckboxChange(id: number) {
+    console.log('Changed ID: ', id);
+    for (let k = 0; k < this.jobSubTitleList.length; k++) {
+      if (this.jobSubTitleList[k].id === id) {
+        this.jobSubTitleList[k].checked = !this.jobSubTitleList[k].checked;
+        console.log('Changed Checkbox Status:', this.jobSubTitleList[k].checked);
+        this.updateJobTitleList(this.jobSubTitleList[k].checked, id);
+        return;
+      }
+    }
+  }
+
+  updateJobTitleList(updateTo: boolean, idToUpdate: number) {
+    // let index: number;
+    const mapData = [{jobTitleID: this.jobTitleID, jobSubTitleID: idToUpdate}];
+    console.log('MAPDATA:', mapData);
+    if (updateTo === true) {
+      // Add new mapping
+      this.apiDataJobTitleService.insertJobTitleMap(mapData)
+      .subscribe(
+        res => {
+          console.log(res);
+          // this.createSuccess.emit(true);
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    } else if (updateTo === false) {
+      // Remove line in map
+      this.apiDataJobTitleService.deletejobTitleMap(mapData)
+      .subscribe(
+        res => {
+          console.log(res);
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    }
+  }
+
+  onDeleteJobTitleClick() {
+    const jobTitleData = {jobTitleID: this.jobTitleID};
+    this.apiDataJobTitleService.deleteJobTitle(jobTitleData)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+    this.ngOnInit();
+  }
+
+  onCreateJobTitleClick(jobTitleName: string, description: string) {
+    const jobTitleData = {jobTitleName: jobTitleName, description: description};
+    console.log('DATA:', jobTitleData);
+    this.apiDataJobTitleService.insertJobTitle(jobTitleData)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+    this.ngOnInit();
+  }
+
 }
