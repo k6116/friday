@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 
 import { ToolsService } from '../_shared/services/_index';
 
+
 import * as _ from 'lodash';
 
 
 
 @Injectable()
-export class DashboaordStackedColumnService {
+export class DashboardStackedColumnService {
 
   constructor(
     private toolsService: ToolsService
@@ -19,7 +20,7 @@ export class DashboaordStackedColumnService {
   buildChartOptions(dashboardFTEData: any): any {
 
     // iterate through the data and build an array of object with name, projectName, and fte
-    const employeeProjectFTEs = [];
+    let employeeProjectFTEs = [];
     dashboardFTEData.forEach(employee => {
       if (employee.hasOwnProperty('projects')) {
         employee.projects.forEach(project => {
@@ -55,8 +56,8 @@ export class DashboaordStackedColumnService {
       }
     });
 
-    console.log('employeeProjectFTEs:');
-    console.log(employeeProjectFTEs);
+    // console.log('employeeProjectFTEs:');
+    // console.log(employeeProjectFTEs);
 
     // get a unique list of employee names for the xAxis categories, into a string array
     // ['Bill Schuetzle', 'Brian Ivanoff', 'Bryan Cheung', ...]
@@ -66,8 +67,8 @@ export class DashboaordStackedColumnService {
     });
     xAxisCategories = _.uniq(xAxisCategories);
 
-    console.log('unique employee names:');
-    console.log(xAxisCategories);
+    // console.log('unique employee names:');
+    // console.log(xAxisCategories);
 
     // calculate fte percentages
     // build an array of objects with totals for each person
@@ -88,8 +89,12 @@ export class DashboaordStackedColumnService {
       });
     });
 
-    console.log('employeeProjectFTEs with percentages:');
-    console.log(employeeProjectFTEs);
+    // sort the values by name and fte %
+    employeeProjectFTEs = _.reverse(_.sortBy(employeeProjectFTEs, ['percentage']));
+    employeeProjectFTEs = _.sortBy(employeeProjectFTEs, ['name']);
+
+    // console.log('employeeProjectFTEs with percentages:');
+    // console.log(employeeProjectFTEs);
 
     // get a unique list of project names, into an array of objects, omitting nulls
     // [{
@@ -108,8 +113,8 @@ export class DashboaordStackedColumnService {
     });
     uniqueProjectNames = _.uniqBy(uniqueProjectNames, 'name');  // remove duplicates
 
-    console.log('unique project names:');
-    console.log(uniqueProjectNames);
+    // console.log('unique project names:');
+    // console.log(uniqueProjectNames);
 
     // go through employee names in string array; then each project in object array
     // try to find a match in the array of objects on name and projectName
@@ -127,13 +132,15 @@ export class DashboaordStackedColumnService {
       });
     });
 
-    console.log('unique project names:');
-    console.log(uniqueProjectNames);
+    // console.log('unique project names:');
+    // console.log(uniqueProjectNames);
+
 
     // set the chart options
     const chartOptions = {
       chart: {
-        type: 'column'
+        type: 'column',
+        height: 450
       },
       title: {
         text: `Your Team's FTEs by Project`
@@ -182,8 +189,8 @@ export class DashboaordStackedColumnService {
       series: uniqueProjectNames
     };
 
-    console.log('chart options');
-    console.log(chartOptions);
+    // console.log('chart options');
+    // console.log(chartOptions);
 
     // return the chart options object
     return chartOptions;

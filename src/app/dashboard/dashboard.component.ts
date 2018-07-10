@@ -3,7 +3,8 @@ import { AppDataService } from '../_shared/services/app-data.service';
 import { ApiDataOrgService, ApiDataReportService } from '../_shared/services/api-data/_index';
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
-import { DashboaordStackedColumnService } from './dashboaord-stacked-column.service';
+import { DashboardStackedColumnService } from './dashboard-stacked-column.service';
+import { DashboardDonutService } from './dashboard-donut.service';
 
 declare var require: any;
 
@@ -18,7 +19,7 @@ import * as _ from 'lodash';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css', '../_shared/styles/common.css'],
-  providers: [DashboaordStackedColumnService]
+  providers: [DashboardStackedColumnService, DashboardDonutService]
 })
 export class DashboardComponent implements OnInit {
 
@@ -36,7 +37,8 @@ export class DashboardComponent implements OnInit {
     private apiDataOrgService: ApiDataOrgService,
     private authService: AuthService,
     private toolsService: ToolsService,
-    private dashboaordStackedColumnService: DashboaordStackedColumnService
+    private dashboardStackedColumnService: DashboardStackedColumnService,
+    private dashboardDonutService: DashboardDonutService
   ) { }
 
   ngOnInit() {
@@ -68,6 +70,7 @@ export class DashboardComponent implements OnInit {
           this.renderMYFTEsColumnChart();
           this.renderFTEEntryProgress();
           this.renderStackedColumnChart();
+          this.renderDonutChart();
           this.showDashboard = true;
           this.showSpinner = false;
         },
@@ -590,9 +593,18 @@ export class DashboardComponent implements OnInit {
 
   renderStackedColumnChart() {
 
-    const chartOptions = this.dashboaordStackedColumnService.buildChartOptions(this.dashboardFTEData);
+    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardFTEData);
 
     highcharts.chart('chart4', chartOptions);
+
+  }
+
+
+  renderDonutChart() {
+
+    const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardFTEData);
+
+    highcharts.chart('chart5', chartOptions);
 
   }
 

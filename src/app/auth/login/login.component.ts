@@ -107,6 +107,8 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
           });
 
+          console.log(`number of background images: ${this.backgroundImages.length}`);
+
           // set random background image
           this.setBackgroundImage();
         },
