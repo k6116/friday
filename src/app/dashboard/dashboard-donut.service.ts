@@ -23,8 +23,26 @@ export class DashboardDonutService {
     // initialize variables
     const categories: string[] = [];
     const data: any[] = [];
-    const browserData = [];
-    const versionsData = [];
+    const projectTypesData = [];
+    const projectsData = [];
+
+    // sum up total fte across all employees and all projects to use as basis/denominator for fte percentages
+    let allFTEs = 0;
+    dashboardFTEData.forEach(employee => {
+      // if the employee has any projects data
+      if (employee.hasOwnProperty('projects')) {
+        // iterate through each project
+        employee.projects.forEach(project => {
+          // if the project has any fte data
+          if (project.hasOwnProperty('ftes')) {
+            // iterate through each fte
+            project.ftes.forEach(fte => {
+              allFTEs += fte.fte;
+            });
+          }
+        });
+      }
+    });
 
     // build an array of objects with projectType, y, drilldown, and data to put in data
 
@@ -38,8 +56,6 @@ export class DashboardDonutService {
           const foundProjectType = data.find(projectType => {
             return projectType.projectType === project.projectTypeName;
           });
-          console.log('found project type object:');
-          console.log(foundProjectType);
           // if there are ftes, sum them up
           let totalFTEs = 0;
           if (project.hasOwnProperty('ftes')) {
@@ -64,12 +80,6 @@ export class DashboardDonutService {
             foundProjectType.y += totalFTEs;
             // look for the projectName in the array of categories in the found projectType object
             const index = foundProjectType.drilldown.categories.indexOf(project.projectName);
-            console.log('foundProjectType.drilldown.categories');
-            console.log(foundProjectType.drilldown.categories);
-            console.log('project.projectName');
-            console.log(project.projectName);
-            console.log('index');
-            console.log(index);
             // if the project already exists in the drilldown for this project type, just increment the fte total
             if (index !== -1) {
               foundProjectType.drilldown.data[index] += totalFTEs;
@@ -83,9 +93,6 @@ export class DashboardDonutService {
       }
     });
 
-    console.log('data');
-    console.log(data);
-
     // go through the data and move the project types in the categories array
     // at the same time, remove/delete the projectType property (not needed for the chart)
     data.forEach(projectType => {
@@ -93,35 +100,23 @@ export class DashboardDonutService {
       delete projectType.projectType;
     });
 
-    console.log('categories');
-    console.log(categories);
-
-
     // build the data arrays
     for (let i = 0; i < data.length; i += 1) {
 
-      // console.log(data[i].color);
-      // console.log(this.toolsService.hexToRgb(data[i].color));
-      // const color = this.toolsService.hexToRgb(data[i].color);
-      // const newColor = `rgba(${color.r}, ${color.g}, ${color.b}, 0.5)`;
-      console.log(this.toolsService.shadeHexColor(data[i].color, 0.5));
-
-      // add browser data
-      browserData.push({
+      // add project types data (innder data)
+      projectTypesData.push({
         name: categories[i],
-        y: data[i].y,
+        y: this.toolsService.roundTo((data[i].y / allFTEs) * 100, 0),
         color: data[i].color
       });
 
-      // add version data
+      // add projects data (outer / drilldown data)
       const drillDataLen = data[i].drilldown.data.length;
       for (let j = 0; j < drillDataLen; j += 1) {
         const brightness = 0.5 - (j / drillDataLen) / 5;
-        console.log(`brightness:`);
-        console.log(brightness);
-        versionsData.push({
+        projectsData.push({
           name: data[i].drilldown.categories[j],
-          y: data[i].drilldown.data[j],
+          y: this.toolsService.roundTo((data[i].drilldown.data[j] / allFTEs) * 100, 0),
           color: this.toolsService.shadeHexColor(data[i].color, brightness)
         });
       }
@@ -137,6 +132,10 @@ export class DashboardDonutService {
       },
       title: {
           text: `Your Team's FTE's by Project Type`
+      },
+      credits: {
+        text: 'jarvis.is.keysight.com',
+        href: 'https://jarvis.is.keysight.com'
       },
       yAxis: {
         title: {
@@ -154,7 +153,7 @@ export class DashboardDonutService {
       },
       series: [{
         name: 'Project Type',
-        data: browserData,
+        data: projectTypesData,
         size: '60%',
         dataLabels: {
           // formatter: function () {
@@ -165,7 +164,7 @@ export class DashboardDonutService {
         }
       }, {
         name: 'Project',
-        data: versionsData,
+        data: projectsData,
         size: '80%',
         innerSize: '60%',
         // dataLabels: {
@@ -175,7 +174,7 @@ export class DashboardDonutService {
         //       this.y + '%' : null;
         //   }
         // },
-        id: 'versions'
+        id: 'projects'
       }],
       responsive: {
         rules: [{
@@ -184,7 +183,7 @@ export class DashboardDonutService {
           },
           chartOptions: {
             series: [{
-              id: 'versions',
+              id: 'projects',
               dataLabels: {
                 enabled: false
               }
