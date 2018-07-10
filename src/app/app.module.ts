@@ -28,7 +28,7 @@ import { AuthService } from './_shared/services/auth.service';
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';

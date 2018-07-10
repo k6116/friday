@@ -5,6 +5,7 @@ import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
 import { DashboardStackedColumnService } from './dashboard-stacked-column.service';
 import { DashboardDonutService } from './dashboard-donut.service';
+import { DashboardMessagesService } from './dashboard-messages.service';
 
 declare var require: any;
 
@@ -19,10 +20,11 @@ import * as _ from 'lodash';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css', '../_shared/styles/common.css'],
-  providers: [DashboardStackedColumnService, DashboardDonutService]
+  providers: [DashboardStackedColumnService, DashboardDonutService, DashboardMessagesService]
 })
 export class DashboardComponent implements OnInit {
 
+  messages: any;
   dashboardFTEData: any;
   chartOptions: any;
   showDashboard: boolean;
@@ -38,7 +40,8 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private toolsService: ToolsService,
     private dashboardStackedColumnService: DashboardStackedColumnService,
-    private dashboardDonutService: DashboardDonutService
+    private dashboardDonutService: DashboardDonutService,
+    private dashboardMessagesService: DashboardMessagesService
   ) { }
 
   ngOnInit() {
@@ -66,6 +69,7 @@ export class DashboardComponent implements OnInit {
           console.log('dashboard data:');
           console.log(res);
           this.dashboardFTEData = res;
+          this.displayMessages();
           this.renderMYFTEsPieChart();
           this.renderMYFTEsColumnChart();
           this.renderFTEEntryProgress();
@@ -83,6 +87,30 @@ export class DashboardComponent implements OnInit {
 
       this.highchartsButtons = highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
       // console.log(this.highchartsButtons);
+
+  }
+
+
+  displayMessages() {
+
+    this.messages = [{
+      iconFontClass: 'nc-privacy-policy',
+      iconType: 'info',
+      messageText: `Welcome to Jarvis Resources! You will be given a short
+        guided tutorial when you go to the FTE Entry Page, or you can click here to get started.`
+    },
+    {
+      iconFontClass: 'nc-a-check',
+      iconType: 'alert',
+      messageText: `You have two new requests to join your projects Treadstone and BlackBriar.
+        Go to the Projects page to approve or deny the requests.`
+    },
+    {
+      iconFontClass: 'nc-time-countdown',
+      iconType: 'warning',
+      messageText: `The deadline to enter your FTE entries for this quarter is next Friday, June 29 (7 days).`
+    }
+  ];
 
   }
 

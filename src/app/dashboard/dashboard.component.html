@@ -23,41 +23,15 @@
           <div class="dashboard-notifications">
             <table class="table">
               <tbody>
-                <tr class="dashboard-notifications-table-row">
+                <tr *ngFor="let message of messages; let i=index" class="dashboard-notifications-table-row">
                   <td class="dashboard-notifications-type-icon-cell">
-                    <i class="nc-icon nc-privacy-policy notification-type-icon notify-info" aria-hidden="true"></i>
+                    <i [class]="'nc-icon ' + message.iconFontClass + ' notification-type-icon notify-' + message.iconType" aria-hidden="true"></i>
                   </td>
                   <td class="dashboard-notifications-text-cell">
-                    Welcome to Jarvis Resources!  You will be given a short guided tutorial when you go to the FTE Entry Page, or you can click here to get started.
-                  </td>
-                  <td class="dashboard-notifications-dismiss-icon-cell">
-                    <i class="fa fa-times notification-dismiss-icon" aria-hidden="true"></i>
-                  </td>
-                </tr>
-                <tr class="dashboard-notifications-table-row">
-                  <td class="dashboard-notifications-type-icon-cell">
-                    <i class="nc-icon nc-a-check notification-type-icon notify-alert" aria-hidden="true"></i>
-                  </td>
-                  <td class="dashboard-notifications-text-cell">
-                    You have two new requests to join your projects Treadstone and BlackBriar.  Go to the Projects page to approve or deny the requests.
-                  </td>
-                  <td class="dashboard-notifications-dismiss-icon-cell">
-                    <i class="fa fa-times notification-dismiss-icon" aria-hidden="true"></i>
-                  </td>
-                </tr>
-                <tr class="dashboard-notifications-table-row">
-                  <td class="dashboard-notifications-type-icon-cell">
-                    <i class="nc-icon nc-time-countdown notification-type-icon notify-warning" aria-hidden="true"></i>
-                  </td>
-                  <td class="dashboard-notifications-text-cell">
-                    The deadline to enter your FTE entries for this quarter is next Friday, June 29 (7 days).
-                  </td>
-                  <td class="dashboard-notifications-dismiss-icon-cell">
-                    <!-- <i class="fa fa-trash-o notification-dismiss-icon" aria-hidden="true"></i> -->
+                    {{ message.messageText }}
                   </td>
                 </tr>
               </tbody>
-              
             </table>
           </div>
         </div>
