@@ -3,7 +3,6 @@ const sequelizePLM = require('../db/sequelize').sequelizePLM;
 const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
-const sleep = require('system-sleep');
 
 // TO-DO PAUL: create reports folder with separate controller files
 
@@ -317,35 +316,7 @@ function getQuarterlyEmployeeFTETotals(req, res) {
 }
 
 
-function getDashboardFTEData(req, res) {
 
-  const userEmailAddress = req.params.employeeEmailAddress;
-  const startDate = req.params.startDate;
-  const endDate = req.params.endDate;
-
-  sequelize.query('EXECUTE resources.DashboardFTEData :userEmailAddress, :startDate, :endDate', 
-    {replacements: {userEmailAddress: userEmailAddress, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
-    .then(dashboardData => {
-
-      // TEMP CODE: for testing datadog alerts
-      // sleep(5000);
-
-      const dashboardDataTree = new Treeize();
-      dashboardDataTree.grow(dashboardData);
-      const dashboardDataTreeized = dashboardDataTree.getData();
-
-      console.log("returning dashboard data");
-      res.json(dashboardDataTreeized);
-
-    })
-    .catch(error => {
-      res.status(400).json({
-        title: 'Error (in catch)',
-        error: {message: error}
-      })
-    });
-
-}
 
 module.exports = {
   getAggregatedFteData: getAggregatedFteData,
@@ -355,6 +326,5 @@ module.exports = {
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,
   getProjectEmployeeFTEList: getProjectEmployeeFTEList,
-  getQuarterlyEmployeeFTETotals: getQuarterlyEmployeeFTETotals,
-  getDashboardFTEData: getDashboardFTEData
+  getQuarterlyEmployeeFTETotals: getQuarterlyEmployeeFTETotals
 }

@@ -140,6 +140,7 @@ import { FooterComponent } from './footer/footer.component';
     ApiDataPermissionService,
     ApiDataProjectService,
     ApiDataReportService,
+    ApiDataDashboardService,
     AppDataService,
     AuthService,
     AuthGuardService,

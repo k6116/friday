@@ -38,7 +38,6 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
     this.subscription2 = this.appDataService.confirmModalClose.subscribe(
       (close: boolean) => {
         // close the modal (regardless of the value, but by convention should pass true)
-        console.log('disposing of the confirm modal');
         $('#confirm-modal').modal('hide');
     });
 

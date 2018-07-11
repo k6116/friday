@@ -74,7 +74,7 @@ i.nc-icon.messages-icon {
 
 div.dashboard-notifications {
   overflow-y: auto;
-  min-height: 200px;
+  min-height: 100px;
   max-height: 300px;
   margin-top: 15px;
 }
@@ -99,7 +99,7 @@ td.dashboard-notifications-type-icon-cell {
 
 i.notification-type-icon {
   font-size: 24px;
-  font-weight: 600;
+  /* font-weight: 600; */
 }
 
 i.notification-type-icon.notify-info {

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { AppDataService } from '../_shared/services/app-data.service';
-import { ApiDataOrgService, ApiDataReportService } from '../_shared/services/api-data/_index';
+import { ApiDataOrgService, ApiDataReportService, ApiDataDashboardService } from '../_shared/services/api-data/_index';
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
 import { DashboardStackedColumnService } from './dashboard-stacked-column.service';
@@ -8,6 +8,7 @@ import { DashboardDonutService } from './dashboard-donut.service';
 import { DashboardMessagesService } from './dashboard-messages.service';
 
 declare var require: any;
+declare var $: any;
 
 import * as highcharts from 'highcharts';
 require('highcharts/modules/data.js')(highcharts);
@@ -24,7 +25,7 @@ import * as _ from 'lodash';
 })
 export class DashboardComponent implements OnInit {
 
-  messages: any;
+  messages: any[] = [];
   dashboardFTEData: any;
   chartOptions: any;
   showDashboard: boolean;
@@ -33,10 +34,25 @@ export class DashboardComponent implements OnInit {
   completedFTEs: string;
   notCompletedFTEs: string;
 
+  @HostListener('document:click', ['$event.target']) public onClick(targetElement) {
+    console.log(targetElement);
+
+    // get the element into a jQuery object
+    const $el = $(targetElement);
+    console.log($el);
+
+    // get the data from the attribute
+    // explain what closest does and especially why
+    const clickTrack = $el.data('dashboard');
+    console.log(clickTrack);
+
+  }
+
   constructor(
     private appDataService: AppDataService,
     private apiDataReportService: ApiDataReportService,
     private apiDataOrgService: ApiDataOrgService,
+    private apiDataDashboardService: ApiDataDashboardService,
     private authService: AuthService,
     private toolsService: ToolsService,
     private dashboardStackedColumnService: DashboardStackedColumnService,
@@ -57,19 +73,22 @@ export class DashboardComponent implements OnInit {
     // format: 2013-02-08
 
     // console.log(moment('2018-11-06'));
-    this.fiscalQuarter(moment('2017-10-31'));
+    this.fiscalQuarter(moment());
+    console.log(this.fiscalQuarterString(moment()));
+    console.log(this.fiscalQuarterRange(moment()));
 
     this.startOfYear(moment());
     this.endOfYear(moment());
     this.currentYearMonths(moment());
 
-    this.apiDataReportService.getDashboardFTEData(this.authService.loggedInUser.email, '05-01-2018', '08-01-2018')
+    this.apiDataDashboardService.getDashboardData(this.authService.loggedInUser.email, '05-01-2018', '08-01-2018',
+      this.authService.loggedInUser.userName, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           console.log('dashboard data:');
           console.log(res);
-          this.dashboardFTEData = res;
-          this.displayMessages();
+          this.dashboardFTEData = res[0];
+          this.displayMessages(res);
           this.renderMYFTEsPieChart();
           this.renderMYFTEsColumnChart();
           this.renderFTEEntryProgress();
@@ -91,26 +110,31 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  displayMessages() {
+  displayMessages(res) {
 
-    this.messages = [{
-      iconFontClass: 'nc-privacy-policy',
-      iconType: 'info',
-      messageText: `Welcome to Jarvis Resources! You will be given a short
-        guided tutorial when you go to the FTE Entry Page, or you can click here to get started.`
-    },
-    {
-      iconFontClass: 'nc-a-check',
-      iconType: 'alert',
-      messageText: `You have two new requests to join your projects Treadstone and BlackBriar.
-        Go to the Projects page to approve or deny the requests.`
-    },
-    {
-      iconFontClass: 'nc-time-countdown',
-      iconType: 'warning',
-      messageText: `The deadline to enter your FTE entries for this quarter is next Friday, June 29 (7 days).`
-    }
-  ];
+    this.messages = this.dashboardMessagesService.displayMessages(res);
+
+
+
+  //   this.messages = [{
+  //     iconFontClass: 'nc-privacy-policy',
+  //     iconType: 'info',
+  //     messageText: `Welcome to Jarvis Resources! You will be given a short
+  //       guided tutorial when you go to the FTE Entry Page, or you can click here to get started.`
+  //   },
+  //   {
+  //     iconFontClass: 'nc-a-check',
+  //     iconType: 'alert',
+  //     messageText: `You have two new requests to join your projects Treadstone and BlackBriar.
+  //       Go to the <span class="dashboard-link-projects" style="color:blue; cursor:pointer" [data-dashboard]="projects">
+  //         Projects</span> page to approve or deny the requests.`
+  //   },
+  //   {
+  //     iconFontClass: 'nc-time-countdown',
+  //     iconType: 'warning',
+  //     messageText: `The deadline to enter your FTE entries for this quarter is next Friday, June 29 (7 days).`
+  //   }
+  // ];
 
   }
 
@@ -640,12 +664,96 @@ export class DashboardComponent implements OnInit {
 
   fiscalQuarter(date: any) {
     const quarter = moment(date).add(2, 'months').quarter();
+    console.log('quarter');
+    console.log(quarter);
     const month = moment(date).month() + 1;  // need to add 1 since months are zero indexed
+    console.log('month');
+    console.log(month);
     // console.log(`month: ${month}`);
     const year = moment(date).year();
+    console.log('year');
+    console.log(year);
     // console.log(`year: ${year}`);
     const fiscalYear = month >= 11 ? year + 1 : year;
     console.log(`fiscal quarter: Q${quarter} ${fiscalYear}`);
+  }
+
+  // return the current fiscal quarter as a string: 'Q2 2018'
+  fiscalQuarterString(date: any): string {
+
+    // keysight fiscal quarters:
+    // Q1: Nov 1 - Jan 31  [11, 12, 1]
+    // Q2: Feb 1 - Apr 30  [2, 3, 4]
+    // Q3: May 1 - Jul 31  [5, 6, 7]
+    // Q4: Aug 1 - Oct 31  [8, 9, 10]
+
+    // set a two dimensional array of fiscal quarters, months
+    const fiscalQuarters = [[11, 12, 1], [2, 3, 4], [5, 6, 7], [8, 9, 10]];
+
+    // get the current month as a number
+    const month = moment(date).month();
+
+    // find the month in the array to get the quarter
+    let quarter;
+    fiscalQuarters.forEach((fiscalQuarter, index) => {
+      if (fiscalQuarter.includes(month)) {
+        quarter = index + 1;
+      }
+    });
+
+    // get the current year as a number
+    const year = moment(date).year();
+
+    // return the fiscal quarter as a string
+    return `Q${quarter} ${year}`;
+
+  }
+
+
+  // return the current fiscal quarter as an array of strings with the date range
+  // that can be used for a sql query, etc.: ['05-01-2018', '08-01-2018']
+  fiscalQuarterRange(date: any): string[] {
+
+    // keysight fiscal quarters:
+    // Q1: Nov 1 - Jan 31  [11, 12, 1]
+    // Q2: Feb 1 - Apr 30  [2, 3, 4]
+    // Q3: May 1 - Jul 31  [5, 6, 7]
+    // Q4: Aug 1 - Oct 31  [8, 9, 10]
+
+    // set a two dimensional array of fiscal quarters, months
+    const fiscalQuarters = [[11, 12, 1], [2, 3, 4], [5, 6, 7], [8, 9, 10]];
+
+    // get the current month as a number
+    const month = moment(date).month();
+
+    // find the month in the array to get the quarter index, and quarter array
+    let quarterIndex;
+    let quarterArr;
+    fiscalQuarters.forEach((fiscalQuarter, index) => {
+      if (fiscalQuarter.includes(month)) {
+        quarterIndex = index + 1;
+        quarterArr = fiscalQuarter;
+      }
+    });
+
+    // get the current year as a number
+    const year = moment(date).year();
+
+    // get the start and end of the quarter in the proper string format
+    // NOTE: subtracting 1 from the month here since months are zero indexed in moment
+    const startOfQuarter = moment({year: year, month: quarterArr[0] - 1}).format('MM-DD-YYYY');
+    const endOfQuarter = moment({year: year, month: quarterArr[2] - 1}).add(1, 'months').format('MM-DD-YYYY');
+
+    // initialize the empty string array to return
+    const range: string[] = [];
+
+    // push the start and end of quarters into the array
+    range.push(startOfQuarter);
+    range.push(endOfQuarter);
+
+    // return the fiscal quarters as an array of two strings
+    return range;
+
   }
 
   startOfYear(date: any) {

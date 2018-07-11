@@ -27,8 +27,8 @@
                   <td class="dashboard-notifications-type-icon-cell">
                     <i [class]="'nc-icon ' + message.iconFontClass + ' notification-type-icon notify-' + message.iconType" aria-hidden="true"></i>
                   </td>
-                  <td class="dashboard-notifications-text-cell">
-                    {{ message.messageText }}
+                  <td class="dashboard-notifications-text-cell" [innerHTML]="message.messageText | safeHtml">
+                    <!-- {{ message.messageText }} -->
                   </td>
                 </tr>
               </tbody>

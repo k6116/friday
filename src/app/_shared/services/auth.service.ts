@@ -388,7 +388,7 @@ export class AuthService {
       {
         title: 'Logout Warning',
         message: `We haven't heard from you in awhile.  For security you will be logged out in
-          ${this.toolsService.numberToword(this.warnBeforeExpiration)} minutes.  Do you want to keep working?`,
+          ${this.toolsService.numberToWord(this.warnBeforeExpiration)} minutes.  Do you want to keep working?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 27, 27)',
         closeButton: false,

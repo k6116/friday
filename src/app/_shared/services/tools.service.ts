@@ -145,7 +145,7 @@ export class ToolsService {
   }
 
 
-  numberToword(num: number) {
+  numberToWord(num: number) {
 
     const numbersArr = `zero one two three four five six seven eight nine ten
       eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen`.split(' ');
@@ -167,6 +167,7 @@ export class ToolsService {
     return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
   }
 
+
   hexToRgb(hex) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
@@ -175,6 +176,7 @@ export class ToolsService {
       b: parseInt(result[3], 16)
     } : null;
   }
+
 
   shadeHexColor(color, percent) {
     const f = parseInt(color.slice(1), 16), t = percent < 0 ? 0 : 255,
