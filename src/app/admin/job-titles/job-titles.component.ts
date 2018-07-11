@@ -16,6 +16,7 @@ export class JobTitlesComponent implements OnInit {
   numJobTitlesToDisplay: number;
   numJobSubTitlesToDisplay: number;
   jobTitleID: number;
+  jobSubTitleID: number;
   name: string;
   modalTitle: string;
   filteredTitle: string;
@@ -163,10 +164,42 @@ export class JobTitlesComponent implements OnInit {
     this.ngOnInit();
   }
 
+  onDeleteJobSubTitleClick() {
+    const jobSubTitleData = {jobSubTitleID: this.jobSubTitleID};
+    console.log('ID:', jobSubTitleData);
+    this.apiDataJobTitleService.deleteJobSubTitle(jobSubTitleData)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+    this.ngOnInit();
+  }
+
+  onSubTitleTrashClick(id: number) {
+    this.jobSubTitleID = id;
+  }
   onCreateJobTitleClick(jobTitleName: string, description: string) {
     const jobTitleData = {jobTitleName: jobTitleName, description: description};
-    console.log('DATA:', jobTitleData);
     this.apiDataJobTitleService.insertJobTitle(jobTitleData)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+    this.ngOnInit();
+  }
+
+  onCreateJobSubTitleClick(jobSubTitleName: string, description: string) {
+    const jobSubTitleData = {jobSubTitleName: jobSubTitleName, description: description};
+    console.log('DATA:', jobSubTitleData);
+    this.apiDataJobTitleService.insertJobSubTitle(jobSubTitleData)
     .subscribe(
       res => {
         console.log(res);

@@ -55,7 +55,7 @@ function indexJobSubTitle(req, res) {
 function updateJobTitle(req,res) {
     const jobTitles = req.body;
     const userID = req.params.userID;
-    console.log(jobTitles);
+    // console.log('JOBTITLE DATA:', jobTitles);
     return sequelize.transaction((t) => {
 
         return models.User
@@ -92,12 +92,9 @@ function updateJobTitle(req,res) {
 }
 
 function insertJobTitle(req, res) {
-
-	// get the project object from the request body
 	const jobTitleData = req.body;
-    console.log('jobTitleData to create JOB TITLES: ', jobTitleData);
+	console.log('JOBTITLE DATA:', jobTitleData);
 	return sequelize.transaction((t) => {
-
 		return models.JobTitle
 			.create(
 				{
@@ -168,19 +165,53 @@ function deleteJobTitle(req, res) {
 	})
 }
 
-function insertJobSubTitle(req, res) {
+function deleteJobSubTitle(req, res) {
 
-	// get the project object from the request body
-	const jobTitleData = req.body;
+	const jobSubTitleData = req.body;
+	console.log(`deleting job title with id: ${jobSubTitleData.jobSubTitleID}`);
 
 	return sequelize.transaction((t) => {
 
+    return models.JobSubTitle
+    .destroy(
+        {
+        where: {id: jobSubTitleData.jobSubTitleID},
+        transaction: t
+        }
+    )
+    .then(deletedRecordCount => {
+
+        console.log('number of jobTitles deleted:')
+        console.log(deletedRecordCount);
+
+    })
+
+	}).then(() => {
+
+    res.json({
+        message: `The jobSubTitleID '${jobSubTitleData.jobSubTitleID}' has been deleted successfully`,
+    })
+
+	}).catch(error => {
+
+    console.log(error);
+    res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+    });
+
+	})
+}
+
+function insertJobSubTitle(req, res) {
+	const jobSubTitleData = req.body;
+	console.log('SUBTITLE DATA:', jobSubTitleData);
+	return sequelize.transaction((t) => {
 		return models.JobSubTitle
 			.create(
 				{
-                    // TO-DO CHAI: What is the naming?
-					jobSubTitleName: jobTitleData.jobTitleName,
-					description: jobTitleData.description,
+					jobSubTitleName: jobSubTitleData.jobSubTitleName,
+					description: jobSubTitleData.description,
 				},
 				{
 					transaction: t
@@ -193,7 +224,7 @@ function insertJobSubTitle(req, res) {
 	}).then(() => {
 
 		res.json({
-			message: `The job title '${jobTitleData.jobSubTitleName}' has been added successfully`,
+			message: `The job title '${jobSubTitleData.jobSubTitleName}' has been added successfully`,
 		})
 
 	}).catch(error => {
@@ -284,7 +315,8 @@ module.exports = {
     indexJobSubTitle: indexJobSubTitle,
     updateJobTitle: updateJobTitle,
     insertJobTitle: insertJobTitle,
-    deleteJobTitle: deleteJobTitle,
+		deleteJobTitle: deleteJobTitle,
+		deleteJobSubTitle: deleteJobSubTitle,
 		insertJobSubTitle: insertJobSubTitle,
 		insertJobTitleMap: insertJobTitleMap,
 		deleteJobTitleMap: deleteJobTitleMap    

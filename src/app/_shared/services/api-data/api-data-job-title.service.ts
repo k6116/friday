@@ -42,10 +42,10 @@ export class ApiDataJobTitleService {
       .map((response: Response) => response.json());
   }
 
-  insertJobTitleSub(newJobTitle: any) {
+  insertJobSubTitle(jobSubTitleData: any) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(`/api/insertJobTitleSub`, JSON.stringify(newJobTitle), options)
+    return this.http.post(`/api/insertJobSubTitle`, JSON.stringify(jobSubTitleData), options)
       .timeout(this.appDataService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -54,6 +54,14 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/deleteJobTitle`, JSON.stringify(jobTitleData), options)
+      .timeout(this.appDataService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  deleteJobSubTitle(jobSubTitleData: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/deleteJobSubTitle`, JSON.stringify(jobSubTitleData), options)
       .timeout(this.appDataService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

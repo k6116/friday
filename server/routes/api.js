@@ -68,6 +68,7 @@ router.get('/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
 router.post('/updateJobTitle/:userID', controllers.jobTitle.updateJobTitle);
 router.post('/insertJobTitle', controllers.jobTitle.insertJobTitle);
 router.post('/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
+router.post('/deleteJobSubTitle', controllers.jobTitle.deleteJobSubTitle);
 router.post('/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
 router.post('/insertJobTitleMap', controllers.jobTitle.insertJobTitleMap);
 router.post('/deleteJobTitleMap', controllers.jobTitle.deleteJobTitleMap);

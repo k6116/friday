@@ -45,7 +45,7 @@
       <div class="input-group">
         <input type="text"  class="form-control" name="jobSubTitleName" [(ngModel)]="jobSubTitleName" placeholder="Search Job Subtitle">
         <div class="input-group-append">
-          <button #btnJobSubTitle name="Job Subtitle" class="btn btn-primary btn-fte-toolbar" style="display: block" disabled>
+          <button #btnJobSubTitle name="Job Subtitle" class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="modal" data-target="#createJobSubTitleModal">
             <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
           </button>
         </div>
@@ -71,10 +71,10 @@
               </div>
               <!-- Edit and delete Buttons -->
               <div class="col-1">
-                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#jobTitleEditModal"></i>
+                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#jobSubTitleEditModal"></i>
               </div>
               <div class="col-1">
-                <i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteJobTitleModal"></i>
+                <i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteJobSubTitleModal" (click)="onSubTitleTrashClick(sublist.id)"></i>
               </div>
             </div>
           </button>
@@ -104,7 +104,7 @@
     </div>
   </div>
 
-  <!-- Create Modal -->
+  <!-- Create JobTitle Modal -->
   <!-- Might be moved to it's own component -->
   <div class="modal" tabindex="-1" role="dialog" id="createJobTitleModal">
     <div class="modal-dialog" role="document">
@@ -114,8 +114,8 @@
         </div>
         <div class="modal-body">
           <div class="input-group">
-            <input type="text" #jobTitle name="jobTitle" class="form-control" placeholder="Job Title">&nbsp;
-            <input type="text" #jobTitleDescription name="description" class="form-control" placeholder="Description">&nbsp;
+            <input type="text" #jobTitle class="form-control" placeholder="Job Title">&nbsp;
+            <input type="text" #jobTitleDescription class="form-control" placeholder="Description">&nbsp;
             <div class="input-group-append">
               <!-- To-Do: Figure out a way to close this modal. With data-dismiss it will also close on error. -->
               <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onCreateJobTitleClick(jobTitle.value, jobTitleDescription.value)">OK</button>&nbsp;
@@ -135,3 +135,51 @@
     </div>
   </div>
   <!--  -->
+
+  <!-- Create JobSubTitle Modal -->
+  <!-- Might be moved to it's own component -->
+  <div class="modal" tabindex="-1" role="dialog" id="createJobSubTitleModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="width:150%">
+        <div class="modal-header" style="border-bottom: none; height: 2rem;">
+          <h5 class="title">Create a New Job Subtitle</h5>
+        </div>
+        <div class="modal-body">
+          <div class="input-group">
+            <input type="text" #jobSubTitle class="form-control" placeholder="Job Subtitle">&nbsp;
+            <input type="text" #jobSubTitleDescription class="form-control" placeholder="Description">&nbsp;
+            <div class="input-group-append">
+              <!-- To-Do: Figure out a way to close this modal. With data-dismiss it will also close on error. -->
+              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onCreateJobSubTitleClick(jobSubTitle.value, jobSubTitleDescription.value)">OK</button>&nbsp;
+              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+            </div>
+          </div>
+        </div>
+        <!-- Show a footer if job title already exists -->
+        <!-- <div class="modal-footer">
+          <div>{{ titles.value | json }}</div>
+          <div>{{ titles.get('name').errors | json }}</div> 
+          <div style="color:red" *ngIf="jobTtitleExists" class="footer">This job title already exists.</div>
+          <div style="color:green" *ngIf="!jobTtitleExists" class="footer">Successfully added.</div>
+        </div> -->
+        <!--  -->
+      </div>
+    </div>
+  </div>
+  <!--  -->
+
+  <!-- DeleteJobSubTitle Modal -->
+  <!-- Might be moved to it's own component -->
+  <div class="modal" tabindex="-1" role="dialog" id="deleteJobSubTitleModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="width:150%">
+        <div class="modal-header" style="border-bottom: none; height: 2rem;">
+          <h5 class="title">Are you sure you want to delete this subtitle?</h5>
+        </div>
+        <div class="modal-body">
+          <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="onDeleteJobSubTitleClick()" data-dismiss="modal">OK</button>&nbsp;
+          <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
