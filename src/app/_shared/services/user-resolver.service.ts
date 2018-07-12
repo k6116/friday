@@ -19,6 +19,8 @@ export class UserResolverService implements Resolve<Observable<string>> {
     private apiDataAuthService: ApiDataAuthService
   ) { }
 
+  // TO-DO BILL: comment!!!
+
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     if (this.authService.loggedInUser) {
       console.log('returning logged in user data from memory');

@@ -14,6 +14,7 @@ import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.c
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
@@ -32,6 +33,7 @@ const routes: Routes = [
     path: 'main', component: MainComponent, canActivate: [AuthGuardService], resolve: { loggedInUser: UserResolverService },
     children: [
       { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent },

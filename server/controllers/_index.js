@@ -11,5 +11,6 @@ module.exports = {
   jobTitle: require('./jobTitleController'),
   project: require('./projectController'),
   report: require('./reportController'),
-  metaData: require('./metaDataController')
+  metaData: require('./metaDataController'),
+  dashboard: require('./dashboardController')
 }

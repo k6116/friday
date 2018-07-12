@@ -85,9 +85,9 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     if (!this.cacheService.nestedOrgDataRequested && !this.cacheService.nestedOrgDataCached) {
       // get logged in user's info
       this.authService.getLoggedInUser((user, err) => {
-        // this.getNestedOrgData(user.email);
+        this.getNestedOrgData(user.email);
         // this.getNestedOrgData('ron_nersesian@keysight.com');
-        this.getNestedOrgData('pat_harper@keysight.com');
+        // this.getNestedOrgData('pat_harper@keysight.com');
       });
     }
 
@@ -109,8 +109,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     .subscribe(
       res => {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');
-        // console.log('nested org object retrieved from api data service in employee reports component');
-        // console.log(nestedOrgData);
+        console.log('nested org object retrieved from api data service in employee reports component');
+        console.log(nestedOrgData);
         this.nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
         this.cacheService.$nestedOrgData = this.nestedOrgData;

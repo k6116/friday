@@ -1,0 +1,108 @@
+
+
+
+<div class="container-fluid">
+
+
+  <!-- spinner -->
+  <div class="row row-custom" *ngIf="showSpinner">
+    <div class="col-lg-12 col-custom">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_bars-rotate-32" transform="rotate(270 16 16)"> <rect x="14" fill="#111111" width="4" height="7"></rect> <rect x="22.83883" y="3.66117" transform="matrix(0.70711 0.70711 -0.70711 0.70711 12.33883 -15.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="25" y="14" fill="#111111" width="7" height="4" style="opacity: 0.4;"></rect> <rect x="22.83883" y="21.33883" transform="matrix(-0.70711 0.70711 -0.70711 -0.70711 59.96625 24.83883)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="14" y="25" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="5.16117" y="21.33883" transform="matrix(-0.70711 -0.70711 0.70711 -0.70711 -5.33883 47.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="0" y="14" fill="#111111" width="7" height="4" style="opacity: 0.6;"></rect> <rect x="5.16117" y="3.66117" transform="matrix(0.70711 -0.70711 0.70711 0.70711 -2.96625 7.16117)" fill="#111111" width="4" height="7" style="opacity: 0.8;"></rect> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_bars-rotate-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg>
+    </div>
+  </div>
+
+  <!-- outer container; don't show until data is ready -->
+  <div class="dashboard-cont" [hidden]="!showDashboard">
+
+    <!-- first row -->
+    <div class="row row-custom">
+
+      <!-- messages -->
+      <div class="col-lg-12 col-custom dashboard-notifications-col">
+        <div class="dashboard-notifications-cont">
+          <div class="dashboard-header-cont">
+            <i class="nc-icon nc-chat-round-content messages-icon"></i>
+            <div class="notifications-header-text">
+              Messages
+            </div>
+          </div>
+          <div class="dashboard-notifications">
+            <table class="table">
+              <tbody>
+                <tr *ngFor="let message of messages; let i=index" class="dashboard-notifications-table-row">
+                  <td class="dashboard-notifications-type-icon-cell">
+                    <i [class]="'nc-icon ' + message.iconFontClass + ' notification-type-icon notify-' + message.iconType" aria-hidden="true"></i>
+                  </td>
+                  <td class="dashboard-notifications-text-cell" [innerHTML]="message.messageText | safeHtml">
+                    <!-- {{ message.messageText }} -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- second row -->
+    <div class="row row-custom">
+
+      <!-- pie chart -->
+      <div class="col-lg-6 col-dashboard left-half">
+        <div class="highchart my-fte-pie-chart1" id="pieChart">
+        </div>
+      </div>
+
+      <!-- donut chart -->
+      <div class="col-lg-6 col-dashboard right-half">
+        <div class="highchart my-fte-pie-chart2" id="donutChart">
+        </div>
+      </div>
+  
+      <!-- pareto chart -->
+      <!-- <div class="col-lg-6 col-dashboard right-half">
+        <div class="highchart my-fte-pie-chart2" id="paretoChart">
+        </div>
+      </div> -->
+  
+    </div>
+  
+    <!-- third row -->
+    <div class="row row-custom">
+      
+      <!-- stacked column chart -->
+      <div class="col-lg-12 col-dashboard">
+        <div class="highchart" id="stackedColumnChart">
+        </div>
+      </div>
+      
+    </div>
+
+
+    <!-- fourth row -->
+    <div class="row row-custom">
+
+      <!-- progress gauge -->
+      <div class="col-lg-6 col-dashboard left-half">
+        <div class="highchart my-fte-pie-chart2" id="progressGauge">
+        </div>
+
+        <div class="fte-progress-cont">
+          <div class="fte-progress-completed">
+            <span class="fte-progress-text">{{ completedPrefix }}</span>{{ completedFTEs }}
+          </div>
+          <div class="fte-progress-incomplete">
+            <span class="fte-progress-text">{{ notCompletedPrefix }}</span>{{ notCompletedFTEs }}
+          </div>
+        </div>
+
+      </div>
+      
+    </div>
+
+
+
+  </div>
+
+
+</div>

@@ -130,7 +130,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         console.log('get project data successfull:');
         console.log(res);
         this.projectList = res;
-        this.setRandomProjectAvatars();
         // this.trimProjects(500);
       },
       err => {
@@ -783,6 +782,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         message: `Are you sure you want to permanently delete all of your FTE values for project ${deletedProject.projectName}?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
         allowOutsideClickDismiss: false,
         allowEscKeyDismiss: false,
         buttons: [
@@ -844,6 +844,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         message: `Are you sure you want to reset the form?  Unsaved changes may be lost.`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
         allowOutsideClickDismiss: true,
         allowEscKeyDismiss: true,
         buttons: [
@@ -1041,37 +1042,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   }
 
-
-  // TEMP CODE: to emulate/spoof project avatars
-  setRandomProjectAvatars() {
-    // tslint:disable-next-line:max-line-length
-    const avatarFiles = ['avocado', 'bacon', 'beer', 'cheese', 'coffee', 'fries', 'grapes', 'lemon-slice', 'pizza-slice', 'tacos', 'watermelon'];
-    this.projectList.forEach(project => {
-      const randomFileIndex: number = Math.floor((Math.random() * (avatarFiles.length)));
-      const randomFile = avatarFiles[randomFileIndex];
-      const randomProject: number = Math.floor((Math.random() * (3)));
-      if (project.ProjectName === 'Deuce') {
-        project.avatar = `../assets/deuce.png`;
-      } else if (project.ProjectName === 'Arges50') {
-        project.avatar = `../assets/arges.png`;
-      } else if (project.ProjectName === 'Baymax') {
-        project.avatar = `../assets/baymax.png`;
-      } else if (project.ProjectName === 'Minions') {
-        project.avatar = `../assets/minions.png`;
-      } else if (randomProject === 0) {
-        project.avatar = `../assets/${randomFile}.png`;
-      } else {
-        project.avatar = null;
-      }
-    });
-    // console.log('projects with avatars');
-    // const filteredProjects = this.projectList.filter(project => {
-    //   return project.avatar;
-    // });
-    // console.log(filteredProjects);
-    // console.log('number of project with avatars:');
-    // console.log(filteredProjects.length);
-  }
 
   trimProjects(numProjects: number) {
     this.projectList = this.projectList.slice(0, numProjects);

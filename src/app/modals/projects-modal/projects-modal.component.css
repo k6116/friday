@@ -31,8 +31,8 @@ div.projects-modal-inner-cont {
 }
 
 div.projects-modal-body {
-  height: 100%;
-  width: 100%;
+  /* height: 100%;
+  width: 100%; */
   padding: 0 40px;
 }
 
@@ -52,21 +52,6 @@ input.projects-filter-input {
   /* z-index: 101; */
 }
 
-
-/* pagination */
-
-div.projects-pagination {
-  display: inline-block;
-  margin-left: 20px;
-}
-
-div.projects-pagination {
-  font-size: 14px;
-}
-
-a.page-link.active {
-  background-color: rgb(233, 236, 239);
-}
 
 
 /* close button */

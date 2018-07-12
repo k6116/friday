@@ -13,6 +13,7 @@ router.get('/getInfoFromToken', controllers.auth.getInfoFromToken);
 router.post('/resetToken', controllers.auth.resetToken);
 router.get('/getLoggedInUsers', controllers.auth.getLoggedInUsers);
 router.get('/logout/:userName', controllers.auth.logout);
+router.get('/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
 
 // FTE CONTROLLER
 router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
@@ -75,6 +76,12 @@ router.get('/report/getProjectFTEHistory/:projectID', controllers.report.getProj
 router.get('/report/getTopFTEProjectList/', controllers.report.getTopFTEProjectList);
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
+
+
+// DASHBOARD CONTROLLER
+router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);
+router.get('/dashboard/checkFirstLogin/:userName', controllers.dashboard.checkFirstLogin);
+router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 

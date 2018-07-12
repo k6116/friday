@@ -20,19 +20,7 @@ export class User implements Deserializable<User> {
   updatedAt: string;
   expiringAt: number;
 
-  // constructor(user: any) {
-  //   this.id = user.id;
-  //   this.fullName = user.fullName;
-  //   this.userName = user.userName;
-  //   this.email = user.email;
-  //   this.roleID = user.roleID;
-  //   this.loginEnabled = user.loginEnabled;
-  //   this.forcePasswordReset = user.forcePasswordReset;
-  //   this.createdBy = user.createdBy;
-  //   this.createdAt = user.createdAt;
-  //   this.updatedBy = user.updatedBy;
-  //   this.updatedAt = user.updatedAt;
-  // }
+  // TO-DO BILL: add comments for these three methods
 
   deserialize(user: any): User {
     Object.assign(this, user);

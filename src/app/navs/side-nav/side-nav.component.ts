@@ -27,6 +27,14 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       // build an object that represents the sidebar menu structure, to be rendered in the html
       this.menuStructure = [
         {
+          title: 'Dashboard',
+          iconClass: 'nc-dashboard-half',
+          alias: 'dashboard',
+          path: 'main/dashboard',
+          expanded: false,
+          active: false
+        },
+        {
           title: 'FTE Entry',
           iconClass: 'nc-calendar-add',
           alias: 'fteEntry',
@@ -47,6 +55,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           iconClass: 'nc-chart-bar-33',
           alias: 'reports',
           expanded: false,
+          active: false,
           subItems: [
             {
               title: 'My FTE Summary',
@@ -84,14 +93,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               active: false
             }
           ]
-        },
-        {
-          title: 'WebSockets',
-          iconClass: 'nc-socket',
-          alias: 'websockets',
-          path: 'main/chat',
-          expanded: false,
-          active: false
         }
       ];
 
@@ -154,13 +155,25 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSubMenuItemClick(menuItem: string, subMenuItem: string) {
+  onSubMenuItemClick(element, menuItem: string, subMenuItem: string) {
     // get the menu item object in the menu structure (this.menuStructure)
     // TO-DO: attempt to combine getMenuObject and getSubMenuObject into a single method
     const foundMenuItem = this.getSubMenuObject(menuItem, subMenuItem);
     // navigate to the selected/clicked route
     this.router.navigate([`/${foundMenuItem.path}`]);
     this.highlightActiveMenu(foundMenuItem.path);
+
+    // find the closest parent main menu item, to show it as highlighted (white text)
+    // const alias = $(element).closest('div.sidenav-menu-item').data('alias');
+    // // find the menu item object matching the alias
+    // const foundMainMenuItem = this.menuStructure.find(mainMenuItem => {
+    //   return mainMenuItem.alias === alias;
+    // });
+    // // if a menu item was found, set active to true
+    // if (foundMainMenuItem) {
+    //   foundMainMenuItem.active = true;
+    // }
+
   }
 
   // hightlight the active/selected menu by going through the entire menu structure (main menu and sub menu items)
@@ -250,8 +263,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     const $el = $(`div.sidenav-menu-item.${alias}`);
     // find the menu item using the alias
     const foundMenuItem = this.getMenuObject(alias);
-    // set/calculate the height - will be 55 pixels collapses, and 55 + 40 times the number of subitems (and extra 3px)
-    const height = expand ? 55 + 3 + (foundMenuItem.subItems.length * 40) : 55;
+    // set/calculate the height
+    // will be 55 pixels collapsed, and 55 + 40 times the number of subitems (and extra 20px for bottom margin)
+    const height = expand ? 55 + 20 + (foundMenuItem.subItems.length * 40) : 55;
     // if animation is desired, set the transition css otherwise clear it
     if (animate) {
       $el.css('transition', 'height .35s ease-out');
