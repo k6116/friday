@@ -159,7 +159,7 @@
                       <tbody>
                         <tr *ngFor="let teamMember of projectRoster?.teamMembers">
                           <td width="40%">{{ teamMember.name }}</td>
-                          <td width = "55%" *ngIf="!toggleEditProjectRole && teamMember.name===loggedInUser.fullName">{{ teamMember.jobTitle }}</td>
+                          <td width = "55%" *ngIf="!toggleEditProjectRole">{{ teamMember.jobTitle }}</td>
                           <td width = "55%" *ngIf="toggleEditProjectRole && teamMember.name===loggedInUser.fullName">
                               <form>
                                 <div class="form-group form-group-custom">
