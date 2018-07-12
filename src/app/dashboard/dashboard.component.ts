@@ -3,9 +3,14 @@ import { AppDataService } from '../_shared/services/app-data.service';
 import { ApiDataOrgService, ApiDataReportService, ApiDataDashboardService } from '../_shared/services/api-data/_index';
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
-import { DashboardStackedColumnService } from './dashboard-stacked-column.service';
 import { DashboardDonutService } from './dashboard-donut.service';
+import { DashboardGaugeService } from './dashboard-gauge.service';
 import { DashboardMessagesService } from './dashboard-messages.service';
+import { DashboardParetoService } from './dashboard-pareto.service';
+import { DashboardPieService } from './dashboard-pie.service';
+import { DashboardStackedColumnService } from './dashboard-stacked-column.service';
+// import { DashboardDonutService, DashboardGaugeService, DashboardMessagesService, DashboardPareto,
+//     DashboardPieService, DashboardStackedColumnService } from './_index';
 
 declare var require: any;
 declare var $: any;
@@ -21,7 +26,8 @@ import * as _ from 'lodash';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css', '../_shared/styles/common.css'],
-  providers: [DashboardStackedColumnService, DashboardDonutService, DashboardMessagesService]
+  providers: [DashboardDonutService, DashboardGaugeService, DashboardMessagesService, DashboardParetoService,
+    DashboardPieService, DashboardStackedColumnService]
 })
 export class DashboardComponent implements OnInit {
 
@@ -34,19 +40,6 @@ export class DashboardComponent implements OnInit {
   completedFTEs: string;
   notCompletedFTEs: string;
 
-  @HostListener('document:click', ['$event.target']) public onClick(targetElement) {
-    console.log(targetElement);
-
-    // get the element into a jQuery object
-    const $el = $(targetElement);
-    console.log($el);
-
-    // get the data from the attribute
-    // explain what closest does and especially why
-    const clickTrack = $el.data('dashboard');
-    console.log(clickTrack);
-
-  }
 
   constructor(
     private appDataService: AppDataService,
@@ -55,33 +48,26 @@ export class DashboardComponent implements OnInit {
     private apiDataDashboardService: ApiDataDashboardService,
     private authService: AuthService,
     private toolsService: ToolsService,
-    private dashboardStackedColumnService: DashboardStackedColumnService,
     private dashboardDonutService: DashboardDonutService,
-    private dashboardMessagesService: DashboardMessagesService
+    private dashboardGaugeService: DashboardGaugeService,
+    private dashboardMessagesService: DashboardMessagesService,
+    private dashboardPareto: DashboardParetoService,
+    private dashboardPieService: DashboardPieService,
+    private dashboardStackedColumnService: DashboardStackedColumnService
   ) { }
 
   ngOnInit() {
 
-
+    // show the waiting to render spinner
     this.showSpinner = true;
 
-    const currentTime = moment();
+    // get the current fiscal quarter's date range (array of two strings in the format 'MM-DD-YYYY')
+    const fiscalQuarterRange = this.toolsService.fiscalQuarterRange(moment(), 'MM-DD-YYYY');
 
-    console.log('current time');
-    console.log(currentTime);
-
-    // format: 2013-02-08
-
-    // console.log(moment('2018-11-06'));
-    this.fiscalQuarter(moment());
-    console.log(this.fiscalQuarterString(moment()));
-    console.log(this.fiscalQuarterRange(moment()));
-
-    this.startOfYear(moment());
-    this.endOfYear(moment());
-    this.currentYearMonths(moment());
-
-    this.apiDataDashboardService.getDashboardData(this.authService.loggedInUser.email, '05-01-2018', '08-01-2018',
+    // get the dashboard data from the database
+    // returns as a single response array using forkjoin:
+    // [fteData, firstLogin, projectRequests]
+    this.apiDataDashboardService.getDashboardData(this.authService.loggedInUser.email, fiscalQuarterRange[0], fiscalQuarterRange[1],
       this.authService.loggedInUser.userName, this.authService.loggedInUser.id)
       .subscribe(
         res => {
@@ -104,6 +90,7 @@ export class DashboardComponent implements OnInit {
         }
       );
 
+      // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
       this.highchartsButtons = highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
       // console.log(this.highchartsButtons);
 
@@ -317,89 +304,94 @@ export class DashboardComponent implements OnInit {
       return data.emailAddress === this.authService.loggedInUser.email;
     });
 
-    // console.log('fte data for logged in user:');
-    // console.log(fteData);
-
-    // if the user does not have any projects, exit here
-    // if (!fteData.hasOwnProperty('projects')) {
-    //   return;
-    // }
-
     // sum up total fte number across all the user's projects (will be for the current quarter always)
     let fteTotal = 0;
-    fteData[0].projects.forEach(project => {
-      project.ftes.forEach(month => {
-        fteTotal += month.fte;
+    if (fteData[0].hasOwnProperty('projects')) {
+      fteData[0].projects.forEach(project => {
+        if (project.hasOwnProperty('ftes')) {
+          project.ftes.forEach(month => {
+            fteTotal += month.fte;
+          });
+        }
       });
-    });
-
-    // console.log(`total fte for the quarter is: ${fteTotal} (should be 3)`);
+    }
 
     // for each project, total up the ftes, calculate the percentages and push into the array
     let seriesData = [];
-    fteData[0].projects.forEach(project => {
-      let projectFTETotal = 0;
-      project.ftes.forEach(month => {
-        projectFTETotal += month.fte;
+    if (fteData[0].hasOwnProperty('projects')) {
+      fteData[0].projects.forEach(project => {
+        let projectFTETotal = 0;
+        if (project.hasOwnProperty('ftes')) {
+          project.ftes.forEach(month => {
+            projectFTETotal += month.fte;
+          });
+          seriesData.push({
+            name: project.projectName,
+            y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 1),
+            drilldown: project.projectName
+          });
+        }
       });
-      seriesData.push({
-        name: project.projectName,
-        y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 1),
-        drilldown: project.projectName
-      });
-    });
+    }
 
     // sort the array by fte value in descending order
-    seriesData = _.reverse(_.sortBy(seriesData, ['y']));
+    if (seriesData.length) {
+      seriesData = _.reverse(_.sortBy(seriesData, ['y']));
+    }
 
     // console.log('series data for your ftes:');
     // console.log(seriesData);
 
     // build the drilldown data
     const drilldownSeries = [];
-    fteData[0].projects.forEach(project => {
+    if (fteData[0].hasOwnProperty('projects')) {
+      fteData[0].projects.forEach(project => {
 
-      // build an array of unique team member names for this project
-      let teamMembers = [];
-      let projectFTESum = 0;
-      project.ftes.forEach(month => {
-        month.teamMembers.forEach(teamMember => {
-          teamMembers.push(teamMember.fullName);
-          projectFTESum += teamMember.fte;
-        });
-      });
-      teamMembers = _.uniq(teamMembers);
-      // console.log(`unique team members array for ${project.projectName}`);
-      // console.log(teamMembers);
-      // console.log(`sum of ftes for ${project.projectName} is ${projectFTESum}`);
-
-      // get the fte total and percent for each team member
-      const drillDownData = [];
-      teamMembers.forEach(teamMemberName => {
-        let teamMemberFTETotal = 0;
-        project.ftes.forEach(month => {
-          month.teamMembers.forEach(teamMember => {
-            if (teamMember.fullName === teamMemberName) {
-              teamMemberFTETotal += teamMember.fte;
-            }
+        // build an array of unique team member names for this project
+        let teamMembers = [];
+        let projectFTESum = 0;
+        if (project.hasOwnProperty('ftes')) {
+          project.ftes.forEach(month => {
+            month.teamMembers.forEach(teamMember => {
+              teamMembers.push(teamMember.fullName);
+              projectFTESum += teamMember.fte;
+            });
           });
-        });
-        drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 1)]);
+          teamMembers = _.uniq(teamMembers);
+          // console.log(`unique team members array for ${project.projectName}`);
+          // console.log(teamMembers);
+          // console.log(`sum of ftes for ${project.projectName} is ${projectFTESum}`);
+
+          // get the fte total and percent for each team member
+          const drillDownData = [];
+          teamMembers.forEach(teamMemberName => {
+            let teamMemberFTETotal = 0;
+            project.ftes.forEach(month => {
+              month.teamMembers.forEach(teamMember => {
+                if (teamMember.fullName === teamMemberName) {
+                  teamMemberFTETotal += teamMember.fte;
+                }
+              });
+            });
+            drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 1)]);
+          });
+
+          // TO-DO: push into an array of object first, then use _.sortBy to sort by fte percent descending
+          // then push into the arrays with just the values with no keys
+
+          // push in an object for each project/slice
+          drilldownSeries.push({
+            name: project.projectName,
+            id: project.projectName,
+            data: drillDownData
+          });
+          // console.log(`drilldownSeries for ${project.projectName}`);
+          // console.log(drilldownSeries);
+
+        }
+
       });
-
-      // TO-DO: push into an array of object first, then use _.sortBy to sort by fte percent descending
-      // then push into the arrays with just the values with no keys
-
-      // push in an object for each project/slice
-      drilldownSeries.push({
-        name: project.projectName,
-        id: project.projectName,
-        data: drillDownData
-      });
-      // console.log(`drilldownSeries for ${project.projectName}`);
-      // console.log(drilldownSeries);
-
-    });
+    }
 
     const chartOptions = {
       chart: {
@@ -474,7 +466,7 @@ export class DashboardComponent implements OnInit {
           });
         });
         console.log(`total fte for employee ${employee.name} is: ${fteTotal}`);
-        if (this.toolsService.roundTo(fteTotal, 0) === 3) {
+        if (this.toolsService.roundTo(fteTotal, 2) === 3.00) {
           completedFTEsArr.push(employee.name);
         } else {
           notCompletedFTEsArr.push(employee.name);
@@ -566,87 +558,9 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  renderMYFTEsPieChart2() {
-
-    const chartOptions = {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 450
-      },
-      title: {
-        text: `Your Team's FTEs By Project`
-      },
-      subtitle: {
-        text: 'Current Fiscal Quarter: 5/1/18 - 8/1/18'
-      },
-      credits: {
-        text: 'jarvis.is.keysight.com',
-        href: 'https://jarvis.is.keysight.com'
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}</b>'
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f}%'
-          }
-        }
-      },
-      series: [{
-        name: 'FTE %',
-        colorByPoint: true,
-          data: [{
-              name: 'Chrome',
-              y: 61.41,
-              sliced: true,
-              selected: true
-          }, {
-              name: 'Internet Explorer',
-              y: 11.84
-          }, {
-              name: 'Firefox',
-              y: 10.85
-          }, {
-              name: 'Edge',
-              y: 4.67
-          }, {
-              name: 'Safari',
-              y: 4.18
-          }, {
-              name: 'Sogou Explorer',
-              y: 1.64
-          }, {
-              name: 'Opera',
-              y: 1.6
-          }, {
-              name: 'QQ',
-              y: 1.2
-          }, {
-              name: 'Other',
-              y: 2.61
-          }]
-      }]
-    };
-
-
-    highcharts.chart('chart2', chartOptions);
-
-
-
-  }
-
-
   renderStackedColumnChart() {
 
     const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardFTEData);
-
     highcharts.chart('chart4', chartOptions);
 
   }
@@ -655,129 +569,8 @@ export class DashboardComponent implements OnInit {
   renderDonutChart() {
 
     const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardFTEData);
-
     highcharts.chart('chart5', chartOptions);
 
-  }
-
-
-
-  fiscalQuarter(date: any) {
-    const quarter = moment(date).add(2, 'months').quarter();
-    console.log('quarter');
-    console.log(quarter);
-    const month = moment(date).month() + 1;  // need to add 1 since months are zero indexed
-    console.log('month');
-    console.log(month);
-    // console.log(`month: ${month}`);
-    const year = moment(date).year();
-    console.log('year');
-    console.log(year);
-    // console.log(`year: ${year}`);
-    const fiscalYear = month >= 11 ? year + 1 : year;
-    console.log(`fiscal quarter: Q${quarter} ${fiscalYear}`);
-  }
-
-  // return the current fiscal quarter as a string: 'Q2 2018'
-  fiscalQuarterString(date: any): string {
-
-    // keysight fiscal quarters:
-    // Q1: Nov 1 - Jan 31  [11, 12, 1]
-    // Q2: Feb 1 - Apr 30  [2, 3, 4]
-    // Q3: May 1 - Jul 31  [5, 6, 7]
-    // Q4: Aug 1 - Oct 31  [8, 9, 10]
-
-    // set a two dimensional array of fiscal quarters, months
-    const fiscalQuarters = [[11, 12, 1], [2, 3, 4], [5, 6, 7], [8, 9, 10]];
-
-    // get the current month as a number
-    const month = moment(date).month();
-
-    // find the month in the array to get the quarter
-    let quarter;
-    fiscalQuarters.forEach((fiscalQuarter, index) => {
-      if (fiscalQuarter.includes(month)) {
-        quarter = index + 1;
-      }
-    });
-
-    // get the current year as a number
-    const year = moment(date).year();
-
-    // return the fiscal quarter as a string
-    return `Q${quarter} ${year}`;
-
-  }
-
-
-  // return the current fiscal quarter as an array of strings with the date range
-  // that can be used for a sql query, etc.: ['05-01-2018', '08-01-2018']
-  fiscalQuarterRange(date: any): string[] {
-
-    // keysight fiscal quarters:
-    // Q1: Nov 1 - Jan 31  [11, 12, 1]
-    // Q2: Feb 1 - Apr 30  [2, 3, 4]
-    // Q3: May 1 - Jul 31  [5, 6, 7]
-    // Q4: Aug 1 - Oct 31  [8, 9, 10]
-
-    // set a two dimensional array of fiscal quarters, months
-    const fiscalQuarters = [[11, 12, 1], [2, 3, 4], [5, 6, 7], [8, 9, 10]];
-
-    // get the current month as a number
-    const month = moment(date).month();
-
-    // find the month in the array to get the quarter index, and quarter array
-    let quarterIndex;
-    let quarterArr;
-    fiscalQuarters.forEach((fiscalQuarter, index) => {
-      if (fiscalQuarter.includes(month)) {
-        quarterIndex = index + 1;
-        quarterArr = fiscalQuarter;
-      }
-    });
-
-    // get the current year as a number
-    const year = moment(date).year();
-
-    // get the start and end of the quarter in the proper string format
-    // NOTE: subtracting 1 from the month here since months are zero indexed in moment
-    const startOfQuarter = moment({year: year, month: quarterArr[0] - 1}).format('MM-DD-YYYY');
-    const endOfQuarter = moment({year: year, month: quarterArr[2] - 1}).add(1, 'months').format('MM-DD-YYYY');
-
-    // initialize the empty string array to return
-    const range: string[] = [];
-
-    // push the start and end of quarters into the array
-    range.push(startOfQuarter);
-    range.push(endOfQuarter);
-
-    // return the fiscal quarters as an array of two strings
-    return range;
-
-  }
-
-  startOfYear(date: any) {
-    const year = moment(date).year();
-    const startOfYear = moment(`${year}-01-01`);
-    console.log(`start of year: ${startOfYear.format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
-  }
-
-  endOfYear(date: any) {
-    const year = moment(date).year();
-    const endOfYear = moment(`${year + 1}-01-01`);
-    console.log(`end of year: ${endOfYear.format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
-  }
-
-  currentYearMonths(date: any) {
-    const months = [];
-    const year = moment(date).year();
-    const startOfYear = moment(`${year}-01-01`);
-    for (let i = 0; i < 12; i++) {
-      const month = moment(`${year}-01-01`).add(i, 'months');
-      months.push(month.format('MMM \'YY'));
-    }
-    console.log('months array');
-    console.log(months);
   }
 
 

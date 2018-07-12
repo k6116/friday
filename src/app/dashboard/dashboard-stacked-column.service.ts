@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { ToolsService } from '../_shared/services/_index';
 
-
 import * as _ from 'lodash';
 
 
@@ -82,9 +81,9 @@ export class DashboardStackedColumnService {
       });
       employeeProjectFTEs.forEach(employeeProjectFTE => {
         if (employeeProjectFTE.name === employee) {
-          employeeProjectFTE.total = employeeProjectFTE.fte ? total : null;
+          employeeProjectFTE.total = employeeProjectFTE.fte ? 3 : null;
           employeeProjectFTE.percentage = employeeProjectFTE.fte ?
-            this.toolsService.roundTo(((employeeProjectFTE.fte / total) * 100), 1) : null;
+            this.toolsService.roundTo(((employeeProjectFTE.fte / 3) * 100), 0) : null;
         }
       });
     });

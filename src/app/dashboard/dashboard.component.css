@@ -110,6 +110,10 @@ i.notification-type-icon.notify-alert {
   color: green;
 }
 
+i.notification-type-icon.notify-concern {
+  color: orange;
+}
+
 i.notification-type-icon.notify-warning {
   color: red;
 }
