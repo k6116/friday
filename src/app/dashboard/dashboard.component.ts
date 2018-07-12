@@ -14,6 +14,7 @@ declare var require: any;
 import * as Highcharts from 'highcharts';
 require('highcharts/modules/data.js')(Highcharts);
 require('highcharts/modules/drilldown.js')(Highcharts);
+require('highcharts/highcharts-more.js')(Highcharts);
 require('highcharts/modules/solid-gauge.js')(Highcharts);
 import * as moment from 'moment';
 
