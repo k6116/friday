@@ -125,8 +125,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
 
     // get the user id and email
-    this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
-    this.userEmail = this.authService.loggedInUser ? this.authService.loggedInUser.email : null;
+    this.userID = this.authService.loggedInUser.id;
+    this.userEmail = this.authService.loggedInUser.email;
 
     this.getUserPLMData(this.userEmail);
     this.getPublicProjectTypes();
