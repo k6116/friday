@@ -283,7 +283,7 @@ export class AuthService {
     if (!this.modalIsDisplayed) {
       this.lastActivity = moment().unix();
     }
-    console.log(`last activity has been updated to: ${moment.unix(this.lastActivity).format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
+    // console.log(`last activity has been updated to: ${moment.unix(this.lastActivity).format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
   }
 
 
