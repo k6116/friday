@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
   ApiDataMetaDataService, ApiDataEmailService } from '../../_shared/services/api-data/_index';
-import { AppDataService } from '../../_shared/services/app-data.service';
+import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
@@ -52,7 +52,7 @@ export class ProjectsSetupsComponent implements OnInit {
     private apiDataPermissionService: ApiDataPermissionService,
     private apiDataMetaDataService: ApiDataMetaDataService,
     private apiDataEmailService: ApiDataEmailService,
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private authService: AuthService,
   ) {
     this.loggedInUser = this.authService.loggedInUser;
@@ -164,7 +164,7 @@ export class ProjectsSetupsComponent implements OnInit {
         this.apiDataEmailService.sendProjectApprovalEmail(request['user.id'], this.authService.loggedInUser.id,
         request['project.projectName'], reply === 'Approved' ? true : false, replyComment).subscribe(
           eSnd => {
-            this.appDataService.raiseToast('success',
+            this.cacheService.raiseToast('success',
             `Email on Approval Decision delivered to ${request['user.fullName']}.`);
             this.getProjectPermissionRequestsList();
           },
@@ -330,7 +330,7 @@ export class ProjectsSetupsComponent implements OnInit {
     const projectData = {projectID: this.selectdProject.id};
 
     // emit confirmation modal after they click request button
-    this.appDataService.confirmModalData.emit(
+    this.cacheService.confirmModalData.emit(
       {
         title: `Confirm Project Delete`,
         message: this.deleteModalMessage,
@@ -343,7 +343,7 @@ export class ProjectsSetupsComponent implements OnInit {
       }
     );
 
-    const deleteModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+    const deleteModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
       if (res) {
         // if they click ok, grab the deleted project info and exec db call to delete
         this.apiDataProjectService.deleteProject(projectData, this.authService.loggedInUser.id)

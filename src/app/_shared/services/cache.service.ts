@@ -3,7 +3,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { ConfirmModalOptions } from '../../modals/confirm-modal/confirm-modal.model';
 
 @Injectable()
-export class AppDataService {
+export class CacheService {
 
 
   // TO-DO MIKE: rename app-data service to cache service EVERYWHERE!!

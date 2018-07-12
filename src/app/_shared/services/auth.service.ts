@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { User } from '../models/user.model';
 import { ApiDataAuthService } from './api-data/_index';
-import { AppDataService } from './app-data.service';
+import { CacheService } from './cache.service';
 import { WebsocketService } from './websocket.service';
 
 import * as moment from 'moment';
@@ -28,9 +28,9 @@ export class AuthService {
     private http: Http,
     private router: Router,
     private apiDataAuthService: ApiDataAuthService,
-    private appDataService: AppDataService,
     private websocketService: WebsocketService,
-    private toolsService: ToolsService
+    private toolsService: ToolsService,
+    private cacheService: CacheService
   ) {
 
     // set the warning modal to appear x minutes before auto-logout
@@ -191,7 +191,7 @@ export class AuthService {
             this.clearToken();
             this.setToken(res.token.signedToken);
             // reset the timer so that it will be synched with the token expiration, at least within a second or two
-            this.appDataService.resetTimer.emit(true);
+            this.cacheService.resetTimer.emit(true);
           },
           err => {
             console.error('reset token error:');
@@ -221,7 +221,7 @@ export class AuthService {
           this.clearToken();
           this.setToken(res.token.signedToken);
           // reset the timer so that it will be synched with the token expiration, at least within a second or two
-          this.appDataService.resetTimer.emit(true);
+          this.cacheService.resetTimer.emit(true);
           // TEMP CODE to log the token status
           this.logTokenStatus();
         },
@@ -338,7 +338,7 @@ export class AuthService {
     this.clearLoggedInUserOnServer();
     this.clearUserCache();
     this.clearToken();
-    this.appDataService.appLoadPath = undefined;
+    this.cacheService.appLoadPath = undefined;
     this.routeToLogin(displayMessage);
   }
 
@@ -361,7 +361,7 @@ export class AuthService {
 
       // display a message on the login screen explaining that they were logged out automatically
       if (displayMessage) {
-        this.appDataService.autoLogout$ = {
+        this.cacheService.autoLogout$ = {
           message: 'For security you have been logged out',
           iconClass: 'fa-info-circle',
           iconColor: 'rgb(87, 168, 255)'
@@ -384,7 +384,7 @@ export class AuthService {
   displayExtendSessionModal() {
 
     // emit a message (object) to the confirm modal component with the title, message, etc. and tell it to display
-    this.appDataService.confirmModalData.emit(
+    this.cacheService.confirmModalData.emit(
       {
         title: 'Logout Warning',
         message: `We haven't heard from you in awhile.  For security you will be logged out in
@@ -410,8 +410,7 @@ export class AuthService {
     );
 
     // after emitting the modal, listen for the response
-    this.confirmModalResponseSubscription = this.appDataService.confirmModalResponse.subscribe(res => {
-      // response will be true or false (based on emit values above)
+    this.confirmModalResponseSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
       if (res) {
         this.resetToken();
       } else {
@@ -424,35 +423,10 @@ export class AuthService {
   }
 
 
-  displayTimeoutError() {
-
-    // emit an object to the confirm modal component to display a bootstrap modal
-    this.appDataService.confirmModalData.emit(
-      {
-        title: 'Timeout Error',
-        message: `The server is not responding.  If you don't believe there is a problem with your network connection,
-           please contact support.`,
-        iconClass: 'fa-exclamation-triangle',
-        iconColor: 'rgb(193, 27, 27)',
-        closeButton: true,
-        allowOutsideClickDismiss: true,
-        allowEscKeyDismiss: true,
-        buttons: [
-          {
-            text: 'Ok',
-            bsClass: 'btn-secondary',
-            emit: false
-          }
-        ]
-      }
-    );
-
-  }
-
 
   hideExtendSessionModal() {
     // emit a message (object) to the confirm modal component to hide it
-    this.appDataService.confirmModalClose.emit(true);
+    this.cacheService.confirmModalClose.emit(true);
   }
 
 }

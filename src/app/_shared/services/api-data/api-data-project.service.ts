@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
-import { AppDataService } from '../app-data.service';
 import { Observable } from 'rxjs/observable';
+import { CacheService } from '../cache.service';
 
 @Injectable()
 export class ApiDataProjectService {
@@ -12,24 +12,24 @@ export class ApiDataProjectService {
 
   constructor(
     private http: Http,
-    private appDataService: AppDataService
+    private cacheService: CacheService
   ) { }
 
   getProjects(): Observable<any> {
     return this.http.get('api/indexProjects')
-    .timeout(this.appDataService.apiDataTimeout)
+    .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
   getProjectRoster(projectID: number) {
     return this.http.get(`/api/indexProjectRoster/${projectID}`)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   getUserProjectList(userID: number) {
     return this.http.get(`/api/indexUserProjectList/${userID}`)
-    .timeout(this.appDataService.apiDataTimeout)
+    .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
@@ -37,7 +37,7 @@ export class ApiDataProjectService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/insertProject/${userID}`, JSON.stringify(project), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -45,7 +45,7 @@ export class ApiDataProjectService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/updateProject/${userID}`, JSON.stringify(project), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -54,25 +54,25 @@ export class ApiDataProjectService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/destroyProject/${userID}`, JSON.stringify(project), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   getProjectTypesList() {
     return this.http.get(`/api/indexProjectTypesList/`)
-    .timeout(this.appDataService.apiDataTimeout)
+    .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
   getProjectSchedule(projectName: string) {
     return this.http.get(`/api/indexProjectSchedule/${projectName}`)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   getProjectTypeDisplayFields() {
     return this.http.get(`/api/indexProjectTypeDisplayFields/`)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -80,7 +80,7 @@ export class ApiDataProjectService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/insertProjectEmployeeRole/${userID}`, JSON.stringify(employeeProjectRoleData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -88,7 +88,7 @@ export class ApiDataProjectService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/updateProjectEmployeeRole/${userID}`, JSON.stringify(projectEmployeeRoleData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -96,7 +96,7 @@ export class ApiDataProjectService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/destroyProjectEmployeeRole/${userID}`, JSON.stringify(projectEmployeeRoleData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -104,7 +104,7 @@ export class ApiDataProjectService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/insertBulkProjectEmployeeRole/${userID}`, JSON.stringify(projectEmployeeRoleData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 

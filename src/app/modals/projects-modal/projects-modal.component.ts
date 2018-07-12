@@ -5,7 +5,7 @@ import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@ang
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
   ApiDataEmailService } from '../../_shared/services/api-data/_index';
-import { AppDataService } from '../../_shared/services/app-data.service';
+import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
 declare var $: any;
@@ -93,7 +93,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     private apiDataProjectService: ApiDataProjectService,
     private apiDataPermissionService: ApiDataPermissionService,
     private apiDataEmailService: ApiDataEmailService,
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private authService: AuthService,
   ) {
 
@@ -358,7 +358,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     }
 
     // emit confirmation modal after they click request button
-    this.appDataService.confirmModalData.emit(
+    this.cacheService.confirmModalData.emit(
       {
         title: `Confirm ${action}`,
         message: message,
@@ -382,7 +382,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       }
     );
 
-    const updateModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+    const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
       if (res) {
         if (firstRequest) {
           const insertActionSubscription =
@@ -570,7 +570,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         // send email
         this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
           eRes => {
-            this.appDataService.raiseToast('success', 'Request Access Email Delivered.');
+            this.cacheService.raiseToast('success', 'Request Access Email Delivered.');
           },
           err => {
             console.log(err);
@@ -589,7 +589,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     .subscribe(
       res => {
         console.log('User PLM Data Retrieved');
-        this.appDataService.userPLMData = res;
+        this.cacheService.userPLMData = res;
         this.getProjectPermissionTeamList();
         this.getProjectPermissionList();
       },
@@ -613,7 +613,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   getProjectPermissionTeamList() {
-    const managerEmailAddress = this.appDataService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+    const managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
     this.apiDataPermissionService.getProjectPermissionTeamList(this.userID, managerEmailAddress)
     .subscribe(
       res => {

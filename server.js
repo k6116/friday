@@ -78,22 +78,12 @@ if (env === 'dev') {
 // start test server
 } else if (env === 'test') {
 
-  // create a node server for https on port 443
+  // create a node server for https on port 440 for testing on the webserver
   const port1 = 440;
   server = https.createServer(sslOptions, app)
     .listen(port1, () => {
       console.log(`node server listening on port: ${port1}`);
     });
-
-  // create a second node server to forward http (port 80) requests to https (port 443)
-  const port2 = 80;
-  server = http.createServer((req, res) => {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-  })
-  .listen(80, () => {
-    console.log(`node server listening on port: ${port2}`);
-  });
 
 // start production server
 } else if (env === 'prod') {

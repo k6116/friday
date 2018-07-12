@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
-import { AppDataService } from '../app-data.service';
+import { CacheService } from '../cache.service';
 
 
 @Injectable()
@@ -10,12 +10,12 @@ export class ApiDataJobTitleService {
 
   constructor(
     private http: Http,
-    private appDataService: AppDataService
+    private cacheService: CacheService
   ) { }
 
   getJobTitleList() {
     return this.http.get(`/api/indexJobTitle/`)
-    .timeout(this.appDataService.apiDataTimeout)
+    .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
@@ -23,7 +23,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/updateJobTitle/${userID}`, JSON.stringify(jobTitles), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 

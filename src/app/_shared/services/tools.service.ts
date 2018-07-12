@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormArray } from '@angular/forms';
 
-import { AppDataService } from './app-data.service';
+import { CacheService } from './cache.service';
 
 import * as moment from 'moment';
 import * as _ from 'lodash';
@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 export class ToolsService {
 
   constructor(
-    private appDataService: AppDataService
+    private cacheService: CacheService
   ) { }
 
   // TO-DO BILL: add comments, remove dead code, fix spelling on sentance
@@ -125,7 +125,7 @@ export class ToolsService {
   displayTimeoutError() {
 
     // emit an object to the confirm modal component to display a bootstrap modal
-    this.appDataService.confirmModalData.emit(
+    this.cacheService.confirmModalData.emit(
       {
         title: 'Timeout Error',
         message: `The server is not responding.  Please check your connection to the Keysight network.

@@ -19,8 +19,8 @@ function setSchedules() {
 // └───────────────────────── second (0 - 59, OPTIONAL)
 
 let sched = '';
-if (env === 'prod') {
-  sched = '0 0 10 1-7 2,5,8,11 1'; // PROD Schedule: 10AM on First Monday of each Designated Month
+if (env === 'prod') {             // TO-DO MIKE: Skip August Blast. But, put August back in schedule after August 6th (first monday of August)
+  sched = '0 0 10 1-7 2,5,11 1'; // PROD Schedule: 10AM on First Monday of each Designated Month
 } else {
   sched = '23 14 30 2,5,8,11 *'; // DEV Schedule: Can Alter for By-The-Minute-Testing
 }
