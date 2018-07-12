@@ -65,11 +65,13 @@ router.post('/updateProjectPermissionRequest/:userID', controllers.permission.up
 // JOB TITLE CONTROLLER
 router.get('/indexJobTitle', controllers.jobTitle.indexJobTitle);
 router.get('/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
-router.post('/updateJobTitle/:userID', controllers.jobTitle.updateJobTitle);
+router.post('/updateEmployeeJobTitle/:userID', controllers.jobTitle.updateEmployeeJobTitle);
 router.post('/insertJobTitle', controllers.jobTitle.insertJobTitle);
 router.post('/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
-router.post('/deleteJobSubTitle', controllers.jobTitle.deleteJobSubTitle);
+router.post('/updateJobTitle', controllers.jobTitle.updateJobTitle);
 router.post('/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
+router.post('/deleteJobSubTitle', controllers.jobTitle.deleteJobSubTitle);
+router.post('/updateJobSubTitle', controllers.jobTitle.updateJobSubTitle);
 router.post('/insertJobTitleMap', controllers.jobTitle.insertJobTitleMap);
 router.post('/deleteJobTitleMap', controllers.jobTitle.deleteJobTitleMap);
 

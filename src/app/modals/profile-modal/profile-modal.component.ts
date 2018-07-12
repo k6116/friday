@@ -127,7 +127,7 @@ import { AuthService } from '../../_shared/services/auth.service';
       this.editToggle = !this.editToggle;
 
       // write new values to database
-      this.apiDataJobTitleService.updateJobTitle(this.loggedInUser.id, this.newJobTitleData)
+      this.apiDataJobTitleService.updateEmployeeJobTitle(this.loggedInUser.id, this.newJobTitleData)
         .subscribe(
           res => {
             console.log(res);

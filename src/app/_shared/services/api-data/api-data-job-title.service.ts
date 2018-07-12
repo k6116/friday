@@ -25,10 +25,10 @@ export class ApiDataJobTitleService {
     .map((response: Response) => response.json());
   }
 
-  updateJobTitle(userID: number, jobTitles: any) {
+  updateEmployeeJobTitle(userID: number, jobTitles: any) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/updateJobTitle/${userID}`, JSON.stringify(jobTitles), options)
+    return this.http.post(`/api/updateEmployeeJobTitle/${userID}`, JSON.stringify(jobTitles), options)
       .timeout(this.appDataService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -62,6 +62,22 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/deleteJobSubTitle`, JSON.stringify(jobSubTitleData), options)
+      .timeout(this.appDataService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  updateJobTitle(jobTitleData: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/updateJobTitle`, JSON.stringify(jobTitleData), options)
+      .timeout(this.appDataService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  updateJobSubTitle(jobSubTitleData: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/updateJobSubTitle`, JSON.stringify(jobSubTitleData), options)
       .timeout(this.appDataService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

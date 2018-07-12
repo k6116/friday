@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import { ApiDataJobTitleService } from '../../_shared/services/api-data/_index';
-import { TitleCasePipe } from '@angular/common';
-import { FormControl, FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-// import { JobTitleInterface } from './job-title-interface';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-job-titles',
@@ -17,17 +15,14 @@ export class JobTitlesComponent implements OnInit {
   numJobSubTitlesToDisplay: number;
   jobTitleID: number;
   jobSubTitleID: number;
-  name: string;
-  modalTitle: string;
-  filteredTitle: string;
-  jobTtitleExists: boolean;
-  description: any;
-  tagMap: any;
   subTitlesInit: boolean;
+  formTitles: FormGroup;
+
+  // Forces Edit Modals to close after successfull update
+  @ViewChild('closeBtn') closeBtn: ElementRef;
 
   constructor(
     private apiDataJobTitleService: ApiDataJobTitleService,
-    private titlecasePipe: TitleCasePipe,
     private formBuilder: FormBuilder,
   ) {}
 
@@ -35,6 +30,26 @@ export class JobTitlesComponent implements OnInit {
     this.subTitlesInit = true;
     this.getJobTitleList();
     this.getJobSubTitleList();
+
+    // initiate Formgroup for jobTitle and jobSubTitle
+    this.formTitles = this.formBuilder.group({
+      id: [''],
+      name: [''],
+      description: ['']
+    });
+  }
+
+  refresh() {
+    this.subTitlesInit = true;
+    this.getJobTitleList();
+    this.getJobSubTitleList();
+
+    // reset Formgroup for jobTitle and jobSubTitle
+    this.formTitles = this.formBuilder.group({
+      id: [''],
+      name: [''],
+      description: ['']
+    });
   }
 
   getJobTitleList() {
@@ -70,7 +85,6 @@ export class JobTitlesComponent implements OnInit {
     this.jobTitleID = id;
     let index: number;
     // Find index of jobtitle to use in subtitles loop
-    // TO-DO CHAI: Can I get this from the the html?
     for (let i = 0; i < this.jobTitleList.length; i++) {
       if (this.jobTitleList[i].id === id) {
         index = i;
@@ -98,14 +112,8 @@ export class JobTitlesComponent implements OnInit {
         this.jobSubTitleList[k].checked = false;
       }
     }
-    console.log('jobTitleList:', this.jobTitleList);
-    console.log('jobSubTitleList', this.jobSubTitleList);
-  }
-
-  onJobSubTitleButtonClick(index: number) {
-    // can't use index because of filter
-    console.log('INDEX', index);
-    console.log('STATUS of CHECKBOX:', this.jobSubTitleList[index].checked);
+    // refresh jobTitleList:
+    this.getJobTitleList();
   }
 
   onCheckboxChange(id: number) {
@@ -121,7 +129,6 @@ export class JobTitlesComponent implements OnInit {
   }
 
   updateJobTitleList(updateTo: boolean, idToUpdate: number) {
-    // let index: number;
     const mapData = [{jobTitleID: this.jobTitleID, jobSubTitleID: idToUpdate}];
     console.log('MAPDATA:', mapData);
     if (updateTo === true) {
@@ -130,7 +137,6 @@ export class JobTitlesComponent implements OnInit {
       .subscribe(
         res => {
           console.log(res);
-          // this.createSuccess.emit(true);
         },
         err => {
           console.log(err);
@@ -161,7 +167,12 @@ export class JobTitlesComponent implements OnInit {
         console.log(err);
       }
     );
-    this.ngOnInit();
+    this.refresh();
+  }
+
+  onSubTitleTrashClick(id: number) {
+    // get the ID for onDeleteJobSubTitleClick()
+    this.jobSubTitleID = id;
   }
 
   onDeleteJobSubTitleClick() {
@@ -176,12 +187,9 @@ export class JobTitlesComponent implements OnInit {
         console.log(err);
       }
     );
-    this.ngOnInit();
+    this.refresh();
   }
 
-  onSubTitleTrashClick(id: number) {
-    this.jobSubTitleID = id;
-  }
   onCreateJobTitleClick(jobTitleName: string, description: string) {
     const jobTitleData = {jobTitleName: jobTitleName, description: description};
     this.apiDataJobTitleService.insertJobTitle(jobTitleData)
@@ -193,7 +201,7 @@ export class JobTitlesComponent implements OnInit {
         console.log(err);
       }
     );
-    this.ngOnInit();
+    this.refresh();
   }
 
   onCreateJobSubTitleClick(jobSubTitleName: string, description: string) {
@@ -208,7 +216,69 @@ export class JobTitlesComponent implements OnInit {
         console.log(err);
       }
     );
-    this.ngOnInit();
+    this.refresh();
   }
 
+  // EDIT JobTitle
+  onJobTitlePencilClick(id: number, jobTitleName: string, description: string) {
+    // Update formgroup with current values
+    this.formTitles = this.formBuilder.group({
+      id: [id],
+      name: [jobTitleName, [Validators.required]],
+      description: [description]
+    });
+  }
+  onEditJobTitleClick() {
+    const id = this.formTitles.controls.id.value;
+    const jobTitleName = this.formTitles.controls.name.value;
+    const description = this.formTitles.controls.description.value;
+    const jobTitleData = {id: id, jobTitleName: jobTitleName, description: description};
+    console.log('Form DATA:', jobTitleData);
+
+    this.apiDataJobTitleService.updateJobTitle(jobTitleData)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+    this.refresh();
+    // force modal to close with @ViewChild('closeBtn')
+    this.closeBtn.nativeElement.click();
+  }
+  //
+
+  // EDIT JobSubTitle
+  onJobSubTitlePencilClick(id: number, jobSubTitleName: string, description: string) {
+    // Update formgroup with current values
+    this.formTitles = this.formBuilder.group({
+      id: [id],
+      name: [jobSubTitleName, [Validators.required]],
+      description: [description]
+    });
+  }
+
+  onEditJobSubTitleClick() {
+    const id = this.formTitles.controls.id.value;
+    const jobSubTitleName = this.formTitles.controls.name.value;
+    const description = this.formTitles.controls.description.value;
+    const jobSubTitleData = {id: id, jobSubTitleName: jobSubTitleName, description: description};
+    console.log('DATA:', jobSubTitleData);
+
+    this.apiDataJobTitleService.updateJobSubTitle(jobSubTitleData)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+    this.refresh();
+    // force modal to close with @ViewChild('closeBtn')
+    this.closeBtn.nativeElement.click();
+  }
+  //
 }

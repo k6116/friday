@@ -52,7 +52,7 @@ function indexJobSubTitle(req, res) {
 }
 
 // Update user's job title and job title sub
-function updateJobTitle(req,res) {
+function updateEmployeeJobTitle(req,res) {
     const jobTitles = req.body;
     const userID = req.params.userID;
     // console.log('JOBTITLE DATA:', jobTitles);
@@ -69,7 +69,7 @@ function updateJobTitle(req,res) {
                     transaction: t
                 }
             )
-            .then(updateJobTitle => {
+            .then(updateEmployeeJobTitle => {
                 console.log('Updated Profile');
             })
     
@@ -91,6 +91,7 @@ function updateJobTitle(req,res) {
       
 }
 
+// For Admin Page:
 function insertJobTitle(req, res) {
 	const jobTitleData = req.body;
 	console.log('JOBTITLE DATA:', jobTitleData);
@@ -165,6 +166,74 @@ function deleteJobTitle(req, res) {
 	})
 }
 
+function updateJobTitle(req,res) {
+	const jobTitleData = req.body;
+	// const id = req.params.userID;
+	// console.log('JOBTITLE DATA:', jobTitleData);
+	return sequelize.transaction((t) => {
+		return models.JobTitle
+			.update(
+				{
+					jobTitleName: jobTitleData.jobTitleName,
+					description: jobTitleData.description
+				},
+				{
+					where: {id: jobTitleData.id},
+					transaction: t
+				}
+			)
+			.then(updateJobTitle => {
+				console.log('Updated JobTitle');
+			})
+		}).then(() => {
+			res.json({
+				message: `This jobtitle '${jobTitleData.jobTitleName}' has been updated successfully`
+			})
+		}).catch(error => {
+			console.log(error);
+			res.status(500).json({
+				title: 'update failed',
+				error: {message: error}
+			});
+		})
+}
+
+function insertJobSubTitle(req, res) {
+	const jobSubTitleData = req.body;
+	console.log('SUBTITLE DATA:', jobSubTitleData);
+	return sequelize.transaction((t) => {
+		return models.JobSubTitle
+			.create(
+				{
+					jobSubTitleName: jobSubTitleData.jobSubTitleName,
+					description: jobSubTitleData.description,
+				},
+				{
+					transaction: t
+				}
+			)
+			.then(savedJobTitle => {
+			//   console.log('created new job title: ', savedJobTitle );
+			})
+
+	}).then(() => {
+
+		res.json({
+			message: `The job title '${jobSubTitleData.jobSubTitleName}' has been added successfully`,
+		})
+
+	}).catch(error => {
+
+		console.log(error);
+		res.status(500).json({
+			title: 'update failed',
+			error: {message: error}
+		});
+
+	})
+  
+}
+
 function deleteJobSubTitle(req, res) {
 
 	const jobSubTitleData = req.body;
@@ -203,40 +272,36 @@ function deleteJobSubTitle(req, res) {
 	})
 }
 
-function insertJobSubTitle(req, res) {
+function updateJobSubTitle(req,res) {
 	const jobSubTitleData = req.body;
-	console.log('SUBTITLE DATA:', jobSubTitleData);
+	// const id = req.params.userID;
+	console.log('JOBSUBTITLE DATA:', jobSubTitleData);
 	return sequelize.transaction((t) => {
 		return models.JobSubTitle
-			.create(
+			.update(
 				{
 					jobSubTitleName: jobSubTitleData.jobSubTitleName,
-					description: jobSubTitleData.description,
+					description: jobSubTitleData.description
 				},
 				{
+					where: {id: jobSubTitleData.id},
 					transaction: t
 				}
 			)
-			.then(savedJobTitle => {
-			//   console.log('created new job title: ', savedJobTitle );
+			.then(updateJobSubTitle => {
+				console.log('Updated JobSubTitle');
 			})
-
-	}).then(() => {
-
-		res.json({
-			message: `The job title '${jobSubTitleData.jobSubTitleName}' has been added successfully`,
+		}).then(() => {
+			res.json({
+				message: `This jobsubtitle '${jobSubTitleData.jobSubTitleName}' has been updated successfully`
+			})
+		}).catch(error => {
+			console.log(error);
+			res.status(500).json({
+				title: 'update failed',
+				error: {message: error}
+			});
 		})
-
-	}).catch(error => {
-
-		console.log(error);
-		res.status(500).json({
-			title: 'update failed',
-			error: {message: error}
-		});
-
-	})
-  
 }
 
 function insertJobTitleMap(req, res) {
@@ -313,11 +378,13 @@ function deleteJobTitleMap(req, res) {
 module.exports = {
     indexJobTitle: indexJobTitle,
     indexJobSubTitle: indexJobSubTitle,
-    updateJobTitle: updateJobTitle,
+    updateEmployeeJobTitle: updateEmployeeJobTitle,
     insertJobTitle: insertJobTitle,
 		deleteJobTitle: deleteJobTitle,
-		deleteJobSubTitle: deleteJobSubTitle,
+		updateJobTitle: updateJobTitle,
 		insertJobSubTitle: insertJobSubTitle,
+		deleteJobSubTitle: deleteJobSubTitle,
+		updateJobSubTitle: updateJobSubTitle,
 		insertJobTitleMap: insertJobTitleMap,
 		deleteJobTitleMap: deleteJobTitleMap    
 }
