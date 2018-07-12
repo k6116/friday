@@ -6,10 +6,10 @@
       <h2>Job Titles</h2>
         <!-- Jobtitle Fuzzy Search Bar -->
         <div class="input-group">
-          <input type="text"  class="form-control" name="jobTitleName" [(ngModel)]="jobTitleName" placeholder="Search Job Title">
+          <input type="text"  class="form-control" name="jobTitleName" [(ngModel)]="jobTitleName" placeholder="Search Job Titles">
           <div class="input-group-append">
             <button #btnJobTitle class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="modal" data-target="#createJobTitleModal">
-              <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
+              <i class="fa fa-plus"></i>&nbsp;&nbsp;New
             </button>
           </div>
         </div>
@@ -43,10 +43,10 @@
       <h2>Job Subtitles</h2>
       <!-- Job Subtitle Fuzzy Search Bar -->
       <div class="input-group">
-        <input type="text"  class="form-control" name="jobSubTitleName" [(ngModel)]="jobSubTitleName" placeholder="Search Job Subtitle">
+        <input type="text"  class="form-control" name="jobSubTitleName" [(ngModel)]="jobSubTitleName" placeholder="Search Job Subtitles">
         <div class="input-group-append">
           <button #btnJobSubTitle name="Job Subtitle" class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="modal" data-target="#createJobSubTitleModal">
-            <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
+            <i class="fa fa-plus"></i>&nbsp;&nbsp;New
           </button>
         </div>
       </div>
@@ -61,7 +61,7 @@
               <div class="col-1">
                 <div class="input-group-prepend">
                   <div class="input-group-text">
-                    <input name="checkbox" type="checkbox" [checked]="sublist.checked===true" (change)="onCheckboxChange(sublist.id)">
+                    <input name="checkbox" type="checkbox" [disabled]="subTitlesInit" [checked]="sublist.checked===true" (change)="onCheckboxChange(sublist.id)">
                   </div>
                 </div>
               </div>

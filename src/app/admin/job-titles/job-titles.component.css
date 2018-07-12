@@ -9,8 +9,8 @@
     height: 35px;
   }
 
-  /* .list-group{
-    max-height: 500px;
-    overflow:scroll;
-    -webkit-overflow-scrolling: touch;
-} */
+  .input-group-text {
+    background-color: white;
+    border: none;
+    margin-bottom: -4px;
+  }
