@@ -54,9 +54,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   outerDivState: string;
   innerDivState: string;
   filterString: string;
-  paginateFilter: any;
-  paginationLinks: any;
-  selectedPage: number;
   checkboxValue: any;
   projectsDisplay: any;
   numProjectsToDisplayAtOnce: number;
@@ -115,7 +112,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       this.innerDivState = 'in';
     }, 0);
 
-    // set the number of projects to display initially, and to add for infinite scroll, and for pagination chunks
+    // set the number of projects to display initially, and to add for infinite scroll
     this.numProjectsToDisplayAtOnce = 100;
     this.numProjectsToDisplay = 100;
 
@@ -126,11 +123,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.projectsDisplay = this.projects.slice(0, this.numProjectsToDisplayAtOnce);
     console.log(`number of displayed projects: ${this.projectsDisplay.length}`);
 
-    this.paginationLinks = this.toolsService.buildPaginationRanges(this.projects, 'ProjectName', this.numProjectsToDisplayAtOnce);
-    console.log(this.paginationLinks);
-
-    this.paginateFilter = {on: false, property: 'ProjectName', regexp: `[${this.paginationLinks[0]}]`};
-    this.selectedPage = 0;
 
     // get the user id and email
     this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
@@ -212,32 +204,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     //     this.tutorialStateEmitter.emit(this.fteTutorialState);
     //   }, 500);
     // }
-  }
-
-  onPaginationLinkClick(link) {
-    console.log('pagination link clicked: ' + link);
-    this.paginateFilter = {on: true, property: 'ProjectName', regexp: `[${link}]`};
-    this.selectedPage = this.paginationLinks.indexOf(link);
-  }
-
-  onPaginationArrowClick(direction: string) {
-    console.log('pagination arrow clicked: ' + direction);
-    let newPage: boolean;
-    if (direction === 'right') {
-      if (this.selectedPage !== this.paginationLinks.length - 1) {
-        this.selectedPage++;
-        newPage = true;
-      }
-    } else if (direction === 'left') {
-      if (this.selectedPage !== 0) {
-        this.selectedPage--;
-        newPage = true;
-      }
-    }
-    if (newPage) {
-      const link = this.paginationLinks[this.selectedPage];
-      this.paginateFilter = {on: true, property: 'ProjectName', regexp: `[${link}]`};
-    }
   }
 
   onScroll() {

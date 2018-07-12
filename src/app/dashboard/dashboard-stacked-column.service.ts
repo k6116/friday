@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { ToolsService } from '../_shared/services/_index';
 
+import * as Highcharts from 'highcharts';
 import * as _ from 'lodash';
 
 
@@ -134,6 +135,8 @@ export class DashboardStackedColumnService {
     // console.log('unique project names:');
     // console.log(uniqueProjectNames);
 
+    // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
+    const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
 
     // set the chart options
     const chartOptions = {
@@ -144,9 +147,19 @@ export class DashboardStackedColumnService {
       title: {
         text: `Your Team's FTEs by Project`
       },
+      subtitle: {
+        text: `For current fiscal quarter.`
+      },
       credits: {
         text: 'jarvis.is.keysight.com',
         href: 'https://jarvis.is.keysight.com'
+      },
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: highchartsButtons
+          }
+        }
       },
       xAxis: {
         categories: xAxisCategories

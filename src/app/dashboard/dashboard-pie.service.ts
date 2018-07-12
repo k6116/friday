@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ToolsService } from '../_shared/services/tools.service';
 import { AuthService } from '../_shared/services/auth.service';
 
-import * as highcharts from 'highcharts';
+import * as Highcharts from 'highcharts';
 import * as _ from 'lodash';
 
 
@@ -115,7 +115,7 @@ export class DashboardPieService {
 
 
     // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
-    const highchartsButtons = highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
+    const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
 
 
     // set the chart options

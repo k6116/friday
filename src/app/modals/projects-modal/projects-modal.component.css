@@ -53,21 +53,6 @@ input.projects-filter-input {
 }
 
 
-/* pagination */
-
-div.projects-pagination {
-  display: inline-block;
-  margin-left: 20px;
-}
-
-div.projects-pagination {
-  font-size: 14px;
-}
-
-a.page-link.active {
-  background-color: rgb(233, 236, 239);
-}
-
 
 /* close button */
 

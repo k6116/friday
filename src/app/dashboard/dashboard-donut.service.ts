@@ -123,6 +123,8 @@ export class DashboardDonutService {
 
     }
 
+    // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
+    const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
 
     // set the chart options
     const chartOptions = {
@@ -133,9 +135,19 @@ export class DashboardDonutService {
       title: {
           text: `Your Team's FTE's by Project Type`
       },
+      subtitle: {
+        text: `For current fiscal quarter.`
+      },
       credits: {
         text: 'jarvis.is.keysight.com',
         href: 'https://jarvis.is.keysight.com'
+      },
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: highchartsButtons
+          }
+        }
       },
       yAxis: {
         title: {

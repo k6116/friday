@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ToolsService } from '../_shared/services/tools.service';
 import { AuthService } from '../_shared/services/auth.service';
 
-import * as highcharts from 'highcharts';
+import * as Highcharts from 'highcharts';
 import * as _ from 'lodash';
 
 @Injectable()
@@ -45,6 +45,9 @@ export class DashboardGaugeService {
     const completedFTEs = completedFTEsArr.join(', ');
     const notCompletedFTEs = notCompletedFTEsArr.join(', ');
 
+    // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
+    const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
+
     // build the chart options
     const chartOptions = {
       chart: {
@@ -53,6 +56,9 @@ export class DashboardGaugeService {
       },
       title: {
         text: `Your Team's FTE Entry Progress`
+      },
+      subtitle: {
+        text: `For current fiscal quarter.`
       },
       pane: {
         center: ['50%', 150],
@@ -71,6 +77,13 @@ export class DashboardGaugeService {
       },
       credits: {
         enabled: false
+      },
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: highchartsButtons
+          }
+        }
       },
       // the value axis
       yAxis: {

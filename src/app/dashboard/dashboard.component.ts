@@ -11,10 +11,10 @@ import { DashboardStackedColumnService } from './dashboard-stacked-column.servic
 
 
 declare var require: any;
-import * as highcharts from 'highcharts';
-require('highcharts/modules/data.js')(highcharts);
-require('highcharts/modules/drilldown.js')(highcharts);
-require('highcharts/modules/solid-gauge.js')(highcharts);
+import * as Highcharts from 'highcharts';
+require('highcharts/modules/data.js')(Highcharts);
+require('highcharts/modules/drilldown.js')(Highcharts);
+require('highcharts/modules/solid-gauge.js')(Highcharts);
 import * as moment from 'moment';
 
 
@@ -93,33 +93,30 @@ export class DashboardComponent implements OnInit {
 
   renderPieChart() {
     const chartOptions = this.dashboardPieService.buildChartOptions(this.dashboardData[0]);
-    highcharts.chart('pieChart', chartOptions);
+    Highcharts.chart('pieChart', chartOptions);
   }
 
   renderParetoChart() {
     const chartOptions = this.dashboardParetoService.buildChartOptions(this.dashboardData[0]);
-    highcharts.chart('paretoChart', chartOptions);
+    Highcharts.chart('paretoChart', chartOptions);
   }
 
   renderProgressGauge() {
     const chart = this.dashboardGaugeService.buildChart(this.dashboardData[0]);
     this.completedFTEs = chart.completedFTEs;
     this.notCompletedFTEs = chart.notCompletedFTEs;
-    highcharts.chart('progressGauge', chart.chartOptions);
+    Highcharts.chart('progressGauge', chart.chartOptions);
   }
 
   renderDonutChart() {
     const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardData[0]);
-    highcharts.chart('donutChart', chartOptions);
+    Highcharts.chart('donutChart', chartOptions);
   }
 
   renderStackedColumnChart() {
     const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
-    highcharts.chart('stackedColumnChart', chartOptions);
+    Highcharts.chart('stackedColumnChart', chartOptions);
   }
-
-
-
 
 
 }
