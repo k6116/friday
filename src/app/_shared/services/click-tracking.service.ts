@@ -57,8 +57,8 @@ export class ClickTrackingService {
 
   logClick(clickTrack: string) {
 
-    // get the user id
-    const userID = this.authService.loggedInUser.id;
+    // get the user id. ternary is needed here since click tracking is used in the login page
+    const userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
 
     // get the url path
     const path = this.router.url;

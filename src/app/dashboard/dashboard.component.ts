@@ -62,8 +62,8 @@ export class DashboardComponent implements OnInit {
       this.authService.loggedInUser.userName, this.authService.loggedInUser.id)
       .subscribe(
         res => {
-          console.log('dashboard data:');
-          console.log(res);
+          // console.log('dashboard data:');
+          // console.log(res);
           this.dashboardData = res;
           this.renderDashboard();
           this.showDashboard = true;

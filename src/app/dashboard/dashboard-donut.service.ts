@@ -168,9 +168,9 @@ export class DashboardDonutService {
         data: projectTypesData,
         size: '60%',
         dataLabels: {
-          // formatter: function () {
-          //   return this.y > 5 ? this.point.name : null;
-          // },
+          formatter: function () {
+            return this.y > 5 ? this.point.name : null;
+          },
           color: '#ffffff',
           distance: -30
         }
