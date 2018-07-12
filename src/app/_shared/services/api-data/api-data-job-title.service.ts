@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
-import { AppDataService } from '../app-data.service';
+import { CacheService } from '../cache.service';
 
 
 @Injectable()
@@ -10,18 +10,18 @@ export class ApiDataJobTitleService {
 
   constructor(
     private http: Http,
-    private appDataService: AppDataService
+    private cacheService: CacheService
   ) { }
 
   getJobTitleList() {
     return this.http.get(`/api/indexJobTitle/`)
-    .timeout(this.appDataService.apiDataTimeout)
+    .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
   getJobSubTitleList() {
     return this.http.get(`/api/indexJobSubTitle/`)
-    .timeout(this.appDataService.apiDataTimeout)
+    .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
@@ -29,7 +29,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/updateEmployeeJobTitle/${userID}`, JSON.stringify(jobTitles), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -38,7 +38,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/insertJobTitle`, JSON.stringify(jobTitleData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -46,7 +46,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/insertJobSubTitle`, JSON.stringify(jobSubTitleData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -54,7 +54,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/deleteJobTitle`, JSON.stringify(jobTitleData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -62,7 +62,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/deleteJobSubTitle`, JSON.stringify(jobSubTitleData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -70,7 +70,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/updateJobTitle`, JSON.stringify(jobTitleData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -78,7 +78,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/updateJobSubTitle`, JSON.stringify(jobSubTitleData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -86,7 +86,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/insertJobTitleMap`, JSON.stringify(mapData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -94,7 +94,7 @@ export class ApiDataJobTitleService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/deletejobTitleMap`, JSON.stringify(mapData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 

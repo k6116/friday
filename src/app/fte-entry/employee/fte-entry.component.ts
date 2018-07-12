@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { AuthService } from '../../_shared/services/auth.service';
 import { ApiDataProjectService, ApiDataFteService, ApiDataJobTitleService } from '../../_shared/services/api-data/_index';
-import { AppDataService } from '../../_shared/services/app-data.service';
+import { CacheService } from '../../_shared/services/cache.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ComponentCanDeactivate } from '../../_shared/guards/unsaved-changes.guard';
 import { UserFTEs, AllocationsArray} from './fte-model';
@@ -84,7 +84,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     private apiDataProjectService: ApiDataProjectService,
     private apiDataFteService: ApiDataFteService,
     private apiDataJobTitleService: ApiDataJobTitleService,
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private toolsService: ToolsService,
     private decimalPipe: DecimalPipe,
     private changeDetectorRef: ChangeDetectorRef
@@ -130,7 +130,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         console.log('get project data successfull:');
         console.log(res);
         this.projectList = res;
-        this.setRandomProjectAvatars();
         // this.trimProjects(500);
       },
       err => {
@@ -275,7 +274,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       this.sliderDisabled = true;
       this.displayFTETable = true;
     } else {
-      this.appDataService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
+      this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
     }
 
   }
@@ -460,14 +459,14 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         res => {
           const t1 = performance.now();
           console.log(`save fte values took ${t1 - t0} milliseconds`);
-          this.appDataService.raiseToast('success', res.message);
+          this.cacheService.raiseToast('success', res.message);
           this.resetProjectFlags();
           this.fteComponentInit();  // re-fetch the data to get newly inserted recordIDs
           this.FTEFormGroup.markAsUntouched();
         },
         err => {
           console.log(err);
-          this.appDataService.raiseToast('error', `${err.status}: ${err.statusText}`);
+          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
         }
       );
 
@@ -503,7 +502,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           invalidValues.push(value);
         }
       });
-      this.appDataService.raiseToast('error', `FTE values in the current quarter must total to 1.
+      this.cacheService.raiseToast('error', `FTE values in the current quarter must total to 1.
       Please correct the ${invalidValues.length} months and try again.`);
     } else if (!futureQuartersValid) {
       const invalidValues = [];
@@ -512,10 +511,10 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           invalidValues.push(value);
         }
       });
-      this.appDataService.raiseToast('error', `FTE values in future quarters must not total to more than 1.
+      this.cacheService.raiseToast('error', `FTE values in future quarters must not total to more than 1.
       Please correct the ${invalidValues.length} months in future quarters and try again.`);
     } else {
-      this.appDataService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
+      this.cacheService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
     }
   }
 
@@ -777,12 +776,13 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
     // emit confirmation modal after they click delete button
-    this.appDataService.confirmModalData.emit(
+    this.cacheService.confirmModalData.emit(
       {
         title: 'Confirm Deletion',
         message: `Are you sure you want to permanently delete all of your FTE values for project ${deletedProject.projectName}?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
         allowOutsideClickDismiss: false,
         allowEscKeyDismiss: false,
         buttons: [
@@ -800,7 +800,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       }
     );
 
-    const deleteModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+    const deleteModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
       if (res) {
         // if they click ok, grab the deleted project info and exec db call to delete
         const toBeDeleted = {
@@ -821,11 +821,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
             this.updateMonthlyTotals();
             this.setMonthlyTotalsBorder();
             console.log('stuff was updated');
-            this.appDataService.raiseToast('success', deleteResponse.message);
+            this.cacheService.raiseToast('success', deleteResponse.message);
             deleteActionSubscription.unsubscribe();
           },
           deleteErr => {
-            this.appDataService.raiseToast('warn', `${deleteErr.status}: ${deleteErr.statusText}`);
+            this.cacheService.raiseToast('warn', `${deleteErr.status}: ${deleteErr.statusText}`);
             deleteActionSubscription.unsubscribe();
           }
         );
@@ -838,12 +838,13 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   onResetClick() {
     // emit confirmation modal
-    this.appDataService.confirmModalData.emit(
+    this.cacheService.confirmModalData.emit(
       {
         title: 'Confirm Reset',
         message: `Are you sure you want to reset the form?  Unsaved changes may be lost.`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
         allowOutsideClickDismiss: true,
         allowEscKeyDismiss: true,
         buttons: [
@@ -861,14 +862,14 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       }
     );
     // wait for response to reset confirm modal
-    const resetModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+    const resetModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
       if (res) {
         this.fteComponentInit();
         this.FTEFormGroup.markAsUntouched();
-        this.appDataService.raiseToast('success', 'Your FTE form has been reset');
+        this.cacheService.raiseToast('success', 'Your FTE form has been reset');
       } else {
         console.log('reset aborted');
-        this.appDataService.raiseToast('warn', 'Reset was aborted');
+        this.cacheService.raiseToast('warn', 'Reset was aborted');
       }
       resetModalSubscription.unsubscribe();
     });
@@ -1042,37 +1043,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
 
-  // TEMP CODE: to emulate/spoof project avatars
-  setRandomProjectAvatars() {
-    // tslint:disable-next-line:max-line-length
-    const avatarFiles = ['avocado', 'bacon', 'beer', 'cheese', 'coffee', 'fries', 'grapes', 'lemon-slice', 'pizza-slice', 'tacos', 'watermelon'];
-    this.projectList.forEach(project => {
-      const randomFileIndex: number = Math.floor((Math.random() * (avatarFiles.length)));
-      const randomFile = avatarFiles[randomFileIndex];
-      const randomProject: number = Math.floor((Math.random() * (3)));
-      if (project.ProjectName === 'Deuce') {
-        project.avatar = `../assets/deuce.png`;
-      } else if (project.ProjectName === 'Arges50') {
-        project.avatar = `../assets/arges.png`;
-      } else if (project.ProjectName === 'Baymax') {
-        project.avatar = `../assets/baymax.png`;
-      } else if (project.ProjectName === 'Minions') {
-        project.avatar = `../assets/minions.png`;
-      } else if (randomProject === 0) {
-        project.avatar = `../assets/${randomFile}.png`;
-      } else {
-        project.avatar = null;
-      }
-    });
-    // console.log('projects with avatars');
-    // const filteredProjects = this.projectList.filter(project => {
-    //   return project.avatar;
-    // });
-    // console.log(filteredProjects);
-    // console.log('number of project with avatars:');
-    // console.log(filteredProjects.length);
-  }
-
   trimProjects(numProjects: number) {
     this.projectList = this.projectList.slice(0, numProjects);
   }
@@ -1081,7 +1051,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   showSliderDisabledToast() {
     const name = this.checkIfEmptyProjects();
     if (this.sliderDisabled) {
-      this.appDataService.raiseToast('warn', `Please enter FTE values for project: ${name}`);
+      this.cacheService.raiseToast('warn', `Please enter FTE values for project: ${name}`);
     }
   }
 

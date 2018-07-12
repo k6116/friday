@@ -1,4 +1,4 @@
-
+const tracer = require('dd-trace').init()
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -11,6 +11,16 @@ const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
 const email = require('./server/email/email');
 
+// datadog (node)
+const StatsD = require('node-dogstatsd').StatsD;
+const dogstatsd = new StatsD();
+
+// datadog (express)
+const dd_options = {
+  'response_code':true,
+  'tags': ['app:my_app']
+}
+const connect_datadog = require('connect-datadog')(dd_options);
 
 // create the express application
 const app = express();
@@ -39,6 +49,9 @@ app.use(bodyParser.urlencoded({limit: '30mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static('public'));
 
+// middleware for datadog express integration (for metrics)
+app.use(connect_datadog);
+
 // middleware function to send any api requests to the server/routes/api.js file
 app.use('/api', api);
 
@@ -65,22 +78,12 @@ if (env === 'dev') {
 // start test server
 } else if (env === 'test') {
 
-  // create a node server for https on port 443
+  // create a node server for https on port 440 for testing on the webserver
   const port1 = 440;
   server = https.createServer(sslOptions, app)
     .listen(port1, () => {
       console.log(`node server listening on port: ${port1}`);
     });
-
-  // create a second node server to forward http (port 80) requests to https (port 443)
-  const port2 = 80;
-  server = http.createServer((req, res) => {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-  })
-  .listen(80, () => {
-    console.log(`node server listening on port: ${port2}`);
-  });
 
 // start production server
 } else if (env === 'prod') {

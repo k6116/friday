@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
-import { AppDataService } from '../app-data.service';
+import { CacheService } from '../cache.service';
 
 @Injectable()
 export class ApiDataFteService {
 
   constructor(
     private http: Http,
-    private appDataService: AppDataService
+    private cacheService: CacheService
   ) { }
 
   // get FTE data from db
   indexUserData(userID: number) {
     return this.http.get(`/api/fte/indexUserData/${userID}`)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -22,7 +22,7 @@ export class ApiDataFteService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/fte/destroyUserProject/${userID}`, JSON.stringify(projectID), options)
-    .timeout(this.appDataService.apiDataTimeout)
+    .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
@@ -31,7 +31,7 @@ export class ApiDataFteService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/fte/updateUserData/${userID}`, JSON.stringify(fteData), options)
-      .timeout(this.appDataService.apiDataTimeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 

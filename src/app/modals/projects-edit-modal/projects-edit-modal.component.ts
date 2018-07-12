@@ -4,7 +4,7 @@ import { ToolsService } from '../../_shared/services/tools.service';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
   ApiDataMetaDataService, ApiDataEmailService } from '../../_shared/services/api-data/_index';
-import { AppDataService } from '../../_shared/services/app-data.service';
+import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
 declare var $: any;
@@ -38,7 +38,7 @@ export class ProjectsEditModalComponent implements OnInit {
     private apiDataPermissionService: ApiDataPermissionService,
     private apiDataMetaDataService: ApiDataMetaDataService,
     private apiDataEmailService: ApiDataEmailService,
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private authService: AuthService,
   ) {
 

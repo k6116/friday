@@ -88,7 +88,11 @@ export class FilterPipe implements PipeTransform {
             return false;
          }
 
+      // TO-DO BILL: remove, this is redundant with the above, and refactor other code and comment some more
       } else if (options.matchFuzzy) {
+
+              const t0 = performance.now();
+
               const fuseOptions = {
                 shouldSort: true,
                 threshold: 0.6, // can lower threshold in tenth percent increments if too many results
@@ -101,6 +105,10 @@ export class FilterPipe implements PipeTransform {
 
               const f = new Fuse([property + ': ' + object[property]], fuseOptions);
               const result = f.search(filter);
+
+              const t1 = performance.now();
+              console.log(`fuzzy search took ${t1 - t0} milliseconds`);
+
               return result.length > 0;
 
       } else {

@@ -5,11 +5,12 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { User } from '../models/user.model';
 import { ApiDataAuthService } from './api-data/_index';
-import { AppDataService } from './app-data.service';
+import { CacheService } from './cache.service';
 import { WebsocketService } from './websocket.service';
 
 import * as moment from 'moment';
 import { Subscriber } from 'rxjs/Subscriber';
+import { ToolsService } from './tools.service';
 
 
 @Injectable()
@@ -27,11 +28,12 @@ export class AuthService {
     private http: Http,
     private router: Router,
     private apiDataAuthService: ApiDataAuthService,
-    private appDataService: AppDataService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private toolsService: ToolsService,
+    private cacheService: CacheService
   ) {
 
-    // set the warning modal to appear 5 minutes before auto-logout
+    // set the warning modal to appear x minutes before auto-logout
     this.warnBeforeExpiration = 5;
   }
 
@@ -81,13 +83,13 @@ export class AuthService {
     } else {
       const token = localStorage.getItem('jarvisToken');
       if (token) {
-        // console.log('logged in user does not exist in memory, getting from token instead');
+        console.log('logged in user does not exist in memory, getting from token instead');
         const t0 = performance.now();
         this.apiDataAuthService.getInfoFromToken(token)
           .subscribe(
             res => {
               const t1 = performance.now();
-              // console.log(`get info from token took ${t1 - t0} milliseconds`);
+              console.log(`get info from token took ${t1 - t0} milliseconds`);
               this.loggedInUser = new User().deserialize(res.jarvisUser);
               callback(this.loggedInUser);
             },
@@ -115,6 +117,7 @@ export class AuthService {
             this.token = res.token;
             // if the token is expired, clear the user data/cache (properties in this service) and token, and re-route to the login page
             if (this.tokenIsExpired()) {
+              console.log('logging out within getInfoFromToken function, due to expired token');
               this.logout(true);
             // if the token is not expired
             } else {
@@ -134,16 +137,18 @@ export class AuthService {
             // check for token has expired error, just for logging (for now)
             if (error.error.hasOwnProperty('name') && error.error.hasOwnProperty('message') && error.error.hasOwnProperty('expiredAt')) {
               if (error.error.message === 'jwt expired') {
-                // console.log(`jwt token expired at ${error.error.expiredAt}`);
+                console.log(`jwt token expired at ${error.error.expiredAt}`);
               }
             }
             // regardless of the cause, clear the user data/cache (properties in this service) and token, and re-route to the login page
+            console.log('logging out within getInfoFromToken function, due to response error');
             this.logout(true);
           }
         );
     // if there is no 'jarvisToken' in local storage
     } else {
       // clear the user data/cache (properties in this service) and token, and re-route to the login page
+      console.log('logging out within getInfoFromToken function, due to no jarvisToken in local storage');
       this.logout(false);
     }
 
@@ -163,13 +168,13 @@ export class AuthService {
     const numInactivitySeconds = moment().diff(moment.unix(this.lastActivity), 'seconds');
 
     // TEMP CODE: to test the timer is working properly
-    // console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
-    // console.log(`time since last activity: ${numInactivityMins} (minutes); ${numInactivitySeconds} (seconds)`);
+    console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
+    console.log(`time since last activity: ${numInactivityMins} (minutes); ${numInactivitySeconds} (seconds)`);
     this.logTokenStatus();
 
     // if the token is expired, log the user out and display a message on the login page
     if (this.tokenIsExpired()) {
-      // console.log('logging out due to expired token');
+      console.log('logging out within checkAuthStatus function, due to expired token');
       this.logout(true);
     // if there is a logged in user and there has been activity within the last 60 seconds
     // go the the server to get them a new token with pushed out expiration date
@@ -186,7 +191,7 @@ export class AuthService {
             this.clearToken();
             this.setToken(res.token.signedToken);
             // reset the timer so that it will be synched with the token expiration, at least within a second or two
-            this.appDataService.resetTimer.emit(true);
+            this.cacheService.resetTimer.emit(true);
           },
           err => {
             console.error('reset token error:');
@@ -216,9 +221,9 @@ export class AuthService {
           this.clearToken();
           this.setToken(res.token.signedToken);
           // reset the timer so that it will be synched with the token expiration, at least within a second or two
-          this.appDataService.resetTimer.emit(true);
+          this.cacheService.resetTimer.emit(true);
           // TEMP CODE to log the token status
-          // this.logTokenStatus();
+          this.logTokenStatus();
         },
         err => {
           console.error('reset token error:');
@@ -249,7 +254,7 @@ export class AuthService {
     if (this.token) {
       const expiringAt = moment.unix(this.token.expiringAt);
       const now = moment();
-      // console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
+      console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
       if (expiringAt.diff(now, 'seconds') <= this.warnBeforeExpiration * 60) {
         return true;
       }
@@ -333,7 +338,7 @@ export class AuthService {
     this.clearLoggedInUserOnServer();
     this.clearUserCache();
     this.clearToken();
-    this.appDataService.appLoadPath = undefined;
+    this.cacheService.appLoadPath = undefined;
     this.routeToLogin(displayMessage);
   }
 
@@ -346,6 +351,7 @@ export class AuthService {
 
       // hide the extend session modal if it is displayed
       if (this.modalIsDisplayed) {
+        console.log('hiding extend session modal');
         this.hideExtendSessionModal();
         this.modalIsDisplayed = undefined;
       }
@@ -355,7 +361,7 @@ export class AuthService {
 
       // display a message on the login screen explaining that they were logged out automatically
       if (displayMessage) {
-        this.appDataService.autoLogout$ = {
+        this.cacheService.autoLogout$ = {
           message: 'For security you have been logged out',
           iconClass: 'fa-info-circle',
           iconColor: 'rgb(87, 168, 255)'
@@ -376,38 +382,51 @@ export class AuthService {
 
 
   displayExtendSessionModal() {
+
     // emit a message (object) to the confirm modal component with the title, message, etc. and tell it to display
-    this.appDataService.confirmModalData.emit(
+    this.cacheService.confirmModalData.emit(
       {
-        title: 'Session Expiration',
-        message: `Your session is about to expire.  Do you want to keep working?`,
+        title: 'Logout Warning',
+        message: `We haven't heard from you in awhile.  For security you will be logged out in
+          ${this.toolsService.numberToWord(this.warnBeforeExpiration)} minutes.  Do you want to keep working?`,
         iconClass: 'fa-exclamation-triangle',
-        iconColor: 'rgb(193, 193, 27)',
-        display: true
+        iconColor: 'rgb(193, 27, 27)',
+        closeButton: false,
+        allowOutsideClickDismiss: false,
+        allowEscKeyDismiss: false,
+        buttons: [
+          {
+            text: 'Yes',
+            bsClass: 'btn-success',
+            emit: true
+          },
+          {
+            text: 'No',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
       }
     );
 
     // after emitting the modal, listen for the response
-    this.confirmModalResponseSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+    this.confirmModalResponseSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
       if (res) {
-        this.modalIsDisplayed = undefined;
         this.resetToken();
       } else {
-        this.modalIsDisplayed = undefined;
+        console.log('logging out within displayExtendSessionModal, due to response received false (no button');
         this.logout(false);
       }
+      this.modalIsDisplayed = undefined;
       this.confirmModalResponseSubscription.unsubscribe();
     });
   }
 
 
+
   hideExtendSessionModal() {
     // emit a message (object) to the confirm modal component to hide it
-    this.appDataService.confirmModalData.emit(
-      {
-        display: false
-      }
-    );
+    this.cacheService.confirmModalClose.emit(true);
   }
 
 }

@@ -5,7 +5,7 @@ import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@ang
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
   ApiDataEmailService } from '../../_shared/services/api-data/_index';
-import { AppDataService } from '../../_shared/services/app-data.service';
+import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
 declare var $: any;
@@ -22,12 +22,12 @@ declare const introJs: any;
         'background-color': 'rgba(0, 0, 0, 0.4)'
       })),
       transition('in => out', [
-        animate(500, style({
+        animate(250, style({
           'background-color': 'rgba(255, 255, 255, 0)'
         }))
       ]),
       transition('out => in', [
-        animate(500, style({
+        animate(250, style({
           'background-color': 'rgba(0, 0, 0, 0.4)'
         }))
       ])
@@ -37,12 +37,12 @@ declare const introJs: any;
         opacity: 1
       })),
       transition('in => out', [
-        animate(500, style({
+        animate(250, style({
           opacity: 0
         }))
       ]),
       transition('out => in', [
-        animate(500, style({
+        animate(250, style({
           opacity: 1
         }))
       ])
@@ -54,9 +54,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   outerDivState: string;
   innerDivState: string;
   filterString: string;
-  paginateFilter: any;
-  paginationLinks: any;
-  selectedPage: number;
   checkboxValue: any;
   projectsDisplay: any;
   numProjectsToDisplayAtOnce: number;
@@ -86,8 +83,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    const newHeight = $('div.projects-modal-body').height() - 170;
-    $('div.project-table-cont').height(newHeight);
+    this.resizeProjectCardsContainer();
   }
 
   constructor(
@@ -97,13 +93,15 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     private apiDataProjectService: ApiDataProjectService,
     private apiDataPermissionService: ApiDataPermissionService,
     private apiDataEmailService: ApiDataEmailService,
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private authService: AuthService,
   ) {
 
   }
 
   ngOnInit() {
+
+    this.resizeProjectCardsContainer();
 
     this.outerDivState = 'out';
     this.innerDivState = 'out';
@@ -114,7 +112,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       this.innerDivState = 'in';
     }, 0);
 
-    // set the number of projects to display initially, and to add for infinite scroll, and for pagination chunks
+    // set the number of projects to display initially, and to add for infinite scroll
     this.numProjectsToDisplayAtOnce = 100;
     this.numProjectsToDisplay = 100;
 
@@ -125,15 +123,10 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.projectsDisplay = this.projects.slice(0, this.numProjectsToDisplayAtOnce);
     console.log(`number of displayed projects: ${this.projectsDisplay.length}`);
 
-    this.paginationLinks = this.toolsService.buildPaginationRanges(this.projects, 'ProjectName', this.numProjectsToDisplayAtOnce);
-    console.log(this.paginationLinks);
-
-    this.paginateFilter = {on: false, property: 'ProjectName', regexp: `[${this.paginationLinks[0]}]`};
-    this.selectedPage = 0;
 
     // get the user id and email
-    this.userID = this.authService.loggedInUser ? this.authService.loggedInUser.id : null;
-    this.userEmail = this.authService.loggedInUser ? this.authService.loggedInUser.email : null;
+    this.userID = this.authService.loggedInUser.id;
+    this.userEmail = this.authService.loggedInUser.email;
 
     this.getUserPLMData(this.userEmail);
     this.getPublicProjectTypes();
@@ -146,9 +139,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
-    const newHeight = $('div.projects-modal-body').height() - 170;
-    $('div.project-table-cont').height(newHeight);
+  }
 
+  resizeProjectCardsContainer() {
+    const newHeight = $('div.projects-modal-inner-cont').height() - 170;
+    $('div.project-table-cont').height(newHeight);
   }
 
   // fte tutorial part 2, passed over from parent component onAddProjectClick()
@@ -209,32 +204,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     //     this.tutorialStateEmitter.emit(this.fteTutorialState);
     //   }, 500);
     // }
-  }
-
-  onPaginationLinkClick(link) {
-    console.log('pagination link clicked: ' + link);
-    this.paginateFilter = {on: true, property: 'ProjectName', regexp: `[${link}]`};
-    this.selectedPage = this.paginationLinks.indexOf(link);
-  }
-
-  onPaginationArrowClick(direction: string) {
-    console.log('pagination arrow clicked: ' + direction);
-    let newPage: boolean;
-    if (direction === 'right') {
-      if (this.selectedPage !== this.paginationLinks.length - 1) {
-        this.selectedPage++;
-        newPage = true;
-      }
-    } else if (direction === 'left') {
-      if (this.selectedPage !== 0) {
-        this.selectedPage--;
-        newPage = true;
-      }
-    }
-    if (newPage) {
-      const link = this.paginationLinks[this.selectedPage];
-      this.paginateFilter = {on: true, property: 'ProjectName', regexp: `[${link}]`};
-    }
   }
 
   onScroll() {
@@ -389,12 +358,13 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     }
 
     // emit confirmation modal after they click request button
-    this.appDataService.confirmModalData.emit(
+    this.cacheService.confirmModalData.emit(
       {
         title: `Confirm ${action}`,
         message: message,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
         allowOutsideClickDismiss: false,
         allowEscKeyDismiss: false,
         buttons: [
@@ -412,7 +382,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       }
     );
 
-    const updateModalSubscription = this.appDataService.confirmModalResponse.subscribe( res => {
+    const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
       if (res) {
         if (firstRequest) {
           const insertActionSubscription =
@@ -600,7 +570,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         // send email
         this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
           eRes => {
-            this.appDataService.raiseToast('success', 'Request Access Email Delivered.');
+            this.cacheService.raiseToast('success', 'Request Access Email Delivered.');
           },
           err => {
             console.log(err);
@@ -619,7 +589,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     .subscribe(
       res => {
         console.log('User PLM Data Retrieved');
-        this.appDataService.userPLMData = res;
+        this.cacheService.userPLMData = res;
         this.getProjectPermissionTeamList();
         this.getProjectPermissionList();
       },
@@ -643,7 +613,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   getProjectPermissionTeamList() {
-    const managerEmailAddress = this.appDataService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+    const managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
     this.apiDataPermissionService.getProjectPermissionTeamList(this.userID, managerEmailAddress)
     .subscribe(
       res => {

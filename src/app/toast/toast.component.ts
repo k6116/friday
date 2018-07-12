@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AppDataService } from '../_shared/services/app-data.service';
+import { CacheService } from '../_shared/services/cache.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class ToastComponent implements OnInit, OnDestroy {
 
-  constructor(private appDataService: AppDataService) { }
+  constructor(private cacheService: CacheService) { }
 
   toastSubscription: Subscription;
   toastType: string;
@@ -20,7 +20,7 @@ export class ToastComponent implements OnInit, OnDestroy {
 
     console.log('toast component has been initialized');
 
-    this.toastSubscription = this.appDataService.toast.subscribe( toast => {
+    this.toastSubscription = this.cacheService.toast.subscribe( toast => {
       this.toastType = `toast toast-${toast.type}`;
       this.toastText = toast.text;
       this.showToast();

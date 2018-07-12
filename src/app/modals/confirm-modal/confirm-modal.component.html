@@ -6,7 +6,7 @@
         <div class="modal-header-cont">
           <i [class]="'modal-header-icon fa fa-2x ' + modal?.iconClass" [style.color]="modal?.iconColor"></i>
           <h5 class="modal-header-title" id="exampleModalLabel">{{ modal?.title }}</h5>
-          <button type="button" class="modal-header-button close" data-dismiss="modal" aria-label="Close">
+          <button *ngIf="modal?.closeButton" type="button" class="modal-header-button close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true" id="no">&times;</span>
           </button>
         </div>

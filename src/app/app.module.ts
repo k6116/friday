@@ -23,16 +23,20 @@ import { FilterPipe } from './_shared/pipes/filter.pipe';
 import { TitleCasePipe } from '@angular/common';
 
 // SERVICES
-import { ApiDataService, AppDataService, ClickTrackingService, CookiesService,
+import { ApiDataService, CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
+
+// CHARTS
+import 'hammerjs';
+import 'chartjs-plugin-zoom';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -62,16 +66,13 @@ import { PerformanceComponent } from './performance/performance.component';
 import { ProgressBarComponent } from './_shared/components/progress-bar/progress-bar.component';
 import { ProgressSpinnerComponent } from './_shared/components/progress-spinner/progress-spinner.component';
 import { ChatComponent } from './chat/chat.component';
-
-// CHARTS
-import 'hammerjs';
-import 'chartjs-plugin-zoom';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
 import { JobTitlesComponent } from './admin/job-titles/job-titles.component';
 import { AdminComponent } from './admin/admin.component';
 import { ProjectAttributesComponent } from './admin/project-attributes/project-attributes.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
@@ -115,6 +116,7 @@ import { FooterComponent } from './footer/footer.component';
     AdminComponent,
     ProjectAttributesComponent,
     FooterComponent,
+    DashboardComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -145,7 +147,8 @@ import { FooterComponent } from './footer/footer.component';
     ApiDataPermissionService,
     ApiDataProjectService,
     ApiDataReportService,
-    AppDataService,
+    ApiDataDashboardService,
+    CacheService,
     AuthService,
     AuthGuardService,
     ToolsService,

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { AppDataService } from '../../_shared/services/app-data.service';
+import { CacheService } from '../../_shared/services/cache.service';
 import { ApiDataOrgService, ApiDataReportService } from '../../_shared/services/api-data/_index';
 import { AuthService } from '../../_shared/services/auth.service';
 
@@ -43,7 +43,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private apiDataReportService: ApiDataReportService,
     private apiDataOrgService: ApiDataOrgService,
     private authService: AuthService
@@ -58,36 +58,36 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
 
-    if (this.appDataService.$nestedOrgData) {
-      this.nestedOrgData = this.appDataService.$nestedOrgData;
-      this.appDataService.nestedOrgDataCached = true;
+    if (this.cacheService.$nestedOrgData) {
+      this.nestedOrgData = this.cacheService.$nestedOrgData;
+      this.cacheService.nestedOrgDataCached = true;
       // console.log('nested org data picked up in employee reports');
       // console.log(this.nestedOrgData);
       this.waitingForOrgData = false;
       this.setInitialDropDownEmployee();
-      this.appDataService.nestedOrgDataRequested = undefined;
+      this.cacheService.nestedOrgDataRequested = undefined;
     }
 
-    this.subscription1 = this.appDataService.nestedOrgData.subscribe(
+    this.subscription1 = this.cacheService.nestedOrgData.subscribe(
       (nestedOrgData: any) => {
-        if (!this.appDataService.nestedOrgDataCached) {
+        if (!this.cacheService.nestedOrgDataCached) {
           this.nestedOrgData = nestedOrgData;
-          this.appDataService.$nestedOrgData = nestedOrgData;
-          this.appDataService.nestedOrgDataCached = true;
+          this.cacheService.$nestedOrgData = nestedOrgData;
+          this.cacheService.nestedOrgDataCached = true;
           // console.log('nested org data received in employee reports component via subscription');
           // console.log(this.nestedOrgData);
           this.waitingForOrgData = false;
           this.setInitialDropDownEmployee();
-          this.appDataService.nestedOrgDataRequested = undefined;
+          this.cacheService.nestedOrgDataRequested = undefined;
         }
     });
 
-    if (!this.appDataService.nestedOrgDataRequested && !this.appDataService.nestedOrgDataCached) {
+    if (!this.cacheService.nestedOrgDataRequested && !this.cacheService.nestedOrgDataCached) {
       // get logged in user's info
       this.authService.getLoggedInUser((user, err) => {
-        // this.getNestedOrgData(user.email);
+        this.getNestedOrgData(user.email);
         // this.getNestedOrgData('ron_nersesian@keysight.com');
-        this.getNestedOrgData('pat_harper@keysight.com');
+        // this.getNestedOrgData('pat_harper@keysight.com');
       });
     }
 
@@ -109,12 +109,12 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     .subscribe(
       res => {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');
-        // console.log('nested org object retrieved from api data service in employee reports component');
-        // console.log(nestedOrgData);
+        console.log('nested org object retrieved from api data service in employee reports component');
+        console.log(nestedOrgData);
         this.nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
-        this.appDataService.$nestedOrgData = this.nestedOrgData;
-        this.appDataService.nestedOrgDataCached = true;
+        this.cacheService.$nestedOrgData = this.nestedOrgData;
+        this.cacheService.nestedOrgDataCached = true;
         this.setInitialDropDownEmployee();
         const t0 = performance.now();
         this.flatOrgData = this.flattenNestedOrgData($.extend(true, {}, this.nestedOrgData));

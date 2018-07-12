@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, Output, Input, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { AppDataService } from '../../_shared/services/app-data.service';
+import { CacheService } from '../../_shared/services/cache.service';
 
 declare var $: any;
 
@@ -20,13 +20,13 @@ export class NoticeModalComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private appDataService: AppDataService
+    private cacheService: CacheService
   ) { }
 
 
   ngOnInit() {
 
-    this.subscription1 = this.appDataService.noticeModalData.subscribe(
+    this.subscription1 = this.cacheService.noticeModalData.subscribe(
       (object: any) => {
         this.modal = object;
         // console.log('notice modal object:');

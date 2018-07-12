@@ -4,7 +4,7 @@ import { trigger, state, style, transition, animate, keyframes, group } from '@a
 import { Subscription } from 'rxjs/Subscription';
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../_shared/services/auth.service';
-import { AppDataService } from '../../_shared/services/app-data.service';
+import { CacheService } from '../../_shared/services/cache.service';
 import { ApiDataService } from '../../_shared/services/api-data.service';
 import { ProfileModalComponent } from '../../modals/profile-modal/profile-modal.component';
 
@@ -49,7 +49,7 @@ export class TopNavComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private apiDataService: ApiDataService,
     private route: ActivatedRoute
   ) {
@@ -115,7 +115,7 @@ export class TopNavComponent implements OnInit {
   }
 
   clearCacheOnLogout() {
-    this.appDataService.nestedOrgDataRequested = undefined;
+    this.cacheService.nestedOrgDataRequested = undefined;
   }
 
 }

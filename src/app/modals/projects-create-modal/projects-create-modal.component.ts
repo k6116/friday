@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener} from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ApiDataEmployeeService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
-import { AppDataService } from '../../_shared/services/app-data.service';
+import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 
 declare var $: any;
@@ -25,7 +25,7 @@ export class ProjectsCreateModalComponent implements OnInit {
     private formBuilder: FormBuilder,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataEmployeeService: ApiDataEmployeeService,
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private authService: AuthService,
   ) {
     this.resetForm();
@@ -37,7 +37,7 @@ export class ProjectsCreateModalComponent implements OnInit {
      this.userID = this.authService.loggedInUser.id;
      this.userEmail = this.authService.loggedInUser.email;
 
-     if (!this.appDataService.userPLMData) {
+     if (!this.cacheService.userPLMData) {
       this.getUserPLMData(this.userEmail);
      }
   }
@@ -74,7 +74,7 @@ export class ProjectsCreateModalComponent implements OnInit {
 
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
-    project.projectOrgManager = this.appDataService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+    project.projectOrgManager = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
 
     this.apiDataProjectService.createProject(project, this.userID)
     .subscribe(
@@ -94,7 +94,7 @@ export class ProjectsCreateModalComponent implements OnInit {
     .subscribe(
       res => {
         console.log('User PLM Data Retrieved');
-        this.appDataService.userPLMData = res;
+        this.cacheService.userPLMData = res;
       },
       err => {
         console.log(err);

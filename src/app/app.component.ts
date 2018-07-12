@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import { AppDataService } from './_shared/services/app-data.service';
+import { CacheService } from './_shared/services/cache.service';
 import { AuthService } from './_shared/services/auth.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
 import { WebsocketService } from './_shared/services/websocket.service';
@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private appDataService: AppDataService,
+    private cacheService: CacheService,
     private authService: AuthService,
     private clickTrackingService: ClickTrackingService,
     private websocketService: WebsocketService
@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
 
     }
 
-    this.subscription1 = this.appDataService.resetTimer.subscribe(
+    this.subscription1 = this.cacheService.resetTimer.subscribe(
       (resetTimer: boolean) => {
         // console.log('subscription to resetTimer receivevd in the app component');
         this.resetTimer();
@@ -91,7 +91,7 @@ export class AppComponent implements OnInit {
     // update the last activity property with a new timestamp
     this.authService.updateLastActivity();
     // emit the clicked class to the data service for a click outside type solution
-    // this.appDataService.clickedClass.emit(event.target.className);
+    // this.cacheService.clickedClass.emit(event.target.className);
     // send the event to the click tracking service to log in the database if appropriate
     this.clickTrackingService.logClickWithAttribute(event);
   }
