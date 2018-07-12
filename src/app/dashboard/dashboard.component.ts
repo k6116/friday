@@ -1,6 +1,5 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { AppDataService } from '../_shared/services/app-data.service';
-import { ApiDataOrgService, ApiDataReportService, ApiDataDashboardService } from '../_shared/services/api-data/_index';
+import { Component, OnInit } from '@angular/core';
+import { ApiDataDashboardService } from '../_shared/services/api-data/_index';
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
 import { DashboardDonutService } from './dashboard-donut.service';
@@ -9,18 +8,15 @@ import { DashboardMessagesService } from './dashboard-messages.service';
 import { DashboardParetoService } from './dashboard-pareto.service';
 import { DashboardPieService } from './dashboard-pie.service';
 import { DashboardStackedColumnService } from './dashboard-stacked-column.service';
-// import { DashboardDonutService, DashboardGaugeService, DashboardMessagesService, DashboardPareto,
-//     DashboardPieService, DashboardStackedColumnService } from './_index';
+
 
 declare var require: any;
-declare var $: any;
-
 import * as highcharts from 'highcharts';
 require('highcharts/modules/data.js')(highcharts);
 require('highcharts/modules/drilldown.js')(highcharts);
 require('highcharts/modules/solid-gauge.js')(highcharts);
 import * as moment from 'moment';
-import * as _ from 'lodash';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -32,26 +28,21 @@ import * as _ from 'lodash';
 export class DashboardComponent implements OnInit {
 
   messages: any[] = [];
-  dashboardFTEData: any;
-  chartOptions: any;
+  dashboardData: any;
   showDashboard: boolean;
   showSpinner: boolean;
-  highchartsButtons: any;
   completedFTEs: string;
   notCompletedFTEs: string;
 
 
   constructor(
-    private appDataService: AppDataService,
-    private apiDataReportService: ApiDataReportService,
-    private apiDataOrgService: ApiDataOrgService,
     private apiDataDashboardService: ApiDataDashboardService,
     private authService: AuthService,
     private toolsService: ToolsService,
     private dashboardDonutService: DashboardDonutService,
     private dashboardGaugeService: DashboardGaugeService,
     private dashboardMessagesService: DashboardMessagesService,
-    private dashboardPareto: DashboardParetoService,
+    private dashboardParetoService: DashboardParetoService,
     private dashboardPieService: DashboardPieService,
     private dashboardStackedColumnService: DashboardStackedColumnService
   ) { }
@@ -73,13 +64,8 @@ export class DashboardComponent implements OnInit {
         res => {
           console.log('dashboard data:');
           console.log(res);
-          this.dashboardFTEData = res[0];
-          this.displayMessages(res);
-          this.renderMYFTEsPieChart();
-          this.renderMYFTEsColumnChart();
-          this.renderFTEEntryProgress();
-          this.renderStackedColumnChart();
-          this.renderDonutChart();
+          this.dashboardData = res;
+          this.renderDashboard();
           this.showDashboard = true;
           this.showSpinner = false;
         },
@@ -90,488 +76,50 @@ export class DashboardComponent implements OnInit {
         }
       );
 
-      // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
-      this.highchartsButtons = highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
-      // console.log(this.highchartsButtons);
-
   }
 
-
-  displayMessages(res) {
-
-    this.messages = this.dashboardMessagesService.displayMessages(res);
-
-
-
-  //   this.messages = [{
-  //     iconFontClass: 'nc-privacy-policy',
-  //     iconType: 'info',
-  //     messageText: `Welcome to Jarvis Resources! You will be given a short
-  //       guided tutorial when you go to the FTE Entry Page, or you can click here to get started.`
-  //   },
-  //   {
-  //     iconFontClass: 'nc-a-check',
-  //     iconType: 'alert',
-  //     messageText: `You have two new requests to join your projects Treadstone and BlackBriar.
-  //       Go to the <span class="dashboard-link-projects" style="color:blue; cursor:pointer" [data-dashboard]="projects">
-  //         Projects</span> page to approve or deny the requests.`
-  //   },
-  //   {
-  //     iconFontClass: 'nc-time-countdown',
-  //     iconType: 'warning',
-  //     messageText: `The deadline to enter your FTE entries for this quarter is next Friday, June 29 (7 days).`
-  //   }
-  // ];
-
+  renderDashboard() {
+    this.displayMessages();
+    this.renderPieChart();
+    // this.renderParetoChart();
+    this.renderProgressGauge();
+    this.renderDonutChart();
+    this.renderStackedColumnChart();
   }
 
-
-  renderMYFTEsPieChart() {
-
-    // init chart data arrays
-    let seriesData = [];
-    const drilldownSeries = [];
-
-    // filter to get only the logged in user's fte values
-    const fteData = this.dashboardFTEData.filter(data => {
-      return data.emailAddress === this.authService.loggedInUser.email;
-    });
-
-    console.log('fte data for logged in user:');
-    console.log(fteData);
-
-    // sum up total fte number across all the user's projects (will be for the current quarter always)
-    let fteTotal = 0;
-    if (fteData[0].hasOwnProperty('projects')) {
-      fteData[0].projects.forEach(project => {
-        if (project.hasOwnProperty('ftes')) {
-          project.ftes.forEach(month => {
-            fteTotal += month.fte;
-          });
-        }
-      });
-    }
-
-    console.log(`total fte for the quarter is: ${fteTotal} (should be 3)`);
-
-    // for each project, total up the ftes, calculate the percentages and push into the array
-    if (fteData[0].hasOwnProperty('projects')) {
-      fteData[0].projects.forEach(project => {
-        let projectFTETotal = 0;
-        if (project.hasOwnProperty('ftes')) {
-          project.ftes.forEach(month => {
-            projectFTETotal += month.fte;
-          });
-          seriesData.push({
-            name: project.projectName,
-            y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 1),
-            drilldown: project.projectName
-          });
-        }
-      });
-    }
-
-    // sort the array by fte value in descending order
-    if (seriesData.length) {
-      seriesData = _.reverse(_.sortBy(seriesData, ['y']));
-    }
-
-    console.log('series data for your ftes:');
-    console.log(seriesData);
-
-    // show the first data point as sliced
-    if (seriesData.length > 1) {
-      seriesData[0].sliced = true;
-      seriesData[0].selected = true;
-    }
-
-
-    // build the drilldown data
-    if (fteData[0].hasOwnProperty('projects')) {
-
-      fteData[0].projects.forEach(project => {
-
-        // build an array of unique team member names for this project
-        let teamMembers = [];
-        let projectFTESum = 0;
-        project.ftes.forEach(month => {
-          month.teamMembers.forEach(teamMember => {
-            teamMembers.push(teamMember.fullName);
-            projectFTESum += teamMember.fte;
-          });
-        });
-        teamMembers = _.uniq(teamMembers);
-
-        // get the fte total and percent for each team member
-        const drillDownData = [];
-        teamMembers.forEach(teamMemberName => {
-          let teamMemberFTETotal = 0;
-          project.ftes.forEach(month => {
-            month.teamMembers.forEach(teamMember => {
-              if (teamMember.fullName === teamMemberName) {
-                teamMemberFTETotal += teamMember.fte;
-              }
-            });
-          });
-          drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 1)]);
-        });
-
-        // TO-DO: push into an array of object first, then use _.sortBy to sort by fte percent descending
-        // then push into the arrays with just the values with no keys
-
-        // push in an object for each project/slice
-        drilldownSeries.push({
-          name: project.projectName,
-          id: project.projectName,
-          data: drillDownData
-        });
-
-      });
-
-    }
-
-
-    console.log('drilldown data:');
-    console.log(drilldownSeries);
-
-
-    // set the chart options
-    const chartOptions = {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 450
-      },
-      title: {
-        text: `Your FTEs by Project`
-      },
-      subtitle: {
-        text: `${this.authService.loggedInUser.fullName};
-          For current fiscal quarter: 5/1/18 - 8/1/18.  Click a slice to view project team members.`
-        // style: {
-        //   color: '#FF00FF',
-        //   fontWeight: 'bold'
-        // }
-      },
-      credits: {
-        text: 'jarvis.is.keysight.com',
-        href: 'https://jarvis.is.keysight.com'
-      },
-      exporting: {
-        buttons: {
-          contextButton: {
-            menuItems: this.highchartsButtons
-          }
-        }
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      plotOptions: {
-        series: {
-          dataLabels: {
-            enabled: true,
-            format: '{point.name}: {point.y:.1f}%'
-          }
-        }
-      },
-      series: [{
-        name: 'FTE %',
-        colorByPoint: true,
-          data: seriesData
-      }],
-      drilldown: {
-        series: drilldownSeries
-      }
-    };
-
-
-    // render the chart
-    highcharts.chart('chart1', chartOptions);
-
-    // console.log(this.chartOptions);
-    // console.log(JSON.stringify(this.chartOptions));
-
+  displayMessages() {
+    this.messages = this.dashboardMessagesService.displayMessages(this.dashboardData);
   }
 
-
-  renderMYFTEsColumnChart() {
-
-    // filter to get only the logged in user's fte values
-    const fteData = this.dashboardFTEData.filter(data => {
-      return data.emailAddress === this.authService.loggedInUser.email;
-    });
-
-    // sum up total fte number across all the user's projects (will be for the current quarter always)
-    let fteTotal = 0;
-    if (fteData[0].hasOwnProperty('projects')) {
-      fteData[0].projects.forEach(project => {
-        if (project.hasOwnProperty('ftes')) {
-          project.ftes.forEach(month => {
-            fteTotal += month.fte;
-          });
-        }
-      });
-    }
-
-    // for each project, total up the ftes, calculate the percentages and push into the array
-    let seriesData = [];
-    if (fteData[0].hasOwnProperty('projects')) {
-      fteData[0].projects.forEach(project => {
-        let projectFTETotal = 0;
-        if (project.hasOwnProperty('ftes')) {
-          project.ftes.forEach(month => {
-            projectFTETotal += month.fte;
-          });
-          seriesData.push({
-            name: project.projectName,
-            y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 1),
-            drilldown: project.projectName
-          });
-        }
-      });
-    }
-
-    // sort the array by fte value in descending order
-    if (seriesData.length) {
-      seriesData = _.reverse(_.sortBy(seriesData, ['y']));
-    }
-
-    // console.log('series data for your ftes:');
-    // console.log(seriesData);
-
-    // build the drilldown data
-    const drilldownSeries = [];
-    if (fteData[0].hasOwnProperty('projects')) {
-      fteData[0].projects.forEach(project => {
-
-        // build an array of unique team member names for this project
-        let teamMembers = [];
-        let projectFTESum = 0;
-        if (project.hasOwnProperty('ftes')) {
-          project.ftes.forEach(month => {
-            month.teamMembers.forEach(teamMember => {
-              teamMembers.push(teamMember.fullName);
-              projectFTESum += teamMember.fte;
-            });
-          });
-          teamMembers = _.uniq(teamMembers);
-          // console.log(`unique team members array for ${project.projectName}`);
-          // console.log(teamMembers);
-          // console.log(`sum of ftes for ${project.projectName} is ${projectFTESum}`);
-
-          // get the fte total and percent for each team member
-          const drillDownData = [];
-          teamMembers.forEach(teamMemberName => {
-            let teamMemberFTETotal = 0;
-            project.ftes.forEach(month => {
-              month.teamMembers.forEach(teamMember => {
-                if (teamMember.fullName === teamMemberName) {
-                  teamMemberFTETotal += teamMember.fte;
-                }
-              });
-            });
-            drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 1)]);
-          });
-
-          // TO-DO: push into an array of object first, then use _.sortBy to sort by fte percent descending
-          // then push into the arrays with just the values with no keys
-
-          // push in an object for each project/slice
-          drilldownSeries.push({
-            name: project.projectName,
-            id: project.projectName,
-            data: drillDownData
-          });
-          // console.log(`drilldownSeries for ${project.projectName}`);
-          // console.log(drilldownSeries);
-
-        }
-
-      });
-    }
-
-    const chartOptions = {
-      chart: {
-        type: 'column',
-        height: 450
-      },
-      title: {
-        text: `Your FTEs by Project`
-      },
-      subtitle: {
-        text: `${this.authService.loggedInUser.fullName};
-          For current fiscal quarter: 5/1/18 - 8/1/18.  Click a column to view project team members.`
-      },
-      credits: {
-        text: 'jarvis.is.keysight.com',
-        href: 'https://jarvis.is.keysight.com'
-      },
-      xAxis: {
-        type: 'category'
-      },
-      yAxis: {
-        title: {
-          text: 'Full Time Equivalent (FTE) Percent'
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      plotOptions: {
-        series: {
-          borderWidth: 0,
-          dataLabels: {
-            enabled: true,
-            format: '{point.y:.1f}%'
-          }
-        }
-      },
-      tooltip: {
-        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
-      },
-      series: [{
-        name: 'FTE %',
-        colorByPoint: true,
-          data: seriesData
-      }],
-      drilldown: {
-        series: drilldownSeries
-      }
-    };
-
-
-    highcharts.chart('chart2', chartOptions);
-
-    // console.log(this.chartOptions);
-    // console.log(JSON.stringify(this.chartOptions));
-
+  renderPieChart() {
+    const chartOptions = this.dashboardPieService.buildChartOptions(this.dashboardData[0]);
+    highcharts.chart('pieChart', chartOptions);
   }
 
-  renderFTEEntryProgress() {
-
-    const completedFTEsArr = [];
-    const notCompletedFTEsArr = [];
-
-    // build arrays of people that have completed or not completed their fte entries
-    this.dashboardFTEData.forEach(employee => {
-      let fteTotal = 0;
-      if (employee.hasOwnProperty('projects')) {
-        employee.projects.forEach(project => {
-          project.ftes.forEach(fteEntry => {
-            fteTotal += fteEntry.fte;
-          });
-        });
-        console.log(`total fte for employee ${employee.name} is: ${fteTotal}`);
-        if (this.toolsService.roundTo(fteTotal, 2) === 3.00) {
-          completedFTEsArr.push(employee.name);
-        } else {
-          notCompletedFTEsArr.push(employee.name);
-        }
-      } else {
-        notCompletedFTEsArr.push(employee.name);
-      }
-    });
-
-    // build strings to display in the view
-    this.completedFTEs = completedFTEsArr.join(', ');
-    this.notCompletedFTEs = notCompletedFTEsArr.join(', ');
-
-    console.log('completed ftes:');
-    console.log(this.completedFTEs);
-
-    console.log('not completed ftes:');
-    console.log(this.notCompletedFTEs);
-
-    console.log(this.dashboardFTEData.length);
-
-    const chartOptions = {
-      chart: {
-        type: 'solidgauge',
-        height: 450
-      },
-      title: {
-        text: `Your Team's FTE Entry Progress`
-      },
-      pane: {
-        center: ['50%', 150],
-        size: '80%',
-        startAngle: -90,
-        endAngle: 90,
-        background: {
-          backgroundColor: '#EEE',
-          innerRadius: '60%',
-          outerRadius: '100%',
-          shape: 'arc'
-        }
-      },
-      tooltip: {
-        enabled: false
-      },
-      credits: {
-        enabled: false
-      },
-      // the value axis
-      yAxis: {
-        min: 0,
-        max: this.dashboardFTEData.length,
-        stops: [
-          [.2, '#DF5353'], // red
-          [.5, '#DDDF0D'], // yellow
-          [.8, '#55BF3B'] // green
-        ],
-        lineWidth: 0,
-        minorTicks: false
-        // minorTickInterval: 'auto'
-        // tickAmount: 2,
-        // tickInterval: 25
-        // labels: {
-        //   y: 16
-        // }
-      },
-      plotOptions: {
-        solidgauge: {
-          dataLabels: {
-            y: -50,
-            borderWidth: 0,
-            useHTML: true
-          }
-        }
-      },
-      series: [{
-        name: 'fteEntryProgress',
-        data: [completedFTEsArr.length],
-        dataLabels: {
-          format: '<div style="text-align:center"><span style="font-size:25px;color:' +
-            ('black') + '">{y}</span><br/>' +
-               '<span style="font-size:12px;color:silver">Completed</span></div>'
-        }
-      }]
-    };
-
-    highcharts.chart('chart3', chartOptions);
-
-
+  renderParetoChart() {
+    const chartOptions = this.dashboardParetoService.buildChartOptions(this.dashboardData[0]);
+    highcharts.chart('paretoChart', chartOptions);
   }
 
-
-  renderStackedColumnChart() {
-
-    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardFTEData);
-    highcharts.chart('chart4', chartOptions);
-
+  renderProgressGauge() {
+    const chart = this.dashboardGaugeService.buildChart(this.dashboardData[0]);
+    this.completedFTEs = chart.completedFTEs;
+    this.notCompletedFTEs = chart.notCompletedFTEs;
+    highcharts.chart('progressGauge', chart.chartOptions);
   }
-
 
   renderDonutChart() {
-
-    const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardFTEData);
-    highcharts.chart('chart5', chartOptions);
-
+    const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardData[0]);
+    highcharts.chart('donutChart', chartOptions);
   }
+
+  renderStackedColumnChart() {
+    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
+    highcharts.chart('stackedColumnChart', chartOptions);
+  }
+
+
+
 
 
 }

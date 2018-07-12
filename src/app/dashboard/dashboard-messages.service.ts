@@ -138,8 +138,6 @@ export class DashboardMessagesService {
       });
     }
 
-    console.log(`total fte for the quarter is: ${this.toolsService.roundTo(fteTotal, 2)} (should be 3)`);
-
     // if the total is three, the fte entry is complete and no message should be displayed
     if (this.toolsService.roundTo(fteTotal, 2) === 3.00) {
       return undefined;
