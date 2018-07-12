@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
 import { Observable } from 'rxjs/observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import 'rxjs/add/operator/timeout';
-import 'rxjs/add/operator/map';
+// import 'rxjs/add/operator/timeout';
+// import 'rxjs/add/operator/map';
 
 @Injectable()
 export class ApiDataAuthService {
 
+  // TO-DO BILL: get timeout from the app data service (single place)
+  // TO-DO BILL: don't need to import timeout and map
   timeout: number;
 
   constructor(
@@ -39,6 +41,13 @@ export class ApiDataAuthService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/resetToken`, JSON.stringify(user), options)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  // get a list of the background image file names and captions
+  getLoginBackgroundImages(): Observable<any> {
+    return this.http.get(`/api/getLoginBackgroundImages`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

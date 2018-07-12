@@ -1,68 +1,93 @@
 
 <!-- <mat-progress-spinner mode="indeterminate"></mat-progress-spinner> -->
-<app-progress-spinner *ngIf="showProgressSpinner"></app-progress-spinner>
+<!-- <app-progress-spinner *ngIf="showProgressSpinner"></app-progress-spinner> -->
 
-<div class="container-fluid">
+<!-- confirm modal component -->
+<app-confirm-modal></app-confirm-modal>
+
+<div class="login-page-cont">
+
+  <div class="login-background-image" [style.background-image]="'url(' + backgroundImage?.path + ')'"></div>
+
+  <div class="login-background-image-details">
+    <div class="login-background-image-details-title">{{ backgroundImage?.title }}</div>
+    <div class="login-background-image-details-subtitle">{{ backgroundImage?.subTitle }}</div>
+  </div>
+
+  <div class="container-fluid">
 
 
-  <div class="login-cont">
+    <div class="login-cont">
 
-    <div class="login-cont-inner">
+      <div class="login-cont-inner">
 
-      <div class="login-logo-cont">
-        <img class="login-logo-img" src="../assets/jarvislogo_login.png">
+        <div class="login-logo-cont">
+          <!-- <img class="login-logo-img" src="../assets/jarvis_logos/jarvislogo_login.png"> -->
+          <img class="login-logo-img" src="../assets/JarvisLogo.svg" alt="">
+        </div>
+
+        <div class="login-subtitle">
+          Resources
+        </div>
+
+        <div class="form-group form-group-login">
+
+          <label class="login-form-label">User Name</label>
+          <input #userNameVC [(ngModel)]="userName" type="text" class="form-control login-input login-user-name" (keyup.enter)="onLoginKeyEnter()">
+          <i class="login-form-icon nc-icon nc-single-05"></i>
+          
+        </div>
+
+        <div class="form-group form-group-login">
+
+          <label class="login-form-label">Password</label>
+          <input #passwordVC [(ngModel)]="password" type="password" class="form-control login-input login-password" (keyup.enter)="onLoginKeyEnter()">
+          <i class="login-form-icon nc-icon nc-lock"></i>
+          
+        </div>
+
+        <div class="login-remember-me-cont">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="customCheck1" [checked]="rememberMe" (change)="onRememberMeChange($event)">
+            <label class="custom-control-label" for="customCheck1">Remember Me</label>
+            <!-- <mat-slide-toggle color="Primary" [checked]="rememberMe" (change)="onRememberMeChange($event)">Remember Me</mat-slide-toggle> -->
+          </div>
+        </div>
+
+        <div class="form-group form-group-login form-group-login-button">
+
+          <!-- TO-DO BILL: center animated svg after click, grey out and disable button and remove text -->
+          <button type="button" class="btn btn-primary btn-login" [disabled]="showPendingLoginAnimation" [attr.data-clicktrack]="'page: Login, clickedOn: Login Button, text: ' + userName" (click)="onLoginClick()">
+            <span *ngIf="!showPendingLoginAnimation">Login</span>
+            <span *ngIf="showPendingLoginAnimation"> 
+              <svg class="login-animated-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 48 48" xml:space="preserve" width="48" height="48"><g class="nc-icon-wrapper" fill="#fcfcfc"><g class="nc-loop_dots-07-48"> <circle data-color="color-2" fill="none" stroke="#fcfcfc" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="24" cy="25" r="4" style="opacity:0.4851111998781562;" transform="translate(12.35733120292425 12.872220003046095) scale(0.4851111998781562)" stroke-linejoin="miter"></circle> <circle fill="none" stroke="#fcfcfc" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="6" cy="25" r="4" stroke-linejoin="miter" style="opacity:0.4;" transform="translate(3.5999999999999996 15) scale(0.4)"></circle> <circle fill="none" stroke="#fcfcfc" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="42" cy="25" r="4" style="opacity:0.9148888001218438;" transform="translate(3.5746703948825598 2.1277799969539046) scale(0.9148888001218438)" stroke-linejoin="miter"></circle> </g> <script>!function(){function t(t){this.element=t,this.dots=[this.element.getElementsByTagName("circle")[1],this.element.getElementsByTagName("circle")[0],this.element.getElementsByTagName("circle")[2]],this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var e=null;window.requestAnimationFrame=function(t,i){var n=(new Date).getTime();e||(e=n);var a=Math.max(0,16-(n-e)),s=window.setTimeout(function(){t(n+a)},a);return e=n+a,s}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var e=this;this.start||(this.start=t);var i=t-this.start,n=Math.min(i/250,4),a=(n=4==n?0:n)%1,s=Math.ceil(n);1e3>i||(this.start=this.start+1e3);var r=[],o=[6,24,42],m=[25,25,25];switch(r[0]=r[1]=r[2]=.4,s){case 1:r[0]=1-3*a/5,r[1]=.4+3*a/5;break;case 2:r[1]=1-3*a/5,r[2]=.4+3*a/5;break;case 3:r[1]=.4+3*a/5,r[2]=1-3*a/5;break;case 4:r[0]=.4+3*a/5,r[1]=1-3*a/5;break;default:r[0]=1}for(var c=0;3>c;c++)this.dots[c].setAttribute("style","opacity:"+r[c]+";"),this.dots[c].setAttribute("transform","translate("+(1-r[c])*o[c]+" "+(1-r[c])*m[c]+") scale("+r[c]+")");if(document.documentElement.contains(this.element))window.requestAnimationFrame(e.triggerAnimation.bind(e))};var i=document.getElementsByClassName("nc-loop_dots-07-48"),n=[];if(i)for(var a=0;i.length>a;a++)!function(e){n.push(new t(i[e]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?n.forEach(function(t){t.reset()}):n.forEach(function(t){t.init()})})}();</script></g></svg>
+            </span>
+          </button>
+          <!-- <svg *ngIf="showPendingLoginAnimation" class="login-animated-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 48 48" xml:space="preserve" width="48" height="48"><g class="nc-icon-wrapper" fill="#fcfcfc"><g class="nc-loop_dots-07-48"> <circle data-color="color-2" fill="none" stroke="#fcfcfc" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="24" cy="25" r="4" style="opacity:0.4851111998781562;" transform="translate(12.35733120292425 12.872220003046095) scale(0.4851111998781562)" stroke-linejoin="miter"></circle> <circle fill="none" stroke="#fcfcfc" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="6" cy="25" r="4" stroke-linejoin="miter" style="opacity:0.4;" transform="translate(3.5999999999999996 15) scale(0.4)"></circle> <circle fill="none" stroke="#fcfcfc" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="42" cy="25" r="4" style="opacity:0.9148888001218438;" transform="translate(3.5746703948825598 2.1277799969539046) scale(0.9148888001218438)" stroke-linejoin="miter"></circle> </g> <script>!function(){function t(t){this.element=t,this.dots=[this.element.getElementsByTagName("circle")[1],this.element.getElementsByTagName("circle")[0],this.element.getElementsByTagName("circle")[2]],this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var e=null;window.requestAnimationFrame=function(t,i){var n=(new Date).getTime();e||(e=n);var a=Math.max(0,16-(n-e)),s=window.setTimeout(function(){t(n+a)},a);return e=n+a,s}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var e=this;this.start||(this.start=t);var i=t-this.start,n=Math.min(i/250,4),a=(n=4==n?0:n)%1,s=Math.ceil(n);1e3>i||(this.start=this.start+1e3);var r=[],o=[6,24,42],m=[25,25,25];switch(r[0]=r[1]=r[2]=.4,s){case 1:r[0]=1-3*a/5,r[1]=.4+3*a/5;break;case 2:r[1]=1-3*a/5,r[2]=.4+3*a/5;break;case 3:r[1]=.4+3*a/5,r[2]=1-3*a/5;break;case 4:r[0]=.4+3*a/5,r[1]=1-3*a/5;break;default:r[0]=1}for(var c=0;3>c;c++)this.dots[c].setAttribute("style","opacity:"+r[c]+";"),this.dots[c].setAttribute("transform","translate("+(1-r[c])*o[c]+" "+(1-r[c])*m[c]+") scale("+r[c]+")");if(document.documentElement.contains(this.element))window.requestAnimationFrame(e.triggerAnimation.bind(e))};var i=document.getElementsByClassName("nc-loop_dots-07-48"),n=[];if(i)for(var a=0;i.length>a;a++)!function(e){n.push(new t(i[e]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?n.forEach(function(t){t.reset()}):n.forEach(function(t){t.init()})})}();</script></g></svg> -->
+          
+        </div>
+
       </div>
 
-      <div class="login-subtitle">
-        Resources
+      <div class="login-cont-inner-message">
+
+        <table>
+          <tr>
+            <td>
+              <i *ngIf="showMessage" [class]="'fa fa-lg login-message-icon ' + iconClass" [style.color]="iconColor" aria-hidden="true"></i>
+            </td>
+            <td class="login-notice-message">
+              {{ loginMessage }}
+            </td>
+          </tr>
+        </table>
+
       </div>
 
-      <div class="form-group form-group-login">
-
-        <label class="login-form-label">User Name</label>
-        <input #userNameVC [(ngModel)]="userName" type="text" class="form-control login-input login-user-name" (keyup.enter)="onLoginKeyEnter()">
-        <i class="login-form-icon nc-icon nc-single-05"></i>
-        
-      </div>
-
-      <div class="form-group form-group-login">
-
-        <label class="login-form-label">Password</label>
-        <input #passwordVC [(ngModel)]="password" type="password" class="form-control login-input login-password" (keyup.enter)="onLoginKeyEnter()">
-        <i class="login-form-icon nc-icon nc-lock"></i>
-        
-      </div>
-
-      <div class="login-remember-me-cont">
-        <mat-slide-toggle color="Primary" [checked]="rememberMe" (change)="onRememberMeChange($event)">Remember Me</mat-slide-toggle>
-      </div>
-
-      <div class="form-group form-group-login form-group-login-button">
-
-        <button type="button" class="btn btn-primary btn-login" [attr.data-clicktrack]="'page: Login, clickedOn: Login Button, text: ' + userName" (click)="onLoginClick()">Login</button>
-        <svg *ngIf="showPendingLoginAnimation" class="login-animated-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 48 48" xml:space="preserve" width="48" height="48"><g class="nc-icon-wrapper" fill="#fcfcfc"><g class="nc-loop_dots-07-48"> <circle data-color="color-2" fill="none" stroke="#fcfcfc" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="24" cy="25" r="4" style="opacity:0.4851111998781562;" transform="translate(12.35733120292425 12.872220003046095) scale(0.4851111998781562)" stroke-linejoin="miter"></circle> <circle fill="none" stroke="#fcfcfc" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="6" cy="25" r="4" stroke-linejoin="miter" style="opacity:0.4;" transform="translate(3.5999999999999996 15) scale(0.4)"></circle> <circle fill="none" stroke="#fcfcfc" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="42" cy="25" r="4" style="opacity:0.9148888001218438;" transform="translate(3.5746703948825598 2.1277799969539046) scale(0.9148888001218438)" stroke-linejoin="miter"></circle> </g> <script>!function(){function t(t){this.element=t,this.dots=[this.element.getElementsByTagName("circle")[1],this.element.getElementsByTagName("circle")[0],this.element.getElementsByTagName("circle")[2]],this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var e=null;window.requestAnimationFrame=function(t,i){var n=(new Date).getTime();e||(e=n);var a=Math.max(0,16-(n-e)),s=window.setTimeout(function(){t(n+a)},a);return e=n+a,s}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var e=this;this.start||(this.start=t);var i=t-this.start,n=Math.min(i/250,4),a=(n=4==n?0:n)%1,s=Math.ceil(n);1e3>i||(this.start=this.start+1e3);var r=[],o=[6,24,42],m=[25,25,25];switch(r[0]=r[1]=r[2]=.4,s){case 1:r[0]=1-3*a/5,r[1]=.4+3*a/5;break;case 2:r[1]=1-3*a/5,r[2]=.4+3*a/5;break;case 3:r[1]=.4+3*a/5,r[2]=1-3*a/5;break;case 4:r[0]=.4+3*a/5,r[1]=1-3*a/5;break;default:r[0]=1}for(var c=0;3>c;c++)this.dots[c].setAttribute("style","opacity:"+r[c]+";"),this.dots[c].setAttribute("transform","translate("+(1-r[c])*o[c]+" "+(1-r[c])*m[c]+") scale("+r[c]+")");if(document.documentElement.contains(this.element))window.requestAnimationFrame(e.triggerAnimation.bind(e))};var i=document.getElementsByClassName("nc-loop_dots-07-48"),n=[];if(i)for(var a=0;i.length>a;a++)!function(e){n.push(new t(i[e]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?n.forEach(function(t){t.reset()}):n.forEach(function(t){t.init()})})}();</script></g></svg>
-        
-      </div>
-
-    </div>
-
-    <div class="login-cont-inner-message">
-
-      <table>
-        <tr>
-          <td>
-            <i *ngIf="showMessage" [class]="'fa fa-lg login-message-icon ' + iconClass" [style.color]="iconColor" aria-hidden="true"></i>
-          </td>
-          <td class="login-notice-message">
-            {{ loginMessage }}
-          </td>
-        </tr>
-      </table>
 
     </div>
 
 
   </div>
-
 
 </div>

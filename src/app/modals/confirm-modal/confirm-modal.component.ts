@@ -15,6 +15,7 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
 
   modal: any;
   subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(
     private cacheService: CacheService
@@ -32,6 +33,12 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
           backdrop: this.modal.allowOutsideClickDismiss ? true : 'static',
           keyboard: this.modal.allowEscKeyDismiss
         });
+    });
+
+    this.subscription2 = this.cacheService.confirmModalClose.subscribe(
+      (close: boolean) => {
+        // close the modal (regardless of the value, but by convention should pass true)
+        $('#confirm-modal').modal('hide');
     });
 
   }

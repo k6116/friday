@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+const { version: appVersion } = require('../../../package.json');
+
+declare const require: any;
 
 @Component({
   selector: 'app-footer',
@@ -7,7 +10,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-  constructor() { }
+  appVersion: string;
+
+  constructor() {
+    this.appVersion = appVersion;
+  }
 
   ngOnInit() {
   }

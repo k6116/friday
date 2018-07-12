@@ -62,4 +62,6 @@ export class ApiDataReportService {
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
+
+
 }

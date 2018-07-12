@@ -17,7 +17,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css', '../../_shared/styles/common.css']
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
@@ -29,6 +29,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   // properties used for two way binding, with ngModel
   userName: string;
   password: string;
+
+  // used to delay rendering of the page until background image is ready
+  showLoginPage: boolean;
 
   // properties used for the error message display (invalid login etc.)
   loginMessage: string;
@@ -47,6 +50,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   // subscriptions
   subscription1: Subscription;
 
+  // array of background images and randomly selected background image
+  backgroundImages: any[] = [];
+  backgroundImage: any;
+
   constructor(
     private router: Router,
     // private apiDataService: ApiDataService,
@@ -60,6 +67,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private cookiesService: CookiesService,
     private route: ActivatedRoute
   ) {
+
   }
 
   ngOnInit() {
@@ -74,9 +82,48 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
     }
 
+    // get background images from the server to display
+    this.getBackgroundImages();
+
   }
 
   ngOnDestroy() {
+  }
+
+
+  getBackgroundImages() {
+
+    this.apiDataAuthService.getLoginBackgroundImages()
+      .subscribe(
+        res => {
+
+          res.images.forEach(image => {
+            if (res.files.indexOf(image.fileName) !== -1) {
+              this.backgroundImages.push({
+                path: `/assets/login_images/${image.fileName}`,
+                title: image.caption,
+                subTitle: `Key Sightings Winner: ${image.winnerDate}`
+              });
+            }
+          });
+
+          console.log(`number of background images: ${this.backgroundImages.length}`);
+
+          // set random background image
+          this.setBackgroundImage();
+        },
+        err => {
+          console.log(err);
+        }
+      );
+
+  }
+
+  // set random background image
+  setBackgroundImage() {
+    const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
+    this.backgroundImage = this.backgroundImages[imageIndex];
+    this.showLoginPage = true;
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)
@@ -159,8 +206,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.cacheService.autoLogout$ = undefined;
 
           // get and store nested org data for this user, in anticipation of use and for performance
-          //  this.getNestedOrgData(res.jarvisUser.email);
-          this.getNestedOrgData('ethan_hunt@keysight.com');
+           this.getNestedOrgData(res.jarvisUser.email);
+          // this.getNestedOrgData('ethan_hunt@keysight.com');
 
           // hide the animated svg
           this.showPendingLoginAnimation = false;
@@ -169,7 +216,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (this.cacheService.appLoadPath) {
             this.router.navigateByUrl(this.cacheService.appLoadPath);
           } else {
-            this.router.navigateByUrl('/main');
+            this.router.navigateByUrl('/main/dashboard');
           }
 
 
@@ -251,15 +298,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   handleErrorMessage(err: any) {
     // check for no response (net::ERR_CONNECTION_REFUSED etc.)
     if (err.status === 0) {
-      this.displayMessage('Server is not responding', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+      this.toolsService.displayTimeoutError();
+      this.displayMessage('The server is not responding', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
     // check for timeout error
     } else if (err.hasOwnProperty('name')) {
       if (err.name === 'TimeoutError') {
-        this.displayMessage('Server timed out', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+        this.toolsService.displayTimeoutError();
+        this.displayMessage('The server is not responding', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
       }
     // otherwise, this should be a failed login (invalid credentials)
     } else {
-      this.displayMessage('Invalid user name or password.  Note: Use your windows credentials to login.',
+      this.displayMessage('Invalid user name or password.  Note: Use your Windows credentials to login.',
         'fa-exclamation-triangle', 'rgb(139, 0, 0)');
     }
   }
@@ -284,7 +333,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // when the slide toggle is changed, update the rememberMe property (boolean)
   onRememberMeChange(event) {
-    this.rememberMe = event.checked;
+    console.log('on remember me change event triggered');
+    console.log(event.target.checked);
+    this.rememberMe = event.target.checked;
   }
 
 

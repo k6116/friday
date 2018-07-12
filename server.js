@@ -1,4 +1,4 @@
-
+const tracer = require('dd-trace').init()
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -11,6 +11,16 @@ const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
 const email = require('./server/email/email');
 
+// datadog (node)
+const StatsD = require('node-dogstatsd').StatsD;
+const dogstatsd = new StatsD();
+
+// datadog (express)
+const dd_options = {
+  'response_code':true,
+  'tags': ['app:my_app']
+}
+const connect_datadog = require('connect-datadog')(dd_options);
 
 // create the express application
 const app = express();
@@ -38,6 +48,9 @@ app.use(bodyParser.urlencoded({limit: '30mb', extended: true }));
 // serve static files
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static('public'));
+
+// middleware for datadog express integration (for metrics)
+app.use(connect_datadog);
 
 // middleware function to send any api requests to the server/routes/api.js file
 app.use('/api', api);
