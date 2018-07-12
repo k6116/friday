@@ -33,6 +33,8 @@ export class DashboardComponent implements OnInit {
   showSpinner: boolean;
   completedFTEs: string;
   notCompletedFTEs: string;
+  completedPrefix: string;
+  notCompletedPrefix: string;
 
 
   constructor(
@@ -62,8 +64,8 @@ export class DashboardComponent implements OnInit {
       this.authService.loggedInUser.userName, this.authService.loggedInUser.id)
       .subscribe(
         res => {
-          // console.log('dashboard data:');
-          // console.log(res);
+          console.log('dashboard data:');
+          console.log(res);
           this.dashboardData = res;
           this.renderDashboard();
           this.showDashboard = true;
@@ -81,7 +83,7 @@ export class DashboardComponent implements OnInit {
   renderDashboard() {
     this.displayMessages();
     this.renderPieChart();
-    // this.renderParetoChart();
+    // // this.renderParetoChart();
     this.renderProgressGauge();
     this.renderDonutChart();
     this.renderStackedColumnChart();
@@ -104,7 +106,9 @@ export class DashboardComponent implements OnInit {
   renderProgressGauge() {
     const chart = this.dashboardGaugeService.buildChart(this.dashboardData[0]);
     this.completedFTEs = chart.completedFTEs;
+    this.completedPrefix = 'Completed:';
     this.notCompletedFTEs = chart.notCompletedFTEs;
+    this.notCompletedPrefix = 'Not Completed:';
     Highcharts.chart('progressGauge', chart.chartOptions);
   }
 

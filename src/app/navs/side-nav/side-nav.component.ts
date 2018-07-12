@@ -55,6 +55,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           iconClass: 'nc-chart-bar-33',
           alias: 'reports',
           expanded: false,
+          active: false,
           subItems: [
             {
               title: 'My FTE Summary',
@@ -154,13 +155,25 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSubMenuItemClick(menuItem: string, subMenuItem: string) {
+  onSubMenuItemClick(element, menuItem: string, subMenuItem: string) {
     // get the menu item object in the menu structure (this.menuStructure)
     // TO-DO: attempt to combine getMenuObject and getSubMenuObject into a single method
     const foundMenuItem = this.getSubMenuObject(menuItem, subMenuItem);
     // navigate to the selected/clicked route
     this.router.navigate([`/${foundMenuItem.path}`]);
     this.highlightActiveMenu(foundMenuItem.path);
+
+    // find the closest parent main menu item, to show it as highlighted (white text)
+    // const alias = $(element).closest('div.sidenav-menu-item').data('alias');
+    // // find the menu item object matching the alias
+    // const foundMainMenuItem = this.menuStructure.find(mainMenuItem => {
+    //   return mainMenuItem.alias === alias;
+    // });
+    // // if a menu item was found, set active to true
+    // if (foundMainMenuItem) {
+    //   foundMainMenuItem.active = true;
+    // }
+
   }
 
   // hightlight the active/selected menu by going through the entire menu structure (main menu and sub menu items)

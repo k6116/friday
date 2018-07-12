@@ -3,7 +3,11 @@ import { Injectable } from '@angular/core';
 import { ToolsService } from '../_shared/services/tools.service';
 import { AuthService } from '../_shared/services/auth.service';
 
+declare var require: any;
 import * as Highcharts from 'highcharts';
+require('highcharts/modules/data.js')(Highcharts);
+require('highcharts/modules/drilldown.js')(Highcharts);
+require('highcharts/modules/solid-gauge.js')(Highcharts);
 import * as _ from 'lodash';
 
 @Injectable()
