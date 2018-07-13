@@ -70,6 +70,7 @@ import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-sum
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
+import { SchedulesComponent } from './schedules/schedules.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { FooterComponent } from './footer/footer.component';
     TeamFteSummaryComponent,
     TopProjectsBubbleComponent,
     DashboardComponent,
-    FooterComponent
+    FooterComponent,
+    SchedulesComponent
   ],
   imports: [
     AppRoutingModule,

@@ -15,6 +15,7 @@ import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-sum
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { SchedulesComponent } from './schedules/schedules.component';
 
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
@@ -43,6 +44,7 @@ const routes: Routes = [
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'chat', component: ChatComponent },
+      { path: 'schedules', component: SchedulesComponent },
     ]
   },
   { path: '**', redirectTo: '/login' }
