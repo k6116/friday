@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { ToolsService } from '../_shared/services/tools.service';
 import { AuthService } from '../_shared/services/auth.service';
+import { DashboardMessage } from './dashboard-message-model';
 
 import * as _ from 'lodash';
 import * as moment from 'moment';
@@ -20,7 +21,7 @@ export class DashboardMessagesService {
   displayMessages(res): any {
 
     // initialize the messages array
-    const messages: any[] = [];
+    const messages: DashboardMessage[] = [];
 
     // check for a first login message and push it into the messages array
     const firstLogin = this.checkFirstLogin(res[1]);
@@ -49,6 +50,7 @@ export class DashboardMessagesService {
     // if there are no messages, add a message saying there are no messages at this time
     if (!messages.length) {
       messages.push({
+        id: 'noMessages',
         iconFontClass: 'nc-archive-check',
         iconType: 'info',
         messageText: `You have no new messages right now.`
@@ -60,10 +62,11 @@ export class DashboardMessagesService {
 
   }
 
-  checkFirstLogin(check): any {
+  checkFirstLogin(check): DashboardMessage {
 
     if (check.firstLogin) {
       return {
+        id: 'welcomeMessage',
         iconFontClass: 'nc-privacy-policy',
         iconType: 'info',
         messageText: `Welcome to Jarvis Resources! You will be given a short
@@ -76,15 +79,16 @@ export class DashboardMessagesService {
   }
 
 
-  checkNoJobTitle(check): any {
+  checkNoJobTitle(check): DashboardMessage {
 
-    if (!check.jobTitle.JobTitleID && !check.jobTitle.JobSubTitleID) {
+    if (!check.jobTitle[0].JobTitleID) {
       const initial = this.authService.loggedInUser.fullName[0].toUpperCase();
       return {
+        id: 'updateProfileMessage',
         iconFontClass: 'nc-badge',
         iconType: 'warning',
-        messageText: `Please update your profile with your job title and subtitle
-        (click the ${initial} icon in the upper right hand corner then the profile button).
+        messageText: `Please update your profile with your job title and subtitle if applicable -
+        click the ${initial} icon in the upper right hand corner then the profile button.
         You won't be able to enter your fte values until this has been updated.`
       };
     } else {
@@ -94,7 +98,7 @@ export class DashboardMessagesService {
   }
 
 
-  checkProjectRequests(check): any {
+  checkProjectRequests(check): DashboardMessage {
 
     // if there are any open, submitted requests for this user
     if (check.requests.length) {
@@ -126,6 +130,7 @@ export class DashboardMessagesService {
 
       // return the object
       return {
+        id: 'projectRequestsMessage',
         iconFontClass: 'nc-a-check',
         iconType: 'alert',
         messageText: `You have ${requestCount} new request${check.requests.length > 1 ? 's' : ''} to join your
@@ -141,7 +146,7 @@ export class DashboardMessagesService {
   }
 
 
-  checkFTEEntryDeadline(fteData): any {
+  checkFTEEntryDeadline(fteData): DashboardMessage {
 
     // set the deadline, in units of number of weeks since the 1st day of the quarter
     const deadlineWeeks = 3;
@@ -197,6 +202,7 @@ export class DashboardMessagesService {
 
       // return the object
       return {
+        id: 'fteDeadlineMessage',
         iconFontClass: 'nc-time-countdown',
         iconType: passedDeadline ? 'warning' : 'concern',
         messageText: `The deadline to enter your FTE entries for this quarter

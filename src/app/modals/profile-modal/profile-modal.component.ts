@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, HostBinding, Output, EventEmitter } from '@angular/core';
 import { ApiDataJobTitleService } from '../../_shared/services/api-data/_index';
 import { AuthService } from '../../_shared/services/auth.service';
+import { CacheService } from '../../_shared/services/cache.service';
 
 @Component({
     selector: 'app-profile-modal',
@@ -27,6 +28,7 @@ import { AuthService } from '../../_shared/services/auth.service';
     constructor(
         private apiDataJobTitleService: ApiDataJobTitleService,
         private authService: AuthService,
+        private cacheService: CacheService
     ) {}
 
     ngOnInit() {
@@ -132,6 +134,8 @@ import { AuthService } from '../../_shared/services/auth.service';
           res => {
             console.log(res);
             this.newJobTitleID = this.jobTitleID;
+            // emit true via the cache service to clear the dashboard message
+            this.cacheService.profileHasBeenUpdated.emit(true);
           },
           err => {
             console.log(err);
