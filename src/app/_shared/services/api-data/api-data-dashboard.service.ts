@@ -27,7 +27,11 @@ export class ApiDataDashboardService {
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
-    return forkJoin([fteData, firstLogin, projectRequests]);
+    const jobTitle = this.http.get(`/api/dashboard/checkJobTitle/${employeeID}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    return forkJoin([fteData, firstLogin, projectRequests, jobTitle]);
 
   }
 

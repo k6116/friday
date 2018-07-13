@@ -28,6 +28,12 @@ export class DashboardMessagesService {
       messages.push(firstLogin);
     }
 
+    // check for a first login message and push it into the messages array
+    const noJobTitle = this.checkNoJobTitle(res[3]);
+    if (noJobTitle) {
+      messages.push(noJobTitle);
+    }
+
     // checkc for open, submitted project requests for this user; build a message and push it into the array
     const projectRequests = this.checkProjectRequests(res[2]);
     if (projectRequests) {
@@ -68,6 +74,25 @@ export class DashboardMessagesService {
     }
 
   }
+
+
+  checkNoJobTitle(check): any {
+
+    if (!check.jobTitle.JobTitleID && !check.jobTitle.JobSubTitleID) {
+      const initial = this.authService.loggedInUser.fullName[0].toUpperCase();
+      return {
+        iconFontClass: 'nc-badge',
+        iconType: 'warning',
+        messageText: `Please update your profile with your job title and subtitle
+        (click the ${initial} icon in the upper right hand corner then the profile button).
+        You won't be able to enter your fte values until this has been updated.`
+      };
+    } else {
+      return undefined;
+    }
+
+  }
+
 
   checkProjectRequests(check): any {
 

@@ -163,179 +163,191 @@ License - nucleoapp.com/license/
 -------------------------*/
 
 .nc-a-check::before {
-    content: "\ea01";
-}
-
-.nc-analytics-88::before {
-    content: "\ea02";
-}
-
-.nc-archive-check::before {
-    content: "\ea03";
-}
-
-.nc-bars-rotate::before {
     content: "\ea04";
 }
 
-.nc-board-29::before {
-    content: "\ea05";
+.nc-analytics-88::before {
+    content: "\ea03";
 }
 
-.nc-calendar-add::before {
-    content: "\ea06";
+.nc-archive-check::before {
+    content: "\ea01";
 }
 
-.nc-calendar-check-59::before {
-    content: "\ea29";
+.nc-award-49::before {
+    content: "\ea02";
 }
 
-.nc-calendar-grid-61::before {
+.nc-badge-15::before {
     content: "\ea07";
 }
 
-.nc-chart-3::before {
+.nc-badge::before {
+    content: "\ea06";
+}
+
+.nc-bars-rotate::before {
+    content: "\ea05";
+}
+
+.nc-board-29::before {
     content: "\ea08";
 }
 
-.nc-chart-bar-33::before {
+.nc-calendar-add::before {
     content: "\ea09";
 }
 
-.nc-chat-46::before {
+.nc-calendar-check-59::before {
     content: "\ea0a";
 }
 
-.nc-chat-round-content::before {
+.nc-calendar-grid-61::before {
     content: "\ea0b";
 }
 
-.nc-check-all-2::before {
+.nc-chart-3::before {
     content: "\ea0c";
 }
 
-.nc-check-all::before {
+.nc-chart-bar-33::before {
     content: "\ea0d";
 }
 
-.nc-check-curve::before {
+.nc-chat-46::before {
     content: "\ea0e";
 }
 
-.nc-circle-09::before {
+.nc-chat-round-content::before {
     content: "\ea0f";
 }
 
-.nc-circle-10::before {
+.nc-check-all-2::before {
     content: "\ea10";
 }
 
-.nc-circle-remove::before {
+.nc-check-all::before {
     content: "\ea11";
 }
 
-.nc-dashboard-29::before {
+.nc-check-curve::before {
     content: "\ea12";
 }
 
-.nc-dashboard-30::before {
+.nc-circle-09::before {
     content: "\ea13";
 }
 
-.nc-dashboard-half::before {
+.nc-circle-10::before {
     content: "\ea14";
 }
 
-.nc-dots-05::before {
+.nc-circle-remove::before {
     content: "\ea15";
 }
 
-.nc-dots-06::before {
+.nc-dashboard-29::before {
     content: "\ea16";
 }
 
-.nc-dots-07::before {
+.nc-dashboard-30::before {
     content: "\ea17";
 }
 
-.nc-event-create::before {
+.nc-dashboard-half::before {
     content: "\ea18";
 }
 
-.nc-eye-17::before {
+.nc-dots-05::before {
     content: "\ea19";
 }
 
-.nc-gantt::before {
+.nc-dots-06::before {
     content: "\ea1a";
 }
 
-.nc-hanger-clothes::before {
+.nc-dots-07::before {
     content: "\ea1b";
 }
 
-.nc-lock::before {
+.nc-event-create::before {
     content: "\ea1c";
 }
 
-.nc-metrics::before {
+.nc-eye-17::before {
     content: "\ea1d";
 }
 
-.nc-newsletter::before {
+.nc-gantt::before {
     content: "\ea1e";
 }
 
-.nc-opening-times::before {
+.nc-hanger-clothes::before {
     content: "\ea1f";
 }
 
-.nc-pencil::before {
+.nc-lock::before {
     content: "\ea20";
 }
 
-.nc-privacy-policy::before {
+.nc-metrics::before {
     content: "\ea21";
 }
 
-.nc-recipe-book-46::before {
+.nc-newsletter::before {
     content: "\ea22";
 }
 
-.nc-recipe-book-47::before {
-    content: "\ea23";
-}
-
-.nc-recipe::before {
+.nc-opening-times::before {
     content: "\ea24";
 }
 
-.nc-rim::before {
+.nc-pencil::before {
+    content: "\ea23";
+}
+
+.nc-privacy-policy::before {
     content: "\ea25";
 }
 
-.nc-send::before {
+.nc-recipe-book-46::before {
     content: "\ea26";
 }
 
-.nc-settings-gear-63::before {
+.nc-recipe-book-47::before {
     content: "\ea27";
 }
 
-.nc-single-05::before {
+.nc-recipe::before {
     content: "\ea28";
 }
 
-.nc-socket::before {
+.nc-rim::before {
+    content: "\ea29";
+}
+
+.nc-send::before {
     content: "\ea2a";
 }
 
-.nc-time-countdown::before {
+.nc-settings-gear-63::before {
     content: "\ea2b";
 }
 
-.nc-wash::before {
+.nc-single-05::before {
     content: "\ea2c";
+}
+
+.nc-socket::before {
+    content: "\ea2d";
+}
+
+.nc-time-countdown::before {
+    content: "\ea2e";
+}
+
+.nc-wash::before {
+    content: "\ea2f";
 }
 
 

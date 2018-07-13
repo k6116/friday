@@ -63,6 +63,27 @@ function checkFirstLogin(req, res) {
 }
 
 
+function checkJobTitle(req, res) {
+
+  console.log('reached check job title');
+
+  const employeeID = req.params.employeeID;
+  sequelize.query(`SELECT JobTitleID, JobSubTitleID FROM accesscontrol.Employees WHERE EmployeeID = :employeeID`, {replacements: {employeeID: employeeID}, type: sequelize.QueryTypes.SELECT})
+    .then(jobTitle => {
+      res.json({
+        jobTitle
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+}
+
+
 function checkProjectRequests(req, res) {
 
   const employeeID = req.params.employeeID;
@@ -104,5 +125,6 @@ function checkProjectRequests(req, res) {
 module.exports = {
   getFTEData: getFTEData,
   checkFirstLogin: checkFirstLogin,
+  checkJobTitle: checkJobTitle,
   checkProjectRequests: checkProjectRequests
 }

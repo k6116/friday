@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataClickTrackingService } from '../../_shared/services/api-data/_index';
 import { AuthService } from '../../_shared/services/auth.service';
 
 import * as moment from 'moment';
@@ -12,7 +12,7 @@ export class ClickTrackingService {
 
   constructor(
     private router: Router,
-    private apiDataService: ApiDataService,
+    private apiDataClickTrackingService: ApiDataClickTrackingService,
     private authService: AuthService
   ) { }
 
@@ -109,7 +109,7 @@ export class ClickTrackingService {
 
     // if the object looks good, send the data to the database to insert
     if (!error) {
-      this.apiDataService.logClick(clickObj, userID)
+      this.apiDataClickTrackingService.logClick(clickObj, userID)
       .subscribe(
         res => {
           // click tracking record was inserted successfully
