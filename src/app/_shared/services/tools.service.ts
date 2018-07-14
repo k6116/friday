@@ -225,12 +225,6 @@ fiscalQuarterString(date: any): string {
 // that can be used for a sql query, etc.: ['05-01-2018', '08-01-2018']
 fiscalQuarterRange(date: any, format: string): string[] {
 
-  // keysight fiscal quarters:
-  // Q1: Nov 1 - Jan 31  [11, 12, 1]
-  // Q2: Feb 1 - Apr 30  [2, 3, 4]
-  // Q3: May 1 - Jul 31  [5, 6, 7]
-  // Q4: Aug 1 - Oct 31  [8, 9, 10]
-
   // set a two dimensional array of fiscal quarters, months
   const fiscalQuarters = [[11, 12, 1], [2, 3, 4], [5, 6, 7], [8, 9, 10]];
 
@@ -264,6 +258,37 @@ fiscalQuarterRange(date: any, format: string): string[] {
 
   // return the fiscal quarters as an array of two strings
   return range;
+
+}
+
+
+// return the current fiscal quarter as a string in the format Aug - Oct
+fiscalQuarterMonthsString(date: any): string {
+
+  // set a two dimensional array of fiscal quarters, months
+  const fiscalQuarters = [[11, 12, 1], [2, 3, 4], [5, 6, 7], [8, 9, 10]];
+
+  // get the current month as a number
+  const month = moment(date).month();
+
+  // find the month in the array to get the quarter index, and quarter array
+  let quarterArr;
+  fiscalQuarters.forEach(fiscalQuarter => {
+    if (fiscalQuarter.includes(month)) {
+      quarterArr = fiscalQuarter;
+    }
+  });
+
+  // get the current year as a number
+  const year = moment(date).year();
+
+  // get the start and end of the quarter in the proper string format
+  // NOTE: subtracting 1 from the month here since months are zero indexed in moment
+  const firstMonth = moment({year: year, month: quarterArr[0] - 1}).format('MMM D');
+  const lastMonth = moment({year: year, month: quarterArr[2] - 1}).add(1, 'months').subtract(1, 'days').format('MMM D');
+
+  // return the string
+  return `${firstMonth} - ${lastMonth}`;
 
 }
 

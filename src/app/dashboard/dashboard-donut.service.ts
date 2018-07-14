@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToolsService } from '../_shared/services/tools.service';
 
 import * as Highcharts from 'highcharts';
+import * as moment from 'moment';
 
 
 @Injectable()
@@ -126,6 +127,11 @@ export class DashboardDonutService {
     // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
     const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
 
+    // get the fiscal quarter and months range for the subtitle
+    const fiscalQuarter = this.toolsService.fiscalQuarterString(moment());
+    const monthsRange = this.toolsService.fiscalQuarterMonthsString(moment());
+
+
     // set the chart options
     const chartOptions = {
       chart: {
@@ -136,7 +142,7 @@ export class DashboardDonutService {
           text: `Your Team's FTE's by Project Type`
       },
       subtitle: {
-        text: `For current fiscal quarter.`
+        text: `For current fiscal quarter ${fiscalQuarter} (${monthsRange}).`
       },
       credits: {
         text: 'jarvis.is.keysight.com',
