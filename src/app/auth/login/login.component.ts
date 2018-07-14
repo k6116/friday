@@ -102,7 +102,7 @@ export class LoginComponent implements OnInit, OnDestroy {
               this.backgroundImages.push({
                 path: `/assets/login_images/${image.fileName}`,
                 title: image.caption,
-                subTitle: `Key Sightings Winner: ${image.winnerDate}`
+                subTitle: `Key Sightings, ${image.winnerDate}`
               });
             }
           });

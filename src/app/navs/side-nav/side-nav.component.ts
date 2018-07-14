@@ -32,7 +32,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           alias: 'dashboard',
           path: 'main/dashboard',
           expanded: false,
-          active: false
+          active: false,
+          highlighted: false
         },
         {
           title: 'FTE Entry',
@@ -40,7 +41,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           alias: 'fteEntry',
           path: 'main/fte-entry/employee',
           expanded: false,
-          active: false
+          active: false,
+          highlighted: false
         },
         {
           title: 'Projects',
@@ -48,7 +50,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           alias: 'projects',
           path: 'main/setups/projects',
           expanded: false,
-          active: false
+          active: false,
+          highlighted: false
         },
         {
           title: 'Reports',
@@ -56,6 +59,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           alias: 'reports',
           expanded: false,
           active: false,
+          highlighted: false,
           subItems: [
             {
               title: 'My FTE Summary',
@@ -148,6 +152,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       if (foundMenuItem.subItems) {
         this.expandOrCollapseMenu(!foundMenuItem.expanded, menuItem, true);
       } else {
+        // clear any main menu items highlights
+        this.clearHighlightMainOfSubMenuItem();
         // navigate to the selected/clicked route
         this.router.navigate([`/${foundMenuItem.path}`]);
         this.highlightActiveMenu(foundMenuItem.path);
@@ -164,16 +170,28 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     this.highlightActiveMenu(foundMenuItem.path);
 
     // find the closest parent main menu item, to show it as highlighted (white text)
-    // const alias = $(element).closest('div.sidenav-menu-item').data('alias');
-    // // find the menu item object matching the alias
-    // const foundMainMenuItem = this.menuStructure.find(mainMenuItem => {
-    //   return mainMenuItem.alias === alias;
-    // });
-    // // if a menu item was found, set active to true
-    // if (foundMainMenuItem) {
-    //   foundMainMenuItem.active = true;
-    // }
+    const alias = $(element).closest('div.sidenav-menu-item').data('alias');
+    this.highlightMainOfSubMenuItem(alias);
 
+  }
+
+  highlightMainOfSubMenuItem(alias) {
+    // highlight the main menu item of a sub menu item in white (no yellow left border)
+    // find the menu item object matching the alias
+    const foundMainMenuItem = this.menuStructure.find(mainMenuItem => {
+      return mainMenuItem.alias === alias;
+    });
+    // if a menu item was found, set highlighted to true
+    if (foundMainMenuItem) {
+      foundMainMenuItem.highlighted = true;
+    }
+  }
+
+  clearHighlightMainOfSubMenuItem() {
+    // go through each main menu item and set the highlighted property to false
+    this.menuStructure.forEach(mainMenuItem => {
+      mainMenuItem.highlighted = false;
+    });
   }
 
   // hightlight the active/selected menu by going through the entire menu structure (main menu and sub menu items)
@@ -209,6 +227,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           // set the property
           // TO-DO: make this method return the object instead of setting a class property, would be more proper
           this.parentMenuToExpand = foundMainMenuItem;
+          // highlight the main menu item of the sub menu item in white (no yellow left border)
+          this.highlightMainOfSubMenuItem(foundMainMenuItem.alias);
         }
       }
     });
