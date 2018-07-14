@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const app = express();
 const jwt = require('jsonwebtoken');
+const dotevnv = require('dotenv').config(
+  {path: '/.env'}
+);
 
 var controllers = require('../controllers/_index.js');
 
@@ -92,7 +95,7 @@ router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.
 // TO-DO BILL: pull in the token secret from .env
 router.use('/', function(req, res, next) {
   // get the token out of the query string and verify it is valid.
-  jwt.verify(req.query.token, 'rutabega', (err, decoded) => {
+  jwt.verify(req.query.token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       console.log(err);
       // if the token was not decoded successfully, return an error status and message
