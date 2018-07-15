@@ -9,6 +9,7 @@ import { ApiDataProjectService } from '../_shared/services/api-data/_index';
 export class SchedulesComponent implements OnInit {
 
   projectList: any;
+  projectTypesList: any;
 
   constructor(
     private apiDataProjectService: ApiDataProjectService,
@@ -16,6 +17,7 @@ export class SchedulesComponent implements OnInit {
 
   ngOnInit() {
     this.getProjects();
+    this.getProjectTypesList();
   }
 
   getProjects() {
@@ -33,4 +35,19 @@ export class SchedulesComponent implements OnInit {
       }
     );
   }
+
+  getProjectTypesList() {
+    this.apiDataProjectService.getProjectTypesList()
+    .subscribe(
+      res => {
+        // console.log(res);
+        this.projectTypesList = res;
+        console.log('Project Types:', this.projectTypesList);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
 }
