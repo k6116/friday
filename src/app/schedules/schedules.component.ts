@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiDataProjectService } from '../_shared/services/api-data/_index';
 
 @Component({
   selector: 'app-schedules',
@@ -7,9 +8,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SchedulesComponent implements OnInit {
 
-  constructor() { }
+  projectList: any;
+
+  constructor(
+    private apiDataProjectService: ApiDataProjectService,
+  ) { }
 
   ngOnInit() {
+    this.getProjects();
   }
 
+  getProjects() {
+    this.apiDataProjectService.getProjects()
+    .subscribe(
+      res => {
+        console.log('get project data successfull:');
+        console.log(res);
+        this.projectList = res;
+        // this.trimProjects(500);
+      },
+      err => {
+        console.log('get project data error:');
+        console.log(err);
+      }
+    );
+  }
 }
