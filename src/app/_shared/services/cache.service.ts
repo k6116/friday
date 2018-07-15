@@ -9,7 +9,7 @@ export class CacheService {
   // TO-DO MIKE: rename app-data service to cache service EVERYWHERE!!
   // app data service serves as a central data store (global variables, constants, emitters)
 
-  apiDataTimeout = 100 * 60 * 15; // set the api data service timeout to 15 seconds
+  apiDataTimeout = 100 * 60 * 20; // set the api data service timeout to 15 seconds
   loggedInUser = new EventEmitter<any>();
   loggedInUser$: any;
 
