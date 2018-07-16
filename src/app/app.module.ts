@@ -109,8 +109,7 @@ import { FooterComponent } from './footer/footer.component';
     TeamFteSummaryComponent,
     TopProjectsBubbleComponent,
     DashboardComponent,
-    FooterComponent
-  ],
+    FooterComponent,  ],
   imports: [
     AppRoutingModule,
     BrowserModule,
