@@ -10,6 +10,7 @@ const dotevnv = require('dotenv').config()
 const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
 const email = require('./server/email/email');
+const websockets = require('./server/websockets/websockets');
 
 // datadog (node)
 const StatsD = require('node-dogstatsd').StatsD;
@@ -107,27 +108,8 @@ if (env === 'dev') {
 
 }
 
-// testing websockets
-
-var io = require('socket.io')(server);
-
-io.on('connection', socket => {
-  console.log('a user connected');
-  socket.on('message', message => {
-    io.emit('message', message);
-  });
-  socket.on('loggedInUser', loggedInUser => {
-    io.emit('loggedInUser', loggedInUser);
-  });
-  socket.on('loggedOutUser', loggedOutUser => {
-    io.emit('loggedOutUser', loggedOutUser);
-  });
-  socket.on('disconnect', () => {
-    console.log('a user disconnected');
-  });
-});
-
-
+// send and receive websockets messages
+websockets.listen(server);
 
 //SET EMAIL SCHEDULES
 email.setSchedules();
