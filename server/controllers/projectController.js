@@ -11,7 +11,8 @@ function indexProjects(req, res) {
         substring(p.ProjectName,1,30) as \'ProjectName\', 
         substring(p.Description,1,500) as \'Description\', 
         e.FullName, 
-        p.CreationDate, 
+        p.CreationDate,
+        t.ProjectTypeID, 
         t.ProjectTypeName, 
         p.CreatedBy
     FROM  

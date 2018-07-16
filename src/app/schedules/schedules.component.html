@@ -12,7 +12,7 @@
   <div class="row">
   <!-- Project Table -->
     <div class="col">
-      <table class="table table-bordered table-hover table-light">
+      <table *ngIf="showTable" class="table table-bordered table-hover table-light">
         <thead>
           <tr>
             <th width="40%">Projects</th>
@@ -22,7 +22,7 @@
               <div class="dropdown-toggle" data-toggle="dropdown">Project Type</div>
               <ul class="dropdown-menu">
                 <li *ngFor="let projectType of projectTypesList">
-                  <input type="checkbox" data-value="option1"/>&nbsp;{{ projectType.projectTypeName }}
+                  <input type="checkbox" [(ngModel)]="projectType.checked" [value]="projectType.value" (change)="onCheckboxChange(projectType.id)"/>&nbsp;{{ projectType.projectTypeName }}
                 </li>
               </ul>
             </th>
@@ -30,7 +30,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let project of projectList">
+          <tr *ngFor="let project of (projectList | projectTypePipe : {ProjectTypeID : projectTypeID})">
             <td>{{ project.ProjectName }}</td>
             <td>{{ project.Description }}</td>
             <td>{{ project.ProjectTypeName }}</td>

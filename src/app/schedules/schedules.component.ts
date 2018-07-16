@@ -10,6 +10,11 @@ export class SchedulesComponent implements OnInit {
 
   projectList: any;
   projectTypesList: any;
+  projectTypeID: number;
+
+  // temporary:
+  showTable: boolean;
+  filterItems: any;
 
   constructor(
     private apiDataProjectService: ApiDataProjectService,
@@ -18,20 +23,33 @@ export class SchedulesComponent implements OnInit {
   ngOnInit() {
     this.getProjects();
     this.getProjectTypesList();
+    this.projectTypeID = 1;
+    // this.filterItems = [
+    //   {
+    //     value: 'val1',
+    //     checked: false
+    //   },
+    //   {
+    //     value: 'val2',
+    //     checked: false
+    //   },
+    //   {
+    //     value: 'val3',
+    //     checked: false
+    //   },
+    // ];
   }
 
   getProjects() {
     this.apiDataProjectService.getProjects()
     .subscribe(
       res => {
-        console.log('get project data successfull:');
-        console.log(res);
         this.projectList = res;
-        // this.trimProjects(500);
+        console.log('ProjectList:', this.projectList);
+        this.showTable = true;
       },
       err => {
-        console.log('get project data error:');
-        console.log(err);
+        console.log('get project data error:', err);
       }
     );
   }
@@ -40,8 +58,11 @@ export class SchedulesComponent implements OnInit {
     this.apiDataProjectService.getProjectTypesList()
     .subscribe(
       res => {
-        // console.log(res);
         this.projectTypesList = res;
+        for (let i = 0; i < this.projectTypesList.length; i++) {
+          // this.projectTypesList[i].checked = false;
+        }
+
         console.log('Project Types:', this.projectTypesList);
       },
       err => {
@@ -49,5 +70,14 @@ export class SchedulesComponent implements OnInit {
       }
     );
   }
+
+  onCheckboxChange(id: number) {
+    this.projectTypeID = id;
+    console.log(this.projectTypeID);
+  }
+
+  // checked() {
+  //   return this.filterItems.filter(item => item.checked);
+  // }
 
 }

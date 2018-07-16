@@ -20,6 +20,7 @@ import { ClickOutsideDirective } from './_shared/directives/click-outside.direct
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
+import { ProjectTypePipe } from './_shared/pipes/project-type.pipe';
 
 // SERVICES
 import { ApiDataService, CacheService, ClickTrackingService, CookiesService,
@@ -93,6 +94,7 @@ import { SchedulesComponent } from './schedules/schedules.component';
     ProfileModalComponent,
     ProjectsModalComponent,
     FilterPipe,
+    ProjectTypePipe,
     TestComponent,
     OrgDropdownComponent,
     ProjectsEditModalComponent,
@@ -111,7 +113,7 @@ import { SchedulesComponent } from './schedules/schedules.component';
     TopProjectsBubbleComponent,
     DashboardComponent,
     FooterComponent,
-    SchedulesComponent
+    SchedulesComponent,
   ],
   imports: [
     AppRoutingModule,
