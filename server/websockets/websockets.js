@@ -15,6 +15,9 @@ function listen(server) {
     socket.on('loggedOutUser', loggedOutUser => {
       io.emit('loggedOutUser', loggedOutUser);
     });
+    socket.on('project', project => {
+      io.emit('project', project);
+    });
     socket.on('disconnect', () => {
       console.log('a user disconnected');
     });

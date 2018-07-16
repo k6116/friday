@@ -108,7 +108,7 @@ if (env === 'dev') {
 
 }
 
-// send and receive websockets messages
+// send and receive real-time websockets messages
 websockets.listen(server);
 
 //SET EMAIL SCHEDULES

@@ -2,11 +2,13 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
   HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { Subscription } from 'rxjs/Subscription';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
   ApiDataEmailService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
+import { WebsocketService } from '../../_shared/services/websocket.service';
 
 declare var $: any;
 declare const introJs: any;
@@ -74,12 +76,14 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   projectData: any;
   clickOutsideException: string;
   selProject: any;
+  subscription1: Subscription;
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
   @Output() tutorialStateEmitter = new EventEmitter<number>();
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
+  @Output() addedProjects = new EventEmitter<any>();
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -95,6 +99,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     private apiDataEmailService: ApiDataEmailService,
     private cacheService: CacheService,
     private authService: AuthService,
+    private websocketService: WebsocketService
   ) {
 
   }
@@ -135,10 +140,33 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     if (this.fteTutorialState === 2) {
       this.tutorialPart2();
     }
+
+    // listen for websocket message for newly created projects
+    this.subscription1 = this.websocketService.getNewProject().subscribe(project => {
+      console.log(project);
+      this.refreshProjectCards();
+    });
+
   }
 
   ngAfterViewInit() {
 
+  }
+
+  // refresh the project cards if another user has added a new project while the modal is open
+  // replaces the need for a refresh button
+  refreshProjectCards() {
+    this.apiDataProjectService.getProjects()
+      .subscribe(
+        res => {
+          this.projects = res;
+          this.addedProjects.emit(this.projects);
+        },
+        err => {
+          console.log('get projects data error:');
+          console.log(err);
+        }
+    );
   }
 
   resizeProjectCardsContainer() {

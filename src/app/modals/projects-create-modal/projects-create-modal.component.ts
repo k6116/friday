@@ -3,6 +3,7 @@ import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@ang
 import { ApiDataEmployeeService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
+import { WebsocketService } from '../../_shared/services/websocket.service';
 
 declare var $: any;
 
@@ -27,6 +28,7 @@ export class ProjectsCreateModalComponent implements OnInit {
     private apiDataEmployeeService: ApiDataEmployeeService,
     private cacheService: CacheService,
     private authService: AuthService,
+    private websocketService: WebsocketService
   ) {
     this.resetForm();
     this.getProjectTypesList();
@@ -81,6 +83,7 @@ export class ProjectsCreateModalComponent implements OnInit {
       res => {
         console.log(res);
         this.createSuccess.emit(true);
+        this.websocketService.sendNewProject(res);
       },
       err => {
         console.log(err);

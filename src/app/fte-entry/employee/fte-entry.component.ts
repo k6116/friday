@@ -125,17 +125,17 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.fteComponentInit();  // initialize the FTE entry component
 
     this.apiDataProjectService.getProjects()
-    .subscribe(
-      res => {
-        console.log('get project data successfull:');
-        console.log(res);
-        this.projectList = res;
-        // this.trimProjects(500);
-      },
-      err => {
-        console.log('get project data error:');
-        console.log(err);
-      }
+      .subscribe(
+        res => {
+          console.log('get project data successfull:');
+          console.log(res);
+          this.projectList = res;
+          // this.trimProjects(500);
+        },
+        err => {
+          console.log('get project data error:');
+          console.log(err);
+        }
     );
 
    this.buildMonthsArray();
@@ -220,6 +220,13 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       this.display = false;
     }
     this.showProjectsModal = true;
+  }
+
+  // output from the projects modal; in the event that any projects are added when the modal is open
+  // and the projects list is refreshed via websockets
+  onAddedProjects(projects: any) {
+    // update the projects list
+    this.projectList = projects;
   }
 
   onModalClosed(selectedProject: any) {

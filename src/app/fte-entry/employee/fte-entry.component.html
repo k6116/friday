@@ -1,6 +1,6 @@
 
 <app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" [fteTutorialState]="fteTutorialState"
-  (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()" (tutorialStateEmitter)="tutorialPart3($event)"></app-projects-modal>
+  (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()" (tutorialStateEmitter)="tutorialPart3($event)" (addedProjects)="onAddedProjects($event)"></app-projects-modal>
 
 <div [hidden]="!display" class="container-fluid">
 
