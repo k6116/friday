@@ -164,10 +164,15 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       overlayOpacity: 0.4,
       exitOnOverlayClick: false,
       showStepNumbers: false,
+      showBullets: false,
       keyboardNavigation: false
     });
     window.setTimeout( () => {
-      intro.start('.tutorial-part2');
+      intro.start('.tutorial-part2').onskip( () => {
+        // if the user clicks skip, reset the FTE tutorial and emit back to the child component
+        this.fteTutorialState = 0;
+        this.tutorialStateEmitter.emit(this.fteTutorialState);
+      });
     }, 500);
   }
 
@@ -191,19 +196,15 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.outerDivState = 'out';
     this.innerDivState = 'out';
 
-    // if user selects project when in the tutorial, end this part and increment the state counter
+    // if user selects project when in the tutorial, end step2 and send the parent component the current state
     if (this.fteTutorialState === 2) {
       this.fteTutorialState++;
       introJs().exit();
+      window.setTimeout( () => {
+        // setting timeout to allow parent component some time to render
+        this.tutorialStateEmitter.emit(this.fteTutorialState);
+      }, 500);
     }
-
-    //  // if user selects a project while we're in the tutorial, end step2 and send the parent component the current state
-    //  if (this.fteTutorialState === 3) {
-    //   window.setTimeout( () => {
-    //     // setting timeout to allow parent component some time to render
-    //     this.tutorialStateEmitter.emit(this.fteTutorialState);
-    //   }, 500);
-    // }
   }
 
   onScroll() {

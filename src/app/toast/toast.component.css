@@ -23,7 +23,7 @@ div.toast {
   }
 
   div.toast.toast-error {
-    background-color: rgb(173, 28, 28);
+    background-color: #C82333; /* bootstrap4 danger-red */
     color: #fff;
   }
   
