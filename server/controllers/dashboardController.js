@@ -43,14 +43,14 @@ function getFTEData(req, res) {
 
 function checkFirstLogin(req, res) {
 
+  const employeeID = req.params.employeeID;
   const userName = req.params.userName;
-  sequelize.query(`SELECT COUNT(*) as LoginCount FROM [resources].[ClickTracking] WHERE ClickedOn = 'Login Button' AND [Text] = :userName`, {replacements: {userName: userName}, type: sequelize.QueryTypes.SELECT})
-    .then(count => {
-      console.log(`count of logins: ${count}`);
-      console.log(count);
-      console.log(count[0].LoginCount === 1 ? true : false);
+  sequelize.query(`SELECT COUNT(*) as ClickCount FROM [resources].[ClickTracking] WHERE EmployeeID = :employeeID OR [Text] = :userName`, {replacements: {employeeID: employeeID, userName: userName}, type: sequelize.QueryTypes.SELECT})
+    .then(clickCount => {
+      console.log(`click count`);
+      console.log(clickCount);
       res.json({
-        firstLogin: count[0].LoginCount === 1 ? true : false
+        clickCount
       });
     })
     .catch(error => {

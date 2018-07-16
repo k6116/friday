@@ -19,7 +19,7 @@ export class ApiDataDashboardService {
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
-    const firstLogin = this.http.get(`/api/dashboard/checkFirstLogin/${userName}`)
+    const firstLogin = this.http.get(`/api/dashboard/checkFirstLogin/${employeeID}/${userName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 

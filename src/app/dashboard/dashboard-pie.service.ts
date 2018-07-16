@@ -51,7 +51,7 @@ export class DashboardPieService {
           });
           seriesData.push({
             name: project.projectName,
-            y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 1),
+            y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 0),
             drilldown: project.projectName
           });
         }
@@ -97,7 +97,7 @@ export class DashboardPieService {
               }
             });
           });
-          drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 1)]);
+          drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 0)]);
         });
 
         // TO-DO: push into an array of object first, then use _.sortBy to sort by fte percent descending
@@ -159,7 +159,7 @@ export class DashboardPieService {
         series: {
           dataLabels: {
             enabled: true,
-            format: '{point.name}: {point.y:.1f}%'
+            format: '{point.name}: {point.y}%'
           }
         }
       },

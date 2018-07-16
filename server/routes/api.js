@@ -82,7 +82,7 @@ router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYea
 
 // DASHBOARD CONTROLLER
 router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);
-router.get('/dashboard/checkFirstLogin/:userName', controllers.dashboard.checkFirstLogin);
+router.get('/dashboard/checkFirstLogin/:employeeID/:userName', controllers.dashboard.checkFirstLogin);
 router.get('/dashboard/checkJobTitle/:employeeID', controllers.dashboard.checkJobTitle);
 router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
 

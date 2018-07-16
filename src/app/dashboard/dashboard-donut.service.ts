@@ -139,7 +139,7 @@ export class DashboardDonutService {
         height: 450
       },
       title: {
-          text: `Your Team's FTE's by Project Type`
+          text: `Your Team's FTEs by Project Type`
       },
       subtitle: {
         text: `For current fiscal quarter ${fiscalQuarter} (${monthsRange}).`
@@ -157,7 +157,7 @@ export class DashboardDonutService {
       },
       yAxis: {
         title: {
-          text: 'Total percent market share'
+          text: '...'
         }
       },
       plotOptions: {
