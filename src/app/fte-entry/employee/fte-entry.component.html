@@ -14,9 +14,9 @@
         <i class="fa fa-table"></i>&nbsp;&nbsp;Export
       </button> -->
       <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
-      <button class="btn btn-primary btn-fte-toolbar" (click)="onResetClick()">
+      <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="onResetClick()">
         <i class="fa fa-eraser"></i>&nbsp;&nbsp;Reset
-      </button>
+      </button> -->
       <button class="btn btn-save btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
         <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
       </button>
@@ -29,7 +29,7 @@
             </button>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
             <a class="dropdown-item" (click)="tutorialPart1()">Interactive Tutorial</a>
-            <a class="dropdown-item" >Instructions</a>
+            <a class="dropdown-item" (click)="onInstructionsClick()">Instructions</a>
             <a class="dropdown-item" >Confluence Documentation</a>
           </div>
         </div>
@@ -90,7 +90,7 @@
                   <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
                 </div>
                 <div class="fte-table-cell col-project-name">{{ (project.projectName.length > 20) ? (project.projectName | slice:0:20) + '...' : (project.projectName) }}</div>
-                <div class="fte-table-cell col-project-role">{{ project.jobSubTitle }}</div>
+                <div class="fte-table-cell col-project-role">{{ project.jobTitle }} - {{ project.jobSubTitle }}</div>
                 <!-- loop through each month's FTE allocation, "monthly" cells per project -->
                 <ng-container *ngFor="let month of months; let j = index">
                   <div class="fte-table-cell" [@colState]="fteMonthVisible[j]" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">

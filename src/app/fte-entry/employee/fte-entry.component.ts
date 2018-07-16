@@ -1080,4 +1080,72 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       });
   }
 
+  onInstructionsClick() {
+    // emit carousel modal after they click instructions button
+    this.cacheService.carouselModalData.emit(
+      {
+        title: `FTE Entry Instructions`,
+        iconClass: 'fa-info',
+        iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Close',
+            bsClass: 'btn-success',
+            emit: true
+          }
+        ],
+        slides: [
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_1.png',
+            alt: 'First FTE Slide',
+            captionLabel: 'Label Test',
+            caption: 'caption test',
+            active: true
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_2.png',
+            alt: 'First FTE Slide',
+            captionLabel: 'Label Test',
+            caption: 'caption test',
+            active: false
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_3.png',
+            alt: 'First FTE Slide',
+            captionLabel: 'Label Test',
+            caption: 'caption test',
+            active: false
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_4.png',
+            alt: 'First FTE Slide',
+            captionLabel: 'Label Test',
+            caption: 'caption test',
+            active: false
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_5.png',
+            alt: 'First FTE Slide',
+            captionLabel: 'Label Test',
+            caption: 'caption test',
+            active: false
+          }
+        ]
+      }
+    );
+
+    const carouselModalSubscription = this.cacheService.carouselModalResponse.subscribe( res => {
+      if (res) {
+        // if they click ok, grab the deleted project info and exec db call to delete
+        console.log('CAROUSEL!');
+      } else {
+        console.log('delete confirm aborted');
+      }
+      carouselModalSubscription.unsubscribe();
+    });
+  }
+
 }
