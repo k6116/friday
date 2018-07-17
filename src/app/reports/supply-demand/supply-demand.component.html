@@ -1,0 +1,31 @@
+
+<div class="container-fluid">
+
+  <div class="row row-custom">
+    <div class="col">
+      <h1>Search Project</h1>
+      <ng2-completer [(ngModel)]="searchStr" [datasource]="completerProjectList" [minSearchLength]="0" (click)="selectProjectClick($event)"></ng2-completer>
+      <h1>Search captain</h1>
+      <ng2-completer [(ngModel)]="captain" [datasource]="captains" [minSearchLength]="0"></ng2-completer>
+    </div>
+  </div>
+  <!-- <div class="row row-custom">
+    <div class="col">
+      <table class="table table-hover table-sm">
+        <thead>
+          <tr>
+            <th>Project Name</th>
+            <th>Project Type</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let project of projectList">
+          <tr>
+            <td>{{ project?.ProjectName }}</td>
+            <td>{{ project?.ProjectTypeName }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> -->
+
+</div>

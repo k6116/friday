@@ -21,6 +21,12 @@ export class ApiDataProjectService {
     .map((response: Response) => response.json());
   }
 
+  getProjectsFilterProjectType(): Observable<any> {
+    return this.http.get('api/indexProjectsFilterProjectType')
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
   getProjectRoster(projectID: number) {
     return this.http.get(`/api/indexProjectRoster/${projectID}`)
       .timeout(this.cacheService.apiDataTimeout)
