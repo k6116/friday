@@ -5,24 +5,11 @@ import { Pipe, PipeTransform } from '@angular/core';
   pure: false
 })
 
-// Filter project list by project type
-// Usage:
-//  item | projectTypePipe : projectTypeID
-// Example:
-// {{ projectList | projectTypePipe : {ProjectTypeID : 1} }}
-
 export class ProjectTypePipe implements PipeTransform {
 
-  // transform(items: Array<any>, conditions: {[field: string]: number}): Array<any> {
-  transform(items: Array<any>, conditions: {[field: string]: any}): Array<any> {
-    return items.filter(item => {
-      for (const i in conditions) {
-          if (item[i] !== conditions[i]) {
-              return false;
-          }
-      }
-      return true;
-    });
+  transform(projectList: any, projectTypesList: any) {
+    const filter = projectTypesList.filter(item => item.checkboxState === true);
+    return projectList.filter(project => filter.some(e => e.id === project.ProjectTypeID) === true );
   }
 
 }

@@ -23,21 +23,20 @@ export class SchedulesComponent implements OnInit {
   ngOnInit() {
     this.getProjects();
     this.getProjectTypesList();
-    this.projectTypeID = 1;
-    // this.filterItems = [
-    //   {
-    //     value: 'val1',
-    //     checked: false
-    //   },
-    //   {
-    //     value: 'val2',
-    //     checked: false
-    //   },
-    //   {
-    //     value: 'val3',
-    //     checked: false
-    //   },
-    // ];
+
+    // TO-DO: Why doesn't setTimeout work for asynchronys issue on init?
+    // setTimeout(() => {
+      // this.resetProjectTypeList();
+    // }, 0);
+
+    // this.projectTypeID = 1;
+  }
+
+  resetProjectTypeList() {
+    for (let i = 0; i < this.projectTypesList.length; i++) {
+      this.projectTypesList[i].checkboxState = true;
+    }
+    console.log('Updated projectTypesList:', this.projectTypesList);
   }
 
   getProjects() {
@@ -59,11 +58,9 @@ export class SchedulesComponent implements OnInit {
     .subscribe(
       res => {
         this.projectTypesList = res;
-        for (let i = 0; i < this.projectTypesList.length; i++) {
-          // this.projectTypesList[i].checked = false;
-        }
-
-        console.log('Project Types:', this.projectTypesList);
+        console.log('projectTypesList:', this.projectTypesList);
+        // TO-DO: This should only be on init
+        this.resetProjectTypeList();
       },
       err => {
         console.log(err);
@@ -71,13 +68,9 @@ export class SchedulesComponent implements OnInit {
     );
   }
 
-  onCheckboxChange(id: number) {
-    this.projectTypeID = id;
-    console.log(this.projectTypeID);
+  onCheckboxChange(index: number) {
+    const checked = this.projectTypesList[index].checkboxState;
+    this.projectTypesList[index].checkboxState = !checked;
   }
-
-  // checked() {
-  //   return this.filterItems.filter(item => item.checked);
-  // }
 
 }
