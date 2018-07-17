@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 
 export class ProjectTypePipe implements PipeTransform {
-// Pipe to display only projectTypes that have .chekcboxState === true
+// Pipe to display only projectTypes that have .checkboxState === true
 
   transform(projectList: any, projectTypesList: any) {
     // filter projectTypesList to only the cheked ones

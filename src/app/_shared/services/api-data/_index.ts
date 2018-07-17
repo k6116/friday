@@ -10,3 +10,4 @@ export * from './api-data-permission.service';
 export * from './api-data-project.service';
 export * from './api-data-report.service';
 export * from './api-data-dashboard.service';
+export * from './api-data-schedules.service';

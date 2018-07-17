@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiDataProjectService } from '../_shared/services/api-data/_index';
+import { ApiDataSchedulesService } from '../_shared/services/api-data/_index';
 
 @Component({
   selector: 'app-schedules',
@@ -10,7 +11,11 @@ export class SchedulesComponent implements OnInit {
 
   projectList: any;
   projectTypesList: any;
+  schedulesList: any;
   projectTypeID: number;
+  projectSchedule: any;
+  scheduleInit: boolean;
+  scheduleExists: boolean;
 
   // temporary:
   showTable: boolean;
@@ -18,11 +23,14 @@ export class SchedulesComponent implements OnInit {
 
   constructor(
     private apiDataProjectService: ApiDataProjectService,
+    private apiDataSchedulesService: ApiDataSchedulesService,
   ) { }
 
   ngOnInit() {
+    this.scheduleInit = true;
     this.getProjects();
     this.getProjectTypesList();
+    this.getSchedules();
 
     // TO-DO: Why doesn't setTimeout work for asynchronys issue on init?
     // setTimeout(() => {
@@ -68,10 +76,32 @@ export class SchedulesComponent implements OnInit {
     );
   }
 
+  getSchedules() {
+    this.apiDataSchedulesService.getSchedules()
+    .subscribe(
+      res => {
+        this.schedulesList = res;
+        console.log('schedulesList:', this.schedulesList);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
   onCheckboxChange(index: number) {
     // update checkbox state in projectTypesList
     const checked = this.projectTypesList[index].checkboxState;
     this.projectTypesList[index].checkboxState = !checked;
+  }
+
+  onProjectRowClick(projectID: number) {
+    this.scheduleInit = false;
+    this.projectSchedule = this.schedulesList.filter(schedule => schedule.projectID === projectID);
+    if (this.projectSchedule.scheduleID !==  null) {
+      this.scheduleExists = true;
+    }
+    console.log(this.projectSchedule);
   }
 
 }

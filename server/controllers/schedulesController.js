@@ -3,7 +3,14 @@ const sequelize = require('../db/sequelize').sequelize;
 function indexSchedules(req, res) {
 	const sql =
 		`SELECT 
-			p.ProjectID, p.ProjectName, pt.ProjectTypeID, pt.ProjectTypeName, s.ScheduleID, sd.PLCDate, plc.PLCStatusID, plc.PLCStatusName
+			p.ProjectID as projectID, 
+			p.ProjectName as projectName, 
+			pt.ProjectTypeID as projectTypeID, 
+			pt.ProjectTypeName projectTypeName, 
+			s.ScheduleID as scheduleID, 
+			sd.PLCDate as plcDate, 
+			plc.PLCStatusID as plcStatusID, 
+			plc.PLCStatusName as plcStatusName
 		FROM
 			projects.Projects p
 			LEFT JOIN projects.ProjectTypes pt ON p.ProjectTypeID = pt.ProjectTypeID

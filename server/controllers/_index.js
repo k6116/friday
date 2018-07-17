@@ -12,5 +12,6 @@ module.exports = {
   project: require('./projectController'),
   report: require('./reportController'),
   metaData: require('./metaDataController'),
-  dashboard: require('./dashboardController')
+  dashboard: require('./dashboardController'),
+  schedules: require('./schedulesController')
 }

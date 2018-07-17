@@ -77,6 +77,8 @@ router.get('/report/getTopFTEProjectList/', controllers.report.getTopFTEProjectL
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
+// SCHEDULES CONTROLLER
+router.get('/indexSchedules', controllers.schedules.indexSchedules);
 
 // DASHBOARD CONTROLLER
 router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);

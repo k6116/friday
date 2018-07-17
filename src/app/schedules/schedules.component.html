@@ -31,18 +31,40 @@
         </thead>
         <tbody>
           <tr *ngFor="let project of (projectList | projectTypePipe : projectTypesList)">
-            <td>{{ project.ProjectName }}</td>
-            <td>{{ project.Description }}</td>
-            <td>{{ project.ProjectTypeName }}</td>
+            <td (click)="onProjectRowClick(project.ProjectID)">{{ project.ProjectName }}</td>
+            <td (click)="onProjectRowClick(project.ProjectID)">{{ project.Description }}</td>
+            <td (click)="onProjectRowClick(project.ProjectID)">{{ project.ProjectTypeName }}</td>
           </tr>
         </tbody>
       </table>
     </div>
-
     <!-- Project Table -->
-    <div class="jumbotron col">
-      <h1 style="text-align: center">Click on Project for Schedules</h1>
+    <div class="col" *ngIf="scheduleInit">
+      <div class="jumbotron">
+        <h1 style="text-align: center">Click on Project for Schedules</h1>
+      </div>
     </div>
-  </div>
 
+    <virtual-scroll [items]="rows" [childHeight]="30">
+      <tr *ngFor="let item of rows">
+        <td>Some text</td>
+      </tr>
+    </virtual-scroll>
+
+    <div class="col" *ngIf="scheduleExists">
+      <table class="table table-bordered table-hover table-light">
+        <thead>
+          <th>PLC Status</th>
+          <th>Date</th>
+          <th>Approved</th>
+        </thead>
+        <tbody *ngFor="let schedule of projectSchedule">
+          <td>{{ schedule.plcStatusName }}</td>
+          <td>{{ schedule.plcDate}}</td>
+          <td>NA</td>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
   </div>
