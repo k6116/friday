@@ -66,7 +66,7 @@ export class ClickTrackingService {
     // build an object that will be inserted into the table
     // NOTE: for now, page, clickedOn, and text will be null, and will be updated later with the clickTrack string
     const clickObj = {
-      clickedDateTime: moment(),
+      clickedDateTime: moment().add(moment().utcOffset() / 60, 'hours'),
       employeeID: userID,
       page: null,
       path: path,
