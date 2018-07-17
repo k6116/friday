@@ -45,12 +45,6 @@
       </div>
     </div>
 
-    <virtual-scroll [items]="rows" [childHeight]="30">
-      <tr *ngFor="let item of rows">
-        <td>Some text</td>
-      </tr>
-    </virtual-scroll>
-
     <div class="col" *ngIf="scheduleExists">
       <table class="table table-bordered table-hover table-light">
         <thead>
