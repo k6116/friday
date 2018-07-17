@@ -90,7 +90,7 @@ export class ClickTrackingService {
       const propName = objArr[0].trim();
       // if the propname from the html custom attribute matches a property in the object, update the property value
       if (clickObj.hasOwnProperty(propName)) {
-        clickObj[propName] = objArr[1].trim();
+        clickObj[propName] = objArr[1].trim() === 'null' ? null : objArr[1].trim();
       // if it is not found, log an error message and don't log to the database
       } else {
         error = true;
