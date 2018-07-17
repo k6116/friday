@@ -78,7 +78,15 @@ export class AppComponent implements OnInit {
 
   // returns true or false depending on whether they are using Chrome version 65.0 or later
   browserIsCompatible(): boolean {
-    return bowser.name === 'Chrome' && +bowser.version >= 65;
+    let isCompatible = false;
+    if (bowser.name === 'Chrome' && +bowser.version >= 65) {
+      isCompatible = true;
+    } else if (bowser.name === 'Firefox' && +bowser.version >= 60) {
+      isCompatible = true;
+    } else if (bowser.name === 'Microsoft Edge' && +bowser.version >= 15) {
+      isCompatible = true;
+    }
+    return isCompatible;
   }
 
 
