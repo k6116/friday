@@ -1101,36 +1101,36 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           {
             src: '../assets/carousel_slides/FTE/carousel_FTE_1.png',
             alt: 'First FTE Slide',
-            captionLabel: 'Label Test',
-            caption: 'caption test',
+            captionHeader: 'Step 1:',
+            captionBody: 'Click the "Project" button to open the projects window',
             active: true
           },
           {
             src: '../assets/carousel_slides/FTE/carousel_FTE_2.png',
             alt: 'First FTE Slide',
-            captionLabel: 'Label Test',
-            caption: 'caption test',
+            captionHeader: 'Step 2:',
+            captionBody: 'Search for the project and click the "Select" button to add to your FTE list',
             active: false
           },
           {
             src: '../assets/carousel_slides/FTE/carousel_FTE_3.png',
             alt: 'First FTE Slide',
-            captionLabel: 'Label Test',
-            caption: 'caption test',
+            captionHeader: 'Step 3:',
+            captionBody: 'Fill in the monthly FTE values (total monthly FTE should sum to 1)',
             active: false
           },
           {
             src: '../assets/carousel_slides/FTE/carousel_FTE_4.png',
             alt: 'First FTE Slide',
-            captionLabel: 'Label Test',
-            caption: 'caption test',
+            captionHeader: 'Step 4:',
+            captionBody: 'Use the slider to see previous/future FTE months (future FTE values can be filled as well)',
             active: false
           },
           {
             src: '../assets/carousel_slides/FTE/carousel_FTE_5.png',
             alt: 'First FTE Slide',
-            captionLabel: 'Label Test',
-            caption: 'caption test',
+            captionHeader: 'Step 5:',
+            captionBody: 'Click "Save" when finished',
             active: false
           }
         ]

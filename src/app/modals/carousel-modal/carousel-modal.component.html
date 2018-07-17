@@ -26,15 +26,15 @@
               <div *ngIf="slide.active" class="carousel-item active">
                 <img class="d-block w-100" [src]="slide.src" [alt]="slide.alt">
                 <div class="carousel-caption d-none d-md-block">
-                  <h5 class="caption-label">{{ slide.captionLabel }}</h5>
-                  <p class="caption-label">{{ slide.caption }}</p>
+                  <h5 class="caption-header">{{ slide.captionHeader }}</h5>
+                  <p class="caption-body">{{ slide.captionBody }}</p>
                 </div>
               </div>
               <div *ngIf="!slide.active" class="carousel-item">
                 <img class="d-block w-100" [src]="slide.src" [alt]="slide.alt">
                 <div class="carousel-caption d-none d-md-block">
-                  <h5 class="caption-label">{{ slide.captionLabel }}</h5>
-                  <p class="caption-label">{{ slide.caption }}</p>
+                  <h5 class="caption-header">{{ slide.captionHeader }}</h5>
+                  <p class="caption-body">{{ slide.captionBody }}</p>
                 </div>
               </div>
             </ng-container>

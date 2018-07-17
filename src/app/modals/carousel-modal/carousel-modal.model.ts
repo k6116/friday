@@ -19,7 +19,7 @@ export class CarouselModalButtons {
 export class CarouselModalSlides {
   src: string;
   alt: string;
-  captionLabel: string;
-  caption: string;
+  captionHeader: string;
+  captionBody: string;
   active: boolean;
 }
