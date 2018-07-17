@@ -170,9 +170,14 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       overlayOpacity: 0.4,
       exitOnOverlayClick: false,
       showStepNumbers: false,
+      showBullets: false,
       keyboardNavigation: false
     });
-    intro.start('.tutorial-part1'); // include a specific css class to run only a subset of steps
+    // include a specific css class in intro.start to run only a subset of steps
+    intro.start('.tutorial-part1').onskip( () => {
+      // if the user clicks skip, reset the FTE tutorial
+      this.fteTutorialState = 0;
+    });
   }
 
   tutorialPart3(currentState: number) {
@@ -206,9 +211,13 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       overlayOpacity: 0.4,
       exitOnOverlayClick: false,
       showStepNumbers: false,
+      showBullets: false,
       keyboardNavigation: false
     });
-    intro.start('.tutorial-part3');
+    intro.start('.tutorial-part3').onskip( () => {
+      // if the user clicks skip, reset the FTE tutorial
+      this.fteTutorialState = 0;
+    });
   }
 
   onAddProjectClick() {
