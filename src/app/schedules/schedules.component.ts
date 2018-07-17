@@ -69,6 +69,7 @@ export class SchedulesComponent implements OnInit {
   }
 
   onCheckboxChange(index: number) {
+    // update checkbox state in projectTypesList
     const checked = this.projectTypesList[index].checkboxState;
     this.projectTypesList[index].checkboxState = !checked;
   }

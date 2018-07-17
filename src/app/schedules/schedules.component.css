@@ -7,3 +7,8 @@
     border: none !important;
     margin: -1px;
 }
+
+.jumbotron {
+    display: inline-table;
+    background-color:#485b651c;
+}
