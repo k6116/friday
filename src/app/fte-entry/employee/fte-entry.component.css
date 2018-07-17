@@ -246,3 +246,9 @@ div.fte-table-body div.fte-table-row div.fte-table-cell.icon {
   width: 30px;
   z-index: 2;
 }
+
+/* help drop down css */
+
+.dropdown-item {
+  cursor: pointer;
+}

@@ -86,6 +86,11 @@ ProjectPermissionRequests.belongsTo(Projects, {foreignKey: 'projectID'});
 ProjectTypes.hasMany(ProjectTypeDisplayFields, {foreignKey: 'id'});
 ProjectTypeDisplayFields.belongsTo(ProjectTypes, {foreignKey: 'projectTypeID'});
 
+// User.hasMany(Projects, {as: 'createdByUser', foreignKey: 'id'});
+// Projects.belongsTo(User, {as: 'createdByUser', foreignKey: 'createdBy'});
+
+// User.hasMany(Projects, {as: 'updatedByUser', foreignKey: 'id'});
+// Projects.belongsTo(User, {as: 'updatedByUser', foreignKey: 'updatedBy'});
 
 module.exports = {
   Projects: Projects, 

@@ -108,7 +108,7 @@ export class ProjectsEditModalComponent implements OnInit {
     this.form = this.formBuilder.group({
       projectID: [null],
       projectName: [null],
-      projectTypeID: [null],
+      // projectTypeID: [null],
       projectDescription: [null],
       projectNotes: [null],
     });
@@ -119,7 +119,7 @@ export class ProjectsEditModalComponent implements OnInit {
     this.form = this.formBuilder.group({
       projectID: this.projectData.id,
       projectName: this.projectData.projectName,
-      projectTypeID: this.projectData['projectType.id'],
+      // projectTypeID: this.projectData['projectType.id'],
       projectDescription: this.projectData.description,
       projectNotes: this.projectData.notes,
     });

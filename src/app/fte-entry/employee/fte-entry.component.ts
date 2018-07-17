@@ -1089,4 +1089,72 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       });
   }
 
+  onInstructionsClick() {
+    // emit carousel modal after they click instructions button
+    this.cacheService.carouselModalData.emit(
+      {
+        title: `FTE Entry Instructions`,
+        iconClass: 'fa-info',
+        iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Close',
+            bsClass: 'btn-success',
+            emit: true
+          }
+        ],
+        slides: [
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_1.png',
+            alt: 'First FTE Slide',
+            captionHeader: 'Step 1:',
+            captionBody: 'Click the "Project" button to open the projects window',
+            active: true
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_2.png',
+            alt: 'First FTE Slide',
+            captionHeader: 'Step 2:',
+            captionBody: 'Search for the project and click the "Select" button to add to your FTE list',
+            active: false
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_3.png',
+            alt: 'First FTE Slide',
+            captionHeader: 'Step 3:',
+            captionBody: 'Fill in the monthly FTE values (total monthly FTE should sum to 1)',
+            active: false
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_4.png',
+            alt: 'First FTE Slide',
+            captionHeader: 'Step 4:',
+            captionBody: 'Use the slider to see previous/future FTE months (future FTE values can be filled as well)',
+            active: false
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_5.png',
+            alt: 'First FTE Slide',
+            captionHeader: 'Step 5:',
+            captionBody: 'Click "Save" when finished',
+            active: false
+          }
+        ]
+      }
+    );
+
+    const carouselModalSubscription = this.cacheService.carouselModalResponse.subscribe( res => {
+      if (res) {
+        // if they click ok, grab the deleted project info and exec db call to delete
+        console.log('CAROUSEL!');
+      } else {
+        console.log('delete confirm aborted');
+      }
+      carouselModalSubscription.unsubscribe();
+    });
+  }
+
 }
