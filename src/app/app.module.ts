@@ -74,6 +74,8 @@ import { AdminComponent } from './admin/admin.component';
 import { ProjectAttributesComponent } from './admin/project-attributes/project-attributes.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
+import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
+
 
 @NgModule({
   declarations: [
@@ -117,6 +119,8 @@ import { FooterComponent } from './footer/footer.component';
     ProjectAttributesComponent,
     FooterComponent,
     DashboardComponent,
+    FooterComponent,
+    CarouselModalComponent
   ],
   imports: [
     AppRoutingModule,
