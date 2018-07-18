@@ -232,7 +232,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onScroll() {
     if (this.scrollAtBottom()) {
-      this.addProjectsForInfiniteScroll2();
+      this.addProjectsForInfiniteScroll();
     }
   }
 
@@ -254,27 +254,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // option 1: push more projects into the array that is in the loop, however can't filter on projects not in array
-  addProjectsForInfiniteScroll() {
-    // get the number of currently displayed projects
-    const numDisplayedProjects = this.projectsDisplay.length;
-    // get the number of total projects
-    const numProjects = this.projects.length;
-    // calculate the number of remaining projects that could be displaed
-    const numRemainingProjects = numProjects - numDisplayedProjects;
-    // take the minimum of X projects or remaining projects
-    const numProjectsToAdd = Math.min(this.numProjectsToDisplayAtOnce, numRemainingProjects);
-    // if there are any more projects to add
-    if (numProjectsToAdd > 0) {
-      // slice off another chunk of project objects to add to the array
-      const projectsToAdd = this.projects.slice(numDisplayedProjects, numDisplayedProjects + numProjectsToAdd);
-      // add the new projects to the array of projects to display
-      this.projectsDisplay.push(...projectsToAdd);
-    }
-  }
 
-  // option 2: use all projects in the ngFor, but use filter pipe to limit, update limit when reaching the bottom
-  addProjectsForInfiniteScroll2() {
+  // use all projects in the ngFor, but use filter pipe to limit, update limit when reaching the bottom
+  addProjectsForInfiniteScroll() {
 
     // get the number of currently displayed projects
     const numDisplayedProjects = this.numProjectsToDisplay;

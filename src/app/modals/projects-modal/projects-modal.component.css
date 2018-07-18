@@ -56,19 +56,13 @@ input.projects-filter-input {
 
 /* close button */
 
-div.projects-modal-close-button-cont {
-  position: absolute;
-  bottom: 20px;
-  left: 0;
-  right: 0;
-  width: 0;
-  margin: 0 auto;
-}
-
 div.projects-modal-close {
   float: right;
-  font-size: 30px;
-  color: rgb(167, 167, 167);;  
+  font-size: 34px;
+  color: rgb(136, 136, 136);
+  position: relative;
+  top: -20px;
+  right: -15px;
 }
 
 i.projects-modal-close-button {
@@ -267,3 +261,7 @@ button.btn.btn-outline-success.project-select-button:hover {
 }
 
 
+/* override default max width for bootstrap popover (276px) */
+div.popover {
+  max-width: 325px;
+}

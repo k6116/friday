@@ -163,23 +163,23 @@ License - nucleoapp.com/license/
 -------------------------*/
 
 .nc-a-check::before {
-    content: "\ea04";
-}
-
-.nc-analytics-88::before {
-    content: "\ea03";
-}
-
-.nc-archive-check::before {
-    content: "\ea01";
-}
-
-.nc-award-49::before {
     content: "\ea02";
 }
 
+.nc-analytics-88::before {
+    content: "\ea04";
+}
+
+.nc-archive-check::before {
+    content: "\ea03";
+}
+
+.nc-award-49::before {
+    content: "\ea01";
+}
+
 .nc-badge-15::before {
-    content: "\ea07";
+    content: "\ea05";
 }
 
 .nc-badge::before {
@@ -187,7 +187,7 @@ License - nucleoapp.com/license/
 }
 
 .nc-bars-rotate::before {
-    content: "\ea05";
+    content: "\ea07";
 }
 
 .nc-board-29::before {
@@ -278,24 +278,28 @@ License - nucleoapp.com/license/
     content: "\ea1d";
 }
 
-.nc-gantt::before {
+.nc-fat-remove::before {
     content: "\ea1e";
 }
 
-.nc-hanger-clothes::before {
+.nc-gantt::before {
     content: "\ea1f";
 }
 
-.nc-lock::before {
+.nc-hanger-clothes::before {
     content: "\ea20";
 }
 
-.nc-metrics::before {
+.nc-lock::before {
     content: "\ea21";
 }
 
-.nc-newsletter::before {
+.nc-metrics::before {
     content: "\ea22";
+}
+
+.nc-newsletter::before {
+    content: "\ea23";
 }
 
 .nc-opening-times::before {
@@ -303,51 +307,63 @@ License - nucleoapp.com/license/
 }
 
 .nc-pencil::before {
-    content: "\ea23";
-}
-
-.nc-privacy-policy::before {
     content: "\ea25";
 }
 
-.nc-recipe-book-46::before {
+.nc-privacy-policy::before {
     content: "\ea26";
 }
 
-.nc-recipe-book-47::before {
+.nc-recipe-book-46::before {
     content: "\ea27";
 }
 
-.nc-recipe::before {
+.nc-recipe-book-47::before {
     content: "\ea28";
 }
 
-.nc-rim::before {
+.nc-recipe::before {
     content: "\ea29";
 }
 
-.nc-send::before {
+.nc-rim::before {
     content: "\ea2a";
 }
 
-.nc-settings-gear-63::before {
+.nc-send::before {
     content: "\ea2b";
 }
 
-.nc-single-05::before {
+.nc-settings-gear-63::before {
     content: "\ea2c";
 }
 
-.nc-socket::before {
+.nc-simple-remove::before {
     content: "\ea2d";
 }
 
-.nc-time-countdown::before {
+.nc-single-05::before {
     content: "\ea2e";
 }
 
-.nc-wash::before {
+.nc-small-remove-2::before {
     content: "\ea2f";
+}
+
+.nc-small-remove::before {
+    content: "\ea30";
+}
+
+.nc-socket::before {
+    content: "\ea31";
+}
+
+.nc-time-countdown::before {
+    content: "\ea32";
+}
+
+.nc-wash::before {
+    content: "\ea33";
 }
 
 
