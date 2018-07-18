@@ -41,6 +41,9 @@ export class CacheService {
   // emit data to the dashboard component telling it to remove the message telling user to update their job title
   profileHasBeenUpdated = new EventEmitter<boolean>();
 
+  // standard red color for alert icon
+  alertIconColor = 'rgb(193, 27, 27)';
+
   constructor() { }
 
   // TO-DO BRYAN: create a toast service and move

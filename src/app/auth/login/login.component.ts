@@ -269,13 +269,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   // display error message and icon for missing username or password, also set focus for the user for convenience
   displayFormEntryErrors() {
     if (!this.userName && !this.password) {
-      this.displayMessage('Please enter your user name and password', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+      this.displayMessage('Please enter your user name and password', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
       this.userNameVC.nativeElement.focus();
     } else if (!this.userName) {
-      this.displayMessage('Please enter your user name', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+      this.displayMessage('Please enter your user name', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
       this.userNameVC.nativeElement.focus();
     } else if (!this.password) {
-      this.displayMessage('Please enter your password', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+      this.displayMessage('Please enter your password', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
       this.passwordVC.nativeElement.focus();
     }
   }
@@ -299,17 +299,17 @@ export class LoginComponent implements OnInit, OnDestroy {
     // check for no response (net::ERR_CONNECTION_REFUSED etc.)
     if (err.status === 0) {
       this.toolsService.displayTimeoutError();
-      this.displayMessage('The server is not responding', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+      this.displayMessage('The server is not responding', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
     // check for timeout error
     } else if (err.hasOwnProperty('name')) {
       if (err.name === 'TimeoutError') {
         this.toolsService.displayTimeoutError();
-        this.displayMessage('The server is not responding', 'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+        this.displayMessage('The server is not responding', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
       }
     // otherwise, this should be a failed login (invalid credentials)
     } else {
       this.displayMessage('Invalid user name or password.  Note: Use your Windows credentials to login.',
-        'fa-exclamation-triangle', 'rgb(139, 0, 0)');
+        'fa-exclamation-triangle', this.cacheService.alertIconColor);
     }
   }
 

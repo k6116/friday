@@ -131,7 +131,7 @@ export class ToolsService {
         message: `The server is not responding.  Please check your connection to the Keysight network.
            If you don't believe there is a problem with your network connection, please contact support.`,
         iconClass: 'fa-exclamation-triangle',
-        iconColor: 'rgb(193, 27, 27)',
+        iconColor: this.cacheService.alertIconColor,
         closeButton: true,
         allowOutsideClickDismiss: true,
         allowEscKeyDismiss: true,
