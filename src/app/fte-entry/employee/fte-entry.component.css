@@ -231,7 +231,7 @@ div.fte-table-body div.fte-table-row div.fte-table-cell.col-project-role {
   background-color: rgb(245, 245, 245);
   position: sticky;
   left: 200px;
-  min-width: 150px;
+  min-width: 220px;
   z-index: 1;
 }
 
