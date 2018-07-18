@@ -14,7 +14,7 @@ export class ApiDataClickTrackingService {
 
 
   // insert the click tracking record
-  logClick(clickData: any, userID: number) {
+  logClick(clickData: any, userID: number): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/clickTracking/${userID}`, JSON.stringify(clickData), options)

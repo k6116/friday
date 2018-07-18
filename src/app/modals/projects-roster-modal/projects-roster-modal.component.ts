@@ -20,7 +20,9 @@ export class ProjectsRosterModalComponent implements OnInit {
     }
   }
 
+  @Output() open = new EventEmitter<boolean>();
   @Output() close = new EventEmitter<boolean>();
+
 
   project: any;
   projectRoster: any;
@@ -28,7 +30,6 @@ export class ProjectsRosterModalComponent implements OnInit {
   projectHasMembers: boolean;
   numTeamMembers: number;
   showRosterContents: boolean;
-
 
   constructor(
     private apiDataService: ApiDataService,
@@ -43,26 +44,27 @@ export class ProjectsRosterModalComponent implements OnInit {
     console.log('getting project roster');
     this.projectHasMembers = false;
     this.apiDataProjectService.getProjectRoster(this.project.ProjectID)
-    .subscribe(
-      res => {
-        console.log('project roster:');
-        console.log(res);
-        if (res.length) {
-          this.projectRoster = res[0];
-          if (Object.keys(this.projectRoster).includes('teamMembers')) {
-            this.projectHasMembers = true;
-            this.numTeamMembers = this.projectRoster.teamMembers.length;
-          } else {
-            this.projectHasMembers = false;
-            this.numTeamMembers = 0;
+      .subscribe(
+        res => {
+          console.log('project roster:');
+          console.log(res);
+          if (res.length) {
+            this.projectRoster = res[0];
+            if (Object.keys(this.projectRoster).includes('teamMembers')) {
+              this.projectHasMembers = true;
+              this.numTeamMembers = this.projectRoster.teamMembers.length;
+            } else {
+              this.projectHasMembers = false;
+              this.numTeamMembers = 0;
+            }
           }
+          this.showRosterContents = true;
+          // this.open.emit(true);
+        },
+        err => {
+          console.log(err);
         }
-        this.showRosterContents = true;
-      },
-      err => {
-        console.log(err);
-      }
-    );
+      );
   }
 
   onCloseClick() {

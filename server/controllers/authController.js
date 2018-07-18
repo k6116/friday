@@ -133,7 +133,7 @@ function authenticate(req, res) {
               email: ldapUser.mail,
               // userName: userName,
               // email: email,
-              roleID: 1,
+              roleID: 4,  // report user
               loginEnabled: true,
               forcePasswordReset: false,
               startUpTutorialFTE: true,
