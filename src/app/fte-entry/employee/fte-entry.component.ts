@@ -142,6 +142,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
    this.fteFormChangeListener();
    this.getJobTitleList();
 
+   $('[data-toggle="tooltip"]').tooltip();
+
   }
 
   ngOnDestroy() {
