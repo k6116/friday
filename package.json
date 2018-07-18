@@ -1,6 +1,6 @@
 {
   "name": "jarvis-rt",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -77,6 +77,8 @@
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
     "codelyzer": "^4.0.1",
+    "corp-semantic-release": "^6.4.0",
+    "cz-conventional-changelog": "^2.1.0",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~2.0.0",
@@ -88,5 +90,10 @@
     "ts-node": "~4.1.0",
     "tslint": "~5.9.1",
     "typescript": "^2.6.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

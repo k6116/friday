@@ -1,0 +1,63 @@
+
+div.modal-header-cont {
+  width: 100%;
+}
+
+i.modal-header-icon {
+  display: inline-block;
+  padding: 10px;
+}
+
+h5.modal-header-title {
+  display: inline-block;
+  font-weight: 600;
+  position: relative;
+  top: -5px;
+}
+
+.modal {
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) { 
+  .modal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: " ";
+    height: 100%;
+  }
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.modal-lg {
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.caption-header {
+  color: black;
+  margin-bottom: 0rem;
+}
+
+.caption-body {
+  color: black;
+  margin-bottom: 0rem;
+}
+
+.carousel-indicators li {
+  background-color: rgba(160, 63, 63, 0.5);
+}
+
+.carousel-indicators .active {
+  background-color: black;
+}
+
+.carousel-control-next, .carousel-control-prev {
+  width: 5%;
+  background-color: black;
+}

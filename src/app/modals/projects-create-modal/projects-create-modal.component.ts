@@ -48,7 +48,7 @@ export class ProjectsCreateModalComponent implements OnInit {
     // initialize the formgroup
     this.form = this.formBuilder.group({
       projectName: [null, [Validators.required]],
-      projectTypeID: [null, [Validators.required]],
+      // projectTypeID: [null, [Validators.required]],
       projectDescription: [null],
       projectNotes: [null],
     });
@@ -76,6 +76,8 @@ export class ProjectsCreateModalComponent implements OnInit {
 
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
+    // for project that are not org level and created by Individual Cont/Managers, projectType will always be "General"
+    project.projectTypeID = 'General';
     project.projectOrgManager = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
 
     this.apiDataProjectService.createProject(project, this.userID)

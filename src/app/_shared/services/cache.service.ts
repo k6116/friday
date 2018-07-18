@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
 import { ConfirmModalOptions } from '../../modals/confirm-modal/confirm-modal.model';
+import { CarouselModalOptions } from '../../modals/carousel-modal/carousel-modal.model';
 
 @Injectable()
 export class CacheService {
@@ -24,6 +25,11 @@ export class CacheService {
   confirmModalData = new EventEmitter<ConfirmModalOptions>();
   confirmModalResponse = new EventEmitter<any>();
   confirmModalClose = new EventEmitter<boolean>();
+
+  // CAROUSEL MODAL
+  carouselModalData = new EventEmitter<CarouselModalOptions>();
+  carouselModalResponse = new EventEmitter<any>();
+  carouselModalClose = new EventEmitter<boolean>();
 
   toast = new EventEmitter<any>();
 
