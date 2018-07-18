@@ -35,5 +35,4 @@ export class ApiDataService {
       .map((response: Response) => response.json());
   }
 
-
 }

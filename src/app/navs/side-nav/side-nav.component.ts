@@ -97,6 +97,14 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               active: false
             }
           ]
+        },
+        {
+          title: 'Admin',
+          iconClass: 'nc-chart-bar-33',
+          alias: 'admin',
+          path: 'main/admin',
+          expanded: false,
+          active: false
         }
         // {
         //   title: 'Websockets',
