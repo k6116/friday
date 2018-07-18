@@ -20,6 +20,7 @@ import { ClickOutsideDirective } from './_shared/directives/click-outside.direct
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
+import { TitleCasePipe } from '@angular/common';
 
 // SERVICES
 import { ApiDataService, CacheService, ClickTrackingService, CookiesService,
@@ -68,6 +69,9 @@ import { ChatComponent } from './chat/chat.component';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
+import { JobTitlesComponent } from './admin/job-titles/job-titles.component';
+import { AdminComponent } from './admin/admin.component';
+import { ProjectAttributesComponent } from './admin/project-attributes/project-attributes.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
@@ -110,6 +114,10 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     MyFteSummaryComponent,
     TeamFteSummaryComponent,
     TopProjectsBubbleComponent,
+    JobTitlesComponent,
+    AdminComponent,
+    ProjectAttributesComponent,
+    FooterComponent,
     DashboardComponent,
     FooterComponent,
     CarouselModalComponent
@@ -152,7 +160,8 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     UserResolverService,
     WebsocketService,
     CookiesService,
-    UnsavedChangesGuard
+    UnsavedChangesGuard,
+    TitleCasePipe
   ],
   bootstrap: [AppComponent]
 })
