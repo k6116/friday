@@ -72,6 +72,7 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
 import { SchedulesComponent } from './schedules/schedules.component';
+import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 
 @NgModule({
   declarations: [
@@ -114,6 +115,7 @@ import { SchedulesComponent } from './schedules/schedules.component';
     DashboardComponent,
     FooterComponent,
     SchedulesComponent,
+    ProjectsSetupsComponent,
   ],
   imports: [
     AppRoutingModule,

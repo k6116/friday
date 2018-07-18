@@ -93,6 +93,29 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               active: false
             }
           ]
+        },
+        {
+          title: 'Setups',
+          iconClass: 'nc-chart-bar-33',
+          alias: 'setups',
+          expanded: false,
+          active: false,
+          subItems: [
+            {
+              title: 'Projects',
+              alias: 'setups-projects',
+              path: 'main/setups/projects',
+              parentAlias: 'setups',
+              active: false
+            },
+            {
+              title: 'Parts',
+              alias: 'setups-parts',
+              path: 'main/setups/parts',
+              parentAlias: 'setups',
+              active: false
+            }
+          ]
         }
       ];
 
