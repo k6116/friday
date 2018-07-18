@@ -35,9 +35,9 @@ div.col-custom.col-slider {
   float: right;
 }
 
-.btn-fte-toolbar:hover {
+/* .btn-fte-toolbar:hover {
   background-color: rgb(138, 147, 155);
-}
+} */
 
 
 
@@ -57,11 +57,11 @@ tr.slider-header-row td {
 /* trash button icon */
 i.fa-trash-o {
   font-size: 13pt;
-  color: red;
+  color: gray;
 }
 
 i.fa-trash-o:hover {
-  color: gray;
+  color: red; /* bootstrap4 danger-red */
   cursor: pointer;
 }
 
@@ -245,4 +245,10 @@ div.fte-table-body div.fte-table-row div.fte-table-cell.icon {
   max-width: 30px;
   width: 30px;
   z-index: 2;
+}
+
+/* help drop down css */
+
+.dropdown-item {
+  cursor: pointer;
 }

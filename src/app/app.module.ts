@@ -73,6 +73,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
 import { SchedulesComponent } from './schedules/schedules.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
+
 
 @NgModule({
   declarations: [
@@ -116,6 +118,7 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
     FooterComponent,
     SchedulesComponent,
     ProjectsSetupsComponent,
+    CarouselModalComponent
   ],
   imports: [
     AppRoutingModule,
