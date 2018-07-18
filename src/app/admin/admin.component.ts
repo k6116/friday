@@ -7,37 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminComponent implements OnInit {
 
-  jobTitlesFlag: boolean;
-  projectAttributesFlag: boolean;
-  adminToggle: any;
-  entries: any;
-  selectedEntry;
-  jobTitleName: string;
-
-  userName: string;
-  gender: string;
+  selection: any;
 
   constructor() {}
 
-  ngOnInit() {
-    // this.jobTitlesFlag = true;
-    // this.projectAttributesFlag = false;
-    // this.gender = form.controls['gender'].value;
-  }
+  ngOnInit() {}
 
-  getProjectAttributes() {
-    // this.jobTitlesFlag = false;
-    // this.projectAttributesFlag = true;
-  }
-
-  getJobTitles(gender: string) {
-    console.log('GENDER IS:', gender);
-    // this.jobTitlesFlag = true;
-    // this.projectAttributesFlag = false;
-  }
-
-  onSelectionChange(entry) {
-    // this.selectedEntry = entry;
+  onSelectionClick(event: any) {
+    this.selection = event.target.value;
+    console.log('Selected:', this.selection);
   }
 
 }

@@ -13,10 +13,13 @@ export class JobTitlesComponent implements OnInit {
   jobSubTitleList: any;
   numJobTitlesToDisplay: number;
   numJobSubTitlesToDisplay: number;
+  jobTitleName: string;
+  jobSubTitleName: string;
   jobTitleID: number;
   jobSubTitleID: number;
   subTitlesInit: boolean;
   formTitles: FormGroup;
+  selection: any;
 
   // Forces Edit Modals to close after successfull update
   @ViewChild('closeBtn') closeBtn: ElementRef;
@@ -40,10 +43,11 @@ export class JobTitlesComponent implements OnInit {
   }
 
   refresh() {
-    this.getJobTitleList();
-    this.getJobSubTitleList();
+    // this.getJobTitleList();
+    // this.getJobSubTitleList();
 
     // reset Formgroup for jobTitle and jobSubTitle
+    // TO-DO: Doesn't reset on button click
     this.formTitles = this.formBuilder.group({
       id: [''],
       name: [''],
@@ -104,10 +108,8 @@ export class JobTitlesComponent implements OnInit {
             if (this.jobSubTitleList[k].id === this.jobTitleList[index].jobSubTitles[j].id) {
               this.jobSubTitleList[k].checked = true;
               break;
-              // console.log('YES' + k, this.jobSubTitleList[k].jobSubTitleName);
             } else {
               this.jobSubTitleList[k].checked = false;
-              // console.log('NO', this.jobSubTitleList[k].jobSubTitleName);
             }
           }
         }
@@ -120,6 +122,7 @@ export class JobTitlesComponent implements OnInit {
     }
     // refresh jobTitleList
     this.getJobTitleList();
+    this.refresh();
   }
 
   onCheckboxChange(id: number) {
@@ -173,6 +176,7 @@ export class JobTitlesComponent implements OnInit {
         console.log(err);
       }
     );
+    this.getJobTitleList();
     this.refresh();
   }
 
@@ -192,6 +196,7 @@ export class JobTitlesComponent implements OnInit {
         console.log(err);
       }
     );
+    this.getJobSubTitleList();
     this.refresh();
   }
 
@@ -206,6 +211,7 @@ export class JobTitlesComponent implements OnInit {
         console.log(err);
       }
     );
+    this.getJobTitleList();
     this.refresh();
   }
 
@@ -221,6 +227,7 @@ export class JobTitlesComponent implements OnInit {
         console.log(err);
       }
     );
+    this.getJobSubTitleList();
     this.refresh();
   }
 
@@ -250,7 +257,7 @@ export class JobTitlesComponent implements OnInit {
         console.log(err);
       }
     );
-    this.refresh();
+    this.getJobTitleList();
   }
 
   // Shows the mapped data in the consol
@@ -300,8 +307,10 @@ export class JobTitlesComponent implements OnInit {
         console.log(err);
       }
     );
+    this.getJobSubTitleList();
     this.refresh();
     // force modal to close with @ViewChild('closeBtn')
     this.closeBtn.nativeElement.click();
   }
+
 }

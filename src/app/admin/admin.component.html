@@ -2,19 +2,19 @@
 
   <div class="btn-group btn-group-toggle">
     <label class="btn btn-secondary active">
-      <input type="radio" name="admin" value="jobTitles" [(ngModel)]="admin"> 
+      <input type="radio" value="jobTitles" (click)="onSelectionClick($event)"> 
       <i class="fa fa-id-card-o" aria-hidden="true"></i>&nbsp;&nbsp;Job Titles
     </label>&nbsp;&nbsp;
     <label class="btn btn-secondary active">
-      <input type="radio" name="admin" value="projectAttributes" [(ngModel)]="admin">
+      <input type="radio" value="projectAttributes" (click)="onSelectionClick($event)">
       <i class="fa fa-paperclip" aria-hidden="true"></i>&nbsp;&nbsp;Project Attributes
     </label>
   </div>
 
 <hr>
 
-  <app-job-titles *ngIf="admin==='jobTitles'"></app-job-titles>
-  <app-project-attributes *ngIf="admin==='projectAttributes'"></app-project-attributes>
+  <app-job-titles *ngIf="selection==='jobTitles'"></app-job-titles>
+  <app-project-attributes *ngIf="selection==='projectAttributes'"></app-project-attributes>
 
 </div>
 

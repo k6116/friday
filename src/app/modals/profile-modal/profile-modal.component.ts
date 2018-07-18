@@ -5,7 +5,7 @@ import { AuthService } from '../../_shared/services/auth.service';
 @Component({
   selector: 'app-profile-modal',
   templateUrl: './profile-modal.component.html',
-  styleUrls: ['./profile-modal.component.css']
+  styleUrls: ['./profile-modal.component.css', '../../_shared/styles/common.css']
 })
 
 export class ProfileModalComponent implements OnInit {
@@ -110,7 +110,7 @@ export class ProfileModalComponent implements OnInit {
   }
 
   selectJobSubTitleChangeHandler (event: any) {
-    // get current subtitle whenever combobox value changes
+    // get current subtitle name whenever combobox value changes
     this.jobSubTitleName = event.target.value;
 
     // find subtitleID to subtitleName.
