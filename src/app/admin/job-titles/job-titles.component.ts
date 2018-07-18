@@ -40,7 +40,6 @@ export class JobTitlesComponent implements OnInit {
   }
 
   refresh() {
-    this.subTitlesInit = true;
     this.getJobTitleList();
     this.getJobSubTitleList();
 
@@ -50,6 +49,10 @@ export class JobTitlesComponent implements OnInit {
       name: [''],
       description: ['']
     });
+
+    this.subTitlesInit = true;
+    // force modal to close with @ViewChild('closeBtn')
+    this.closeBtn.nativeElement.click();
   }
 
   getJobTitleList() {
@@ -91,28 +94,31 @@ export class JobTitlesComponent implements OnInit {
         break;
       }
     }
-    // loop through jobSubTitleList and match up with the subtitles in the map by adding check: true or false
-    const jobSubTitleMapLength = this.jobTitleList[index].jobTitleMap.jobSubTitles.length;
-    if (jobSubTitleMapLength !== 0) {
-      for (let k = 0; k < this.jobSubTitleList.length; k++) {
-        for (let j = 0; j < jobSubTitleMapLength; j++) {
-          if (this.jobSubTitleList[k].id === this.jobTitleList[index].jobTitleMap.jobSubTitles[j].id) {
-            this.jobSubTitleList[k].checked = true;
-            break;
-            // console.log('YES' + k, this.jobSubTitleList[k].jobSubTitleName);
-          } else {
-            this.jobSubTitleList[k].checked = false;
-            // console.log('NO', this.jobSubTitleList[k].jobSubTitleName);
+    // If jobTitle has no jobSubTitles jobTitleList[index].jobSubTitles will be undefined
+    if (this.jobTitleList[index].jobSubTitles !== undefined) {
+      // loop through jobSubTitleList and match up with the subtitles in the map by adding check: true or false
+      const jobSubTitleMapLength = this.jobTitleList[index].jobSubTitles.length;
+      if (jobSubTitleMapLength !== undefined) {
+        for (let k = 0; k < this.jobSubTitleList.length; k++) {
+          for (let j = 0; j < jobSubTitleMapLength; j++) {
+            if (this.jobSubTitleList[k].id === this.jobTitleList[index].jobSubTitles[j].id) {
+              this.jobSubTitleList[k].checked = true;
+              break;
+              // console.log('YES' + k, this.jobSubTitleList[k].jobSubTitleName);
+            } else {
+              this.jobSubTitleList[k].checked = false;
+              // console.log('NO', this.jobSubTitleList[k].jobSubTitleName);
+            }
           }
         }
       }
     } else {
-      // check everything to zero to overwrite previous list
+      // If jobTitle has no subTitles, turn all checkboxes false to overwrite previous list
       for (let k = 0; k < this.jobSubTitleList.length; k++) {
         this.jobSubTitleList[k].checked = false;
       }
     }
-    // refresh jobTitleList:
+    // refresh jobTitleList
     this.getJobTitleList();
   }
 
@@ -177,7 +183,6 @@ export class JobTitlesComponent implements OnInit {
 
   onDeleteJobSubTitleClick() {
     const jobSubTitleData = {jobSubTitleID: this.jobSubTitleID};
-    console.log('ID:', jobSubTitleData);
     this.apiDataJobTitleService.deleteJobSubTitle(jobSubTitleData)
     .subscribe(
       res => {
@@ -206,7 +211,7 @@ export class JobTitlesComponent implements OnInit {
 
   onCreateJobSubTitleClick(jobSubTitleName: string, description: string) {
     const jobSubTitleData = {jobSubTitleName: jobSubTitleName, description: description};
-    console.log('DATA:', jobSubTitleData);
+    console.log('jobSubTitle DATA:', jobSubTitleData);
     this.apiDataJobTitleService.insertJobSubTitle(jobSubTitleData)
     .subscribe(
       res => {
@@ -228,6 +233,7 @@ export class JobTitlesComponent implements OnInit {
       description: [description]
     });
   }
+
   onEditJobTitleClick() {
     const id = this.formTitles.controls.id.value;
     const jobTitleName = this.formTitles.controls.name.value;
@@ -245,10 +251,28 @@ export class JobTitlesComponent implements OnInit {
       }
     );
     this.refresh();
-    // force modal to close with @ViewChild('closeBtn')
-    this.closeBtn.nativeElement.click();
   }
-  //
+
+  // Shows the mapped data in the consol
+  onSubTitleButtonClick(jobSubTitleID: number) {
+    let k = 0;
+    const mappedTo = [];
+    // loop through every jobTitle
+    for (let i = 0; i < this.jobTitleList.length; i++) {
+      // jobTitles without subTitles will say undefined
+      if (this.jobTitleList[i].jobSubTitles !== undefined) {
+        const len = this.jobTitleList[i].jobSubTitles.length;
+        // loop through jobSubtitles
+        for (let j = 0; j < len; j++) {
+          if (this.jobTitleList[i].jobSubTitles[j].id === jobSubTitleID) {
+            mappedTo[k] = [{id: this.jobTitleList[i].id, jobTitleName: this.jobTitleList[i].jobTitleName}];
+            k = k + 1;
+          }
+        }
+      }
+    }
+    console.log('This jobSubTitle is mapped to:', mappedTo);
+  }
 
   // EDIT JobSubTitle
   onJobSubTitlePencilClick(id: number, jobSubTitleName: string, description: string) {
@@ -265,7 +289,7 @@ export class JobTitlesComponent implements OnInit {
     const jobSubTitleName = this.formTitles.controls.name.value;
     const description = this.formTitles.controls.description.value;
     const jobSubTitleData = {id: id, jobSubTitleName: jobSubTitleName, description: description};
-    console.log('DATA:', jobSubTitleData);
+    console.log('jobSubTitle DATA:', jobSubTitleData);
 
     this.apiDataJobTitleService.updateJobSubTitle(jobSubTitleData)
     .subscribe(
@@ -280,5 +304,4 @@ export class JobTitlesComponent implements OnInit {
     // force modal to close with @ViewChild('closeBtn')
     this.closeBtn.nativeElement.click();
   }
-  //
 }

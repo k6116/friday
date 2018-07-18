@@ -46,7 +46,9 @@ function indexJobTitle(req, res) {
 		FROM 
 			resources.JobTitle J
 			LEFT JOIN resources.JobTitleMap JM ON J.JobTitleID = JM.JobTitleID
-			LEFT JOIN resources.JobSubTitle JS ON JM.JobSubTitleID = JS.JobSubTitleID
+            LEFT JOIN resources.JobSubTitle JS ON JM.JobSubTitleID = JS.JobSubTitleID
+        ORDER BY
+            J.JobTitleName
 	`
 
 	sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
