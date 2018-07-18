@@ -165,25 +165,29 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         this.clearHighlightMainOfSubMenuItem();
         // navigate to the selected/clicked route
         this.router.navigate([`/${foundMenuItem.path}`]);
-        this.highlightActiveMenu(foundMenuItem.path);
+        setTimeout(() => {
+          this.highlightActiveMenu(this.router.url.slice(1));
+        }, 0);
+        // this.highlightActiveMenu(foundMenuItem.path);
       }
     }
   }
 
   onSubMenuItemClick(element, menuItem: string, subMenuItem: string) {
     // get the menu item object in the menu structure (this.menuStructure)
-    // TO-DO: attempt to combine getMenuObject and getSubMenuObject into a single method
+    // TO-DO BILL: attempt to combine getMenuObject and getSubMenuObject into a single method
     const foundMenuItem = this.getSubMenuObject(menuItem, subMenuItem);
     // navigate to the selected/clicked route
     this.router.navigate([`/${foundMenuItem.path}`]);
-    this.highlightActiveMenu(foundMenuItem.path);
-
-    // find the closest parent main menu item, to show it as highlighted (white text)
-    const alias = $(element).closest('div.sidenav-menu-item').data('alias');
-    this.highlightMainOfSubMenuItem(alias);
-
+    setTimeout(() => {
+      const path = this.router.url.slice(1);
+      this.highlightActiveMenu(path);
+      // find the parent main menu item, to show it as highlighted (white text)
+      this.highlightMainOfSubMenuItem2(path);
+    }, 0);
   }
 
+  // TO-DO BILL: combine highlightMainOfSubMenuItem and highlightMainOfSubMenuItem2 into single method
   highlightMainOfSubMenuItem(alias) {
     // highlight the main menu item of a sub menu item in white (no yellow left border)
     // find the menu item object matching the alias
@@ -194,6 +198,26 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     if (foundMainMenuItem) {
       foundMainMenuItem.highlighted = true;
     }
+  }
+
+  highlightMainOfSubMenuItem2(path) {
+    // highlight the main menu item of a sub menu item in white (with no yellow left border)
+    // go through each main menu object in the menu structure
+    console.log(path);
+    this.menuStructure.forEach(menuItem => {
+      // if the menu item has sub menu items
+      if (menuItem.hasOwnProperty('subItems')) {
+        // try to find a match on the path in the sub menu items
+        const foundSubMenuItem = menuItem.subItems.find(subItem => {
+          return subItem.path === path;
+        });
+        // if the submenu is found, set the highlighted property of the main menu item to true,
+        // to set the highlighted class, which will change the color to white
+        if (foundSubMenuItem) {
+          menuItem.highlighted = true;
+        }
+      }
+    });
   }
 
   clearHighlightMainOfSubMenuItem() {
