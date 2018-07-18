@@ -395,9 +395,13 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     return `
       <style>
+        div.popover {
+          max-width: 325px;
+        }
+
         .projects-roster-modal-team-members {
           overflow-y: auto;
-          max-height: 280px;
+          max-height: 265px;
         }
 
         div.projects-roster-modal-team-member {

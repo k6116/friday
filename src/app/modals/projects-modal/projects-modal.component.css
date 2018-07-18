@@ -59,7 +59,7 @@ input.projects-filter-input {
 div.projects-modal-close {
   float: right;
   font-size: 34px;
-  color: rgb(136, 136, 136);
+  color: rgb(77, 77, 77);
   position: relative;
   top: -20px;
   right: -15px;
@@ -261,7 +261,9 @@ button.btn.btn-outline-success.project-select-button:hover {
 }
 
 
-/* override default max width for bootstrap popover (276px) */
-div.popover {
-  max-width: 325px;
+
+/* popover styles */
+
+.popover-header {
+  font-size: 15px;
 }
