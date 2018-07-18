@@ -50,7 +50,7 @@ import { TopNavComponent } from './navs/top-nav/top-nav.component';
 import { SideNavComponent } from './navs/side-nav/side-nav.component';
 import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
-import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { MyProjectsComponent } from './my-projects/my-projects.component';
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
@@ -89,7 +89,7 @@ import { SchedulesComponent } from './schedules/schedules.component';
     SideNavComponent,
     TopProjectsReportsComponent,
     EmployeesReportsComponent,
-    ProjectsSetupsComponent,
+    MyProjectsComponent,
     FteEntryTeamComponent,
     ProfileModalComponent,
     ProjectsModalComponent,

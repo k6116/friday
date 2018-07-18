@@ -1,19 +1,19 @@
 import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
-  ApiDataMetaDataService, ApiDataEmailService } from '../../_shared/services/api-data/_index';
-import { CacheService } from '../../_shared/services/cache.service';
-import { AuthService } from '../../_shared/services/auth.service';
-import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
-import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
-import { User } from '../../_shared/models/user.model';
+  ApiDataMetaDataService, ApiDataEmailService } from '../_shared/services/api-data/_index';
+import { CacheService } from '../_shared/services/cache.service';
+import { AuthService } from '../_shared/services/auth.service';
+import { ProjectsEditModalComponent } from '../modals/projects-edit-modal/projects-edit-modal.component';
+import { ProjectsCreateModalComponent } from '../modals/projects-create-modal/projects-create-modal.component';
+import { User } from '../_shared/models/user.model';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'app-projects-setups',
-  templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.css', '../../_shared/styles/common.css']
+  selector: 'app-my-projects',
+  templateUrl: './my-projects.component.html',
+  styleUrls: ['./my-projects.component.css', '../_shared/styles/common.css']
 })
-export class ProjectsSetupsComponent implements OnInit {
+export class MyProjectsComponent implements OnInit {
 
 
   // TO-DO PAUL: create model for at least projects

@@ -43,10 +43,10 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           active: false
         },
         {
-          title: 'Projects',
+          title: 'My Projects',
           iconClass: 'nc-gantt',
           alias: 'projects',
-          path: 'main/setups/projects',
+          path: 'main/my-projects',
           expanded: false,
           active: false
         },
