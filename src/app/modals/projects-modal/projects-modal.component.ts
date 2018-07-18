@@ -301,6 +301,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // get the project object
     const project = this.getProject(element);
 
+    console.log('project object for project info modal:');
+    console.log(project);
+
     // get the styles/css and html content
     const css = this.getProjectDetailsStyle();
     const html = this.getProjectDetailsContent(project);
