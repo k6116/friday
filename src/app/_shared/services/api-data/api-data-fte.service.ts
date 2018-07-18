@@ -35,4 +35,11 @@ export class ApiDataFteService {
       .map((response: Response) => response.json());
   }
 
+  // check it job title and subtitle has been set
+  checkJobTitleUpdated(userID: number) {
+    return this.http.get(`/api/dashboard/checkJobTitle/${userID}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 }
