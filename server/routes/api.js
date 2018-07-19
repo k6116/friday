@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const app = express();
 const jwt = require('jsonwebtoken');
+const dotevnv = require('dotenv').config(
+  {path: '/.env'}
+);
 
 var controllers = require('../controllers/_index.js');
 
@@ -65,7 +68,16 @@ router.post('/updateProjectPermissionRequest/:userID', controllers.permission.up
 
 // JOB TITLE CONTROLLER
 router.get('/indexJobTitle', controllers.jobTitle.indexJobTitle);
-router.post('/updateJobTitle/:userID', controllers.jobTitle.updateJobTitle);
+router.get('/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
+router.post('/updateEmployeeJobTitle/:userID', controllers.jobTitle.updateEmployeeJobTitle);
+router.post('/insertJobTitle', controllers.jobTitle.insertJobTitle);
+router.post('/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
+router.post('/updateJobTitle', controllers.jobTitle.updateJobTitle);
+router.post('/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
+router.post('/deleteJobSubTitle', controllers.jobTitle.deleteJobSubTitle);
+router.post('/updateJobSubTitle', controllers.jobTitle.updateJobSubTitle);
+router.post('/insertJobTitleMap', controllers.jobTitle.insertJobTitleMap);
+router.post('/deleteJobTitleMap', controllers.jobTitle.deleteJobTitleMap);
 
 // REPORTS PROJECT CONTROLLER
 router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
@@ -82,8 +94,10 @@ router.get('/indexSchedules', controllers.schedules.indexSchedules);
 
 // DASHBOARD CONTROLLER
 router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);
-router.get('/dashboard/checkFirstLogin/:userName', controllers.dashboard.checkFirstLogin);
+router.get('/dashboard/checkFirstLogin/:employeeID/:userName', controllers.dashboard.checkFirstLogin);
+router.get('/dashboard/checkJobTitle/:employeeID', controllers.dashboard.checkJobTitle);
 router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
+
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
@@ -93,7 +107,7 @@ router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.
 // TO-DO BILL: pull in the token secret from .env
 router.use('/', function(req, res, next) {
   // get the token out of the query string and verify it is valid.
-  jwt.verify(req.query.token, 'rutabega', (err, decoded) => {
+  jwt.verify(req.query.token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       console.log(err);
       // if the token was not decoded successfully, return an error status and message

@@ -1,0 +1,36 @@
+.btn-primary {
+  color: #f5f6f7;
+  background-color: rgb(108, 117, 125);;
+  border-color: rgb(108, 117, 125);;
+}
+
+.btn-fte-toolbar {
+  width: 90px;
+  height: 35px;
+}
+
+.input-group-text {
+  background-color: white;
+  border: none;
+  margin-bottom: -4px;
+}
+
+button {
+  border-radius: 0 !important;
+}
+
+button.highlighted {
+  background-color: #8f9faa!important;
+  font-weight: 700;
+}
+
+button.selected {
+  background-color: #8f9faa!important;
+  font-weight: 700;
+}
+
+.input-group-text {
+  background-color: inherit;
+}
+
+

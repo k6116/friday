@@ -38,7 +38,8 @@ export class AppComponent implements OnInit {
     private websocketService: WebsocketService
   ) {
 
-    // set the timer interval in minutes, used to check for user activity
+    // set the timer interval in minutes, used to check for user activity like a click and keypress
+    // to reset the token expiration
     this.timerInterval = 1;
 
   }
@@ -49,6 +50,9 @@ export class AppComponent implements OnInit {
 
     // connect to the websocket
     this.websocketService.connect();
+
+    // insert a record into the click tracking table as a page load; to capture the browser
+    this.clickTrackingService.logClickWithEvent(`page: App Load, clickedOn: null`);
 
     // check for browser compatibility
     const browserCheck = this.browserIsCompatible();

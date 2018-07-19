@@ -7,6 +7,8 @@ const ProjectPermissionRequests = require('./project').ProjectPermissionRequests
 const User = sequelize.define('user',
   {
     id: { type: Sequelize.INTEGER, field: 'EmployeeID', primaryKey: true, autoIncrement: true },
+    firstName: { type: Sequelize.STRING, field: 'FirstName' },
+    lastName: { type: Sequelize.STRING, field: 'LastName' },
     fullName: { type: Sequelize.STRING, field: 'FullName' },
     userName: { type: Sequelize.STRING, field: 'UserName' },
     email: { type: Sequelize.STRING, field: 'EmailAddress' },

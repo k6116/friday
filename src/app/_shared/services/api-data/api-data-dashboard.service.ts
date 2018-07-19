@@ -19,7 +19,7 @@ export class ApiDataDashboardService {
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
-    const firstLogin = this.http.get(`/api/dashboard/checkFirstLogin/${userName}`)
+    const firstLogin = this.http.get(`/api/dashboard/checkFirstLogin/${employeeID}/${userName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
@@ -27,8 +27,14 @@ export class ApiDataDashboardService {
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
-    return forkJoin([fteData, firstLogin, projectRequests]);
+    const jobTitle = this.http.get(`/api/dashboard/checkJobTitle/${employeeID}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    return forkJoin([fteData, firstLogin, projectRequests, jobTitle]);
 
   }
+
+
 
 }

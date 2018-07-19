@@ -4,6 +4,7 @@ import { ToolsService } from '../_shared/services/_index';
 
 import * as Highcharts from 'highcharts';
 import * as _ from 'lodash';
+import * as moment from 'moment';
 
 
 
@@ -138,6 +139,10 @@ export class DashboardStackedColumnService {
     // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
     const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
 
+    // get the fiscal quarter and months range for the subtitle
+    const fiscalQuarter = this.toolsService.fiscalQuarterString(moment());
+    const monthsRange = this.toolsService.fiscalQuarterMonthsString(moment());
+
     // set the chart options
     const chartOptions = {
       chart: {
@@ -148,7 +153,7 @@ export class DashboardStackedColumnService {
         text: `Your Team's FTEs by Project`
       },
       subtitle: {
-        text: `For current fiscal quarter.`
+        text: `For current fiscal quarter ${fiscalQuarter} (${monthsRange}).`
       },
       credits: {
         text: 'jarvis.is.keysight.com',

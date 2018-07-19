@@ -21,26 +21,6 @@ export class ApiDataService {
 
   // TO-DO ALL: move remaining to appropriate api data service file
 
-  // get all users (index)
-  getUserData() {
-    const token = localStorage.getItem('jarvisToken') ? '?token=' + localStorage.getItem('jarvisToken') : '';
-    // console.log('token query string is:');
-    // console.log(token);
-    return this.http.get(`/api/users${token}`)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
-
-  // for click tracking
-  logClick(clickData: any, userID: number) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/clickTracking/${userID}`, JSON.stringify(clickData), options)
-      .timeout(this.timeout)
-      .map((response: Response) => response.json());
-  }
-
   getProjectList() {
     return this.http.get(`/api/projects/projectlist`)
       .timeout(this.timeout)
@@ -54,6 +34,5 @@ export class ApiDataService {
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }
-
 
 }

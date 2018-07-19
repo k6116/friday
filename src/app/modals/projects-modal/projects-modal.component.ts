@@ -2,11 +2,13 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
   HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { Subscription } from 'rxjs/Subscription';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
   ApiDataEmailService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
+import { WebsocketService } from '../../_shared/services/websocket.service';
 
 declare var $: any;
 declare const introJs: any;
@@ -58,10 +60,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   projectsDisplay: any;
   numProjectsToDisplayAtOnce: number;
   numProjectsToDisplay: number;
-  showInfoModal: boolean;
-  showRosterModal: boolean;
-  clickedProjectForInfoModal: any;
-  clickedProjectForRosterModal: any;
   userID: any;
   userEmail: string;
   userPLMData: any;
@@ -74,12 +72,14 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   projectData: any;
   clickOutsideException: string;
   selProject: any;
+  subscription1: Subscription;
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
   @Output() tutorialStateEmitter = new EventEmitter<number>();
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
+  @Output() addedProjects = new EventEmitter<any>();
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -95,6 +95,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     private apiDataEmailService: ApiDataEmailService,
     private cacheService: CacheService,
     private authService: AuthService,
+    private websocketService: WebsocketService
   ) {
 
   }
@@ -135,10 +136,33 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     if (this.fteTutorialState === 2) {
       this.tutorialPart2();
     }
+
+    // listen for websocket message for newly created projects
+    this.subscription1 = this.websocketService.getNewProject().subscribe(project => {
+      console.log(project);
+      this.refreshProjectCards();
+    });
+
   }
 
   ngAfterViewInit() {
 
+  }
+
+  // refresh the project cards if another user has added a new project while the modal is open
+  // replaces the need for a refresh button
+  refreshProjectCards() {
+    this.apiDataProjectService.getProjects()
+      .subscribe(
+        res => {
+          this.projects = res;
+          this.addedProjects.emit(this.projects);
+        },
+        err => {
+          console.log('get projects data error:');
+          console.log(err);
+        }
+    );
   }
 
   resizeProjectCardsContainer() {
@@ -209,7 +233,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onScroll() {
     if (this.scrollAtBottom()) {
-      this.addProjectsForInfiniteScroll2();
+      this.addProjectsForInfiniteScroll();
     }
   }
 
@@ -231,27 +255,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // option 1: push more projects into the array that is in the loop, however can't filter on projects not in array
-  addProjectsForInfiniteScroll() {
-    // get the number of currently displayed projects
-    const numDisplayedProjects = this.projectsDisplay.length;
-    // get the number of total projects
-    const numProjects = this.projects.length;
-    // calculate the number of remaining projects that could be displaed
-    const numRemainingProjects = numProjects - numDisplayedProjects;
-    // take the minimum of X projects or remaining projects
-    const numProjectsToAdd = Math.min(this.numProjectsToDisplayAtOnce, numRemainingProjects);
-    // if there are any more projects to add
-    if (numProjectsToAdd > 0) {
-      // slice off another chunk of project objects to add to the array
-      const projectsToAdd = this.projects.slice(numDisplayedProjects, numDisplayedProjects + numProjectsToAdd);
-      // add the new projects to the array of projects to display
-      this.projectsDisplay.push(...projectsToAdd);
-    }
-  }
 
-  // option 2: use all projects in the ngFor, but use filter pipe to limit, update limit when reaching the bottom
-  addProjectsForInfiniteScroll2() {
+  // use all projects in the ngFor, but use filter pipe to limit, update limit when reaching the bottom
+  addProjectsForInfiniteScroll() {
 
     // get the number of currently displayed projects
     const numDisplayedProjects = this.numProjectsToDisplay;
@@ -269,50 +275,221 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
+
   onProjectInfoClick(element) {
 
-    // get the position to display based on the clicked element (button)
-    const position = this.calculateModalPosition(element, 'div.projects-info-modal-outer-cont');
+    // get the project id from the card buttons custom html attribute 'data-id'
+    const projectID = $(element).closest('.card-button').data('id');
 
-    // set the modal position (top and left css properties)
-    this.setModalPosition(position, 'div.projects-info-modal-outer-cont');
+    // get the project object
+    const project = this.getProject(element);
 
-    // get and deliver the project data to the modal component
-    this.clickedProjectForInfoModal = this.getProject(element);
+    console.log('project object for project info modal:');
+    console.log(project);
 
-    // show the modal
-    setTimeout(() => {
-      this.showInfoModal = true;
-    }, 0);
+    // get the styles/css and html content
+    const css = this.getProjectDetailsStyle();
+    const html = this.getProjectDetailsContent(project);
+    const content = css + html;
+
+    // set the jquery element
+    const $el = $(`.card-button.info[data-id="${projectID}"]`);
+
+    // set the popover options
+    const options = {
+      animation: true,
+      placement: 'right',
+      html: true,
+      trigger: 'focus',
+      title: `${project.ProjectName} Project Details`,
+      content: content
+    };
 
     // hide the tooltip
-    $(`.card-button.info[data-id=${this.clickedProjectForInfoModal.ProjectID}]`).tooltip('hide');
+    $(`.card-button.info[data-id="${projectID}"]`).tooltip('hide');
+
+    // show the popover
+    $el.popover(options);
+    $el.popover('show');
+
 
   }
+
+
+  getProjectDetailsStyle(): string {
+
+    return `
+      <style>
+
+      </style>
+    `;
+
+  }
+
+
+  getProjectDetailsContent(project): string {
+
+
+    let content = `
+      <div class="projects-info-description">
+        <p>Project Description</p>
+      </div>
+    `;
+
+    content += ``;
+
+    return content;
+
+  }
+
 
 
   onProjectRosterClick(element) {
 
-    // TO-DO: don't show the modal until the roster data has been retreived
+    // get the project id from the card buttons custom html attribute 'data-id'
+    const projectID = $(element).closest('.card-button').data('id');
 
-    // get the position to display based on the clicked element (button)
-    const position = this.calculateModalPosition(element, 'div.projects-roster-modal-outer-cont');
+    // get the project object
+    const project = this.getProject(element);
 
-    // set the modal position (top and left css properties)
-    this.setModalPosition(position, 'div.projects-roster-modal-outer-cont');
+    // get the project roster data
+    this.apiDataProjectService.getProjectRoster(projectID)
+      .subscribe(
+        res => {
 
-    // get and deliver the project data to the modal component
-    this.clickedProjectForRosterModal = this.getProject(element);
+          const projectRoster = res;
+          const css = this.getProjectRosterStyle();
+          const html = this.getProjectRosterContent(project, projectRoster);
+          const content = css + html;
 
-    // show the modal
-    setTimeout(() => {
-      this.showRosterModal = true;
-    }, 0);
+          // set the jquery element
+          const $el = $(`.card-button.roster[data-id="${projectID}"]`);
 
-    // hide the tooltip
-    $(`.card-button.roster[data-id=${this.clickedProjectForRosterModal.ProjectID}]`).tooltip('hide');
+          // set the options
+          const options = {
+            animation: true,
+            placement: 'right',
+            html: true,
+            trigger: 'focus',
+            title: `${project.ProjectName} Team Roster`,
+            content: content
+          };
+
+          // hide the tooltip
+          $(`.card-button.roster[data-id="${projectID}"]`).tooltip('hide');
+
+          // show the popover
+          $el.popover(options);
+          $el.popover('show');
+
+        },
+        err => {
+          console.log('error:');
+          console.log(err);
+        }
+      );
 
   }
+
+
+  getProjectRosterStyle(): string {
+
+    return `
+      <style>
+        div.popover {
+          max-width: 325px;
+        }
+
+        .projects-roster-modal-team-members {
+          overflow-y: auto;
+          max-height: 265px;
+        }
+
+        div.projects-roster-modal-team-member {
+          border-bottom: 1px solid lightgrey;
+          padding: 5px 0;
+        }
+
+        div.projects-roster-modal-team-member:first-child {
+          border-top: 1px solid lightgrey;
+        }
+
+        td.projects-roster-team-member-icon-cell {
+          padding-right: 8px;
+          vertical-align: middle;
+        }
+
+        i.projects-roster-team-member-icon {
+          font-size: 20px;
+          color: rgb(136, 136, 136);
+        }
+
+        td.projects-roster-team-member-name-cell {
+          padding: 0 8px;
+          font-weight: 500;
+        }
+
+        td.projects-roster-team-member-jobtitle-cell {
+          padding: 0 8px;
+        }
+      </style>
+    `;
+
+  }
+
+
+  getProjectRosterContent(project, projectRoster): string {
+
+    let projectHasMembers;
+    let numTeamMembers;
+
+    if (projectRoster.length) {
+      projectRoster = projectRoster[0];
+      if (Object.keys(projectRoster).includes('teamMembers')) {
+        projectHasMembers = true;
+        numTeamMembers = projectRoster.teamMembers.length;
+      } else {
+        projectHasMembers = false;
+        numTeamMembers = 0;
+      }
+    }
+
+    let content = `
+      <div class="projects-roster-header">
+        <p class="projects-roster-subtitle subtitle2">${numTeamMembers ? numTeamMembers : 'No'} Team Members</p>
+      </div>
+    `;
+
+    if (projectHasMembers) {
+      content += `
+      <div class="projects-roster-modal-team-members">
+      `;
+      projectRoster.teamMembers.forEach(teamMember => {
+        content += `
+        <div class="projects-roster-modal-team-member">
+          <table>
+            <tr>
+              <td class="projects-roster-team-member-icon-cell" rowspan="2">
+                <i class="projects-roster-team-member-icon nc-icon nc-circle-10"></i>
+              </td>
+              <td class="projects-roster-team-member-name-cell" >${teamMember.name}</td>
+            </tr>
+            <tr>
+              <td class="projects-roster-team-member-jobtitle-cell" >${teamMember.jobTitle ? teamMember.jobTitle : 'No Role Assigned'}</td>
+            </tr>
+          </table>
+        </div>
+        `;
+      });
+      content += `
+      </div>
+      `;
+    }
+
+    return content;
+
+  }
+
 
   onProjectPermissionClick(project: any, action: string) {
 
@@ -421,88 +598,13 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // since the modals are a single element, need to move the position to align with the button before displaying
-  // returns an object with left and top properties
-  calculateModalPosition(element, modalSelector: string): any {
 
-    // set the button width in pixels
-    const buttonWidth = $(element).closest('div.card-button').outerWidth();
-
-    // get the left position using the distance from the left side of the window with the left sides of the cards table and card button
-    // (subtract the table distance from the button distance)
-    // use .closest to find the closest parent, in case the icon inside the button is clicked and passed as the element
-    let left = $(element).closest('div.card-button').offset().left - $('div.project-table-cont').offset().left;
-    // get the top position in a similar way, except accounting also for the scroll distance from the top of the table
-    const top = ($(element).closest('div.card-button').offset().top -
-      $('div.project-table-cont').offset().top) + $('div.project-table-cont').scrollTop();
-
-    // calculate the available widths from the button to the left and right sides of the table
-    const cardsWidth = $('div.project-table-cont').width();
-    const widthRight = cardsWidth - left;
-    const widthLeft = left;
-
-    // determine the final left position, based on available widths to the left and right
-    // rule: if there is enough width to the right (400px), show to the right, otherwise take the max of the two and use that
-    // to show to the left, just subtract the width (400px) to use for the left property
-
-    // get the width of the modal
-    const modalWidth = $(modalSelector).outerWidth();
-
-    // calculate the left position
-    let position: string;
-    if (widthRight > modalWidth) {
-      position = 'right';
-      left = left + buttonWidth + 10;   // display modal to the right of the button
-    } else {
-      const maxWidth = Math.max(widthRight, widthLeft);
-      if (maxWidth === widthRight) {
-        position = 'right';
-        left = left + buttonWidth + 10;   // display modal to the right of the button
-      } else {
-        position = 'left';
-        left = left - modalWidth - 10;   // display modal to the left of the button
-      }
-    }
-
-    // return an object with the left and top values
-    return {
-      position: position,
-      left: left,
-      top: top
-    };
-
-  }
-
-  // update the top and left css properties for the modal
-  setModalPosition(position, selector) {
-
-    // set the container's position
-    const $el = $(selector);
-    $el.css('left', position.left);
-    $el.css('top', position.top);
-
-    // set the triangle position
-    const $elTriangle = $(`${selector} .dropdown-triangle`);
-    const $elTriangleCover = $(`${selector} .dropdown-triangle-cover`);
-    if (position.position === 'right') {
-      $elTriangle.css('left', '-8px');
-      $elTriangle.css('right', 'unset');
-      $elTriangleCover.css('left', '0');
-      $elTriangleCover.css('right', 'unset');
-    } else if (position.position === 'left') {
-      $elTriangle.css('left', 'unset');
-      $elTriangle.css('right', '-8px');
-      $elTriangleCover.css('left', 'unset');
-      $elTriangleCover.css('right', '0');
-    }
-
-  }
 
   // update the clickedProject that is passed to the component through @input
   getProject(element): any {
 
     // get the project id from the card buttons custom html attribute 'data-id'
-    const projectID = $(element).closest('div.card-button').data('id');
+    const projectID = $(element).closest('.card-button').data('id');
 
     // find the project from the array of all projects using the id
     return this.projects.find(project => {
@@ -525,17 +627,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.cancel.emit(true);
   }
 
-  onProjectsInfoModalCloseClick() {
-    setTimeout(() => {
-      this.showInfoModal = false;
-    }, 0);
-  }
-
-  onProjectsRosterModalCloseClick() {
-    setTimeout(() => {
-      this.showRosterModal = false;
-    }, 0);
-  }
 
   // show the tooltip on mouse enter
   onCardButtonMouseEnter(title: string, buttonClass: string, projectID: number) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiDataService } from '../../_shared/services/api-data.service';
+import { ApiDataClickTrackingService } from '../../_shared/services/api-data/_index';
 import { AuthService } from '../../_shared/services/auth.service';
 
 import * as moment from 'moment';
@@ -12,7 +12,7 @@ export class ClickTrackingService {
 
   constructor(
     private router: Router,
-    private apiDataService: ApiDataService,
+    private apiDataClickTrackingService: ApiDataClickTrackingService,
     private authService: AuthService
   ) { }
 
@@ -66,7 +66,7 @@ export class ClickTrackingService {
     // build an object that will be inserted into the table
     // NOTE: for now, page, clickedOn, and text will be null, and will be updated later with the clickTrack string
     const clickObj = {
-      clickedDateTime: moment(),
+      clickedDateTime: moment().add(moment().utcOffset() / 60, 'hours'),
       employeeID: userID,
       page: null,
       path: path,
@@ -90,7 +90,7 @@ export class ClickTrackingService {
       const propName = objArr[0].trim();
       // if the propname from the html custom attribute matches a property in the object, update the property value
       if (clickObj.hasOwnProperty(propName)) {
-        clickObj[propName] = objArr[1].trim();
+        clickObj[propName] = objArr[1].trim() === 'null' ? null : objArr[1].trim();
       // if it is not found, log an error message and don't log to the database
       } else {
         error = true;
@@ -109,7 +109,7 @@ export class ClickTrackingService {
 
     // if the object looks good, send the data to the database to insert
     if (!error) {
-      this.apiDataService.logClick(clickObj, userID)
+      this.apiDataClickTrackingService.logClick(clickObj, userID)
       .subscribe(
         res => {
           // click tracking record was inserted successfully

@@ -14,6 +14,7 @@ import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.c
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
+import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SchedulesComponent } from './schedules/schedules.component';
 
@@ -48,6 +49,7 @@ const routes: Routes = [
       { path: 'setups/projects', component: ProjectsSetupsComponent },
       { path: 'setups/parts', component: ProjectsSetupsComponent },
       { path: 'schedules', component: SchedulesComponent },
+      { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
     ]
   },
   { path: '**', redirectTo: '/login' }
