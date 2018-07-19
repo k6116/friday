@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiDataSchedulesService } from '../../_shared/services/api-data/_index';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-projects',
@@ -31,6 +32,11 @@ export class ProjectsSetupsComponent implements OnInit {
     .subscribe(
       res => {
         this.projectSchedulesList = res;
+        for (let i = 0; i < this.projectSchedulesList.length; i++) {
+          for (let j = 0; j < this.projectSchedulesList[i].length; j++) {
+            this.projectSchedulesList[i].schedules[j].plcDate = moment().format('YYYY-MM-DD');
+          }
+        }
         console.log('schedulesList:', this.projectSchedulesList);
       },
       err => {
@@ -43,6 +49,12 @@ export class ProjectsSetupsComponent implements OnInit {
     this.project = project;
     this.showProjectCard = true;
     console.log(project);
+  }
+
+  onSearchInputChange(event: any) {
+    if (this.searchProjects.length === 0) {
+      this.showProjectCard = false;
+    }
   }
 
 }

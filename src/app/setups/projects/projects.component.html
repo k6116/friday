@@ -3,7 +3,7 @@
   <div class="jumbotron">
     <!-- Jobtitle Fuzzy Search Bar -->
     <div class="input-group">
-      <input type="text" [(ngModel)]="searchProjects" placeholder="Search Projects">
+      <input class="searchInput" type="text" [(ngModel)]="searchProjects" (change)="onSearchInputChange($event)" placeholder="Search Projects">
       <div class="input-group-append">
         <button class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="modal" data-target="#createNewProject">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
@@ -63,10 +63,12 @@
       <div class="card" *ngIf="showProjectCard">
         <div class="card-header">
           <div class="row">
-            <div class="col-9">
-              <h6>{{ project.projectName }}</h6>
+            <div class="col-8">
+              <h6>{{ project.projectName }}&nbsp;&nbsp;
+                <span class="badge badge-success">{{ project.priorityName }}</span>
+              </h6>
             </div>
-            <div class="col-3 text-right">
+            <div class="col-4 text-right">
               <button class="btn btn-primary btn-fte-toolbar">
                 <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectEditModal"></i>&nbsp;&nbsp;Edit
               </button>
@@ -86,10 +88,10 @@
       <div class="card" *ngIf="showProjectCard">
         <div class="card-header">
           <div class="row">
-            <div class="col-9">
+            <div class="col-8">
               <h6>PLC Schedule</h6>
             </div>
-            <div class="col-3 text-right">
+            <div class="col-4 text-right">
               <button class="btn btn-primary btn-fte-toolbar">
                 <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectEditModal"></i>&nbsp;&nbsp;Edit
               </button>
@@ -106,9 +108,9 @@
               <th>Date</th>
               <th>Approved</th>
             </thead>
-            <tbody>
-              <td>{{ project.plcStatusName }}</td>
-              <td>{{ project.plcDate}}</td>
+            <tbody *ngFor="let schedule of project.schedules">
+              <td>{{ schedule.plcStatusName }}</td>
+              <td>{{ schedule.plcDate }}</td>
               <td>NA</td>
             </tbody>
           </table>

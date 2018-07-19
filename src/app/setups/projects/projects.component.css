@@ -8,3 +8,12 @@
     width: 90px;
     height: 35px;
   }
+
+  .searchInput {
+    width: 300px;
+  }
+
+  h6 {
+    line-height: 2.2 !important;
+    margin-bottom: 0;
+  }
