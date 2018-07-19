@@ -27,6 +27,35 @@ function indexProjects(req, res) {
 
 }
 
+function indexProjectsFilterProjectType(req, res) {
+
+  const projectTypes = req.body
+
+  const sql = `
+   SELECT 
+    p.ProjectID, 
+    substring(p.ProjectName,1,30) as \'ProjectName\', 
+    substring(p.Description,1,500) as \'Description\', 
+    e.FullName, 
+    p.CreationDate, 
+    t.ProjectTypeName, 
+    p.CreatedBy,
+    p.ProjectName + ' - ' + t.ProjectTypeName as 'ProjectProjectType'
+  FROM  
+    projects.Projects p INNER JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
+    INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
+  WHERE
+    t.ProjectTypeName IN ('NCI', 'NPPI')
+  ORDER BY 
+    p.ProjectName`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+
+}
+
 function indexProjectRoster(req, res) {
 
   const projectID = req.params.projectID;
@@ -36,6 +65,7 @@ function indexProjectRoster(req, res) {
     SELECT 
       T1.ProjectID as 'projectID',
       T1.ProjectName as 'projectName',
+      T3.EmployeeID as 'teamMembers:employeeID',
       T3.FullName as 'teamMembers:name',
       SUM(T2.FTE) as 'teamMembers:fte',
       T4.JobTitleName + ' - ' + T5.JobSubTitleName as 'teamMembers:jobTitle'
@@ -51,6 +81,7 @@ function indexProjectRoster(req, res) {
       T1.ProjectID,
       T1.ProjectName,
       T1.[Description],
+      T3.EmployeeID, 
       T3.FullName,
       (T4.JobTitleName + ' - ' + T5.JobSubTitleName)
   `
@@ -111,6 +142,7 @@ function insertProject(req, res) {
   const userID = req.params.userID;
   const today = new Date();
 
+
   return sequelize.transaction((t) => {
 
     return models.Projects
@@ -132,15 +164,15 @@ function insertProject(req, res) {
       )
       .then(newProject => {
 
-        console.log('created project id is: ' + project.id);
-
+        console.log('created project id is: ' + newProject.id);
+        res.json({newProjectID: newProject.id})
       })
 
     }).then(() => {
 
-      res.json({
-        message: `The project '${project.projectName}' has been added successfully`,
-      })
+      // res.json({
+      //   message: `The project '${project.projectName}' has been added successfully`,
+      // })
 
     }).catch(error => {
 
@@ -505,6 +537,7 @@ function insertBulkProjectEmployeeRole(req, res) {
 
 module.exports = {
   indexProjects: indexProjects,
+  indexProjectsFilterProjectType: indexProjectsFilterProjectType,
   indexProjectRoster: indexProjectRoster,
   indexUserProjectList: indexUserProjectList,
   insertProject: insertProject,

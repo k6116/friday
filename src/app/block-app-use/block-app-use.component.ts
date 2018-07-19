@@ -36,7 +36,7 @@ export class BlockAppUseComponent implements OnInit, AfterViewInit {
       {
         title: 'Browser Not Supported',
         message: `Jarvis Resources will not work with ${bowser.name} version ${bowser.version}.  Please
-         use Google Chrome version 65.0 or later.`,
+         use Google Chrome v65.0+, Mozilla Firefox v60.0+, or Microsoft Edge v15.0+.`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(197, 50, 76)',
         display: true

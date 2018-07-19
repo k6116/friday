@@ -1,0 +1,9 @@
+.app-wrapper {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.flexbox-wrapper {
+    flex: 1;
+}

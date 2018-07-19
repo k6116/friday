@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { DecimalPipe } from '@angular/common';
@@ -16,6 +16,8 @@ import { UserFTEs, AllocationsArray} from './fte-model';
 import { utils, write, WorkBook } from 'xlsx';
 import { saveAs } from 'file-saver';
 import { JAN } from '@angular/material';
+
+import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
 
 const moment = require('moment');
 require('moment-fquarter');
@@ -77,6 +79,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   jobTitleList: any;
 
   fteTutorialState = 0; // for keeping track of which part of the tutorial we're in, and passing to child component
+
+  @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
 
   constructor(
     private fb: FormBuilder,
@@ -317,11 +321,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
       // map the jobTitle and jobSubTitle IDs
       for (let i = 0; i < this.jobTitleList.length; i++) {
-        for (let j = 0; j < this.jobTitleList[i].jobTitleMap.jobSubTitles.length; j++) {
-          if (this.jobTitleList[i].id === selectedProject.JobTitleID) {
-            if (this.jobTitleList[i].jobTitleMap.jobSubTitles[j].id === selectedProject.JobSubTitleID) {
+        for (let j = 0; j < this.jobTitleList[i].jobSubTitles.length; j++) {
+          if (this.jobTitleList[i].id === newProject.jobTitleID) {
+            if (this.jobTitleList[i].jobSubTitles[j].id === newProject.jobSubTitleID) {
               newProject.jobTitle = this.jobTitleList[i].jobTitleName;
-              newProject.jobSubTitle = this.jobTitleList[i].jobTitleMap.jobSubTitles[j].jobSubTitleName;
+              newProject.jobSubTitle = this.jobTitleList[i].jobSubTitles[j].jobSubTitleName;
             }
           }
         }
@@ -357,7 +361,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
 
   onFTEChange(i, j, value) {
-    console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
+    // console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
 
     let fteReplace: boolean;
     let fteReplaceValue: any;
@@ -367,14 +371,29 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     // if not a match, will want to update/patch it to use the standard format
     if (!match) {
       fteReplace = true;
-      // check for still valid format such as .6, 1., 1
-      if (/^[.][1-9]{1}$/.test(value) || /^[1][.]$/.test(value) || /^[1]$/.test(value)) {
-        fteReplaceValue = this.decimalPipe.transform(value, '1.1');
+
+      // first, strip out all dots except the first
+      const dotPosition = value.indexOf( '.' );
+      if ( dotPosition > -1 ) {
+        fteReplaceValue = value.substr( 0, dotPosition + 1 ) + value.slice( dotPosition ).replace( /\./g, '' );
       } else {
-        fteReplaceValue = null;
+        fteReplaceValue = value;
       }
+
+      // if string has a trailing dot, append a zero so it will look like a number
+      if (dotPosition === fteReplaceValue.length - 1) {
+        fteReplaceValue = fteReplaceValue + '0';
+      }
+
+      // if the value is 0, replace with null, else decimalPipe it into the proper format
+      if (Number(fteReplaceValue) === 0) {
+        fteReplaceValue = null;
+      } else {
+        fteReplaceValue = this.decimalPipe.transform(Number(fteReplaceValue), '1.1-1');
+      }
+
     }
-    console.log(`match is ${match}, replacement value: ${fteReplaceValue}, at ${i}, ${j}`);
+    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}, at ${i}, ${j}`);
 
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
@@ -1214,6 +1233,66 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       }
       carouselModalSubscription.unsubscribe();
     });
+  }
+
+  createProject() {
+    setTimeout(() => {
+      this.projectsCreateModalComponent.resetForm();
+    }, 0);
+  }
+
+  onCreateSuccess(selectedProject: any) {
+    console.log('Create project success. My Project List Refreshed');
+    console.log('selectedProject', selectedProject);
+    this.display = true;  // make sure FTE entry form is visible
+
+    // verify selectedProject has not already been added
+    const fteFormArray = this.FTEFormGroup.controls.FTEFormArray;
+    const currentProjectsList = [];
+    fteFormArray['controls'].forEach( project => {
+      currentProjectsList.push(project.projectID);
+    });
+    const alreadyExists = currentProjectsList.find( value => {
+      return value === selectedProject.projectID;
+    });
+    if (!alreadyExists) {
+      const newProject = new UserFTEs;
+      newProject.userID = this.authService.loggedInUser.id;
+      newProject.projectID = selectedProject.projectID;
+      newProject.projectName = selectedProject.projectName;
+      newProject.jobTitleID = this.authService.loggedInUser.jobTitleID;
+      newProject.jobSubTitleID = this.authService.loggedInUser.jobSubTitleID;
+      newProject.newlyAdded = true;
+
+      // map the jobTitle and jobSubTitle IDs
+      for (let i = 0; i < this.jobTitleList.length; i++) {
+        for (let j = 0; j < this.jobTitleList[i].jobSubTitles.length; j++) {
+          if (this.jobTitleList[i].id === newProject.jobTitleID) {
+            if (this.jobTitleList[i].jobSubTitles[j].id === newProject.jobSubTitleID) {
+              newProject.jobTitle = this.jobTitleList[i].jobTitleName;
+              newProject.jobSubTitle = this.jobTitleList[i].jobSubTitles[j].jobSubTitleName;
+            }
+          }
+        }
+      }
+
+      // loop through the already-built months array and initialize null FTEs for each month in this new project
+      newProject.allocations = new Array<AllocationsArray>();
+      this.months.forEach( month => {
+        const newMonth = new AllocationsArray;
+        newMonth.month = moment(month).utc().format();
+        newMonth.fte = null;
+        newMonth.recordID = null;
+        newProject.allocations.push(newMonth);
+      });
+
+      const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+      this.addProjectToFteForm(FTEFormArray, newProject, true);
+      this.sliderDisabled = true;
+      this.displayFTETable = true;
+    } else {
+      this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
+    }
   }
 
 }

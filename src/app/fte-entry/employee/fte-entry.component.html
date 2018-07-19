@@ -1,6 +1,7 @@
 
 <app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" [fteTutorialState]="fteTutorialState"
   (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()" (tutorialStateEmitter)="tutorialPart3($event)" (addedProjects)="onAddedProjects($event)"></app-projects-modal>
+<app-projects-create-modal (createSuccess)="onCreateSuccess($event)"></app-projects-create-modal>
 
 <div [hidden]="!display" class="container-fluid">
 
@@ -8,6 +9,9 @@
     <div class="col-sm col-custom">
       <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onAddProjectClick()" id="intro-add-project">
         <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
+      </button>
+      <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
+        <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
       </button>
       <!-- Don't Delete - useful buttons for later -->
       <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
@@ -88,7 +92,7 @@
                 <!-- loop through each month's FTE allocation, "monthly" cells per project -->
                 <ng-container *ngFor="let month of months; let j = index">
                   <div class="fte-table-cell" [@colState]="fteMonthVisible[j]" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">
-                    <input type="text" formControlName="fte" class="form-control" [attr.disabled]="fteMonthEditable[j] ? null : ''" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
+                    <input type="text" formControlName="fte" class="form-control" maxlength="3" [attr.disabled]="fteMonthEditable[j] ? null : ''" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
                   </div>
                   <ng-container *ngIf="j % 3 === 2">
                     <div class="fte-table-cell quarter-spacer" [@colState]="fteMonthVisible[j]" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">&nbsp;</div>
@@ -122,7 +126,3 @@
   </div> <!-- end row for FTE entry table -->
 
 </div> <!-- end FTE component container div -->
-
-<ng-container *ngIf="display">
-  <app-footer></app-footer>
-</ng-container>

@@ -54,7 +54,7 @@ export class JobTitlesComponent implements OnInit {
       description: ['']
     });
 
-    this.subTitlesInit = true;
+    // this.subTitlesInit = true;
     // force modal to close with @ViewChild('closeBtn')
     this.closeBtn.nativeElement.click();
   }
