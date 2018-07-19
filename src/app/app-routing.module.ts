@@ -23,7 +23,6 @@ import { TestComponent } from './test/test.component';
 import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
 import { UserResolverService } from './_shared/services/user-resolver.service';
-import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -44,7 +43,6 @@ const routes: Routes = [
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent },
       { path: 'reports/employees', component: EmployeesReportsComponent },
-      { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
     ]
