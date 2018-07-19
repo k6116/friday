@@ -65,6 +65,7 @@ function indexProjectRoster(req, res) {
     SELECT 
       T1.ProjectID as 'projectID',
       T1.ProjectName as 'projectName',
+      T3.EmployeeID as 'teamMembers:employeeID',
       T3.FullName as 'teamMembers:name',
       SUM(T2.FTE) as 'teamMembers:fte',
       T4.JobTitleName + ' - ' + T5.JobSubTitleName as 'teamMembers:jobTitle'
@@ -80,6 +81,7 @@ function indexProjectRoster(req, res) {
       T1.ProjectID,
       T1.ProjectName,
       T1.[Description],
+      T3.EmployeeID, 
       T3.FullName,
       (T4.JobTitleName + ' - ' + T5.JobSubTitleName)
   `

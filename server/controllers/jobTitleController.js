@@ -2,6 +2,7 @@
 const models = require('../models/_index');
 const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize');
+const Treeize = require('treeize');
 
 // Retrieve list of all job titles and the associated job title subs
 function indexJobTitle(req, res) {
@@ -30,6 +31,7 @@ function indexJobTitle(req, res) {
             error: {message: error}
         })
     })
+
 }
 
 // Update user's job title and job title sub

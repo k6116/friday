@@ -45,8 +45,8 @@ const JobTitleMap = sequelize.define( "jobTitleMap",
 // For junction tables without primary key
 JobTitleMap.removeAttribute('id');
 
-JobTitle.hasOne(JobTitleMap, {foreignKey: 'JobTitleID', sourceKey: 'JobTitleID' });
-JobTitleMap.hasMany(JobSubTitle, {foreignKey: 'JobSubTitleID', sourceKey: 'JobSubTitleID' });
+// JobTitle.hasOne(JobTitleMap, {foreignKey: 'JobTitleID', sourceKey: 'JobTitleID' });
+// JobTitleMap.hasMany(JobSubTitle, {foreignKey: 'JobSubTitleID', sourceKey: 'JobSubTitleID' });
 
 module.exports = {
     // Employees: Employees,
