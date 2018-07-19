@@ -142,6 +142,7 @@ function insertProject(req, res) {
   const userID = req.params.userID;
   const today = new Date();
 
+
   return sequelize.transaction((t) => {
 
     return models.Projects
@@ -163,15 +164,15 @@ function insertProject(req, res) {
       )
       .then(newProject => {
 
-        console.log('created project id is: ' + project.id);
-
+        console.log('created project id is: ' + newProject.id);
+        res.json({newProjectID: newProject.id})
       })
 
     }).then(() => {
 
-      res.json({
-        message: `The project '${project.projectName}' has been added successfully`,
-      })
+      // res.json({
+      //   message: `The project '${project.projectName}' has been added successfully`,
+      // })
 
     }).catch(error => {
 

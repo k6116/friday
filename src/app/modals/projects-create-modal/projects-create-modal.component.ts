@@ -14,13 +14,14 @@ declare var $: any;
 })
 export class ProjectsCreateModalComponent implements OnInit {
 
-  @Output() createSuccess = new EventEmitter<boolean>();
+  @Output() createSuccess = new EventEmitter<any>();
 
   form: FormGroup;
   userID: any;
   userEmail: string;
   projectTypesList: any;
   userPLMData: any;
+  createdProject: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -93,7 +94,8 @@ export class ProjectsCreateModalComponent implements OnInit {
     .subscribe(
       res => {
         console.log(res);
-        this.createSuccess.emit(true);
+        project.projectID = res.newProjectID;
+        this.createSuccess.emit(project);
         this.websocketService.sendNewProject(res);
       },
       err => {
