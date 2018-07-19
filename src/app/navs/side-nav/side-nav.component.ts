@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CacheService } from '../../_shared/services/cache.service';
+import { MainMenuItems } from './side-nav.model';
 
 declare var $: any;
 
@@ -23,6 +24,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cacheService: CacheService) {
+
 
       // build an object that represents the sidebar menu structure, to be rendered in the html
       this.menuStructure = [

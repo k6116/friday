@@ -45,7 +45,16 @@ function checkFirstLogin(req, res) {
 
   const employeeID = req.params.employeeID;
   const userName = req.params.userName;
-  sequelize.query(`SELECT COUNT(*) as ClickCount FROM [resources].[ClickTracking] WHERE EmployeeID = :employeeID OR [Text] = :userName`, {replacements: {employeeID: employeeID, userName: userName}, type: sequelize.QueryTypes.SELECT})
+  const sql = `
+    SELECT 
+      COUNT(*) as ClickCount 
+    FROM 
+      [resources].[ClickTracking] 
+    WHERE 
+      (EmployeeID = :employeeID OR [Text] = :userName)
+      AND Page <> 'App Load'
+  `;
+  sequelize.query(sql, {replacements: {employeeID: employeeID, userName: userName}, type: sequelize.QueryTypes.SELECT})
     .then(clickCount => {
       console.log(`click count`);
       console.log(clickCount);

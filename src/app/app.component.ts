@@ -54,35 +54,23 @@ export class AppComponent implements OnInit {
     // insert a record into the click tracking table as a page load; to capture the browser
     this.clickTrackingService.logClickWithEvent(`page: App Load, clickedOn: null`);
 
-    // check for browser compatibility
-    const browserCheck = this.browserIsCompatible();
+    // start a timer to fire every x minutes to check the login status
+    console.log('starting timer for auth service');
+    this.startTimer();
 
-    // if the browser is not compatible, navigate (redirect) to the block page
-    if (!browserCheck) {
-      this.router.navigateByUrl('/block');
-    // continue otherwise if the browser is compatible
-    } else {
-      // start a timer to fire every x minutes to check the login status
-      console.log('starting timer for auth service');
-      this.startTimer();
-      // update the last activity property with a new timestamp
-      this.authService.updateLastActivity();
-      // attempt to get user info, expiration date etc. from the token if one exists
-      this.authService.getInfoFromToken();
+    // update the last activity property with a new timestamp
+    this.authService.updateLastActivity();
 
-    }
+    // attempt to get user info, expiration date etc. from the token if one exists
+    this.authService.getInfoFromToken();
 
+    // subscibe to the resetTimer, can be used to synch up the clock
     this.subscription1 = this.cacheService.resetTimer.subscribe(
       (resetTimer: boolean) => {
         // console.log('subscription to resetTimer receivevd in the app component');
         this.resetTimer();
     });
 
-  }
-
-  // returns true or false depending on whether they are using Chrome version 65.0 or later
-  browserIsCompatible(): boolean {
-    return bowser.name === 'Chrome' && +bowser.version >= 65;
   }
 
 

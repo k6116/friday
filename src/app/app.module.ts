@@ -27,13 +27,14 @@ import { TitleCasePipe } from '@angular/common';
 import { ApiDataService, CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
-import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
   ApiDataReportService, ApiDataDashboardService} from './_shared/services/api-data/_index';
 
 // GUARDS
+import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
+import { BrowserGuard } from './_shared/guards/browser.guard';
 
 // CHARTS
 import 'hammerjs';
@@ -159,6 +160,7 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     WebsocketService,
     CookiesService,
     UnsavedChangesGuard,
+    BrowserGuard,
     TitleCasePipe
   ],
   bootstrap: [AppComponent]

@@ -19,6 +19,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
+import { BrowserGuard } from './_shared/guards/browser.guard';
 import { TestComponent } from './test/test.component';
 import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
@@ -27,13 +28,13 @@ import { UserResolverService } from './_shared/services/user-resolver.service';
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'block', component: BlockAppUseComponent },
-  { path: 'test', component: TestComponent },
-  { path: 'perf', component: PerformanceComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'test', component: TestComponent, canActivate: [BrowserGuard] },
+  { path: 'perf', component: PerformanceComponent, canActivate: [BrowserGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [BrowserGuard] },
   {
-    path: 'main', component: MainComponent, canActivate: [AuthGuardService], resolve: { loggedInUser: UserResolverService },
+    path: 'main', component: MainComponent, canActivate: [BrowserGuard, AuthGuardService], resolve: { loggedInUser: UserResolverService },
     children: [
-      { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full' },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
