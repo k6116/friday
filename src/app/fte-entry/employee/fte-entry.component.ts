@@ -317,11 +317,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
       // map the jobTitle and jobSubTitle IDs
       for (let i = 0; i < this.jobTitleList.length; i++) {
-        for (let j = 0; j < this.jobTitleList[i].jobTitleMap.jobSubTitles.length; j++) {
+        for (let j = 0; j < this.jobTitleList[i].jobSubTitles.length; j++) {
           if (this.jobTitleList[i].id === selectedProject.JobTitleID) {
-            if (this.jobTitleList[i].jobTitleMap.jobSubTitles[j].id === selectedProject.JobSubTitleID) {
+            if (this.jobTitleList[i].jobSubTitles[j].id === selectedProject.JobSubTitleID) {
               newProject.jobTitle = this.jobTitleList[i].jobTitleName;
-              newProject.jobSubTitle = this.jobTitleList[i].jobTitleMap.jobSubTitles[j].jobSubTitleName;
+              newProject.jobSubTitle = this.jobTitleList[i].jobSubTitles[j].jobSubTitleName;
             }
           }
         }
