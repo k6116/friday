@@ -74,7 +74,6 @@ import { ProjectAttributesComponent } from './admin/project-attributes/project-a
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
-import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 
 
 @NgModule({
