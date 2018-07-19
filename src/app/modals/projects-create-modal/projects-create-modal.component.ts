@@ -3,6 +3,7 @@ import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@ang
 import { ApiDataEmployeeService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
+import { WebsocketService } from '../../_shared/services/websocket.service';
 
 declare var $: any;
 
@@ -27,6 +28,7 @@ export class ProjectsCreateModalComponent implements OnInit {
     private apiDataEmployeeService: ApiDataEmployeeService,
     private cacheService: CacheService,
     private authService: AuthService,
+    private websocketService: WebsocketService
   ) {
     this.resetForm();
     this.getProjectTypesList();
@@ -46,7 +48,7 @@ export class ProjectsCreateModalComponent implements OnInit {
     // initialize the formgroup
     this.form = this.formBuilder.group({
       projectName: [null, [Validators.required]],
-      projectTypeID: [null, [Validators.required]],
+      // projectTypeID: [null, [Validators.required]],
       projectDescription: [null],
       projectNotes: [null],
     });
@@ -74,6 +76,8 @@ export class ProjectsCreateModalComponent implements OnInit {
 
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
+    // for project that are not org level and created by Individual Cont/Managers, projectType will always be "General"
+    project.projectTypeID = 'General';
     project.projectOrgManager = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
 
     this.apiDataProjectService.createProject(project, this.userID)
@@ -81,6 +85,7 @@ export class ProjectsCreateModalComponent implements OnInit {
       res => {
         console.log(res);
         this.createSuccess.emit(true);
+        this.websocketService.sendNewProject(res);
       },
       err => {
         console.log(err);

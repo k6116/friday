@@ -5,6 +5,7 @@ import { AuthService } from '../_shared/services/auth.service';
 
 import * as Highcharts from 'highcharts';
 import * as _ from 'lodash';
+import * as moment from 'moment';
 
 
 @Injectable()
@@ -50,7 +51,7 @@ export class DashboardPieService {
           });
           seriesData.push({
             name: project.projectName,
-            y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 1),
+            y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 0),
             drilldown: project.projectName
           });
         }
@@ -96,7 +97,7 @@ export class DashboardPieService {
               }
             });
           });
-          drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 1)]);
+          drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 0)]);
         });
 
         // TO-DO: push into an array of object first, then use _.sortBy to sort by fte percent descending
@@ -117,6 +118,9 @@ export class DashboardPieService {
     // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
     const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
 
+    // get the fiscal quarter and months range for the subtitle
+    const fiscalQuarter = this.toolsService.fiscalQuarterString(moment());
+    const monthsRange = this.toolsService.fiscalQuarterMonthsString(moment());
 
     // set the chart options
     const chartOptions = {
@@ -131,7 +135,7 @@ export class DashboardPieService {
         text: `Your FTEs by Project`
       },
       subtitle: {
-        text: `For current fiscal quarter.  Click a slice to view project team members.`
+        text: `For current fiscal quarter ${fiscalQuarter} (${monthsRange}).  Click a slice to view project team members.`
         // style: {
         //   color: '#FF00FF',
         //   fontWeight: 'bold'
@@ -155,7 +159,7 @@ export class DashboardPieService {
         series: {
           dataLabels: {
             enabled: true,
-            format: '{point.name}: {point.y:.1f}%'
+            format: '{point.name}: {point.y}%'
           }
         }
       },

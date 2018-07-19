@@ -12,7 +12,7 @@ const configPLM = {
   dbname: "OracleWorkSpace",
   host: 'PLMBRIDGE.COS.IS.KEYSIGHT.COM',
   username: 'DARWIN_USER',
-  password: 'sp_f1nches',
+  password: process.env.PLMBRIDGE_DB_PASSWORD,
   dialect: 'mssql'
 };
 
@@ -20,7 +20,7 @@ const config2017 = {
   dbname: "JarvisResources",
   host: 'WCOSOFW2.COS.IS.KEYSIGHT.COM',
   username: 'JarvisRTUser',
-  password: '3pineapple#',
+  password: process.env.WCOSOFW2_DB_PASSWORD,
   dialect: 'mssql'
 };
 
@@ -33,7 +33,7 @@ if (env === 'prod') {
     dbname: "Jarvis",
     host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',
     username: 'JarvisRTUser',
-    password: '3pineapple#',
+    password: process.env.SPYGLASS_DB_PASSWORD,
     dialect: 'mssql'
   };
 } else {
@@ -42,7 +42,7 @@ if (env === 'prod') {
     dbname: "Jarvis_Resources",
     host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',
     username: 'JarvisRTUser',
-    password: '3pineapple#',
+    password: process.env.SPYGLASS_DB_PASSWORD,
     dialect: 'mssql'
   };
 }

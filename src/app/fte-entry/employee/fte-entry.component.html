@@ -1,14 +1,8 @@
 
 <app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" [fteTutorialState]="fteTutorialState"
-  (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()" (tutorialStateEmitter)="tutorialPart3($event)"></app-projects-modal>
+  (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()" (tutorialStateEmitter)="tutorialPart3($event)" (addedProjects)="onAddedProjects($event)"></app-projects-modal>
 
 <div [hidden]="!display" class="container-fluid">
-
-  <div class="row row-custom">
-    <div class="col-sm col-custom col-text-header">
-      <h2 class="page-header-text">My FTEs</h2>
-    </div>
-  </div>
 
   <div class="row row-custom">
     <div class="col-sm col-custom">
@@ -23,9 +17,16 @@
       <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
         <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
       </button>
-      <button class="btn btn-secondary btn-help" (click)="tutorialPart1()">
-        <i class="fa fa-question"></i>
-      </button>
+      <div class="dropdown btn-help ">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-question"></i>
+            </button>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" (click)="tutorialPart1()">Interactive Tutorial</a>
+            <a class="dropdown-item" (click)="onInstructionsClick()">Instructions</a>
+            <a class="dropdown-item" >Confluence Documentation</a>
+          </div>
+        </div>
     </div>
   </div>
 
@@ -82,8 +83,8 @@
                 <div class="fte-table-cell icon"> <!-- for trash icon -->
                   <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
                 </div>
-                <div class="fte-table-cell col-project-name">{{ (project.projectName.length > 20) ? (project.projectName | slice:0:20) + '...' : (project.projectName) }}</div>
-                <div class="fte-table-cell col-project-role">{{ project.jobSubTitle }}</div>
+                <div class="fte-table-cell col-project-name" data-toggle="tooltip" data-placement="top" [title]="project.projectName.length > 20 ? project.projectName : ''">{{ (project.projectName.length > 20) ? (project.projectName | slice:0:20) + '...' : (project.projectName) }}</div>
+                <div class="fte-table-cell col-project-role" data-toggle="tooltip" data-placement="top" [title]="((project.jobTitle.length + project.jobSubTitle.length) > 30) ? (project.jobTitle + ' - ' + project.jobSubTitle) : ''">{{ ((project.jobTitle.length + project.jobSubTitle.length) > 30) ? ((project.jobTitle + ' - ' + project.jobSubTitle) | slice:0:30) + '...' : (project.jobTitle + ' - ' + project.jobSubTitle) }}</div>
                 <!-- loop through each month's FTE allocation, "monthly" cells per project -->
                 <ng-container *ngFor="let month of months; let j = index">
                   <div class="fte-table-cell" [@colState]="fteMonthVisible[j]" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">

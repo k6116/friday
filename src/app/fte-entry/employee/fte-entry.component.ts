@@ -125,22 +125,24 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.fteComponentInit();  // initialize the FTE entry component
 
     this.apiDataProjectService.getProjects()
-    .subscribe(
-      res => {
-        console.log('get project data successfull:');
-        console.log(res);
-        this.projectList = res;
-        // this.trimProjects(500);
-      },
-      err => {
-        console.log('get project data error:');
-        console.log(err);
-      }
+      .subscribe(
+        res => {
+          console.log('get project data successfull:');
+          console.log(res);
+          this.projectList = res;
+          // this.trimProjects(500);
+        },
+        err => {
+          console.log('get project data error:');
+          console.log(err);
+        }
     );
 
    this.buildMonthsArray();
    this.fteFormChangeListener();
    this.getJobTitleList();
+
+   $('[data-toggle="tooltip"]').tooltip();
 
   }
 
@@ -228,7 +230,64 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       introJs().exit();
       this.display = false;
     }
-    this.showProjectsModal = true;
+    // check to make sure the user has updated their profile with their job title before allowing them to add a project
+    this.apiDataFteService.checkJobTitleUpdated(this.authService.loggedInUser.id)
+      .subscribe(
+        res => {
+          console.log(res);
+          if (res.jobTitle[0].JobTitleID) {
+            this.showProjectsModal = true;
+          } else {
+            // show modal or toast
+            this.displayNeedToUpdateJobTitleModal();
+            // this.displayNeedToUpdateJobTitleToast();
+          }
+        },
+        err => {
+          console.log(err);
+        }
+      );
+  }
+
+  // display modal after attempt to add project when job title hasn't been populated
+  displayNeedToUpdateJobTitleModal() {
+
+    const initial = this.authService.loggedInUser.fullName[0].toUpperCase();
+    this.cacheService.confirmModalData.emit(
+      {
+        title: 'Profile Update Required',
+        message: `Please update your profile with your job title and subtitle if applicable -
+          click the ${initial} icon in the upper right hand corner then the profile button.
+          You won't be able to add any projects until this has been updated.`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 27, 27)',
+        closeButton: true,
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Got It',
+            bsClass: 'btn-success'
+          }
+        ]
+      }
+    );
+
+  }
+
+
+  // display toast after attempt to add project when job title hasn't been populated
+  displayNeedToUpdateJobTitleToast() {
+    this.cacheService.raiseToast('warn',
+      `You must update your profile with your job title before you can add any projects.`);
+  }
+
+
+  // output from the projects modal; in the event that any projects are added when the modal is open
+  // and the projects list is refreshed via websockets
+  onAddedProjects(projects: any) {
+    // update the projects list
+    this.projectList = projects;
   }
 
   onModalClosed(selectedProject: any) {
@@ -1102,6 +1161,74 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       err => {
         console.log(err);
       });
+  }
+
+  onInstructionsClick() {
+    // emit carousel modal after they click instructions button
+    this.cacheService.carouselModalData.emit(
+      {
+        title: `FTE Entry Instructions`,
+        iconClass: 'fa-info',
+        iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Close',
+            bsClass: 'btn-success',
+            emit: true
+          }
+        ],
+        slides: [
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_1.png',
+            alt: 'First FTE Slide',
+            captionHeader: 'Step 1:',
+            captionBody: 'Click the "Project" button to open the projects window',
+            active: true
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_2.png',
+            alt: 'First FTE Slide',
+            captionHeader: 'Step 2:',
+            captionBody: 'Search for the project and click the "Select" button to add to your FTE list',
+            active: false
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_3.png',
+            alt: 'First FTE Slide',
+            captionHeader: 'Step 3:',
+            captionBody: 'Fill in the monthly FTE values (total monthly FTE should sum to 1)',
+            active: false
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_4.png',
+            alt: 'First FTE Slide',
+            captionHeader: 'Step 4:',
+            captionBody: 'Use the slider to see previous/future FTE months (future FTE values can be filled as well)',
+            active: false
+          },
+          {
+            src: '../assets/carousel_slides/FTE/carousel_FTE_5.png',
+            alt: 'First FTE Slide',
+            captionHeader: 'Step 5:',
+            captionBody: 'Click "Save" when finished',
+            active: false
+          }
+        ]
+      }
+    );
+
+    const carouselModalSubscription = this.cacheService.carouselModalResponse.subscribe( res => {
+      if (res) {
+        // if they click ok, grab the deleted project info and exec db call to delete
+        console.log('CAROUSEL!');
+      } else {
+        console.log('delete confirm aborted');
+      }
+      carouselModalSubscription.unsubscribe();
+    });
   }
 
 }

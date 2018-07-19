@@ -20,6 +20,7 @@ import { ClickOutsideDirective } from './_shared/directives/click-outside.direct
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
+import { TitleCasePipe } from '@angular/common';
 
 // SERVICES
 import { ApiDataService, CacheService, ClickTrackingService, CookiesService,
@@ -54,10 +55,8 @@ import { ProfileModalComponent } from './modals/profile-modal/profile-modal.comp
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
 import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
-import { ProjectsInfoModalComponent } from './modals/projects-info-modal/projects-info-modal.component';
 import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
-import { ProjectsRosterModalComponent } from './modals/projects-roster-modal/projects-roster-modal.component';
 import { ChartsModule } from 'ng2-charts';
 import { ToastComponent } from './toast/toast.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
@@ -68,8 +67,13 @@ import { ChatComponent } from './chat/chat.component';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
+import { JobTitlesComponent } from './admin/job-titles/job-titles.component';
+import { AdminComponent } from './admin/admin.component';
+import { ProjectAttributesComponent } from './admin/project-attributes/project-attributes.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
+import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
+
 
 @NgModule({
   declarations: [
@@ -96,8 +100,6 @@ import { FooterComponent } from './footer/footer.component';
     OrgDropdownComponent,
     ProjectsEditModalComponent,
     ProjectsCreateModalComponent,
-    ProjectsInfoModalComponent,
-    ProjectsRosterModalComponent,
     ToastComponent,
     BlockAppUseComponent,
     PerformanceComponent,
@@ -108,8 +110,13 @@ import { FooterComponent } from './footer/footer.component';
     MyFteSummaryComponent,
     TeamFteSummaryComponent,
     TopProjectsBubbleComponent,
+    JobTitlesComponent,
+    AdminComponent,
+    ProjectAttributesComponent,
+    FooterComponent,
     DashboardComponent,
-    FooterComponent
+    FooterComponent,
+    CarouselModalComponent
   ],
   imports: [
     AppRoutingModule,
@@ -149,7 +156,8 @@ import { FooterComponent } from './footer/footer.component';
     UserResolverService,
     WebsocketService,
     CookiesService,
-    UnsavedChangesGuard
+    UnsavedChangesGuard,
+    TitleCasePipe
   ],
   bootstrap: [AppComponent]
 })

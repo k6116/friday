@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
 import { ConfirmModalOptions } from '../../modals/confirm-modal/confirm-modal.model';
+import { CarouselModalOptions } from '../../modals/carousel-modal/carousel-modal.model';
 
 @Injectable()
 export class CacheService {
@@ -25,6 +26,11 @@ export class CacheService {
   confirmModalResponse = new EventEmitter<any>();
   confirmModalClose = new EventEmitter<boolean>();
 
+  // CAROUSEL MODAL
+  carouselModalData = new EventEmitter<CarouselModalOptions>();
+  carouselModalResponse = new EventEmitter<any>();
+  carouselModalClose = new EventEmitter<boolean>();
+
   toast = new EventEmitter<any>();
 
   resetTimer = new EventEmitter<boolean>();
@@ -37,6 +43,12 @@ export class CacheService {
   nestedOrgDataCached: boolean;
 
   appLoadPath: string;  // the url that was hit on app load/refresh, stored for deep linking if user is not authenticated
+
+  // emit data to the dashboard component telling it to remove the message telling user to update their job title
+  profileHasBeenUpdated = new EventEmitter<boolean>();
+
+  // standard red color for alert icon
+  alertIconColor = 'rgb(193, 27, 27)';
 
   constructor() { }
 

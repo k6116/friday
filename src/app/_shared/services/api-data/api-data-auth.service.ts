@@ -2,29 +2,23 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
 import { Observable } from 'rxjs/observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-// import 'rxjs/add/operator/timeout';
-// import 'rxjs/add/operator/map';
+import { CacheService } from '../cache.service';
+
 
 @Injectable()
 export class ApiDataAuthService {
 
-  // TO-DO BILL: get timeout from the app data service (single place)
-  // TO-DO BILL: don't need to import timeout and map
-  timeout: number;
-
   constructor(
-    private http: Http
-  ) {
-    // set the timeout to 15 seconds
-    this.timeout = 15000;
-  }
+    private http: Http,
+    private cacheService: CacheService
+  ) { }
 
   // attempt to authenticate the user credentials using windows login and ldap
   authenticate(user: any): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post('/api/login', JSON.stringify(user), options)
-      .timeout(this.timeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -32,7 +26,7 @@ export class ApiDataAuthService {
   getInfoFromToken(token): Observable<any> {
     const queryString = '?token=' + token;
     return this.http.get(`/api/getInfoFromToken${queryString}`)
-      .timeout(this.timeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
@@ -41,28 +35,28 @@ export class ApiDataAuthService {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/resetToken`, JSON.stringify(user), options)
-      .timeout(this.timeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   // get a list of the background image file names and captions
   getLoginBackgroundImages(): Observable<any> {
     return this.http.get(`/api/getLoginBackgroundImages`)
-      .timeout(this.timeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   // TEMP CODE: for websockets testing
   getLoggedInUsers(): Observable<any> {
     return this.http.get(`/api/getLoggedInUsers`)
-      .timeout(this.timeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   // TEMP CODE: for websockets testing
   logout(userName): Observable<any> {
     return this.http.get(`/api/logout/${userName}`)
-      .timeout(this.timeout)
+      .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 

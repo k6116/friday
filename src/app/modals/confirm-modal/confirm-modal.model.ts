@@ -13,5 +13,5 @@ export class ConfirmModalOptions {
 export class ConfirmModalButtons {
   text: string;
   bsClass: string;
-  emit: any;  // you can emit and receive any data type that meets your needs - string, boolean, number, object
+  emit?: any;  // you can emit and receive any data type that meets your needs - string, boolean, number, object
 }
