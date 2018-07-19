@@ -59,4 +59,17 @@ export class WebsocketService {
     return observable;
   }
 
+  sendNewProject(project) {
+    this.socket.emit('project', project);
+  }
+
+  getNewProject() {
+    const observable = new Observable(observer => {
+      this.socket.on('project', (data) => {
+        observer.next(data);
+      });
+    });
+    return observable;
+  }
+
 }

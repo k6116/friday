@@ -1,3 +1,18 @@
+<a name="1.1.0"></a>
+# [1.1.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.0.1...v1.1.0) (2018-07-18)
+
+
+### Bug Fixes
+
+* **admin and job-titles component:** declared ng-Model variables for production build ([f4b967b](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f4b967b))
+
+
+### Features
+
+* **job-titles component:** page to update jobTitles and subTitles ([be95dae](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/be95dae))
+
+
+
 <a name="1.0.1"></a>
 ## [1.0.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.0.0...v1.0.1) (2018-07-16)
 

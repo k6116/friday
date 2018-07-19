@@ -78,10 +78,16 @@ function authenticate(req, res) {
           }
         })
 
+        // set the user nme
+        let userName = ldapUser.cn;
+
+        // TEMP CODE: impersonate as a manager for testing
+        // userName = 'ethanh'
+
         // check the Employees table to determine if this is an existing Jarvis user or not
         // using the user name as the unique key (note could use email as alternative)
         models.User.findOne({
-          where: {userName: ldapUser.cn}
+          where: {userName: userName}
         }).then(jarvisUser => {
           
           // if this is an existing jarvis user, send back a response
@@ -107,19 +113,35 @@ function authenticate(req, res) {
               return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
             });
 
+            // TEMP CODE: impersonate as a manager for testing
+            // fullName = 'Ethan Hunt';
+            // userName = 'ethanh';
+            // const email = 'ethan_hunt@keysight.com';
+
+            // get the first and last name from the full name
+            const nameArr = fullName.split(' ');
+            const firstName = nameArr[0];
+            const lastName = nameArr[nameArr.length - 1];
+
             // insert a record into the Employees table
             // TO-DO: figure out what to set for roldID and forcePasswordReset
             models.User.create({
+              firstName: firstName,
+              lastName: lastName,
               fullName: fullName,
               userName: ldapUser.cn,
               email: ldapUser.mail,
-              roleID: 1,
+              // userName: userName,
+              // email: email,
+              roleID: 4,  // report user
               loginEnabled: true,
               forcePasswordReset: false,
+              startUpTutorialFTE: true,
+              startUpTutorialProjects: true,
               createdBy: 1,
-              createdAt: moment().subtract(8, 'hours'),
+              createdAt: moment().add(moment().utcOffset() / 60, 'hours'),
               updatedBy: 1,
-              updatedAt: moment().subtract(8, 'hours')
+              updatedAt: moment().add(moment().utcOffset() / 60, 'hours')
             })
             .then(savedUser => {
 

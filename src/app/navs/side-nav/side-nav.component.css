@@ -24,6 +24,24 @@
   cursor: pointer;
 }
 
+.sidenav-mainmenu-cont.active {
+  border-left: 5px solid #fde772;
+  color: white;
+}
+
+.sidenav-mainmenu-cont.inactive {
+  border-left: 5px solid transparent;
+  color: rgb(202, 202, 202);
+}
+
+.sidenav-mainmenu-cont.inactive.highlighted {
+  color: white;
+}
+
+.sidenav-mainmenu-cont.inactive:hover {
+  color: white;
+}
+
 .sidenav-mainmenu-cont:hover {
   background-color: rgb(40, 40, 40);
 }
@@ -50,6 +68,20 @@
   margin-left: 10px;
   position: relative;
   top: -6px;
+}
+
+.sidenav-submenu-cont.active {
+  border-left: 5px solid #fde772;
+  color: white;
+}
+
+.sidenav-submenu-cont.inactive {
+  border-left: 5px solid transparent;
+  color: rgb(202, 202, 202);
+}
+
+.sidenav-submenu-cont.inactive:hover {
+  color: white;
 }
 
 .sidenav-submenu-cont:hover {

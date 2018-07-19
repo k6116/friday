@@ -14,6 +14,7 @@ import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.c
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
+import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 import { AuthGuardService } from './_shared/guards/auth.guard';
@@ -45,6 +46,7 @@ const routes: Routes = [
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'chat', component: ChatComponent },
+      { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
     ]
   },
   { path: '**', redirectTo: '/login' }

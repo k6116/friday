@@ -32,7 +32,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           alias: 'dashboard',
           path: 'main/dashboard',
           expanded: false,
-          active: false
+          active: false,
+          highlighted: false
         },
         {
           title: 'FTE Entry',
@@ -40,7 +41,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           alias: 'fteEntry',
           path: 'main/fte-entry/employee',
           expanded: false,
-          active: false
+          active: false,
+          highlighted: false
         },
         {
           title: 'Projects',
@@ -48,7 +50,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           alias: 'projects',
           path: 'main/setups/projects',
           expanded: false,
-          active: false
+          active: false,
+          highlighted: false
         },
         {
           title: 'Reports',
@@ -56,6 +59,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           alias: 'reports',
           expanded: false,
           active: false,
+          highlighted: false,
           subItems: [
             {
               title: 'My FTE Summary',
@@ -100,7 +104,24 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               active: false
             }
           ]
+        },
+        {
+          title: 'Admin',
+          iconClass: 'nc-chart-bar-33',
+          alias: 'admin',
+          path: 'main/admin',
+          expanded: false,
+          active: false
         }
+        // {
+        //   title: 'Websockets',
+        //   iconClass: 'nc-socket',
+        //   alias: 'websockets',
+        //   path: 'main/chat',
+        //   expanded: false,
+        //   active: false,
+        //   highlighted: false
+        // },
       ];
 
 
@@ -155,32 +176,70 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       if (foundMenuItem.subItems) {
         this.expandOrCollapseMenu(!foundMenuItem.expanded, menuItem, true);
       } else {
+        // clear any main menu items highlights
+        this.clearHighlightMainOfSubMenuItem();
         // navigate to the selected/clicked route
         this.router.navigate([`/${foundMenuItem.path}`]);
-        this.highlightActiveMenu(foundMenuItem.path);
+        setTimeout(() => {
+          this.highlightActiveMenu(this.router.url.slice(1));
+        }, 0);
+        // this.highlightActiveMenu(foundMenuItem.path);
       }
     }
   }
 
   onSubMenuItemClick(element, menuItem: string, subMenuItem: string) {
     // get the menu item object in the menu structure (this.menuStructure)
-    // TO-DO: attempt to combine getMenuObject and getSubMenuObject into a single method
+    // TO-DO BILL: attempt to combine getMenuObject and getSubMenuObject into a single method
     const foundMenuItem = this.getSubMenuObject(menuItem, subMenuItem);
     // navigate to the selected/clicked route
     this.router.navigate([`/${foundMenuItem.path}`]);
-    this.highlightActiveMenu(foundMenuItem.path);
+    setTimeout(() => {
+      const path = this.router.url.slice(1);
+      this.highlightActiveMenu(path);
+      // find the parent main menu item, to show it as highlighted (white text)
+      this.highlightMainOfSubMenuItem2(path);
+    }, 0);
+  }
 
-    // find the closest parent main menu item, to show it as highlighted (white text)
-    // const alias = $(element).closest('div.sidenav-menu-item').data('alias');
-    // // find the menu item object matching the alias
-    // const foundMainMenuItem = this.menuStructure.find(mainMenuItem => {
-    //   return mainMenuItem.alias === alias;
-    // });
-    // // if a menu item was found, set active to true
-    // if (foundMainMenuItem) {
-    //   foundMainMenuItem.active = true;
-    // }
+  // TO-DO BILL: combine highlightMainOfSubMenuItem and highlightMainOfSubMenuItem2 into single method
+  highlightMainOfSubMenuItem(alias) {
+    // highlight the main menu item of a sub menu item in white (no yellow left border)
+    // find the menu item object matching the alias
+    const foundMainMenuItem = this.menuStructure.find(mainMenuItem => {
+      return mainMenuItem.alias === alias;
+    });
+    // if a menu item was found, set highlighted to true
+    if (foundMainMenuItem) {
+      foundMainMenuItem.highlighted = true;
+    }
+  }
 
+  highlightMainOfSubMenuItem2(path) {
+    // highlight the main menu item of a sub menu item in white (with no yellow left border)
+    // go through each main menu object in the menu structure
+    console.log(path);
+    this.menuStructure.forEach(menuItem => {
+      // if the menu item has sub menu items
+      if (menuItem.hasOwnProperty('subItems')) {
+        // try to find a match on the path in the sub menu items
+        const foundSubMenuItem = menuItem.subItems.find(subItem => {
+          return subItem.path === path;
+        });
+        // if the submenu is found, set the highlighted property of the main menu item to true,
+        // to set the highlighted class, which will change the color to white
+        if (foundSubMenuItem) {
+          menuItem.highlighted = true;
+        }
+      }
+    });
+  }
+
+  clearHighlightMainOfSubMenuItem() {
+    // go through each main menu item and set the highlighted property to false
+    this.menuStructure.forEach(mainMenuItem => {
+      mainMenuItem.highlighted = false;
+    });
   }
 
   // hightlight the active/selected menu by going through the entire menu structure (main menu and sub menu items)
@@ -216,6 +275,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           // set the property
           // TO-DO: make this method return the object instead of setting a class property, would be more proper
           this.parentMenuToExpand = foundMainMenuItem;
+          // highlight the main menu item of the sub menu item in white (no yellow left border)
+          this.highlightMainOfSubMenuItem(foundMainMenuItem.alias);
         }
       }
     });
