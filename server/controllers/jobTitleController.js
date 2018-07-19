@@ -83,6 +83,7 @@ function indexJobSubTitle(req, res) {
             error: {message: error}
         })
     })
+
 }
 
 // Update user's job title and job title sub

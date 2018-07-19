@@ -25,6 +25,7 @@ router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
 
 // PROJECT CONTROLLER
 router.get('/indexProjects', controllers.project.indexProjects)
+router.get('/indexProjectsFilterProjectType', controllers.project.indexProjectsFilterProjectType)
 router.get('/indexProjectRoster/:projectID', controllers.project.indexProjectRoster);
 router.get('/indexUserProjectList/:userID', controllers.project.indexUserProjectList);
 router.get('/indexProjectTypesList/', controllers.project.indexProjectTypesList);

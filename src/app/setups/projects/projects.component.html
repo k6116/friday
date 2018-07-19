@@ -23,6 +23,27 @@
 </div>
 <!--  -->
 
+<!-- Edit Project Role Modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="projectRoleModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width:150%">
+      <div class="modal-header" style="border-bottom: none; height: 2rem;">
+        <h5 class="title">Change your role for this project</h5>
+      </div>
+      <div class="modal-body">
+      <div class="input-group">
+        <input [(ngModel)]="replyComment" type="text" class="form-control" placeholder="Add a comment">
+        <div class="input-group-append">
+          <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="requestResponse(request, 'Denied', replyComment)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
+          <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  -->
+
 <div class="container-fluid">
 
   <!-- Request Alerts -->
@@ -152,8 +173,8 @@
                       <tbody>
                         <tr *ngFor="let teamMember of projectRoster?.teamMembers">
                           <td width="40%">{{ teamMember.name }}</td>
-                          <td width = "55%" *ngIf="!toggleEditProjectRole">{{ teamMember.jobTitle }}</td>
-                          <td width = "55%" *ngIf="toggleEditProjectRole && teamMember.name===loggedInUser.fullName">
+                          <td width = "55%">{{ teamMember.jobTitle }}</td>
+                          <!-- <td width = "55%" *ngIf="toggleEditProjectRole && teamMember.name===loggedInUser.fullName">
                               <form>
                                 <div class="form-group form-group-custom">
                                   <select class="custom-select custom-select-project-role" (change)="selectProjectRoleChangeHandler($event, project)">
@@ -162,8 +183,8 @@
                                   </select>
                                 </div>
                               </form>
-                          </td>
-                          <td width = "5%"><i *ngIf="teamMember.name===loggedInUser.fullName" class="fa fa-pencil-square-o fa-sm" (click)="onProjectRoleEditClick()"></i></td>
+                          </td> -->
+                          <td width = "5%"><i *ngIf="teamMember.name===loggedInUser.fullName" class="fa fa-pencil-square-o fa-sm" data-toggle="modal" data-target="#projectRoleModal" (click)="onProjectRoleEditClick()"></i></td>
                         </tr>
                       </tbody>
                     </table>

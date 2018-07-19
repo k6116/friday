@@ -192,9 +192,18 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectRoster(projectID)
     .subscribe(
       res => {
-        // console.log('project roster:', res);
-        if (res.length) {
-          this.projectRoster = res[0];
+        console.log('project roster:', res);
+        // Check if roster for this project exists
+        if ('teamMembers' in res[0]) {
+          // This loop will move the loggedInUser to the top of the project roster list
+          for (let i = 0; i < res[0].teamMembers.length; i++) {
+            if (res[0].teamMembers[i].employeeID === this.authService.loggedInUser.id) {
+                const a = res[0].teamMembers.splice(i, 1);   // removes the item
+                res[0].teamMembers.unshift(a[0]);         // adds it back to the beginning
+                this.projectRoster = res[0];
+                break;
+            }
+        }
         }
       },
       err => {
