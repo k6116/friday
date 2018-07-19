@@ -95,7 +95,7 @@
       <ng-container *ngFor="let project of projectList; let k = index" class="table-container">
         <!-- table row start -->
         <!-- <div class="card-header-custom" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)"> -->
-            <div class="card-header-custom" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)">
+        <div class="card-header-custom" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)">
           <div class="col-2" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
             <div>{{ (project['projectName'].length > 50) ? (project['projectName'] | slice:0:50) + '...' : (project['projectName']) }}</div>
           </div>

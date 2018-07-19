@@ -10,12 +10,19 @@ export class ProjectsSetupsComponent implements OnInit {
 
   projectSchedulesList: any;
   searchProjects: string; // fuzzy-search string
+  project: any;
+
+  // all the flags
+  init: boolean;
+  showProjectCard;
 
   constructor(
     private apiDataSchedulesService: ApiDataSchedulesService,
   ) { }
 
   ngOnInit() {
+    this.init = false;
+    this.showProjectCard = false;
     this.getSchedules();
   }
 
@@ -30,6 +37,12 @@ export class ProjectsSetupsComponent implements OnInit {
         console.log(err);
       }
     );
+  }
+
+  onProjectClick(project: any) {
+    this.project = project;
+    this.showProjectCard = true;
+    console.log(project);
   }
 
 }

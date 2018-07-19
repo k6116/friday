@@ -13,10 +13,10 @@
   </div>
 
   <div class="row">
-    <div class="col">
-      <div class="card">
+    <div class="col-2">
+      <!-- <div class="card"> -->
         <!-- table headers start -->
-        <div class="card-header">
+        <!-- <div class="card-header">
             <div class="row header-project-table">
               <div class="col-2">
                 <div><h6>Name</h6></div>
@@ -41,24 +41,79 @@
                 </div>
               </div>
             </div>
-        </div>
+        </div> -->
         <!-- table headers end -->
 
         <!-- ACCORDION START -->
-        <div class="accordion" id="accordionProjectList">
-          <ng-container *ngIf="(projectSchedulesList | filter : searchProjects : 'projectName':{limitTo: 10, matchFuzzy: true}) as filteredProjectList">
+        <!-- <div class="accordion" id="accordionProjectList"> -->
+          <ng-container *ngIf="(projectSchedulesList | filter : searchProjects : 'projectName':{limitTo: -1, matchFuzzy: true}) as filteredProjectList">
             <ul class="list-group list-group-flush" *ngFor="let project of filteredProjectList | slice:0:10; let i=index">
-              <li class="list-group-item">{{ project.projectName }}</li>
+              <button class="list-group-item list-group-item-action" (click)="onProjectClick(project)">
+                {{ project.projectName }}<span *ngIf="project.projectTypeName"> - {{project.projectTypeName}}</span>
+              </button>
             </ul>
           </ng-container>
-        </div>
+        <!-- </div> -->
         <!-- ACCORDION END -->
         
-      </div> 
+      <!-- </div>  -->
     </div>
 
-    <div class="col">
+    <div class="col-5">
+      <div class="card" *ngIf="showProjectCard">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-9">
+              <h6>{{ project.projectName }}</h6>
+            </div>
+            <div class="col-3 text-right">
+              <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectEditModal"></i>&nbsp;&nbsp;Edit
+              </button>
+              <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal" (click)="onDeleteProjectClick(project)"></i>&nbsp;&nbsp;Delete
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <h5></h5>
+        </div>
+      </div>
+    </div>
 
+    <div class="col-5">
+      <div class="card" *ngIf="showProjectCard">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-9">
+              <h6>PLC Schedule</h6>
+            </div>
+            <div class="col-3 text-right">
+              <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectEditModal"></i>&nbsp;&nbsp;Edit
+              </button>
+              <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal" (click)="onDeleteProjectClick(project)"></i>&nbsp;&nbsp;Delete
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-hover table-light">
+            <thead>
+              <th>PLC Status</th>
+              <th>Date</th>
+              <th>Approved</th>
+            </thead>
+            <tbody>
+              <td>{{ project.plcStatusName }}</td>
+              <td>{{ project.plcDate}}</td>
+              <td>NA</td>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
   </div>
