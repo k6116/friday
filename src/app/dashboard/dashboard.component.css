@@ -103,19 +103,19 @@ i.notification-type-icon {
 }
 
 i.notification-type-icon.notify-info {
-  color: blue;
+  color: rgb(0, 123, 255);
 }
 
 i.notification-type-icon.notify-alert {
-  color: green;
+  color: rgb(40, 167, 69);
 }
 
 i.notification-type-icon.notify-concern {
-  color: orange;
+  color: rgb(255, 166, 7);
 }
 
 i.notification-type-icon.notify-warning {
-  color: red;
+  color: rgb(220, 53, 69);
 }
 
 td.dashboard-notifications-text-cell {

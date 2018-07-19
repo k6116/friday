@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 import { ApiDataDashboardService } from '../_shared/services/api-data/_index';
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
+import { CacheService } from '../_shared/services/cache.service';
 import { DashboardDonutService } from './dashboard-donut.service';
 import { DashboardGaugeService } from './dashboard-gauge.service';
 import { DashboardMessagesService } from './dashboard-messages.service';
@@ -36,12 +38,14 @@ export class DashboardComponent implements OnInit {
   notCompletedFTEs: string;
   completedPrefix: string;
   notCompletedPrefix: string;
+  subscription1: Subscription;
 
 
   constructor(
     private apiDataDashboardService: ApiDataDashboardService,
     private authService: AuthService,
     private toolsService: ToolsService,
+    private cacheService: CacheService,
     private dashboardDonutService: DashboardDonutService,
     private dashboardGaugeService: DashboardGaugeService,
     private dashboardMessagesService: DashboardMessagesService,
@@ -51,6 +55,19 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    // get dashboard data, then render dashboard
+    this.getDashboardData();
+
+    // listen for emitter to remove profile update message
+    this.subscription1 = this.cacheService.profileHasBeenUpdated.subscribe(
+      (profileHasBeenUpdated: boolean) => {
+        this.removeProfileUpdateMessage();
+    });
+
+  }
+
+  getDashboardData() {
 
     // show the waiting to render spinner
     this.showSpinner = true;
@@ -121,6 +138,14 @@ export class DashboardComponent implements OnInit {
   renderStackedColumnChart() {
     const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
     Highcharts.chart('stackedColumnChart', chartOptions);
+  }
+
+  removeProfileUpdateMessage() {
+    // find the index of the object in the array, then slice it out of the array
+    const index = this.messages.map(message => message.id).indexOf('updateProfileMessage');
+    if (index !== -1) {
+      this.messages.splice(index, 1);
+    }
   }
 
 

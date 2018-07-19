@@ -43,14 +43,35 @@ function getFTEData(req, res) {
 
 function checkFirstLogin(req, res) {
 
+  const employeeID = req.params.employeeID;
   const userName = req.params.userName;
-  sequelize.query(`SELECT COUNT(*) as LoginCount FROM [resources].[ClickTracking] WHERE ClickedOn = 'Login Button' AND [Text] = :userName`, {replacements: {userName: userName}, type: sequelize.QueryTypes.SELECT})
-    .then(count => {
-      console.log(`count of logins: ${count}`);
-      console.log(count);
-      console.log(count[0].LoginCount === 1 ? true : false);
+  sequelize.query(`SELECT COUNT(*) as ClickCount FROM [resources].[ClickTracking] WHERE EmployeeID = :employeeID OR [Text] = :userName`, {replacements: {employeeID: employeeID, userName: userName}, type: sequelize.QueryTypes.SELECT})
+    .then(clickCount => {
+      console.log(`click count`);
+      console.log(clickCount);
       res.json({
-        firstLogin: count[0].LoginCount === 1 ? true : false
+        clickCount
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+}
+
+
+function checkJobTitle(req, res) {
+
+  console.log('reached check job title');
+
+  const employeeID = req.params.employeeID;
+  sequelize.query(`SELECT JobTitleID, JobSubTitleID FROM accesscontrol.Employees WHERE EmployeeID = :employeeID`, {replacements: {employeeID: employeeID}, type: sequelize.QueryTypes.SELECT})
+    .then(jobTitle => {
+      res.json({
+        jobTitle
       });
     })
     .catch(error => {
@@ -104,5 +125,6 @@ function checkProjectRequests(req, res) {
 module.exports = {
   getFTEData: getFTEData,
   checkFirstLogin: checkFirstLogin,
+  checkJobTitle: checkJobTitle,
   checkProjectRequests: checkProjectRequests
 }

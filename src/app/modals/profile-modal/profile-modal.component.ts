@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, HostBinding, Output, EventEmitter } from '@angular/core';
 import { ApiDataJobTitleService } from '../../_shared/services/api-data/_index';
 import { AuthService } from '../../_shared/services/auth.service';
+import { CacheService } from '../../_shared/services/cache.service';
 
 @Component({
   selector: 'app-profile-modal',
