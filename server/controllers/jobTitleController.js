@@ -3,8 +3,6 @@ const models = require('../models/_index');
 const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize');
 const Treeize = require('treeize');
-<<<<<<< HEAD
-=======
 
 // // Retrieve list of all job titles and the associated job title subs
 // function indexJobTitle(req, res) {
@@ -34,7 +32,6 @@ const Treeize = require('treeize');
 //         })
 //     })
 // }
->>>>>>> master
 
 // Retrieve list of all job titles and the associated job title subs
 function indexJobTitle(req, res) {
