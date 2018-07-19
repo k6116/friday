@@ -1,6 +1,6 @@
 {
   "name": "jarvis-rt",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -30,6 +30,7 @@
     "bowser": "^1.9.3",
     "chart.js": "^2.7.2",
     "chartjs-plugin-zoom": "^0.6.3",
+    "commitizen": "^2.10.1",
     "connect-datadog": "0.0.6",
     "core-js": "^2.4.1",
     "dd-trace": "^0.3.1",
@@ -49,6 +50,7 @@
     "moment-fquarter": "^1.0.0",
     "moment-timezone": "^0.5.14",
     "ng2-charts": "^1.6.0",
+    "ng2-completer": "^2.0.8",
     "ng2-nouislider": "^1.7.7",
     "ng4-click-outside": "^1.0.1",
     "node": "^9.11.0",

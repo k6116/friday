@@ -14,13 +14,14 @@ declare var $: any;
 })
 export class ProjectsCreateModalComponent implements OnInit {
 
-  @Output() createSuccess = new EventEmitter<boolean>();
+  @Output() createSuccess = new EventEmitter<any>();
 
   form: FormGroup;
   userID: any;
   userEmail: string;
   projectTypesList: any;
   userPLMData: any;
+  createdProject: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -58,7 +59,7 @@ export class ProjectsCreateModalComponent implements OnInit {
     this.apiDataProjectService.getProjectTypesList()
     .subscribe(
       res => {
-        // console.log(res);
+        // console.log('ProjectTypesList', res);
         this.projectTypesList = res;
       },
       err => {
@@ -77,14 +78,24 @@ export class ProjectsCreateModalComponent implements OnInit {
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
     // for project that are not org level and created by Individual Cont/Managers, projectType will always be "General"
-    project.projectTypeID = 'General';
+    project.projectTypeName = 'General';
+
+    // Find the project type ID
+    for (let i = 0; i < this.projectTypesList.length; i++ ) {
+      if (this.projectTypesList[i].projectTypeName === project.projectTypeName) {
+        project.projectTypeID = this.projectTypesList[i].id;
+        break;
+      }
+    }
+
     project.projectOrgManager = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
 
     this.apiDataProjectService.createProject(project, this.userID)
     .subscribe(
       res => {
         console.log(res);
-        this.createSuccess.emit(true);
+        project.projectID = res.newProjectID;
+        this.createSuccess.emit(project);
         this.websocketService.sendNewProject(res);
       },
       err => {

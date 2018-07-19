@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NouisliderModule } from 'ng2-nouislider';
 import { ClickOutsideModule } from 'ng4-click-outside';
+import { Ng2CompleterModule } from 'ng2-completer';
 
 // ANGULAR MATERIAL MODULES
 import { MatSlideToggleModule, MatButtonModule, MatCheckboxModule, MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
@@ -138,7 +139,8 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     MatProgressSpinnerModule,
     NouisliderModule,
     ClickOutsideModule,
-    ChartsModule
+    ChartsModule,
+    Ng2CompleterModule
   ],
   providers: [
     ApiDataService,

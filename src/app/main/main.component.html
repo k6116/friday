@@ -1,18 +1,23 @@
+<div class="app-wrapper">
+  <!-- top nav component -->
+  <app-top-nav></app-top-nav>
 
-<!-- top nav component -->
-<app-top-nav></app-top-nav>
+  <!-- confirm modal component -->
+  <app-confirm-modal></app-confirm-modal>
 
-<!-- confirm modal component -->
-<app-confirm-modal></app-confirm-modal>
+  <!-- side nav component -->
+  <app-side-nav></app-side-nav>
 
-<!-- carousel modal component -->
-<app-carousel-modal></app-carousel-modal>
+  <!-- carousel modal component -->
+  <app-carousel-modal></app-carousel-modal>
 
-<!-- toast component -->
-<app-toast></app-toast>
+  <!-- toast component -->
+  <app-toast></app-toast>
 
-<!-- side nav component -->
-<app-side-nav></app-side-nav>
+  <div class="flexbox-wrapper">
+    <!-- router outlet that will inject components for child routes of 'main' path -->
+    <router-outlet></router-outlet>
+  </div>
 
-<!-- router outlet that will inject components for child routes of 'main' path -->
-<router-outlet></router-outlet>
+  <app-footer></app-footer>
+</div>
