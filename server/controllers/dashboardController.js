@@ -51,7 +51,8 @@ function checkFirstLogin(req, res) {
     FROM 
       [resources].[ClickTracking] 
     WHERE 
-      (EmployeeID = :employeeID OR [Text] = :userName)
+      EmployeeID = :employeeID
+      AND ClickedOn <> 'Login Button'
       AND Page <> 'App Load'
   `;
   sequelize.query(sql, {replacements: {employeeID: employeeID, userName: userName}, type: sequelize.QueryTypes.SELECT})

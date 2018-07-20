@@ -64,7 +64,7 @@ export class DashboardMessagesService {
 
   checkFirstLogin(check): DashboardMessage {
 
-    if (check.clickCount[0].ClickCount <= 1) {
+    if (check.clickCount[0].ClickCount === 0) {
       return {
         id: 'welcomeMessage',
         iconFontClass: 'nc-privacy-policy',
