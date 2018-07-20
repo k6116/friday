@@ -15,14 +15,14 @@
         <form>
           <div class="form-group">
             <label for="formGroupJobTitle">Job Title</label>
-            <select class="custom-select" [disabled]="!editToggle" id="formGroupJobTitle" (change)="selectJobTitleChangeHandler($event)">
+            <select class="custom-select" id="formGroupJobTitle" (change)="selectJobTitleChangeHandler($event)">
               <option>Select a Job Title...</option>
               <option *ngFor="let list of jobTitles" [selected]="list.jobTitleName == jobTitleName">{{list.jobTitleName}}</option>
             </select>
           </div>
           <div class="form-group">
             <label for="formGroupJobSubtitle">Job Subtitle</label>
-            <select class="custom-select" [disabled]="!editToggle || subTitleEmpty" (change)="selectJobSubTitleChangeHandler($event)">
+            <select class="custom-select" (change)="selectJobSubTitleChangeHandler($event)">
               <option selected>Select a Job Subtitle...</option>
               <option *ngFor="let list of jobSubTitleList" [selected]="list.jobSubTitleName == jobSubTitleName">{{list.jobSubTitleName}}</option>
             </select>
@@ -31,8 +31,12 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-light" (click)="onEditButtonClick()" [disabled]="editToggle">Edit</button>
-        <button type="button" class="btn btn-light" data-dismiss="modal" (click)="onUpdateButtonClick()" >Update</button>
+        <button type="button" class="btn btn-secondary btn-fte-toolbar" data-dismiss="modal">
+          <i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel
+        </button>
+        <button type="button" class="btn btn-secondary btn-fte-toolbar" data-dismiss="modal" (click)="onUpdateButtonClick()">
+          <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+        </button>
       </div>
   
     </div>
