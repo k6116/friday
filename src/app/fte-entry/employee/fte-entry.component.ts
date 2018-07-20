@@ -525,9 +525,9 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       return value === true;
     });
 
-    // validate totals boxes for current quarter (must = 1)
+    // validate totals boxes for current quarter (must < 1)
     const currentQuarterValid = this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).every( value => {
-      return value === 1;
+      return value <= 1;
     });
 
     // validate totals boxes for future quarters (must be < 1)
