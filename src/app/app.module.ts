@@ -75,6 +75,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
 
+// BOM module stuff
+import { BomGraphComponent } from './reports/bom-graph/bom-graph.component';
+
 
 @NgModule({
   declarations: [
@@ -117,7 +120,8 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     FooterComponent,
     DashboardComponent,
     FooterComponent,
-    CarouselModalComponent
+    CarouselModalComponent,
+    BomGraphComponent
   ],
   imports: [
     AppRoutingModule,
