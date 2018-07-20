@@ -6,7 +6,7 @@ import { AuthService } from './_shared/services/auth.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
 import { WebsocketService } from './_shared/services/websocket.service';
 
-import * as bowser from 'bowser';
+// import * as bowser from 'bowser';
 declare var $: any;
 
 @Component({
@@ -72,7 +72,6 @@ export class AppComponent implements OnInit {
     });
 
   }
-
 
   onDocumentEvent() {
     // update the last activity property with a new timestamp
