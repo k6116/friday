@@ -87,7 +87,7 @@ export class AppComponent implements OnInit {
       isCompatible = true;
     } else if (bowser.name === 'Firefox' && +bowser.version >= 60) {
       isCompatible = true;
-    } else if (bowser.name === 'Microsoft Edge' && +bowser.version >= 15) {
+    } else if (bowser.name === 'Microsoft Edge' && +bowser.version >= 13) {
       isCompatible = true;
     }
     return isCompatible;
