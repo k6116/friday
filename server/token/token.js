@@ -6,15 +6,18 @@ const dotevnv = require('dotenv').config(
 
 function decode(token) {
 
+  var decodedToken;
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (decoded) {
-      console.log('decoded token:');
-      console.log(decoded);
-      return decoded;
+      // console.log('decoded token:');
+      // console.log(decoded);
+      decodedToken = decoded;
     } else {
-      return undefined;
+      decodedToken = undefined;
     }
   })
+
+  return decodedToken;
 
 }
 

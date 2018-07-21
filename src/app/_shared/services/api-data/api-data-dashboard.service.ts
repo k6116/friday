@@ -16,10 +16,10 @@ export class ApiDataDashboardService {
   ) { }
 
 
-  getDashboardData(emailAddress: string, startDate: string, endDate: string, userName: string, employeeID: number): Observable<any> {
+  getDashboardData(startDate: string, endDate: string, userName: string, employeeID: number): Observable<any> {
 
     // NOTE: email is passed here instead of id as the key since it gets data from the plm databridge as well as jarvis
-    const fteData = this.http.get(`/api/dashboard/getFTEData/${emailAddress}/${startDate}/${endDate}
+    const fteData = this.http.get(`/api/dashboard/getFTEData/${startDate}/${endDate}
       ?token=${this.authService.token.signedToken}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());

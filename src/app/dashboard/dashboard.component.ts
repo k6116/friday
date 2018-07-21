@@ -80,7 +80,7 @@ export class DashboardComponent implements OnInit {
     // get the dashboard data from the database
     // returns as a single response array using forkjoin:
     // [fteData, firstLogin, projectRequests]
-    this.apiDataDashboardService.getDashboardData(this.authService.loggedInUser.email, fiscalQuarterRange[0], fiscalQuarterRange[1],
+    this.apiDataDashboardService.getDashboardData(fiscalQuarterRange[0], fiscalQuarterRange[1],
       this.authService.loggedInUser.userName, this.authService.loggedInUser.id)
       .subscribe(
         res => {

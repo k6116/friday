@@ -9,31 +9,40 @@ const jwt = require('jsonwebtoken');
 const dotevnv = require('dotenv').config(
   {path: '/.env'}
 );
-// const sequelizePLM = require('../db/sequelize').sequelizePLM;
-// const sequelize = require('../db/sequelize').sequelize2017;
+const token = require('../token/token');
 
 
 function getFTEData(req, res) {
 
-  const emailAddress = req.params.emailAddress;
+  // const emailAddress = req.params.emailAddress;
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
 
-  var decodedToken;
-  jwt.verify(req.query.token, process.env.JWT_SECRET, (err, decoded) => {
-    if (decoded) {
-      console.log('decoded token:');
-      console.log(decoded);
-      decodedToken = decoded;
-    } else {
-      console.log('token is invalid');
-      // send an invalid response here; to handle on client side with some error message
-      // would indicate some tampering, or using some tool like postman or browser to hit api route without valid token
-    }
-  })
+  var decodedToken = token.decode(req.query.token);
+  // console.log('decoded token:');
+  // console.log(decodedToken);
 
-  console.log('decoded token outside jwt verify 1:');
-  console.log(decodedToken);
+  if (!decodedToken) {
+    res.status(401).json({
+      title: 'Not Authenticated',
+      error: err
+    });
+  }
+
+  // jwt.verify(req.query.token, process.env.JWT_SECRET, (err, decoded) => {
+  //   if (decoded) {
+  //     console.log('decoded token:');
+  //     console.log(decoded);
+  //     decodedToken = decoded;
+  //   } else {
+  //     console.log('token is invalid');
+  //     // send an invalid response here; to handle on client side with some error message
+  //     // would indicate some tampering, or using some tool like postman or browser to hit api route without valid token
+  //   }
+  // })
+
+  // console.log('decoded token outside jwt verify 1:');
+  // console.log(decodedToken);
 
 
   sequelize.query('EXECUTE resources.DashboardFTEData :emailAddress, :startDate, :endDate', 
