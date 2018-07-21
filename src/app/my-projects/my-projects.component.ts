@@ -10,10 +10,10 @@ import * as moment from 'moment';
 
 @Component({
   selector: 'app-projects-setups',
-  templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.css', '../_shared/styles/common.css']
+  templateUrl: './my-projects.component.html',
+  styleUrls: ['./my-projects.component.css', '../_shared/styles/common.css']
 })
-export class ProjectsSetupsComponent implements OnInit {
+export class MyProjectsComponent implements OnInit {
 
 
   // TO-DO PAUL: create model for at least projects

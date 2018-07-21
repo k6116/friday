@@ -14,49 +14,13 @@
 
   <div class="row">
     <div class="col-2">
-      <!-- <div class="card"> -->
-        <!-- table headers start -->
-        <!-- <div class="card-header">
-            <div class="row header-project-table">
-              <div class="col-2">
-                <div><h6>Name</h6></div>
-              </div>
-              <div class="col-2">
-                <div><h6>Project Type</h6></div>
-              </div>
-              <div class="col-4">
-                <div><h6>Description</h6></div>
-              </div>
-              <div class="col-3">
-                <div><h6>Status</h6></div>
-              </div>
-              <div class="col-1">
-                <div class="row">
-                  <div class="col-6">
-                    <div><h6></h6></div>
-                  </div>
-                  <div class="col-6">
-                    <div><h6></h6></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-        </div> -->
-        <!-- table headers end -->
-
-        <!-- ACCORDION START -->
-        <!-- <div class="accordion" id="accordionProjectList"> -->
-          <ng-container *ngIf="(projectSchedulesList | filter : searchProjects : 'projectName':{limitTo: -1, matchFuzzy: true}) as filteredProjectList">
-            <ul class="list-group list-group-flush" *ngFor="let project of filteredProjectList | slice:0:10; let i=index">
-              <button class="list-group-item list-group-item-action" (click)="onProjectClick(project)">
-                {{ project.projectName }}<span *ngIf="project.projectTypeName"> - {{project.projectTypeName}}</span>
-              </button>
-            </ul>
-          </ng-container>
-        <!-- </div> -->
-        <!-- ACCORDION END -->
-        
-      <!-- </div>  -->
+      <ng-container *ngIf="(projectSchedulesList | filter : searchProjects : 'projectName':{limitTo: -1, matchFuzzy: true}) as filteredProjectList">
+        <ul class="list-group list-group-flush" *ngFor="let project of filteredProjectList | slice:0:10; let i=index">
+          <button class="list-group-item list-group-item-action" (click)="onProjectClick(project)">
+            {{ project.projectName }}<span *ngIf="project.projectTypeName"> - {{project.projectTypeName}}</span>
+          </button>
+        </ul>
+      </ng-container>
     </div>
 
     <div class="col-5">
