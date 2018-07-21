@@ -96,6 +96,9 @@ router.get('/dashboard/checkFirstLogin/:employeeID/:userName', controllers.dashb
 router.get('/dashboard/checkJobTitle/:employeeID', controllers.dashboard.checkJobTitle);
 router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
 
+// ANALYTICS CONTROLLER
+router.get('/getNCIProjectsWithDemandList', controllers.analytics.getNCIProjectsWithDemandList);
+router.get('/getNCISupplyDemand', controllers.analytics.getNCISupplyDemand);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
