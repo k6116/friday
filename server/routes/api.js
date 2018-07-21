@@ -90,11 +90,7 @@ router.get('/report/getTopFTEProjectList/', controllers.report.getTopFTEProjectL
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
-// DASHBOARD CONTROLLER
-router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);
-router.get('/dashboard/checkFirstLogin/:employeeID/:userName', controllers.dashboard.checkFirstLogin);
-router.get('/dashboard/checkJobTitle/:employeeID', controllers.dashboard.checkJobTitle);
-router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
+
 
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
@@ -122,6 +118,16 @@ router.use('/', function(req, res, next) {
 });
 
 // NOTE: all routes after this middleware function WILL be protected in the case of invalid token
+
+
+// DASHBOARD CONTROLLER
+router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);
+router.get('/dashboard/checkFirstLogin/:employeeID/:userName', controllers.dashboard.checkFirstLogin);
+router.get('/dashboard/checkJobTitle/:employeeID', controllers.dashboard.checkJobTitle);
+router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
+
+
+
 
 router.get('/users', controllers.auth.index);
 

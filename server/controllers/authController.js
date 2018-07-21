@@ -55,115 +55,175 @@ function authenticate(req, res) {
 	      const timeDiff = process.hrtime(startTime);
         console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
         
-        // build an encrypted token using the jsonwebtoken module
-        const token = jwt.sign(
-          {
-            userName: ldapUser.cn,
-            email: ldapUser.mail, 
-            rememberMe: true
-          }, 
-          tokenSecret, 
-          {expiresIn: expirationTime}
-        );
-
-        // decode the token to get the issued at and expiring at timestamps
-        var decodedToken;
-        jwt.verify(token, tokenSecret, (err, decoded) => {
-          if (decoded) {
-            console.log('decoded token:');
-            console.log(decoded);
-            decodedToken2 = decoded;
-          } else {
-            console.log('token is invalid');
-          }
-        })
-
-        // set the user nme
+        // set variables using the ldap object
+        // mainly the reason for doing this here is for testing, to be able to impersonate a manager etc.
         let userName = ldapUser.cn;
+        let emailAddress = ldapUser.mail;
+        let firstName = ldapUser.givenName;
+        let lastName = ldapUser.sn;
 
         // TEMP CODE: impersonate as a manager for testing
-        // userName = 'ethanh'
+        // userName = 'ethanh';
+        // emailAddress = 'ethan_hunt@keysight.com';
+        // firstName = 'ETHAN';
+        // lastName = 'HUNT'
 
-        // check the Employees table to determine if this is an existing Jarvis user or not
-        // using the user name as the unique key (note could use email as alternative)
-        models.User.findOne({
-          where: {userName: userName}
-        }).then(jarvisUser => {
-          
-          // if this is an existing jarvis user, send back a response
-          // with the ldap user object, jarvis user object, new user (no), and jwt token
-          if (jarvisUser) {
-            res.json({
-              ldapUser: ldapUser,
-              jarvisUser: jarvisUser,
-              newUser: false,
-              token: {
-                signedToken: token,
-                issuedAt: decodedToken2.iat,
-                expiringAt: decodedToken2.exp
-              }
-            });
-            loggedInUsers.push(jarvisUser);
-          // if this is not an existing jarvis user, add a record to the Employees table before sending the response
-          } else {
-
-            // build the full name to insert into the table (need to convert FIRSTNAME LASTNAME to Firstname Lastname)
-            var fullName = ldapUser.givenName + ' ' + ldapUser.sn;
-            fullName = fullName.replace(/\w\S*/g, text => {
-              return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
-            });
-
-            // TEMP CODE: impersonate as a manager for testing
-            // fullName = 'Ethan Hunt';
-            // userName = 'ethanh';
-            // const email = 'ethan_hunt@keysight.com';
-
-            // get the first and last name from the full name
-            const nameArr = fullName.split(' ');
-            const firstName = nameArr[0];
-            const lastName = nameArr[nameArr.length - 1];
-
-            // insert a record into the Employees table
-            // TO-DO: figure out what to set for roldID and forcePasswordReset
-            models.User.create({
-              firstName: firstName,
-              lastName: lastName,
-              fullName: fullName,
-              userName: ldapUser.cn,
-              email: ldapUser.mail,
-              // userName: userName,
-              // email: email,
-              roleID: 4,  // report user
-              loginEnabled: true,
-              forcePasswordReset: false,
-              startUpTutorialFTE: true,
-              startUpTutorialProjects: true,
-              createdBy: 1,
-              createdAt: moment().add(moment().utcOffset() / 60, 'hours'),
-              updatedBy: 1,
-              updatedAt: moment().add(moment().utcOffset() / 60, 'hours')
-            })
-            .then(savedUser => {
-
-              // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
-              res.json({
-                ldapUser: ldapUser,
-                jarvisUser: savedUser,
-                newUser: true,
-                token: token
-              });
-
-              // TEMP CODE: testing websockets
-              loggedInUsers.push(savedUser);
-
-            })
+        // determine if the user is a manager
         
-          }
+        const sql = `
+          SELECT
+            COUNT(*) AS numEmployees
+          FROM
+            resources.PLMPerAllPeopleOrg T1
+            INNER JOIN resources.PLMPerAllPeopleOrg T2 ON T1.PERSON_ID = T2.SUPERVISOR_ID
+          WHERE
+            T1.EMAIL_ADDRESS = :emailAddress
+        `;
+        sequelize.query(sql, {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+          .then(employeesCount => {
 
-        });
+            // set a boolean variabled based on the employee count
+            const isManager = employeesCount[0].numEmployees >= 1 ? true : false;
 
-      }
-    // if an error object is returned, this indicates authentication failure
+            // check the Employees table to determine if this is an existing Jarvis user or not
+            // using the user name as the unique key (note could use email as alternative)
+            models.User.findOne({
+              where: {userName: userName}
+            }).then(jarvisUser => {
+
+              // if this is an existing jarvis user, send back a response
+              // with the ldap user object, jarvis user object, new user (no), and jwt token
+              if (jarvisUser) {
+
+                // build an encrypted token using jwt
+                const token = jwt.sign(
+                  {
+                    id: jarvisUser.id,
+                    firstName: jarvisUser.firstName,
+                    lastName: jarvisUser.lastName,
+                    fullNname: jarvisUser.fullName,
+                    userName: jarvisUser.userName,
+                    email: jarvisUser.email,
+                    isManager: isManager
+                  }, 
+                  tokenSecret, 
+                  {expiresIn: expirationTime}
+                );
+
+                // decode the token to get the issued at and expiring at timestamps
+                var decodedToken;
+                jwt.verify(token, tokenSecret, (err, decoded) => {
+                  if (decoded) {
+                    console.log('decoded token:');
+                    console.log(decoded);
+                    decodedToken2 = decoded;
+                  } else {
+                    console.log('token is invalid');
+                  }
+                })
+
+                // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
+                res.json({
+                  ldapUser: ldapUser,
+                  jarvisUser: jarvisUser,
+                  isManager: isManager,
+                  newUser: false,
+                  token: {
+                    signedToken: token,
+                    issuedAt: decodedToken2.iat,
+                    expiringAt: decodedToken2.exp
+                  }
+                });
+
+              // if this is not an existing jarvis user, add a record to the Employees table before sending the response
+              } else {
+
+                // build the full name to insert into the employees table (need to convert FIRSTNAME LASTNAME to Firstname Lastname)
+                var fullName = firstName + ' ' + lastName;
+                fullName = fullName.replace(/\w\S*/g, text => {
+                  return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+                });
+
+                // get the first and last name from the full name
+                const nameArr = fullName.split(' ');
+                firstName = nameArr[0];
+                lastName = nameArr[nameArr.length - 1];
+
+                // insert a record into the Employees table
+                // TO-DO: figure out what to set for forcePasswordReset
+                models.User.create({
+                  firstName: firstName,
+                  lastName: lastName,
+                  fullName: fullName,
+                  userName: userName,
+                  email: emailAddress,
+                  roleID: 4,  // report user
+                  loginEnabled: true,
+                  forcePasswordReset: false,
+                  startUpTutorialFTE: true,
+                  startUpTutorialProjects: true,
+                  createdBy: 1,
+                  createdAt: moment().add(moment().utcOffset() / 60, 'hours'),
+                  updatedBy: 1,
+                  updatedAt: moment().add(moment().utcOffset() / 60, 'hours')
+                })
+                .then(savedUser => {
+
+
+                  // build an encrypted token using jwt
+                  const token = jwt.sign(
+                    {
+                      id: savedUser.id,
+                      firstName: savedUser.firstName,
+                      lastName: savedUser.lastName,
+                      fullNname: savedUser.fullName,
+                      userName: savedUser.userName,
+                      email: savedUser.email,
+                      isManager: isManager
+                    }, 
+                    tokenSecret, 
+                    {expiresIn: expirationTime}
+                  );
+
+                  // decode the token to get the issued at and expiring at timestamps
+                  var decodedToken;
+                  jwt.verify(token, tokenSecret, (err, decoded) => {
+                    if (decoded) {
+                      console.log('decoded token:');
+                      console.log(decoded);
+                      decodedToken2 = decoded;
+                    } else {
+                      console.log('token is invalid');
+                    }
+                  })
+
+                  // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
+                  res.json({
+                    ldapUser: ldapUser,
+                    jarvisUser: savedUser,
+                    isManager: isManager,
+                    newUser: true,
+                    token: {
+                      signedToken: token,
+                      issuedAt: decodedToken2.iat,
+                      expiringAt: decodedToken2.exp
+                    }
+                  });
+                  
+                  // TEMP CODE: testing websockets
+                  loggedInUsers.push(jarvisUser);
+                  
+                }); // end of create/insert new jarvis user
+
+              } // end of if jarvis user 
+
+            }); // end of find jarvis user query (find one)
+
+          }); // end of manager check query
+
+      } // end of ldap username matches if case
+    
+    // if an ldap error object is returned, this indicates authentication failure
     } else if (err) {
 
       // log the ldap response time
@@ -199,6 +259,9 @@ function getInfoFromToken(req, res) {
   jwt.verify(token, tokenSecret, (err, decoded) => {
     // if the token was successfully decoded
     if (decoded) {
+
+      console.log('get info from token, decoded token:');
+      console.log(decoded);
 
       // use the user name in the decoded token to get the employee record from the Jarvis database
       models.User.findOne({
@@ -249,12 +312,27 @@ function resetToken(req, res) {
     // if the database was able to find the user record and return an object
     if (jarvisUser) {
 
+      // var decodedToken;
+      // jwt.verify(req.query.token, tokenSecret, (err, decoded) => {
+      //   if (decoded) {
+      //     decodedToken = decoded;
+      //   } else {
+      //     console.log('token is invalid');
+      //   }
+      // })
+
+      // console.log('decoded token within reset token:');
+      // console.log(decodedToken);
+
       // generate a new token and set the new expiration datetime
       const token = jwt.sign(
         {
+          id: jarvisUser.id,
+          firstName: jarvisUser.firstName,
+          lastName: jarvisUser.lastName,
+          fullName: jarvisUser.fullName,
           userName: jarvisUser.userName,
-          email: jarvisUser.email, 
-          rememberMe: true
+          email: jarvisUser.email
         }, 
         tokenSecret, 
         {expiresIn: expirationTime}

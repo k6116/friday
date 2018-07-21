@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { User } from '../models/user.model';
-import { ApiDataAuthService } from './api-data/_index';
+import { ApiDataAuthService } from './api-data/api-data-auth.service';
 import { CacheService } from './cache.service';
 import { WebsocketService } from './websocket.service';
 
@@ -124,6 +124,10 @@ export class AuthService {
               // store the data in this service
               console.log('within getInfoFromToken; token is valid');
               this.loggedInUser = new User().deserialize(res.jarvisUser);
+              // add the isManager property to the loggedInUser object
+              this.loggedInUser.isManager = res.jarvisUser.isManager;
+              console.log('get info from token; updated logged in user:');
+              console.log(this.loggedInUser);
               this.setLoggedIn(true);
               // reset the token
               this.resetToken();

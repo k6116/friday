@@ -16,6 +16,7 @@ declare var require: any;
 import * as Highcharts from 'highcharts';
 require('highcharts/modules/data.js')(Highcharts);
 require('highcharts/modules/drilldown.js')(Highcharts);
+require('highcharts/modules/no-data-to-display.js')(Highcharts);
 require('highcharts/highcharts-more.js')(Highcharts);
 require('highcharts/modules/solid-gauge.js')(Highcharts);
 import * as moment from 'moment';
@@ -38,6 +39,7 @@ export class DashboardComponent implements OnInit {
   notCompletedFTEs: string;
   completedPrefix: string;
   notCompletedPrefix: string;
+  displayProgressGauge: boolean;
   subscription1: Subscription;
 
 
@@ -102,9 +104,14 @@ export class DashboardComponent implements OnInit {
     this.displayMessages();
     this.renderPieChart();
     // // this.renderParetoChart();
-    this.renderProgressGauge();
     this.renderDonutChart();
     this.renderStackedColumnChart();
+    if (this.authService.loggedInUser.isManager) {
+      this.displayProgressGauge = true;
+      this.renderProgressGauge();
+    } else {
+      this.displayProgressGauge = false;
+    }
   }
 
   displayMessages() {

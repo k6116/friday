@@ -24,7 +24,7 @@ import { FilterPipe } from './_shared/pipes/filter.pipe';
 import { TitleCasePipe } from '@angular/common';
 
 // SERVICES
-import { ApiDataService, CacheService, ClickTrackingService, CookiesService,
+import { CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
@@ -138,7 +138,6 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     Ng2CompleterModule
   ],
   providers: [
-    ApiDataService,
     ApiDataAuthService,
     ApiDataClickTrackingService,
     ApiDataEmailService,

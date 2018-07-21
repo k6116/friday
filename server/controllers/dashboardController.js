@@ -5,6 +5,10 @@ const Sequelize = require('sequelize')
 const moment = require('moment');
 const Treeize = require('treeize');
 const sleep = require('system-sleep');
+const jwt = require('jsonwebtoken');
+const dotevnv = require('dotenv').config(
+  {path: '/.env'}
+);
 // const sequelizePLM = require('../db/sequelize').sequelizePLM;
 // const sequelize = require('../db/sequelize').sequelize2017;
 
@@ -15,8 +19,25 @@ function getFTEData(req, res) {
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
 
+  var decodedToken;
+  jwt.verify(req.query.token, process.env.JWT_SECRET, (err, decoded) => {
+    if (decoded) {
+      console.log('decoded token:');
+      console.log(decoded);
+      decodedToken = decoded;
+    } else {
+      console.log('token is invalid');
+      // send an invalid response here; to handle on client side with some error message
+      // would indicate some tampering, or using some tool like postman or browser to hit api route without valid token
+    }
+  })
+
+  console.log('decoded token outside jwt verify 1:');
+  console.log(decodedToken);
+
+
   sequelize.query('EXECUTE resources.DashboardFTEData :emailAddress, :startDate, :endDate', 
-    {replacements: {emailAddress: emailAddress, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
+    {replacements: {emailAddress: decodedToken.email, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
     .then(dashboardData => {
 
       // TEMP CODE: for testing datadog alerts
