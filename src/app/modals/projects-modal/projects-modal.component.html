@@ -5,10 +5,40 @@
     <div class="projects-modal-body">
 
       <div class="projects-filter-cont">
-
-        <div class="projects-modal-filter tutorial-part2" id="intro-search-project">
+        <div class="row">
+        <div class="projects-modal-filter tutorial-part2 col-2" id="intro-search-project">
           <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter" appAutofocus>
         </div>
+
+        <!-- Tawanchai's Quick Filters -->
+        <div class="custom-filter-backdrop col-4" style="max-width: 27.333333%">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input check-hidden" type="checkbox" id="filterByLable">
+          <label class="form-check-label" for="filterByLable" style="font-size: larger">
+            Filter By:
+          </label>
+        </div>&nbsp;&nbsp;
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="myTeamsCheck">
+          <label class="form-check-label" for="myTeamsCheck" style="font-size: larger">
+            My Team
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="descriptionCheck">
+          <label class="form-check-label" for="descriptionCheck" style="font-size: larger">
+            Description
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="projectTypeCheck">
+          <label class="form-check-label" for="projectTypeCheck" style="font-size: larger">
+            ProjectType
+          </label>
+        </div>
+        </div>
+        </div>
+        <!-- Tawanchai's Quick Filters End -->
 
         <div class="projects-modal-close">
           <i class="nc-icon nc-small-remove projects-modal-close-button" (click)="onCancelClicked()"></i>
@@ -16,7 +46,6 @@
 
       </div>
 
-      
 
       <div class="project-table-cont tutorial-part2" (scroll)="onScroll()" id="intro-select-project">   
         
