@@ -267,3 +267,11 @@ button.btn.btn-outline-success.project-select-button:hover {
 .popover-header {
   font-size: 15px;
 }
+
+.custom-toggle {
+  font-size: smaller;
+  width: 98px;
+  position: absolute;
+  padding: 3px;
+  margin: 5px;
+}

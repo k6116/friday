@@ -6,7 +6,12 @@ import { Directive, Input, HostListener, ElementRef, Renderer } from '@angular/c
 export class FteInputRestrictDirective {
 
   @HostListener('keypress', ['$event']) onKeyPress(event) {
-    this.testKeyPress(event);
+    if (event.keyCode === 8 || event.keyCode === 9 || event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 46 ) {
+      // do nothing. Firefox interprets backspace (8), tab (9), arrow keys (37, 39), and delete (46) as 'keypress' events
+      // while Chrome and Edge do not.  having this case allows us to manually allow those keystrokes through the filter
+    } else {
+      this.restrictToNumeric(event);
+    }
   }
 
   constructor(
@@ -14,30 +19,12 @@ export class FteInputRestrictDirective {
     private renderer: Renderer
   ) { }
 
-
-  testKeyPress(event) {
-
-    // get the text/value of the input that will be there if the key is allowed
-    let text: string;
-    if (this.textIsHightlighted(event)) {
-      text = event.key;
-    } else {
-      text = event.target.value + event.key;
-    }
-
-    // cancel the keypress if the would be text/value does not conform to one of the accepted formats (using regex)
-    // such as 0.5, .8, 1.0
-    const regexp = new RegExp(/^[0|1|.]{1}$|^[0|1]{1}[.]{1}$|^[0]{1}[.]{1}[1-9]{1}$|^[.]{1}[1-9]{1}$|^[1]{1}[.]{1}[0]{1}$/);
-    if (!regexp.test(text)) {
+  restrictToNumeric(event) {
+    // simple regex to restrict each input key to only numbers or dots
+    const regexp = new RegExp(/[0-9\.]/);
+    if (!regexp.test(event.key)) {
       event.preventDefault();
     }
-  }
-
-  // check whether all the text in the input is highlighted (determines whether they can type over the existing text)
-  textIsHightlighted(event): boolean {
-    const cursorPositionStart = this.elementRef.nativeElement.selectionStart;
-    const cursorPositionEnd = this.elementRef.nativeElement.selectionEnd;
-    return cursorPositionStart === 0 && cursorPositionEnd === event.target.value.length;
   }
 
 }

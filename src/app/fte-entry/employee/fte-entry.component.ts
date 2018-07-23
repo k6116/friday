@@ -361,7 +361,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
 
   onFTEChange(i, j, value) {
-    console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
+    // console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
 
     let fteReplace: boolean;
     let fteReplaceValue: any;
@@ -371,14 +371,29 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     // if not a match, will want to update/patch it to use the standard format
     if (!match) {
       fteReplace = true;
-      // check for still valid format such as .6, 1., 1
-      if (/^[.][1-9]{1}$/.test(value) || /^[1][.]$/.test(value) || /^[1]$/.test(value)) {
-        fteReplaceValue = this.decimalPipe.transform(value, '1.1');
+
+      // first, strip out all dots except the first
+      const dotPosition = value.indexOf( '.' );
+      if ( dotPosition > -1 ) {
+        fteReplaceValue = value.substr( 0, dotPosition + 1 ) + value.slice( dotPosition ).replace( /\./g, '' );
       } else {
-        fteReplaceValue = null;
+        fteReplaceValue = value;
       }
+
+      // if string has a trailing dot, append a zero so it will look like a number
+      if (dotPosition === fteReplaceValue.length - 1) {
+        fteReplaceValue = fteReplaceValue + '0';
+      }
+
+      // if the value is 0, replace with null, else decimalPipe it into the proper format
+      if (Number(fteReplaceValue) === 0) {
+        fteReplaceValue = null;
+      } else {
+        fteReplaceValue = this.decimalPipe.transform(Number(fteReplaceValue), '1.1-1');
+      }
+
     }
-    console.log(`match is ${match}, replacement value: ${fteReplaceValue}, at ${i}, ${j}`);
+    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}, at ${i}, ${j}`);
 
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
