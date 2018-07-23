@@ -34,11 +34,10 @@ function getNCIProjectsWithDemandList(req, res) {
 }
 
 function getNCISupplyDemand(req, res) {
-
   const sql = `
     SELECT
       NCIProjectName as 'NCIProjectName*',
-      SupplyOrDemand as 'Details:SupplyOrDemand*',
+      SupplyOrDemand as 'Details:SupplyOrDemand',
       NCIPartName as 'Details:NCIPartName',
       SupplyDemandDate as 'Details:SupplyDemandDate',
       DemandQty as 'Details:DemandQty',
@@ -53,8 +52,11 @@ function getNCISupplyDemand(req, res) {
       analytics.NCISupplyDemand
     WHERE
       SupplyDemandDiff < 0 AND SupplyDemandDate < DATEADD(month, 6, GETDATE())
+    ORDER BY
+      NCIProjectName
   `
-  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+
+  sequelize.query(sql2, { type: sequelize.QueryTypes.SELECT })
     .then(getNCISupplyDemand => {
       console.log("returning NCISupplyDemand data");
       const NCISupplyDemandTree = new Treeize();
