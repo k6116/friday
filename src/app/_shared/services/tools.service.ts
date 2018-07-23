@@ -148,6 +148,32 @@ export class ToolsService {
   }
 
 
+  displayTokenError() {
+
+    // emit an object to the confirm modal component to display a bootstrap modal
+    this.cacheService.confirmModalData.emit(
+      {
+        title: 'Authentication Error',
+        message: `There was an issue verifying your identify.  For security you have been logged out.
+        If you believe this error is invalid, please contact support`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: this.cacheService.alertIconColor,
+        closeButton: true,
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Ok',
+            bsClass: 'btn-secondary',
+            emit: undefined
+          }
+        ]
+      }
+    );
+
+  }
+
+
   numberToWord(num: number) {
 
     const numbersArr = `zero one two three four five six seven eight nine ten

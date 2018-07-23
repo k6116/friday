@@ -235,7 +235,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       this.display = false;
     }
     // check to make sure the user has updated their profile with their job title before allowing them to add a project
-    this.apiDataFteService.checkJobTitleUpdated(this.authService.loggedInUser.id)
+    this.apiDataFteService.checkJobTitleUpdated()
       .subscribe(
         res => {
           console.log(res);

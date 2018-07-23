@@ -14,35 +14,9 @@ const token = require('../token/token');
 
 function getFTEData(req, res) {
 
-  // const emailAddress = req.params.emailAddress;
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
-
-  var decodedToken = token.decode(req.query.token);
-  // console.log('decoded token:');
-  // console.log(decodedToken);
-
-  if (!decodedToken) {
-    res.status(401).json({
-      title: 'Not Authenticated',
-      error: err
-    });
-  }
-
-  // jwt.verify(req.query.token, process.env.JWT_SECRET, (err, decoded) => {
-  //   if (decoded) {
-  //     console.log('decoded token:');
-  //     console.log(decoded);
-  //     decodedToken = decoded;
-  //   } else {
-  //     console.log('token is invalid');
-  //     // send an invalid response here; to handle on client side with some error message
-  //     // would indicate some tampering, or using some tool like postman or browser to hit api route without valid token
-  //   }
-  // })
-
-  // console.log('decoded token outside jwt verify 1:');
-  // console.log(decodedToken);
+  const decodedToken = token.decode(req.query.token);
 
 
   sequelize.query('EXECUTE resources.DashboardFTEData :emailAddress, :startDate, :endDate', 
@@ -73,8 +47,8 @@ function getFTEData(req, res) {
 
 function checkFirstLogin(req, res) {
 
-  const employeeID = req.params.employeeID;
-  const userName = req.params.userName;
+  const decodedToken = token.decode(req.query.token);
+
   const sql = `
     SELECT 
       COUNT(*) as ClickCount 
@@ -85,7 +59,7 @@ function checkFirstLogin(req, res) {
       AND ClickedOn <> 'Login Button'
       AND Page <> 'App Load'
   `;
-  sequelize.query(sql, {replacements: {employeeID: employeeID, userName: userName}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query(sql, {replacements: {employeeID: decodedToken.id, userName: decodedToken.userName}, type: sequelize.QueryTypes.SELECT})
     .then(clickCount => {
       console.log(`click count`);
       console.log(clickCount);
@@ -105,10 +79,9 @@ function checkFirstLogin(req, res) {
 
 function checkJobTitle(req, res) {
 
-  console.log('reached check job title');
+  const decodedToken = token.decode(req.query.token);
 
-  const employeeID = req.params.employeeID;
-  sequelize.query(`SELECT JobTitleID, JobSubTitleID FROM accesscontrol.Employees WHERE EmployeeID = :employeeID`, {replacements: {employeeID: employeeID}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT JobTitleID, JobSubTitleID FROM accesscontrol.Employees WHERE EmployeeID = :employeeID`, {replacements: {employeeID: decodedToken.id}, type: sequelize.QueryTypes.SELECT})
     .then(jobTitle => {
       res.json({
         jobTitle
@@ -126,7 +99,8 @@ function checkJobTitle(req, res) {
 
 function checkProjectRequests(req, res) {
 
-  const employeeID = req.params.employeeID;
+  const decodedToken = token.decode(req.query.token);
+
   const sql = `
     SELECT
       T1.RequestID,
@@ -145,7 +119,7 @@ function checkProjectRequests(req, res) {
       AND T3.EmployeeID = :employeeID
   `
 
-  sequelize.query(sql, {replacements: {employeeID: employeeID}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query(sql, {replacements: {employeeID: decodedToken.id}, type: sequelize.QueryTypes.SELECT})
     .then(requests => {
       res.json({
         requests

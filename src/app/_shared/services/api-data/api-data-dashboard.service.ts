@@ -16,26 +16,22 @@ export class ApiDataDashboardService {
   ) { }
 
 
-  getDashboardData(startDate: string, endDate: string, userName: string, employeeID: number): Observable<any> {
+  getDashboardData(startDate: string, endDate: string): Observable<any> {
 
     // NOTE: email is passed here instead of id as the key since it gets data from the plm databridge as well as jarvis
-    const fteData = this.http.get(`/api/dashboard/getFTEData/${startDate}/${endDate}
-      ?token=${this.authService.token.signedToken}`)
+    const fteData = this.http.get(`/api/dashboard/getFTEData/${startDate}/${endDate}?token=${this.authService.token.signedToken}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
-    const firstLogin = this.http.get(`/api/dashboard/checkFirstLogin/${employeeID}/${userName}
-      ?token=${this.authService.token.signedToken}`)
+    const firstLogin = this.http.get(`/api/dashboard/checkFirstLogin?token=${this.authService.token.signedToken}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
-    const projectRequests = this.http.get(`/api/dashboard/checkProjectRequests/${employeeID}
-      ?token=${this.authService.token.signedToken}`)
+    const projectRequests = this.http.get(`/api/dashboard/checkProjectRequests?token=${this.authService.token.signedToken}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
-    const jobTitle = this.http.get(`/api/dashboard/checkJobTitle/${employeeID}
-      ?token=${this.authService.token.signedToken}`)
+    const jobTitle = this.http.get(`/api/dashboard/checkJobTitle?token=${this.authService.token.signedToken}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 

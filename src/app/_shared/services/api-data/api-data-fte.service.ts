@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
 import { CacheService } from '../cache.service';
+import { AuthService } from '../auth.service';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -8,7 +9,8 @@ export class ApiDataFteService {
 
   constructor(
     private http: Http,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private authService: AuthService
   ) { }
 
   // get FTE data from db
@@ -37,8 +39,8 @@ export class ApiDataFteService {
   }
 
   // check it job title and subtitle has been set
-  checkJobTitleUpdated(userID: number) {
-    return this.http.get(`/api/dashboard/checkJobTitle/${userID}`)
+  checkJobTitleUpdated() {
+    return this.http.get(`/api/dashboard/checkJobTitle?token=${this.authService.token.signedToken}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

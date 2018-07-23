@@ -80,8 +80,7 @@ export class DashboardComponent implements OnInit {
     // get the dashboard data from the database
     // returns as a single response array using forkjoin:
     // [fteData, firstLogin, projectRequests]
-    this.apiDataDashboardService.getDashboardData(fiscalQuarterRange[0], fiscalQuarterRange[1],
-      this.authService.loggedInUser.userName, this.authService.loggedInUser.id)
+    this.apiDataDashboardService.getDashboardData(fiscalQuarterRange[0], fiscalQuarterRange[1])
       .subscribe(
         res => {
           console.log('dashboard data:');
@@ -92,9 +91,17 @@ export class DashboardComponent implements OnInit {
           this.showSpinner = false;
         },
         err => {
+          console.log('error response from get dashboard data:');
           console.log(err);
           this.showSpinner = false;
-          this.toolsService.displayTimeoutError();
+          // TO-DO BILL: create function in tools service that takes err and handles it from there
+          if (err.status === 401) {
+            this.authService.logout(true);
+            setTimeout(() => {
+              this.toolsService.displayTokenError();
+            }, 500);
+          }
+          // this.toolsService.displayTimeoutError();
         }
       );
 

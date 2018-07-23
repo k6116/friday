@@ -122,13 +122,12 @@ router.use('/', function(req, res, next) {
 
 // DASHBOARD CONTROLLER
 router.get('/dashboard/getFTEData/:startDate/:endDate', controllers.dashboard.getFTEData);
-router.get('/dashboard/checkFirstLogin/:employeeID/:userName', controllers.dashboard.checkFirstLogin);
-router.get('/dashboard/checkJobTitle/:employeeID', controllers.dashboard.checkJobTitle);
-router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
+router.get('/dashboard/checkFirstLogin', controllers.dashboard.checkFirstLogin);
+router.get('/dashboard/checkJobTitle', controllers.dashboard.checkJobTitle);
+router.get('/dashboard/checkProjectRequests', controllers.dashboard.checkProjectRequests);
 
 
-
-
+// TEMP CODE: GET ALL USERS; FOR TESTING API ROUTE GUARD
 router.get('/users', controllers.auth.index);
 
 
