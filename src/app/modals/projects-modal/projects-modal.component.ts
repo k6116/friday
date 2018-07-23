@@ -73,6 +73,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   clickOutsideException: string;
   selProject: any;
   subscription1: Subscription;
+  filterProjects: any;
+  myTeamsToggle: boolean;
+  mySupervisorEmail: string;
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
@@ -143,6 +146,10 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       this.refreshProjectCards();
     });
 
+    // for filter toggle
+    this.filterProjects = this.projects;
+    this.myTeamsToggle = false;
+
   }
 
   ngAfterViewInit() {
@@ -156,6 +163,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       .subscribe(
         res => {
           this.projects = res;
+          // this.filterProjects = this.projects;
           this.addedProjects.emit(this.projects);
         },
         err => {
@@ -773,6 +781,23 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.getProjectPermissionList();
   }
 
+  onMyTeamToggleClick() {
+    this.myTeamsToggle = !this.myTeamsToggle;
+    const managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+    let m = 0;
+    const filter = [];
+    if (this.myTeamsToggle === true) {
+      for (let i = 0; i < this.projects.length; i++) {
+        if (this.projects[i].ProjectOrgManager === managerEmailAddress) {
+          filter[m] = this.projects[i];
+          m = m + 1;
+        }
+      }
+      this.filterProjects = filter;
+    } else {
+      this.filterProjects = this.projects;
+    }
+  }
 
 }
 

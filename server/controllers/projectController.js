@@ -13,7 +13,8 @@ function indexProjects(req, res) {
         e.FullName, 
         p.CreationDate, 
         t.ProjectTypeName, 
-        p.CreatedBy
+        p.CreatedBy,
+        p.ProjectOrgManager
     FROM  
         projects.Projects p INNER JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
         INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID

@@ -48,7 +48,7 @@ div.projects-filter-cont {
 }
 
 input.projects-filter-input {
-  width: 270px;
+  width: 200px;
   /* z-index: 101; */
 }
 
@@ -61,7 +61,7 @@ div.projects-modal-close {
   font-size: 34px;
   color: rgb(77, 77, 77);
   position: relative;
-  top: -38px;
+  top: -20px;
   right: -15px;
 }
 
@@ -268,17 +268,10 @@ button.btn.btn-outline-success.project-select-button:hover {
   font-size: 15px;
 }
 
-.check-hidden {
-  opacity: 0;
-}
-
-.custom-filter-backdrop {
-  margin-top: auto;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  border: 1px solid #ccc;
-  border-style: solid;
-  border-width: thin;
-  border-radius: 4px;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+.custom-toggle {
+  font-size: smaller;
+  width: 98px;
+  position: absolute;
+  padding: 3px;
+  margin: 5px;
 }
