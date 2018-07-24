@@ -41,7 +41,7 @@ export class ProjectsSetupsComponent implements OnInit {
   deleteModalButtons: any;
   projectTypeDisplayFields: any;
   projectBasicInfo = [];
-  filterString: string;
+  filterString: any;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
