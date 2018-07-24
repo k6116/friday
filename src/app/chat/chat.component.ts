@@ -88,7 +88,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   getLoggedInUsers() {
 
-    this.apiDataAuthService.getLoggedInUsers()
+    this.apiDataAuthService.getLoggedInUsers(this.authService.token.signedToken)
       .subscribe(
         res => {
           console.log('logged in users');

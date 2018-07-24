@@ -191,9 +191,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
           // store the logged in user in the auth service
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
-
-          // add the isManager property to the loggedInUser object
-          this.authService.loggedInUser.isManager = res.isManager;
+          // this.authService.loggedInUser = res.jarvisUser;
+          console.log('logged in user:');
+          console.log(this.authService.loggedInUser);
 
           // store the jwt token in the auth service
           this.authService.token = res.token;

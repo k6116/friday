@@ -6,9 +6,9 @@ import { CarouselModalOptions } from '../../modals/carousel-modal/carousel-modal
 @Injectable()
 export class CacheService {
 
-
-  // TO-DO MIKE: rename app-data service to cache service EVERYWHERE!!
   // app data service serves as a central data store (global variables, constants, emitters)
+
+  token: any;   // jwt token object with signedToken property (encoded string), expiringAt, and issuedAt
 
   apiDataTimeout = 100 * 60 * 15; // set the api data service timeout to 15 seconds
   loggedInUser = new EventEmitter<any>();

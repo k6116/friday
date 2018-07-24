@@ -19,19 +19,25 @@ export class ApiDataDashboardService {
   getDashboardData(startDate: string, endDate: string): Observable<any> {
 
     // NOTE: email is passed here instead of id as the key since it gets data from the plm databridge as well as jarvis
-    const fteData = this.http.get(`/api/dashboard/getFTEData/${startDate}/${endDate}?token=${this.authService.token.signedToken}`)
+    const headers = new Headers({'X-JWT': this.authService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+
+    // console.log('get dashboard data token:');
+    // console.log(this.authService.token.signedToken);
+
+    const fteData = this.http.get(`/api/dashboard/dashboard/show/getFTEData/${startDate}/${endDate}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
-    const firstLogin = this.http.get(`/api/dashboard/checkFirstLogin?token=${this.authService.token.signedToken}`)
+    const firstLogin = this.http.get(`/api/dashboard/checkFirstLogin`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
-    const projectRequests = this.http.get(`/api/dashboard/checkProjectRequests?token=${this.authService.token.signedToken}`)
+    const projectRequests = this.http.get(`/api/dashboard/checkProjectRequests`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 
-    const jobTitle = this.http.get(`/api/dashboard/checkJobTitle?token=${this.authService.token.signedToken}`)
+    const jobTitle = this.http.get(`/api/dashboard/checkJobTitle`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 

@@ -72,6 +72,7 @@ export class AuthService {
   }
 
 
+  // TO-DO BILL: get rid of this; should be replaced by user resolver
   // get user information for components that need the data, to deal with scenario where there may or may not be user info in the cache
   getLoggedInUser(callback: (user: User, error?: string) => void): void {
     console.log('getLoggedInUser method called');
@@ -101,11 +102,11 @@ export class AuthService {
     }
   }
 
-
-  // get information from the token like user, issued at, expiring at, by sending it to server to be decoded
-  // so it can be cached for performance
-  // NOTE: this should only be executed on refresh of pages, will be invoked on app component init (other than the login page?)
+  // this is invokek from the app component init (app load / page refresh)
+  // if there is no token in local storage or it is expired, make sure they are re-routed to the login page and it is cleard
+  // if there is a valid token; refresh it to get a new expiration date and new user data just in case some info may have changed
   getInfoFromToken() {
+    console.log('get info from token started');
     // get the token from local storage
     const token = localStorage.getItem('jarvisToken');
     // if the token exists (if is doesn't the token constant will be set to null)
@@ -115,6 +116,8 @@ export class AuthService {
           res => {
             // update the token info in memory
             this.token = res.token;
+            console.log('token has been updated');
+            console.log(this.token);
             // if the token is expired, clear the user data/cache (properties in this service) and token, and re-route to the login page
             if (this.tokenIsExpired()) {
               console.log('logging out within getInfoFromToken function, due to expired token');
@@ -123,13 +126,13 @@ export class AuthService {
             } else {
               // store the data in this service
               console.log('within getInfoFromToken; token is valid');
+              // this jarvis user will be the have the same data as in the token that was sent
               this.loggedInUser = new User().deserialize(res.jarvisUser);
-              // add the isManager property to the loggedInUser object
-              this.loggedInUser.isManager = res.jarvisUser.isManager;
-              console.log('get info from token; updated logged in user:');
+              console.log('get info from token; same logged in user');
               console.log(this.loggedInUser);
               this.setLoggedIn(true);
               // reset the token
+              console.log('resetting the token');
               this.resetToken();
             }
             // TEMP CODE to log the token status
@@ -159,9 +162,10 @@ export class AuthService {
   }
 
 
-  // this should be executed when the timer is fired
+  // this is executed when the timer is fired every minute
   // to either issue a new token with new expiration, auto log them out, ask them if they want to stay logged in w/ modal, or do nothing
   checkAuthStatus() {
+
     // don't execute this if the user is on the login page
     if (this.router.url === '/login') {
       return;
@@ -180,45 +184,36 @@ export class AuthService {
     if (this.tokenIsExpired()) {
       console.log('logging out within checkAuthStatus function, due to expired token');
       this.logout(true);
+
     // if there is a logged in user and there has been activity within the last 60 seconds
     // go the the server to get them a new token with pushed out expiration date
     // NOTE: the numInactivitySeconds or numInactivityMinutes should be synched with the timer interval in the app component
     } else if (this.loggedInUser && numInactivitySeconds < 60) {
-      // console.log('attempting to get a new token with a new expiration date');
-      this.apiDataAuthService.resetToken(this.loggedInUser)
-        .subscribe(
-          res => {
-            console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
-            // update the token info in memory
-            this.token = res.token;
-            // remove and reset the token in local storage
-            this.clearToken();
-            this.setToken(res.token.signedToken);
-            // reset the timer so that it will be synched with the token expiration, at least within a second or two
-            this.cacheService.resetTimer.emit(true);
-          },
-          err => {
-            console.error('reset token error:');
-            console.error(err);
-          }
-        );
+
+      // reset the token
+      this.resetToken();
+
     // if the token is about to expire, show a modal asking the user if they want to keep working/stay logged in
     } else if (this.tokenIsAboutToExpire()) {
+
       // only emit a message to the modal if it isn't already displayed
       if (!this.modalIsDisplayed) {
         this.displayExtendSessionModal();
         this.modalIsDisplayed = true;
       }
+
     }
 
   }
 
-  // TO-DO: get a new token on app refresh (if there is a token, because it should be considered a new session)
+  // get a new token with a new expiration date and a new logged in user
   resetToken() {
     // console.log('attempting to get a new token with a new expiration date');
-    this.apiDataAuthService.resetToken(this.loggedInUser)
+    const token = localStorage.getItem('jarvisToken');
+    this.apiDataAuthService.resetToken(token)
       .subscribe(
         res => {
+          console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
           // update the token info in memory
           this.token = res.token;
           // remove and reset the token in local storage
@@ -226,6 +221,10 @@ export class AuthService {
           this.setToken(res.token.signedToken);
           // reset the timer so that it will be synched with the token expiration, at least within a second or two
           this.cacheService.resetTimer.emit(true);
+          // this jarvis user will be the have the same data as in the token that was sent
+          this.loggedInUser = new User().deserialize(res.jarvisUser);
+          console.log('get info from token; new logged in user');
+          console.log(this.loggedInUser);
           // TEMP CODE to log the token status
           this.logTokenStatus();
         },

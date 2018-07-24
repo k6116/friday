@@ -58,6 +58,8 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
 
+    // console.log('dashboard component initialized');
+
     // get dashboard data, then render dashboard
     this.getDashboardData();
 
