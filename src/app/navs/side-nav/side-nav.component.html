@@ -3,7 +3,7 @@
 
     <div class="sidenav-menu-items">
 
-      <div *ngFor="let menu of menuStructure" [class]="'sidenav-menu-item ' + menu.alias" [attr.data-alias]="menu.alias">
+      <div *ngFor="let menu of menuStructure" [class]="'sidenav-menu-item ' + menu.alias" [attr.data-alias]="menu.alias" [hidden]="menu.hidden">
   
         <div [class]="'sidenav-mainmenu-cont' + (menu.active ? ' active' : ' inactive') + (menu.highlighted ? ' highlighted' : '')" [attr.data-clicktrack]="'page: Main, clickedOn: Menu Item > ' + menu.title" (click)="onMenuItemClick(menu.alias)">
           <i [class]="'nc-icon sidenav-menu-icon ' + menu.iconClass"></i>
@@ -12,7 +12,7 @@
         </div>
   
         <ng-container *ngIf="menu.subItems">
-          <div *ngFor="let subMenu of menu.subItems" [class]="'sidenav-submenu-cont' + (subMenu.active ? ' active' : ' inactive')">
+          <div *ngFor="let subMenu of menu.subItems" [class]="'sidenav-submenu-cont' + (subMenu.active ? ' active' : ' inactive')" [hidden]="subMenu.hidden">
             <div class="sidenav-submenu-item" [attr.data-clicktrack]="'page: Main, clickedOn: Menu Item > ' + menu.title + ' > ' + subMenu.title" (click)="onSubMenuItemClick($event.target, menu.alias, subMenu.alias)">
               {{ subMenu.title }}
             </div>

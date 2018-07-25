@@ -7,10 +7,11 @@ import { User } from '../models/user.model';
 import { ApiDataAuthService } from './api-data/api-data-auth.service';
 import { CacheService } from './cache.service';
 import { WebsocketService } from './websocket.service';
-
-import * as moment from 'moment';
 import { Subscriber } from 'rxjs/Subscriber';
 import { ToolsService } from './tools.service';
+
+import * as moment from 'moment';
+import * as decode from 'jwt-decode';
 
 
 @Injectable()
@@ -233,6 +234,15 @@ export class AuthService {
           console.error(err);
         }
       );
+  }
+
+
+  decodedToken(): any {
+    if (this.token) {
+      return decode(this.token.signedToken);
+    } else {
+      return undefined;
+    }
   }
 
 

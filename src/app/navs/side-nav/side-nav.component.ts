@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CacheService } from '../../_shared/services/cache.service';
+import { AuthService } from '../../_shared/services/auth.service';
 import { MainMenuItems } from './side-nav.model';
 
 declare var $: any;
@@ -23,7 +24,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private cacheService: CacheService) {
+    private cacheService: CacheService,
+    private authService: AuthService) {
 
 
       // build an object that represents the sidebar menu structure, to be rendered in the html
@@ -35,7 +37,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           path: 'main/dashboard',
           expanded: false,
           active: false,
-          highlighted: false
+          highlighted: false,
+          permissionProtected: false,
+          hidden: false
         },
         {
           title: 'FTE Entry',
@@ -44,7 +48,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           path: 'main/fte-entry/employee',
           expanded: false,
           active: false,
-          highlighted: false
+          highlighted: false,
+          permissionProtected: false,
+          hidden: false
         },
         {
           title: 'My Projects',
@@ -53,7 +59,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           path: 'main/setups/projects',
           expanded: false,
           active: false,
-          highlighted: false
+          highlighted: false,
+          permissionProtected: true,
+          hidden: false
         },
         {
           title: 'Reports',
@@ -62,41 +70,53 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           expanded: false,
           active: false,
           highlighted: false,
+          permissionProtected: false,
+          hidden: false,
           subItems: [
             {
               title: 'My FTE Summary',
               alias: 'reports-my-fte-summary',
               path: 'main/reports/my-fte-summary',
               parentAlias: 'reports',
-              active: false
+              active: false,
+              permissionProtected: false,
+              hidden: false
             },
             {
               title: 'Team FTE Summary',
               alias: 'reports-team-fte-summary',
               path: 'main/reports/team-fte-summary',
               parentAlias: 'reports',
-              active: false
+              active: false,
+              permissionProtected: true,
+              hidden: false
             },
             {
               title: 'Top Projects',
               alias: 'reports-top-projects',
               path: 'main/reports/top-projects',
               parentAlias: 'reports',
-              active: false
+              active: false,
+              permissionProtected: false,
+              hidden: false
             },
             {
               title: 'Top Projects Bubble',
               alias: 'reports-top-projects-bubble',
               path: 'main/reports/top-projects-bubble',
               parentAlias: 'reports',
-              active: false
+              active: false,
+              permissionProtected: true,
+              hidden: false
             },
             {
               title: 'Employees',
               alias: 'employees',
               path: 'main/reports/employees',
               parentAlias: 'reports',
-              active: false
+              active: false,
+              permissionProtected: false,
+              hidden: false
             }
           ]
         },
@@ -106,7 +126,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           alias: 'admin',
           path: 'main/admin',
           expanded: false,
-          active: false
+          active: false,
+          permissionProtected: true,
+          hidden: false
         },
         {
           title: 'Websockets',
@@ -115,7 +137,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           path: 'main/chat',
           expanded: false,
           active: false,
-          highlighted: false
+          highlighted: false,
+          permissionProtected: true,
+          hidden: false
         }
       ];
 
@@ -143,6 +167,12 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       this.setExpandedProperties(expandedMenu);
     }
 
+    // hide menu items that the user does not have permissions to access
+    this.hideUnauthorizedMenuItems();
+
+    // console.log('decoded token object within sidenav component:');
+    // console.log(this.authService.decodedToken());
+
   }
 
   ngAfterViewInit() {
@@ -158,6 +188,56 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       expandedMenu.push(this.parentMenuToExpand);
       this.expandMenus(expandedMenu);
     }
+
+  }
+
+
+  hideUnauthorizedMenuItems() {
+
+    // get the decoded token from the auth service which will have the array of permissions
+    // NOTE, TO-DO BILL: when jwt is refactored from local storage into a cookie not accessible from code,
+    // we will no longer be able to decodeon the client side (sad-face emoji)
+    const tokenPayload = this.authService.decodedToken();
+
+    // get the permissions out of the token payload
+    const permissions = tokenPayload.userData.permissions;
+
+    // go through each menu item and set the hidden property by checking the permissions
+    // only if the permissionProtected property is set to true
+    this.menuStructure.forEach(menuItem => {
+      // if the permissionProtected property is set to true, need to check to make sure the user has the permission to access this menu item
+      if (menuItem.permissionProtected) {
+        // look through the permissions, try to find a match based on the convention of:
+        // 'Resources > Main Menu Title > View'
+        const foundPermission = permissions.find(permission => {
+          return permission.permissionName === `Resources > ${menuItem.title} > View`;
+        });
+        // if the permission was not found, set the hidden property to true
+        if (!foundPermission) {
+          menuItem.hidden = true;
+        }
+      }
+      // if the menu item has sub menu items
+      if (menuItem.hasOwnProperty('subItems')) {
+        // go through each sub-menu item and set the hidden property by checking the permissions
+        // only if the permissionProtected property is set to true
+        menuItem.subItems.forEach(subMenuItem => {
+          // if the permissionProtected property is set to true
+          // need to check to make sure the user has the permission to access this sub menu item
+          if (subMenuItem.permissionProtected) {
+            // look through the permissions, try to find a match based on the convention of:
+            // 'Resources > Main Menu Title > Sub Menu Title > View'
+            const foundPermission = permissions.find(permission => {
+              return permission.permissionName === `Resources > ${menuItem.title} > ${subMenuItem.title} > View`;
+            });
+            // if the permission was not found, set the hidden property to true
+            if (!foundPermission) {
+              subMenuItem.hidden = true;
+            }
+          }
+        });
+      }
+    });
 
   }
 
@@ -326,9 +406,13 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     const $el = $(`div.sidenav-menu-item.${alias}`);
     // find the menu item using the alias
     const foundMenuItem = this.getMenuObject(alias);
+    // find the number of visible (non-hidden) sub-menu items
+    const visibleSubMenuItems = foundMenuItem.subItems.filter(subItem => {
+      return !subItem.hidden;
+    });
     // set/calculate the height
     // will be 55 pixels collapsed, and 55 + 40 times the number of subitems (and extra 20px for bottom margin)
-    const height = expand ? 55 + 20 + (foundMenuItem.subItems.length * 40) : 55;
+    const height = expand ? 55 + 20 + (visibleSubMenuItems.length * 40) : 55;
     // if animation is desired, set the transition css otherwise clear it
     if (animate) {
       $el.css('transition', 'height .35s ease-out');

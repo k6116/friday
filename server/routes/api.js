@@ -138,6 +138,8 @@ router.use('/', function(req, res, next) {
 
   // get the permissions within the token object (array of objects {permissionName: "name"})
   const permissions = decodedToken.userData.permissions;
+  console.log('permissions array:');
+  console.log(permissions);
   
   // translate the path into a string that should match the permission by applying the convention
   // split the path into an array
@@ -154,8 +156,8 @@ router.use('/', function(req, res, next) {
   const foundPermission = permissions.find(permission => {
     // modify the permission string to remove white space between characters and convert to lowercase
     const permissionNameModified = permission.permissionName.split(' > ').map(x => x.replace(/\s/g, '')).join(' > ').toLowerCase();
-    // console.log('permission modified');
-    // console.log(permissionNameModified);
+    console.log('permission modified');
+    console.log(permissionNameModified);
     return permissionNameModified === permissionNeeded;
   });
   console.log('found permission:');

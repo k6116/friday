@@ -197,6 +197,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
           // store the jwt token in the auth service
           this.authService.token = res.token;
+          console.log('token saved in auth service (this.token):');
+          console.log(this.authService.token);
 
           // set logged in to true in the auth service (loggedIn property)
           this.authService.setLoggedIn(true);
