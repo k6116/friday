@@ -6,15 +6,14 @@ import * as Highcharts from 'highcharts';
 
 declare var require: any;
 const moment = require('moment');
-
 // require('highcharts/modules/annotations')(Highcharts);
 
 @Component({
-  selector: 'app-reports-topprojects',
-  templateUrl: './top-projects.component.html',
-  styleUrls: ['./top-projects.component.css', '../../_shared/styles/common.css']
+  selector: 'app-supply-demand',
+  templateUrl: './supply-demand.component.html',
+  styleUrls: ['./supply-demand.component.css', '../../_shared/styles/common.css']
 })
-export class TopProjectsReportsComponent implements OnInit, OnDestroy {
+export class SupplyDemandComponent implements OnInit, OnDestroy {
 
   displayTopFTEProjectList: boolean;  // display boolean for top FTE table
   topFTEProjectList: any; // for top FTE projects table
@@ -31,7 +30,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
   chartIsLoading = true;
   lineChart: any;
   lineChartOptions: any;  // for setting chart options
-  historicFteData = []; // for populating historic FTE data to plot in chart
+  historicFteData:  any; // for populating historic FTE data to plot in chart
   historicFteSubscription: Subscription;
 
 
@@ -79,42 +78,35 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
   onProjectClick(project: any, index: number) {
     this.selectedProject = project;
 
-    // if project is being deselected, deselect the row, remove the project data, and re-render the chart
-    if (this.isProjectSelected[index]) {
-      this.isProjectSelected[index] = false;
-      // remove the project data
-      this.historicFteData.forEach( proj => {
-        if (proj.projectIndex === index) {
-          this.historicFteData.splice(this.historicFteData.indexOf(proj), 1);
+    // Retrieve historical FTE data for a given project
+    this.historicFteSubscription = this.apiDataReportService.getProjectFTEHistory(this.selectedProject.projectID)
+    .subscribe(
+      res => {
+        // highlight selected row
+        for (let i = 0; i < this.isProjectSelected.length; i++) {
+          this.isProjectSelected[i] = false;
         }
-      });
-      this.plotFteHistoryChart();
-    } else {
-      // Retrieve historical FTE data for a given project
-      this.historicFteSubscription = this.apiDataReportService.getProjectFTEHistory(this.selectedProject.projectID)
-      .subscribe(
-        res => {
-          // highlight selected row
-          this.isProjectSelected[index] = true;
-          // Convert table to array for HighChart data series format
-          // also, convert fiscal date from js datetime to unix (ms) timestamp for proper plotting in highcharts
-          const fiscalDate = Object.keys(res)
-          .map(i => new Array(moment(res[i].fiscalDate).valueOf(), res[i].totalMonthlyFTE));
+        this.isProjectSelected[index] = true;
 
-          this.historicFteData.push({
-            projectIndex: index,
-            projectName: project.projectName,
-            data: fiscalDate
-          });
-          console.log('fiscalDate', fiscalDate);
-          console.log(this.historicFteData);
-          this.plotFteHistoryChart();
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    }
+        // Convert table to array for HighChart data series format
+        // also, convert fiscal date from js datetime to unix (ms) timestamp for proper plotting in highcharts
+        const fiscalDate = Object.keys(res)
+        .map(i => new Array(moment(res[i].fiscalDate).valueOf(), res[i].totalMonthlyFTE));
+
+        this.historicFteData = ({
+          projectIndex: index,
+          projectName: project.projectName,
+          data: fiscalDate
+        });
+        console.log('fiscalDate', fiscalDate);
+        console.log(this.historicFteData);
+        this.plotFteHistoryChart();
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
   }
 
   // function for getting the project roster onClick in the plot.  (TO BE OBSOLETED)
@@ -169,16 +161,19 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
             }
           }
         }
-      }
+      },
+
+      series: [{name: this.historicFteData.projectName,
+        data: this.historicFteData.data}]
     };
     this.lineChart = Highcharts.chart('FTEHistory', this.lineChartOptions);
     // loop through the historic FTE data object and plot each object as an independent series
-    this.historicFteData.forEach( project => {
-      this.lineChart.addSeries({
-        name: project.projectName,
-        data: project.data
-      });
+    this.lineChart.addSeries({
+      name: this.historicFteData.projectName,
+      data: this.historicFteData.data
     });
+
   }
+
 
 }
