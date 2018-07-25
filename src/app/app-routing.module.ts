@@ -42,7 +42,7 @@ const routes: Routes = [
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent },
-      { path: 'reports/employees', component: EmployeesReportsComponent },
+      // { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
     ]

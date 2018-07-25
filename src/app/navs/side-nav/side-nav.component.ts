@@ -89,13 +89,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               parentAlias: 'reports',
               active: false
             },
-            {
-              title: 'Employees',
-              alias: 'employees',
-              path: 'main/reports/employees',
-              parentAlias: 'reports',
-              active: false
-            }
           ]
         },
         {

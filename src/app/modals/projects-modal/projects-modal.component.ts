@@ -604,6 +604,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       }
       updateModalSubscription.unsubscribe();
     });
+
+    this.onRequestedProject(project);
   }
 
 
