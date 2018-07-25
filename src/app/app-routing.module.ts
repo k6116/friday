@@ -13,6 +13,7 @@ import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-pr
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
 import { TeamFteSummaryComponent } from './reports/team-fte-summary/team-fte-summary.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
+import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -47,6 +48,7 @@ const routes: Routes = [
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent },
       { path: 'reports/employees', component: EmployeesReportsComponent },
+      { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
     ]

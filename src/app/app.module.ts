@@ -30,7 +30,7 @@ import { AuthService } from './_shared/services/auth.service';
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
@@ -74,6 +74,7 @@ import { ProjectAttributesComponent } from './admin/project-attributes/project-a
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
+import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 
 // BOM module stuff
 import { BomGraphComponent } from './reports/bom-graph/bom-graph.component';
@@ -121,7 +122,8 @@ import { BomGraphComponent } from './reports/bom-graph/bom-graph.component';
     DashboardComponent,
     FooterComponent,
     CarouselModalComponent,
-    BomGraphComponent
+    BomGraphComponent,
+    SupplyDemandComponent
   ],
   imports: [
     AppRoutingModule,
@@ -154,6 +156,7 @@ import { BomGraphComponent } from './reports/bom-graph/bom-graph.component';
     ApiDataProjectService,
     ApiDataReportService,
     ApiDataDashboardService,
+    ApiDataAnalyticsService,
     CacheService,
     AuthService,
     AuthGuardService,

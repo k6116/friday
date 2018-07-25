@@ -41,6 +41,7 @@ export class ProjectsSetupsComponent implements OnInit {
   deleteModalButtons: any;
   projectTypeDisplayFields: any;
   projectBasicInfo = [];
+  filterString: any;
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
@@ -77,7 +78,16 @@ export class ProjectsSetupsComponent implements OnInit {
     .subscribe(
       res => {
         console.log('Project List: ', res);
-        this.projectList = res;
+        // Sort the project list by project Name
+        this.projectList = res.sort(function(a, b) {
+          return a.projectName > b.projectName;
+        });
+        // Move user created projects to the bottom
+        for (let i = 0; i < this.projectList.length; i++) {
+          if (this.projectList[i].createdBy === this.authService.loggedInUser.id) {
+            this.projectList.push(this.projectList.splice(i, 1)[0]);
+          }
+        }
       },
       err => {
         console.log(err);
@@ -194,17 +204,19 @@ export class ProjectsSetupsComponent implements OnInit {
       res => {
         console.log('project roster:', res);
         // Check if roster for this project exists
-        if ('teamMembers' in res[0]) {
-          // This loop will move the loggedInUser to the top of the project roster list
-          for (let i = 0; i < res[0].teamMembers.length; i++) {
-            if (res[0].teamMembers[i].employeeID === this.authService.loggedInUser.id) {
-                const a = res[0].teamMembers.splice(i, 1);   // removes the item
-                res[0].teamMembers.unshift(a[0]);         // adds it back to the beginning
-                this.projectRoster = res[0];
-                break;
+          if ('teamMembers' in res[0]) {
+            // This loop will move the loggedInUser to the top of the project roster list
+            for (let i = 0; i < res[0].teamMembers.length; i++) {
+              if (res[0].teamMembers[i].employeeID === this.authService.loggedInUser.id) {
+                  const a = res[0].teamMembers.splice(i, 1);   // removes the item
+                  res[0].teamMembers.unshift(a[0]);         // adds it back to the beginning
+                  this.projectRoster = res[0];
+                  break;
+              }
             }
-        }
-        }
+          } else {
+            this.projectRoster = undefined;
+          }
       },
       err => {
         console.log(err);
@@ -283,10 +295,14 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectSchedule(projectName)
     .subscribe(
       res => {
-        // console.log('project schedule:', res);
-        this.projectSchedule = res;
-        for (let i = 0; i < this.projectSchedule.length; i++) {
-          this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
+        console.log('project schedule:', res);
+        if (res.length !== 0) {
+          this.projectSchedule = res;
+          for (let i = 0; i < this.projectSchedule.length; i++) {
+            this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
+          }
+        } else {
+          this.projectSchedule = undefined;
         }
       },
       err => {
