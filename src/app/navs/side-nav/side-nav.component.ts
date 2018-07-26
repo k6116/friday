@@ -60,7 +60,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           expanded: false,
           active: false,
           highlighted: false,
-          permissionProtected: true,
+          permissionProtected: false,
           hidden: false
         },
         {
@@ -88,7 +88,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               path: 'main/reports/team-fte-summary',
               parentAlias: 'reports',
               active: false,
-              permissionProtected: true,
+              permissionProtected: false,
               hidden: false
             },
             {
@@ -106,7 +106,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               path: 'main/reports/top-projects-bubble',
               parentAlias: 'reports',
               active: false,
-              permissionProtected: true,
+              permissionProtected: false,
               hidden: false
             },
             {
@@ -127,7 +127,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           path: 'main/admin',
           expanded: false,
           active: false,
-          permissionProtected: true,
+          permissionProtected: false,
           hidden: false
         },
         {
@@ -138,7 +138,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           expanded: false,
           active: false,
           highlighted: false,
-          permissionProtected: true,
+          permissionProtected: false,
           hidden: false
         }
       ];

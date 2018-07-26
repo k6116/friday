@@ -35,6 +35,7 @@ import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, A
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 import { BrowserGuard } from './_shared/guards/browser.guard';
+import { PermissionsGuard } from './_shared/guards/permissions.guard';
 
 // CHARTS
 import 'hammerjs';
@@ -160,6 +161,7 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     CookiesService,
     UnsavedChangesGuard,
     BrowserGuard,
+    PermissionsGuard,
     TitleCasePipe
   ],
   bootstrap: [AppComponent]

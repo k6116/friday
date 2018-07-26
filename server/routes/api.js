@@ -15,6 +15,7 @@ var controllers = require('../controllers/_index.js');
 router.post('/login', controllers.auth.authenticate);
 router.get('/getInfoFromToken', controllers.auth.getInfoFromToken);
 router.post('/resetToken', controllers.auth.resetToken);
+router.get('/verifyToken', controllers.auth.verifyToken);
 router.get('/logout/:userName', controllers.auth.logout);
 router.get('/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
 
@@ -176,6 +177,8 @@ router.use('/', function(req, res, next) {
 
 });
 
+
+// NOTE: these are just being used for testing permissions protected routes; these are not necessarily going to be permissions protected
 
 router.get('/auth/websockets/index/getLoggedInUsers', controllers.auth.getLoggedInUsers);
 router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate', controllers.dashboard.getFTEData);

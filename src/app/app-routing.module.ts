@@ -20,6 +20,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 import { BrowserGuard } from './_shared/guards/browser.guard';
+import { PermissionsGuard } from './_shared/guards/permissions.guard';
 import { TestComponent } from './test/test.component';
 import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
@@ -42,10 +43,10 @@ const routes: Routes = [
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },
-      { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent },
+      { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent, canActivate: [PermissionsGuard] },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'chat', component: ChatComponent },
-      { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
+      { path: 'admin', component: AdminComponent, canActivate: [PermissionsGuard] },
     ]
   },
   { path: '**', redirectTo: '/login' }

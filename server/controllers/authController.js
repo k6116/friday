@@ -219,6 +219,28 @@ function resetToken(req, res) {
 }
 
 
+// simply verify the token and return status code 200 (OK) or 401 (Unauthorized)
+function verifyToken(req, res) {
+
+  // get the token out of the request header
+  const token = req.header('X-JWT');
+
+  // send the token through verification and send the appropriate response
+  jwt.verify(token, tokenSecret, (err, decoded) => {
+    if (decoded) {
+      res.status(200).json({
+        tokenIsValid: true
+      });
+    } else {
+      res.status(401).json({
+        tokenIsValid: false
+      });
+    }
+  })
+
+}
+
+
 
 function getLoginBackgroundImages(req, res) {
 
@@ -268,6 +290,7 @@ module.exports = {
   authenticate: authenticate,
   getInfoFromToken: getInfoFromToken,
   resetToken: resetToken,
+  verifyToken: verifyToken,
   getLoggedInUsers: getLoggedInUsers,
   logout: logout,
   getLoginBackgroundImages: getLoginBackgroundImages

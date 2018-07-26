@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { CacheService } from '../cache.service';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 
 
 @Injectable()
@@ -39,6 +40,18 @@ export class ApiDataAuthService {
     return this.http.post(`/api/resetToken`, null, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
+  }
+
+  // verify the token to ensure it hasn't been tampered with
+  async verifyToken(token: string) {
+    const headers = new Headers({'X-JWT': token});
+    const options = new RequestOptions({headers: headers});
+    return await this.http.get(`/api/verifyToken`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json()).toPromise();
+
+    // const response: Response = await this.http.get(`/api/verifyToken`, options).toPromise();
+    // return response.json();
   }
 
   // get a list of the background image file names and captions

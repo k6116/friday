@@ -103,7 +103,8 @@ export class AuthService {
     }
   }
 
-  // this is invokek from the app component init (app load / page refresh)
+
+  // this is invoked from the app component init (on app load / page refresh)
   // if there is no token in local storage or it is expired, make sure they are re-routed to the login page and it is cleard
   // if there is a valid token; refresh it to get a new expiration date and new user data just in case some info may have changed
   getInfoFromToken() {
