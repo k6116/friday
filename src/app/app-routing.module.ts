@@ -25,6 +25,7 @@ import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
 import { UserResolverService } from './_shared/services/user-resolver.service';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { PartSetupComponent } from './setups/parts/parts.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -47,7 +48,7 @@ const routes: Routes = [
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent },
-      { path: 'setups/parts', component: ProjectsSetupsComponent },
+      { path: 'setups/parts', component: PartSetupComponent },
       { path: 'schedules', component: SchedulesComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
     ]

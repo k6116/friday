@@ -40,7 +40,41 @@ function indexSchedules(req, res) {
 		})
 }
 
-module.exports = {
-	indexSchedules: indexSchedules,
+
+function getPartSchedule(req, res) {
+	const partID = req.params.partID;
+
+// 	SELECT ROW_NUMBER() OVER (Order by f.ScheduleId) AS RowNumber, f.CurrentRevision, f.notes as 'RevisionNotes', d.needbydate, d.neededquantity, d.buildstatusname,d.notes
+//  from vSchedulesForm f  
+// inner join vSchedulesDetail d 
+// on d.scheduleid = f.scheduleid
+
+// where f.PartID = 1149 -- detail
+	const sql =
+		`SELECT 
+			ROW_NUMBER() OVER (Order by f.ScheduleId) AS RowNumber,			
+			f.CurrentRevision,
+			f.notes as 'RevisionNotes', 
+			d.NeedByDate, 
+			d.NeededQuantity, 
+			d.BuildStatusName,
+			d.Notes
+		FROM
+			vSchedulesForm f 
+		INNER JOIN 
+			vSchedulesDetail d on d.scheduleid = f.scheduleid
+		WHERE
+			f.PartID = '${partID}'
+		ORDER BY 
+			RowNumber`
+
+	sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+		.then(schedule => {		
+			res.json(schedule);
+		})
 }
 
+module.exports = {
+	indexSchedules: indexSchedules,
+	getPartSchedule: getPartSchedule
+}

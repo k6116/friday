@@ -31,7 +31,7 @@ import { AuthService } from './_shared/services/auth.service';
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService, ApiDataPartService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
@@ -77,6 +77,7 @@ import { FooterComponent } from './footer/footer.component';
 import { SchedulesComponent } from './schedules/schedules.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
+import { PartSetupComponent } from './setups/parts/parts.component';
 
 
 @NgModule({
@@ -123,7 +124,8 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     FooterComponent,
     SchedulesComponent,
     ProjectsSetupsComponent,
-    CarouselModalComponent
+    CarouselModalComponent,
+    PartSetupComponent
   ],
   imports: [
     AppRoutingModule,
@@ -157,6 +159,7 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     ApiDataReportService,
     ApiDataDashboardService,
     ApiDataSchedulesService,
+    ApiDataPartService,
     CacheService,
     AuthService,
     AuthGuardService,

@@ -13,5 +13,6 @@ module.exports = {
   report: require('./reportController'),
   metaData: require('./metaDataController'),
   dashboard: require('./dashboardController'),
-  schedules: require('./schedulesController')
+  schedules: require('./schedulesController'),
+  parts: require('./partController')
 }

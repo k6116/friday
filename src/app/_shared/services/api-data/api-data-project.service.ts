@@ -114,5 +114,11 @@ export class ApiDataProjectService {
       .map((response: Response) => response.json());
   }
 
+  getBuildStatus(): Observable<any> {
+    return this.http.get('api/indexBuildStatus')
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
 
 }

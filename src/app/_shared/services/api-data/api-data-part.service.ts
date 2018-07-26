@@ -4,23 +4,28 @@ import { Observable } from 'rxjs/observable';
 import { CacheService } from '../cache.service';
 
 @Injectable()
-export class ApiDataSchedulesService {
+export class ApiDataPartService {
 
   constructor(
     private http: Http,
     private cacheService: CacheService
   ) { }
 
-  getSchedules(): Observable<any> {
-    return this.http.get('api/indexSchedules')
+  getParts(): Observable<any> {
+    return this.http.get('api/getParts')
     .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
-  getPartSchedule(partID: number): Observable<any> {
-    return this.http.get(`api/getPartSchedule/${partID}`)
+  getPart(): Observable<any> {
+    return this.http.get('api/getPart/:partID')
     .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
+  getPartTypes(): Observable<any> {
+    return this.http.get('api/getPartTypes')
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
 }

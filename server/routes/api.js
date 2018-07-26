@@ -38,6 +38,7 @@ router.post('/insertProjectEmployeeRole/:userID', controllers.project.insertProj
 router.post('/updateProjectEmployeeRole/:userID', controllers.project.updateProjectEmployeeRole);
 router.post('/destroyProjectEmployeeRole/:userID', controllers.project.destroyProjectEmployeeRole);
 router.post('/insertBulkProjectEmployeeRole/:userID', controllers.project.insertBulkProjectEmployeeRole);
+router.get('/indexBuildStatus', controllers.project.indexBuildStatus);
 
 // META DATA CONTROLLER
 router.get('/indexPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.metaData.indexPrimaryKeyRefs);
@@ -45,6 +46,8 @@ router.get('/indexPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.meta
 // EMPLOYEE CONTROLLER
 router.get('/employeeList/:managerEmailAddress', controllers.employee.show);
 router.get('/showUserPLMData/:userEmailAddress', controllers.employee.showUserPLMData);
+router.get('/getDesigners', controllers.employee.getDesigners);
+router.get('/getPlanners', controllers.employee.getPlanners);
 
 // ORG CONTROLLER
 router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
@@ -92,6 +95,14 @@ router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYea
 
 // SCHEDULES CONTROLLER
 router.get('/indexSchedules', controllers.schedules.indexSchedules);
+router.get('/getPartSchedule/:partID', controllers.schedules.getPartSchedule);
+
+
+// PARTS CONTROLLER
+router.get('/getParts', controllers.parts.indexParts);
+router.get('/getPart/:partID', controllers.parts.getPart);
+router.get('/getPartTypes', controllers.parts.indexPartTypes);
+
 
 // DASHBOARD CONTROLLER
 router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);

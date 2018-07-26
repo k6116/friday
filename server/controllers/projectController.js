@@ -534,6 +534,21 @@ function insertBulkProjectEmployeeRole(req, res) {
 }
 
 
+function indexBuildStatus(req, res) {
+  const sql = `
+   SELECT 
+      BuildStatusID, 
+      BuildStatusName                
+  FROM  
+      projects.BuildStatus`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+}
+
+
 
 
 module.exports = {
@@ -550,5 +565,6 @@ module.exports = {
   insertProjectEmployeeRole: insertProjectEmployeeRole,
   updateProjectEmployeeRole: updateProjectEmployeeRole,
   destroyProjectEmployeeRole: destroyProjectEmployeeRole,
-  insertBulkProjectEmployeeRole: insertBulkProjectEmployeeRole
+  insertBulkProjectEmployeeRole: insertBulkProjectEmployeeRole,
+  indexBuildStatus: indexBuildStatus
 }

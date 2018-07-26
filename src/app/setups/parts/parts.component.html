@@ -1,0 +1,129 @@
+<div class="container-fluid">
+
+  <div class="jumbotron">
+    <!-- Jobtitle Fuzzy Search Bar -->
+    <div class="input-group">
+      <input class="searchInput" type="text" [(ngModel)]="searchParts" (change)="onSearchInputChange($event)" placeholder="Search Parts">
+      <div class="input-group-append">
+        <button class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="modal" data-target="#createNewPart">
+          <i class="fa fa-plus"></i>&nbsp;&nbsp;New
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-2">
+      <ng-container *ngIf="(partList | filter : searchParts : 'PartName':{limitTo: -1, matchOptimistic: true}) as filteredPartList">
+        <ul class="list-group list-group-flush" *ngFor="let part of filteredPartList | slice:0:10; let i=index">
+          <button class="list-group-item list-group-item-action" (click)="onPartClick(part)">
+            {{ part.PartName }}<span *ngIf="part.partTypeName"> - {{part.PartTypeName}}</span>
+          </button>
+        </ul>
+      </ng-container>
+    </div>
+
+    <div class="col-5">
+      <div class="card" *ngIf="showPartCard">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-8">
+              <h6>{{ part.PartName }}&nbsp;&nbsp;
+                <span class="badge badge-success">{{ part.PriorityName }}</span>
+              </h6>
+            </div>
+            <div class="col-4 text-right">
+              <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#partEditModal"></i>&nbsp;&nbsp;Edit
+              </button>
+              <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal" (click)="onDeletePartClick(part)"></i>&nbsp;&nbsp;Delete
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+         <table class="table table-bordered table-light">
+           <tr>
+             <td>Description</td>
+             <td colspan="3"><input type=text [(ngModel)]="part.Description"></td>            
+           </tr>
+           <tr>
+              <td>Oracle Description</td>
+              <td colspan="3"><input type=text [(ngModel)]="part.OracleDescription"></td>             
+            </tr>
+            <tr>
+                <td>Oracle Item #</td>
+                <td><input type=text [(ngModel)]="part.OracleItemNumber"></td>
+                <td>Part Type</td>
+                <td><select></select></td>
+              </tr>
+              <tr>
+                  <td>DUT Family</td>
+                  <td><input type=text [(ngModel)]="part.DUTFamily"></td>
+                  <td>Designer</td>
+                <td><select></select></td>
+                </tr>
+                <tr>
+                  <td>Item Status</td>
+                  <td><input type=text [(ngModel)]="part.ItemStatus"></td>
+                  <td>Planner</td>
+                  <td><select></select></td>
+                  </tr>
+                <tr>
+                      <td>Notes</td>
+                      <td colspan="3" rowspan="2"><textarea  [(ngModel)]="part.Notes"></textarea></td>                     
+                 </tr>
+                 <tr></tr>             
+
+           </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-5">
+      <div class="card" *ngIf="showPartCard">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-8">
+              <h6>Schedule Revision {{ schedule[0]?.CurrentRevision }}</h6>              
+            </div>
+            <div class="col-4 text-right">
+              <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#partEditModal"></i>&nbsp;&nbsp;Edit
+              </button>
+              <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal" (click)="onDeletePartClick(part)"></i>&nbsp;&nbsp;Delete
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-hover table-light">
+            <thead>
+              <th>Need By</th>
+              <th>Quantity</th>
+              <th>Project Status</th>
+              <th>Notes</th>
+              <th>Del</th>
+            </thead>
+          
+            <tbody *ngFor="let sched of schedule">
+              <td>{{ sched?.NeedByDate | date: 'MM-dd-yyyy'}}</td>
+              <td>{{ sched?.NeededQuantity }}</td>
+              <td>{{ sched?.BuildStatusName }}</td>
+              <td>{{ sched?.Notes }}</td>
+              <td><input type="checkbox"></td>
+
+            </tbody>
+         
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
