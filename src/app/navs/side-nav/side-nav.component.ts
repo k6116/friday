@@ -10,7 +10,7 @@ declare var $: any;
 @Component({
   selector: 'app-side-nav',
   templateUrl: './side-nav.component.html',
-  styleUrls: ['./side-nav.component.css']
+  styleUrls: ['./side-nav.component.css', '../../_shared/styles/simplebar.css']
 })
 export class SideNavComponent implements OnInit, AfterViewInit {
 
@@ -195,6 +195,10 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       expandedMenu.push(this.parentMenuToExpand);
       this.expandMenus(expandedMenu);
     }
+
+    // setTimeout(() => {
+    //   $('div.simplebar-content').css('overflow-x', 'hidden!important');
+    // }, 1000);
 
   }
 

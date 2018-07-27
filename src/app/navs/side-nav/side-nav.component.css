@@ -9,6 +9,9 @@
   font-size: 14px;
   overflow-y: auto;
   padding-bottom: 150px;
+  user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .sidenav-menu-item {
@@ -94,3 +97,5 @@
 .sidenav-submenu-item {
   padding: 10px 0 10px 26px;
 }
+
+
