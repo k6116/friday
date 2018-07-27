@@ -32,15 +32,22 @@ function authenticate(req, res) {
     searchBase: 'dc=ad,dc=keysight,dc=com',
     searchFilter: '(cn={{username}})'
   };
+
+  console.log('ldap options object:');
+  console.log(options);
   
   // create an instance of the ldap auth fork 
   const auth = new ldapAuth(options);
+
+  console.log('reached after auth instance created');
 
   // TO-DO: figure out what this is for
   auth.on('error', (err) => {
     console.log('error on authentication:');
     console.error(err);
   });
+
+  console.log('reached after auth on error');
 
   // start a timer to check the performance of the ldap server
   const startTime = process.hrtime();
@@ -49,8 +56,15 @@ function authenticate(req, res) {
   auth.authenticate(user.userName, user.password, (err, ldapUser) => {
     // if a user object is returned, this indicates authentication success
     if (ldapUser) {
+
+      console.log('ldap user:');
+      console.log(ldapUser);
+
       // double check by making sure the user name matches
       if (ldapUser.cn === user.userName) {
+
+        console.log('ldapUser.cn:');
+        console.log(ldapUser.cn);
 
         // log the ldap response time
 	      const timeDiff = process.hrtime(startTime);
@@ -66,7 +80,7 @@ function authenticate(req, res) {
         let firstName = nameArr[0];
         let lastName = nameArr[nameArr.length - 1];
 
-        // TEMP CODE: impersonate as a manager for testing
+        // TEMP CODE: impersonate manager for testing
         // userName = 'ethanh';
         // emailAddress = 'ethan_hunt@keysight.com';
         // fullName = 'Ethan Hunt';
@@ -120,6 +134,14 @@ function authenticate(req, res) {
         });
 
         
+      // the ldap.cn (username) does not match the username entered in the login page
+      } else {
+
+        // send a an error response (status code 500) indicating the credentials are invalid
+        res.status(500).json({
+          title: 'invalid user credentials',
+          error: err
+        });
 
       }
     
