@@ -61,7 +61,7 @@ function authenticate(req, res) {
       console.log(ldapUser);
 
       // double check by making sure the user name matches
-      if (ldapUser.cn === user.userName) {
+      if (ldapUser.cn.toLowerCase() === user.userName) {
 
         console.log('ldapUser.cn:');
         console.log(ldapUser.cn);
