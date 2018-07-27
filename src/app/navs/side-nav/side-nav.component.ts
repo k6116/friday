@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { MainMenuItems } from './side-nav.model';
@@ -20,6 +21,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
   menuStructure: any;
   expandedMenus: any;
   parentMenuToExpand: any;
+  subscription1: Subscription;
 
   constructor(
     private router: Router,
@@ -170,8 +172,13 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     // hide menu items that the user does not have permissions to access
     this.hideUnauthorizedMenuItems();
 
-    // console.log('decoded token object within sidenav component:');
-    // console.log(this.authService.decodedToken());
+    // set up subscription to receive path from the permissions guard, to highlight the menu item after passing the guard
+    this.subscription1 = this.cacheService.navigatedPath.subscribe(navigatedPath => {
+      // highlight the menu item in this.menuStructure that matches the path
+      // NOTE: need to trim off the leading /
+      this.highlightActiveMenu(navigatedPath.slice(1));
+    });
+
 
   }
 
@@ -196,11 +203,15 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
     // get the decoded token from the auth service which will have the array of permissions
     // NOTE, TO-DO BILL: when jwt is refactored from local storage into a cookie not accessible from code,
-    // we will no longer be able to decodeon the client side (sad-face emoji)
+    // we will no longer be able to decodeon the client side
     const tokenPayload = this.authService.decodedToken();
+    console.log('token payload:');
+    console.log(tokenPayload);
 
     // get the permissions out of the token payload
     const permissions = tokenPayload.userData.permissions;
+    console.log('user permissions:');
+    console.log(permissions);
 
     // go through each menu item and set the hidden property by checking the permissions
     // only if the permissionProtected property is set to true
@@ -212,6 +223,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         const foundPermission = permissions.find(permission => {
           return permission.permissionName === `Resources > ${menuItem.title} > View`;
         });
+        console.log('found permission object:');
+        console.log(foundPermission);
         // if the permission was not found, set the hidden property to true
         if (!foundPermission) {
           menuItem.hidden = true;
@@ -258,7 +271,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
           this.highlightActiveMenu(this.router.url.slice(1));
         }, 0);
-        // this.highlightActiveMenu(foundMenuItem.path);
       }
     }
   }

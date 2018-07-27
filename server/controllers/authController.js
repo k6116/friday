@@ -219,18 +219,68 @@ function resetToken(req, res) {
 }
 
 
-// simply verify the token and return status code 200 (OK) or 401 (Unauthorized)
-function verifyToken(req, res) {
+// verify the user is able to access to app route (url)
+function verifyRoutePermissions(req, res) {
 
   // get the token out of the request header
   const token = req.header('X-JWT');
+  // console.log('token:');
+  // console.log(token);
+
+  // get the path from the request header
+  const path = req.header('X-Path');
+  // console.log('path:');
+  // console.log(path);
+
+  // split the path into an array
+  const pathArr = path.split('/');
+  // console.log('path array:');
+  // console.log(pathArr);
+
+  // find the position of 'main' in the path
+  const mainIndex = pathArr.indexOf('main');
+
+  // get a string of the 'protected' route, which is everthing after the main route
+  const protectedRoute = pathArr.slice(mainIndex + 1).join(' > ');
+  // console.log('protected route:');
+  // console.log(protectedRoute);
+
+  // build the required permission string based on the path and permissions convention
+  const permissionNeeded = `resources > ${protectedRoute} > view`;
+  // console.log('permission needed:');
+  // console.log(permissionNeeded);
 
   // send the token through verification and send the appropriate response
   jwt.verify(token, tokenSecret, (err, decoded) => {
     if (decoded) {
-      res.status(200).json({
-        tokenIsValid: true
+
+      // console.log('user permissions:');
+      // console.log(decoded.userData.permissions);
+
+      // try to find the required permission in the user's list of permissions
+      const foundPermission = decoded.userData.permissions.find(permission => {
+        // modify the permission string to replace white space between characters with '-' to match app routes and convert to lowercase
+        const permissionNameModified = permission.permissionName.split(' > ').map(x => x.replace(/\s/g, '-')).join(' > ').toLowerCase();
+        // console.log('permission modified:');
+        // console.log(permissionNameModified);
+        return permissionNeeded === permissionNameModified;
       });
+
+      // console.log('found permission:');
+      // console.log(foundPermission);
+
+      // if the permission was found, return valid status code and token is valid true, otherwise return error status
+      if (foundPermission) {
+        res.status(200).json({
+          tokenIsValid: true
+        });
+      } else {
+        res.status(401).json({
+          tokenIsValid: false
+        });
+      }
+
+    // if the token is invalid, return error status
     } else {
       res.status(401).json({
         tokenIsValid: false
@@ -290,7 +340,7 @@ module.exports = {
   authenticate: authenticate,
   getInfoFromToken: getInfoFromToken,
   resetToken: resetToken,
-  verifyToken: verifyToken,
+  verifyRoutePermissions: verifyRoutePermissions,
   getLoggedInUsers: getLoggedInUsers,
   logout: logout,
   getLoginBackgroundImages: getLoginBackgroundImages

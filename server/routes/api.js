@@ -15,7 +15,7 @@ var controllers = require('../controllers/_index.js');
 router.post('/login', controllers.auth.authenticate);
 router.get('/getInfoFromToken', controllers.auth.getInfoFromToken);
 router.post('/resetToken', controllers.auth.resetToken);
-router.get('/verifyToken', controllers.auth.verifyToken);
+router.get('/verifyRoutePermissions', controllers.auth.verifyRoutePermissions);
 router.get('/logout/:userName', controllers.auth.logout);
 router.get('/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
 

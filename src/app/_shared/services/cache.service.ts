@@ -50,6 +50,11 @@ export class CacheService {
   // standard red color for alert icon
   alertIconColor = 'rgb(193, 27, 27)';
 
+  // emit data from the permissions guard to the sidenav component, with the path, so that it can be hightlighted
+  // this is needed since the permissions guard makes a request from the server so takes some time
+  navigatedPath = new EventEmitter<string>();
+
+
   constructor() { }
 
   // TO-DO BRYAN: create a toast service and move

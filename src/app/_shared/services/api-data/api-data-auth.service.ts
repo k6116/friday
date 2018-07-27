@@ -43,15 +43,12 @@ export class ApiDataAuthService {
   }
 
   // verify the token to ensure it hasn't been tampered with
-  async verifyToken(token: string) {
-    const headers = new Headers({'X-JWT': token});
+  async verifyRoutePermissions(token: string, path: string) {
+    const headers = new Headers({'X-JWT': token, 'X-Path': path});
     const options = new RequestOptions({headers: headers});
-    return await this.http.get(`/api/verifyToken`, options)
+    return await this.http.get(`/api/verifyRoutePermissions`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json()).toPromise();
-
-    // const response: Response = await this.http.get(`/api/verifyToken`, options).toPromise();
-    // return response.json();
   }
 
   // get a list of the background image file names and captions
