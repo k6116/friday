@@ -196,10 +196,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       this.expandMenus(expandedMenu);
     }
 
-    // setTimeout(() => {
-    //   $('div.simplebar-content').css('overflow-x', 'hidden!important');
-    // }, 1000);
-
   }
 
 

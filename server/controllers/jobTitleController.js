@@ -3,6 +3,10 @@ const models = require('../models/_index');
 const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize');
 const Treeize = require('treeize');
+const dotevnv = require('dotenv').config(
+    {path: '/.env'}
+  );
+const token = require('../token/token');
 
 // // Retrieve list of all job titles and the associated job title subs
 // function indexJobTitle(req, res) {

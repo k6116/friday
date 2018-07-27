@@ -36,6 +36,7 @@ import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 import { BrowserGuard } from './_shared/guards/browser.guard';
 import { PermissionsGuard } from './_shared/guards/permissions.guard';
+import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
 
 // CHARTS
 import 'hammerjs';
@@ -162,6 +163,7 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     UnsavedChangesGuard,
     BrowserGuard,
     PermissionsGuard,
+    FteEntryGuard,
     TitleCasePipe
   ],
   bootstrap: [AppComponent]
