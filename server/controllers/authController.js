@@ -29,7 +29,7 @@ function authenticate(req, res) {
     url: 'ldap://adldap.cos.is.keysight.com',
     bindDN: `cn=${user.userName},cn=users,dc=ad,dc=keysight,dc=com`,
     bindCredentials: user.password,
-    searchBase: 'dc=ad,dc=keysight,dc=com',
+    searchBase: 'cn=users,dc=ad,dc=keysight,dc=com',
     searchFilter: '(cn={{username}})'
   };
 
@@ -68,7 +68,7 @@ function authenticate(req, res) {
 
         // log the ldap response time
 	      const timeDiff = process.hrtime(startTime);
-        console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
+        console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.");
         
         // set variables using the ldap object
         let userName = ldapUser.cn;

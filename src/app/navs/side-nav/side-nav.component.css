@@ -7,6 +7,8 @@
   top: 65px;
   background-color: rgb(33, 46, 53);
   font-size: 14px;
+  overflow-y: auto;
+  padding-bottom: 150px;
 }
 
 .sidenav-menu-item {
