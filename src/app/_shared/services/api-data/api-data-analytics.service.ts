@@ -15,19 +15,28 @@ export class ApiDataAnalyticsService {
     private cacheService: CacheService
   ) { }
 
-  getNCIProjectsWithDemandList(): Observable<any> {
-    return this.http.get('api/getNCIProjectsWithDemandList')
+  getNCIProjectsParentChildList(): Observable<any> {
+    return this.http.get(`api/getNCIProjectsParentChildList`)
     .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
+  getNCISupplyDemand(projectName: any): Observable<any> {
+    return this.http.get(`api/getNCISupplyDemand/${projectName}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
 
-  createProject(project: any, userID: number) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({ headers: headers });
-    return this.http.post(`/api/insertProject/${userID}`, JSON.stringify(project), options)
-      .timeout(this.cacheService.apiDataTimeout)
-      .map((response: Response) => response.json());
+  getNCISupplyDemandDatesList(): Observable<any> {
+    return this.http.get(`api/getNCISupplyDemandDatesList`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  getNCISupplyDemandProjectList(): Observable<any> {
+    return this.http.get(`api/getNCISupplyDemandProjectList`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
   }
 
 }

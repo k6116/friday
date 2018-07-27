@@ -97,8 +97,11 @@ router.get('/dashboard/checkJobTitle/:employeeID', controllers.dashboard.checkJo
 router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
 
 // ANALYTICS CONTROLLER
-router.get('/getNCIProjectsWithDemandList', controllers.analytics.getNCIProjectsWithDemandList);
-router.get('/getNCISupplyDemand', controllers.analytics.getNCISupplyDemand);
+router.get('/getNCIProjectsParentChildList', controllers.analytics.getNCIProjectsParentChildList);
+router.get('/getNCISupplyDemand/:projectName', controllers.analytics.getNCISupplyDemand);
+router.get('/getNCISupplyDemandDatesList', controllers.analytics.getNCISupplyDemandDatesList);
+router.get('/getNCISupplyDemandProjectList', controllers.analytics.getNCISupplyDemandProjectList);
+
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 

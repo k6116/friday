@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ApiDataReportService } from '../../_shared/services/api-data/_index';
+import { ApiDataAnalyticsService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
@@ -15,9 +15,11 @@ const moment = require('moment');
 })
 export class SupplyDemandComponent implements OnInit, OnDestroy {
 
-  displayTopFTEProjectList: boolean;  // display boolean for top FTE table
-  topFTEProjectList: any; // for top FTE projects table
-  topFteProjectSubscription: Subscription;
+  displaySupplyDemandList: boolean;  // display boolean for top FTE table
+  projectParentChildList: any;
+  supplyDemandProjectList: any; // for top FTE projects table
+  supplyDemandDatesList: any;
+  supplyDemandList: any;
   isProjectSelected: any; // for toggling projects when clicking the top FTE table
 
   projectEmployeeData: any; // for rendering project roster (TO BE OBSOLETED)
@@ -30,94 +32,109 @@ export class SupplyDemandComponent implements OnInit, OnDestroy {
   chartIsLoading = true;
   lineChart: any;
   lineChartOptions: any;  // for setting chart options
-  historicFteData:  any; // for populating historic FTE data to plot in chart
-  historicFteSubscription: Subscription;
+  supplyData:  any; // for populating historic FTE data to plot in chart
+  demandData: any;
+
+  // subscriptions for api calls
+  subscription1: Subscription;
+  subscription2: Subscription;
+  subscription3: Subscription;
+  subscription4: Subscription;
 
 
   constructor(
-    private apiDataReportService: ApiDataReportService
+    private apiDataAnalyticsService: ApiDataAnalyticsService
   ) { }
 
   ngOnInit() {
     // Set display flags to false
-    this.displayTopFTEProjectList = false;
+    this.displaySupplyDemandList = true;
     this.displayProjectEmployeeList = false;
 
-    // Retrieve Top FTE Project List
-    this.topFteProjectSubscription = this.apiDataReportService.getTopFTEProjectList()
+    // Retrieve Supply Demand List
+    this.subscription1 = this.apiDataAnalyticsService.getNCIProjectsParentChildList()
     .subscribe(
       res => {
-        console.log('Top FTE Project List Data: ', res);
-        this.topFTEProjectList = res;
-        this.displayTopFTEProjectList = true;
-        this.chartIsLoading = false;
-        // initialize an array row state, whether the project is displayed in the chart or not
-        this.isProjectSelected = new Array(this.topFTEProjectList.length).fill(false);
+        console.log('Project Parent Child List Data: ', res);
+        this.projectParentChildList = res;
       },
       err => {
         console.log(err);
       }
     );
+
+    this.subscription2 = this.apiDataAnalyticsService.getNCISupplyDemandDatesList()
+    .subscribe(
+      res => {
+        console.log('Date List Data: ', res);
+        this.supplyDemandDatesList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+    this.subscription3 = this.apiDataAnalyticsService.getNCISupplyDemandProjectList()
+    .subscribe(
+      res => {
+        console.log('Project List Data: ', res);
+        this.supplyDemandProjectList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
   }
 
   ngOnDestroy() {
-    if (this.lineChart) {
-      this.lineChart.destroy();
+    if (this.subscription1) {
+      this.subscription1.unsubscribe();
     }
-    if (this.topFteProjectSubscription) {
-      this.topFteProjectSubscription.unsubscribe();
+    if (this.subscription2) {
+      this.subscription2.unsubscribe();
     }
-    if (this.projectEmployeeSubscription) {
-      this.projectEmployeeSubscription.unsubscribe();
+    if (this.subscription3) {
+      this.subscription3.unsubscribe();
     }
-    if (this.historicFteSubscription) {
-      this.historicFteSubscription.unsubscribe();
+    if (this.subscription4) {
+      this.subscription4.unsubscribe();
     }
   }
 
-  onProjectClick(project: any, index: number) {
+  onProjectClick(project: any) {
     this.selectedProject = project;
+    this.supplyData = undefined;
+    this.demandData = undefined;
 
-    // Retrieve historical FTE data for a given project
-    this.historicFteSubscription = this.apiDataReportService.getProjectFTEHistory(this.selectedProject.projectID)
+    // Retrieve Supply Demand List
+    this.subscription4 = this.apiDataAnalyticsService.getNCISupplyDemand(project.NCIProjectName)
     .subscribe(
       res => {
-        // highlight selected row
-        for (let i = 0; i < this.isProjectSelected.length; i++) {
-          this.isProjectSelected[i] = false;
-        }
-        this.isProjectSelected[index] = true;
+        this.supplyDemandList = res[0].Details;
+        // initialize an array row state, whether the project is displayed in the chart or not
+        // this.isProjectSelected = new Array(this.supplyDemandList.length).fill(false);
+        console.log('Supply Demand List Data: ', this.supplyDemandList);
 
         // Convert table to array for HighChart data series format
         // also, convert fiscal date from js datetime to unix (ms) timestamp for proper plotting in highcharts
-        const fiscalDate = Object.keys(res)
-        .map(i => new Array(moment(res[i].fiscalDate).valueOf(), res[i].totalMonthlyFTE));
+        const supplyQty = Object.keys(this.supplyDemandList)
+        .map(i => new Array(moment(this.supplyDemandList[i].SupplyDemandDate).valueOf(), this.supplyDemandList[i].SupplyQty));
 
-        this.historicFteData = ({
-          projectIndex: index,
-          projectName: project.projectName,
-          data: fiscalDate
+        const demandQty = Object.keys(this.supplyDemandList)
+        .map(i => new Array(moment(this.supplyDemandList[i].SupplyDemandDate).valueOf(), this.supplyDemandList[i].DemandQty));
+
+        this.supplyData = ({
+          name: 'Supply',
+          data: supplyQty
         });
-        console.log('fiscalDate', fiscalDate);
-        console.log(this.historicFteData);
+        this.demandData = ({
+          name: 'Demand',
+          data: demandQty
+        });
+        console.log('supply qty', supplyQty);
+
         this.plotFteHistoryChart();
-      },
-      err => {
-        console.log(err);
-      }
-    );
-
-  }
-
-  // function for getting the project roster onClick in the plot.  (TO BE OBSOLETED)
-  getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
-    this.displayProjectEmployeeList = true;
-    // Retrieve all employee FTE logs for a given project
-    this.projectEmployeeSubscription = this.apiDataReportService.getProjectEmployeeFTEList(projectID, fiscalDate)
-    .subscribe(
-      res => {
-        // console.log('Project FTE Employee Data: ', res);
-        this.projectEmployeeData = res;
       },
       err => {
         console.log(err);
@@ -135,13 +152,13 @@ export class SupplyDemandComponent implements OnInit, OnDestroy {
         text: 'jarvis.is.keysight.com',
         href: 'https://jarvis.is.keysight.com'
       },
-      title: {text: `Top Projects FTE History`},
+      title: {text: `Supply Demand ${this.selectedProject.NCIProjectName}`},
       subtitle: { text: 'Time Period: All historic data'},
       xAxis: {
         type: 'datetime'
       },
       yAxis:  {
-        title: {text: 'FTEs Allocated'}
+        title: {text: 'Supply'}
       },
       tooltip: {
         crosshairs: true,
@@ -163,17 +180,15 @@ export class SupplyDemandComponent implements OnInit, OnDestroy {
         }
       },
 
-      series: [{name: this.historicFteData.projectName,
-        data: this.historicFteData.data}]
+      series: [{name: this.supplyData.name,
+        data: this.supplyData.data}]
     };
-    this.lineChart = Highcharts.chart('FTEHistory', this.lineChartOptions);
+    this.lineChart = Highcharts.chart('SupplyDemand', this.lineChartOptions);
     // loop through the historic FTE data object and plot each object as an independent series
     this.lineChart.addSeries({
-      name: this.historicFteData.projectName,
-      data: this.historicFteData.data
+      name: this.demandData.name,
+      data: this.demandData.data
     });
-
   }
-
-
 }
+
