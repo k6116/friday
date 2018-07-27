@@ -26,7 +26,7 @@ export class ApiDataAuthService {
 
   // decode the jwt token to get the user info, issued and expiration dates
   getInfoFromToken(token: string): Observable<any> {
-    const headers = new Headers({'X-JWT': token});
+    const headers = new Headers({'X-Token': token});
     const options = new RequestOptions({headers: headers});
     return this.http.get(`/api/getInfoFromToken`, options)
       .timeout(this.cacheService.apiDataTimeout)
@@ -35,7 +35,7 @@ export class ApiDataAuthService {
 
   // reset / get a new token with pushed out expiration date
   resetToken(token: string): Observable<any> {
-    const headers = new Headers({'X-JWT': token});
+    const headers = new Headers({'X-Token': token});
     const options = new RequestOptions({headers: headers});
     return this.http.post(`/api/resetToken`, null, options)
       .timeout(this.cacheService.apiDataTimeout)
@@ -44,7 +44,7 @@ export class ApiDataAuthService {
 
   // verify the token to ensure it hasn't been tampered with
   async verifyRoutePermissions(token: string, path: string) {
-    const headers = new Headers({'X-JWT': token, 'X-Path': path});
+    const headers = new Headers({'X-Token': token, 'X-Path': path});
     const options = new RequestOptions({headers: headers});
     return await this.http.get(`/api/verifyRoutePermissions`, options)
       .timeout(this.cacheService.apiDataTimeout)
@@ -60,7 +60,7 @@ export class ApiDataAuthService {
 
   // TEMP CODE: for websockets testing
   getLoggedInUsers(token: string): Observable<any> {
-    const headers = new Headers({'X-JWT': token});
+    const headers = new Headers({'X-Token': token});
     const options = new RequestOptions({headers: headers});
     return this.http.get(`/api/auth/websockets/index/getLoggedInUsers`, options)
       .timeout(this.cacheService.apiDataTimeout)

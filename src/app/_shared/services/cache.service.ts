@@ -8,7 +8,9 @@ export class CacheService {
 
   // app data service serves as a central data store (global variables, constants, emitters)
 
-  token: any;   // jwt token object with signedToken property (encoded string), expiringAt, and issuedAt
+  // jwt token object with signedToken property (encoded string), issuedAt, and expiringAt (unix/epoch time)
+  // userData object will be encoded in the signedToken string
+  token: any;
 
   apiDataTimeout = 100 * 60 * 15; // set the api data service timeout to 15 seconds
   loggedInUser = new EventEmitter<any>();

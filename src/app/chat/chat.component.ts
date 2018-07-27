@@ -3,6 +3,7 @@ import { WebsocketService } from '../_shared/services/websocket.service';
 import { Subscription } from 'rxjs/Subscription';
 import { ApiDataAuthService } from '../_shared/services/api-data/_index';
 import { AuthService } from '../_shared/services/auth.service';
+import { CacheService } from '../_shared/services/cache.service';
 import * as io from 'socket.io-client';
 import * as faker from 'faker';
 import * as moment from 'moment';
@@ -19,7 +20,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   @ViewChild('message') message: ElementRef;
 
-  url = 'http://localhost:3000';  // don't need this, it will be set by default
+  url = 'http://localhost:3000';  // TO-DO BILL: can remove; don't need this, it will be set by default
   socket;
   inputText: string;
   userName: string;
@@ -35,7 +36,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   constructor (
     private websocketService: WebsocketService,
     private apiDataAuthService: ApiDataAuthService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cacheService: CacheService
     ) {
 
   }
@@ -88,7 +90,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   getLoggedInUsers() {
 
-    this.apiDataAuthService.getLoggedInUsers(this.authService.token.signedToken)
+    this.apiDataAuthService.getLoggedInUsers(this.cacheService.token.signedToken)
       .subscribe(
         res => {
           console.log('logged in users');

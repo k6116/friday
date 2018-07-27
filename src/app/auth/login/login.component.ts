@@ -195,17 +195,17 @@ export class LoginComponent implements OnInit, OnDestroy {
           console.log('logged in user:');
           console.log(this.authService.loggedInUser);
 
-          // store the jwt token in the auth service
-          this.authService.token = res.token;
-          console.log('token saved in auth service (this.token):');
-          console.log(this.authService.token);
-
-          // set logged in to true in the auth service (loggedIn property)
-          this.authService.setLoggedIn(true);
+          // store the jwt token in the cache service
+          this.cacheService.token = res.token;
+          console.log('token saved in cache service (this.token):');
+          console.log(this.cacheService.token);
 
           // store the jwt token in local storage
           localStorage.setItem('jarvisToken', res.token.signedToken);
           // sessionStorage.setItem('jarvisToken', res.token.signedToken);
+
+          // set logged in to true in the auth service (loggedIn property)
+          this.authService.setLoggedIn(true);
 
           // reset the timer so that it will be synched with the token expiration, at least within a second or two
           this.cacheService.resetTimer.emit(true);

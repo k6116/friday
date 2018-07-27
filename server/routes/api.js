@@ -97,7 +97,7 @@ router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYea
 // NOTE: comment this out when you want to test routes using postman, chrome etc. without having to pass the token
 router.use('/', function(req, res, next) {
   // get the token out of the query string and verify it is valid.
-  jwt.verify(req.header('X-JWT'), process.env.JWT_SECRET, (err, decoded) => {
+  jwt.verify(req.header('X-Token'), process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       console.log(err);
       // if the token was not decoded successfully, return an error status and message
@@ -129,40 +129,40 @@ router.use('/', function(req, res, next) {
 
   // get the api route/path the user is attempting to access
   const path = req.path
-  console.log('path');
-  console.log(path);
+  // console.log('path');
+  // console.log(path);
 
   // decode the token to get access to the permission array
-  const decodedToken = token.decode2(req.header('X-JWT'), res);
-  console.log('decoded token:');
-  console.log(decodedToken);
+  const decodedToken = token.decode(req.header('X-Token'), res);
+  // console.log('decoded token:');
+  // console.log(decodedToken);
 
   // get the permissions within the token object (array of objects {permissionName: "name"})
   const permissions = decodedToken.userData.permissions;
-  console.log('permissions array:');
-  console.log(permissions);
+  // console.log('permissions array:');
+  // console.log(permissions);
   
   // translate the path into a string that should match the permission by applying the convention
   // split the path into an array
   const pathArr = path.split('/');
-  console.log('path array:');
-  console.log(pathArr);
+  // console.log('path array:');
+  // console.log(pathArr);
 
   // build the required permission string based on the path and permissions convention
   const permissionNeeded = `resources > ${pathArr[2].split('-').join(' > ')} > ${(pathArr[3] === 'index' || pathArr[3] === 'show') ? 'view' : pathArr[3]}`.toLowerCase();
-  console.log('permission needed based on path:');
-  console.log(permissionNeeded);
+  // console.log('permission needed based on path:');
+  // console.log(permissionNeeded);
 
   // try to find the required permission in the user's list of permissions
   const foundPermission = permissions.find(permission => {
     // modify the permission string to remove white space between characters and convert to lowercase
     const permissionNameModified = permission.permissionName.split(' > ').map(x => x.replace(/\s/g, '')).join(' > ').toLowerCase();
-    console.log('permission modified');
-    console.log(permissionNameModified);
+    // console.log('permission modified');
+    // console.log(permissionNameModified);
     return permissionNameModified === permissionNeeded;
   });
-  console.log('found permission:');
-  console.log(foundPermission);
+  // console.log('found permission:');
+  // console.log(foundPermission);
 
   // if the permission was not found, send an error response
   if (!foundPermission) {
@@ -183,5 +183,8 @@ router.use('/', function(req, res, next) {
 router.get('/auth/websockets/index/getLoggedInUsers', controllers.auth.getLoggedInUsers);
 router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate', controllers.dashboard.getFTEData);
 router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', controllers.report.getAggregatedFteData);
+
+
+
 
 module.exports = router;

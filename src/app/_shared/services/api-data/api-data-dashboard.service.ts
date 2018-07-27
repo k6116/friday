@@ -19,11 +19,8 @@ export class ApiDataDashboardService {
   getDashboardData(startDate: string, endDate: string): Observable<any> {
 
     // NOTE: email is passed here instead of id as the key since it gets data from the plm databridge as well as jarvis
-    const headers = new Headers({'X-JWT': this.authService.token.signedToken});
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-
-    // console.log('get dashboard data token:');
-    // console.log(this.authService.token.signedToken);
 
     const fteData = this.http.get(`/api/dashboard/dashboard/show/getFTEData/${startDate}/${endDate}`, options)
       .timeout(this.cacheService.apiDataTimeout)

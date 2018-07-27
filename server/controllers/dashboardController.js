@@ -16,7 +16,7 @@ function getFTEData(req, res) {
 
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
-  const decodedToken = token.decode(req.header('X-JWT'));
+  const decodedToken = token.decode(req.header('X-Token'));
 
   sequelize.query('EXECUTE resources.DashboardFTEData :emailAddress, :startDate, :endDate', 
     {replacements: {emailAddress: decodedToken.userData.email, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
@@ -29,10 +29,7 @@ function getFTEData(req, res) {
       dashboardDataTree.grow(dashboardData);
       const dashboardDataTreeized = dashboardDataTree.getData();
 
-      console.log("returning dashboard data");
       res.json(dashboardDataTreeized);
-
-      // res.json(dashboardData);
 
     })
     .catch(error => {
@@ -46,7 +43,7 @@ function getFTEData(req, res) {
 
 function checkFirstLogin(req, res) {
 
-  const decodedToken = token.decode(req.header('X-JWT'));
+  const decodedToken = token.decode(req.header('X-Token'), res);
 
   const sql = `
     SELECT 
@@ -58,6 +55,7 @@ function checkFirstLogin(req, res) {
       AND ClickedOn <> 'Login Button'
       AND Page <> 'App Load'
   `;
+  
   sequelize.query(sql, {replacements: {employeeID: decodedToken.userData.id, userName: decodedToken.userData.userName}, type: sequelize.QueryTypes.SELECT})
     .then(clickCount => {
       console.log(`click count`);
@@ -78,7 +76,7 @@ function checkFirstLogin(req, res) {
 
 function checkJobTitle(req, res) {
 
-  const decodedToken = token.decode(req.header('X-JWT'));
+  const decodedToken = token.decode(req.header('X-Token'), res);
 
   sequelize.query(`SELECT JobTitleID, JobSubTitleID FROM accesscontrol.Employees WHERE EmployeeID = :employeeID`, {replacements: {employeeID: decodedToken.userData.id}, type: sequelize.QueryTypes.SELECT})
     .then(jobTitle => {
@@ -98,7 +96,7 @@ function checkJobTitle(req, res) {
 
 function checkProjectRequests(req, res) {
 
-  const decodedToken = token.decode(req.header('X-JWT'));
+  const decodedToken = token.decode(req.header('X-Token'), res);
 
   const sql = `
     SELECT

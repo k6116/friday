@@ -62,7 +62,7 @@ export class ApiDataReportService {
 
   // Top Projects Bubble report
   getAggregatedFteData() {
-    const headers = new Headers({'X-JWT': this.authService.token.signedToken});
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
     return this.http.get(`/api/report/reports-topProjectsBubble/show/getAggregatedFteData/`, options)
       .timeout(this.cacheService.apiDataTimeout)

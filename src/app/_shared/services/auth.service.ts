@@ -19,7 +19,6 @@ export class AuthService {
 
   loggedIn: boolean;
   loggedInUser: User;
-  token: any;
   lastActivity: number;   // epoch time indicating last time there was any mouse click or keypress
   modalIsDisplayed: boolean;
   warnBeforeExpiration: number; // time in minutes before auto logout to display the warning modal
@@ -47,7 +46,7 @@ export class AuthService {
       return false;
     } else {
       // if the user is logged in and there is a token, make sure the token has not expired
-      if (this.loggedIn && this.token) {
+      if (this.loggedIn && this.cacheService.token) {
         // if the token is expired, the user is not logged in
         if (this.tokenIsExpired()) {
           // console.log('isLoggedIn returned false due to token expired');
@@ -117,9 +116,9 @@ export class AuthService {
         .subscribe(
           res => {
             // update the token info in memory
-            this.token = res.token;
+            this.cacheService.token = res.token;
             console.log('token has been updated');
-            console.log(this.token);
+            console.log(this.cacheService.token);
             // if the token is expired, clear the user data/cache (properties in this service) and token, and re-route to the login page
             if (this.tokenIsExpired()) {
               console.log('logging out within getInfoFromToken function, due to expired token');
@@ -217,7 +216,7 @@ export class AuthService {
         res => {
           console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
           // update the token info in memory
-          this.token = res.token;
+          this.cacheService.token = res.token;
           // remove and reset the token in local storage
           this.clearToken();
           this.setToken(res.token.signedToken);
@@ -239,8 +238,8 @@ export class AuthService {
 
 
   decodedToken(): any {
-    if (this.token) {
-      return decode(this.token.signedToken);
+    if (this.cacheService.token) {
+      return decode(this.cacheService.token.signedToken);
     } else {
       return undefined;
     }
@@ -250,8 +249,8 @@ export class AuthService {
   // method to compare the timestamps and check to see whether the token expiration date has passed
   // NOTE: this method just uses the cached token data, doesn't need to make a call to the server to decode
   tokenIsExpired(): boolean {
-    if (this.token) {
-      const expiringAt = moment.unix(this.token.expiringAt);
+    if (this.cacheService.token) {
+      const expiringAt = moment.unix(this.cacheService.token.expiringAt);
       const now = moment();
       if (expiringAt.diff(now, 'seconds') <= 0) {
       // if (expiringAt.isSameOrAfter(now)) {
@@ -265,8 +264,8 @@ export class AuthService {
 
   // method to compare the timestamps to see if the token will expire in X minutes or less
   tokenIsAboutToExpire(): boolean {
-    if (this.token) {
-      const expiringAt = moment.unix(this.token.expiringAt);
+    if (this.cacheService.token) {
+      const expiringAt = moment.unix(this.cacheService.token.expiringAt);
       const now = moment();
       console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
       if (expiringAt.diff(now, 'seconds') <= this.warnBeforeExpiration * 60) {
@@ -280,13 +279,13 @@ export class AuthService {
 
   // get the token expiration datetime as a string (convert from unix epoch)
   tokenExpirationDate(): string {
-    return moment.unix(this.token.expiringAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
+    return moment.unix(this.cacheService.token.expiringAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
   }
 
 
   // get the token issued datetime as a string (convert from unix epoch)
   tokenIssuedDate(): string {
-    return moment.unix(this.token.issuedAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
+    return moment.unix(this.cacheService.token.issuedAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
   }
 
 
@@ -308,7 +307,7 @@ export class AuthService {
   clearUserCache() {
     this.loggedIn = undefined;
     this.loggedInUser = undefined;
-    this.token = undefined;
+    this.cacheService.token = undefined;
   }
 
 
@@ -389,7 +388,7 @@ export class AuthService {
 
   // TEMP CODE: to log the token status
   logTokenStatus() {
-    if (this.token) {
+    if (this.cacheService.token) {
       console.log(`token was issued at: ${this.tokenIssuedDate()}; expiring at: ${this.tokenExpirationDate()}`);
     }
   }

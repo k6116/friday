@@ -108,7 +108,7 @@ function authenticate(req, res) {
             );
 
             // decode the token to get the issued at and expiring at timestamps
-            const decodedToken = token.decode(newToken);
+            const decodedToken = token.decode(newToken, res);
 
             // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
             res.json({
@@ -175,13 +175,13 @@ function authenticate(req, res) {
 // verify and decode the token to get user info, issued at and expiring at data
 function getInfoFromToken(req, res) {
 
-  const decodedToken = token.decode2(req.header('X-JWT'), res);
+  const decodedToken = token.decode(req.header('X-Token'), res);
 
   // NOTE: the token is not updated here; only user data is returned from the decoded token
   res.json({
     jarvisUser: decodedToken.userData,
     token: {
-      signedToken: req.header('X-JWT'),
+      signedToken: req.header('X-Token'),
       issuedAt: decodedToken.iat,
       expiringAt: decodedToken.exp
     }
@@ -194,7 +194,7 @@ function getInfoFromToken(req, res) {
 // NOTE: new jarvis user is retrived in case permissions or other details have changed
 function resetToken(req, res) {
 
-  const decodedToken = token.decode(req.header('X-JWT'));
+  const decodedToken = token.decode(req.header('X-Token'), res);
 
   // execute the stored procedure to get the user data, role, and permissions
   // it will also insert a new record into the employees table if this is a new user
@@ -245,7 +245,7 @@ function resetToken(req, res) {
 function verifyRoutePermissions(req, res) {
 
   // get the token out of the request header
-  const token = req.header('X-JWT');
+  const token = req.header('X-Token');
   // console.log('token:');
   // console.log(token);
 

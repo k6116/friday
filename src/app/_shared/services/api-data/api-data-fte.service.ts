@@ -40,7 +40,7 @@ export class ApiDataFteService {
 
   // check it job title and subtitle has been set
   checkJobTitleUpdated() {
-    const headers = new Headers({'X-JWT': this.authService.token.signedToken});
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
     return this.http.get('api/dashboard/checkJobTitle', options)
       .timeout(this.cacheService.apiDataTimeout)
