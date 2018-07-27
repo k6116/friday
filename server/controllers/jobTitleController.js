@@ -89,7 +89,8 @@ function indexJobSubTitle(req, res) {
 // Update user's job title and job title sub
 function updateEmployeeJobTitle(req,res) {
     const jobTitles = req.body;
-    const userID = req.params.userID;
+    // const userID = req.params.userID;
+    const decodedToken = token.decode(req.header('X-Token'), res);
     // console.log('JOBTITLE DATA:', jobTitles);
     return sequelize.transaction((t) => {
 
@@ -100,7 +101,7 @@ function updateEmployeeJobTitle(req,res) {
                     jobSubTitleID: jobTitles.newJobSubTitleID
                 },
                 {
-                    where: {id: userID},
+                    where: {id: decodedToken.userData.id},
                     transaction: t
                 }
             )

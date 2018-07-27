@@ -129,7 +129,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           path: 'main/admin',
           expanded: false,
           active: false,
-          permissionProtected: false,
+          permissionProtected: true,
           hidden: false
         },
         {

@@ -19,7 +19,7 @@ export class ApiDataAuthService {
   authenticate(user: any): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
-    return this.http.post('/api/login', JSON.stringify(user), options)
+    return this.http.post('/api/auth/authenticate', JSON.stringify(user), options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -28,7 +28,7 @@ export class ApiDataAuthService {
   getInfoFromToken(token: string): Observable<any> {
     const headers = new Headers({'X-Token': token});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/getInfoFromToken`, options)
+    return this.http.get(`/api/auth/getInfoFromToken`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -37,7 +37,7 @@ export class ApiDataAuthService {
   resetToken(token: string): Observable<any> {
     const headers = new Headers({'X-Token': token});
     const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/resetToken`, null, options)
+    return this.http.post(`/api/auth/resetToken`, null, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -46,14 +46,14 @@ export class ApiDataAuthService {
   async verifyRoutePermissions(token: string, path: string) {
     const headers = new Headers({'X-Token': token, 'X-Path': path});
     const options = new RequestOptions({headers: headers});
-    return await this.http.get(`/api/verifyRoutePermissions`, options)
+    return await this.http.get(`/api/auth/verifyRoutePermissions`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json()).toPromise();
   }
 
   // get a list of the background image file names and captions
   getLoginBackgroundImages(): Observable<any> {
-    return this.http.get(`/api/getLoginBackgroundImages`)
+    return this.http.get(`/api/auth/getLoginBackgroundImages`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -69,7 +69,7 @@ export class ApiDataAuthService {
 
   // TEMP CODE: for websockets testing
   logout(userName): Observable<any> {
-    return this.http.get(`/api/logout/${userName}`)
+    return this.http.get(`/api/auth/logout/${userName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

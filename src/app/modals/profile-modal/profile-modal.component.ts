@@ -129,7 +129,7 @@ export class ProfileModalComponent implements OnInit {
     this.editToggle = !this.editToggle;
 
     // write new values to database
-    this.apiDataJobTitleService.updateEmployeeJobTitle(this.loggedInUser.id, this.newJobTitleData)
+    this.apiDataJobTitleService.updateEmployeeJobTitle(this.newJobTitleData)
       .subscribe(
         res => {
           console.log(res);

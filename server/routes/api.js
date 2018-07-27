@@ -12,12 +12,12 @@ var controllers = require('../controllers/_index.js');
 // TO-DO ALL: rename controller functions to index, show, insert, update, destory if it fits
 
 // AUTH CONTROLLER 
-router.post('/login', controllers.auth.authenticate);
-router.get('/getInfoFromToken', controllers.auth.getInfoFromToken);
-router.post('/resetToken', controllers.auth.resetToken);
-router.get('/verifyRoutePermissions', controllers.auth.verifyRoutePermissions);
-router.get('/logout/:userName', controllers.auth.logout);
-router.get('/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
+router.post('/auth/authenticate', controllers.auth.authenticate);
+router.get('/auth/getInfoFromToken', controllers.auth.getInfoFromToken);
+router.post('/auth/resetToken', controllers.auth.resetToken);
+router.get('/auth/verifyRoutePermissions', controllers.auth.verifyRoutePermissions);
+router.get('/auth/logout/:userName', controllers.auth.logout);
+router.get('/auth/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
 
 // FTE CONTROLLER
 router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
@@ -68,18 +68,6 @@ router.post('/insertProjectPermissionRequest/:userID', controllers.permission.in
 router.post('/updateProjectPermissionResponse/:userID/:reply/:replyComment', controllers.permission.updateProjectPermissionResponse);
 router.post('/updateProjectPermissionRequest/:userID', controllers.permission.updateProjectPermissionRequest);
 
-// JOB TITLE CONTROLLER
-router.get('/indexJobTitle', controllers.jobTitle.indexJobTitle);
-router.get('/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
-router.post('/updateEmployeeJobTitle/:userID', controllers.jobTitle.updateEmployeeJobTitle);
-router.post('/insertJobTitle', controllers.jobTitle.insertJobTitle);
-router.post('/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
-router.post('/updateJobTitle', controllers.jobTitle.updateJobTitle);
-router.post('/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
-router.post('/deleteJobSubTitle', controllers.jobTitle.deleteJobSubTitle);
-router.post('/updateJobSubTitle', controllers.jobTitle.updateJobSubTitle);
-router.post('/insertJobTitleMap', controllers.jobTitle.insertJobTitleMap);
-router.post('/deleteJobTitleMap', controllers.jobTitle.deleteJobTitleMap);
 
 // REPORTS PROJECT CONTROLLER
 router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
@@ -129,29 +117,41 @@ router.use('/', function(req, res, next) {
 
   // get the api route/path the user is attempting to access
   const path = req.path
-  // console.log('path');
-  // console.log(path);
+  console.log('path');
+  console.log(path);
 
   // decode the token to get access to the permission array
   const decodedToken = token.decode(req.header('X-Token'), res);
-  // console.log('decoded token:');
-  // console.log(decodedToken);
+  console.log('decoded token:');
+  console.log(decodedToken);
 
   // get the permissions within the token object (array of objects {permissionName: "name"})
   const permissions = decodedToken.userData.permissions;
-  // console.log('permissions array:');
-  // console.log(permissions);
+  console.log('permissions array:');
+  console.log(permissions);
   
   // translate the path into a string that should match the permission by applying the convention
   // split the path into an array
   const pathArr = path.split('/');
-  // console.log('path array:');
-  // console.log(pathArr);
+  console.log('path array:');
+  console.log(pathArr);
 
   // build the required permission string based on the path and permissions convention
-  const permissionNeeded = `resources > ${pathArr[2].split('-').join(' > ')} > ${(pathArr[3] === 'index' || pathArr[3] === 'show') ? 'view' : pathArr[3]}`.toLowerCase();
-  // console.log('permission needed based on path:');
-  // console.log(permissionNeeded);
+  const firstSegment = 'resources';
+  const secondSegment = pathArr[2].split('-').join(' > ');
+  var thirdSegment;
+  if (pathArr[3] === 'index' || pathArr[3] === 'show') {
+    thirdSegment = 'view';
+  } else if (pathArr[3] === 'update') {
+    thirdSegment = 'update';
+  } else if (pathArr[3] === 'insert') {
+    thirdSegment = 'create';
+  } else if (pathArr[3] === 'destroy') {
+    thirdSegment = 'delete';
+  }
+  const permissionNeeded = `${firstSegment} > ${secondSegment} > ${thirdSegment}`.toLowerCase();
+  console.log('permission needed based on path:');
+  console.log(permissionNeeded);
 
   // try to find the required permission in the user's list of permissions
   const foundPermission = permissions.find(permission => {
@@ -161,11 +161,12 @@ router.use('/', function(req, res, next) {
     // console.log(permissionNameModified);
     return permissionNameModified === permissionNeeded;
   });
-  // console.log('found permission:');
-  // console.log(foundPermission);
+  console.log('found permission:');
+  console.log(foundPermission);
 
   // if the permission was not found, send an error response
   if (!foundPermission) {
+    console.log(`permission '${permissionNeeded}' not found, action is denied`);
     return res.status(401).json({
       title: 'Invalid Permissions',
       message: 'You do not have the appropriate permission to access the requested api route'
@@ -180,11 +181,27 @@ router.use('/', function(req, res, next) {
 
 // NOTE: these are just being used for testing permissions protected routes; these are not necessarily going to be permissions protected
 
+// AUTH CONTROLLER
 router.get('/auth/websockets/index/getLoggedInUsers', controllers.auth.getLoggedInUsers);
+
+// DASHBOARD CONTROLLER
 router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate', controllers.dashboard.getFTEData);
+
+// REPORT CONTROLLER
 router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', controllers.report.getAggregatedFteData);
 
-
+// JOB TITLE CONTROLLER (ADMIN)
+router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
+router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
+router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
+router.post('/jobTitle/admin/insert/insertJobTitle', controllers.jobTitle.insertJobTitle);
+router.post('/jobTitle/admin/insert/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
+router.post('/jobTitle/admin/destroy/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
+router.post('/jobTitle/admin/destroy/deleteJobSubTitle', controllers.jobTitle.deleteJobSubTitle);
+router.put('/jobTitle/admin/update/updateJobTitle', controllers.jobTitle.updateJobTitle);
+router.put('/jobTitle/admin/update/updateJobSubTitle', controllers.jobTitle.updateJobSubTitle);
+router.post('/jobTitle/admin/insert/insertJobTitleMap', controllers.jobTitle.insertJobTitleMap);
+router.post('/jobTitle/admin/destroy/deleteJobTitleMap', controllers.jobTitle.deleteJobTitleMap);
 
 
 module.exports = router;
