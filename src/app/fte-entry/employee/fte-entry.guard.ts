@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Router, CanActivate, ActivatedRoute, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
@@ -10,6 +10,8 @@ import 'rxjs/add/operator/toPromise';
 export class FteEntryGuard implements CanActivate {
 
   constructor(
+    private router: Router,
+    private route: ActivatedRoute,
     private apiDataFteService: ApiDataFteService,
     private cacheService: CacheService,
     private authService: AuthService
@@ -29,9 +31,6 @@ export class FteEntryGuard implements CanActivate {
         return false;
       });
 
-    console.log('fte entry guard response:');
-    console.log(res);
-
     // if the job title is populated (not null)
     if (res.jobTitle[0].JobTitleID) {
       // emit the path through the cache service for the sidenav component to pick up to highlight the menu item
@@ -40,27 +39,32 @@ export class FteEntryGuard implements CanActivate {
       return true;
     // if the job title is null
     } else {
-      // show modal instructing the user they must update their profile with their job title and subtitle
-      const initial = this.authService.loggedInUser.fullName[0].toUpperCase();
-      this.cacheService.confirmModalData.emit(
-        {
-          title: 'Profile Update Required',
-          message: `Please update your profile with your job title and subtitle if applicable -
-            click the ${initial} icon in the upper right hand corner then the profile button.
-            You won't be able to enter your project ftes until this has been updated.`,
-          iconClass: 'fa-exclamation-triangle',
-          iconColor: 'rgb(193, 27, 27)',
-          closeButton: true,
-          allowOutsideClickDismiss: true,
-          allowEscKeyDismiss: true,
-          buttons: [
-            {
-              text: 'Ok',
-              bsClass: 'btn-secondary'
-            }
-          ]
-        }
-      );
+      // route to the dashboard landing page, if the user tries to navigate directly to the fte entry page via the address bar
+      if (this.router.url === '/') {
+        this.router.navigate(['/main/dashboard']);
+      } else {
+        // show modal instructing the user they must update their profile with their job title and subtitle
+        const initial = this.authService.loggedInUser.fullName[0].toUpperCase();
+        this.cacheService.confirmModalData.emit(
+          {
+            title: 'Profile Update Required',
+            message: `Please update your profile with your job title and subtitle if applicable -
+              click the ${initial} icon in the upper right hand corner then the profile button.
+              You won't be able to enter your project ftes until this has been updated.`,
+            iconClass: 'fa-exclamation-triangle',
+            iconColor: 'rgb(193, 27, 27)',
+            closeButton: true,
+            allowOutsideClickDismiss: true,
+            allowEscKeyDismiss: true,
+            buttons: [
+              {
+                text: 'Ok',
+                bsClass: 'btn-secondary'
+              }
+            ]
+          }
+        );
+      }
       // return false to implement the guard / block the navigate to the fte entry component
       return false;
     }

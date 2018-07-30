@@ -94,9 +94,8 @@ router.use('/', function(req, res, next) {
         title: 'Not Authenticated',
         error: err
       });
-    } else {
-      console.log('token is valid, passed api guard');
     }
+    console.log('token is valid, passed api guard');
     next();
   })
 });
@@ -122,10 +121,11 @@ router.use('/', function(req, res, next) {
 
   // decode the token to get access to the permission array
   const decodedToken = token.decode(req.header('X-Token'), res);
-  console.log('decoded token:');
-  console.log(decodedToken);
+  // console.log('decoded token:');
+  // console.log(decodedToken);
 
   // get the permissions within the token object (array of objects {permissionName: "name"})
+  // NOTE: could slim down the token here by calling the db to get the permissions
   const permissions = decodedToken.userData.permissions;
   console.log('permissions array:');
   console.log(permissions);
