@@ -13,7 +13,8 @@ function indexProjects(req, res) {
         e.FullName, 
         p.CreationDate, 
         t.ProjectTypeName, 
-        p.CreatedBy
+        p.CreatedBy,
+        p.ProjectOrgManager
     FROM  
         projects.Projects p 
         INNER JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
@@ -109,18 +110,18 @@ function indexUserProjectList(req, res) {
 
   const sql = `
     SELECT DISTINCT
-      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes, 
-      P1.CreatedBy as createdBy, E1.FullName as createdByFullName, P1.CreationDate as createdAt,
-      P1.LastUpdatedBy as updatedBy, E2.FullName as updatedByFullName, P1.LastUpdateDate as updatedAt,
-      P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
-    FROM
-      projects.Projects P1
-      LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
-      LEFT JOIN resources.ProjectEmployees P3 ON P1.ProjectID = P3.ProjectID
-      LEFT JOIN accesscontrol.Employees E1 ON P1.CreatedBy = E1.EmployeeID
-      LEFT JOIN accesscontrol.Employees E2 ON P1.LastUpdatedBy = E2.EmployeeID
-    WHERE
-      P1.CreatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
+        P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes, 
+        P1.CreatedBy as createdBy, E1.FullName as createdByFullName, P1.CreationDate as createdAt,
+        P1.LastUpdatedBy as updatedBy, E2.FullName as updatedByFullName, P1.LastUpdateDate as updatedAt,
+        P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
+      FROM
+        projects.Projects P1
+        LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
+        LEFT JOIN resources.ProjectEmployees P3 ON P1.ProjectID = P3.ProjectID
+        LEFT JOIN accesscontrol.Employees E1 ON P1.CreatedBy = E1.EmployeeID
+        LEFT JOIN accesscontrol.Employees E2 ON P1.LastUpdatedBy = E2.EmployeeID
+      WHERE
+        P1.CreatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {

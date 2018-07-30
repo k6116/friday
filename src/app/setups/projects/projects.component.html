@@ -64,11 +64,18 @@
   </div>
   <!--  -->
 
-  <!-- Create New Project Button -->
-  <button class="btn btn-primary btn-fte-toolbar" style="display: block" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
-    <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
-  </button>
-  <!--  -->
+  <div class="row custom-row-top">
+    <!-- Search -->
+    <div class="projects-modal-filter">
+      <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter">
+    </div>&nbsp;&nbsp;
+    <!--  -->
+    <!-- Create New Project Button -->
+    <button class="btn btn-secondary btn-fte-toolbar" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
+      <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
+    </button>
+    <!--  -->
+  </div>
 
   <br>
   
@@ -105,10 +112,9 @@
 
     <!-- ACCORDION START -->
     <div class="accordion" id="accordionProjectList">
-      <ng-container *ngFor="let project of projectList; let k = index" class="table-container">
+      <ng-container *ngFor="let project of projectList | filter :filterString:'projectName':{limitTo: 100, matchFuzzy: true}; let k = index" class="table-container">
         <!-- table row start -->
-        <!-- <div class="card-header-custom" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)"> -->
-            <div class="card-header-custom" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)">
+        <div class="card-header-custom" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)">
           <div class="col-2" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
             <div>{{ (project['projectName'].length > 50) ? (project['projectName'] | slice:0:50) + '...' : (project['projectName']) }}</div>
           </div>
@@ -184,7 +190,7 @@
                                 </div>
                               </form>
                           </td> -->
-                          <td width = "5%"><i *ngIf="teamMember.name===loggedInUser.fullName" class="fa fa-pencil-square-o fa-sm" data-toggle="modal" data-target="#projectRoleModal" (click)="onProjectRoleEditClick()"></i></td>
+                          <!-- <td width = "5%"><i *ngIf="teamMember.name===loggedInUser.fullName" class="fa fa-pencil-square-o fa-sm" data-toggle="modal" data-target="#projectRoleModal" (click)="onProjectRoleEditClick()"></i></td> -->
                         </tr>
                       </tbody>
                     </table>
@@ -219,6 +225,7 @@
     </div>
     <!-- ACCORDION END -->
     
-  </div>
+    </div>
+
 </div>
 

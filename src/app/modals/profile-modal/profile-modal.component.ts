@@ -11,6 +11,7 @@ import { CacheService } from '../../_shared/services/cache.service';
 
 export class ProfileModalComponent implements OnInit {
 
+  modal: any;
   userName: any;
   loggedInUser: any;
   jobTitles: any;
@@ -20,7 +21,6 @@ export class ProfileModalComponent implements OnInit {
   jobSubTitleList: any;
   jobSubTitleID: any;
   jobSubTitleName: any;
-  editToggle: boolean;
   newJobTitleData: any;
   newJobTitleID: number;
   subTitleEmpty: boolean;
@@ -31,7 +31,6 @@ export class ProfileModalComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.editToggle = false;
     this.getUserProfile();
   }
 
@@ -46,7 +45,6 @@ export class ProfileModalComponent implements OnInit {
 
   // called on profile button click on top-nav
   getJobTitleList() {
-    this.editToggle = false;
     this.apiDataJobTitleService.getJobTitleList()
       .subscribe(
         // pulls JobTitleID, JobTitleName and  all subtitles from Jarvis Employees table
@@ -126,7 +124,6 @@ export class ProfileModalComponent implements OnInit {
   onUpdateButtonClick() {
     // create json with new job titles to send to server
     this.newJobTitleData = {'newJobTitleID': this.jobTitleID, 'newJobSubTitleID': this.jobSubTitleID};
-    this.editToggle = !this.editToggle;
 
     // write new values to database
     this.apiDataJobTitleService.updateEmployeeJobTitle(this.newJobTitleData)
@@ -139,10 +136,6 @@ export class ProfileModalComponent implements OnInit {
           console.log(err);
         }
       );
-  }
-
-  onEditButtonClick() {
-    this.editToggle = !this.editToggle;
   }
 
 }

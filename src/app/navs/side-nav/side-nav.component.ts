@@ -111,15 +111,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               permissionProtected: false,
               hidden: false
             },
-            {
-              title: 'Employees',
-              alias: 'employees',
-              path: 'main/reports/employees',
-              parentAlias: 'reports',
-              active: false,
-              permissionProtected: false,
-              hidden: false
-            }
           ]
         },
         {

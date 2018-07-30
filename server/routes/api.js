@@ -79,6 +79,12 @@ router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controlle
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
 
+// ANALYTICS CONTROLLER
+router.get('/getNCIProjectsWithDemandList', controllers.analytics.getNCIProjectsWithDemandList);
+router.get('/getNCISupplyDemand', controllers.analytics.getNCISupplyDemand);
+
+// NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
+
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
