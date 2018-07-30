@@ -308,8 +308,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       animation: true,
       placement: 'right',
       html: true,
-      trigger: 'focus',
-      title: `${project.ProjectName} Project Details`,
+      // trigger: 'focus',
+      // title: `${project.ProjectName} Project Details`,
+      title: `Project Details`,
       content: content
     };
 
@@ -328,6 +329,38 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     return `
       <style>
+        .projects-info-details {
+          overflow-y: auto;
+          max-height: 265px;
+          line-height: 40px;
+        }
+
+        .projects-info-table-row {
+          border-bottom: 1px solid lightgrey;
+        }
+
+        .project-info-label {
+          display: block;
+          margin-bottom: -17px;
+          color: #7b7b7b;
+        }
+
+        .project-info-p {
+          margin-bottom: 0rem;
+        }
+
+        .project-info-description {
+          overflow-y: auto;
+          position: relative;
+          line-height: 1.4em;
+          height: 70px;
+          width: 200px;
+          text-align: left;
+          font-size: 15px;
+          margin-top: 14px;
+          margin-bottom: -18px;
+          border-color: lightgray;
+        }
 
       </style>
     `;
@@ -336,13 +369,56 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
 
   getProjectDetailsContent(project): string {
+    let active = '';
+    if (project.Active === true) {
+      active = 'Active';
+    } else if (project.Active === false) {
+      active = 'Inactive';
+    } else if ( project.Active === null) {
+      active = 'Not Available';
+    }
 
+    let priorityName = project.PriorityName;
+    if (priorityName === null) {
+      priorityName = 'Not Available';
+    }
+
+    let projectManager = project.NPIHWProjectManager;
+    if (projectManager === null) {
+      projectManager = 'Not Available';
+    }
+
+    let description = project.Description;
+    if (description === null) {
+      description = 'Not Available';
+    }
+
+    let notes = project.Notes;
+    if (notes === null) {
+      notes = 'Not Available';
+    }
 
     let content = `
-      <div class="projects-info-description">
-        <p>Project Description</p>
-      </div>
-    `;
+    <div class="projects-info-details">
+      <table>
+        <tr class="projects-info-table-row">
+          <td><label class="project-info-label">Status</label><p class="project-info-p">${active}</p></td>
+          <td><label class="project-info-label">Priority</label><p class="project-info-p">${priorityName}</p></td>
+        </tr>
+        <tr class="projects-info-table-row">
+          <td colspan="2"><label class="project-info-label">Project Manager</label><p class="project-info-p">${projectManager}</p></td>
+        </tr>
+        <tr>
+          <td colspan="2"><label class="project-info-label">Project Description</label>
+            <textarea class="project-info-description">${description}</textarea></td>
+        </tr>
+        <tr>
+        <td colspan="2"><label class="project-info-label">Notes</label>
+          <textarea class="project-info-description">${notes}</textarea></td>
+        </tr>
+      </table>
+    </div>
+  `;
 
     content += ``;
 

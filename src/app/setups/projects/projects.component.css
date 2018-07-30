@@ -54,3 +54,12 @@
   .form-group-custom {
     margin-bottom: 0%;
   }
+
+  div.projects-modal-filter {
+    display: inline-block;
+  }
+
+  .custom-row-top {
+    margin-right: 0 !important; 
+    margin-left: 0;
+  }
