@@ -26,7 +26,7 @@ import { PerformanceComponent } from './performance/performance.component';
 import { UserResolverService } from './_shared/services/user-resolver.service';
 
 // BOM module stuff
-import { BomGraphComponent } from './reports/bom-graph/bom-graph.component';
+import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -42,7 +42,7 @@ const routes: Routes = [
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent },
-      { path: 'reports/bom-graph', component: BomGraphComponent },
+      { path: 'reports/bom-viewer', component: BomViewerComponent },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },

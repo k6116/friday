@@ -30,7 +30,7 @@ import { AuthService } from './_shared/services/auth.service';
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
@@ -38,6 +38,7 @@ import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
+import { TreeModule } from 'ng2-tree';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -77,7 +78,7 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 
 // BOM module stuff
-import { BomGraphComponent } from './reports/bom-graph/bom-graph.component';
+import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
 
 
 @NgModule({
@@ -122,7 +123,7 @@ import { BomGraphComponent } from './reports/bom-graph/bom-graph.component';
     DashboardComponent,
     FooterComponent,
     CarouselModalComponent,
-    BomGraphComponent,
+    BomViewerComponent,
     SupplyDemandComponent
   ],
   imports: [
@@ -140,7 +141,8 @@ import { BomGraphComponent } from './reports/bom-graph/bom-graph.component';
     NouisliderModule,
     ClickOutsideModule,
     ChartsModule,
-    Ng2CompleterModule
+    Ng2CompleterModule,
+    TreeModule
   ],
   providers: [
     ApiDataService,
@@ -157,6 +159,7 @@ import { BomGraphComponent } from './reports/bom-graph/bom-graph.component';
     ApiDataReportService,
     ApiDataDashboardService,
     ApiDataAnalyticsService,
+    ApiDataBomService,
     CacheService,
     AuthService,
     AuthGuardService,

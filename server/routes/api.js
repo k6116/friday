@@ -100,6 +100,10 @@ router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.
 router.get('/getNCIProjectsWithDemandList', controllers.analytics.getNCIProjectsWithDemandList);
 router.get('/getNCISupplyDemand', controllers.analytics.getNCISupplyDemand);
 
+// BOM CONTROLLER
+router.get('/bom/index', controllers.bom.index);
+router.get('/bom/showSingleBom/:parentID', controllers.bom.showSingleBom);
+
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified
