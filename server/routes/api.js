@@ -103,6 +103,8 @@ router.get('/getNCISupplyDemand', controllers.analytics.getNCISupplyDemand);
 // BOM CONTROLLER
 router.get('/bom/index', controllers.bom.index);
 router.get('/bom/showSingleBom/:parentID', controllers.bom.showSingleBom);
+router.get('/bom/showPartInfo/:partID', controllers.bom.showPartInfo);
+router.get('/bom/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 

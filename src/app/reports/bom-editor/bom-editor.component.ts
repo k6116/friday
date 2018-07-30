@@ -4,11 +4,11 @@ import { ApiDataBomService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
-  selector: 'app-bom-viewer',
-  templateUrl: './bom-viewer.component.html',
-  styleUrls: ['./bom-viewer.component.css', '../../_shared/styles/common.css']
+  selector: 'app-bom-editor',
+  templateUrl: './bom-editor.component.html',
+  styleUrls: ['./bom-editor.component.css', '../../_shared/styles/common.css']
 })
-export class BomViewerComponent implements OnInit {
+export class BomEditorComponent implements OnInit {
 
   @ViewChild('treeComponent') treeComponent;
 
@@ -17,6 +17,10 @@ export class BomViewerComponent implements OnInit {
   bill: any;  // for storing the selected bill as flat array
   bomTree: any; // for storing the selected bill as tree JSON
   showBom = false;
+
+  // for showing details when clicking a ndoe
+  showDetails = false;
+  details: any;
 
   constructor(private apiDataBomService: ApiDataBomService) { }
 
@@ -28,18 +32,35 @@ export class BomViewerComponent implements OnInit {
   }
 
   onNodeSelect(clickedItem: any) {
+    this.showDetails = false;
     // when a tree node is selected, toggle node collapse
     const oopNodeController = this.treeComponent.getControllerByNodeId(clickedItem.node.id);
     oopNodeController.unselect();
     if (oopNodeController.isCollapsed()) {
       oopNodeController.expand();
+    }
+
+    // fetch the data
+    if (clickedItem.node.type === 'Project') {
+      const detailsSub = this.apiDataBomService.showProjectInfo(clickedItem.node.id).subscribe( res => {
+        this.details = res[0];
+        this.details.entity = 'Project';
+        detailsSub.unsubscribe();
+        this.showDetails = true;
+      });
     } else {
-      oopNodeController.collapse();
+      const detailsSub = this.apiDataBomService.showPartInfo(clickedItem.node.id).subscribe( res => {
+        this.details = res[0];
+        this.details.entity = 'Part';
+        detailsSub.unsubscribe();
+        this.showDetails = true;
+      });
     }
   }
 
   onBomSelect(selected: number) {
     this.showBom = false;
+    this.showDetails = false;
 
     // get the selected BOM as flat array
     const bomSubscription = this.apiDataBomService.showSingleBom(selected).subscribe( res => {
@@ -50,7 +71,8 @@ export class BomViewerComponent implements OnInit {
       // initialize bomtree
       this.bomTree = {
         value: this.bill[0].ParentName,
-        id: this.bill[0].ParentID
+        id: this.bill[0].ParentID,
+        type: this.bill[0].ParentEntity
       };
 
       // recursively parse the BOM structure

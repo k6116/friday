@@ -78,7 +78,7 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 
 // BOM module stuff
-import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
+import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
 
 
 @NgModule({
@@ -123,7 +123,7 @@ import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
     DashboardComponent,
     FooterComponent,
     CarouselModalComponent,
-    BomViewerComponent,
+    BomEditorComponent,
     SupplyDemandComponent
   ],
   imports: [

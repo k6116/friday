@@ -23,4 +23,16 @@ export class ApiDataBomService {
       .map((response: Response) => response.json());
   }
 
+  showPartInfo(partID: number) {
+    return this.http.get(`/api/bom/showPartInfo/${partID}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  showProjectInfo(projectID: number) {
+    return this.http.get(`/api/bom/showProjectInfo/${projectID}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 }
