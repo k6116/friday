@@ -79,6 +79,7 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
 
 // BOM module stuff
 import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
+import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
 
 
 @NgModule({
@@ -124,6 +125,7 @@ import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
     FooterComponent,
     CarouselModalComponent,
     BomEditorComponent,
+    BomViewerComponent,
     SupplyDemandComponent
   ],
   imports: [
