@@ -540,7 +540,9 @@ function indexBuildStatus(req, res) {
       BuildStatusID, 
       BuildStatusName                
   FROM  
-      projects.BuildStatus`
+      projects.BuildStatus
+  ORDER BY
+      BuildStatusName`
   
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
   .then(p => {    

@@ -23,4 +23,19 @@ export class ApiDataSchedulesService {
     .map((response: Response) => response.json());
   }
 
+  updatePartSchedule(schedule: any, revisionNotes: string, userID: number): Observable<any> {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+
+    return this.http.post(`api/updatePartSchedule/${userID}/${revisionNotes}`, JSON.stringify(schedule), options)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  destroyPartSchedule(scheduleID: number, userID: number): Observable<any> {
+    return this.http.get(`api/destroyPartSchedule/${scheduleID}/${userID}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
 }

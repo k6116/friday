@@ -17,3 +17,15 @@
     line-height: 2.2 !important;
     margin-bottom: 0;
   }
+
+  select {
+    max-height: 35px;
+    
+  }
+
+  .revision {
+    color: green;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  

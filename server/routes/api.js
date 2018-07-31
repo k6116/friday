@@ -96,12 +96,16 @@ router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYea
 // SCHEDULES CONTROLLER
 router.get('/indexSchedules', controllers.schedules.indexSchedules);
 router.get('/getPartSchedule/:partID', controllers.schedules.getPartSchedule);
-
+router.post('/updatePartSchedule/:userID/:revisionNotes', controllers.schedules.updatePartSchedule);
+router.get('/destroyPartSchedule/:scheduleID/:userID', controllers.schedules.destroyPartSchedule);
 
 // PARTS CONTROLLER
 router.get('/getParts', controllers.parts.indexParts);
 router.get('/getPart/:partID', controllers.parts.getPart);
 router.get('/getPartTypes', controllers.parts.indexPartTypes);
+router.post('/updatePart/:userID', controllers.parts.updatePart);
+router.post('/createPart/:userID', controllers.parts.createPart);
+router.delete('/deletePart/:partID/:scheduleID/:userID', controllers.parts.destroyPart);
 
 
 // DASHBOARD CONTROLLER
