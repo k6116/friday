@@ -76,6 +76,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   filterProjects: any;
   myTeamsToggle: boolean;
   mySupervisorEmail: string;
+  groupsflag: boolean;
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
@@ -308,7 +309,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       animation: true,
       placement: 'right',
       html: true,
-      // trigger: 'focus',
+      trigger: 'focus',
       // title: `${project.ProjectName} Project Details`,
       title: `Project Details`,
       content: content
@@ -341,7 +342,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
         .project-info-label {
           display: block;
-          margin-bottom: -17px;
+          margin-bottom: -24px;
           color: #7b7b7b;
         }
 
@@ -364,7 +365,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
       </style>
     `;
-
   }
 
 
@@ -375,32 +375,69 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     } else if (project.Active === false) {
       active = 'Inactive';
     } else if ( project.Active === null) {
-      active = 'Not Available';
+      active = '--';
     }
 
     let priorityName = project.PriorityName;
     if (priorityName === null) {
-      priorityName = 'Not Available';
+      priorityName = '--';
     }
 
     let projectManager = project.NPIHWProjectManager;
     if (projectManager === null) {
-      projectManager = 'Not Available';
+      projectManager = '--';
     }
 
     let description = project.Description;
     if (description === null) {
-      description = 'Not Available';
+      description = '--';
     }
 
     let notes = project.Notes;
     if (notes === null) {
-      notes = 'Not Available';
+      notes = '--';
     }
+
+    const groups = project.GroupName;
+    const entity = project.EntityName;
+    const entityOwner = project.EntityOwnerName;
 
     let content = `
     <div class="projects-info-details">
       <table>
+    `;
+
+    // Create string for groups>entity>entityOwner.
+    // If any one of them exists, start a new row and cell.
+    if (groups !== null || entity !== null || entityOwner !== null) {
+      content += `
+      <tr  class="projects-info-table-row">
+        <td colspan="2">
+      `;
+      // Check them individually and append the one's that exist to the string
+      if (groups !== null) {
+        content += `
+            <span>${groups}</span>
+        `;
+      }
+      if (entity !== null) {
+        content += `
+            <span> > ${entity}</span>
+        `;
+      }
+      if (entityOwner !== null) {
+        content += `
+            <span> > ${entityOwner}</span>
+        `;
+      }
+      content += `
+        </td>
+      </tr>
+      `;
+    }
+
+    // Continue with the rest of the content
+    content += `
         <tr class="projects-info-table-row">
           <td><label class="project-info-label">Status</label><p class="project-info-p">${active}</p></td>
           <td><label class="project-info-label">Priority</label><p class="project-info-p">${priorityName}</p></td>
@@ -410,23 +447,20 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         </tr>
         <tr>
           <td colspan="2"><label class="project-info-label">Project Description</label>
-            <textarea class="project-info-description">${description}</textarea></td>
+            <textarea class="project-info-description">${description}</textarea>
+          </td>
         </tr>
         <tr>
-        <td colspan="2"><label class="project-info-label">Notes</label>
-          <textarea class="project-info-description">${notes}</textarea></td>
+          <td colspan="2"><label class="project-info-label">Notes</label>
+            <textarea class="project-info-description">${notes}</textarea>
+          </td>
         </tr>
       </table>
     </div>
-  `;
-
-    content += ``;
+    `;
 
     return content;
-
   }
-
-
 
   onProjectRosterClick(element) {
 

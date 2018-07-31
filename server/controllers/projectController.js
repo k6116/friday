@@ -14,7 +14,10 @@ function indexProjects(req, res) {
         p.Active,
         py.PriorityID,
         py.PriorityName,
-        p.NPIHWProjectManager, 
+        p.NPIHWProjectManager,
+        g.GroupName,
+        ey.EntityName,
+        eo.EntityOwnerName, 
         e.FullName, 
         p.CreationDate, 
         t.ProjectTypeName, 
@@ -22,9 +25,12 @@ function indexProjects(req, res) {
         p.ProjectOrgManager
     FROM  
         projects.Projects p 
-        INNER JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
+        LEFT JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
         LEFT JOIN projects.Priority py ON p.PriorityID = py.PriorityID
         INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
+        LEFT JOIN projects."Group" g ON p.GroupID = g.GroupID
+        LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
+        LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
     ORDER BY 
         p.ProjectName`
     

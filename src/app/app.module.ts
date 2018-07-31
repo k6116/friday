@@ -117,7 +117,7 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     FooterComponent,
     DashboardComponent,
     FooterComponent,
-    CarouselModalComponent
+    CarouselModalComponent,
   ],
   imports: [
     AppRoutingModule,
