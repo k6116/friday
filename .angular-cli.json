@@ -27,7 +27,8 @@
         "../src/app/_shared/styles/nouislider-custom.css",
         "../public/icons/nucleo/css/style.css",
         "../node_modules/intro.js/minified/introjs.min.css",
-        "../node_modules/simplebar/dist/simplebar.css"
+        "../node_modules/simplebar/dist/simplebar.css",
+        "../src/app/_shared/styles/simplebar-custom.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",

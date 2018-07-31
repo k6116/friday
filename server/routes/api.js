@@ -107,12 +107,19 @@ router.use('/', function(req, res, next) {
 });
 
 
+// AUTH CONTROLLER
+router.get('/auth/websockets/index/getLoggedInUsers', controllers.auth.getLoggedInUsers);
+
 
 // DASHBOARD CONTROLLER
-
+router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate', controllers.dashboard.getFTEData);
 router.get('/dashboard/checkFirstLogin', controllers.dashboard.checkFirstLogin);
 router.get('/dashboard/checkJobTitle', controllers.dashboard.checkJobTitle);
 router.get('/dashboard/checkProjectRequests', controllers.dashboard.checkProjectRequests);
+
+
+// REPORT CONTROLLER
+router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', controllers.report.getAggregatedFteData);
 
 
 
@@ -185,16 +192,7 @@ router.use('/', function(req, res, next) {
 });
 
 
-// NOTE: these are just being used for testing permissions protected routes; these are not necessarily going to be permissions protected
 
-// AUTH CONTROLLER
-router.get('/auth/websockets/index/getLoggedInUsers', controllers.auth.getLoggedInUsers);
-
-// DASHBOARD CONTROLLER
-router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate', controllers.dashboard.getFTEData);
-
-// REPORT CONTROLLER
-router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', controllers.report.getAggregatedFteData);
 
 // JOB TITLE CONTROLLER (ADMIN)
 router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);

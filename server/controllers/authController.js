@@ -32,9 +32,6 @@ function authenticate(req, res) {
     searchBase: 'cn=users,dc=ad,dc=keysight,dc=com',
     searchFilter: '(cn={{username}})'
   };
-
-  console.log('ldap options object:');
-  console.log(options);
   
   // create an instance of the ldap auth fork 
   const auth = new ldapAuth(options);
@@ -73,12 +70,11 @@ function authenticate(req, res) {
         // set variables using the ldap object
         let userName = ldapUser.cn;
         let emailAddress = ldapUser.mail;
-        let fullName = ldapUser.givenName + ' ' + ldapUser.sn.replace(/\w\S*/g, text => {
+        let firstName = ldapUser.givenName.charAt(0).toUpperCase() + ldapUser.givenName.substr(1).toLowerCase();
+        let lastName = ldapUser.sn.replace(/\w\S*/g, text => {
           return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
         });
-        const nameArr = fullName.split(' ');
-        let firstName = nameArr[0];
-        let lastName = nameArr[nameArr.length - 1];
+        let fullName = firstName + ' ' + lastName;
 
         // TEMP CODE: impersonate manager for testing
         // userName = 'ethanh';

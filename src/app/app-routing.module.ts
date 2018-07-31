@@ -46,7 +46,7 @@ const routes: Routes = [
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },
-      { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent, canActivate: [PermissionsGuard] },
+      { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'chat', component: ChatComponent },

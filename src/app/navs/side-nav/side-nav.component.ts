@@ -10,7 +10,7 @@ declare var $: any;
 @Component({
   selector: 'app-side-nav',
   templateUrl: './side-nav.component.html',
-  styleUrls: ['./side-nav.component.css', '../../_shared/styles/simplebar.css']
+  styleUrls: ['./side-nav.component.css']
 })
 export class SideNavComponent implements OnInit, AfterViewInit {
 
@@ -122,18 +122,18 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           active: false,
           permissionProtected: true,
           hidden: false
-        },
-        {
-          title: 'Websockets',
-          iconClass: 'nc-socket',
-          alias: 'websockets',
-          path: 'main/chat',
-          expanded: false,
-          active: false,
-          highlighted: false,
-          permissionProtected: false,
-          hidden: false
         }
+        // {
+        //   title: 'Websockets',
+        //   iconClass: 'nc-socket',
+        //   alias: 'websockets',
+        //   path: 'main/chat',
+        //   expanded: false,
+        //   active: false,
+        //   highlighted: false,
+        //   permissionProtected: false,
+        //   hidden: false
+        // }
       ];
 
 
