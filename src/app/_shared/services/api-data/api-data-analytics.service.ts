@@ -39,4 +39,45 @@ export class ApiDataAnalyticsService {
     .map((response: Response) => response.json());
   }
 
+  getNCISupplyDemandPartList(projectName: any): Observable<any> {
+    return this.http.get(`api/getNCISupplyDemandPartList/${projectName}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  getNCISupplyLotList(partName: any): Observable<any> {
+    return this.http.get(`api/getNCISupplyLotList/${partName}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  getNCISupplyLotExclusionList(partName: any): Observable<any> {
+    return this.http.get(`api/getNCISupplyLotExclusionList/${partName}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  execUpdateSupplyDemand(): Observable<any> {
+    return this.http.get(`api/execUpdateSupplyDemand/`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  insertLotExclusion(partData: any, userID: number): Observable<any>  {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`api/insertLotExclusion/${userID}`, JSON.stringify(partData), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  deleteLotExclusion(partData: any, userID: number): Observable<any>  {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`api/destroyLotExclusion/${userID}`, JSON.stringify(partData), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+
 }

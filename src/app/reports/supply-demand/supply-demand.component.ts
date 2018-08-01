@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiDataAnalyticsService } from '../../_shared/services/api-data/_index';
+import { AuthService } from '../../_shared/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as Highcharts from 'highcharts';
@@ -13,20 +14,25 @@ const moment = require('moment');
   templateUrl: './supply-demand.component.html',
   styleUrls: ['./supply-demand.component.css', '../../_shared/styles/common.css']
 })
-export class SupplyDemandComponent implements OnInit, OnDestroy {
+export class SupplyDemandComponent implements OnInit {
 
   displaySupplyDemandList: boolean;  // display boolean for top FTE table
   projectParentChildList: any;
   supplyDemandProjectList: any; // for top FTE projects table
   supplyDemandDatesList: any;
   supplyDemandList: any;
+  supplyDemandPartList: any;
+  supplyLotList: any;
+  supplyLotExclusionList: any;
+  selectedProjectChildList: any;
+  strPartList: string;
   isProjectSelected: any; // for toggling projects when clicking the top FTE table
 
   projectEmployeeData: any; // for rendering project roster (TO BE OBSOLETED)
   projectEmployeeSubscription: Subscription;
   selectedProject: any; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
   selectedFiscalDate: string; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
-  displayProjectEmployeeList: boolean;  // display boolean for project roster (TO BE OBSOLETED)
+  displaySupplyDemandDetails: boolean;  // display boolean for project roster (TO BE OBSOLETED)
 
   // chart-related variables
   chartIsLoading = true;
@@ -35,24 +41,19 @@ export class SupplyDemandComponent implements OnInit, OnDestroy {
   supplyData:  any; // for populating historic FTE data to plot in chart
   demandData: any;
 
-  // subscriptions for api calls
-  subscription1: Subscription;
-  subscription2: Subscription;
-  subscription3: Subscription;
-  subscription4: Subscription;
-
 
   constructor(
-    private apiDataAnalyticsService: ApiDataAnalyticsService
+    private apiDataAnalyticsService: ApiDataAnalyticsService,
+    private authService: AuthService,
   ) { }
 
   ngOnInit() {
     // Set display flags to false
     this.displaySupplyDemandList = true;
-    this.displayProjectEmployeeList = false;
+    this.displaySupplyDemandDetails = false;
 
     // Retrieve Supply Demand List
-    this.subscription1 = this.apiDataAnalyticsService.getNCIProjectsParentChildList()
+    this.apiDataAnalyticsService.getNCIProjectsParentChildList()
     .subscribe(
       res => {
         console.log('Project Parent Child List Data: ', res);
@@ -63,7 +64,7 @@ export class SupplyDemandComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.subscription2 = this.apiDataAnalyticsService.getNCISupplyDemandDatesList()
+    this.apiDataAnalyticsService.getNCISupplyDemandDatesList()
     .subscribe(
       res => {
         console.log('Date List Data: ', res);
@@ -74,7 +75,7 @@ export class SupplyDemandComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.subscription3 = this.apiDataAnalyticsService.getNCISupplyDemandProjectList()
+    this.apiDataAnalyticsService.getNCISupplyDemandProjectList()
     .subscribe(
       res => {
         console.log('Project List Data: ', res);
@@ -87,28 +88,16 @@ export class SupplyDemandComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy() {
-    if (this.subscription1) {
-      this.subscription1.unsubscribe();
-    }
-    if (this.subscription2) {
-      this.subscription2.unsubscribe();
-    }
-    if (this.subscription3) {
-      this.subscription3.unsubscribe();
-    }
-    if (this.subscription4) {
-      this.subscription4.unsubscribe();
-    }
-  }
-
   onProjectClick(project: any) {
     this.selectedProject = project;
     this.supplyData = undefined;
     this.demandData = undefined;
+    this.supplyLotList = undefined;
+    this.supplyLotExclusionList = undefined;
+    this.selectedProjectChildList = undefined;
 
     // Retrieve Supply Demand List
-    this.subscription4 = this.apiDataAnalyticsService.getNCISupplyDemand(project.NCIProjectName)
+    this.apiDataAnalyticsService.getNCISupplyDemand(project.NCIProjectName)
     .subscribe(
       res => {
         this.supplyDemandList = res[0].Details;
@@ -135,6 +124,130 @@ export class SupplyDemandComponent implements OnInit, OnDestroy {
         console.log('supply qty', supplyQty);
 
         this.plotFteHistoryChart();
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+    // Get the child parts for the NCI Project
+    this.apiDataAnalyticsService.getNCISupplyDemandPartList(project.NCIProjectName)
+    .subscribe(
+      res1 => {
+        console.log('Part List', res1);
+        this.supplyDemandPartList = res1;
+
+        if (this.supplyDemandPartList.length) {
+          // Generate the string for the controller function sql where clause
+          this.strPartList = '';
+          for (let i = 0; i < this.supplyDemandPartList.length; i++) {
+            this.strPartList = this.strPartList + '\',\'' + this.supplyDemandPartList[i].NCIPartName;
+          }
+          this.strPartList = this.strPartList.substring(2);
+          this.strPartList = this.strPartList + '\'';
+
+          // Get the supply lots list for the child part
+          this.apiDataAnalyticsService.getNCISupplyLotList(this.strPartList)
+          .subscribe(
+            res2 => {
+              console.log('Lot List', res2);
+              this.supplyLotList = res2;
+            },
+            err => {
+              console.log(err);
+            }
+          );
+
+          // Need the full list of children for an NCI Project to search if they exist in the exlusion list
+          this.selectedProjectChildList = '';
+          for (let i = 0; i < this.projectParentChildList.length; i++) {
+            if (this.projectParentChildList[i].ProjectName === project.NCIProjectName) {
+              if (this.projectParentChildList[i].Childs.length) {
+                for (let j = 0; j < this.projectParentChildList[i].Childs.length; j++) {
+                  this.selectedProjectChildList = this.selectedProjectChildList + '\',\''
+                    + this.projectParentChildList[i].Childs[j].ChildPartName;
+                }
+              }
+            }
+          }
+          this.selectedProjectChildList = this.selectedProjectChildList.substring(2);
+          this.selectedProjectChildList = this.selectedProjectChildList + '\'';
+
+          // Get the lot exclusion list
+          this.apiDataAnalyticsService.getNCISupplyLotExclusionList(this.selectedProjectChildList)
+          .subscribe(
+            res3 => {
+              console.log('Lot Exclusion List', res3);
+              this.supplyLotExclusionList = res3;
+            },
+            err => {
+              console.log(err);
+            }
+          );
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+  }
+
+  // function for getting the project roster onClick in the plot.  (TO BE OBSOLETED)
+  getSupplyDemandDetailsList(supplyDemandDate: string) {
+    this.displaySupplyDemandDetails = true;
+    // find specific data for indicated supply demand date
+    for (let i = 0; i < this.supplyDemandList.length; i++) {
+      // console.log(this.supplyDemandList[i].SupplyDemandDate);
+      if (this.supplyDemandList[i].SupplyDemandDate === supplyDemandDate) {
+        if (this.supplyDemandList[i].SupplyOrDemand === 'Supply') {
+          console.log('Supply: ' + this.supplyDemandList[i].SupplyQty);
+          console.log('Fab: ' + this.supplyDemandList[i].LotListFab);
+          console.log('ICTest: ' + this.supplyDemandList[i].LotListICTest);
+          console.log('DieFab: ' + this.supplyDemandList[i].LotListDieFab);
+          console.log('Storage: ' + this.supplyDemandList[i].LotListStorage);
+        } else {
+          console.log('Demand ' + this.supplyDemandList[i].DemandQty);
+        }
+      }
+    }
+
+  }
+
+  onLotIncludedClick(partData: any) {
+    // On click, add lot to exclusion list
+    this.apiDataAnalyticsService.insertLotExclusion(partData, this.authService.loggedInUser.id)
+    .subscribe(
+      res => {
+        console.log('Added to Lot Excluded List');
+        this.onProjectClick(this.selectedProject);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  onLotExcludedClick(partData: any) {
+    // On click, remove lot to exclusion list
+    this.apiDataAnalyticsService.deleteLotExclusion(partData, this.authService.loggedInUser.id)
+    .subscribe(
+      res => {
+        console.log('Removed from Lot Excluded List');
+        this.onProjectClick(this.selectedProject);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  onExecClick() {
+    // On click, execute stored procedure to update supply demand tables
+    this.apiDataAnalyticsService.execUpdateSupplyDemand()
+    .subscribe(
+      res => {
+        console.log('Updated Suply Demand Tables');
       },
       err => {
         console.log(err);
@@ -172,8 +285,9 @@ export class SupplyDemandComponent implements OnInit, OnDestroy {
             events: { // TODO: change click event to show project-time event statistics instead of roster
               click: function(e) {
                 const p = e.point;
-                this.selectedFiscalDate = moment(p.x).toISOString();
-                this.getProjectEmployeeFTEList(this.selectedProject.projectID, this.selectedFiscalDate);
+                let supplyDemandDate = moment(p.x).toISOString();
+                supplyDemandDate = moment(supplyDemandDate).format('YYYY-MM-DD');
+                this.getSupplyDemandDetailsList(supplyDemandDate);
               }.bind(this)
             }
           }
