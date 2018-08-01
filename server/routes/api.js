@@ -74,7 +74,7 @@ router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', c
 router.get('/report/getSubordinateFtes/:managerEmailAddress/:period', controllers.report.getSubordinateFtes);
 router.get('/report/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
 router.get('/report/getProjectFTEHistory/:projectID', controllers.report.getProjectFTEHistory);
-router.get('/report/getTopFTEProjectList/', controllers.report.getTopFTEProjectList);   // PROTECT
+router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.report.getTopFTEProjectList);   // PROTECT
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 

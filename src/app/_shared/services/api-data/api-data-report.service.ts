@@ -43,7 +43,7 @@ export class ApiDataReportService {
 
   // Top Projects report
   getTopFTEProjectList() {
-    return this.http.get(`/api/report/reports-topProjects/show/getTopFTEProjectList/`)
+    return this.http.get(`/api/report/reports-topProjects/show/getTopFTEProjectList`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
