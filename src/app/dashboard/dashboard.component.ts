@@ -20,6 +20,7 @@ require('highcharts/modules/no-data-to-display.js')(Highcharts);
 require('highcharts/highcharts-more.js')(Highcharts);
 require('highcharts/modules/solid-gauge.js')(Highcharts);
 import * as moment from 'moment';
+import * as momentTimezone from 'moment-timezone';
 
 
 @Component({
@@ -57,8 +58,6 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
-    // console.log('dashboard component initialized');
 
     // get dashboard data, then render dashboard
     this.getDashboardData();

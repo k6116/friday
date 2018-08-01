@@ -122,6 +122,11 @@ router.get('/dashboard/checkProjectRequests', controllers.dashboard.checkProject
 router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', controllers.report.getAggregatedFteData);
 
 
+// JOB TITLE CONTROLLER (ADMIN)
+router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
+router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
+
+
 
 // middleware to protect permissions protected routes
 // if it is verified, it will continue (next) and allow the routes
@@ -192,11 +197,7 @@ router.use('/', function(req, res, next) {
 });
 
 
-
-
 // JOB TITLE CONTROLLER (ADMIN)
-router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
-router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
 router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 router.post('/jobTitle/admin/insert/insertJobTitle', controllers.jobTitle.insertJobTitle);
 router.post('/jobTitle/admin/insert/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
