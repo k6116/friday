@@ -48,7 +48,7 @@ export class FteEntryGuard implements CanActivate {
         this.cacheService.confirmModalData.emit(
           {
             title: 'Profile Update Required',
-            message: `Please update your profile with your job title and subtitle if applicable -
+            message: `Please update your profile with your job title and subtitle -
               click the ${initial} icon in the upper right hand corner then the profile button.
               You won't be able to enter your project ftes until this has been updated.`,
             iconClass: 'fa-exclamation-triangle',

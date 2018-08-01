@@ -54,14 +54,13 @@ export class ProfileModalComponent implements OnInit {
           // Loop through res and find matching name to jobTitleID
           for (let i = 0; i < this.jobTitles.length; i++) {
             if (this.jobTitles[i].id === this.jobTitleID) {
-                this.jobTitleName = this.jobTitles[i].jobTitleName;
-                this.jobTitleIndex = i;
-                console.log('My Job Title: ' + this.jobTitleName);
+              this.jobTitleName = this.jobTitles[i].jobTitleName;
+              this.jobTitleIndex = i;
+              console.log('My Job Title: ' + this.jobTitleName);
             }
           }
           // Load the appropriate list of subtitles
           this.getJobSubTitleList();
-
         },
         err => {
           console.log(err);
@@ -70,11 +69,14 @@ export class ProfileModalComponent implements OnInit {
   }
 
   getJobSubTitleList() {
-    this.jobSubTitleList = this.jobTitles[this.jobTitleIndex].jobSubTitles;
-    console.log('JobSubTitleList:', this.jobSubTitleList);
+
+    if (this.jobTitleIndex) {
+      this.jobSubTitleList = this.jobTitles[this.jobTitleIndex].jobSubTitles;
+      console.log('JobSubTitleList:', this.jobSubTitleList);
+    }
 
     // loop through jobSubTitlelist to get jobSubTitleName
-    if (this.jobSubTitleID !== null) {
+    if (this.jobSubTitleID !== null && this.jobSubTitleList) {
       for (let i = 0; i < this.jobSubTitleList.length; i++) {
         if (this.jobSubTitleList[i].id === this.jobSubTitleID) {
             this.jobSubTitleName = this.jobSubTitleList[i].jobSubTitleName;
