@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { ApiDataDashboardService } from '../_shared/services/api-data/_index';
 import { AuthService } from '../_shared/services/auth.service';
@@ -29,7 +29,7 @@ import * as moment from 'moment';
   providers: [DashboardDonutService, DashboardGaugeService, DashboardMessagesService, DashboardParetoService,
     DashboardPieService, DashboardStackedColumnService]
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
 
   messages: any[] = [];
   dashboardData: any;
@@ -68,6 +68,12 @@ export class DashboardComponent implements OnInit {
       (profileHasBeenUpdated: boolean) => {
         this.removeProfileUpdateMessage();
     });
+
+  }
+
+  ngAfterViewInit() {
+
+    window.resizeTo(screen.width - 5, screen.height - 5);
 
   }
 
