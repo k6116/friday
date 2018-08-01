@@ -9,6 +9,8 @@ const _ = require('lodash');
 const dotevnv = require('dotenv').config()
 const fs = require('fs');
 const path = require('path');
+const Treeize = require('treeize');
+const token = require('../token/token');
 
 const tokenSecret = process.env.JWT_SECRET;  // get the secret code word for enconding and decoding the token with jwt
 const expirationTime = 60 * 30  // set the token expiration time to 30 minutes - units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
@@ -22,23 +24,27 @@ function authenticate(req, res) {
   // get the user object from the request payload/body (user name and password)
   const user = req.body;
 
-  // set the ldap object
+  // set the ldap options object
   const options = {
     url: 'ldap://adldap.cos.is.keysight.com',
     bindDN: `cn=${user.userName},cn=users,dc=ad,dc=keysight,dc=com`,
     bindCredentials: user.password,
-    searchBase: 'dc=ad,dc=keysight,dc=com',
+    searchBase: 'cn=users,dc=ad,dc=keysight,dc=com',
     searchFilter: '(cn={{username}})'
   };
   
   // create an instance of the ldap auth fork 
   const auth = new ldapAuth(options);
 
+  console.log('reached after auth instance created');
+
   // TO-DO: figure out what this is for
   auth.on('error', (err) => {
     console.log('error on authentication:');
     console.error(err);
   });
+
+  console.log('reached after auth on error');
 
   // start a timer to check the performance of the ldap server
   const startTime = process.hrtime();
@@ -47,123 +53,95 @@ function authenticate(req, res) {
   auth.authenticate(user.userName, user.password, (err, ldapUser) => {
     // if a user object is returned, this indicates authentication success
     if (ldapUser) {
+
+      console.log('ldap user:');
+      console.log(ldapUser);
+
       // double check by making sure the user name matches
-      // TO-DO: this could probably be removed
-      if (ldapUser.cn === user.userName) {
+      if (ldapUser.cn.toLowerCase() === user.userName) {
+
+        console.log('ldapUser.cn:');
+        console.log(ldapUser.cn);
 
         // log the ldap response time
 	      const timeDiff = process.hrtime(startTime);
-        console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
+        console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.");
         
-        // build an encrypted token using the jsonwebtoken module
-        const token = jwt.sign(
-          {
-            userName: ldapUser.cn,
-            email: ldapUser.mail, 
-            rememberMe: true
-          }, 
-          tokenSecret, 
-          {expiresIn: expirationTime}
-        );
-
-        // decode the token to get the issued at and expiring at timestamps
-        var decodedToken;
-        jwt.verify(token, tokenSecret, (err, decoded) => {
-          if (decoded) {
-            console.log('decoded token:');
-            console.log(decoded);
-            decodedToken2 = decoded;
-          } else {
-            console.log('token is invalid');
-          }
-        })
-
-        // set the user nme
+        // set variables using the ldap object
         let userName = ldapUser.cn;
+        let emailAddress = ldapUser.mail;
+        let firstName = ldapUser.givenName.charAt(0).toUpperCase() + ldapUser.givenName.substr(1).toLowerCase();
+        let lastName = ldapUser.sn.replace(/\w\S*/g, text => {
+          return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+        });
+        let fullName = firstName + ' ' + lastName;
 
-        // TEMP CODE: impersonate as a manager for testing
-        // userName = 'ethanh'
+        // TEMP CODE: impersonate manager for testing
+        // userName = 'ethanh';
+        // emailAddress = 'ethan_hunt@keysight.com';
+        // fullName = 'Ethan Hunt';
+        // firstName = 'Ethan';
+        // lastName = 'Hunt'
 
-        // check the Employees table to determine if this is an existing Jarvis user or not
-        // using the user name as the unique key (note could use email as alternative)
-        models.User.findOne({
-          where: {userName: userName}
-        }).then(jarvisUser => {
-          
-          // if this is an existing jarvis user, send back a response
-          // with the ldap user object, jarvis user object, new user (no), and jwt token
-          if (jarvisUser) {
+        // execute the stored procedure to get the user data, role, and permissions
+        // it will also insert a new record into the employees table if this is a new user
+        sequelize.query('EXECUTE resources.AuthData :emailAddress, :firstName, :lastName, :fullName, :userName', 
+          {replacements: {emailAddress: emailAddress, firstName: firstName, lastName: lastName, fullName: fullName, userName: userName}, type: sequelize.QueryTypes.SELECT})
+          .then(userData => {
+
+            // treeize the data to get a nested object (for permissions)
+            const userDataTree = new Treeize();
+            userDataTree.grow(userData);
+            const userDataTreeized = userDataTree.getData();
+
+            // build a token using jwt
+            const newToken = jwt.sign(
+              {
+                userData: userDataTreeized[0]
+              }, 
+              tokenSecret, 
+              {expiresIn: expirationTime}
+            );
+
+            // decode the token to get the issued at and expiring at timestamps
+            const decodedToken = token.decode(newToken, res);
+
+            // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
             res.json({
               ldapUser: ldapUser,
-              jarvisUser: jarvisUser,
-              newUser: false,
+              jarvisUser: userDataTreeized[0],
               token: {
-                signedToken: token,
-                issuedAt: decodedToken2.iat,
-                expiringAt: decodedToken2.exp
+                signedToken: newToken,
+                issuedAt: decodedToken.iat,
+                expiringAt: decodedToken.exp
               }
             });
-            loggedInUsers.push(jarvisUser);
-          // if this is not an existing jarvis user, add a record to the Employees table before sending the response
-          } else {
 
-            // build the full name to insert into the table (need to convert FIRSTNAME LASTNAME to Firstname Lastname)
-            var fullName = ldapUser.givenName + ' ' + ldapUser.sn;
-            fullName = fullName.replace(/\w\S*/g, text => {
-              return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
-            });
+            // TEMP CODE: testing websockets
+            loggedInUsers.push(userDataTreeized[0]);
+          
 
-            // TEMP CODE: impersonate as a manager for testing
-            // fullName = 'Ethan Hunt';
-            // userName = 'ethanh';
-            // const email = 'ethan_hunt@keysight.com';
+        })
+        .catch(error => {
+          res.status(400).json({
+            title: 'Error (in catch)',
+            error: {message: error}
+          })
+        });
 
-            // get the first and last name from the full name
-            const nameArr = fullName.split(' ');
-            const firstName = nameArr[0];
-            const lastName = nameArr[nameArr.length - 1];
-
-            // insert a record into the Employees table
-            // TO-DO: figure out what to set for roldID and forcePasswordReset
-            models.User.create({
-              firstName: firstName,
-              lastName: lastName,
-              fullName: fullName,
-              userName: ldapUser.cn,
-              email: ldapUser.mail,
-              // userName: userName,
-              // email: email,
-              roleID: 4,  // report user
-              loginEnabled: true,
-              forcePasswordReset: false,
-              startUpTutorialFTE: true,
-              startUpTutorialProjects: true,
-              createdBy: 1,
-              createdAt: moment().add(moment().utcOffset() / 60, 'hours'),
-              updatedBy: 1,
-              updatedAt: moment().add(moment().utcOffset() / 60, 'hours')
-            })
-            .then(savedUser => {
-
-              // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
-              res.json({
-                ldapUser: ldapUser,
-                jarvisUser: savedUser,
-                newUser: true,
-                token: token
-              });
-
-              // TEMP CODE: testing websockets
-              loggedInUsers.push(savedUser);
-
-            })
         
-          }
+      // the ldap.cn (username) does not match the username entered in the login page
+      } else {
 
+        // send a an error response (status code 500) indicating the credentials are invalid
+        res.status(500).json({
+          title: 'invalid user credentials',
+          error: err
         });
 
       }
-    // if an error object is returned, this indicates authentication failure
+    
+    // if an ldap error object is returned, this indicates authentication failure
     } else if (err) {
 
       // log the ldap response time
@@ -193,193 +171,143 @@ function authenticate(req, res) {
 // verify and decode the token to get user info, issued at and expiring at data
 function getInfoFromToken(req, res) {
 
-  // extract the token from the query parameters/string (after the ? in the url)
-  const token = req.query.token;
+  const decodedToken = token.decode(req.header('X-Token'), res);
 
-  jwt.verify(token, tokenSecret, (err, decoded) => {
-    // if the token was successfully decoded
-    if (decoded) {
-
-      // use the user name in the decoded token to get the employee record from the Jarvis database
-      models.User.findOne({
-        where: {userName: decoded.userName}
-      }).then(jarvisUser => {
-
-        // send back a response with the ldap user object, jarvis user object, new user (no), and jwt token
-        res.json({
-          jarvisUser: jarvisUser,
-          newUser: false,
-          token: {
-            signedToken: req.query.token,
-            issuedAt: decoded.iat,
-            expiringAt: decoded.exp
-          }
-        });
-
-      })
-    
-    // if the token was not successfully decoded this means either it is expired or was modified thus couldn't be decoded
-    } else if (err) {
-
-      // send back a response with an error status code
-      return res.status(401).json({
-        title: 'the token is not valid (is expired or was tampered with)',
-        error: err
-      });
-
+  // NOTE: the token is not updated here; only user data is returned from the decoded token
+  res.json({
+    jarvisUser: decodedToken.userData,
+    token: {
+      signedToken: req.header('X-Token'),
+      issuedAt: decodedToken.iat,
+      expiringAt: decodedToken.exp
     }
-  })
+  });
 
 }
 
 
-// function to get a new token (currently, only needed to push out the expiration date)
+// function to get a new token and jarvis user
+// NOTE: new jarvis user is retrived in case permissions or other details have changed
 function resetToken(req, res) {
 
-  // get the user name from the request body
-  const userName = req.body.userName;
+  const decodedToken = token.decode(req.header('X-Token'), res);
 
-  // TO-DO: decide if this really necessary to get the user again
-  // get the employee record from the Jarvis database
-  models.User.findOne({
-    where: { userName: userName }
-  })
-  .then(jarvisUser => {
+  // execute the stored procedure to get the user data, role, and permissions
+  // it will also insert a new record into the employees table if this is a new user
+  sequelize.query('EXECUTE resources.AuthData :emailAddress, :firstName, :lastName, :fullName, :userName', 
+    {replacements: {emailAddress: decodedToken.userData.email, firstName: decodedToken.userData.firstName, lastName: decodedToken.userData.lastName, fullName: decodedToken.userData.fullName, userName: decodedToken.userData.userName}
+      , type: sequelize.QueryTypes.SELECT})
+    .then(userData => {
 
-    // if the database was able to find the user record and return an object
-    if (jarvisUser) {
+      // treeize the data to get a nested object (for permissions)
+      const userDataTree = new Treeize();
+      userDataTree.grow(userData);
+      const userDataTreeized = userDataTree.getData();
 
-      // generate a new token and set the new expiration datetime
-      const token = jwt.sign(
+      // build a token using jwt
+      const newToken = jwt.sign(
         {
-          userName: jarvisUser.userName,
-          email: jarvisUser.email, 
-          rememberMe: true
+          userData: userDataTreeized[0]
         }, 
         tokenSecret, 
         {expiresIn: expirationTime}
       );
 
-      // decode the token to get the issued at and expired at datetimes
-      jwt.verify(token, tokenSecret, (err, decoded) => {
-        // if the decode was successfull
-        if (decoded) {
+      // decode the token to get the issued at and expiring at timestamps
+      const decodedToken = token.decode(newToken);
 
-          // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
-          res.json({
-            jarvisUser: jarvisUser,
-            newUser: false,
-            token: {
-              signedToken: token,
-              issuedAt: decoded.iat,
-              expiringAt: decoded.exp
-            }
-          });
-
-        // if the decode failed (this should not happen, if it does there is probably a bug in the code)
-        } else if (err) {
-          console.log('token is invalid (weird because we just created it!)');
+      // send back a response with the jarvis user object and jwt token
+      res.json({
+        jarvisUser: userDataTreeized[0],
+        token: {
+          signedToken: newToken,
+          issuedAt: decodedToken.iat,
+          expiringAt: decodedToken.exp
         }
-      })
-
-    // if the database was not able to find the user (if this happens, there is probably a bug or some design flaw)
-    } else {
-
-      // send back a response with an error status code
-      res.status(401).json({
-        title: 'reset token failed',
-        error: {message: `invalid user name: ${userName}`}
       });
-
-    }
+    
   })
   .catch(error => {
-
-    // send back a response with an error status code
-    res.status(401).json({
-      title: 'reset token failed (in catch)',
+    res.status(400).json({
+      title: 'Error (in catch)',
       error: {message: error}
-    });
-  })
-
-}
-
-
-
-function resetTokenWithToken(req, res) {
-
-  // extract the token from the query parameters/string (after the ? in the url)
-  const token = req.query.token;
-
-  jwt.verify(token, tokenSecret, (err, decoded) => {
-    // if the token was successfully decoded
-    if (decoded) {
-
-      // use the user name in the decoded token to get the employee record from the Jarvis database
-      models.User.findOne({
-        where: {userName: decoded.userName}
-      }).then(jarvisUser => {
-
-        // create a new token
-        const token = jwt.sign(
-          {
-            userName: jarvisUser.userName,
-            email: jarvisUser.email, 
-            rememberMe: true
-          }, 
-          tokenSecret, 
-          {expiresIn: expirationTime}
-        );
-
-        // decode the token to get the issued at and expired at datetimes
-        jwt.verify(token, tokenSecret, (err, decoded) => {
-          // if the decode was successfull
-          if (decoded) {
-
-            // send back a response with the ldap user object, jarvis user object, new user (no), and jwt token
-            res.json({
-              jarvisUser: jarvisUser,
-              newUser: false,
-              token: {
-                signedToken: token,
-                issuedAt: decoded.iat,
-                expiringAt: decoded.exp
-              }
-            });
-
-          // if the decode failed (this should not happen, if it does there is probably a bug in the code)
-          } else if (err) {
-            console.log('token is invalid (weird because we just created it!)');
-          }
-        })
-
-      })
-    
-    // if the token was not successfully decoded this means either it is expired or was modified thus couldn't be decoded
-    } else if (err) {
-
-      // send back a response with an error status code
-      return res.status(401).json({
-        title: 'the token is not valid (is expired or was tampered with)',
-        error: err
-      });
-
-    }
-  })
-
-}
-
-
-// return all users in the Employees table
-function index(req, res) {
-
-  models.User.findAll({
-  }).then(users => {
-    console.log("Returning users data (all)");
-    res.json(users);
+    })
   });
 
 }
+
+
+// verify the user is able to access to app route (url)
+function verifyRoutePermissions(req, res) {
+
+  // get the token out of the request header
+  const token = req.header('X-Token');
+  // console.log('token:');
+  // console.log(token);
+
+  // get the path from the request header
+  const path = req.header('X-Path');
+  // console.log('path:');
+  // console.log(path);
+
+  // split the path into an array
+  const pathArr = path.split('/');
+  // console.log('path array:');
+  // console.log(pathArr);
+
+  // find the position of 'main' in the path
+  const mainIndex = pathArr.indexOf('main');
+
+  // get a string of the 'protected' route, which is everthing after the main route
+  const protectedRoute = pathArr.slice(mainIndex + 1).join(' > ');
+  // console.log('protected route:');
+  // console.log(protectedRoute);
+
+  // build the required permission string based on the path and permissions convention
+  const permissionNeeded = `resources > ${protectedRoute} > view`;
+  // console.log('permission needed:');
+  // console.log(permissionNeeded);
+
+  // send the token through verification and send the appropriate response
+  jwt.verify(token, tokenSecret, (err, decoded) => {
+    if (decoded) {
+
+      // console.log('user permissions:');
+      // console.log(decoded.userData.permissions);
+
+      // try to find the required permission in the user's list of permissions
+      const foundPermission = decoded.userData.permissions.find(permission => {
+        // modify the permission string to replace white space between characters with '-' to match app routes and convert to lowercase
+        const permissionNameModified = permission.permissionName.split(' > ').map(x => x.replace(/\s/g, '-')).join(' > ').toLowerCase();
+        // console.log('permission modified:');
+        // console.log(permissionNameModified);
+        return permissionNeeded === permissionNameModified;
+      });
+
+      // console.log('found permission:');
+      // console.log(foundPermission);
+
+      // if the permission was found, return valid status code and token is valid true, otherwise return error status
+      if (foundPermission) {
+        res.status(200).json({
+          tokenIsValid: true
+        });
+      } else {
+        res.status(401).json({
+          tokenIsValid: false
+        });
+      }
+
+    // if the token is invalid, return error status
+    } else {
+      res.status(401).json({
+        tokenIsValid: false
+      });
+    }
+  })
+
+}
+
 
 
 function getLoginBackgroundImages(req, res) {
@@ -406,6 +334,7 @@ function getLoginBackgroundImages(req, res) {
 // TEMP CODE: testing websockets
 function getLoggedInUsers(req, res) {
 
+  console.log('getting logged in users for websockets testing (Whos logged in)');
   res.json(loggedInUsers);
 
 }
@@ -429,7 +358,7 @@ module.exports = {
   authenticate: authenticate,
   getInfoFromToken: getInfoFromToken,
   resetToken: resetToken,
-  index: index,
+  verifyRoutePermissions: verifyRoutePermissions,
   getLoggedInUsers: getLoggedInUsers,
   logout: logout,
   getLoginBackgroundImages: getLoginBackgroundImages

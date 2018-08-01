@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { User } from '../../_shared/models/user.model';
 import { AuthService } from '../../_shared/services/auth.service';
 import { CacheService } from '../../_shared/services/cache.service';
-import { ApiDataService } from '../../_shared/services/api-data.service';
 import { ProfileModalComponent } from '../../modals/profile-modal/profile-modal.component';
 
 declare var $: any;
@@ -50,7 +49,6 @@ export class TopNavComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private cacheService: CacheService,
-    private apiDataService: ApiDataService,
     private route: ActivatedRoute
   ) {
 

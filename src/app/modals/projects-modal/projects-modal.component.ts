@@ -164,6 +164,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       .subscribe(
         res => {
           this.projects = res;
+          // Need to refresh the project permissions list when a new one is created live through websockets
+          this.getProjectPermissionTeamList();
           // this.filterProjects = this.projects;
           this.addedProjects.emit(this.projects);
         },
@@ -714,6 +716,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       }
       updateModalSubscription.unsubscribe();
     });
+
+    this.onRequestedProject(project);
   }
 
 

@@ -24,16 +24,19 @@ import { FilterPipe } from './_shared/pipes/filter.pipe';
 import { TitleCasePipe } from '@angular/common';
 
 // SERVICES
-import { ApiDataService, CacheService, ClickTrackingService, CookiesService,
+import { CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
-import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService} from './_shared/services/api-data/_index';
 
 // GUARDS
+import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
+import { BrowserGuard } from './_shared/guards/browser.guard';
+import { PermissionsGuard } from './_shared/guards/permissions.guard';
+import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
 
 // CHARTS
 import 'hammerjs';
@@ -55,7 +58,7 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
-import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
+import { OrgDropdownComponent } from './reports/team-fte-summary/org-dropdown/org-dropdown.component';
 import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
 import { ChartsModule } from 'ng2-charts';
@@ -74,6 +77,7 @@ import { ProjectAttributesComponent } from './admin/project-attributes/project-a
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
+import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 
 
 @NgModule({
@@ -118,6 +122,7 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     DashboardComponent,
     FooterComponent,
     CarouselModalComponent,
+    SupplyDemandComponent
   ],
   imports: [
     AppRoutingModule,
@@ -137,7 +142,6 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     Ng2CompleterModule
   ],
   providers: [
-    ApiDataService,
     ApiDataAuthService,
     ApiDataClickTrackingService,
     ApiDataEmailService,
@@ -150,6 +154,7 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     ApiDataProjectService,
     ApiDataReportService,
     ApiDataDashboardService,
+    ApiDataAnalyticsService,
     CacheService,
     AuthService,
     AuthGuardService,
@@ -159,6 +164,9 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
     WebsocketService,
     CookiesService,
     UnsavedChangesGuard,
+    BrowserGuard,
+    PermissionsGuard,
+    FteEntryGuard,
     TitleCasePipe
   ],
   bootstrap: [AppComponent]

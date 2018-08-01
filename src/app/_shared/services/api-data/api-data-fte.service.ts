@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
 import { CacheService } from '../cache.service';
+import { AuthService } from '../auth.service';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class ApiDataFteService {
 
   constructor(
     private http: Http,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private authService: AuthService
   ) { }
 
   // get FTE data from db
@@ -36,10 +40,22 @@ export class ApiDataFteService {
   }
 
   // check it job title and subtitle has been set
-  checkJobTitleUpdated(userID: number) {
-    return this.http.get(`/api/dashboard/checkJobTitle/${userID}`)
+  checkJobTitleUpdated() {
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get('api/dashboard/checkJobTitle', options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
+
+  // check it job title and subtitle has been set (synchronous version)
+  async checkJobTitleUpdatedSync(token: string) {
+    const headers = new Headers({'X-Token': token});
+    const options = new RequestOptions({headers: headers});
+    return await this.http.get('api/dashboard/checkJobTitle', options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json()).toPromise();
+  }
+
 
 }

@@ -1,3 +1,33 @@
+<a name="1.4.1"></a>
+## [1.4.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.4.0...v1.4.1) (2018-07-26)
+
+
+### Bug Fixes
+
+* **app-routing.module.ts:** fixed dashboard stuck on loading ([20bdd16](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/20bdd16))
+
+
+
+<a name="1.4.0"></a>
+# [1.4.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.3.1...v1.4.0) (2018-07-25)
+
+
+### Features
+
+* **team-fte-summary component:** Added org dropdown ([38358cc](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/38358cc))
+
+
+
+<a name="1.3.1"></a>
+## [1.3.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.3.0...v1.3.1) (2018-07-24)
+
+
+### Bug Fixes
+
+* **projects-component:** BETA fixes ([cf53e14](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/cf53e14))
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.2.1...v1.3.0) (2018-07-23)
 
