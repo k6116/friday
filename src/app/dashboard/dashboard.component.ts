@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { ApiDataDashboardService } from '../_shared/services/api-data/_index';
 import { AuthService } from '../_shared/services/auth.service';
@@ -20,6 +20,7 @@ require('highcharts/modules/no-data-to-display.js')(Highcharts);
 require('highcharts/highcharts-more.js')(Highcharts);
 require('highcharts/modules/solid-gauge.js')(Highcharts);
 import * as moment from 'moment';
+import * as momentTimezone from 'moment-timezone';
 
 
 @Component({
@@ -29,7 +30,7 @@ import * as moment from 'moment';
   providers: [DashboardDonutService, DashboardGaugeService, DashboardMessagesService, DashboardParetoService,
     DashboardPieService, DashboardStackedColumnService]
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit {
 
   messages: any[] = [];
   dashboardData: any;
@@ -58,8 +59,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
-    // console.log('dashboard component initialized');
-
     // get dashboard data, then render dashboard
     this.getDashboardData();
 
@@ -68,12 +67,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       (profileHasBeenUpdated: boolean) => {
         this.removeProfileUpdateMessage();
     });
-
-  }
-
-  ngAfterViewInit() {
-
-    window.resizeTo(screen.width - 5, screen.height - 5);
 
   }
 
