@@ -24,16 +24,19 @@ import { FilterPipe } from './_shared/pipes/filter.pipe';
 import { TitleCasePipe } from '@angular/common';
 
 // SERVICES
-import { ApiDataService, CacheService, ClickTrackingService, CookiesService,
+import { CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
-import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
   ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService} from './_shared/services/api-data/_index';
 
 // GUARDS
+import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
+import { BrowserGuard } from './_shared/guards/browser.guard';
+import { PermissionsGuard } from './_shared/guards/permissions.guard';
+import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
 
 // CHARTS
 import 'hammerjs';
@@ -139,7 +142,6 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     Ng2CompleterModule
   ],
   providers: [
-    ApiDataService,
     ApiDataAuthService,
     ApiDataClickTrackingService,
     ApiDataEmailService,
@@ -162,6 +164,9 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     WebsocketService,
     CookiesService,
     UnsavedChangesGuard,
+    BrowserGuard,
+    PermissionsGuard,
+    FteEntryGuard,
     TitleCasePipe
   ],
   bootstrap: [AppComponent]

@@ -21,6 +21,9 @@ export class UserResolverService implements Resolve<Observable<string>> {
 
   // TO-DO BILL: comment!!!
 
+  // NOTE: the resolver will guarantee the data will be there before any of the components are initialized,
+  // but not for any of the guards
+
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     if (this.authService.loggedInUser) {
       console.log('returning logged in user data from memory');

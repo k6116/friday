@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
 import { CacheService } from '../cache.service';
+import { AuthService } from '../auth.service';
+import 'rxjs/add/operator/map';
+
 
 @Injectable()
 export class ApiDataReportService {
 
   constructor(
     private http: Http,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private authService: AuthService
   ) { }
 
   // Employees report
@@ -39,7 +43,7 @@ export class ApiDataReportService {
 
   // Top Projects report
   getTopFTEProjectList() {
-    return this.http.get(`/api/report/getTopFTEProjectList/`)
+    return this.http.get(`/api/report/reports-topProjects/show/getTopFTEProjectList`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -58,7 +62,9 @@ export class ApiDataReportService {
 
   // Top Projects Bubble report
   getAggregatedFteData() {
-    return this.http.get(`/api/report/getAggregatedFteData/`)
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/report/reports-topProjectsBubble/show/getAggregatedFteData/`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
