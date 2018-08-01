@@ -125,6 +125,7 @@ router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', contro
 // JOB TITLE CONTROLLER (ADMIN)
 router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
 router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
+router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
 
 
@@ -198,7 +199,6 @@ router.use('/', function(req, res, next) {
 
 
 // JOB TITLE CONTROLLER (ADMIN)
-router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 router.post('/jobTitle/admin/insert/insertJobTitle', controllers.jobTitle.insertJobTitle);
 router.post('/jobTitle/admin/insert/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
 router.post('/jobTitle/admin/destroy/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
