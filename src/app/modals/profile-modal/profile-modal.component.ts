@@ -133,6 +133,11 @@ export class ProfileModalComponent implements OnInit {
         res => {
           console.log(res);
           this.newJobTitleID = this.jobTitleID;
+          // TEMP CODE: update the loggedInUser object with the saved jobTitleID and jobSubTitleID
+          // this should be refactored to get a new token first, and also get the job title and subtitle names in the token payload so
+          // don't have to retrive job title data and 'map'
+          this.authService.loggedInUser.jobTitleID = this.jobTitleID;
+          this.authService.loggedInUser.jobSubTitleID = this.jobSubTitleID;
         },
         err => {
           console.log(err);
