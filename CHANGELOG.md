@@ -1,3 +1,14 @@
+<a name="1.5.0"></a>
+# [1.5.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.4.1...v1.5.0) (2018-08-02)
+
+
+### Features
+
+* **supply-demand-component:** Added an experimental supply demand feature ([81a8635](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/81a8635))
+* **supply-demand-component:** added supply demand charts for NCI Projects ([a0c0659](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a0c0659))
+
+
+
 <a name="1.4.1"></a>
 ## [1.4.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.4.0...v1.4.1) (2018-07-26)
 
