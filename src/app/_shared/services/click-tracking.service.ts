@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiDataClickTrackingService } from '../../_shared/services/api-data/_index';
 import { AuthService } from '../../_shared/services/auth.service';
+import { ToolsService } from '../../_shared/services/tools.service';
 
 import * as moment from 'moment';
+import * as momentTimezone from 'moment-timezone';
 import * as bowser from 'bowser';
 declare var $: any;
 
@@ -13,7 +15,8 @@ export class ClickTrackingService {
   constructor(
     private router: Router,
     private apiDataClickTrackingService: ApiDataClickTrackingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toolsService: ToolsService
   ) { }
 
 
@@ -66,7 +69,7 @@ export class ClickTrackingService {
     // build an object that will be inserted into the table
     // NOTE: for now, page, clickedOn, and text will be null, and will be updated later with the clickTrack string
     const clickObj = {
-      clickedDateTime: moment().add(moment().utcOffset() / 60, 'hours'),
+      clickedDateTime: this.toolsService.pacificTime(),
       employeeID: userID,
       page: null,
       path: path,

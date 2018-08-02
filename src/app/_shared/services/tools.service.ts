@@ -4,6 +4,7 @@ import { FormArray } from '@angular/forms';
 import { CacheService } from './cache.service';
 
 import * as moment from 'moment';
+import * as momentTimezone from 'moment-timezone';
 import * as _ from 'lodash';
 
 @Injectable()
@@ -316,6 +317,45 @@ export class ToolsService {
 
     // return the string
     return `${firstMonth} - ${lastMonth}`;
+
+  }
+
+
+  pacificTime(): any {
+
+    // console.log('moment string, local time:');
+    // const localTimeString = moment().format('dddd, MMMM Do YYYY, h:mm:ss a');
+    // console.log(localTimeString);
+
+    // console.log('utc offset, local time:');
+    // const localTimeOffset = -(moment().utcOffset() / 60);
+    // console.log(localTimeOffset);
+
+    // get a moment in pacific time
+    const pacificTime = momentTimezone(moment().format('YYYY-MM-DDTHH:mm:ssZ')).tz('America/Los_Angeles');
+    // console.log('pacific time moment:');
+    // console.log(pacificTime);
+
+    // console.log('pacific time string');
+    // const pacificTimeString = pacificTime.format('MMMM Do YYYY, h:mm:ss a Z z');
+    // console.log(pacificTimeString);
+
+    // get the utc / greenwich mean time offset of the pacific time (either 7 or 8 hours depending on DST)
+    const pacificTimeOffset = -(pacificTime.utcOffset() / 60);
+    // console.log('utc offset, pacific time:');
+    // console.log(pacificTimeOffset);
+
+    // console.log('pacific time final string:');
+    // console.log(pacificTime.subtract(pacificTimeOffset, 'hours').format('MMMM Do YYYY, h:mm:ss a Z z'));
+
+    // substract the utc offset, since the sequelize date datatype will automatically add this offset
+    const pacificTimeFinal = pacificTime.subtract(pacificTimeOffset, 'hours');
+    // console.log('pacific time final:');
+    // console.log(pacificTimeFinal);
+
+    // return the moment
+    return pacificTimeFinal;
+
 
   }
 

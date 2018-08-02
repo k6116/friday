@@ -20,7 +20,6 @@ require('highcharts/modules/no-data-to-display.js')(Highcharts);
 require('highcharts/highcharts-more.js')(Highcharts);
 require('highcharts/modules/solid-gauge.js')(Highcharts);
 import * as moment from 'moment';
-import * as momentTimezone from 'moment-timezone';
 
 
 @Component({
