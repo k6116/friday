@@ -1,3 +1,34 @@
+<a name="1.5.0"></a>
+# [1.5.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.4.1...v1.5.0) (2018-08-02)
+
+
+### Features
+
+* **supply-demand-component:** Added an experimental supply demand feature ([81a8635](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/81a8635))
+* **supply-demand-component:** added supply demand charts for NCI Projects ([a0c0659](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a0c0659))
+
+
+
+<a name="1.4.1"></a>
+## [1.4.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.4.0...v1.4.1) (2018-07-26)
+
+
+### Bug Fixes
+
+* **app-routing.module.ts:** fixed dashboard stuck on loading ([20bdd16](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/20bdd16))
+
+
+
+<a name="1.4.0"></a>
+# [1.4.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.3.1...v1.4.0) (2018-07-25)
+
+
+### Features
+
+* **team-fte-summary component:** Added org dropdown ([38358cc](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/38358cc))
+
+
+
 <a name="1.3.1"></a>
 ## [1.3.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.3.0...v1.3.1) (2018-07-24)
 

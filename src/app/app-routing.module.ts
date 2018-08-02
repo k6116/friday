@@ -20,6 +20,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
+import { BrowserGuard } from './_shared/guards/browser.guard';
+import { PermissionsGuard } from './_shared/guards/permissions.guard';
+import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
 import { TestComponent } from './test/test.component';
 import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
@@ -32,15 +35,16 @@ import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'block', component: BlockAppUseComponent },
-  { path: 'test', component: TestComponent },
-  { path: 'perf', component: PerformanceComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'test', component: TestComponent, canActivate: [BrowserGuard] },
+  { path: 'perf', component: PerformanceComponent, canActivate: [BrowserGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [BrowserGuard] },
   {
-    path: 'main', component: MainComponent, canActivate: [AuthGuardService], resolve: { loggedInUser: UserResolverService },
+    path: 'main', component: MainComponent, canActivate: [BrowserGuard, AuthGuardService], resolve: { loggedInUser: UserResolverService },
     children: [
-      { path: '', redirectTo: 'fte-entry/employee', pathMatch: 'full' },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent, canDeactivate: [UnsavedChangesGuard] },
+      { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
+        canActivate: [FteEntryGuard], canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent },
       { path: 'reports/bom-editor', component: BomEditorComponent },
@@ -52,7 +56,7 @@ const routes: Routes = [
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'chat', component: ChatComponent },
-      { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
+      { path: 'admin', component: AdminComponent, canActivate: [PermissionsGuard] },
     ]
   },
   { path: '**', redirectTo: '/login' }

@@ -29,7 +29,9 @@
         "../node_modules/intro.js/minified/introjs.min.css",
         "../node_modules/ng2-tree/styles.css",
         "../node_modules/treant-js/Treant.css",
-        "../src/app/_shared/styles/treant-custom.css"
+        "../src/app/_shared/styles/treant-custom.css",
+        "../node_modules/simplebar/dist/simplebar.css",
+        "../src/app/_shared/styles/simplebar-custom.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
@@ -38,7 +40,8 @@
         "../node_modules/chart.js/dist/chart.bundle.js",
         "../node_modules/intro.js/minified/intro.min.js",
         "../node_modules/treant-js/Treant.js",
-        "../node_modules/treant-js/vendor/raphael.js"
+        "../node_modules/treant-js/vendor/raphael.js",
+        "../node_modules/simplebar/dist/simplebar.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

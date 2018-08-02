@@ -5,18 +5,21 @@ const Sequelize = require('sequelize')
 const moment = require('moment');
 const Treeize = require('treeize');
 const sleep = require('system-sleep');
-// const sequelizePLM = require('../db/sequelize').sequelizePLM;
-// const sequelize = require('../db/sequelize').sequelize2017;
+const jwt = require('jsonwebtoken');
+const dotevnv = require('dotenv').config(
+  {path: '/.env'}
+);
+const token = require('../token/token');
 
 
 function getFTEData(req, res) {
 
-  const emailAddress = req.params.emailAddress;
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
+  const decodedToken = token.decode(req.header('X-Token'));
 
   sequelize.query('EXECUTE resources.DashboardFTEData :emailAddress, :startDate, :endDate', 
-    {replacements: {emailAddress: emailAddress, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
+    {replacements: {emailAddress: decodedToken.userData.email, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
     .then(dashboardData => {
 
       // TEMP CODE: for testing datadog alerts
@@ -26,10 +29,7 @@ function getFTEData(req, res) {
       dashboardDataTree.grow(dashboardData);
       const dashboardDataTreeized = dashboardDataTree.getData();
 
-      console.log("returning dashboard data");
       res.json(dashboardDataTreeized);
-
-      // res.json(dashboardData);
 
     })
     .catch(error => {
@@ -43,9 +43,20 @@ function getFTEData(req, res) {
 
 function checkFirstLogin(req, res) {
 
-  const employeeID = req.params.employeeID;
-  const userName = req.params.userName;
-  sequelize.query(`SELECT COUNT(*) as ClickCount FROM [resources].[ClickTracking] WHERE EmployeeID = :employeeID OR [Text] = :userName`, {replacements: {employeeID: employeeID, userName: userName}, type: sequelize.QueryTypes.SELECT})
+  const decodedToken = token.decode(req.header('X-Token'), res);
+
+  const sql = `
+    SELECT 
+      COUNT(*) as ClickCount 
+    FROM 
+      [resources].[ClickTracking] 
+    WHERE 
+      EmployeeID = :employeeID
+      AND ClickedOn <> 'Login Button'
+      AND Page <> 'App Load'
+  `;
+  
+  sequelize.query(sql, {replacements: {employeeID: decodedToken.userData.id, userName: decodedToken.userData.userName}, type: sequelize.QueryTypes.SELECT})
     .then(clickCount => {
       console.log(`click count`);
       console.log(clickCount);
@@ -65,10 +76,9 @@ function checkFirstLogin(req, res) {
 
 function checkJobTitle(req, res) {
 
-  console.log('reached check job title');
+  const decodedToken = token.decode(req.header('X-Token'), res);
 
-  const employeeID = req.params.employeeID;
-  sequelize.query(`SELECT JobTitleID, JobSubTitleID FROM accesscontrol.Employees WHERE EmployeeID = :employeeID`, {replacements: {employeeID: employeeID}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT JobTitleID, JobSubTitleID FROM accesscontrol.Employees WHERE EmployeeID = :employeeID`, {replacements: {employeeID: decodedToken.userData.id}, type: sequelize.QueryTypes.SELECT})
     .then(jobTitle => {
       res.json({
         jobTitle
@@ -86,7 +96,8 @@ function checkJobTitle(req, res) {
 
 function checkProjectRequests(req, res) {
 
-  const employeeID = req.params.employeeID;
+  const decodedToken = token.decode(req.header('X-Token'), res);
+
   const sql = `
     SELECT
       T1.RequestID,
@@ -105,7 +116,7 @@ function checkProjectRequests(req, res) {
       AND T3.EmployeeID = :employeeID
   `
 
-  sequelize.query(sql, {replacements: {employeeID: employeeID}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query(sql, {replacements: {employeeID: decodedToken.userData.id}, type: sequelize.QueryTypes.SELECT})
     .then(requests => {
       res.json({
         requests

@@ -1,0 +1,5 @@
+div.col-custom.table-scrollable {
+    max-height: 397px;
+    overflow: scroll;
+    padding: 10px 14px;
+  }

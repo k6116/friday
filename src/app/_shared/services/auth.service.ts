@@ -4,13 +4,14 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { User } from '../models/user.model';
-import { ApiDataAuthService } from './api-data/_index';
+import { ApiDataAuthService } from './api-data/api-data-auth.service';
 import { CacheService } from './cache.service';
 import { WebsocketService } from './websocket.service';
-
-import * as moment from 'moment';
 import { Subscriber } from 'rxjs/Subscriber';
 import { ToolsService } from './tools.service';
+
+import * as moment from 'moment';
+import * as decode from 'jwt-decode';
 
 
 @Injectable()
@@ -18,7 +19,6 @@ export class AuthService {
 
   loggedIn: boolean;
   loggedInUser: User;
-  token: any;
   lastActivity: number;   // epoch time indicating last time there was any mouse click or keypress
   modalIsDisplayed: boolean;
   warnBeforeExpiration: number; // time in minutes before auto logout to display the warning modal
@@ -46,7 +46,7 @@ export class AuthService {
       return false;
     } else {
       // if the user is logged in and there is a token, make sure the token has not expired
-      if (this.loggedIn && this.token) {
+      if (this.loggedIn && this.cacheService.token) {
         // if the token is expired, the user is not logged in
         if (this.tokenIsExpired()) {
           // console.log('isLoggedIn returned false due to token expired');
@@ -72,6 +72,7 @@ export class AuthService {
   }
 
 
+  // TO-DO BILL: get rid of this; should be replaced by user resolver
   // get user information for components that need the data, to deal with scenario where there may or may not be user info in the cache
   getLoggedInUser(callback: (user: User, error?: string) => void): void {
     console.log('getLoggedInUser method called');
@@ -102,10 +103,11 @@ export class AuthService {
   }
 
 
-  // get information from the token like user, issued at, expiring at, by sending it to server to be decoded
-  // so it can be cached for performance
-  // NOTE: this should only be executed on refresh of pages, will be invoked on app component init (other than the login page?)
+  // this is invoked from the app component init (on app load / page refresh)
+  // if there is no token in local storage or it is expired, make sure they are re-routed to the login page and it is cleard
+  // if there is a valid token; refresh it to get a new expiration date and new user data just in case some info may have changed
   getInfoFromToken() {
+    console.log('get info from token started');
     // get the token from local storage
     const token = localStorage.getItem('jarvisToken');
     // if the token exists (if is doesn't the token constant will be set to null)
@@ -114,7 +116,9 @@ export class AuthService {
         .subscribe(
           res => {
             // update the token info in memory
-            this.token = res.token;
+            this.cacheService.token = res.token;
+            console.log('token has been updated');
+            console.log(this.cacheService.token);
             // if the token is expired, clear the user data/cache (properties in this service) and token, and re-route to the login page
             if (this.tokenIsExpired()) {
               console.log('logging out within getInfoFromToken function, due to expired token');
@@ -123,9 +127,13 @@ export class AuthService {
             } else {
               // store the data in this service
               console.log('within getInfoFromToken; token is valid');
+              // this jarvis user will be the have the same data as in the token that was sent
               this.loggedInUser = new User().deserialize(res.jarvisUser);
+              console.log('get info from token; same logged in user');
+              console.log(this.loggedInUser);
               this.setLoggedIn(true);
               // reset the token
+              console.log('resetting the token');
               this.resetToken();
             }
             // TEMP CODE to log the token status
@@ -155,9 +163,10 @@ export class AuthService {
   }
 
 
-  // this should be executed when the timer is fired
+  // this is executed when the timer is fired every minute
   // to either issue a new token with new expiration, auto log them out, ask them if they want to stay logged in w/ modal, or do nothing
   checkAuthStatus() {
+
     // don't execute this if the user is on the login page
     if (this.router.url === '/login') {
       return;
@@ -176,52 +185,47 @@ export class AuthService {
     if (this.tokenIsExpired()) {
       console.log('logging out within checkAuthStatus function, due to expired token');
       this.logout(true);
+
     // if there is a logged in user and there has been activity within the last 60 seconds
     // go the the server to get them a new token with pushed out expiration date
     // NOTE: the numInactivitySeconds or numInactivityMinutes should be synched with the timer interval in the app component
     } else if (this.loggedInUser && numInactivitySeconds < 60) {
-      // console.log('attempting to get a new token with a new expiration date');
-      this.apiDataAuthService.resetToken(this.loggedInUser)
-        .subscribe(
-          res => {
-            console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
-            // update the token info in memory
-            this.token = res.token;
-            // remove and reset the token in local storage
-            this.clearToken();
-            this.setToken(res.token.signedToken);
-            // reset the timer so that it will be synched with the token expiration, at least within a second or two
-            this.cacheService.resetTimer.emit(true);
-          },
-          err => {
-            console.error('reset token error:');
-            console.error(err);
-          }
-        );
+
+      // reset the token
+      this.resetToken();
+
     // if the token is about to expire, show a modal asking the user if they want to keep working/stay logged in
     } else if (this.tokenIsAboutToExpire()) {
+
       // only emit a message to the modal if it isn't already displayed
       if (!this.modalIsDisplayed) {
         this.displayExtendSessionModal();
         this.modalIsDisplayed = true;
       }
+
     }
 
   }
 
-  // TO-DO: get a new token on app refresh (if there is a token, because it should be considered a new session)
+  // get a new token with a new expiration date and a new logged in user
   resetToken() {
     // console.log('attempting to get a new token with a new expiration date');
-    this.apiDataAuthService.resetToken(this.loggedInUser)
+    const token = localStorage.getItem('jarvisToken');
+    this.apiDataAuthService.resetToken(token)
       .subscribe(
         res => {
+          console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
           // update the token info in memory
-          this.token = res.token;
+          this.cacheService.token = res.token;
           // remove and reset the token in local storage
           this.clearToken();
           this.setToken(res.token.signedToken);
           // reset the timer so that it will be synched with the token expiration, at least within a second or two
           this.cacheService.resetTimer.emit(true);
+          // this jarvis user will be the have the same data as in the token that was sent
+          this.loggedInUser = new User().deserialize(res.jarvisUser);
+          console.log('get info from token; new logged in user');
+          console.log(this.loggedInUser);
           // TEMP CODE to log the token status
           this.logTokenStatus();
         },
@@ -233,11 +237,20 @@ export class AuthService {
   }
 
 
+  decodedToken(): any {
+    if (this.cacheService.token) {
+      return decode(this.cacheService.token.signedToken);
+    } else {
+      return undefined;
+    }
+  }
+
+
   // method to compare the timestamps and check to see whether the token expiration date has passed
   // NOTE: this method just uses the cached token data, doesn't need to make a call to the server to decode
   tokenIsExpired(): boolean {
-    if (this.token) {
-      const expiringAt = moment.unix(this.token.expiringAt);
+    if (this.cacheService.token) {
+      const expiringAt = moment.unix(this.cacheService.token.expiringAt);
       const now = moment();
       if (expiringAt.diff(now, 'seconds') <= 0) {
       // if (expiringAt.isSameOrAfter(now)) {
@@ -251,8 +264,8 @@ export class AuthService {
 
   // method to compare the timestamps to see if the token will expire in X minutes or less
   tokenIsAboutToExpire(): boolean {
-    if (this.token) {
-      const expiringAt = moment.unix(this.token.expiringAt);
+    if (this.cacheService.token) {
+      const expiringAt = moment.unix(this.cacheService.token.expiringAt);
       const now = moment();
       console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
       if (expiringAt.diff(now, 'seconds') <= this.warnBeforeExpiration * 60) {
@@ -266,13 +279,13 @@ export class AuthService {
 
   // get the token expiration datetime as a string (convert from unix epoch)
   tokenExpirationDate(): string {
-    return moment.unix(this.token.expiringAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
+    return moment.unix(this.cacheService.token.expiringAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
   }
 
 
   // get the token issued datetime as a string (convert from unix epoch)
   tokenIssuedDate(): string {
-    return moment.unix(this.token.issuedAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
+    return moment.unix(this.cacheService.token.issuedAt).format('dddd, MMMM Do YYYY, h:mm:ss a');
   }
 
 
@@ -294,7 +307,7 @@ export class AuthService {
   clearUserCache() {
     this.loggedIn = undefined;
     this.loggedInUser = undefined;
-    this.token = undefined;
+    this.cacheService.token = undefined;
   }
 
 
@@ -375,7 +388,7 @@ export class AuthService {
 
   // TEMP CODE: to log the token status
   logTokenStatus() {
-    if (this.token) {
+    if (this.cacheService.token) {
       console.log(`token was issued at: ${this.tokenIssuedDate()}; expiring at: ${this.tokenExpirationDate()}`);
     }
   }
