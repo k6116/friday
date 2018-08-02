@@ -21,15 +21,9 @@ export class BomViewerComponent implements OnInit {
   billListSub: Subscription;
   bill: any;  // for storing the selected bill as flat array
 
-  showBom = false;
+  bomChart: any;  // treant chart object
+  bomChartOptions: any; // object of options for treant chart
 
-  my_chart: any;
-  nodeStructure: any; // for storing the selected bill as tree JSON
-  chart: any;
-
-  // for showing details when clicking a ndoe
-  showDetails = false;
-  details: any;
 
   constructor(private apiDataBomService: ApiDataBomService) { }
 
@@ -41,9 +35,7 @@ export class BomViewerComponent implements OnInit {
   }
 
   onBomSelect(selected: number) {
-    this.my_chart = {};
-    this.showBom = false;
-    this.showDetails = false;
+    this.bomChartOptions = {};
 
     // get the selected BOM as flat array
     const bomSubscription = this.apiDataBomService.showSingleBom(selected).subscribe( res => {
@@ -51,11 +43,12 @@ export class BomViewerComponent implements OnInit {
       bomSubscription.unsubscribe();
       console.log(this.bill);
 
-      this.my_chart = {
+      this.bomChartOptions = {
         chart: {
           container: '#tree-simple',
           levelSeparation: 100,
           siblingSeparation: 20,
+          padding: 100,
           connectors: {type: 'curve'},
           rootOrientation: 'NORTH',
           nodeAlign: 'BOTTOM',
@@ -63,28 +56,26 @@ export class BomViewerComponent implements OnInit {
         }
       };
       // initialize bomtree
-      this.nodeStructure = {
-        text: {name: {val: this.bill[0].ParentName}}
-        // id: this.bill[0].ParentID,
-        // type: this.bill[0].ParentEntity
+      this.bomChartOptions.nodeStructure = {
+        text: {name: {val: this.bill[0].ParentName}},
+        id: this.bill[0].ParentID,
+        type: this.bill[0].ParentEntity
       };
 
       // recursively parse the BOM structure
-      const blaa = this.bomTraverse(0, 1);
-      console.log(blaa);
-      this.nodeStructure.children = blaa[0];
-      this.my_chart.nodeStructure = this.nodeStructure;
-      console.log('chart');
-      console.log(this.my_chart);
-      this.showBom = true;
-      if (this.chart) {
-        this.chart.destroy();
+      const jsonBom = this.bomTraverse(0, 1);
+
+      // add the recursive output as 'children' property of the tree nodeStructure
+      this.bomChartOptions.nodeStructure.children = jsonBom.nextLvData;
+      if (this.bomChart) {
+        this.bomChart.destroy();
       }
-      this.chart = new Treant(this.my_chart, this.onTreeLoadComplete, $);
+      this.bomChart = new Treant(this.bomChartOptions, this.onTreeLoadComplete, $);
     });
   }
 
   onTreeLoadComplete() {
+    // callback function executed when Treant is done drawing the tree, currently unused
     console.log('completed');
   }
 
@@ -96,24 +87,34 @@ export class BomViewerComponent implements OnInit {
       if (this.bill[i].Level === lv) {
         // traverse down and collect all the siblings in this level
         children.push({
-          text: {name: this.bill[i].ChildName}
-          // id: this.bill[i].ChildID,
-          // type: this.bill[i].ChildEntity
+          text: {name: this.bill[i].ChildName},
+          id: this.bill[i].ChildID,
+          type: this.bill[i].ChildEntity
         });
         i++;
       } else if (this.bill[i].Level > lv) {
         // if the next record is a child, recurse
         // when we return to this level, continue traversing from the farthest-reached index
         const output = this.bomTraverse(i, lv + 1);
-        children[children.length - 1].children = output[0];
-        i = Number(output[1]);
+        const lastIndex = children.length - 1;
+        children[lastIndex].children = output.nextLvData;
+        if (output.nextLvData.length > 10) {
+          children[lastIndex].collapsed = true;
+        }
+        i = Number(output.nextRow);
       } else if (this.bill[i].Level < lv) {
         // if the next record is a parent, return the complete set of nested children
         // and the next value to continue traversing at
-        return [children, i];
+        return {
+          nextRow: i,
+          nextLvData: children
+        };
       }
     } // end while
-    return [children, i];
+    return {
+      nextRow: i,
+      nextLvData: children
+    };
   } // end bomTraverse
 
 }
