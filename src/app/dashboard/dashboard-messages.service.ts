@@ -64,7 +64,7 @@ export class DashboardMessagesService {
 
   checkFirstLogin(check): DashboardMessage {
 
-    if (check.clickCount[0].ClickCount <= 1) {
+    if (check.clickCount[0].ClickCount === 0) {
       return {
         id: 'welcomeMessage',
         iconFontClass: 'nc-privacy-policy',
@@ -87,7 +87,7 @@ export class DashboardMessagesService {
         id: 'updateProfileMessage',
         iconFontClass: 'nc-badge',
         iconType: 'warning',
-        messageText: `Please update your profile with your job title and subtitle if applicable -
+        messageText: `Please update your profile with your job title and subtitle -
         click the ${initial} icon in the upper right hand corner then the profile button.
         You won't be able to enter your fte values until this has been updated.`
       };

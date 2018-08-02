@@ -234,56 +234,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       introJs().exit();
       this.display = false;
     }
-    // check to make sure the user has updated their profile with their job title before allowing them to add a project
-    this.apiDataFteService.checkJobTitleUpdated(this.authService.loggedInUser.id)
-      .subscribe(
-        res => {
-          console.log(res);
-          if (res.jobTitle[0].JobTitleID) {
-            this.showProjectsModal = true;
-          } else {
-            // show modal or toast
-            this.displayNeedToUpdateJobTitleModal();
-            // this.displayNeedToUpdateJobTitleToast();
-          }
-        },
-        err => {
-          console.log(err);
-        }
-      );
-  }
-
-  // display modal after attempt to add project when job title hasn't been populated
-  displayNeedToUpdateJobTitleModal() {
-
-    const initial = this.authService.loggedInUser.fullName[0].toUpperCase();
-    this.cacheService.confirmModalData.emit(
-      {
-        title: 'Profile Update Required',
-        message: `Please update your profile with your job title and subtitle if applicable -
-          click the ${initial} icon in the upper right hand corner then the profile button.
-          You won't be able to add any projects until this has been updated.`,
-        iconClass: 'fa-exclamation-triangle',
-        iconColor: 'rgb(193, 27, 27)',
-        closeButton: true,
-        allowOutsideClickDismiss: true,
-        allowEscKeyDismiss: true,
-        buttons: [
-          {
-            text: 'Got It',
-            bsClass: 'btn-success'
-          }
-        ]
-      }
-    );
-
-  }
-
-
-  // display toast after attempt to add project when job title hasn't been populated
-  displayNeedToUpdateJobTitleToast() {
-    this.cacheService.raiseToast('warn',
-      `You must update your profile with your job title before you can add any projects.`);
+    this.showProjectsModal = true;
   }
 
 

@@ -123,13 +123,8 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     });
 
     if (!this.cacheService.nestedOrgDataRequested && !this.cacheService.nestedOrgDataCached) {
-      // get logged in user's info
-      this.authService.getLoggedInUser((user, err) => {
-        // this.getNestedOrgData(user.email);
-        // this.getNestedOrgData('ron_nersesian@keysight.com');
-        // this.getNestedOrgData('pat_harper@keysight.com');
-        this.getNestedOrgData('ron_nersesian@keysight.com');
-      });
+      // this.getNestedOrgData('ron_nersesian@keysight.com');
+      this.getNestedOrgData(this.authService.loggedInUser.email);
     }
 
     // show the spinner if the nested org data is not loaded yet

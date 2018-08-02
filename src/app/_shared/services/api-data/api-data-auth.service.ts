@@ -3,6 +3,8 @@ import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@a
 import { Observable } from 'rxjs/observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { CacheService } from '../cache.service';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 
 
 @Injectable()
@@ -17,45 +19,57 @@ export class ApiDataAuthService {
   authenticate(user: any): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
-    return this.http.post('/api/login', JSON.stringify(user), options)
+    return this.http.post('/api/auth/authenticate', JSON.stringify(user), options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   // decode the jwt token to get the user info, issued and expiration dates
-  getInfoFromToken(token): Observable<any> {
-    const queryString = '?token=' + token;
-    return this.http.get(`/api/getInfoFromToken${queryString}`)
+  getInfoFromToken(token: string): Observable<any> {
+    const headers = new Headers({'X-Token': token});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/auth/getInfoFromToken`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   // reset / get a new token with pushed out expiration date
-  resetToken(user: any): Observable<any> {
-    const headers = new Headers({'Content-Type': 'application/json'});
+  resetToken(token: string): Observable<any> {
+    const headers = new Headers({'X-Token': token});
     const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/resetToken`, JSON.stringify(user), options)
+    return this.http.post(`/api/auth/resetToken`, null, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
+  // verify the token to ensure it hasn't been tampered with
+  async verifyRoutePermissions(token: string, path: string) {
+    const headers = new Headers({'X-Token': token, 'X-Path': path});
+    const options = new RequestOptions({headers: headers});
+    return await this.http.get(`/api/auth/verifyRoutePermissions`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json()).toPromise();
+  }
+
   // get a list of the background image file names and captions
   getLoginBackgroundImages(): Observable<any> {
-    return this.http.get(`/api/getLoginBackgroundImages`)
+    return this.http.get(`/api/auth/getLoginBackgroundImages`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   // TEMP CODE: for websockets testing
-  getLoggedInUsers(): Observable<any> {
-    return this.http.get(`/api/getLoggedInUsers`)
+  getLoggedInUsers(token: string): Observable<any> {
+    const headers = new Headers({'X-Token': token});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/auth/websockets/index/getLoggedInUsers`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   // TEMP CODE: for websockets testing
   logout(userName): Observable<any> {
-    return this.http.get(`/api/logout/${userName}`)
+    return this.http.get(`/api/auth/logout/${userName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

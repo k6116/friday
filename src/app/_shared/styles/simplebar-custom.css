@@ -1,0 +1,9 @@
+
+
+.simplebar-content {
+  overflow-x: hidden!important;
+}
+
+.simplebar-scrollbar:before {
+  background: rgb(128, 128, 128);
+}

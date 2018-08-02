@@ -32,12 +32,12 @@ div.login-cont {
   left: 0;
   right: 0;
   top: 0;
-  bottom: 0;
+  bottom: 50px;
   background-color: white;
   opacity: 0.9;
 }
 
-@media (max-height: 600px) {
+@media (max-height: 650px) {
   div.login-cont {
     margin-top: 50px;
   }

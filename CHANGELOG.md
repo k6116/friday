@@ -1,3 +1,13 @@
+<a name="1.4.1"></a>
+## [1.4.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.4.0...v1.4.1) (2018-07-26)
+
+
+### Bug Fixes
+
+* **app-routing.module.ts:** fixed dashboard stuck on loading ([20bdd16](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/20bdd16))
+
+
+
 <a name="1.4.0"></a>
 # [1.4.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.3.1...v1.4.0) (2018-07-25)
 

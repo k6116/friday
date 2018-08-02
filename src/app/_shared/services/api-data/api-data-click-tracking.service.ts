@@ -3,6 +3,7 @@ import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@a
 import { Observable } from 'rxjs/observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { CacheService } from '../cache.service';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class ApiDataClickTrackingService {

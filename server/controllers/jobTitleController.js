@@ -3,6 +3,10 @@ const models = require('../models/_index');
 const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize');
 const Treeize = require('treeize');
+const dotevnv = require('dotenv').config(
+    {path: '/.env'}
+  );
+const token = require('../token/token');
 
 // // Retrieve list of all job titles and the associated job title subs
 // function indexJobTitle(req, res) {
@@ -89,7 +93,8 @@ function indexJobSubTitle(req, res) {
 // Update user's job title and job title sub
 function updateEmployeeJobTitle(req,res) {
     const jobTitles = req.body;
-    const userID = req.params.userID;
+    // const userID = req.params.userID;
+    const decodedToken = token.decode(req.header('X-Token'), res);
     // console.log('JOBTITLE DATA:', jobTitles);
     return sequelize.transaction((t) => {
 
@@ -100,7 +105,7 @@ function updateEmployeeJobTitle(req,res) {
                     jobSubTitleID: jobTitles.newJobSubTitleID
                 },
                 {
-                    where: {id: userID},
+                    where: {id: decodedToken.userData.id},
                     transaction: t
                 }
             )
