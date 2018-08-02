@@ -80,8 +80,18 @@ router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYea
 
 
 // ANALYTICS CONTROLLER
-router.get('/getNCIProjectsWithDemandList', controllers.analytics.getNCIProjectsWithDemandList);
-router.get('/getNCISupplyDemand', controllers.analytics.getNCISupplyDemand);
+router.get('/getNCIProjectsParentChildList', controllers.analytics.getNCIProjectsParentChildList);
+router.get('/getNCISupplyDemand/:projectName', controllers.analytics.getNCISupplyDemand);
+router.get('/getNCISupplyDemandDatesList', controllers.analytics.getNCISupplyDemandDatesList);
+router.get('/getNCISupplyDemandProjectList', controllers.analytics.getNCISupplyDemandProjectList);
+router.get('/getNCISupplyDemandPartList/:projectName', controllers.analytics.getNCISupplyDemandPartList);
+router.get('/getNCISupplyLotList/:partName', controllers.analytics.getNCISupplyLotList);
+router.get('/getNCISupplyLotExclusionList/:partName', controllers.analytics.getNCISupplyLotExclusionList);
+router.get('/execUpdateSupplyDemand/', controllers.analytics.execUpdateSupplyDemand);
+router.post('/insertLotExclusion/:userID', controllers.analytics.insertLotExclusion);
+router.post('/destroyLotExclusion/:userID', controllers.analytics.destroyLotExclusion);
+
+
 
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
