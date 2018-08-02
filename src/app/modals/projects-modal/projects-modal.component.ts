@@ -74,9 +74,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   selProject: any;
   subscription1: Subscription;
   filterProjects: any;
-  myTeamsToggle: boolean;
-  mySupervisorEmail: string;
-  groupsflag: boolean;
+  myTeam: boolean;
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
@@ -149,7 +147,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     // for filter toggle
     this.filterProjects = this.projects;
-    this.myTeamsToggle = false;
+    this.myTeam = false;
 
   }
 
@@ -895,23 +893,34 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.getProjectPermissionList();
   }
 
-  onMyTeamToggleClick() {
-    this.myTeamsToggle = !this.myTeamsToggle;
-    const managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
-    let m = 0;
-    const filter = [];
-    if (this.myTeamsToggle === true) {
+    // when the myTeam checkbox is changed, update the myTeam property (boolean)
+    onMyTeamChange(event) {
+      this.myTeam = event.target.checked;
+
+      // if myTeam is checked then filter projects
+      if (this.myTeam === true) {
+        this.filterMyTeam();
+      } else {
+        this.filterProjects = this.projects;
+      }
+    }
+
+    // only show projects created within my team
+    filterMyTeam() {
+      const managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+      const filter = [];
+      let m = 0;
+      // loop through projects list and check the manager of the project creator
       for (let i = 0; i < this.projects.length; i++) {
-        if (this.projects[i].ProjectOrgManager === managerEmailAddress) {
+        // if the ProjectOrgManager is the same as user's manager's email address,
+        // or if the creator is the user's manager, add that project to filter[]
+        if (this.projects[i].ProjectOrgManager === managerEmailAddress || this.projects[i].EmailAddress === managerEmailAddress) {
           filter[m] = this.projects[i];
           m = m + 1;
         }
       }
       this.filterProjects = filter;
-    } else {
-      this.filterProjects = this.projects;
     }
-  }
 
 }
 

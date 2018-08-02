@@ -8,21 +8,18 @@
           <div class="projects-modal-filter tutorial-part2" id="intro-search-project">
             <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter" appAutofocus>
           </div>&nbsp;&nbsp;
-
-          <!-- Filter Toggle -->
-          <button *ngIf="!myTeamsToggle" type="button btn-sm" class="btn btn-primary custom-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" (click)="onMyTeamToggleClick()">
-            Show My Team
-          </button>
-          <button *ngIf="myTeamsToggle" type="button btn-sm" class="btn btn-primary custom-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" (click)="onMyTeamToggleClick()">
-            Show All Projects
-          </button>
+          
+          <!-- Checkbox Filter -->
           <!-- <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox">
-            <label class="form-check-label" for="checkbox.name" style="font-size: larger">
-              Show My Team
-            </label>
+            <input class="form-check-input" type="checkbox" id="customCheck1" [checked]="myTeam" (change)="onMyTeamChange($event)">
+            <label class="form-check-label" for="customCheck1">My Team</label>
           </div> -->
-          <!-- Filter Toggle end -->
+          
+          <div class="custom-control custom-checkbox" style="display: inline-block">
+            <input type="checkbox" class="custom-control-input" id="customCheck1" [checked]="myTeam" (change)="onMyTeamChange($event)">
+            <label class="custom-control-label" for="customCheck1">My Team</label>
+          </div>
+          <!--  -->
 
           <div class="projects-modal-close">
             <i class="nc-icon nc-small-remove projects-modal-close-button" (click)="onCancelClicked()"></i>

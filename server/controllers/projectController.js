@@ -18,7 +18,8 @@ function indexProjects(req, res) {
         g.GroupName,
         ey.EntityName,
         eo.EntityOwnerName, 
-        e.FullName, 
+        e.FullName,
+        e2.EmailAddress, 
         p.CreationDate, 
         t.ProjectTypeName, 
         p.CreatedBy,
@@ -31,6 +32,7 @@ function indexProjects(req, res) {
         LEFT JOIN projects."Group" g ON p.GroupID = g.GroupID
         LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
         LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
+        LEFT JOIN accesscontrol.Employees e2 ON P.CreatedBy = e2.EmployeeID
     ORDER BY 
         p.ProjectName`
     
