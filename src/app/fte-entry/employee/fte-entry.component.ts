@@ -312,67 +312,32 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
 
   onFTEChange(i, j, value) {
+    value = Number(value);
     // console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
-
-    let fteReplace: boolean;
-    let fteReplaceValue: any;
-
-    // check for match on the standard three digit format 0.5, 1.0
-    const match = /^[0][.][1-9]{1}$/.test(value) || /^[1][.][0]{1}$/.test(value);
-    // if not a match, will want to update/patch it to use the standard format
-    if (!match) {
-      fteReplace = true;
-
-      // first, strip out all dots except the first
-      const dotPosition = value.indexOf( '.' );
-      if ( dotPosition > -1 ) {
-        fteReplaceValue = value.substr( 0, dotPosition + 1 ) + value.slice( dotPosition ).replace( /\./g, '' );
-      } else {
-        fteReplaceValue = value;
-      }
-
-      // if string has a trailing dot, append a zero so it will look like a number
-      if (dotPosition === fteReplaceValue.length - 1) {
-        fteReplaceValue = fteReplaceValue + '0';
-      }
-
-      // if the value is 0, replace with null, else decimalPipe it into the proper format
-      if (Number(fteReplaceValue) === 0) {
-        fteReplaceValue = null;
-      } else {
-        fteReplaceValue = this.decimalPipe.transform(Number(fteReplaceValue), '1.1-1');
-      }
-
-    }
-    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}, at ${i}, ${j}`);
 
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
     const FTEFormGroup = FTEFormProjectArray.at(j);
 
-    if ( (fteReplaceValue === null) && (FTEFormGroup.value.recordID !== null) ) {
-      // if the replacement value is a null and the recordID is accessible, delete that record
+    // if user typed a 0, replace with null
+    if (value === 0) {
+      FTEFormGroup.patchValue({
+        fte: null
+      });
+    }
+
+    if ( (value === null) && (FTEFormGroup.value.recordID !== null) ) {
+      // if user typed a null and the recordID is accessible, delete that record
       // TODO: get the newly created recordID after a save transaction is completed
       FTEFormGroup.patchValue({
         toBeDeleted: true,
         updated: false
       });
     } else {
+      // user changed the value, so set the update flag for us to update it in the DB
       FTEFormGroup.patchValue({
         updated: true
       });
-    }
-
-    if (fteReplace) {
-      FTEFormGroup.patchValue({
-        fte: fteReplaceValue
-      });
-      // {
-      //   onlySelf: true,
-      //   emitEvent: true,
-      //   emitModelToViewChange: true,
-      //   emitViewToModelChange: true
-      // });
     }
 
     // update the monthly total
@@ -401,8 +366,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       });
     });
 
-    // set to null if zero (to show blank) and round to one significant digit
-    total = total === 0 ? null : Math.round(total * 10) / 10;
+    // set to null if zero (to show blank) and convert to an actual decimal percentage. frontend will use percentpipe to display it properly
+    total = total === 0 ? null : total / 100;
 
     // set the monthly totals property at the index
     this.monthlyTotals[index] = total;
@@ -430,9 +395,9 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       return total === 0 ? null : total;
     });
 
-    // round the totals to one significant digit
+    // convert the total to a decimal, using percentpipe in the frontend to display
     totals = totals.map(total => {
-      return total ? Math.round(total * 10) / 10 : null;
+      return total ? total / 100 : null;
     });
 
     // set the monthly totals property
@@ -668,7 +633,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           jobSubTitleID: [proj.jobSubTitleID],
           newlyAdded: [proj.newlyAdded],
           month: [month],
-          fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
+          fte: [foundEntry ? foundEntry['allocations:fte'] * 100 : null], // convert db values to a percent without the percent sign
           newRecord: [foundEntry ? false : true],
           updated: [false],
           toBeDeleted: [false]
