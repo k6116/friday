@@ -162,8 +162,12 @@ License - nucleoapp.com/license/
 	font icons
 -------------------------*/
 
-.nc-a-check::before {
+.nc--stopwatch::before {
     content: "\ea01";
+}
+
+.nc-a-check::before {
+    content: "\ea02";
 }
 
 .nc-analytics-88::before {
@@ -171,10 +175,6 @@ License - nucleoapp.com/license/
 }
 
 .nc-archive-check::before {
-    content: "\ea02";
-}
-
-.nc-award-49-2::before {
     content: "\ea04";
 }
 
@@ -183,15 +183,15 @@ License - nucleoapp.com/license/
 }
 
 .nc-badge-15::before {
-    content: "\ea07";
+    content: "\ea06";
 }
 
 .nc-badge::before {
-    content: "\ea08";
+    content: "\ea07";
 }
 
 .nc-bars-rotate::before {
-    content: "\ea06";
+    content: "\ea08";
 }
 
 .nc-board-29::before {
@@ -230,180 +230,160 @@ License - nucleoapp.com/license/
     content: "\ea11";
 }
 
-.nc-check-all-2::before {
+.nc-check-all::before {
     content: "\ea12";
 }
 
-.nc-check-all::before {
+.nc-check-curve::before {
     content: "\ea13";
 }
 
-.nc-check-curve::before {
+.nc-circle-09::before {
     content: "\ea14";
 }
 
-.nc-circle-09::before {
+.nc-circle-10::before {
     content: "\ea15";
 }
 
-.nc-circle-10::before {
+.nc-circle-remove::before {
     content: "\ea16";
 }
 
-.nc-circle-remove::before {
+.nc-crosshair::before {
     content: "\ea17";
 }
 
-.nc-crosshair::before {
+.nc-dashboard-29::before {
     content: "\ea18";
 }
 
-.nc-dashboard-29::before {
+.nc-dashboard-30::before {
     content: "\ea19";
 }
 
-.nc-dashboard-30::before {
+.nc-dashboard-half::before {
     content: "\ea1a";
 }
 
-.nc-dashboard-half::before {
+.nc-dots-05::before {
     content: "\ea1b";
 }
 
-.nc-dots-05::before {
+.nc-dots-06::before {
     content: "\ea1c";
 }
 
-.nc-dots-06::before {
+.nc-dots-07::before {
     content: "\ea1d";
 }
 
-.nc-dots-07::before {
+.nc-event-create::before {
     content: "\ea1e";
 }
 
-.nc-event-create::before {
+.nc-eye-17::before {
     content: "\ea1f";
 }
 
-.nc-eye-17::before {
+.nc-fat-remove::before {
     content: "\ea20";
 }
 
-.nc-fat-remove::before {
+.nc-gantt::before {
     content: "\ea21";
 }
 
-.nc-gantt::before {
+.nc-hierarchy-53::before {
     content: "\ea22";
 }
 
-.nc-hanger-clothes::before {
+.nc-hierarchy-54::before {
     content: "\ea23";
 }
 
-.nc-hierarchy-53::before {
+.nc-hierarchy-55::before {
     content: "\ea24";
 }
 
-.nc-l-security::before {
+.nc-hierarchy-56::before {
     content: "\ea25";
 }
 
-.nc-l-settings::before {
+.nc-i-lock::before {
     content: "\ea26";
 }
 
-.nc-list::before {
+.nc-l-security::before {
     content: "\ea27";
 }
 
-.nc-lock::before {
+.nc-l-settings::before {
     content: "\ea28";
 }
 
-.nc-meeting::before {
+.nc-list::before {
     content: "\ea29";
 }
 
-.nc-metrics::before {
+.nc-lock-2::before {
     content: "\ea2a";
 }
 
-.nc-newsletter::before {
+.nc-lock::before {
     content: "\ea2b";
 }
 
-.nc-opening-times::before {
+.nc-meeting::before {
     content: "\ea2c";
 }
 
-.nc-pencil::before {
+.nc-newsletter::before {
     content: "\ea2d";
 }
 
-.nc-privacy-policy-2::before {
+.nc-no-access::before {
     content: "\ea2e";
 }
 
-.nc-privacy-policy::before {
+.nc-opening-times::before {
     content: "\ea2f";
 }
 
-.nc-recipe-book-46::before {
+.nc-pencil::before {
     content: "\ea30";
 }
 
-.nc-recipe-book-47::before {
+.nc-privacy-policy::before {
     content: "\ea31";
 }
 
-.nc-recipe::before {
+.nc-send::before {
     content: "\ea32";
 }
 
-.nc-rim::before {
+.nc-settings-gear-63::before {
     content: "\ea33";
 }
 
-.nc-send::before {
+.nc-simple-remove::before {
     content: "\ea34";
 }
 
-.nc-settings-gear-63::before {
+.nc-single-05::before {
     content: "\ea35";
 }
 
-.nc-simple-remove::before {
+.nc-small-remove::before {
     content: "\ea36";
 }
 
-.nc-single-05::before {
+.nc-socket::before {
     content: "\ea37";
 }
 
-.nc-small-remove-2::before {
-    content: "\ea38";
-}
-
-.nc-small-remove::before {
-    content: "\ea39";
-}
-
-.nc-socket::before {
-    content: "\ea3a";
-}
-
-.nc-time-countdown::before {
-    content: "\ea3b";
-}
-
 .nc-todo::before {
-    content: "\ea3c";
-}
-
-.nc-wash::before {
-    content: "\ea3d";
+    content: "\ea38";
 }
 
 

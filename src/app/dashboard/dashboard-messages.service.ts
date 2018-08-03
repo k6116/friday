@@ -203,7 +203,7 @@ export class DashboardMessagesService {
       // return the object
       return {
         id: 'fteDeadlineMessage',
-        iconFontClass: 'nc-time-countdown',
+        iconFontClass: 'nc--stopwatch',
         iconType: passedDeadline ? 'warning' : 'concern',
         messageText: `The deadline to enter your FTE entries for this quarter
           ${passedDeadline ? ' was' : ' is'} ${deadlineString} (${timeSinceDeadline}).`

@@ -24,6 +24,15 @@ export class ApiDataAuthService {
       .map((response: Response) => response.json());
   }
 
+  // attempt to authenticate the user credentials using windows login and ldap
+  async authenticateSync(user: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+    return await this.http.post('/api/auth/authenticate', JSON.stringify(user), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json()).toPromise();
+  }
+
   // decode the jwt token to get the user info, issued and expiration dates
   getInfoFromToken(token: string): Observable<any> {
     const headers = new Headers({'X-Token': token});

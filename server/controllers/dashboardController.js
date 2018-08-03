@@ -6,9 +6,6 @@ const moment = require('moment');
 const Treeize = require('treeize');
 const sleep = require('system-sleep');
 const jwt = require('jsonwebtoken');
-const dotevnv = require('dotenv').config(
-  {path: '/.env'}
-);
 const token = require('../token/token');
 
 
@@ -16,14 +13,11 @@ function getFTEData(req, res) {
 
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
-  const decodedToken = token.decode(req.header('X-Token'));
+  const decodedToken = token.decode(req.header('X-Token'), res);
 
   sequelize.query('EXECUTE resources.DashboardFTEData :emailAddress, :startDate, :endDate', 
     {replacements: {emailAddress: decodedToken.userData.email, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
     .then(dashboardData => {
-
-      // TEMP CODE: for testing datadog alerts
-      // sleep(5000);
 
       const dashboardDataTree = new Treeize();
       dashboardDataTree.grow(dashboardData);
@@ -40,6 +34,10 @@ function getFTEData(req, res) {
     });
 
 }
+
+
+// TEMP CODE: for testing datadog alerts
+// sleep(5000);
 
 function checkFirstLogin(req, res) {
 

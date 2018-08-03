@@ -10,6 +10,7 @@ import { User } from '../../_shared/models/user.model';
 import { WebsocketService } from '../../_shared/services/websocket.service';
 import { CookiesService } from '../../_shared/services/cookies.service';
 import { ApiDataAuthService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import 'rxjs/observable';
 
 import * as moment from 'moment';
 
@@ -151,7 +152,55 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.onLoginClick();
   }
 
-  onLoginClick() {
+
+  async authenticateSync(user): Promise<any> {
+
+    console.log('within authenticateSync');
+    const response = await this.apiDataAuthService.authenticateSync(user)
+      .catch(err => {
+        return err;
+      });
+    console.log('response within authenticateSync');
+    console.log(response);
+    return response;
+
+  }
+
+  // this is the best, but need to also use async on your calling function
+  async authenticate(user) {
+
+    console.log('within authenticateSync');
+    const response = await this.apiDataAuthService.authenticate(user).toPromise()
+      .catch(err => {
+        console.log('error response within authenticate');
+        return err;
+      });
+    console.log('response within authenticate');
+    console.log(response);
+    return response;
+
+  }
+
+  async authenticate2(user) {
+
+    console.log('within authenticate2');
+    let response;
+    await this.apiDataAuthService.authenticate(user)
+      .subscribe(
+        res => {
+          response = res;
+        },
+        err => {
+          response = err;
+        });
+    console.log('response within authenticate2');
+    console.log(response);
+    return response;
+
+  }
+
+
+  async onLoginClick() {
 
     // reset and hide the error message if any is already displayed
     this.resetErrorMessage();
@@ -174,10 +223,38 @@ export class LoginComponent implements OnInit, OnDestroy {
     // show the animated svg
     this.showPendingLoginAnimation = true;
 
+    let storedAuthResponse;
+    await this.authenticateSync(user)
+      .then(authResponse => {
+        console.log('synch auth response:');
+        console.log(authResponse);
+        storedAuthResponse = authResponse;
+      });
+    console.log('stored auth response:');
+    console.log(storedAuthResponse);
+
+    let storedAuthResponse2;
+    await this.authenticate(user)
+      .then(authResponse => {
+        console.log('synch auth response 2:');
+        console.log(authResponse);
+        storedAuthResponse2 = authResponse;
+      });
+    console.log('stored auth response 2:');
+    console.log(storedAuthResponse2);
+
+
+    const storedAuthResponse3 = this.authenticate2(user);
+    console.log('stored auth response 3:');
+    console.log(storedAuthResponse3);
+
     // call the api data service to authenticate the user credentials
-    this.apiDataAuthService.authenticate(user)
+    console.log('before async authenticate');
+    await this.apiDataAuthService.authenticate(user)
       .subscribe(
         res => {
+
+          console.log('within authenticate (response');
 
           // log the time it took to authenticate
           this.logAuthPerformance(t0);

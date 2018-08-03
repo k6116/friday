@@ -78,6 +78,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
+import { Error403Component } from './error-pages/error-403/error-403.component';
 
 
 @NgModule({
@@ -122,7 +123,8 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     DashboardComponent,
     FooterComponent,
     CarouselModalComponent,
-    SupplyDemandComponent
+    SupplyDemandComponent,
+    Error403Component
   ],
   imports: [
     AppRoutingModule,

@@ -27,6 +27,7 @@ import { TestComponent } from './test/test.component';
 import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
 import { UserResolverService } from './_shared/services/user-resolver.service';
+import { Error403Component } from './error-pages/error-403/error-403.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'test', component: TestComponent, canActivate: [BrowserGuard] },
   { path: 'perf', component: PerformanceComponent, canActivate: [BrowserGuard] },
   { path: 'login', component: LoginComponent, canActivate: [BrowserGuard] },
+  { path: 'error403', component: Error403Component },
   {
     path: 'main', component: MainComponent, canActivate: [BrowserGuard, AuthGuardService], resolve: { loggedInUser: UserResolverService },
     children: [
