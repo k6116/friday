@@ -74,7 +74,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   selProject: any;
   subscription1: Subscription;
   filterProjects: any;
-  myTeam: boolean;
+
+  // for checkbox pipe
+  filterItems: Array<any>;
+  filters: any;
+  managerEmailAddress: string;
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
@@ -98,9 +102,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     private cacheService: CacheService,
     private authService: AuthService,
     private websocketService: WebsocketService
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {
 
@@ -145,10 +147,25 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       this.refreshProjectCards();
     });
 
-    // for filter toggle
+    // for checkbox filter
     this.filterProjects = this.projects;
-    this.myTeam = false;
-
+    this.managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+    // for pipe: id is used to apply filter; value is used for filtercondition and checked is ckeckbox state
+    // title is used in html as checkbox label
+    this.filterItems = [
+      {
+      id: 'myTeamCheck',
+      title: 'My Team',
+      value: this.managerEmailAddress,
+      checked: false
+      },
+      {
+      id: 'npiCheck',
+      title: 'NPI',
+      value: 'NPI',
+      checked: false
+      },
+    ];
   }
 
   ngAfterViewInit() {
@@ -892,35 +909,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // refresh project access list to update the request buttons
     this.getProjectPermissionList();
   }
-
-    // when the myTeam checkbox is changed, update the myTeam property (boolean)
-    onMyTeamChange(event) {
-      this.myTeam = event.target.checked;
-
-      // if myTeam is checked then filter projects
-      if (this.myTeam === true) {
-        this.filterMyTeam();
-      } else {
-        this.filterProjects = this.projects;
-      }
-    }
-
-    // only show projects created within my team
-    filterMyTeam() {
-      const managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
-      const filter = [];
-      let m = 0;
-      // loop through projects list and check the manager of the project creator
-      for (let i = 0; i < this.projects.length; i++) {
-        // if the ProjectOrgManager is the same as user's manager's email address,
-        // or if the creator is the user's manager, add that project to filter[]
-        if (this.projects[i].ProjectOrgManager === managerEmailAddress || this.projects[i].EmailAddress === managerEmailAddress) {
-          filter[m] = this.projects[i];
-          m = m + 1;
-        }
-      }
-      this.filterProjects = filter;
-    }
 
 }
 

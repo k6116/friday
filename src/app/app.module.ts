@@ -22,6 +22,7 @@ import { ClickOutsideDirective } from './_shared/directives/click-outside.direct
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
 import { TitleCasePipe } from '@angular/common';
+import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
 import { CacheService, ClickTrackingService, CookiesService,
@@ -89,6 +90,7 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     NoticeModalComponent,
     ConfirmModalComponent,
     SafeHtmlPipe,
+    ProjectsFilterPipe,
     FteInputRestrictDirective,
     FteEntryEmployeeComponent,
     FteInputRestrictDirective,
