@@ -451,9 +451,18 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       return value <= 1;
     });
 
+    // validate that no projects are empty
+    const fteData = this.FTEFormGroup.value.FTEFormArray;
+    const noProjectsEmpty = fteData.every( project => {
+      // check if every editable value for a given project is null
+      const isProjectEmpty = project.slice(firstEditableMonth).every( entry => {
+        return entry.fte === null;
+      });
+      return !isProjectEmpty;
+    });
+
     // only save if all quarters are valid
-    if (currentQuarterValid && futureQuartersValid) {
-      const fteData = this.FTEFormGroup.value.FTEFormArray;
+    if (currentQuarterValid && futureQuartersValid && noProjectsEmpty) {
       const t0 = performance.now();
 
       // call the api data service to send the put request
@@ -489,7 +498,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         this.apiDataProjectService.insertBulkProjectEmployeeRole(newlyAddedProjects, this.authService.loggedInUser.id)
         .subscribe(
           res => {
-            console.log('Successfully inserted bulk data into project employee role table');
+            // console.log('Successfully inserted bulk data into project employee role table');
           },
           err => {
             console.log(err);
@@ -498,26 +507,42 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       }
 
 
+    } else if (!noProjectsEmpty) {
+      // if the save was disallowed because there are empty projects, let the user know which ones
+      const invalidProjects = [];
+      fteData.forEach( project => {
+        const isProjectEmpty = project.slice(firstEditableMonth).every( entry => {
+          return entry.fte === null;
+        });
+        if (isProjectEmpty) {
+          invalidProjects.push(` ${project[0].projectName}`);
+        }
+      });
+      const invalidProjectsString = invalidProjects.toString();
+      this.cacheService.raiseToast('error', `Error: All projects in your table must have FTE entries.
+      Please add FTE entries for the following projects:${invalidProjectsString} and try again`);
     } else if (!currentQuarterValid) {
+      // if the save was disallowed because there are invalid sums in the current quarter, let the user know how many
       const invalidValues = [];
       this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).forEach( value => {
         if (value !== 1) {
           invalidValues.push(value);
         }
       });
-      this.cacheService.raiseToast('error', `FTE totals in each month cannot exceed 100%.
-      Please correct the ${invalidValues.length} months and try again.`);
+      this.cacheService.raiseToast('error', `Error: FTE totals in each month cannot exceed 100%.
+      Please correct the ${invalidValues.length} months in the current quarter and try again.`);
     } else if (!futureQuartersValid) {
+      // if the save was disallowed because there are invalid sums in future quarters, let the user know how many
       const invalidValues = [];
       this.monthlyTotals.slice(firstEditableMonth + 3).forEach( value => {
         if (value > 1) {
           invalidValues.push(value);
         }
       });
-      this.cacheService.raiseToast('error', `FTE totals in each month cannot exceed 100%.
+      this.cacheService.raiseToast('error', `Error: FTE totals in each month cannot exceed 100%.
       Please correct the ${invalidValues.length} months in future quarters and try again.`);
     } else {
-      this.cacheService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
+      this.cacheService.raiseToast('error', 'Error: An unknown error has occurred while saving.  Please contact the administrators.');
     }
   }
 
@@ -1054,7 +1079,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   showSliderDisabledToast() {
     const name = this.checkIfEmptyProjects();
     if (this.sliderDisabled) {
-      this.cacheService.raiseToast('warn', `Please enter FTE values for project: ${name}`);
+      this.cacheService.raiseToast('warn', `Please enter FTE values for project ${name}, before dragging the slider`);
     }
   }
 

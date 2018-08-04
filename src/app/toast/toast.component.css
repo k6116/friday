@@ -11,12 +11,16 @@ div.toast {
     background-color: #333; /* default */
     color: #fff;
     border-radius: 4px;
-    transition: transform 0.5s ease, opacity 0.5s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
   }
   
   div.toast.toast-success {
     background-color: #28A745; /* bootstrap4 success */
     color: #fff;
+  }
+
+  div.toast.toast-success:hover {
+    box-shadow: 0px 0px 14px rgb(133, 189, 146);
   }
   
   div.toast.toast-warn {
@@ -24,9 +28,17 @@ div.toast {
     color: #000;
   }
 
+  div.toast.toast-warn:hover {
+    box-shadow: 0px 0px 14px rgb(236, 201, 95);
+  }
+
   div.toast.toast-error {
     background-color: #C82333; /* bootstrap4 danger-red */
     color: #fff;
+  }
+
+  div.toast.toast-error:hover {
+    box-shadow: 0px 0px 14px rgb(197, 121, 128);
   }
   
   div.toast-show {

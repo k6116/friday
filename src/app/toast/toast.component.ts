@@ -18,27 +18,42 @@ export class ToastComponent implements OnInit, OnDestroy {
   timer: any;
 
   ngOnInit() {
-
-    console.log('toast component has been initialized');
-
     this.toastSubscription = this.cacheService.toast.subscribe( toast => {
-      if (this.timer) {
-        // if invoked while toast is already visible, clear the timeout
-        clearTimeout(this.timer);
+      if (this.toastVisible) {
+        // if toast is already visible, dismiss the existing one and then show the new one
+        this.dismissToast();
+        // delay is just a smidge longer than how long it takes to animate hiding the toast
+        setTimeout( () => { this.onToastReceive(toast); }, 305);
+      } else {
+        this.onToastReceive(toast);
       }
-      this.toastType = `toast toast-${toast.type}`;
-      this.toastText = toast.text;
-      this.showToast();
     });
   }
 
-  showToast() {
-    // show the toast, then remove the toast-show class from the div after 4 sec
+  onToastReceive(toast: any) {
+    // set type CSS class for toast, and the body of the message
+    this.toastType = `toast toast-${toast.type}`;
+    this.toastText = toast.text;
+    if (toast.type === 'error') {
+      // if it's a warning toast, require the user to dismiss it
+      this.showToast(true);
+    } else {
+      this.showToast(false);
+    }
+  }
+
+  showToast(requireDismiss: boolean) {
     this.toastVisible = true;
-    this.timer = setTimeout(() => { this.dismissToast(); }, 4000);
+    if (!requireDismiss) {
+      // if dismiss not required, remove the toast-show class from the div after 5 sec
+      this.timer = setTimeout(() => { this.dismissToast(); }, 5000);
+    }
   }
 
   dismissToast() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
     this.toastVisible = false;
   }
 
