@@ -193,12 +193,12 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       steps: [
         {
           intro: `Great!  Now you can add FTEs (full-time employee) to show your contribution to this project.
-            Please enter a value between 0 and 1, representing the proportion of your time each month you spend
+            Please enter a value between 0 and 100, representing the percent of your time each month you spend
             working on this project.`,
           element: '#intro-add-ftes'
         },
         {
-          intro: `Your total FTEs in each month should sum to 1, representing 100% of your time being allocated each month.`,
+          intro: `Your total FTEs in each month should sum to 100%.`,
           element: '#intro-fte-total'
         },
         {
@@ -326,7 +326,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       });
     }
 
-    if ( (value === null) && (FTEFormGroup.value.recordID !== null) ) {
+    if ( (FTEFormGroup.value.fte === null) && (FTEFormGroup.value.recordID !== null) ) {
       // if user typed a null and the recordID is accessible, delete that record
       // TODO: get the newly created recordID after a save transaction is completed
       FTEFormGroup.patchValue({
@@ -505,7 +505,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           invalidValues.push(value);
         }
       });
-      this.cacheService.raiseToast('error', `FTE values in the current quarter must total to 1.
+      this.cacheService.raiseToast('error', `FTE totals in each month cannot exceed 100%.
       Please correct the ${invalidValues.length} months and try again.`);
     } else if (!futureQuartersValid) {
       const invalidValues = [];
@@ -514,7 +514,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           invalidValues.push(value);
         }
       });
-      this.cacheService.raiseToast('error', `FTE values in future quarters must not total to more than 1.
+      this.cacheService.raiseToast('error', `FTE totals in each month cannot exceed 100%.
       Please correct the ${invalidValues.length} months in future quarters and try again.`);
     } else {
       this.cacheService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
@@ -682,13 +682,13 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     const startDate = moment().startOf('month');
     const month = moment(startDate).month();
     if (month === 10 || month === 11 || month === 0) {
-      this.sliderRange = [4, 6]; // Q1
+      this.sliderRange = [3, 6]; // Q1
     } else if (month === 1 || month === 2 || month === 3) {
-      this.sliderRange = [5, 7]; // Q2
+      this.sliderRange = [4, 7]; // Q2
     } else if (month === 4 || month === 5 || month === 6) {
-      this.sliderRange = [6, 8];
+      this.sliderRange = [5, 8];
     } else {
-      this.sliderRange = [7, 9];
+      this.sliderRange = [6, 9];
     }
 
     // initialize the by-month FTE display with the slider range handles
