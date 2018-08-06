@@ -30,7 +30,7 @@ import { CacheService, ClickTrackingService, CookiesService,
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { AuthGuardService } from './_shared/guards/auth.guard';
@@ -42,6 +42,7 @@ import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
+import { TreeModule } from 'ng2-tree';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -79,6 +80,10 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
+
+// BOM module stuff
+import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
+import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
 
 
 @NgModule({
@@ -124,6 +129,8 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     DashboardComponent,
     FooterComponent,
     CarouselModalComponent,
+    BomEditorComponent,
+    BomViewerComponent,
     SupplyDemandComponent
   ],
   imports: [
@@ -141,7 +148,8 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     NouisliderModule,
     ClickOutsideModule,
     ChartsModule,
-    Ng2CompleterModule
+    Ng2CompleterModule,
+    TreeModule
   ],
   providers: [
     ApiDataAuthService,
@@ -157,6 +165,7 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     ApiDataReportService,
     ApiDataDashboardService,
     ApiDataAnalyticsService,
+    ApiDataBomService,
     CacheService,
     AuthService,
     AuthGuardService,

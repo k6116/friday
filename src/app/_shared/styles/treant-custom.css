@@ -1,0 +1,38 @@
+/* overriding the treant collapse-switch CSS classes */
+
+.Treant .collapse-switch {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.Treant .collapsed .collapse-switch {
+  background-color: unset;
+}
+
+
+/* overriding the Treant node css classes */
+.Treant .node {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  /* height: 30px; */
+  min-width: 90px;
+  /* line-height: 30px; */
+  /* vertical-align: middle; */
+  text-align: center;
+  background-color: #FFFFFF;
+  border: 1px solid;
+  border-radius: 4px;
+  font-family: "Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+
+.Treant .node.collapsed {
+  background-color: #9B9B9B99;
+}
+
+.Treant .node p.node-name {
+  margin-top: unset;
+  margin-bottom: unset;
+}

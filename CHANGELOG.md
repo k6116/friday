@@ -1,3 +1,16 @@
+<a name="1.5.1"></a>
+## [1.5.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.5.0...v1.5.1) (2018-08-06)
+
+
+### Bug Fixes
+
+* **FTE Component:** when user adds a project that's already in their FTE table (but hidden), show th ([ce788d8](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/ce788d8))
+* **FTE Input page:** changed inputs to be whole numbers instead of decimals, displaying a percent si ([36bb300](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/36bb300))
+* **Toast component:** moved toasts to more visible location, switched to bootstrap colors, and made ([f83ec6e](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f83ec6e))
+* **Toast component:** toasts are now dismissable, and error toasts require dismissal ([e1a5f22](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/e1a5f22))
+
+
+
 <a name="1.5.0"></a>
 # [1.5.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.4.1...v1.5.0) (2018-08-02)
 

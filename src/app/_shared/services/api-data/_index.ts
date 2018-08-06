@@ -1,4 +1,5 @@
 export * from './api-data-auth.service';
+export * from './api-data-bom.service';
 export * from './api-data-click-tracking.service';
 export * from './api-data-email.service';
 export * from './api-data-employee.service';
