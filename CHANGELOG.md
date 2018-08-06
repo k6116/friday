@@ -1,3 +1,16 @@
+<a name="1.6.0"></a>
+# [1.6.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.5.1...v1.6.0) (2018-08-06)
+
+
+### Features
+
+* **fte-entry component adn projects-modal component:** remember user-chosen filters after modal is ([105ca0e](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/105ca0e))
+* **projects-modal:** Added project details ([9152125](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9152125))
+* **projects-modal and projects-filter pipe:** Filtering with checkboxes using projects-filter pipe ([fc59380](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/fc59380))
+* **projects-modal component:** add search by description feature ([60c6be7](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/60c6be7))
+
+
+
 <a name="1.5.1"></a>
 ## [1.5.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.5.0...v1.5.1) (2018-08-06)
 
