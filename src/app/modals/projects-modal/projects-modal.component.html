@@ -11,7 +11,7 @@
           
           <!-- Checkbox Filter -->         
             <div *ngFor="let filterItem of filterItems; let i = index;" class="custom-control custom-checkbox custom-control-inline">
-              <input type="checkbox" class="custom-control-input" [attr.id]="filterItem.id" [(ngModel)]="filterItem.checked" (change)="onFilterItemsChange()">{{ filterItem.title }}
+              <input type="checkbox" class="custom-control-input" [attr.id]="filterItem.id" [(ngModel)]="filterItem.checked" (change)="onFilterItemsChange(filterItem.id)">{{ filterItem.title }}
               <label class="custom-control-label" [attr.for]="filterItem.id"></label>
             </div>
           <!--  -->
@@ -26,7 +26,7 @@
           
           <div class="cards-cont">
             
-            <div class="card" *ngFor="let project of filterProjects | projectsFilter: filterItems | filter :filterString:'ProjectName':{limitTo: numProjectsToDisplay, matchFuzzy: true}">
+            <div class="card" *ngFor="let project of filterProjects | projectsFilter : filterItems | filter : filterString : filterItems[2].value : {limitTo: numProjectsToDisplay, matchFuzzy: true}">
               <div class="card-header-cont">
                 <div class="card-header-img" *ngIf="project.avatar">
                   <img class="card-project-avatar" [src]="project.avatar" alt="">

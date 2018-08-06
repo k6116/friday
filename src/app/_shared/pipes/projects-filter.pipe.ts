@@ -16,11 +16,11 @@ export class ProjectsFilterPipe implements PipeTransform {
     if (filterChecked.length !== 0) {
       // loop through all checked checkboxes and apply their condition
       for (let i = 0; i < filterChecked.length; i++) {
-        if (filterChecked[i].id === 'myTeamCheck') {
+        if (filterChecked[i].id === 'check0') {
           projectList = projectList.filter(project =>
             project.ProjectOrgManager === filterChecked[i].value || project.EmailAddress === filterChecked[i].value);
         }
-        if (filterChecked[i].id === 'npiCheck') {
+        if (filterChecked[i].id === 'check1') {
           projectList = projectList.filter(project => project.ProjectTypeName === filterChecked[i].value);
         }
       }

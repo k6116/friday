@@ -77,7 +77,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   // for checkbox pipe
   filterItems: Array<any>;
-  filters: any;
   managerEmailAddress: string;
 
   @Input() projects: any;
@@ -901,30 +900,45 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   // Checkbox Filter
-  onFilterItemsChange() {
-    console.log(this.filterItems);
+  onFilterItemsChange(id: string) {
+    // send filterItems to FTE entry page to remember user's filters
     this.filterItemsEmit.emit(this.filterItems);
+
+    // toggle filterString in filter pipe between Description and ProjectName depending on checkbox state of check2 (searchByDescription)
+    if (id === 'check2') {
+      if (this.filterItems[2].checked === true) {
+        this.filterItems[2].value = 'Description';
+      } else {
+        this.filterItems[2].value = 'ProjectName';
+      }
+    }
   }
 
+  // Gets called onInit.
   setFilterItems() {
     if (this.savedProjectFilters === undefined) {
       // for pipe: id is used to apply filter; value is used for filtercondition and checked is ckeckbox state
       // title is used in html as checkbox label
       this.filterItems = [
       {
-      id: 'myTeamCheck',
+      id: 'check0',
       title: 'My Team',
       value: this.managerEmailAddress,
       checked: false
       },
       {
-      id: 'npiCheck',
+      id: 'check1',
       title: 'NPI',
       value: 'NPI',
       checked: false
       },
+      {
+      id: 'check2',
+      title: 'Search By Description',
+      value: 'ProjectName',
+      checked: false
+      },
     ];
-      console.log('onInit savedProjectFilters:', this.savedProjectFilters);
     } else {
       // remember user-chosen filters after modal is closed
       this.filterItems = this.savedProjectFilters;
