@@ -29,7 +29,7 @@ export class BrowserGuard implements CanActivate {
       },
       {
         name: 'Microsoft Edge',
-        version: 15
+        version: 13
       }
     ];
 
