@@ -110,7 +110,7 @@
               <ng-container *ngFor="let month of months; let z = index">
                 <!-- <div class="fte-table-cell" *ngIf="fteMonthVisible[z]"> -->
                 <div class="fte-table-cell" [@colState]="fteMonthVisible[z]" [style.display]="fteMonthVisible[z] ? 'table-cell' : 'none'">
-                  <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
+                  <input disabled [value]="monthlyTotals[z] | percent" type="text" [class]="'form-control' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
                 </div>
                 <ng-container *ngIf="z % 3 === 2">
                   <div class="fte-table-cell quarter-spacer" [@colState]="fteMonthVisible[z]" [style.display]="fteMonthVisible[z] ? 'table-cell' : 'none'">&nbsp;</div>

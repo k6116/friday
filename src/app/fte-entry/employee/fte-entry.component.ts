@@ -193,12 +193,12 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       steps: [
         {
           intro: `Great!  Now you can add FTEs (full-time employee) to show your contribution to this project.
-            Please enter a value between 0 and 1, representing the proportion of your time each month you spend
+            Please enter a value between 0 and 100, representing the percent of your time each month you spend
             working on this project.`,
           element: '#intro-add-ftes'
         },
         {
-          intro: `Your total FTEs in each month should sum to 1, representing 100% of your time being allocated each month.`,
+          intro: `Your total FTEs in each month should sum to 100%.`,
           element: '#intro-fte-total'
         },
         {
@@ -253,15 +253,19 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     }, 500);
 
     // verify selectedProject has not already been added
-    const fteFormArray = this.FTEFormGroup.controls.FTEFormArray;
-    const currentProjectsList = [];
-    fteFormArray['controls'].forEach( project => {
-      currentProjectsList.push(project.projectID);
+    const fteFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+    const indexInTable = fteFormArray.controls.findIndex( project => {
+      return project['projectID'] === selectedProject.ProjectID;
     });
-    const alreadyExists = currentProjectsList.find( value => {
-      return value === selectedProject.ProjectID;
-    });
-    if (!alreadyExists) {
+    if (indexInTable !== -1) {
+      // project is in their table, so check if it's visible.  If it's visible throw them an error
+      // if it's not visible, show it
+      if (this.fteProjectVisible[indexInTable]) {
+        this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
+      } else {
+        this.fteProjectVisible[indexInTable] = true;
+      }
+    } else {
       const newProject = new UserFTEs;
       newProject.userID = this.authService.loggedInUser.id;
       newProject.projectID = selectedProject.ProjectID;
@@ -296,10 +300,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       this.addProjectToFteForm(FTEFormArray, newProject, true);
       this.sliderDisabled = true;
       this.displayFTETable = true;
-    } else {
-      this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
     }
-
   }
 
   onModalCancelClick() {
@@ -312,67 +313,32 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
 
   onFTEChange(i, j, value) {
+    value = Number(value);
     // console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
-
-    let fteReplace: boolean;
-    let fteReplaceValue: any;
-
-    // check for match on the standard three digit format 0.5, 1.0
-    const match = /^[0][.][1-9]{1}$/.test(value) || /^[1][.][0]{1}$/.test(value);
-    // if not a match, will want to update/patch it to use the standard format
-    if (!match) {
-      fteReplace = true;
-
-      // first, strip out all dots except the first
-      const dotPosition = value.indexOf( '.' );
-      if ( dotPosition > -1 ) {
-        fteReplaceValue = value.substr( 0, dotPosition + 1 ) + value.slice( dotPosition ).replace( /\./g, '' );
-      } else {
-        fteReplaceValue = value;
-      }
-
-      // if string has a trailing dot, append a zero so it will look like a number
-      if (dotPosition === fteReplaceValue.length - 1) {
-        fteReplaceValue = fteReplaceValue + '0';
-      }
-
-      // if the value is 0, replace with null, else decimalPipe it into the proper format
-      if (Number(fteReplaceValue) === 0) {
-        fteReplaceValue = null;
-      } else {
-        fteReplaceValue = this.decimalPipe.transform(Number(fteReplaceValue), '1.1-1');
-      }
-
-    }
-    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}, at ${i}, ${j}`);
 
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
     const FTEFormGroup = FTEFormProjectArray.at(j);
 
-    if ( (fteReplaceValue === null) && (FTEFormGroup.value.recordID !== null) ) {
-      // if the replacement value is a null and the recordID is accessible, delete that record
+    // if user typed a 0, replace with null
+    if (value === 0) {
+      FTEFormGroup.patchValue({
+        fte: null
+      });
+    }
+
+    if ( (FTEFormGroup.value.fte === null) && (FTEFormGroup.value.recordID !== null) ) {
+      // if user typed a null and the recordID is accessible, delete that record
       // TODO: get the newly created recordID after a save transaction is completed
       FTEFormGroup.patchValue({
         toBeDeleted: true,
         updated: false
       });
     } else {
+      // user changed the value, so set the update flag for us to update it in the DB
       FTEFormGroup.patchValue({
         updated: true
       });
-    }
-
-    if (fteReplace) {
-      FTEFormGroup.patchValue({
-        fte: fteReplaceValue
-      });
-      // {
-      //   onlySelf: true,
-      //   emitEvent: true,
-      //   emitModelToViewChange: true,
-      //   emitViewToModelChange: true
-      // });
     }
 
     // update the monthly total
@@ -401,8 +367,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       });
     });
 
-    // set to null if zero (to show blank) and round to one significant digit
-    total = total === 0 ? null : Math.round(total * 10) / 10;
+    // set to null if zero (to show blank) and convert to an actual decimal percentage. frontend will use percentpipe to display it properly
+    total = total === 0 ? null : total / 100;
 
     // set the monthly totals property at the index
     this.monthlyTotals[index] = total;
@@ -430,9 +396,9 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       return total === 0 ? null : total;
     });
 
-    // round the totals to one significant digit
+    // convert the total to a decimal, using percentpipe in the frontend to display
     totals = totals.map(total => {
-      return total ? Math.round(total * 10) / 10 : null;
+      return total ? total / 100 : null;
     });
 
     // set the monthly totals property
@@ -476,9 +442,9 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       return value === true;
     });
 
-    // validate totals boxes for current quarter (must = 1)
+    // validate totals boxes for current quarter (must < 1)
     const currentQuarterValid = this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).every( value => {
-      return value === 1;
+      return value <= 1;
     });
 
     // validate totals boxes for future quarters (must be < 1)
@@ -486,9 +452,18 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       return value <= 1;
     });
 
+    // validate that no projects are empty
+    const fteData = this.FTEFormGroup.value.FTEFormArray;
+    const noProjectsEmpty = fteData.every( project => {
+      // check if every editable value for a given project is null
+      const isProjectEmpty = project.slice(firstEditableMonth).every( entry => {
+        return entry.fte === null;
+      });
+      return !isProjectEmpty;
+    });
+
     // only save if all quarters are valid
-    if (currentQuarterValid && futureQuartersValid) {
-      const fteData = this.FTEFormGroup.value.FTEFormArray;
+    if (currentQuarterValid && futureQuartersValid && noProjectsEmpty) {
       const t0 = performance.now();
 
       // call the api data service to send the put request
@@ -524,7 +499,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         this.apiDataProjectService.insertBulkProjectEmployeeRole(newlyAddedProjects, this.authService.loggedInUser.id)
         .subscribe(
           res => {
-            console.log('Successfully inserted bulk data into project employee role table');
+            // console.log('Successfully inserted bulk data into project employee role table');
           },
           err => {
             console.log(err);
@@ -533,26 +508,42 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       }
 
 
+    } else if (!noProjectsEmpty) {
+      // if the save was disallowed because there are empty projects, let the user know which ones
+      const invalidProjects = [];
+      fteData.forEach( project => {
+        const isProjectEmpty = project.slice(firstEditableMonth).every( entry => {
+          return entry.fte === null;
+        });
+        if (isProjectEmpty) {
+          invalidProjects.push(` ${project[0].projectName}`);
+        }
+      });
+      const invalidProjectsString = invalidProjects.toString();
+      this.cacheService.raiseToast('error', `Error: All projects in your table must have FTE entries.
+      Please add FTE entries for the following projects:${invalidProjectsString} and try again`);
     } else if (!currentQuarterValid) {
+      // if the save was disallowed because there are invalid sums in the current quarter, let the user know how many
       const invalidValues = [];
       this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).forEach( value => {
         if (value !== 1) {
           invalidValues.push(value);
         }
       });
-      this.cacheService.raiseToast('error', `FTE values in the current quarter must total to 1.
-      Please correct the ${invalidValues.length} months and try again.`);
+      this.cacheService.raiseToast('error', `Error: FTE totals in each month cannot exceed 100%.
+      Please correct the ${invalidValues.length} months in the current quarter and try again.`);
     } else if (!futureQuartersValid) {
+      // if the save was disallowed because there are invalid sums in future quarters, let the user know how many
       const invalidValues = [];
       this.monthlyTotals.slice(firstEditableMonth + 3).forEach( value => {
         if (value > 1) {
           invalidValues.push(value);
         }
       });
-      this.cacheService.raiseToast('error', `FTE values in future quarters must not total to more than 1.
+      this.cacheService.raiseToast('error', `Error: FTE totals in each month cannot exceed 100%.
       Please correct the ${invalidValues.length} months in future quarters and try again.`);
     } else {
-      this.cacheService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
+      this.cacheService.raiseToast('error', 'Error: An unknown error has occurred while saving.  Please contact the administrators.');
     }
   }
 
@@ -668,7 +659,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           jobSubTitleID: [proj.jobSubTitleID],
           newlyAdded: [proj.newlyAdded],
           month: [month],
-          fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
+          fte: [foundEntry ? foundEntry['allocations:fte'] * 100 : null], // convert db values to a percent without the percent sign
           newRecord: [foundEntry ? false : true],
           updated: [false],
           toBeDeleted: [false]
@@ -717,13 +708,13 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     const startDate = moment().startOf('month');
     const month = moment(startDate).month();
     if (month === 10 || month === 11 || month === 0) {
-      this.sliderRange = [4, 6]; // Q1
+      this.sliderRange = [3, 6]; // Q1
     } else if (month === 1 || month === 2 || month === 3) {
-      this.sliderRange = [5, 7]; // Q2
+      this.sliderRange = [4, 7]; // Q2
     } else if (month === 4 || month === 5 || month === 6) {
-      this.sliderRange = [6, 8];
+      this.sliderRange = [5, 8];
     } else {
-      this.sliderRange = [7, 9];
+      this.sliderRange = [6, 9];
     }
 
     // initialize the by-month FTE display with the slider range handles
@@ -1089,7 +1080,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   showSliderDisabledToast() {
     const name = this.checkIfEmptyProjects();
     if (this.sliderDisabled) {
-      this.cacheService.raiseToast('warn', `Please enter FTE values for project: ${name}`);
+      this.cacheService.raiseToast('warn', `Please enter FTE values for project ${name}, before dragging the slider`);
     }
   }
 

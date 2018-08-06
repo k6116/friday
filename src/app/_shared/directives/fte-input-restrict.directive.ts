@@ -20,8 +20,8 @@ export class FteInputRestrictDirective {
   ) { }
 
   restrictToNumeric(event) {
-    // simple regex to restrict each input key to only numbers or dots
-    const regexp = new RegExp(/[0-9\.]/);
+    // simple regex to restrict each input key to only numbers
+    const regexp = new RegExp(/[0-9]/);
     if (!regexp.test(event.key)) {
       event.preventDefault();
     }

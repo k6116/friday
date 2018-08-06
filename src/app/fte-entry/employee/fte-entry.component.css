@@ -35,10 +35,6 @@ div.col-custom.col-slider {
   float: right;
 }
 
-/* .btn-fte-toolbar:hover {
-  background-color: rgb(138, 147, 155);
-} */
-
 
 
 table.slider-header {
@@ -196,7 +192,7 @@ div.fte-table-footer div.fte-table-row div.fte-table-cell.col-projects-roles {
   background-color: rgb(245, 245, 245);
   position: sticky;
   left: 200px;
-  min-width: 200px;
+  min-width: 220px;
   text-align: left;
   font-weight: bold;
   z-index: 3;
