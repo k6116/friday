@@ -253,15 +253,19 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     }, 500);
 
     // verify selectedProject has not already been added
-    const fteFormArray = this.FTEFormGroup.controls.FTEFormArray;
-    const currentProjectsList = [];
-    fteFormArray['controls'].forEach( project => {
-      currentProjectsList.push(project.projectID);
+    const fteFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+    const indexInTable = fteFormArray.controls.findIndex( project => {
+      return project['projectID'] === selectedProject.ProjectID;
     });
-    const alreadyExists = currentProjectsList.find( value => {
-      return value === selectedProject.ProjectID;
-    });
-    if (!alreadyExists) {
+    if (indexInTable !== -1) {
+      // project is in their table, so check if it's visible.  If it's visible throw them an error
+      // if it's not visible, show it
+      if (this.fteProjectVisible[indexInTable]) {
+        this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
+      } else {
+        this.fteProjectVisible[indexInTable] = true;
+      }
+    } else {
       const newProject = new UserFTEs;
       newProject.userID = this.authService.loggedInUser.id;
       newProject.projectID = selectedProject.ProjectID;
@@ -296,10 +300,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       this.addProjectToFteForm(FTEFormArray, newProject, true);
       this.sliderDisabled = true;
       this.displayFTETable = true;
-    } else {
-      this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
     }
-
   }
 
   onModalCancelClick() {
