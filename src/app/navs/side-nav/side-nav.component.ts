@@ -55,15 +55,43 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           hidden: false
         },
         {
-          title: 'My Projects',
+          title: 'Projects',
           iconClass: 'nc-gantt',
           alias: 'projects',
-          path: 'main/setups/projects',
           expanded: false,
           active: false,
           highlighted: false,
           permissionProtected: false,
-          hidden: false
+          hidden: false,
+          subItems: [
+            {
+              title: 'My Projects',
+              alias: 'my-projects',
+              path: 'main/projects/my-projects',
+              parentAlias: 'projects',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            },
+            {
+              title: 'Requests',
+              alias: 'project-requests',
+              path: 'main/projects/requests',
+              parentAlias: 'projects',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            },
+            {
+              title: 'Browse',
+              alias: 'browse',
+              path: 'main/projects/browse',
+              parentAlias: 'projects',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            }
+          ]
         },
         {
           title: 'Reports',

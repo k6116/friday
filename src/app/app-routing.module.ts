@@ -7,7 +7,9 @@ import { LoginComponent } from './auth/login/login.component';
 import { MainComponent } from './main/main.component';
 import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.component';
 import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
-import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
+import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
+import { BrowseProjectsComponent } from './projects/browse-projects/browse-projects.component';
 import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
@@ -17,21 +19,21 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-
-import { AuthGuardService } from './_shared/guards/auth.guard';
-import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
-import { BrowserGuard } from './_shared/guards/browser.guard';
-import { PermissionsGuard } from './_shared/guards/permissions.guard';
-import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
 import { TestComponent } from './test/test.component';
 import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
 import { UserResolverService } from './_shared/services/user-resolver.service';
 import { Error403Component } from './error-pages/error-403/error-403.component';
-
-// BOM module stuff
 import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
 import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
+
+import { AuthGuardService } from './_shared/guards/auth.guard';
+
+import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
+import { BrowserGuard } from './_shared/guards/browser.guard';
+import { PermissionsGuard } from './_shared/guards/permissions.guard';
+import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -48,7 +50,9 @@ const routes: Routes = [
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
         canActivate: [FteEntryGuard], canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
-      { path: 'setups/projects', component: ProjectsSetupsComponent },
+      { path: 'projects/my-projects', component: MyProjectsComponent },
+      { path: 'projects/requests', component: ProjectRequestsComponent },
+      { path: 'projects/browse', component: BrowseProjectsComponent },
       { path: 'reports/bom-editor', component: BomEditorComponent },
       { path: 'reports/bom-viewer', component: BomViewerComponent },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
