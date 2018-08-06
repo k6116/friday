@@ -80,6 +80,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   fteTutorialState = 0; // for keeping track of which part of the tutorial we're in, and passing to child component
 
+  savedProjectFilters: any; // for checkbox states in project modal
+
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
 
   constructor(
@@ -1244,6 +1246,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     } else {
       this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
     }
+  }
+
+  updateProjectFilters(filterItems: any) {
+    this.savedProjectFilters = filterItems;
+    console.log('Emitted filterItems:', this.savedProjectFilters);
   }
 
 }

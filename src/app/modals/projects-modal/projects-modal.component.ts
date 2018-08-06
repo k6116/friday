@@ -82,10 +82,12 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
+  @Input() savedProjectFilters: any;
   @Output() tutorialStateEmitter = new EventEmitter<number>();
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
   @Output() addedProjects = new EventEmitter<any>();
+  @Output() filterItemsEmit = new EventEmitter<any>();
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -150,22 +152,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // for checkbox filter
     this.filterProjects = this.projects;
     this.managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
-    // for pipe: id is used to apply filter; value is used for filtercondition and checked is ckeckbox state
-    // title is used in html as checkbox label
-    this.filterItems = [
-      {
-      id: 'myTeamCheck',
-      title: 'My Team',
-      value: this.managerEmailAddress,
-      checked: false
-      },
-      {
-      id: 'npiCheck',
-      title: 'NPI',
-      value: 'NPI',
-      checked: false
-      },
-    ];
+
+    // initialize project filters
+    this.setFilterItems();
   }
 
   ngAfterViewInit() {
@@ -759,6 +748,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   closeModal() {
+    console.log('CLOSE MODAL');
     this.outerDivState = 'out';
     this.innerDivState = 'out';
     this.cancel.emit(true);
@@ -908,6 +898,37 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   onRequestUpdateSuccess() {
     // refresh project access list to update the request buttons
     this.getProjectPermissionList();
+  }
+
+  // Checkbox Filter
+  onFilterItemsChange() {
+    console.log(this.filterItems);
+    this.filterItemsEmit.emit(this.filterItems);
+  }
+
+  setFilterItems() {
+    if (this.savedProjectFilters === undefined) {
+      // for pipe: id is used to apply filter; value is used for filtercondition and checked is ckeckbox state
+      // title is used in html as checkbox label
+      this.filterItems = [
+      {
+      id: 'myTeamCheck',
+      title: 'My Team',
+      value: this.managerEmailAddress,
+      checked: false
+      },
+      {
+      id: 'npiCheck',
+      title: 'NPI',
+      value: 'NPI',
+      checked: false
+      },
+    ];
+      console.log('onInit savedProjectFilters:', this.savedProjectFilters);
+    } else {
+      // remember user-chosen filters after modal is closed
+      this.filterItems = this.savedProjectFilters;
+    }
   }
 
 }
