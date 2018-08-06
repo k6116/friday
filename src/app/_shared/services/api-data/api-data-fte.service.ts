@@ -21,6 +21,13 @@ export class ApiDataFteService {
       .map((response: Response) => response.json());
   }
 
+  // get FTE data from db
+  indexTeamData(emailAddress: string, startDate: string) {
+    return this.http.get(`/api/fte/indexTeamData/${emailAddress}/${startDate}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   // delete an entire project from a user's FTE table
   destroyUserProject(projectID: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});

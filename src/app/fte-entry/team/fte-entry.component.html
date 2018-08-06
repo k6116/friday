@@ -1,11 +1,100 @@
 
-<!-- temp page content for testing routes -->
-<div class="container-fluid">
-  <div class="row row-custom">
-    <div class="col-xs-12 col-custom">
-      <h2 class="page-header-text">
-        Team FTE Entry Page
-      </h2>
-    </div>
+<app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" [fteTutorialState]="fteTutorialState"
+(selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()" (tutorialStateEmitter)="tutorialPart3($event)" (addedProjects)="onAddedProjects($event)"></app-projects-modal>
+<app-projects-create-modal (createSuccess)="onCreateSuccess($event)"></app-projects-create-modal>
+
+<div [hidden]="!display" class="container-fluid">
+
+<div class="row row-custom">
+  <div class="col-sm col-custom">
+    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onAddProjectClick()" id="intro-add-project">
+      <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
+    </button>
+    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
+      <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
+    </button>
+    <!-- Don't Delete - useful buttons for later -->
+    <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
+      <i class="fa fa-table"></i>&nbsp;&nbsp;Export
+    </button> -->
+    <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
+    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
+      <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+    </button>
+    <div class="dropdown btn-help ">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-question"></i>&nbsp;&nbsp;Help
+          </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" (click)="tutorialPart1()">Interactive Tutorial</a>
+          <a class="dropdown-item" (click)="onInstructionsClick()">Instructions</a>
+          <a class="dropdown-item" >Confluence Documentation</a>
+        </div>
+      </div>
   </div>
 </div>
+
+<!-- begin row for FTE entry table -->
+<div class="row row-custom">
+
+  <!-- block for FTE entry div table -->
+  <div class="col-sm col-custom fte-table-container tutorial-part3" id="intro-add-ftes">
+    <form [formGroup]="FTEFormGroup">
+
+      <div class="fte-table" formArrayName="FTEFormArray">
+
+        <div class="fte-table-header">
+          <div class="fte-table-row">
+            <div class="fte-table-cell icon">&nbsp;</div> <!-- placeholder for trash icon -->
+            <div class="fte-table-cell col-projects-totals">&nbsp;</div>
+            <div class="fte-table-cell col-projects-roles">&nbsp;</div> <!-- spacer for project-role column -->
+          </div>
+          <div class="fte-table-row">
+            <div class="fte-table-cell icon icon-month-header">&nbsp;</div> <!-- for trash icon -->
+            <div class="fte-table-cell row-month-header col-projects-totals">Project</div>
+            <!-- loop through each month in the userFTEs data object-->
+            <ng-container *ngFor="let employee of employees; let k = index">
+              <!-- only show the month column if the slider deems it visible -->
+              <div class="fte-table-cell row-month-header" [style.display]="fteMonthVisible[k] ? 'table-cell' : 'none'">{{ employee }}</div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div *ngIf="displayFTETable" class="fte-table-body">
+          <!-- loop through each project, one row per project -->
+          <ng-container *ngFor="let project of projects; let i = index">
+            <div class="fte-table-row" [formGroupName]="i" [style.display]="(fteProjectVisible[i]) ? 'table-row' : 'none'">
+              <div class="fte-table-cell icon"> <!-- for trash icon -->
+                <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
+              </div>
+              <div class="fte-table-cell col-project-name" data-toggle="tooltip" data-placement="top" [title]="project.projectName.length > 20 ? project.projectName : ''">{{ (project.projectName.length > 20) ? (project.projectName | slice:0:20) + '...' : (project.projectName) }}</div>
+              <!-- loop through each month's FTE allocation, "monthly" cells per project -->
+              <ng-container *ngFor="let month of employees; let j = index">
+                <div class="fte-table-cell" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">
+                  <input type="text" formControlName="fte" class="form-control" maxlength="3" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="fte-table-footer">
+          <div class="fte-table-row tutorial-part3" id="intro-fte-total">
+            <div class="fte-table-cell icon">&nbsp;</div> <!-- for trash icon -->
+            <div class="fte-table-cell col-projects-totals">TOTAL</div>
+            <ng-container *ngFor="let month of months; let z = index">
+              <!-- <div class="fte-table-cell" *ngIf="fteMonthVisible[z]"> -->
+              <div class="fte-table-cell" [style.display]="fteMonthVisible[z] ? 'table-cell' : 'none'">
+                <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+      </div> <!-- end div table -->
+
+    </form>
+  </div> <!-- end div that controls entire FTE entry table visibility -->
+</div> <!-- end row for FTE entry table -->
+
+</div> <!-- end FTE component container div -->

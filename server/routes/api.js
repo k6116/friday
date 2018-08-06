@@ -21,6 +21,7 @@ router.get('/auth/getLoginBackgroundImages', controllers.auth.getLoginBackground
 
 // FTE CONTROLLER
 router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
+router.get('/fte/indexTeamData/:emailAddress/:startDate', controllers.fte.indexTeamData);
 router.post('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProject);   // PROTECT
 router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
 

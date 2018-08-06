@@ -193,8 +193,32 @@ function updateUserData(req, res) {
 
 }
 
+function indexTeamData(req, res) {
+
+  const emailAddress = req.params.emailAddress;
+  const startDate = req.params.startDate;
+
+  sequelize.query('EXECUTE resources.DisplayTeamFTE :emailAddress, :startDate', {replacements: {emailAddress: emailAddress, startDate: startDate}, type: sequelize.QueryTypes.SELECT})
+  .then(results => {
+      const fteTree = new Treeize();
+      fteTree.grow(results);
+      res.json({
+        nested: fteTree.getData(),
+        flat: results
+      });
+  })
+  .catch(error => {
+      res.status(400).json({
+          title: 'Error (in catch)',
+          error: {message: error}
+      })
+  });
+
+}
+
 module.exports = {
   indexUserData: indexUserData,
   destroyUserProject: destroyUserProject,
   updateUserData: updateUserData,
+  indexTeamData: indexTeamData
 }
