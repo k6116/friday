@@ -26,6 +26,7 @@ export class FilterPipe implements PipeTransform {
 
     // return all (or nothing) if no objects or no filter given
     if (!objects || !hasFilter) {
+      console.log('returning all objects (no filter provided');
       return objects;
     }
 
@@ -42,6 +43,7 @@ export class FilterPipe implements PipeTransform {
 
     // no string filter, but has limitTo filter turned on
     if (!filter && options.hasOwnProperty('limitTo')) {
+      console.log('returning limit to filter');
       return objects.filter((object, index) => {
         return index <= +options.limitTo;
       });
@@ -87,29 +89,6 @@ export class FilterPipe implements PipeTransform {
            console.log('optimistic search regex error');
             return false;
          }
-
-      // TO-DO BILL: remove, this is redundant with the above, and refactor other code and comment some more
-      } else if (options.matchFuzzy) {
-
-              const t0 = performance.now();
-
-              const fuseOptions = {
-                shouldSort: true,
-                threshold: 0.6, // can lower threshold in tenth percent increments if too many results
-                location: 0,
-                distance: 100,
-                maxPatternLength: 32,
-                minMatchCharLength: 1,
-                keys: [property]
-              };
-
-              const f = new Fuse([property + ': ' + object[property]], fuseOptions);
-              const result = f.search(filter);
-
-              const t1 = performance.now();
-              console.log(`fuzzy search took ${t1 - t0} milliseconds`);
-
-              return result.length > 0;
 
       } else {
         return (object[property] ? object[property] : '').substring(0, filter.length).toLowerCase() === filter.toLowerCase();

@@ -25,10 +25,12 @@ export class ProjectsFilterPipe implements PipeTransform {
         }
       }
       // output the filtered projectList
+      console.log('returning filtered project list from checkbox filter');
       return projectList;
 
     // if no checkbox is checked, return the original projectList
     } else {
+      console.log('returning filtered project list from checkbox filter (original)');
       return projectList;
     }
   }
