@@ -38,8 +38,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   mainSliderConfig: any;  // slider config
   fqLabelArray = new Array; // for labeling fiscal quarters in FTE table
   fyLabelArray = new Array; // for labeling fiscal years in slider header
-  fteMonthVisible = new Array(12).fill(true);  // boolean array for by-month FTE form display
-  fteMonthEditable = new Array(12).fill(true);  // boolean array for by-month FTE box disabling
   fteProjectVisible = new Array;  // boolean array for by-project row display
   fteProjectDeletable = new Array;  // boolean array for by-project delete-ability
   FTEFormGroup: FormGroup;
@@ -58,7 +56,12 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   jobTitleList: any;
   fteEmployeeVisible: any;
   teamOrgStructure: any;
-  employees: string[] = [];
+  employees: any[] = [];
+  teamEditableMembers: string;
+  currentMonth: any;
+  currentMonthName: any;
+  setMonth: any;
+  setMonthName: any;
 
   fteTutorialState = 0; // for keeping track of which part of the tutorial we're in, and passing to child component
 
@@ -121,6 +124,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     $('[data-toggle="tooltip"]').tooltip();
 
     // this.makeFyLabels();
+
+    this.currentMonth = moment(1, 'DD');
+    this.currentMonthName = moment(this.currentMonth).format('MMM');
+    this.setMonth = this.currentMonth;
 
   }
 
@@ -355,112 +362,74 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     console.log(this.FTEFormGroup.value.FTEFormArray);
     console.log('fte-project-visible array');
     console.log(this.fteProjectVisible);
-    console.log('Team FTE', this.teamFTEs);
+    console.log('FTEData', this.FTEFormGroup.value.FTEFormArray);
+    this.buildTeamEditableMembers();
   }
 
   onSaveClick() {
 
-    const firstEditableMonth = this.fteMonthEditable.findIndex( value => {
-      return value === true;
-    });
+    const fteData = this.FTEFormGroup.value.FTEFormArray;
+    const t0 = performance.now();
 
-    // validate totals boxes for current quarter (must = 1)
-    const currentQuarterValid = this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).every( value => {
-      return value === 1;
-    });
-
-    // validate totals boxes for future quarters (must be < 1)
-    const futureQuartersValid = this.monthlyTotals.slice(firstEditableMonth + 3).every( value => {
-      return value <= 1;
-    });
-
-    // only save if all quarters are valid
-    if (currentQuarterValid && futureQuartersValid) {
-      const fteData = this.FTEFormGroup.value.FTEFormArray;
-      const t0 = performance.now();
-
-      // call the api data service to send the put request
-      this.apiDataFteService.updateUserData(fteData, this.authService.loggedInUser.id)
-      .subscribe(
-        res => {
-          const t1 = performance.now();
-          console.log(`save fte values took ${t1 - t0} milliseconds`);
-          this.cacheService.raiseToast('success', res.message);
-          this.resetProjectFlags();
-          this.fteComponentInit();  // re-fetch the data to get newly inserted recordIDs
-          this.FTEFormGroup.markAsUntouched();
-        },
-        err => {
-          console.log(err);
-          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
-        }
-      );
-
-      // Create an array of only newly added projects to add to the project-employee-role table
-      const newlyAddedProjects: any = [];
-      for (let i = 0; i < fteData.length; i++) {
-        if (fteData[i][0].newlyAdded === true) {
-          newlyAddedProjects.push({
-            projectID: fteData[i][0].projectID,
-            jobTitleID: this.authService.loggedInUser.jobTitleID,
-            jobSubTitleID: this.authService.loggedInUser.jobSubTitleID
-          });
-        }
+    // call the api data service to send the put request
+    this.apiDataFteService.updateTeamData(fteData, this.authService.loggedInUser.id)
+    .subscribe(
+      res => {
+        const t1 = performance.now();
+        console.log(`save fte values took ${t1 - t0} milliseconds`);
+        this.cacheService.raiseToast('success', res.message);
+        // this.resetProjectFlags();
+        // this.fteComponentInit();  // re-fetch the data to get newly inserted recordIDs
+        this.FTEFormGroup.markAsUntouched();
+      },
+      err => {
+        console.log(err);
+        this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
       }
-      // If array is empty, new roles don't have to be updated
-      if (newlyAddedProjects !== undefined || newlyAddedProjects.length !== 0) {
-        this.apiDataProjectService.insertBulkProjectEmployeeRole(newlyAddedProjects, this.authService.loggedInUser.id)
-        .subscribe(
-          res => {
-            console.log('Successfully inserted bulk data into project employee role table');
-          },
-          err => {
-            console.log(err);
-          }
-        );
-      }
+    );
 
+    // // Create an array of only newly added projects to add to the project-employee-role table
+    // const newlyAddedProjects: any = [];
+    // for (let i = 0; i < fteData.length; i++) {
+    //   if (fteData[i][0].newlyAdded === true) {
+    //     newlyAddedProjects.push({
+    //       projectID: fteData[i][0].projectID,
+    //       jobTitleID: this.authService.loggedInUser.jobTitleID,
+    //       jobSubTitleID: this.authService.loggedInUser.jobSubTitleID
+    //     });
+    //   }
+    // }
+    // // If array is empty, new roles don't have to be updated
+    // if (newlyAddedProjects !== undefined || newlyAddedProjects.length !== 0) {
+    //   this.apiDataProjectService.insertBulkProjectEmployeeRole(newlyAddedProjects, this.authService.loggedInUser.id)
+    //   .subscribe(
+    //     res => {
+    //       console.log('Successfully inserted bulk data into project employee role table');
+    //     },
+    //     err => {
+    //       console.log(err);
+    //     }
+    //   );
+    // }
 
-    } else if (!currentQuarterValid) {
-      const invalidValues = [];
-      this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).forEach( value => {
-        if (value !== 1) {
-          invalidValues.push(value);
-        }
-      });
-      this.cacheService.raiseToast('error', `FTE values in the current quarter must total to 1.
-      Please correct the ${invalidValues.length} months and try again.`);
-    } else if (!futureQuartersValid) {
-      const invalidValues = [];
-      this.monthlyTotals.slice(firstEditableMonth + 3).forEach( value => {
-        if (value > 1) {
-          invalidValues.push(value);
-        }
-      });
-      this.cacheService.raiseToast('error', `FTE values in future quarters must not total to more than 1.
-      Please correct the ${invalidValues.length} months in future quarters and try again.`);
-    } else {
-      this.cacheService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
-    }
   }
 
 
   fteComponentInit() {
     // get FTE data
-    this.apiDataFteService.indexTeamData('paul_sung@keysight.com', '08-01-2018')
+    this.apiDataFteService.indexTeamData(this.teamEditableMembers, '08-01-2018')
     .subscribe(
       res => {
         // console.log('indexUserData', res.nested);
-        console.log('Team FTE Comp Init', res);
         this.teamFTEs = res.nested;
         this.teamFTEsFlat = res.flat;
-        this.buildFteEditableArray();
+        // this.buildFteEditableArray();
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
         // this.projects = this.userFTEs;
         const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
         this.projects = FTEFormArray.controls;
-        console.log('this.Projects', this.projects);
+        // console.log('this.Projects', this.projects);
       },
       err => {
         console.error(err);
@@ -480,31 +449,13 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     }
 
     for (let i = 0; i < this.teamOrgStructure.employees.length; i++) {
-      this.employees.push(this.teamOrgStructure.employees[i].fullName);
-    }
-    console.log('Months', this.months);
-
-    console.log('Employees', this.employees);
-  }
-
-  buildFteEditableArray() {
-    // build a boolean array of FTE entry months that are editable, based on current month
-    const startMonth = this.months[0];
-    let currentMonth = moment.utc().startOf('month');
-    const secondMonthInQuarter = [2, 5, 8, 11];
-    const thirdMonthInQuarter = [0, 3, 6, 9];
-
-    // we want current fiscal quarter to be editable as long as we are in that FQ,
-    // so adjust the current month to allow all months in the current quarter to be editable
-    if (thirdMonthInQuarter.includes(moment(currentMonth).month())) {
-      currentMonth = moment(currentMonth).subtract(2, 'months');
-    } else if (secondMonthInQuarter.includes(moment(currentMonth).month())) {
-      currentMonth = moment(currentMonth).subtract(1, 'month');
+      this.employees.push({
+        employeeID: this.teamOrgStructure.employees[i].employeeID,
+        fullName: this.teamOrgStructure.employees[i].fullName,
+        emailAddress: this.teamOrgStructure.employees[i].emailAddress
+      });
     }
 
-    // find the number of months between the start of the FTE display and current month
-    const monthsBetween = currentMonth.diff(startMonth, 'months');
-    this.fteMonthEditable.fill(false, 0, monthsBetween);  // zero-indexed
   }
 
   buildFteEntryForm() {
@@ -529,7 +480,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
     this.checkIfNoProjectsVisible();
 
-    this.updateProjectDeletability();
+    // this.updateProjectDeletability();
 
   }
 
@@ -552,7 +503,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         if (newProject) {
           return false;
         } else {
-          return proj.projectID === teamFTE.projectID && employee === teamFTE['allocations:fullName'];
+          return proj.projectID === teamFTE.projectID && employee.fullName === teamFTE['allocations:fullName'];
         }
       });
 
@@ -561,7 +512,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           recordID: [foundEntry ? foundEntry['allocations:recordID'] : null],
           projectID: [proj.projectID],
           projectName: [proj.projectName],
-          fullName: [employee],
+          employeeID: [employee.employeeID],
+          fullName: [employee.fullName],
+          month: ['08-01-2018'],
           fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
           newRecord: [foundEntry ? false : true],
           updated: [false],
@@ -784,16 +737,64 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       res => {
         this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
         console.log('this.teamOrgStructure', this.teamOrgStructure);
-        this.fteMonthVisible = new Array(this.teamOrgStructure.employees.length).fill(true);
+        // this.fteMonthVisible = new Array(this.teamOrgStructure.employees.length).fill(true);
         this.buildMonthsArray();
+        this.buildTeamEditableMembers();
         // console.log('Build month array');
         this.makeFyLabels();
-        this.fteComponentInit();
+        // this.fteComponentInit();
+        this.createNewPlan('TEST PLAN');
       },
       err => {
         console.error('error getting nested org data');
       }
     );
   }
+
+  buildTeamEditableMembers() {
+    // build the string of employee email address to use as a parameter for the SP resources.DisplayTeamFTE
+    for (let i = 0; i < this.employees.length; i++) {
+      this.teamEditableMembers = this.employees[i].emailAddress + '\',\'' + this.teamEditableMembers;
+    }
+    this.teamEditableMembers = this.teamEditableMembers.substr(0, this.teamEditableMembers.lastIndexOf(','));
+    this.teamEditableMembers = '\'\'' + this.teamEditableMembers + '\'';
+    // console.log('teamEditableMember', this.teamEditableMembers);
+  }
+
+  createNewPlan(planName: string) {
+    // get FTE data
+    this.apiDataFteService.indexNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, planName)
+    .subscribe(
+      res => {
+        // console.log('indexUserData', res.nested);
+        this.teamFTEs = res.nested;
+        this.teamFTEsFlat = res.flat;
+        // this.buildFteEditableArray();
+        this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+        this.display = true;  // ghetto way to force rendering after FTE data is fetched
+        // this.projects = this.userFTEs;
+        const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+        this.projects = FTEFormArray.controls;
+        // console.log('this.Projects', this.projects);
+      },
+      err => {
+        console.error(err);
+      }
+    );
+  }
+
+  onPreviousMonthClick() {
+    this.setMonth = moment(this.setMonth).subtract(1, 'months');
+    this.setMonthName = moment(this.setMonth).format('MMM');
+    console.log(this.setMonthName);
+
+  }
+
+  onNextMonthClick() {
+    this.setMonth = moment(this.setMonth).add(1, 'months');
+    this.setMonthName = moment(this.setMonth).format('MMM');
+    console.log(this.setMonthName);
+  }
+
 
 }

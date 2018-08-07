@@ -34,6 +34,13 @@
   </div>
 </div>
 
+<div class="row row-custom">
+  <div class="col-sm col-custom">
+    <h6>August 2018</h6>
+    <button class="btn btn-primary" (click)="onPreviousMonthClick()">Previous</button>
+    <button class="btn btn-primary" (click)="onNextMonthClick()">Next</button>
+  </div>
+</div>
 <!-- begin row for FTE entry table -->
 <div class="row row-custom">
 
@@ -45,17 +52,12 @@
 
         <div class="fte-table-header">
           <div class="fte-table-row">
-            <div class="fte-table-cell icon">&nbsp;</div> <!-- placeholder for trash icon -->
-            <div class="fte-table-cell col-projects-totals">&nbsp;</div>
-            <div class="fte-table-cell col-projects-roles">&nbsp;</div> <!-- spacer for project-role column -->
-          </div>
-          <div class="fte-table-row">
             <div class="fte-table-cell icon icon-month-header">&nbsp;</div> <!-- for trash icon -->
             <div class="fte-table-cell row-month-header col-projects-totals">Project</div>
             <!-- loop through each month in the userFTEs data object-->
             <ng-container *ngFor="let employee of employees; let k = index">
               <!-- only show the month column if the slider deems it visible -->
-              <div class="fte-table-cell row-month-header" [style.display]="fteMonthVisible[k] ? 'table-cell' : 'none'">{{ employee }}</div>
+              <div class="fte-table-cell row-month-header">{{ employee.fullName }}</div>
             </ng-container>
           </div>
         </div>
@@ -67,10 +69,10 @@
               <div class="fte-table-cell icon"> <!-- for trash icon -->
                 <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
               </div>
-              <div class="fte-table-cell col-project-name" data-toggle="tooltip" data-placement="top" [title]="project.projectName.length > 20 ? project.projectName : ''">{{ (project.projectName.length > 20) ? (project.projectName | slice:0:20) + '...' : (project.projectName) }}</div>
+              <div class="fte-table-cell col-project-name" data-toggle="tooltip" data-placement="top" [title]="project.projectName.length > 40 ? project.projectName : ''">{{ (project.projectName.length > 40) ? (project.projectName | slice:0:40) + '...' : (project.projectName) }}</div>
               <!-- loop through each month's FTE allocation, "monthly" cells per project -->
-              <ng-container *ngFor="let month of employees; let j = index">
-                <div class="fte-table-cell" [formGroupName]="j" [style.display]="fteMonthVisible[j] ? 'table-cell' : 'none'">
+              <ng-container *ngFor="let employee of employees; let j = index">
+                <div class="fte-table-cell" [formGroupName]="j">
                   <input type="text" formControlName="fte" class="form-control" maxlength="3" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
                 </div>
               </ng-container>
@@ -82,9 +84,8 @@
           <div class="fte-table-row tutorial-part3" id="intro-fte-total">
             <div class="fte-table-cell icon">&nbsp;</div> <!-- for trash icon -->
             <div class="fte-table-cell col-projects-totals">TOTAL</div>
-            <ng-container *ngFor="let month of months; let z = index">
-              <!-- <div class="fte-table-cell" *ngIf="fteMonthVisible[z]"> -->
-              <div class="fte-table-cell" [style.display]="fteMonthVisible[z] ? 'table-cell' : 'none'">
+            <ng-container *ngFor="let employee of employees; let z = index">
+              <div class="fte-table-cell">
                 <input disabled [value]="monthlyTotals[z] | number:'1.1'" type="text" [class]="'form-control' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
               </div>
             </ng-container>

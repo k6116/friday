@@ -21,7 +21,7 @@ export class ApiDataFteService {
       .map((response: Response) => response.json());
   }
 
-  // get FTE data from db
+  // get Team FTE data from db
   indexTeamData(emailAddress: string, startDate: string) {
     return this.http.get(`/api/fte/indexTeamData/${emailAddress}/${startDate}`)
       .timeout(this.cacheService.apiDataTimeout)
@@ -46,11 +46,18 @@ export class ApiDataFteService {
       .map((response: Response) => response.json());
   }
 
-  // check it job title and subtitle has been set
-  checkJobTitleUpdated() {
-    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+  // update existing Team FTE records
+  updateTeamData(fteData: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
-    return this.http.get('api/dashboard/checkJobTitle', options)
+    return this.http.post(`/api/fte/updateTeamData/${userID}`, JSON.stringify(fteData), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  // create a new FTE Plan and return it
+  indexNewPlan(emailAddress: string, userID: number, planName: string) {
+    return this.http.get(`/api/fte/indexNewPlan/${emailAddress}/${userID}/${planName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
