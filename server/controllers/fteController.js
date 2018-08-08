@@ -221,6 +221,7 @@ function updateTeamData(req, res) {
 
   const formData = req.body;
   const userID = req.params.userID;
+  const planName = req.params.planName;
   const updatedValues = [];
 
   // combine all project arrays into a single array
@@ -244,10 +245,13 @@ function updateTeamData(req, res) {
       // insert array
       if (data.newRecord && data.fte) {
         insertData.push({
+            planName: planName,
             projectID: data.projectID,
-            employeeID: data.employeeID,
-            fiscalDate: '08-01-2018 00:00:00:000',
+            employeeEmail: data.emailAddress,
+            fiscalDate: data.month,
             fte: +data.fte,
+            createdBy: userID,
+            createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
             updatedBy: userID,
             updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
           }
@@ -257,9 +261,11 @@ function updateTeamData(req, res) {
       if (!data.newRecord && data.updated) {
         updateData.push({
           projectID: data.projectID,
-          employeeID: data.employeeID,
-          fiscalDate: '08-01-2018 00:00:00:000',
+          employeeEmail: data.emailAddress,
+          fiscalDate: data.month,
           fte: +data.fte,
+          createdBy: userID,
+          createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
           updatedBy: userID,
           updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
         })
@@ -282,7 +288,7 @@ function updateTeamData(req, res) {
   return sequelize.transaction((t) => {
 
     // insert the new records
-    return models.ProjectEmployee
+    return models.ProjectEmployeePlanning
       .destroy({
         where: {
           id: deleteRecordIds
@@ -293,7 +299,7 @@ function updateTeamData(req, res) {
         updatedValues.push(deletedRows);
         console.log(`${deletedRows} project employee records deleted`);
 
-        return models.ProjectEmployee.bulkCreate(
+        return models.ProjectEmployeePlanning.bulkCreate(
           insertData,
           {transaction: t}
         )
@@ -306,10 +312,11 @@ function updateTeamData(req, res) {
           // update the existing records
           var promises = [];
           for (var i = 0; i < updateData.length; i++) {
-            var newPromise = models.ProjectEmployee.update(
+            var newPromise = models.ProjectEmployeePlanning.update(
               {
+                planName: planName,
                 projectID: updateData[i].projectID,
-                employeeID: updateData[i].employeeID,
+                employeeEmail: updateData[i].emailAddress,
                 fiscalDate: updateData[i].fiscalDate,
                 fte: updateData[i].fte,
                 updatedBy: userID,
@@ -384,11 +391,118 @@ function indexNewPlan(req, res) {
 
 }
 
+function indexPlan(req, res) {
+
+  // this function retrieves a specific plan for a user
+
+  const userID = req.params.userID;
+  const planName = req.params.planName;
+
+  const sql = `
+    SELECT
+      PEP.PlanName as planName,
+      P.ProjectID as projectID,
+      P.ProjectName as projectName,
+      PEP.ProjectEmployeesPlanningID as [allocations:recordID], -- Alias for Treeize
+      E.FullName as [allocations:fullName], 
+      PEP.EmployeeEmail as [allocations:emailAddress],
+      PEP.FiscalDate as [allocations:fiscalDate],
+      PEP.FTE as [allocations:fte]
+    FROM
+      resources.ProjectEmployeesPlanning PEP
+      LEFT JOIN accesscontrol.Employees E ON PEP.EmployeeEmail = E.EmailAddress
+      LEFT JOIN projects.Projects P ON PEP.ProjectID = P.ProjectID
+    WHERE
+      PEP.PlanName = '${planName}' AND PEP.CreatedBy = ${userID}
+    ORDER BY
+      P.ProjectName
+  `
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(indexPlan => {
+      console.log("returning indexPlan data");
+      const fteTree = new Treeize();
+      fteTree.grow(indexPlan);
+      res.json({
+        nested: fteTree.getData(),
+        flat: indexPlan
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+
+}
+
+function indexPlanList(req, res) {
+
+  // This function retrieves all plans created by the user
+
+  const userID = req.params.userID;
+
+  const sql = `
+    SELECT DISTINCT
+      T1.PlanName as planName, MAX(T1.LastUpdateDate) as lastUpdateDate
+    FROM
+      resources.ProjectEmployeesPlanning T1
+    WHERE
+      T1.CreatedBy = ${userID}
+    GROUP BY
+      T1.PlanName
+    ORDER BY
+      LastUpdateDate DESC
+  `
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(indexPlanList => {
+      console.log("returning indexPlanList data");
+      res.json(indexPlanList);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+}
+
+function destroyPlan(req, res) {
+  
+  const planData = req.body;
+
+  return models.ProjectEmployeePlanning
+  .destroy({
+    where: {
+      planName: planData.planName,
+      createdBy: planData.userID
+    }})
+  .then(deletedRows => {
+    console.log(`${deletedRows} project employee plan deleted`);
+    res.json({
+      message: `Successfully deleted plan ${planData.planName}`
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({
+      message: 'Delete Failed',
+      error: error
+    });
+  })
+
+}
+
 module.exports = {
   indexUserData: indexUserData,
   destroyUserProject: destroyUserProject,
   updateUserData: updateUserData,
   indexTeamData: indexTeamData,
   updateTeamData: updateTeamData,
-  indexNewPlan: indexNewPlan
+  indexNewPlan: indexNewPlan,
+  indexPlan: indexPlan,
+  indexPlanList: indexPlanList,
+  destroyPlan: destroyPlan
 }

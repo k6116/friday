@@ -24,8 +24,12 @@ router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
 router.get('/fte/indexTeamData/:emailAddress/:startDate', controllers.fte.indexTeamData);
 router.post('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProject);   // PROTECT
 router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
-router.post('/fte/updateTeamData/:userID', controllers.fte.updateTeamData);
+router.post('/fte/updateTeamData/:userID/:planName', controllers.fte.updateTeamData);
 router.get('/fte/indexNewPlan/:emailAddress/:userID/:planName', controllers.fte.indexNewPlan);
+router.get('/fte/indexPlanList/:userID', controllers.fte.indexPlanList);
+router.get('/fte/indexPlan/:userID/:planName', controllers.fte.indexPlan);
+router.post('/fte/destroyPlan/', controllers.fte.destroyPlan);
+
 
 // PROJECT CONTROLLER
 router.get('/indexProjects', controllers.project.indexProjects)

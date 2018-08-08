@@ -7,6 +7,7 @@ export class TeamFTEs {
 
 export class AllocationsArray {
     fullName: string;
+    month: Date;
     fte: number;
     recordID: number;
 }

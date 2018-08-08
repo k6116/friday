@@ -143,7 +143,7 @@ div.fte-table-row.tutorial-part3.introjs-showElement.introjs-relativePosition {
     /* css for the month-header cells in the header */
     background-color: rgb(245, 245, 245);
     position: sticky;
-    top: 30px;
+    top: 0px;
     z-index: 1;
   }
   
@@ -234,4 +234,8 @@ div.fte-table-row.tutorial-part3.introjs-showElement.introjs-relativePosition {
   
   .dropdown-item {
     cursor: pointer;
+  }
+
+  .col-newplan{
+    float: right;
   }

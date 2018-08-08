@@ -13,6 +13,7 @@
     <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
       <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
     </button>
+    
     <!-- Don't Delete - useful buttons for later -->
     <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
       <i class="fa fa-table"></i>&nbsp;&nbsp;Export
@@ -21,24 +22,39 @@
     <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
       <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
     </button>
+
     <div class="dropdown btn-help ">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-question"></i>&nbsp;&nbsp;Help
-          </button>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" (click)="tutorialPart1()">Interactive Tutorial</a>
-          <a class="dropdown-item" (click)="onInstructionsClick()">Instructions</a>
-          <a class="dropdown-item" >Confluence Documentation</a>
-        </div>
+      <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-question"></i>&nbsp;&nbsp;Help
+      </button>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" (click)="tutorialPart1()">Interactive Tutorial</a>
+        <a class="dropdown-item" (click)="onInstructionsClick()">Instructions</a>
+        <a class="dropdown-item" >Confluence Documentation</a>
       </div>
-  </div>
+    </div>
+  </div>  
 </div>
 
 <div class="row row-custom">
   <div class="col-sm col-custom">
-    <h6>August 2018</h6>
-    <button class="btn btn-primary" (click)="onPreviousMonthClick()">Previous</button>
+    <h4>{{ setMonthName }} {{ setYear }}</h4>
+    <button class="btn btn-primary" (click)="onPreviousMonthClick()">Prev</button>
     <button class="btn btn-primary" (click)="onNextMonthClick()">Next</button>
+
+    <div class="col-newplan" style="display: inline-flex">
+      <button class="btn btn-secondary" data-toggle="modal" data-target="#newPlanModal">
+        <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
+      </button>
+      <span style="width: 5px"></span>
+      <select class="form-control" style="width: 200px" (change)="selectedPlan($event.target.value)">
+        <option *ngFor="let plan of planList; let i = index" [value]="plan.planName">{{ plan.planName }}</option>
+      </select>
+      <span style="width: 5px"></span>
+      <button class="btn btn-secondary" (click)="deletePlan()">
+        <i class="fa fa-times"></i>&nbsp;&nbsp;Del Plan
+      </button>
+    </div>
   </div>
 </div>
 <!-- begin row for FTE entry table -->
@@ -99,3 +115,24 @@
 </div> <!-- end row for FTE entry table -->
 
 </div> <!-- end FTE component container div -->
+
+<!-- Edit Project Role Modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="newPlanModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="width:150%">
+        <div class="modal-header" style="border-bottom: none; height: 2rem;">
+          <h5 class="title">Create a New Plan</h5>
+        </div>
+        <div class="modal-body">
+        <div class="input-group">
+          <input [(ngModel)]="newPlanName" type="text" class="form-control" placeholder="New Plan Name">
+          <div class="input-group-append">
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"  (click)="createNewPlan(null, null, newPlanName)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->

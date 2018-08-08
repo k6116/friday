@@ -2,6 +2,7 @@
 module.exports = {
   User: require('./user.js'),
   ProjectEmployee: require('./projectEmployee.js').ProjectEmployee,
+  ProjectEmployeePlanning: require('./projectEmployee.js').ProjectEmployeePlanning,
   ProjectEmployeeRoles: require('./projectEmployee.js').ProjectEmployeeRoles,
   Org: require('./org.js'),
   ClickTracking: require('./clickTracking.js'),

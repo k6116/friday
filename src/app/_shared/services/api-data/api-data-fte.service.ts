@@ -47,10 +47,10 @@ export class ApiDataFteService {
   }
 
   // update existing Team FTE records
-  updateTeamData(fteData: any, userID: number) {
+  updateTeamData(fteData: any, userID: number, planName: string) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/fte/updateTeamData/${userID}`, JSON.stringify(fteData), options)
+    return this.http.post(`/api/fte/updateTeamData/${userID}/${planName}`, JSON.stringify(fteData), options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -58,6 +58,29 @@ export class ApiDataFteService {
   // create a new FTE Plan and return it
   indexNewPlan(emailAddress: string, userID: number, planName: string) {
     return this.http.get(`/api/fte/indexNewPlan/${emailAddress}/${userID}/${planName}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  // return a specific Plan
+  indexPlan(userID: number, planName: string) {
+    return this.http.get(`/api/fte/indexPlan/${userID}/${planName}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  // create a new FTE Plan and return it
+  indexPlanList(userID: number) {
+    return this.http.get(`/api/fte/indexPlanList/${userID}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  // update existing Team FTE records
+  deletePlan(planData: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+    return this.http.post(`/api/fte/destroyPlan/`, JSON.stringify(planData), options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

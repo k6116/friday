@@ -17,6 +17,8 @@ import { saveAs } from 'file-saver';
 import { JAN } from '@angular/material';
 
 import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
+import { format } from 'util';
+import { yearsPerPage } from '../../../../node_modules/@angular/material/datepicker/typings/multi-year-view';
 
 const moment = require('moment');
 require('moment-fquarter');
@@ -62,6 +64,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   currentMonthName: any;
   setMonth: any;
   setMonthName: any;
+  setYear: any;
+  setYearName: any;
+  planList: any;
+  defaultPlan: any;
+  currentPlan: any;
 
   fteTutorialState = 0; // for keeping track of which part of the tutorial we're in, and passing to child component
 
@@ -110,25 +117,37 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   ngOnInit() {
-    this.projectList = [
-      {projectID: 9990, projectName: 'testawef1'},
-      {projectID: 9991, projectName: 'testawef2'},
-      {projectID: 1164, projectName: 'Jarvis'}
-    ];
-    this.getTeam('ethan_hunt@keysight.com');
-    // this.fteComponentInit();  // initialize the FTE entry component
+    // this.projectList = [
+    //   {projectID: 9990, projectName: 'testawef1'},
+    //   {projectID: 9991, projectName: 'testawef2'},
+    //   {projectID: 1164, projectName: 'Jarvis'}
+    // ];
 
-    // this.buildMonthsArray();
+    // Using promises to avoid async
+    // First, get the list of Plans for current user
+    // Second, get all subordinates for current user
+    // Third, retrieve data for that plan
+    // If plan does not exist, create one
+    this.getPlanList(this.authService.loggedInUser.id).then(
+      res1 => {
+      if (this.defaultPlan === undefined) {
+        this.getTeam('ethan_hunt@keysight.com').then(
+          res2 => this.createNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1'));
+      } else {
+        this.getTeam('ethan_hunt@keysight.com').then(res => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan));
+      }}
+    );
+
     this.fteFormChangeListener();
 
     $('[data-toggle="tooltip"]').tooltip();
 
-    // this.makeFyLabels();
-
+    // Initialize to current month/year
     this.currentMonth = moment(1, 'DD');
-    this.currentMonthName = moment(this.currentMonth).format('MMM');
+    this.currentMonthName = moment(this.currentMonth).format('MMMM');
     this.setMonth = this.currentMonth;
-
+    this.setMonthName = moment(this.setMonth).format('MMMM');
+    this.setYear = moment().year();
   }
 
   ngOnDestroy() {
@@ -363,7 +382,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     console.log('fte-project-visible array');
     console.log(this.fteProjectVisible);
     console.log('FTEData', this.FTEFormGroup.value.FTEFormArray);
-    this.buildTeamEditableMembers();
+    console.log('teamFTE', this.teamFTEs);
   }
 
   onSaveClick() {
@@ -372,7 +391,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     const t0 = performance.now();
 
     // call the api data service to send the put request
-    this.apiDataFteService.updateTeamData(fteData, this.authService.loggedInUser.id)
+    this.apiDataFteService.updateTeamData(fteData, this.authService.loggedInUser.id, this.currentPlan)
     .subscribe(
       res => {
         const t1 = performance.now();
@@ -417,7 +436,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
   fteComponentInit() {
     // get FTE data
-    this.apiDataFteService.indexTeamData(this.teamEditableMembers, '08-01-2018')
+    this.apiDataFteService.indexTeamData(this.teamEditableMembers, moment(this.setMonth).format('MM-DD-YYYY'))
     .subscribe(
       res => {
         // console.log('indexUserData', res.nested);
@@ -459,6 +478,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   buildFteEntryForm() {
+    this.FTEFormGroup = this.fb.group({
+      FTEFormArray: this.fb.array([])
+    });
     // grab the Project formarray
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
 
@@ -503,7 +525,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         if (newProject) {
           return false;
         } else {
-          return proj.projectID === teamFTE.projectID && employee.fullName === teamFTE['allocations:fullName'];
+          return proj.projectID === teamFTE.projectID &&
+            moment(this.setMonth).format('MM-DD-YYYY') === moment(teamFTE['allocations:fiscalDate']).utc().format('MM-DD-YYYY') &&
+            employee.emailAddress === teamFTE['allocations:emailAddress'];
         }
       });
 
@@ -513,8 +537,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           projectID: [proj.projectID],
           projectName: [proj.projectName],
           employeeID: [employee.employeeID],
+          emailAddress: [employee.emailAddress],
           fullName: [employee.fullName],
-          month: ['08-01-2018'],
+          month: [moment(this.setMonth).format('MM-DD-YYYY')],
           fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
           newRecord: [foundEntry ? false : true],
           updated: [false],
@@ -693,6 +718,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
     let emptyCounter = 0;
     let emptyProjectName: string = null;
+
     FTEFormArray.controls.forEach( project => {
       // check if ALL months for a given project have an empty FTE value
       const projectEmpty = project['controls'].every( month => {
@@ -731,24 +757,25 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   getTeam(email: string) {
-    // get list of subordinates
-    this.apiDataOrgService.getOrgData(email)
-    .subscribe(
-      res => {
-        this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
-        console.log('this.teamOrgStructure', this.teamOrgStructure);
-        // this.fteMonthVisible = new Array(this.teamOrgStructure.employees.length).fill(true);
-        this.buildMonthsArray();
-        this.buildTeamEditableMembers();
-        // console.log('Build month array');
-        this.makeFyLabels();
-        // this.fteComponentInit();
-        this.createNewPlan('TEST PLAN');
-      },
-      err => {
-        console.error('error getting nested org data');
-      }
-    );
+    return new Promise((p_res, p_err) => {
+      // get list of subordinates
+      this.apiDataOrgService.getOrgData(email)
+      .subscribe(
+        res => {
+          this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
+
+          this.buildMonthsArray();
+          this.buildTeamEditableMembers();
+          // this.makeFyLabels(); // do i need this?
+
+          p_res();
+        },
+        err => {
+          console.error('error getting nested org data');
+          p_err();
+        }
+      );
+    });
   }
 
   buildTeamEditableMembers() {
@@ -758,24 +785,36 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     }
     this.teamEditableMembers = this.teamEditableMembers.substr(0, this.teamEditableMembers.lastIndexOf(','));
     this.teamEditableMembers = '\'\'' + this.teamEditableMembers + '\'';
-    // console.log('teamEditableMember', this.teamEditableMembers);
   }
 
-  createNewPlan(planName: string) {
-    // get FTE data
-    this.apiDataFteService.indexNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, planName)
+  createNewPlan(emailAddress: any, userID: any, planName: string) {
+
+    if (emailAddress === null) {
+      emailAddress = this.teamEditableMembers;
+    }
+    if (userID === null) {
+      userID = this.authService.loggedInUser.id;
+    }
+
+    // create new plan and get FTE data
+    this.apiDataFteService.indexNewPlan(emailAddress, userID, planName)
     .subscribe(
       res => {
-        // console.log('indexUserData', res.nested);
         this.teamFTEs = res.nested;
         this.teamFTEsFlat = res.flat;
-        // this.buildFteEditableArray();
+
+        // Set month back to current/default
+        this.currentMonth = moment(1, 'DD');
+        this.currentMonthName = moment(this.currentMonth).format('MMMM');
+        this.setMonth = this.currentMonth;
+        this.setMonthName = moment(this.setMonth).format('MMMM');
+        this.setYear = moment().year();
+
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
-        // this.projects = this.userFTEs;
         const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
         this.projects = FTEFormArray.controls;
-        // console.log('this.Projects', this.projects);
+        this.getPlanList(this.authService.loggedInUser.id); // update the plan list with the new plan
       },
       err => {
         console.error(err);
@@ -783,17 +822,122 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     );
   }
 
-  onPreviousMonthClick() {
-    this.setMonth = moment(this.setMonth).subtract(1, 'months');
-    this.setMonthName = moment(this.setMonth).format('MMM');
-    console.log(this.setMonthName);
+  getPlan(userID: any, planName: string) {
+    // get FTE data for specific plan
+    this.apiDataFteService.indexPlan(userID, planName)
+    .subscribe(
+      res => {
+        this.teamFTEs = res.nested;
+        this.teamFTEsFlat = res.flat;
+        this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+        this.display = true;  // ghetto way to force rendering after FTE data is fetched
+        const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+        this.projects = FTEFormArray.controls;
+      },
+      err => {
+        console.error(err);
+      }
+    );
+  }
 
+  getPlanList(userID: any) {
+    // get the list of plans to load the Selection dropdown
+    return new Promise((p_res, p_err) => {
+      this.apiDataFteService.indexPlanList(userID)
+      .subscribe(
+        res => {
+          this.planList = res;
+          // If user doesn't have any plans, then set the default to undefined
+          if (this.planList.length === 0) {
+            this.defaultPlan = undefined;
+          } else {
+            // set the default plan to the latest plan
+            this.defaultPlan = this.planList[0].planName;
+            this.currentPlan = this.defaultPlan;
+          }
+          p_res();
+        },
+        err => {
+          console.error(err);
+          p_err();
+        }
+      );
+    });
+  }
+
+  selectedPlan(planName: string) {
+    // set plan after selection
+    this.currentPlan = planName;
+
+    // get data for selected plan
+    this.getPlan(this.authService.loggedInUser.id, this.currentPlan);
+    this.setMonth = this.currentMonth;
+    this.setMonthName = moment(this.setMonth).format('MMMM');
+    this.setYear = moment().year();
+  }
+
+  deletePlan() {
+
+    // hide the fte form while delete and reload functions are running
+    this.displayFTETable = false;
+
+    // create object with delete data
+    const planData = {
+      planName: this.currentPlan,
+      userID: this.authService.loggedInUser.id
+    };
+
+    this.apiDataFteService.deletePlan(planData)
+      .subscribe(
+        res => {
+          console.log('plan deleted', res);
+
+          // empty arrays so it won't have objects appended when the buildMonthsArray() function runs
+          this.employees = [];
+          this.teamEditableMembers = '';
+
+          // if user deletes the last plan, need to handle it the same as ngoninit
+          this.getPlanList(this.authService.loggedInUser.id).then(
+            res1 => {
+            if (this.defaultPlan === undefined) {
+              this.getTeam('ethan_hunt@keysight.com').then(
+                res2 => this.createNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1'));
+            } else {
+              this.getTeam('ethan_hunt@keysight.com').then(res3 => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan));
+            }
+          });
+          this.currentMonth = moment(1, 'DD');
+          this.currentMonthName = moment(this.currentMonth).format('MMMM');
+          this.setMonth = this.currentMonth;
+          this.setMonthName = moment(this.setMonth).format('MMMM');
+          this.setYear = moment().year();
+        },
+        err => {
+          console.error(err);
+        }
+      );
+  }
+
+  onPreviousMonthClick() {
+    // Set month to next month and format
+    this.setMonth = moment(this.setMonth).subtract(1, 'months');
+    this.setMonthName = moment(this.setMonth).format('MMMM');
+    this.setYear = moment(this.setMonth).format('YYYY');
+
+    // rebuild the FTE entry page to show selected month
+    this.buildFteEntryForm();
+    this.displayFTETable = true;
   }
 
   onNextMonthClick() {
+    // Set month to next month and format
     this.setMonth = moment(this.setMonth).add(1, 'months');
-    this.setMonthName = moment(this.setMonth).format('MMM');
-    console.log(this.setMonthName);
+    this.setMonthName = moment(this.setMonth).format('MMMM');
+    this.setYear = moment(this.setMonth).format('YYYY');
+
+    // rebuild the FTE entry page to show selected month
+    this.buildFteEntryForm();
+    this.displayFTETable = true;
   }
 
 
