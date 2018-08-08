@@ -18,6 +18,7 @@ div.project-card {
   width: 100%;
   margin-right: 10px;  /* leaves a bit of space between the card and the vertical scrollbar */
   border: 1px solid lightgrey;
+  background-color: white;
   transition: box-shadow 0.2s;
 }
 
@@ -35,13 +36,6 @@ div.project-type-cont {
   background-color: rgb(232, 232, 232);
   vertical-align: top;  /* this is key, otherwise will push down the inline block to the right if it has top padding */
   padding-top: 20px;
-}
-
-div.project-name-cont {
-  display: inline-block;
-  height: 100%;
-  border: 1px solid lightgrey;
-
 }
 
 div.project-type-name {
@@ -62,4 +56,38 @@ div.project-type-icon {
   margin: auto;
   font-size: 25px;
   text-align: center;
+}
+
+div.project-details-cont {
+  display: inline-block;
+  padding-top: 20px;
+  padding-left: 25px;
+}
+
+div.project-name {
+  font-size: 17px;
+  font-weight: 500;
+}
+
+div.project-description {
+  position: relative;
+  margin-top: 10px;
+  width: 500px;
+  height: 2.8em;
+  line-height: 1.4em;
+  overflow: hidden;
+  text-align: left;
+  /* border: 1px solid lightgrey; */
+}
+
+div.project-description:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40%;
+  height: 1.4em;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(50%, rgba(255, 255, 255, 1)));
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }

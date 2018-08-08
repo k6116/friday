@@ -194,196 +194,260 @@ License - nucleoapp.com/license/
     content: "\ea08";
 }
 
-.nc-board-29::before {
+.nc-board-28::before {
     content: "\ea09";
 }
 
-.nc-book-open-2::before {
+.nc-board-29::before {
     content: "\ea0a";
 }
 
-.nc-calendar-add::before {
+.nc-book-open-2::before {
     content: "\ea0b";
 }
 
-.nc-calendar-check-59::before {
+.nc-bulb-63::before {
     content: "\ea0c";
 }
 
-.nc-calendar-grid-61::before {
+.nc-calendar-add::before {
     content: "\ea0d";
 }
 
-.nc-chart-3::before {
+.nc-calendar-check-59::before {
     content: "\ea0e";
 }
 
-.nc-chart-bar-33::before {
+.nc-calendar-grid-61::before {
     content: "\ea0f";
 }
 
-.nc-chat-46::before {
+.nc-chart-3::before {
     content: "\ea10";
 }
 
-.nc-chat-round-content::before {
+.nc-chart-bar-33::before {
     content: "\ea11";
 }
 
-.nc-check-all::before {
+.nc-chat-46::before {
     content: "\ea12";
 }
 
-.nc-check-curve::before {
+.nc-chat-round-content::before {
     content: "\ea13";
 }
 
-.nc-circle-09::before {
+.nc-check-all::before {
     content: "\ea14";
 }
 
-.nc-circle-10::before {
+.nc-check-curve::before {
     content: "\ea15";
 }
 
-.nc-circle-remove::before {
+.nc-circle-09::before {
     content: "\ea16";
 }
 
-.nc-crosshair::before {
+.nc-circle-10::before {
     content: "\ea17";
 }
 
-.nc-dashboard-29::before {
+.nc-circle-remove::before {
     content: "\ea18";
 }
 
-.nc-dashboard-30::before {
+.nc-code-editor::before {
     content: "\ea19";
 }
 
-.nc-dashboard-half::before {
+.nc-crosshair::before {
     content: "\ea1a";
 }
 
-.nc-dots-05::before {
+.nc-dashboard-29::before {
     content: "\ea1b";
 }
 
-.nc-dots-06::before {
+.nc-dashboard-30::before {
     content: "\ea1c";
 }
 
-.nc-dots-07::before {
+.nc-dashboard-half::before {
     content: "\ea1d";
 }
 
-.nc-event-create::before {
+.nc-dots-05::before {
     content: "\ea1e";
 }
 
-.nc-eye-17::before {
+.nc-dots-06::before {
     content: "\ea1f";
 }
 
-.nc-fat-remove::before {
+.nc-dots-07::before {
     content: "\ea20";
 }
 
-.nc-gantt::before {
+.nc-event-create::before {
     content: "\ea21";
 }
 
-.nc-hierarchy-53::before {
+.nc-eye-17::before {
     content: "\ea22";
 }
 
-.nc-hierarchy-54::before {
+.nc-factory::before {
     content: "\ea23";
 }
 
-.nc-hierarchy-55::before {
+.nc-fat-remove::before {
     content: "\ea24";
 }
 
-.nc-hierarchy-56::before {
+.nc-gantt::before {
     content: "\ea25";
 }
 
-.nc-i-lock::before {
+.nc-hierarchy-53::before {
     content: "\ea26";
 }
 
-.nc-l-security::before {
+.nc-hierarchy-54::before {
     content: "\ea27";
 }
 
-.nc-l-settings::before {
+.nc-hierarchy-55::before {
     content: "\ea28";
 }
 
-.nc-list::before {
+.nc-hierarchy-56::before {
     content: "\ea29";
 }
 
-.nc-lock-2::before {
+.nc-i-lock::before {
     content: "\ea2a";
 }
 
-.nc-lock::before {
+.nc-keyboard-wireless::before {
     content: "\ea2b";
 }
 
-.nc-meeting::before {
+.nc-l-security::before {
     content: "\ea2c";
 }
 
-.nc-newsletter::before {
+.nc-l-settings::before {
     content: "\ea2d";
 }
 
-.nc-no-access::before {
+.nc-lab::before {
     content: "\ea2e";
 }
 
-.nc-opening-times::before {
+.nc-list::before {
     content: "\ea2f";
 }
 
-.nc-pencil::before {
+.nc-lock::before {
     content: "\ea30";
 }
 
-.nc-privacy-policy::before {
+.nc-meeting::before {
     content: "\ea31";
 }
 
-.nc-send::before {
+.nc-microscope::before {
     content: "\ea32";
 }
 
-.nc-settings-gear-63::before {
+.nc-newsletter::before {
     content: "\ea33";
 }
 
-.nc-simple-remove::before {
+.nc-opening-times::before {
     content: "\ea34";
 }
 
-.nc-single-05::before {
+.nc-pencil::before {
     content: "\ea35";
 }
 
-.nc-small-remove::before {
+.nc-power-lifting::before {
     content: "\ea36";
 }
 
-.nc-socket::before {
+.nc-preferences-container-circle::before {
     content: "\ea37";
 }
 
-.nc-todo::before {
+.nc-privacy-policy::before {
     content: "\ea38";
+}
+
+.nc-ram::before {
+    content: "\ea39";
+}
+
+.nc-send::before {
+    content: "\ea3a";
+}
+
+.nc-server-rack::before {
+    content: "\ea3b";
+}
+
+.nc-settings-91::before {
+    content: "\ea3c";
+}
+
+.nc-settings-gear-63::before {
+    content: "\ea3d";
+}
+
+.nc-sign-closed::before {
+    content: "\ea3e";
+}
+
+.nc-simple-remove::before {
+    content: "\ea3f";
+}
+
+.nc-single-05::before {
+    content: "\ea40";
+}
+
+.nc-small-remove::before {
+    content: "\ea41";
+}
+
+.nc-socket-europe-1::before {
+    content: "\ea42";
+}
+
+.nc-socket::before {
+    content: "\ea43";
+}
+
+.nc-spaceship::before {
+    content: "\ea44";
+}
+
+.nc-todo::before {
+    content: "\ea45";
+}
+
+.nc-tomato::before {
+    content: "\ea46";
+}
+
+.nc-wifi-router::before {
+    content: "\ea47";
+}
+
+.nc-wifi::before {
+    content: "\ea48";
 }
 
 

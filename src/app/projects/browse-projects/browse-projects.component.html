@@ -19,7 +19,7 @@ considering topnav, sidenav, and footer -->
         <div class="project-card">
 
           <!-- container for project type (left side element) -->
-          <div class="project-type-cont">
+          <div class="project-type-cont" [ngStyle]="{ 'color': setProjctTypeColor(project.ProjectTypeName) }">
 
             <!-- project type name text -->
             <div class="project-type-name"> 
@@ -28,15 +28,22 @@ considering topnav, sidenav, and footer -->
 
             <!-- project type icon -->
             <div class="project-type-icon"> 
-              <i class="nc-icon nc-l-security"></i>
-              <!-- coifas -->
+              <i [ngClass]="setProjctTypeIconClass(project.ProjectTypeName)"></i>
             </div>
             
           </div>
 
           <!-- container for project name, description, etc. (middle element) -->
-          <div class="project-name-cont">
-            {{ project.ProjectName }}
+          <div class="project-details-cont">
+
+            <div class="project-name">
+              {{ project.ProjectName }}
+            </div>
+
+            <div class="project-description" [attr.data-id]="project.ProjectID" (mouseenter)="onDescriptionMouseEnter(project)" (mouseleave)="onDescriptionMouseLeave(project.ProjectID)">
+              {{ project.Description }}
+            </div>
+            
           </div>
 
         </div>
