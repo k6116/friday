@@ -1,3 +1,50 @@
-<p>
-  browse-projects works!
-</p>
+
+<!-- fluid bootstrap container with margins to center page content
+considering topnav, sidenav, and footer -->
+<div class="container-fluid">
+
+  <!-- outer page container; don't show until data is ready -->
+  <div class="page-cont" *ngIf="showPage">
+
+    <div class="projects-filters-cont">
+      filters go here
+    </div>
+
+    <div class="projects-cards-cont">
+
+      <!-- each row is a project card, with bottom margin separating it from the next one -->
+      <div *ngFor="let project of projects" class="row row-custom row-project-card">
+
+        <!-- 12 columns width project card container-->
+        <div class="project-card">
+
+          <!-- container for project type (left side element) -->
+          <div class="project-type-cont">
+
+            <!-- project type name text -->
+            <div class="project-type-name"> 
+              {{ project.ProjectTypeName }}
+            </div>
+
+            <!-- project type icon -->
+            <div class="project-type-icon"> 
+              <i class="nc-icon nc-l-security"></i>
+              <!-- coifas -->
+            </div>
+            
+          </div>
+
+          <!-- container for project name, description, etc. (middle element) -->
+          <div class="project-name-cont">
+            {{ project.ProjectName }}
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>  
+
+</div>
