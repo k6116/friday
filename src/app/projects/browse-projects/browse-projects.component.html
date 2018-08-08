@@ -10,10 +10,10 @@ considering topnav, sidenav, and footer -->
       filters go here
     </div>
 
-    <div class="projects-cards-cont">
+    <div class="projects-cards-cont" (scroll)="onScroll()">
 
       <!-- each row is a project card, with bottom margin separating it from the next one -->
-      <div *ngFor="let project of projects" class="row row-custom row-project-card">
+      <div *ngFor="let project of projects | filter : filterString : 'ProjectName' : {limitTo: numProjectsToDisplay, matchFuzzy: true}" class="row row-custom row-project-card">
 
         <!-- 12 columns width project card container-->
         <div class="project-card">

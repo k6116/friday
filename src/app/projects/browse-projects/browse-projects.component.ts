@@ -11,12 +11,19 @@ declare var $: any;
 export class BrowseProjectsComponent implements OnInit {
 
   projects: any;
+  projectsToDisplay: any;
   showPage: boolean;
   projectTypeBinding: any;
+  numProjectsToDisplayAtOnce: number;
+  numProjectsToDisplay: number;
 
   constructor(
     private apiDataProjectService: ApiDataProjectService
   ) {
+
+    // set the number of projects to display initially, and to add for infinite scroll
+    this.numProjectsToDisplayAtOnce = 100;
+    this.numProjectsToDisplay = 100;
 
     // create an object to use for class and style binding for the project type
     this.projectTypeBinding = [
@@ -93,8 +100,8 @@ export class BrowseProjectsComponent implements OnInit {
           console.log('get projects successfull:');
           console.log(res);
           this.projects = res;
-          // TEMP CODE: trim down the list of projects to a smaller number, for testing css
-          this.trimProjects(100);
+          // this.projectsToDisplay = this.projects.slice(0, this.numProjectsToDisplayAtOnce);
+          // console.log(`number of displayed projects: ${this.projectsToDisplay.length}`);
           // display the page
           this.showPage = true;
         },
@@ -200,6 +207,54 @@ export class BrowseProjectsComponent implements OnInit {
       default:
         return 'rgb(139, 0, 139)';  // magenta
     }
+  }
+
+
+  onScroll() {
+    if (this.scrollAtBottom()) {
+      console.log('scrollbar is at the bottom');
+      this.addProjectsForInfiniteScroll();
+    }
+  }
+
+
+  scrollAtBottom(): boolean {
+    // get the project cards container element using jQuery
+    const $el = $('div.projects-cards-cont');
+    // get the current scrollbar position from the top in pixels
+    const scrollPosition = $el.scrollTop();
+    // get the total scrollable height of the div with this calculation
+    // need to subtract the visible height to get a comparable height with scrollTop
+    const scrollHeight = $el.prop('scrollHeight');
+    const height = $el.height();
+    const totalDivHeight = scrollHeight - height;
+    // if the scroll position is at (or maybe slightly below due to rounding), return true otherwise false
+    if (scrollPosition >= totalDivHeight - 5) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+  // use all projects in the ngFor, but use filter pipe to limit, update limit when reaching the bottom
+  addProjectsForInfiniteScroll() {
+
+    // get the number of currently displayed projects
+    const numDisplayedProjects = this.numProjectsToDisplay;
+    // get the number of total projects
+    const numProjects = this.projects.length;
+    // calculate the number of remaining projects that could be displaed
+    const numRemainingProjects = numProjects - numDisplayedProjects;
+    // take the minimum of X projects or remaining projects
+    const numProjectsToAdd = Math.min(this.numProjectsToDisplayAtOnce, numRemainingProjects);
+    // if there are any more projects to add
+    if (numProjectsToAdd > 0) {
+      // update / increment the number of projects to display (using the filter pipe)
+      this.numProjectsToDisplay += numProjectsToAdd;
+      console.log(`added ${numProjectsToAdd} projects; now showing ${this.numProjectsToDisplay} projects`);
+    }
+
   }
 
 

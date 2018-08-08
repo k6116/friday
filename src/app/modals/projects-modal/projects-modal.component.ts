@@ -57,7 +57,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   innerDivState: string;
   filterString: string;
   checkboxValue: any;
-  projectsDisplay: any;
+  // projectsDisplay: any;
   numProjectsToDisplayAtOnce: number;
   numProjectsToDisplay: number;
   userID: any;
@@ -126,8 +126,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     console.log(this.projects);
     console.log(`number of projects: ${this.projects.length}`);
 
-    this.projectsDisplay = this.projects.slice(0, this.numProjectsToDisplayAtOnce);
-    console.log(`number of displayed projects: ${this.projectsDisplay.length}`);
+    // this.projectsDisplay = this.projects.slice(0, this.numProjectsToDisplayAtOnce);
+    // console.log(`number of displayed projects: ${this.projectsDisplay.length}`);
 
 
     // get the user id and email
