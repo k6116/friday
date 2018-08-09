@@ -106,6 +106,7 @@ router.get('/bom/showSingleBom/:parentID', controllers.bom.showSingleBom);
 router.get('/bom/showPartInfo/:partID', controllers.bom.showPartInfo);
 router.get('/bom/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
 
+
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified
@@ -148,7 +149,8 @@ router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', contro
 // JOB TITLE CONTROLLER (ADMIN)
 router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
 router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
-
+// TEMP JOB TITLE CONTROLLER
+router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
 
 // middleware to protect permissions protected routes
@@ -221,7 +223,7 @@ router.use('/', function(req, res, next) {
 
 
 // JOB TITLE CONTROLLER (ADMIN)
-router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
+// router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 router.post('/jobTitle/admin/insert/insertJobTitle', controllers.jobTitle.insertJobTitle);
 router.post('/jobTitle/admin/insert/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
 router.post('/jobTitle/admin/destroy/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
