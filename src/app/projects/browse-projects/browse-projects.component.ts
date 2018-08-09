@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 
 declare var $: any;
@@ -10,12 +10,15 @@ declare var $: any;
 })
 export class BrowseProjectsComponent implements OnInit {
 
+  @ViewChild('filterVC') filterVC: ElementRef;
+
   projects: any;
   projectsToDisplay: any;
   showPage: boolean;
   projectTypeBinding: any;
   numProjectsToDisplayAtOnce: number;
   numProjectsToDisplay: number;
+  filterString: string;
 
   constructor(
     private apiDataProjectService: ApiDataProjectService
@@ -111,6 +114,14 @@ export class BrowseProjectsComponent implements OnInit {
         }
     );
 
+  }
+
+  // on clicking the 'x' icon at the right of the search/filter input
+  onClearSearchClick() {
+    // clear the filter string
+    this.filterString = undefined;
+    // reset the focus on the filter input
+    this.filterVC.nativeElement.focus();
   }
 
 
