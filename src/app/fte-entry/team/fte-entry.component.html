@@ -37,17 +37,33 @@
 </div>
 
 <div class="row row-custom">
-  <div class="col-sm col-custom">
-    <h4>{{ setMonthName }} {{ setYear }}</h4>
-    <button class="btn btn-primary" (click)="onPreviousMonthClick()">Prev</button>
-    <button class="btn btn-primary" (click)="onNextMonthClick()">Next</button>
+  <div class="col-sm-3 col-custom">
+      <div style="display: inline-flex">
+        <button class="btn btn-secondary" [disabled]="disablePreviousMonth" (click)="onPreviousMonthClick()">Prev</button>
+        <span style="width: 5px"></span>
+        <button class="btn btn-secondary" (click)="onNextMonthClick()">Next</button>
+        <span style="width: 10px"></span>
+        <h4>{{ setMonthName }} {{ setYear }}</h4>
+      </div>
+  </div>
 
+  <div class="col-sm-3 col-custom col-multiselect">
+      <ss-multiselect-dropdown #filterEmployeesDropdown [options]="filterEmployeesOptions" [texts]="filterEmployeesTexts" 
+            [settings]="filterEmployeesSettings" [(ngModel)]="filterEmployeesModel" (ngModelChange)="onFilterEmployeesChange($event)"></ss-multiselect-dropdown>
+  </div>
+
+  <div class="col-sm-3 col-custom col-multiselect">
+      <ss-multiselect-dropdown #filterProjectsDropdown [options]="filterProjectsOptions" [texts]="filterProjectsTexts" 
+            [settings]="filterProjectsSettings" [(ngModel)]="filterProjectsModel" (ngModelChange)="onFilterProjectsChange($event)"></ss-multiselect-dropdown>
+  </div>
+
+  <div class="col-sm-3 col-custom">
     <div class="col-newplan" style="display: inline-flex">
       <button class="btn btn-secondary" data-toggle="modal" data-target="#newPlanModal">
         <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
       </button>
       <span style="width: 5px"></span>
-      <select class="form-control" style="width: 200px" (change)="selectedPlan($event.target.value)">
+      <select class="form-control" style="width: 200px" (change)="selectPlan($event.target.value)">
         <option *ngFor="let plan of planList; let i = index" [value]="plan.planName">{{ plan.planName }}</option>
       </select>
       <span style="width: 5px"></span>
@@ -56,6 +72,7 @@
       </button>
     </div>
   </div>
+
 </div>
 <!-- begin row for FTE entry table -->
 <div class="row row-custom">

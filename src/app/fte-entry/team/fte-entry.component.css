@@ -236,6 +236,11 @@ div.fte-table-row.tutorial-part3.introjs-showElement.introjs-relativePosition {
     cursor: pointer;
   }
 
-  .col-newplan{
+  .col-newplan {
     float: right;
+  }
+
+  .col-multiselect {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
   }

@@ -20,6 +20,8 @@ import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal
 import { format } from 'util';
 import { yearsPerPage } from '../../../../node_modules/@angular/material/datepicker/typings/multi-year-view';
 
+import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts, MultiselectDropdownComponent } from 'angular-2-dropdown-multiselect';
+
 const moment = require('moment');
 require('moment-fquarter');
 
@@ -49,6 +51,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   display: boolean; // TODO: find a better solution to FTE display timing issue
   displayFTETable = false;
   projects: any;  // for aliasing formarray
+  allProjects: any;
   months: string[] = [];
   monthlyTotals: number[];
   monthlyTotalsValid: boolean[];
@@ -59,6 +62,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   fteEmployeeVisible: any;
   teamOrgStructure: any;
   employees: any[] = [];
+  allEmployees: any[] = [];
   teamEditableMembers: string;
   currentMonth: any;
   currentMonthName: any;
@@ -69,10 +73,66 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   planList: any;
   defaultPlan: any;
   currentPlan: any;
+  disablePreviousMonth: boolean;
+
+  // Multiselect Declarations
+  filterProjectsModelStaging: any[] = [];
+  filterProjectsOptionsStaging: any[] = [];
+  filterEmployees: any[] = [];
+  filterEmployeesModel: number[];
+  filterEmployeesOptions: IMultiSelectOption[];
+  filterEmployeesTexts: IMultiSelectTexts = {
+    checkAll: 'Select all',
+    uncheckAll: 'Unselect all',
+    checked: 'employee selected',
+    checkedPlural: 'employees selected',
+    searchPlaceholder: 'Search Employees',
+    searchEmptyResult: 'Nothing found...',
+    searchNoRenderText: 'Type in search box to see results...',
+    defaultTitle: 'Filter Employees',
+    allSelected: 'All employees selected',
+  };
+  filterEmployeesSettings: IMultiSelectSettings = {
+    showCheckAll: true,
+    showUncheckAll: true,
+    enableSearch: true,
+    // checkedStyle: 'fontawesome',
+    buttonClasses: 'btn btn-primary btn-block',
+    dynamicTitleMaxItems: 3,
+    displayAllSelectedText: true,
+    maxHeight: '500px'
+  };
+  filterProjects: any[] = [];
+  filterProjectsModel: number[];
+  filterProjectsOptions: IMultiSelectOption[];
+  filterProjectsTexts: IMultiSelectTexts = {
+    checkAll: 'Select all',
+    uncheckAll: 'Unselect all',
+    checked: 'project selected',
+    checkedPlural: 'projects selected',
+    searchPlaceholder: 'Search Projects',
+    searchEmptyResult: 'Nothing found...',
+    searchNoRenderText: 'Type in search box to see results...',
+    defaultTitle: 'Filter Projects',
+    allSelected: 'All projects selected',
+};
+  filterProjectsSettings: IMultiSelectSettings = {
+    showCheckAll: true,
+    showUncheckAll: true,
+    enableSearch: true,
+    // checkedStyle: 'fontawesome',
+    buttonClasses: 'btn btn-primary btn-block',
+    dynamicTitleMaxItems: 3,
+    displayAllSelectedText: true,
+    maxHeight: '500px'
+};
 
   fteTutorialState = 0; // for keeping track of which part of the tutorial we're in, and passing to child component
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
+  // Accessing the model to update the rendering manually because the author of this package never fixed a bug
+  @ViewChild('filterEmployeesDropdown') filterEmployeesDropdown: MultiselectDropdownComponent;
+  @ViewChild('filterProjectsDropdown') filterProjectsDropdown: MultiselectDropdownComponent;
 
   constructor(
     private fb: FormBuilder,
@@ -98,7 +158,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.timer = setInterval(() => {
       this.changeDetectorRef.detectChanges();
     }, 200);
-
   }
 
   // canDeactivate checks if the user has unsaved changes in the form and informs the router whether the user can leave
@@ -117,6 +176,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   ngOnInit() {
+    this.filterEmployeesModel = [];
+    this.filterEmployeesOptions = [];
+    this.filterProjectsModel = [];
+    this.filterProjectsOptions = [];
     // this.projectList = [
     //   {projectID: 9990, projectName: 'testawef1'},
     //   {projectID: 9991, projectName: 'testawef2'},
@@ -148,6 +211,14 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.setMonth = this.currentMonth;
     this.setMonthName = moment(this.setMonth).format('MMMM');
     this.setYear = moment().year();
+
+    // disable the previous button to prevent user from going into past months
+    if (moment(this.setMonth) <= moment(this.currentMonth)) {
+      this.disablePreviousMonth = true;
+    } else {
+      this.disablePreviousMonth = false;
+    }
+
   }
 
   ngOnDestroy() {
@@ -381,7 +452,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     console.log(this.FTEFormGroup.value.FTEFormArray);
     console.log('fte-project-visible array');
     console.log(this.fteProjectVisible);
-    console.log('FTEData', this.FTEFormGroup.value.FTEFormArray);
     console.log('teamFTE', this.teamFTEs);
   }
 
@@ -433,29 +503,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
   }
 
-
-  fteComponentInit() {
-    // get FTE data
-    this.apiDataFteService.indexTeamData(this.teamEditableMembers, moment(this.setMonth).format('MM-DD-YYYY'))
-    .subscribe(
-      res => {
-        // console.log('indexUserData', res.nested);
-        this.teamFTEs = res.nested;
-        this.teamFTEsFlat = res.flat;
-        // this.buildFteEditableArray();
-        this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
-        this.display = true;  // ghetto way to force rendering after FTE data is fetched
-        // this.projects = this.userFTEs;
-        const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-        this.projects = FTEFormArray.controls;
-        // console.log('this.Projects', this.projects);
-      },
-      err => {
-        console.error(err);
-      }
-    );
-  }
-
   buildMonthsArray() {
     // build an array of months that matches the slider length, based on today's date
     const startDate = moment().utc().startOf('year').subtract(2, 'months').subtract(1, 'years');
@@ -468,11 +515,12 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     }
 
     for (let i = 0; i < this.teamOrgStructure.employees.length; i++) {
-      this.employees.push({
+      this.allEmployees.push({
         employeeID: this.teamOrgStructure.employees[i].employeeID,
         fullName: this.teamOrgStructure.employees[i].fullName,
         emailAddress: this.teamOrgStructure.employees[i].emailAddress
       });
+      this.employees = this.allEmployees;
     }
 
   }
@@ -527,7 +575,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         } else {
           return proj.projectID === teamFTE.projectID &&
             moment(this.setMonth).format('MM-DD-YYYY') === moment(teamFTE['allocations:fiscalDate']).utc().format('MM-DD-YYYY') &&
-            employee.emailAddress === teamFTE['allocations:emailAddress'];
+            employee.emailAddress === teamFTE['allocations:emailAddress'] &&
+            teamFTE.hide === false;
         }
       });
 
@@ -554,26 +603,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     tempProj.projectName = proj.projectName;
 
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
-  }
-
-  makeFyLabels() {
-    // generate slider labels based on current date
-    let startDate = moment().startOf('year').subtract(2, 'months'); // first day of this FY
-    startDate = moment(startDate).subtract(1, 'year');  // first day of last FY
-    const month = moment(startDate).month();
-    let firstQuarter = moment(startDate).fquarter(-3).quarter;
-    let firstYear = moment(startDate).fquarter(-3).year;
-
-    // make an array of label strings, ie - [Q4'17, Q1'18]
-    for ( let i = 0; i < 12; i++) {
-      this.fqLabelArray.push(`Q${firstQuarter} - ${firstYear.toString().slice(2)}`);
-      firstQuarter++;
-      if (firstQuarter > 4) {
-        this.fyLabelArray.push(`${firstYear.toString()}`);
-        firstYear++;
-        firstQuarter = 1;
-      }
-    }
   }
 
   onTrashClick(index: number) {
@@ -686,33 +715,33 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     });
   }
 
-  updateProjectDeletability() {
-    // reset project deletability
-    this.fteProjectDeletable.length = 0;
+  // updateProjectDeletability() {
+  //   // reset project deletability
+  //   this.fteProjectDeletable.length = 0;
 
-    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
-    const firstDeletableMonth = this.fteMonthEditable.findIndex( value => {
-      return value; // look for the first month that is editable
-    });
+  //   const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
+  //   const firstDeletableMonth = this.fteMonthEditable.findIndex( value => {
+  //     return value; // look for the first month that is editable
+  //   });
 
-    FTEFormArray.controls.forEach( project => {
-      let nullCounter = 0;
+  //   FTEFormArray.controls.forEach( project => {
+  //     let nullCounter = 0;
 
-      for (let i = 0; i < firstDeletableMonth; i++) {
-        const currProjControls = project['controls'][i].controls;
-        if (currProjControls.fte.value) {
-          // if any of the controls have an FTE value, break out of the loop and make the whole project not deletable
-          i = firstDeletableMonth;
-          nullCounter = 0; // reset nullCounter
-          this.fteProjectDeletable.push(false);
-        } else { nullCounter++; }
-      }
-      if (nullCounter === firstDeletableMonth) {
-        // all historic FTE values are null, so project can safely be deleted
-        this.fteProjectDeletable.push(true);
-      }
-    });
-  }
+  //     for (let i = 0; i < firstDeletableMonth; i++) {
+  //       const currProjControls = project['controls'][i].controls;
+  //       if (currProjControls.fte.value) {
+  //         // if any of the controls have an FTE value, break out of the loop and make the whole project not deletable
+  //         i = firstDeletableMonth;
+  //         nullCounter = 0; // reset nullCounter
+  //         this.fteProjectDeletable.push(false);
+  //       } else { nullCounter++; }
+  //     }
+  //     if (nullCounter === firstDeletableMonth) {
+  //       // all historic FTE values are null, so project can safely be deleted
+  //       this.fteProjectDeletable.push(true);
+  //     }
+  //   });
+  // }
 
   checkIfEmptyProjects(): string {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
@@ -763,11 +792,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       .subscribe(
         res => {
           this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
-
+          this.updateEmployeeFilters();
           this.buildMonthsArray();
           this.buildTeamEditableMembers();
-          // this.makeFyLabels(); // do i need this?
-
           p_res();
         },
         err => {
@@ -813,7 +840,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
         const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-        this.projects = FTEFormArray.controls;
+        this.allProjects = FTEFormArray.controls;
+        this.projects = this.allProjects;
+
+        this.updateProjectFilters();
+
         this.getPlanList(this.authService.loggedInUser.id); // update the plan list with the new plan
       },
       err => {
@@ -832,12 +863,51 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
         const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-        this.projects = FTEFormArray.controls;
+        this.allProjects = FTEFormArray.controls;
+        this.projects = this.allProjects;
+        // this.updateProjectFilters();
+
       },
       err => {
         console.error(err);
       }
     );
+  }
+
+  updateEmployeeFilters() {
+    // Update list for employee dropdown filter
+    for (let i = 0; i < this.teamOrgStructure.employees.length; i++ ) {
+      this.filterEmployeesOptions.push({
+        id: i + 1,
+        name: this.teamOrgStructure.employees[i].fullName
+      });
+      this.filterEmployeesModel.push(i + 1);
+    }
+
+    // For some reason, this does not render dynamically, so this will force the rendering
+    //  by accessing the model and updating the renderFilteredOptions manually
+    this.filterEmployeesDropdown.renderFilteredOptions = this.filterEmployeesOptions;
+  }
+
+  updateProjectFilters() {
+    // Update list for project dropdown filter
+    this.filterProjectsModelStaging = [];
+    this.filterProjectsOptionsStaging = [];
+
+    for (let i = 0; i < this.allProjects.length; i++ ) {
+      this.filterProjectsOptionsStaging.push({
+        id: i + 1,
+        name: this.allProjects[i].projectName
+      });
+      this.filterProjectsModelStaging.push(i + 1);
+    }
+
+    this.filterProjectsOptions = this.filterProjectsOptionsStaging;
+    this.filterProjectsModel = this.filterProjectsModelStaging;
+    // For some reason, this does not render dynamically, so this will force the rendering
+    //  by accessing the model and updating the renderFilteredOptions manually
+    this.filterProjectsDropdown.renderFilteredOptions = this.filterProjectsOptions;
+    this.filterProjectsDropdown.model = this.filterProjectsModel;
   }
 
   getPlanList(userID: any) {
@@ -865,7 +935,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     });
   }
 
-  selectedPlan(planName: string) {
+  selectPlan(planName: string) {
     // set plan after selection
     this.currentPlan = planName;
 
@@ -877,7 +947,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   deletePlan() {
-
     // hide the fte form while delete and reload functions are running
     this.displayFTETable = false;
 
@@ -927,6 +996,13 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // rebuild the FTE entry page to show selected month
     this.buildFteEntryForm();
     this.displayFTETable = true;
+
+    // disable the previous button to prevent user from going into past months
+    if (moment(this.setMonth) <= moment(this.currentMonth)) {
+      this.disablePreviousMonth = true;
+    } else {
+      this.disablePreviousMonth = false;
+    }
   }
 
   onNextMonthClick() {
@@ -938,7 +1014,55 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // rebuild the FTE entry page to show selected month
     this.buildFteEntryForm();
     this.displayFTETable = true;
+
+    // disable the previous button to prevent user from going into past months
+    if (moment(this.setMonth) <= moment(this.currentMonth)) {
+      this.disablePreviousMonth = true;
+    } else {
+      this.disablePreviousMonth = false;
+    }
   }
 
+  // Angular-2-MultiSelect-Dropdown functions
+
+  onFilterEmployeesChange() {
+    this.filterEmployees = [];
+
+    for (let i = 0; i < this.filterEmployeesOptions.length; i++) {
+      for (let j = 0; j < this.filterEmployeesModel.length; j++) {
+        if (this.filterEmployeesOptions[i].id === this.filterEmployeesModel[j]) {
+          this.filterEmployees.push(this.filterEmployeesOptions[i]);
+        }
+      }
+    }
+
+    this.employees = this.allEmployees.filter(o1 => this.filterEmployees.some(o2 => o1.fullName === o2.name));
+
+    console.log('employees', this.employees);
+    // console.log('nested!', this.teamFTEs)
+    // console.log('flat!', this.teamFTEsFlat)
+    // this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+    // this.display = true;  // ghetto way to force rendering after FTE data is fetched
+  }
+
+  onFilterProjectsChange() {
+    this.filterProjects = [];
+
+    for (let i = 0; i < this.filterProjectsOptions.length; i++) {
+      for (let j = 0; j < this.filterProjectsModel.length; j++) {
+        if (this.filterProjectsOptions[i].id === this.filterProjectsModel[j]) {
+          this.filterProjects.push(this.filterProjectsOptions[i]);
+        }
+      }
+    }
+
+    // this.projects = this.allProjects.filter(o1 => this.filterProjects.some(o2 => o1.projectName === o2.name));
+  console.log('@#!@#!@#!@#', this.filterProjectsDropdown)
+    // console.log('nested!', this.teamFTEs)
+    // console.log('flat!', this.teamFTEsFlat)
+    this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+    this.display = true;  // ghetto way to force rendering after FTE data is fetched
+
+  }
 
 }
