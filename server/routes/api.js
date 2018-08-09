@@ -87,9 +87,6 @@ router.post('/insertLotExclusion/:userID', controllers.analytics.insertLotExclus
 router.post('/destroyLotExclusion/:userID', controllers.analytics.destroyLotExclusion);
 
 
-
-// NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
-
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
@@ -135,6 +132,9 @@ router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJ
 router.get('/fte/fte/index/indexUserData', controllers.fte.indexUserData);
 router.delete('/fte/fte/destroy/destroyUserProject/:projectID', controllers.fte.destroyUserProject);   // PROTECT
 router.put('/fte/fte/update/updateUserData', controllers.fte.updateUserData);
+
+// TEMP JOB TITLE CONTROLLER
+router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
 
 // middleware to protect permissions protected routes
@@ -207,7 +207,7 @@ router.use('/', function(req, res, next) {
 
 
 // JOB TITLE CONTROLLER (ADMIN)
-router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
+// router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 router.post('/jobTitle/admin/insert/insertJobTitle', controllers.jobTitle.insertJobTitle);
 router.post('/jobTitle/admin/insert/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
 router.post('/jobTitle/admin/destroy/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
