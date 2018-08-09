@@ -15,26 +15,28 @@ export class ApiDataFteService {
   ) { }
 
   // get FTE data from db
-  indexUserData(userID: number) {
-    return this.http.get(`/api/fte/indexUserData/${userID}`)
+  indexUserData() {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/fte/fte/index/indexUserData`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   // delete an entire project from a user's FTE table
-  destroyUserProject(projectID: any, userID: number) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+  destroyUserProject(projectID: number) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/fte/destroyUserProject/${userID}`, JSON.stringify(projectID), options)
+    return this.http.delete(`/api/fte/fte/destroy/destroyUserProject/${projectID}`, options)
     .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
 
   // update existing FTE records
-  updateUserData(fteData: any, userID: number) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+  updateUserData(fteData: any) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.post(`/api/fte/updateUserData/${userID}`, JSON.stringify(fteData), options)
+    return this.http.put(`/api/fte/fte/update/updateUserData`, JSON.stringify(fteData), options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

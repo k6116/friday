@@ -122,6 +122,36 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           active: false,
           permissionProtected: true,
           hidden: false
+        },
+        {
+          title: 'BOM',
+          iconClass: 'nc-chart-bar-33',
+          alias: 'bom',
+          expanded: false,
+          active: false,
+          highlighted: false,
+          permissionProtected: true,
+          hidden: false,
+          subItems: [
+            {
+              title: 'BOM Viewer',
+              alias: 'bom-viewer',
+              path: 'main/reports/bom-viewer',
+              parentAlias: 'bom',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            },
+            {
+              title: 'BOM Editor',
+              alias: 'bom-editor',
+              path: 'main/reports/bom-editor',
+              parentAlias: 'bom',
+              active: false,
+              permissionProtected: true,
+              hidden: false
+            }
+          ]
         }
         // {
         //   title: 'Websockets',
@@ -134,7 +164,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         //   permissionProtected: false,
         //   hidden: false
         // }
-      ];
+      ];  // end menuStructure array of objects
 
 
   }

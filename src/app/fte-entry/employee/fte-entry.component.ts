@@ -467,7 +467,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       const t0 = performance.now();
 
       // call the api data service to send the put request
-      this.apiDataFteService.updateUserData(fteData, this.authService.loggedInUser.id)
+      this.apiDataFteService.updateUserData(fteData)
       .subscribe(
         res => {
           const t1 = performance.now();
@@ -550,7 +550,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   fteComponentInit() {
     // get FTE data
-    this.apiDataFteService.indexUserData(this.authService.loggedInUser.id)
+    // this.apiDataFteService.indexUserData(this.authService.loggedInUser.id)
+    this.apiDataFteService.indexUserData()
     .subscribe(
       res => {
         // console.log('indexUserData', res.nested);
@@ -838,7 +839,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           newlyAdded: deletedProject.newlyAdded
         };
 
-        const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
+        const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted.projectID).subscribe(
           deleteResponse => {
             // only delete from the projectemployeerole table if user is deleting a non-newlyAdded project
             if (!toBeDeleted.newlyAdded) {

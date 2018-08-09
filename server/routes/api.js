@@ -19,11 +19,6 @@ router.get('/auth/verifyRoutePermissions', controllers.auth.verifyRoutePermissio
 router.get('/auth/logout/:userName', controllers.auth.logout);
 router.get('/auth/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
 
-// FTE CONTROLLER
-router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
-router.post('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProject);   // PROTECT
-router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
-
 // PROJECT CONTROLLER
 router.get('/indexProjects', controllers.project.indexProjects)
 router.get('/indexProjectsFilterProjectType', controllers.project.indexProjectsFilterProjectType)
@@ -93,12 +88,6 @@ router.post('/destroyLotExclusion/:userID', controllers.analytics.destroyLotExcl
 
 
 
-// BOM CONTROLLER
-router.get('/bom/index', controllers.bom.index);
-router.get('/bom/showSingleBom/:parentID', controllers.bom.showSingleBom);
-router.get('/bom/showPartInfo/:partID', controllers.bom.showPartInfo);
-router.get('/bom/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
-
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified
@@ -142,6 +131,10 @@ router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', contro
 router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
 router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
 
+// FTE CONTROLLER
+router.get('/fte/fte/index/indexUserData', controllers.fte.indexUserData);
+router.delete('/fte/fte/destroy/destroyUserProject/:projectID', controllers.fte.destroyUserProject);   // PROTECT
+router.put('/fte/fte/update/updateUserData', controllers.fte.updateUserData);
 
 
 // middleware to protect permissions protected routes
@@ -224,5 +217,10 @@ router.put('/jobTitle/admin/update/updateJobSubTitle', controllers.jobTitle.upda
 router.post('/jobTitle/admin/insert/insertJobTitleMap', controllers.jobTitle.insertJobTitleMap);
 router.post('/jobTitle/admin/destroy/deleteJobTitleMap', controllers.jobTitle.deleteJobTitleMap);
 
+// BOM CONTROLLER
+router.get('/bom/bom/index', controllers.bom.index);
+router.get('/bom/bom/show/showSingleBom/:parentID', controllers.bom.showSingleBom);
+router.get('/bom/bom/show/showPartInfo/:partID', controllers.bom.showPartInfo);
+router.get('/bom/bom/show/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
 
 module.exports = router;
