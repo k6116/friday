@@ -104,9 +104,9 @@
           <div class="row">
             <div class="col-3">
                 <table>
-                    <td> <h6>Schedule Revision</h6></td>
-                    <td><span class=revision *ngIf='schedule'>[ {{ schedule[0].CurrentRevision }} ]</span> </td>
-                  </table>    
+                   <tr><td> <h6>Schedule Revision</h6></td></tr>
+                  <tr><td><span class=revision *ngIf='schedule'>[ {{ schedule[0].CurrentRevision }} ]</span></td></tr>
+                </table>    
                       
             </div>
             <div class="col-5">
@@ -140,7 +140,7 @@
                 {{item.BuildStatusName}}
               </option></select></td>
               <td><input [(ngModel)]="sched.Notes" type=text class=form-control></td>
-              <td><input type="checkbox" [(ngModel)]="sched.DeleteRow" class=form-control></td>
+              <td><input type="checkbox" [(ngModel)]="sched.DeleteRow"></td>
             </tbody>
             <tfoot>
               <tr>

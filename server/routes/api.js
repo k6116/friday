@@ -39,6 +39,13 @@ router.post('/updateProjectEmployeeRole/:userID', controllers.project.updateProj
 router.post('/destroyProjectEmployeeRole/:userID', controllers.project.destroyProjectEmployeeRole);
 router.post('/insertBulkProjectEmployeeRole/:userID', controllers.project.insertBulkProjectEmployeeRole);
 router.get('/indexBuildStatus', controllers.project.indexBuildStatus);
+router.get('/indexPLCStatus', controllers.project.indexPLCStatus);
+router.get('/indexProjectDepartments', controllers.project.indexProjectDepartments);
+router.get('/indexProjectGroups', controllers.project.indexProjectGroups);
+router.get('/indexProjectPriorities', controllers.project.indexProjectPriorities);
+router.post('/updateProjectSetup/:userID', controllers.project.updateProjectSetup);
+router.post('/insertProjectSetup/:userID', controllers.project.insertProjectSetup);
+router.delete('/destroyProjectSetup/:projectID/:scheduleID/:userID', controllers.project.destroyProjectSetup);
 
 // META DATA CONTROLLER
 router.get('/indexPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.metaData.indexPrimaryKeyRefs);
@@ -94,10 +101,11 @@ router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controlle
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
 // SCHEDULES CONTROLLER
-router.get('/indexSchedules', controllers.schedules.indexSchedules);
-router.get('/getPartSchedule/:partID', controllers.schedules.getPartSchedule);
+router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
+router.post('/updateProjectSchedule/:userID/:revisionNotes', controllers.schedules.updateProjectSchedule);
+router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
 router.post('/updatePartSchedule/:userID/:revisionNotes', controllers.schedules.updatePartSchedule);
-router.get('/destroyPartSchedule/:scheduleID/:userID', controllers.schedules.destroyPartSchedule);
+router.get('/destroySchedule/:scheduleID/:userID', controllers.schedules.destroySchedule);
 
 // PARTS CONTROLLER
 router.get('/getParts', controllers.parts.indexParts);
@@ -106,7 +114,6 @@ router.get('/getPartTypes', controllers.parts.indexPartTypes);
 router.post('/updatePart/:userID', controllers.parts.updatePart);
 router.post('/createPart/:userID', controllers.parts.createPart);
 router.delete('/deletePart/:partID/:scheduleID/:userID', controllers.parts.destroyPart);
-
 
 // DASHBOARD CONTROLLER
 router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);

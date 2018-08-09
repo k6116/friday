@@ -16,7 +16,6 @@ import { EmployeesReportsComponent } from './reports/employees/employees.compone
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { SchedulesComponent } from './schedules/schedules.component';
 
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
@@ -49,7 +48,6 @@ const routes: Routes = [
       { path: 'chat', component: ChatComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent },
       { path: 'setups/parts', component: PartSetupComponent },
-      { path: 'schedules', component: SchedulesComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService] },
     ]
   },

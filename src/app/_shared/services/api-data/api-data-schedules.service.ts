@@ -11,8 +11,17 @@ export class ApiDataSchedulesService {
     private cacheService: CacheService
   ) { }
 
-  getSchedules(): Observable<any> {
-    return this.http.get('api/indexSchedules')
+  getProjectSchedule(projectID: number): Observable<any> {
+    return this.http.get(`api/getProjectSchedule/${projectID}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  updateProjectSchedule(schedule: any, revisionNotes: string, userID: number): Observable<any> {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+
+    return this.http.post(`api/updateProjectSchedule/${userID}/${revisionNotes}`, JSON.stringify(schedule), options)
     .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
@@ -32,8 +41,8 @@ export class ApiDataSchedulesService {
     .map((response: Response) => response.json());
   }
 
-  destroyPartSchedule(scheduleID: number, userID: number): Observable<any> {
-    return this.http.get(`api/destroyPartSchedule/${scheduleID}/${userID}`)
+  destroySchedule(scheduleID: number, userID: number): Observable<any> {
+    return this.http.get(`api/destroySchedule/${scheduleID}/${userID}`)
     .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }

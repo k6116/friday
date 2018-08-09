@@ -5,63 +5,134 @@
     <div class="input-group">
       <input class="searchInput" type="text" [(ngModel)]="searchProjects" (change)="onSearchInputChange($event)" placeholder="Search Projects">
       <div class="input-group-append">
-        <button class="btn btn-primary btn-fte-toolbar" style="display: block" data-toggle="modal" data-target="#createNewProject">
+        <button class="btn btn-primary btn-fte-toolbar" (click)="onCreateProjectClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
-        </button>
+        </button>       
       </div>
     </div>
   </div>
 
-  <div class="row">
+  <div class="row">  
     <div class="col-2">
-      <ng-container *ngIf="(projectSchedulesList | filter : searchProjects : 'projectName':{limitTo: -1, matchFuzzy: true}) as filteredProjectList">
+      <ng-container *ngIf="(projectList | filter : searchProjects : 'ProjectName':{limitTo: -1, matchOptimistic: true}) as filteredProjectList">
         <ul class="list-group list-group-flush" *ngFor="let project of filteredProjectList | slice:0:10; let i=index">
           <button class="list-group-item list-group-item-action" (click)="onProjectClick(project)">
-            {{ project.projectName }}<span *ngIf="project.projectTypeName"> - {{project.projectTypeName}}</span>
+            {{ project.ProjectName }}<span *ngIf="project.ProjecTypeName"> - {{project.ProjecTypeName}}</span>
           </button>
         </ul>
       </ng-container>
     </div>
 
+  
     <div class="col-5">
       <div class="card" *ngIf="showProjectCard">
         <div class="card-header">
           <div class="row">
             <div class="col-8">
-              <h6>{{ project.projectName }}&nbsp;&nbsp;
-                <span class="badge badge-success">{{ project.priorityName }}</span>
-              </h6>
+                <form [formGroup] = 'form'>
+                  <input type=text readonly=true formControlName="projectName" class="form-control">
+                </form>
+              <!-- <h6>{{ part.PartName }}         
+              </h6> -->
             </div>
             <div class="col-4 text-right">
-              <button class="btn btn-primary btn-fte-toolbar">
-                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectEditModal"></i>&nbsp;&nbsp;Edit
+              <!-- <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#partEditModal"></i>&nbsp;&nbsp;Edit
+              </button> -->
+              <button *ngIf=project class="btn btn-primary btn-fte-toolbar" (click)="onDeleteProjectClick(project)">
+                <i class="fa fa-trash-o fa-lg" ></i>&nbsp;&nbsp;Delete
               </button>
-              <button class="btn btn-primary btn-fte-toolbar">
-                <i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal" (click)="onDeleteProjectClick(project)"></i>&nbsp;&nbsp;Delete
-              </button>
+              <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveProjectClick()">
+                  <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+                </button>
             </div>
           </div>
         </div>
-        <div class="card-body">
-          <h5></h5>
-        </div>
+        <form [formGroup] = 'form'>
+          <div class="card-body">
+           <table class="table table-bordered table-light">
+             <tr>
+               <td>Project Name</td>
+               <td colspan="3"><input type=text class="form-control" formControlName="projectName"></td>            
+             </tr>
+             <tr>
+                <td>Description</td>
+                <td colspan="3"><input type=text class="form-control" formControlName="description"></td>             
+              </tr>
+              <tr>
+                <td>Active</td>
+                <td><input type="checkbox" formControlName="active"></td>
+                <td>Groups</td>
+                <td><select class="form-control" formControlName="groupID"><option class="dropdown-item" *ngFor="let item of groupChoices" [value]= "item.GroupID">
+                    {{item.GroupName}}
+                  </option></select></td>               
+              </tr>
+              <tr>
+                  <td>Project Number</td>
+                  <td><input type="text" class="form-control" formControlName="projectNumber"></td>
+                  <td>Priority</td>
+                  <td><select class="form-control" formControlName="priorityID"><option class="dropdown-item" *ngFor="let item of priorityChoices" [value]= "item.PriorityID">
+                      {{item.PriorityName}}
+                    </option></select></td>                 
+                </tr>
+              <tr>
+                  <td>MU</td>
+                  <td><input type=text class="form-control" formControlName="mu"></td>
+                  <td>Project Type</td>
+                  <td><select class="form-control" formControlName="projectTypeID"><option class="dropdown-item" *ngFor="let item of projectTypeChoices" [value]= "item.id">
+                    {{item.projectTypeName}}
+                  </option></select></td>
+                </tr>
+                <tr>
+                    <td>IBO</td>
+                    <td><input type=text class="form-control" formControlName="ibo"></td>
+                    <td>Department</td>
+                  <td><select class="form-control" formControlName="departmentID"><option class="dropdown-item" *ngFor="let item of departmentChoices" [value]= "item.DepartmentID">
+                    {{item.Department}}
+                  </option></select></td>
+                  </tr>
+                  <tr>
+                    <td>POR</td>
+                    <td><input type="checkbox" formControlName="planOfRecord"></td>
+                    <td>Priority</td>
+                    <td><select class="form-control" formControlName="priorityID"><option class="dropdown-item" *ngFor="let item of priorityChoices" [value]= "item.PriorityID">
+                        {{item.PriorityName}}
+                      </option></select></td>                
+                    </tr>
+                  <tr>
+                        <td>Notes</td>
+                        <td colspan="3" rowspan="2"><textarea  class="form-control" formControlName="notes"></textarea></td>                     
+                   </tr>
+                   <tr></tr>             
+  
+             </table>
+          </div>
+        </form>
       </div>
     </div>
 
     <div class="col-5">
-      <div class="card" *ngIf="showProjectCard">
+      <div class="card" *ngIf="showScheduleCard">
         <div class="card-header">
           <div class="row">
-            <div class="col-8">
-              <h6>PLC Schedule</h6>
+            <div class="col-3">
+                <table>
+                   <tr><td> <h6>Schedule Revision</h6></td></tr> 
+                    <tr><td><span class=revision *ngIf='schedule'>[ {{ schedule[0].CurrentRevision }} ]</span> </td></tr>
+                  </table>    
+                      
             </div>
+            <div class="col-5">
+              <table>
+                <td> <h6>Revision Notes</h6></td>
+                <td><input type=text class=form-control [(ngModel)]="revisionNotes"></td>
+              </table>                      
+            </div>
+           
             <div class="col-4 text-right">
-              <button class="btn btn-primary btn-fte-toolbar">
-                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectEditModal"></i>&nbsp;&nbsp;Edit
-              </button>
-              <button class="btn btn-primary btn-fte-toolbar">
-                <i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal" (click)="onDeleteProjectClick(project)"></i>&nbsp;&nbsp;Delete
-              </button>
+              <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
+                <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+              </button>              
             </div>
           </div>
         </div>
@@ -69,14 +140,28 @@
           <table class="table table-bordered table-hover table-light">
             <thead>
               <th>PLC Status</th>
-              <th>Date</th>
-              <th>Approved</th>
+              <th>PLC Date</th>             
+              <th>Notes</th>
+              <th>Del</th>
             </thead>
-            <tbody *ngFor="let schedule of project.schedules">
-              <td>{{ schedule.plcStatusName }}</td>
-              <td>{{ schedule.plcDate }}</td>
-              <td>NA</td>
+         
+            <tbody *ngFor="let sched of schedule">                  
+              <td><select [(ngModel)]="sched.PLCStatusID" class=form-control><option *ngFor="let item of plcStatusChoices" [value]= "item.PLCStatusID">
+                {{item.PLCStatusName}}
+              </option></select></td>
+              <td><input [(ngModel)]="sched.PLCDate" type=date class=form-control ></td>      
+              <td><input [(ngModel)]="sched.Notes" type=text class=form-control></td>
+              <td><input type="checkbox" [(ngModel)]="sched.DeleteRow"></td>
             </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="5">
+                    <button 
+                    class="btn btn-primary btn-fte-toolbar" (click)="onAddScheduleRow()" 
+                     style="display: block">+</button> 
+                </td>
+              </tr>
+           </tfoot>
           </table>
         </div>
       </div>
@@ -84,5 +169,6 @@
 
   </div>
 
-</div>
+  </div>
+
 

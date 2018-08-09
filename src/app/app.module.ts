@@ -74,7 +74,6 @@ import { AdminComponent } from './admin/admin.component';
 import { ProjectAttributesComponent } from './admin/project-attributes/project-attributes.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
-import { SchedulesComponent } from './schedules/schedules.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
 import { PartSetupComponent } from './setups/parts/parts.component';
@@ -122,7 +121,6 @@ import { PartSetupComponent } from './setups/parts/parts.component';
     FooterComponent,
     DashboardComponent,
     FooterComponent,
-    SchedulesComponent,
     ProjectsSetupsComponent,
     CarouselModalComponent,
     PartSetupComponent

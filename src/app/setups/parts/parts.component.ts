@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiDataSchedulesService, ApiDataPartService, ApiDataProjectService,
   ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
+import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import * as moment from 'moment';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
@@ -33,7 +34,8 @@ export class PartSetupComponent implements OnInit {
     private apiDataPartService: ApiDataPartService,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataEmployeeService: ApiDataEmployeeService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cacheService: CacheService
   ) { }
 
   ngOnInit() {
@@ -119,16 +121,49 @@ export class PartSetupComponent implements OnInit {
 
   onDeletePartClick() {
 
-    this.apiDataPartService.deletePart(this.part.PartID, this.scheduleId, this.authService.loggedInUser.id)
-    .subscribe(
-      res => {
-        console.log('part deleted');
-        this.getParts();
-      },
-      err => {
-        console.log(err);
-      }
-    );
+      // emit confirmation modal after they click request button
+      this.cacheService.confirmModalData.emit(
+        {
+          title: 'Delete Part Confirmation',
+          message: `Are you sure you want to delete ${this.part.PartName} ?`,
+          iconClass: 'fa-exclamation-triangle',
+          iconColor: 'rgb(193, 193, 27)',
+          closeButton: true,
+          allowOutsideClickDismiss: true,
+          allowEscKeyDismiss: true,
+          buttons: [
+            {
+              text: 'Delete',
+              bsClass: 'btn-success',
+              emit: true
+            },
+            {
+              text: 'Cancel',
+              bsClass: 'btn-secondary',
+              emit: false
+            }
+          ]
+        }
+      );
+      const deleteModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
+        if (res) {
+          this.apiDataPartService.deletePart(this.part.PartID, this.scheduleId, this.authService.loggedInUser.id)
+          .subscribe(
+            del => {
+              console.log('part deleted');
+              this.part = null;
+              this.schedule = null;
+              this.showPartCard = false;
+              this.showScheduleCard = false;
+              this.getParts();
+              deleteModalSubscription.unsubscribe();
+            },
+            err => {
+              console.log(err);
+            }
+          );
+        }
+      });
   }
 
   createDefaultScheduleRow() {
@@ -165,7 +200,7 @@ export class PartSetupComponent implements OnInit {
         }
       );
     } else {
-      this.apiDataSchedulesService.destroyPartSchedule(this.scheduleId, this.authService.loggedInUser.id)
+      this.apiDataSchedulesService.destroySchedule(this.scheduleId, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           console.log('Deleted Schedule');
@@ -300,4 +335,5 @@ export class PartSetupComponent implements OnInit {
       this.showScheduleCard = false;
     }
   }
+
 }

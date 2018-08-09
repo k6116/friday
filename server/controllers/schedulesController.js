@@ -2,46 +2,129 @@ const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize');
 const Treeize = require('treeize');
 
-function indexSchedules(req, res) {
+
+function indexProjectSchedule(req, res) {
+
+	const projectID = req.params.projectID;
 	const sql =
-		`SELECT 
-			p.ProjectID as 'projectID*', 
-			p.ProjectName as projectName,
-			p.Description as description,
-			pt.ProjectTypeID as projectTypeID, 
-			pt.ProjectTypeName projectTypeName,
-			p.Active as active,
-			py.PriorityID as priorityID,
-            py.PriorityName as priorityName,
-			p.CreationDate as creationDate,
-			p.CreatedBy as createdBy,
-			p.LastUpdatedBy as lastUpdatedBy,
-			p.LastUpdateDate as lastUpdateDate,  
-			s.ScheduleID as 'schedules:scheduleID', 
-			sd.PLCDate as 'schedules:plcDate', 
-			plc.PLCStatusID as 'schedules:plcStatusID', 
-			plc.PLCStatusName as 'schedules:plcStatusName'
+		`SELECT 		
+			f.ScheduleID,	
+			f.ProjectID,				
+			f.CurrentRevision,
+			f.notes as 'RevisionNotes', 
+			convert(varchar(10), d.PLCDate, 120) as 'PLCDate', 	
+			d.PLCStatusID,
+			d.Notes,
+			DeleteRow = 0
 		FROM
-			projects.Projects p
-			LEFT JOIN projects.ProjectTypes pt ON p.ProjectTypeID = pt.ProjectTypeID
-			LEFT JOIN projects.Priority py ON p.PriorityID = py.PriorityID
-			LEFT JOIN demand.Schedules s ON p.ProjectID = s.ProjectID
-			LEFT JOIN demand.SchedulesDetail sd ON s.ScheduleID = sd.ScheduleID
-			LEFT JOIN projects.PLCStatus plc ON sd.PLCStatusID = plc.PLCStatusID
+			vSchedulesForm f 
+		INNER JOIN 
+			vSchedulesDetail d on d.scheduleid = f.scheduleid
+		WHERE
+			f.ProjectID = '${projectID}'
 		ORDER BY 
-			p.ProjectName`
+			NeedByDate`
 
 	sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
-		.then(indexSchedule => {
-			const scheduleTree = new Treeize();
-			scheduleTree.grow(indexSchedule);
-			const schedule = scheduleTree.getData();    
+		.then(schedule => {		
 			res.json(schedule);
 		})
 }
 
+  function updateProjectSchedule(req,res) {
 
-function getPartSchedule(req, res) {
+	const userID = req.params.userID;
+	const revisionNotes = req.params.revisionNotes;
+	const schedule = req.body;
+
+	var scheduleXML = `<Schedules>`;
+	schedule.forEach(element => {
+		   if (element.DeleteRow === false || element.DeleteRow === 0) {
+			scheduleXML = scheduleXML + 
+			`<Schedule 
+			PLCDate='${element.PLCDate}'		
+			PLCStatusID='${element.PLCStatusID == null ? '' : element.PLCStatusID}' 
+			Notes='${element.Notes}' 
+		    />` 	
+			}		
+		});
+	scheduleXML = scheduleXML + '</Schedules>'
+	
+	
+  if (schedule[0].ScheduleID > 0) { // EDIT EXISTING
+	sequelize.query(`EXECUTE dbo.Schedules 
+	:executeType, 
+	:scheduleID,
+	:projectID,  
+	:partID,
+	:notes,
+	:employeeID,
+	:schedule,
+	:rowCount,
+	:errorNumber,
+	:errorMessage`, { replacements: {
+			executeType: 'Edit',
+			scheduleID: schedule[0].ScheduleID,
+			projectID: schedule[0].ProjectID,
+			partID: null,
+			notes: revisionNotes,
+			employeeID: userID,
+			schedule: scheduleXML,
+			rowCount: null,
+			errorNumber: null,
+			errorMessage: null 
+	}, type: sequelize.QueryTypes.SELECT})
+    .then(sched => {
+      console.log("execute dbo.Schedules ");
+      res.json(sched);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+  } else { // CREATE NEW 
+		   // (TO-DO use a single sequelize for both Edit and Add executions using a variable replacement object as parameters)
+		   // (On first try using a replacement object there were syntax errors for ':')
+		sequelize.query(`EXECUTE dbo.Schedules 
+		:executeType, 
+		:scheduleID,
+		:projectID,  
+		:partID,
+		:notes,
+		:employeeID,
+		:schedule,
+		:rowCount,
+		:errorNumber,
+		:errorMessage`, { replacements: {
+				executeType: 'Add',
+				scheduleID: null,
+				projectID: schedule[0].ProjectID,
+				partID: null,
+				notes: revisionNotes,
+				employeeID: userID,
+				schedule: scheduleXML,
+				rowCount: null,
+				errorNumber: null,
+				errorMessage: null 
+		}, type: sequelize.QueryTypes.SELECT})
+		.then(sched => {
+		console.log("execute dbo.Schedules ");
+		res.json(sched);
+		})
+		.catch(error => {
+		res.status(400).json({
+			title: 'Error (in catch)',
+			error: {message: error}
+		})
+		});
+	}
+}
+
+
+function indexPartSchedule(req, res) {
 	const partID = req.params.partID;
 	const sql =
 		`SELECT 		
@@ -83,10 +166,9 @@ function updatePartSchedule(req,res) {
 			`<Schedule 
 			NeedByDate='${element.NeedByDate}' 
 			NeededQuantity='${element.NeededQuantity}' 
-			ProjectStatusID='${element.BuildStatusID}' 
+			BuildStatusID='${element.BuildStatusID == null ? '' : element.BuildStatusID}' 
 			Notes='${element.Notes}' 
-			PLCDate='' 
-			PLCStatusID='' />` 	
+		    />` 	
 			}		
 		});
 	scheduleXML = scheduleXML + '</Schedules>'
@@ -164,7 +246,8 @@ function updatePartSchedule(req,res) {
 	}
 }
 
-function destroyPartSchedule(req, res) {
+
+function destroySchedule(req, res) {
 
 	const scheduleID = req.params.scheduleID;   
 	const userID = req.params.userID;    
@@ -205,11 +288,10 @@ function destroyPartSchedule(req, res) {
 	  })    
   }
 
-
-
 module.exports = {
-	indexSchedules: indexSchedules,
-	getPartSchedule: getPartSchedule,
-	updatePartSchedule: updatePartSchedule,
-	destroyPartSchedule: destroyPartSchedule
+	indexProjectSchedule: indexProjectSchedule,
+	indexPartSchedule: indexPartSchedule,
+	updateProjectSchedule: updateProjectSchedule,
+	updatePartSchedule: updatePartSchedule,	
+	destroySchedule: destroySchedule
 }

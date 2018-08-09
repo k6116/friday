@@ -148,7 +148,7 @@ export class MyProjectsComponent implements OnInit {
         }
     }
     this.getProjectRoster(project.id);
-    this.getProjectSchedule(project.projectName);
+    this.getProjectSchedule(project.id);
 
   }
 
@@ -278,9 +278,9 @@ export class MyProjectsComponent implements OnInit {
       );
   }
 
-  getProjectSchedule(projectName: string) {
+  getProjectSchedule(projectID: number) {
 
-    this.apiDataProjectService.getProjectSchedule(projectName)
+    this.apiDataProjectService.getProjectSchedule(projectID)
     .subscribe(
       res => {
         // console.log('project schedule:', res);

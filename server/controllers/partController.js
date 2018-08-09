@@ -190,19 +190,64 @@ function createPart(req, res) {
             errorMessage: null 
         }, type: sequelize.QueryTypes.SELECT})
           .then(sched => {  
-            models.Part
-            .destroy(
-              {
-                where: {partID: partID},
-                transaction: t
-              }
-            )
-            .then(deletedPart => {  
-            });            
+           
+            return  sequelize.query(`EXECUTE dbo.Parts
+            :executeType,  
+            :partID,
+            :partName,
+            :description,
+            :projectNumber,
+            :partTypeID,
+            :departmentID,
+            :designerEmployeeID,
+            :plannerEmployeeID,
+            :dutFamily,
+            :oracleItemNumber,
+            :oracleItemStatus,
+            :oracleDescription,
+            :oracleDWSFDeptWSF,
+            :oracleICATItemCategories,
+            :notes,
+            :tags,
+            :partsList,
+            :employeeID,
+            :rowCount,
+            :errorNumber,
+            :errorMessage`, { replacements: {
+                executeType: 'Delete',                
+                partID: partID,
+                partName: null,
+                description: null,
+                projectNumber: null,
+                partTypeID: null,
+                departmentID: null,
+                designerEmployeeID: null,
+                plannerEmployeeID: null,
+                dutFamily: null,
+                oracleItemNumber: null,
+                oracleItemStatus: null,
+                oracleDescription: null,
+                oracleDWSFDeptWSF: null,
+                oracleICATItemCategories: null,
+                notes: null,
+                tags: null,
+                partsList: null,
+                employeeID: userID,                
+                rowCount: null,
+                errorNumber: null,
+                errorMessage: null 
+            }, type: sequelize.QueryTypes.DELETE})
+              .then(p => { 
+                console.log('delete part');
+              })
+              .catch(error => {
+                console.log('unable to delete part');
+                console.log(error);
+              });
           });
         }).then(() => {    
            res.json({
-           message: `The Part '${part.partName}' has been deleted successfully`,
+           message: `The Part '${partID}' has been deleted successfully`,
           })
     
         }).catch(error => {    
