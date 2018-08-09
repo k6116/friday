@@ -23,6 +23,7 @@ export class BrowseProjectsComponent implements OnInit {
   filterString: string;
   totalProjects: number;
   displayedProjects: number;
+  filters: any[];
 
   constructor(
     private apiDataProjectService: ApiDataProjectService,
@@ -33,69 +34,31 @@ export class BrowseProjectsComponent implements OnInit {
     this.numProjectsToDisplayAtOnce = 100;
     this.numProjectsToDisplay = 100;
 
-    // create an object to use for class and style binding for the project type
-    this.projectTypeBinding = [
+    // this.filters = ['Project Name', 'Project Type', 'Description', 'Priority', 'Project Status'];
+
+    this.filters = [
       {
-        projectTypeName: 'NCI',
-        iconClass: 'nc-ram',
-        color: 'darkred'
+        displayName: 'Project Name',
+        apiName: 'projectName'
       },
       {
-        projectTypeName: 'NPI',
-        iconClass: 'nc-keyboard-wireless',
-        color: 'darkgreen'
+        displayName: 'Project Type',
+        apiName: 'projectName'
       },
       {
-        projectTypeName: 'NPPI',
-        iconClass: 'nc-socket-europe-1',
-        color: 'darkred'
+        displayName: 'Description',
+        apiName: 'projectName'
       },
       {
-        projectTypeName: 'NTI',
-        iconClass: 'nc-lab',
-        color: 'darkred'
+        displayName: 'Priority',
+        apiName: 'projectName'
       },
       {
-        projectTypeName: 'Research',
-        iconClass: 'nc-microscope',
-        color: 'darkred'
-      },
-      {
-        projectTypeName: 'MFG',
-        iconClass: 'nc-settings-91',
-        color: 'darkred'
-      },
-      {
-        projectTypeName: 'Program',
-        iconClass: 'nc-code-editor',
-        color: 'darkred'
-      },
-      {
-        projectTypeName: 'Solution',
-        iconClass: 'nc-book-open-2',
-        color: 'darkred'
-      },
-      {
-        projectTypeName: 'Initiative',
-        iconClass: 'nc-board-28',
-        color: 'darkred'
-      },
-      {
-        projectTypeName: 'TOF Engaged',
-        iconClass: 'nc-bulb-63',
-        color: 'darkred'
-      },
-      {
-        projectTypeName: 'Completed',
-        iconClass: 'nc-sign-closed',
-        color: 'darkred'
-      },
-      {
-        projectTypeName: 'General',
-        iconClass: 'nc-gantt',
-        color: 'darkred'
-      },
+        displayName: 'Project Status',
+        apiName: 'projectName'
+      }
     ];
+
 
   }
 
@@ -112,6 +75,9 @@ export class BrowseProjectsComponent implements OnInit {
           this.totalProjects = this.projects.length;
           // set the number of displayed projects
           this.displayedProjects = this.projects.length;
+          // fire the filter string change to run it through the pipe
+          // TO-DO: rename this method
+          this.onFilterStringChange();
           // display the page
           this.showPage = true;
         },
@@ -136,10 +102,21 @@ export class BrowseProjectsComponent implements OnInit {
   }
 
 
+  onFilterByChange(value) {
+    console.log('filter by change event fired');
+    console.log(value);
+    // set the focus on the filter input
+    this.filterVC.nativeElement.focus();
+  }
+
+
   onFilterStringChange() {
     console.log('filter string change fired');
-    const projects = this.filterPipe.transform(this.projects, this.filterString, 'ProjectName', {matchFuzzy: true});
+    const projects = this.filterPipe.transform(this.projects, this.filterString, 'ProjectName',
+      {limitTo: this.numProjectsToDisplay, matchFuzzy: true});
     this.displayedProjects = projects.length;
+    console.log('filter string returned projects:');
+    console.log(projects);
   }
 
 
@@ -189,12 +166,6 @@ export class BrowseProjectsComponent implements OnInit {
     // dispose of the popover
     $el.popover('dispose');
 
-  }
-
-
-
-  trimProjects(numProjects: number) {
-    this.projects = this.projects.slice(0, numProjects);
   }
 
 
@@ -284,6 +255,7 @@ export class BrowseProjectsComponent implements OnInit {
       // update / increment the number of projects to display (using the filter pipe)
       this.numProjectsToDisplay += numProjectsToAdd;
       console.log(`added ${numProjectsToAdd} projects; now showing ${this.numProjectsToDisplay} projects`);
+      this.onFilterStringChange();
     }
 
   }

@@ -6,6 +6,22 @@ div.projects-filters-cont {
   margin-bottom: 40px;
 }
 
+div.projects-filter-label {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+div.projects-filter-dropdown {
+  display: inline-block;
+  width: 175px;
+  margin-right: 10px;
+}
+
+select.form-control.projects-filter-select {
+  font-size: 14px;
+  height: 35px;
+}
+
 div.projects-filter-string {
   position: relative;
   display: inline-block;
@@ -48,11 +64,11 @@ div.projects-cards-cont {
 }
 
 div.row.row-custom.row-project-card {
-  border-bottom: 35px;
+  border-bottom: 30px;
 }
 
 div.row.row-custom.row-project-card:not(:last-child) {
-  margin-bottom: 35px;
+  margin-bottom: 30px;
 }
 
 div.project-card {

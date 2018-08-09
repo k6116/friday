@@ -50,15 +50,15 @@ export class DashboardStackedColumnService {
         });
       }
     });
-    // round fte's to 1 decimal places
+    // round fte's to 2 decimal places
     employeeProjectFTEs.forEach(employeeProjectFTE => {
       if (employeeProjectFTE.fte) {
-        employeeProjectFTE.fte = this.toolsService.roundTo(employeeProjectFTE.fte, 1);
+        employeeProjectFTE.fte = this.toolsService.roundTo(employeeProjectFTE.fte, 2);
       }
     });
 
-    // console.log('employeeProjectFTEs:');
-    // console.log(employeeProjectFTEs);
+    console.log('employeeProjectFTEs:');
+    console.log(employeeProjectFTEs);
 
     // get a unique list of employee names for the xAxis categories, into a string array
     // ['Bill Schuetzle', 'Brian Ivanoff', 'Bryan Cheung', ...]
@@ -84,8 +84,7 @@ export class DashboardStackedColumnService {
       employeeProjectFTEs.forEach(employeeProjectFTE => {
         if (employeeProjectFTE.name === employee) {
           employeeProjectFTE.total = employeeProjectFTE.fte ? 3 : null;
-          employeeProjectFTE.percentage = employeeProjectFTE.fte ?
-            this.toolsService.roundTo(((employeeProjectFTE.fte / 3) * 100), 0) : null;
+          employeeProjectFTE.percentage = employeeProjectFTE.fte ? (employeeProjectFTE.fte / 3) * 100 : null;
         }
       });
     });
@@ -94,8 +93,8 @@ export class DashboardStackedColumnService {
     employeeProjectFTEs = _.reverse(_.sortBy(employeeProjectFTEs, ['percentage']));
     employeeProjectFTEs = _.sortBy(employeeProjectFTEs, ['name']);
 
-    // console.log('employeeProjectFTEs with percentages:');
-    // console.log(employeeProjectFTEs);
+    console.log('employeeProjectFTEs with percentages:');
+    console.log(employeeProjectFTEs);
 
     // get a unique list of project names, into an array of objects, omitting nulls
     // [{
@@ -176,10 +175,11 @@ export class DashboardStackedColumnService {
           text: 'FTE %'
         },
         labels: {
-          format: '{value} %'
+          format: '{value:.0f} %'
         },
         stackLabels: {
           enabled: true,
+          format: '{total:.0f} %',
           style: {
             fontWeight: 'bold',
             color: 'gray'
@@ -191,7 +191,7 @@ export class DashboardStackedColumnService {
       },
       tooltip: {
         headerFormat: '<b>{point.x}</b><br/>',
-        pointFormat: '{series.name}: {point.y}%<br/>Total: {point.stackTotal}%'
+        pointFormat: '{series.name}: {point.y:.0f}%<br/>Total: {point.stackTotal:.0f}%'
       },
       plotOptions: {
         column: {
@@ -199,7 +199,7 @@ export class DashboardStackedColumnService {
           dataLabels: {
             enabled: true,
             color: 'white',
-            format: '{point.y}'
+            format: '{point.y:.0f}'
             }
         }
       },

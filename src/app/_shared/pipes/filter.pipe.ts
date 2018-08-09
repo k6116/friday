@@ -45,7 +45,7 @@ export class FilterPipe implements PipeTransform {
     if (!filter && options.hasOwnProperty('limitTo')) {
       console.log('returning limit to filter');
       return objects.filter((object, index) => {
-        return index <= +options.limitTo;
+        return index < +options.limitTo;
       });
     }
 
