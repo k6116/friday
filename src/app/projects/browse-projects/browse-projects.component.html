@@ -9,9 +9,13 @@ considering topnav, sidenav, and footer -->
     <div class="projects-filters-cont">
 
       <div class="projects-filter-string">
-        <input type="text" #filterVC [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter" appAutofocus>
+        <input type="text" #filterVC [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter" (ngModelChange)="onFilterStringChange()" appAutofocus>
         <i class="projects-filter-icon-search fa fa-search"></i>
         <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
+      </div>
+
+      <div class="projects-display-count">
+        Showing {{ displayedProjects === totalProjects ? 'All' : displayedProjects + ' of' }} {{ totalProjects }} Projects
       </div>
 
     </div>

@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
+import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 
 declare var $: any;
 
 @Component({
   selector: 'app-browse-projects',
   templateUrl: './browse-projects.component.html',
-  styleUrls: ['./browse-projects.component.css', '../../_shared/styles/common.css']
+  styleUrls: ['./browse-projects.component.css', '../../_shared/styles/common.css'],
+  providers: [FilterPipe]
 })
 export class BrowseProjectsComponent implements OnInit {
 
@@ -19,9 +21,12 @@ export class BrowseProjectsComponent implements OnInit {
   numProjectsToDisplayAtOnce: number;
   numProjectsToDisplay: number;
   filterString: string;
+  totalProjects: number;
+  displayedProjects: number;
 
   constructor(
-    private apiDataProjectService: ApiDataProjectService
+    private apiDataProjectService: ApiDataProjectService,
+    private filterPipe: FilterPipe
   ) {
 
     // set the number of projects to display initially, and to add for infinite scroll
@@ -94,17 +99,19 @@ export class BrowseProjectsComponent implements OnInit {
 
   }
 
+
   ngOnInit() {
 
     // get all the projects
     this.apiDataProjectService.getProjects()
       .subscribe(
         res => {
-          console.log('get projects successfull:');
-          console.log(res);
+          // store the response in the projects array of objects
           this.projects = res;
-          // this.projectsToDisplay = this.projects.slice(0, this.numProjectsToDisplayAtOnce);
-          // console.log(`number of displayed projects: ${this.projectsToDisplay.length}`);
+          // store the number of projects, to display in the page 'showing x of y projects'
+          this.totalProjects = this.projects.length;
+          // set the number of displayed projects
+          this.displayedProjects = this.projects.length;
           // display the page
           this.showPage = true;
         },
@@ -116,12 +123,23 @@ export class BrowseProjectsComponent implements OnInit {
 
   }
 
+
+
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
     // clear the filter string
     this.filterString = undefined;
     // reset the focus on the filter input
     this.filterVC.nativeElement.focus();
+    // update the count display (showing x of y) by calling onFilterStringChange()
+    this.onFilterStringChange();
+  }
+
+
+  onFilterStringChange() {
+    console.log('filter string change fired');
+    const projects = this.filterPipe.transform(this.projects, this.filterString, 'ProjectName', {matchFuzzy: true});
+    this.displayedProjects = projects.length;
   }
 
 
@@ -222,7 +240,9 @@ export class BrowseProjectsComponent implements OnInit {
 
 
   onScroll() {
-    if (this.scrollAtBottom()) {
+    // if the scrollbar is at the bottom, and there is no active filter
+    // add another chunk of projects
+    if (this.scrollAtBottom() && !this.filterString) {
       console.log('scrollbar is at the bottom');
       this.addProjectsForInfiniteScroll();
     }

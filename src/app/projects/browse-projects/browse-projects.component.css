@@ -33,6 +33,14 @@ i.projects-filter-icon-close {
   cursor: pointer;
 }
 
+div.projects-display-count {
+  /* display: inline-block; */
+  float: right;
+}
+
+
+/* search bar (end) */
+
 
 div.projects-cards-cont {
   height: 70vh;  /* TO-DO: replace with javascipt */
