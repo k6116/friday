@@ -8,35 +8,25 @@
           <div class="projects-modal-filter tutorial-part2" id="intro-search-project">
             <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter" appAutofocus>
           </div>&nbsp;&nbsp;
-
-          <!-- Filter Toggle -->
-          <button *ngIf="!myTeamsToggle" type="button btn-sm" class="btn btn-primary custom-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" (click)="onMyTeamToggleClick()">
-            Show My Team
-          </button>
-          <button *ngIf="myTeamsToggle" type="button btn-sm" class="btn btn-primary custom-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" (click)="onMyTeamToggleClick()">
-            Show All Projects
-          </button>
-          <!-- <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox">
-            <label class="form-check-label" for="checkbox.name" style="font-size: larger">
-              Show My Team
-            </label>
-          </div> -->
-          <!-- Filter Toggle end -->
+          
+          <!-- Checkbox Filter -->         
+            <div *ngFor="let filterItem of filterItems; let i = index;" class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" [attr.id]="filterItem.id" [(ngModel)]="filterItem.checked" (change)="onFilterItemsChange(filterItem.id)">{{ filterItem.title }}
+              <label class="custom-control-label" [attr.for]="filterItem.id"></label>
+            </div>
+          <!--  -->
 
           <div class="projects-modal-close">
             <i class="nc-icon nc-small-remove projects-modal-close-button" (click)="onCancelClicked()"></i>
           </div>
   
-        </div>
-  
-        
+        </div>  
   
         <div class="project-table-cont tutorial-part2" (scroll)="onScroll()" id="intro-select-project">   
           
           <div class="cards-cont">
             
-            <div class="card" *ngFor="let project of filterProjects | filter :filterString:'ProjectName':{limitTo: numProjectsToDisplay, matchFuzzy: true}">
+            <div class="card" *ngFor="let project of filterProjects | projectsFilter : filterItems | filter : filterString : filterItems[2].value : {limitTo: numProjectsToDisplay, matchFuzzy: true}">
               <div class="card-header-cont">
                 <div class="card-header-img" *ngIf="project.avatar">
                   <img class="card-project-avatar" [src]="project.avatar" alt="">
