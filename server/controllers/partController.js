@@ -1,6 +1,7 @@
 const sequelize = require('../db/sequelize').sequelize;
 const models = require('../models/_index');
 const moment = require('moment');
+const token = require('../token/token');
 
 function indexParts(req, res) {    
 
@@ -11,10 +12,16 @@ function indexParts(req, res) {
         parts.Parts    
     ORDER BY 
         PartName`
-    
+
     sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
-    .then(p => {    
-     res.json(p);
+      .then(p => {    
+        res.json(p);
+    }).catch(error => {
+        console.log(`indexParts failed: ${error}`);
+        res.status(500).json({
+        title: 'indexParts failed',
+        error: {message: error}
+      });
     })
 
 }
@@ -30,8 +37,14 @@ function getPart(req, res) {
         PartID = '${partID}'`
     
     sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
-    .then(p => {    
-     res.json(p);
+      .then(p => {    
+        res.json(p);
+    }).catch(error => {
+       console.log(`getPart failed: ${error}`);
+        res.status(500).json({
+        title: 'getPart failed',
+        error: {message: error}
+      });
     })
 
 }
@@ -45,25 +58,27 @@ function indexPartTypes(req, res) {
     FROM  
         parts.PartTypes   
     ORDER BY 
-        PartTypeName`
-    
+        PartTypeName`  
+
     sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
-    .then(p => {    
-     res.json(p);
+      .then(p => {    
+        res.json(p);
+    }).catch(error => {
+        console.log(`indexPartType failed: ${error}`);
+        res.status(500).json({
+        title: 'indexPartTypes failed',
+        error: {message: error}
+      });
     })
 
 }
 
 function updatePart(req, res) {    
  
-  const userID = req.params.userID;
+  const decodedToken = token.decode(req.header('X-Token'), res);
   const part = req.body;
 
-  console.log('updating existing part:');
-  console.log(part);
-
   return sequelize.transaction((t) => {
-
     return models.Part
       .update(
         {      
@@ -76,7 +91,7 @@ function updatePart(req, res) {
           oracleDescription: part.oracleDescription,      
           notes: part.notes,      
           itemStatus: part.itemStatus,      
-          updatedBy: userID,
+          updatedBy: decodedToken.userData.id,
           updatedAt: new Date()
         },
         {
@@ -84,36 +99,27 @@ function updatePart(req, res) {
           transaction: t
         }
       )
-      .then(updatedPart => {
-        console.log('Updated Part')
-        console.log(updatedPart);
-      })
+      .then(updatedPart => { })
 
-    }).then(() => {
-      res.json({
-        message: `The part '${part.partName}' has been updated successfully`
-      })
-
+    }).then(() => { 
+        res.json({ 
+            message: `The part '${part.partName}' has been updated successfully` })
     }).catch(error => {
-
-      console.log(error);
-      res.status(500).json({
-        title: 'update failed',
+        console.log(`transaction rollback on updatePart: ${error}`);
+        res.status(500).json({
+        title: 'updatePart failed',
         error: {message: error}
       });
-
     })
-
 }
 
 function createPart(req, res) {
 
-    const userID = req.params.userID;
+    const decodedToken = token.decode(req.header('X-Token'), res);
     const part = req.body;
     var newPart;
 
     return sequelize.transaction((t) => {
-
         return models.Part
           .create(
             {        
@@ -127,45 +133,32 @@ function createPart(req, res) {
                 oracleDescription: part.oracleDescription,      
                 notes: part.notes,      
                 itemStatus: part.itemStatus,
-                createdBy: userID,
+                createdBy: decodedToken.userData.id,
                 createdAt: new Date(),
-                updatedBy: userID,
+                updatedBy: decodedToken.userData.id,
                 updatedAt: new Date()
-            },
-            {
-              where: {id: part.partID},
-              transaction: t
-            }
-          )
-          .then(newPartRecord => {
-            console.log('Created Part')
-            console.log(newPart);
-            newPart = newPartRecord;
-          })
-    
-        }).then(() => {
-          res.json({
-            message: `The part '${part.partName}' has been created successfully`,
-            newPart: newPart
-          })
-    
+            },{ where: {id: part.partID}, transaction: t 
+            }).then(newPartRecord => { newPart = newPartRecord; }) 
+
+        }).then(() => { 
+            res.json({ 
+                message: `The part '${part.partName}' has been created successfully`, 
+                newPart: newPart })    
         }).catch(error => {
-    
-          console.log(error);
-          res.status(500).json({
+            console.log(`transaction rollback on createPart: ${error}`);           
+            res.status(500).json({
             title: 'create part failed',
             error: {message: error}
-          });
-    
+          });    
         })   
     }
   
-    function destroyPart(req, res) {
+    function deletePart(req, res) {
 
+      const decodedToken = token.decode(req.header('X-Token'), res);
       const partID = req.params.partID;   
       const scheduleID = req.params.scheduleID;   
-      const userID = req.params.userID;          
-    
+
       return sequelize.transaction((t) => {    
         return  sequelize.query(`EXECUTE dbo.Schedules 
         :executeType, 
@@ -183,82 +176,26 @@ function createPart(req, res) {
             projectID: null,
             partID: partID,
             notes: null,
-            employeeID: userID,
+            employeeID: decodedToken.userData.id,
             schedule: null,
             rowCount: null,
             errorNumber: null,
             errorMessage: null 
         }, type: sequelize.QueryTypes.SELECT})
-          .then(sched => {  
-           
-            return  sequelize.query(`EXECUTE dbo.Parts
-            :executeType,  
-            :partID,
-            :partName,
-            :description,
-            :projectNumber,
-            :partTypeID,
-            :departmentID,
-            :designerEmployeeID,
-            :plannerEmployeeID,
-            :dutFamily,
-            :oracleItemNumber,
-            :oracleItemStatus,
-            :oracleDescription,
-            :oracleDWSFDeptWSF,
-            :oracleICATItemCategories,
-            :notes,
-            :tags,
-            :partsList,
-            :employeeID,
-            :rowCount,
-            :errorNumber,
-            :errorMessage`, { replacements: {
-                executeType: 'Delete',                
-                partID: partID,
-                partName: null,
-                description: null,
-                projectNumber: null,
-                partTypeID: null,
-                departmentID: null,
-                designerEmployeeID: null,
-                plannerEmployeeID: null,
-                dutFamily: null,
-                oracleItemNumber: null,
-                oracleItemStatus: null,
-                oracleDescription: null,
-                oracleDWSFDeptWSF: null,
-                oracleICATItemCategories: null,
-                notes: null,
-                tags: null,
-                partsList: null,
-                employeeID: userID,                
-                rowCount: null,
-                errorNumber: null,
-                errorMessage: null 
-            }, type: sequelize.QueryTypes.DELETE})
-              .then(p => { 
-                console.log('delete part');
-              })
-              .catch(error => {
-                console.log('unable to delete part');
-                console.log(error);
-              });
+          .then(sched => {                      
+             return models.Part.destroy({where: {id: partID}}) //foreign key issue
+            //  return  sequelize.query(`DELETE parts.Parts WHERE PartID = ${partID}`).then(p => {})                    
           });
-        }).then(() => {    
-           res.json({
-           message: `The Part '${partID}' has been deleted successfully`,
-          })
-    
-        }).catch(error => {    
-          console.log(error);
-          res.status(500).json({
-            title: 'destroy part failed',
-            error: {message: error}
-          });    
-        })    
+          }).then(() => { 
+              res.json({ message: `The Part '${partID}' has been deleted successfully`})      
+          }).catch(error => {
+              console.log(`transaction rollback on deletePart: ${error}`);
+              res.status(500).json({
+              title: 'destroy part failed',
+              error: {message: error}
+            });    
+          })  
     }
-
 
     module.exports = {
     indexParts: indexParts,
@@ -266,5 +203,5 @@ function createPart(req, res) {
     indexPartTypes: indexPartTypes,
     updatePart: updatePart,
     createPart: createPart,
-    destroyPart: destroyPart
+    deletePart: deletePart
 }

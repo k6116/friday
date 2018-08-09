@@ -1,64 +1,64 @@
 
 <div *ngIf="displayTopFTEProjectList" class="container-fluid">
 
-  <!-- block for spinner if chart is loading -->
-  <div *ngIf="chartIsLoading" class="row row-custom">
-    Chart is loading...&nbsp;&nbsp;&nbsp;<div class="loading-spinner"></div>
-  </div>
-
-  <!-- block for top FTE table and chart -->
-  <div class="row row-custom" [hidden]="chartIsLoading">
-    <div class="col-sm-5">
-      <table class="table table-sm table-hover">
-        <thead>
-          <tr>
-            <th width="30%" scope="col">Project Name</th>
-            <th width="10%" scope="col">Project Type</th>
-            <th width="10%" scope="col">Priority</th>
-            <th width="10%" scope="col">Total FTE</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let project of topFTEProjectList; let i = index" (click)="onProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
-            <td>{{ project.projectName }}</td>
-            <td>{{ project.projectTypeName }}</td>
-            <td>{{ project.priorityName }}</td>
-            <td>{{ project.totalFTE }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- block for spinner if chart is loading -->
+    <div *ngIf="chartIsLoading" class="row row-custom">
+      Chart is loading...&nbsp;&nbsp;&nbsp;<div class="loading-spinner"></div>
     </div>
-
-    <div class="col-sm-7 fte-history-chart">
-      <div id="FTEHistory"></div>
+  
+    <!-- block for top FTE table and chart -->
+    <div class="row row-custom" [hidden]="chartIsLoading">
+      <div class="col-sm-5">
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th width="30%" scope="col">Project Name</th>
+              <th width="10%" scope="col">Project Type</th>
+              <th width="10%" scope="col">Priority</th>
+              <th width="10%" scope="col">Total FTE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let project of topFTEProjectList; let i = index" (click)="onProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
+              <td>{{ project.projectName }}</td>
+              <td>{{ project.projectTypeName }}</td>
+              <td>{{ project.priorityName }}</td>
+              <td>{{ project.totalFTE }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <div class="col-sm-7 fte-history-chart">
+        <div id="FTEHistory"></div>
+      </div>
     </div>
-  </div>
-
-  <!-- block for selected project roster -->
-  <div class="row row-custom" [hidden]="chartIsLoading">
-    <div class="col-sm">
-      <div *ngIf="displayProjectEmployeeList">
-        <h2>{{ selectedProject.projectName }} Roster | {{ selectedFiscalDate | date:'MMM-yyyy' }}</h2>
-        <div class="table-container">
-          <table class="table table-sm table-hover">
-            <thead>
-              <tr>
-                <th width="20%" scope="col">Employee Name</th>
-                <th width="40%" scope="col">JobTitle</th>
-                <th width="10%" scope="col">FTE</th>
-              </tr>
-            </thead>
-            <tbody *ngFor="let employee of projectEmployeeData">
-              <tr>
-                <td>{{ employee.fullName }}</td>
-                <td>{{ employee.jobTitleName }} - {{ employee.jobSubTitleName }}</td>
-                <td>{{ employee.fte }}</td>
-              </tr>
-            </tbody>
-          </table>
+  
+    <!-- block for selected project roster -->
+    <div class="row row-custom" [hidden]="chartIsLoading">
+      <div class="col-sm">
+        <div *ngIf="displayProjectEmployeeList">
+          <h2>{{ selectedProject.projectName }} Roster | {{ selectedFiscalDate | date:'MMM-yyyy' }}</h2>
+          <div class="table-container">
+            <table class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th width="20%" scope="col">Employee Name</th>
+                  <th width="40%" scope="col">JobTitle</th>
+                  <th width="10%" scope="col">FTE</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let employee of projectEmployeeData">
+                <tr>
+                  <td>{{ employee.fullName }}</td>
+                  <td>{{ employee.jobTitleName }} - {{ employee.jobSubTitleName }}</td>
+                  <td>{{ employee.fte }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
 </div>

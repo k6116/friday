@@ -11,6 +11,7 @@ import { CacheService } from '../../_shared/services/cache.service';
 
 export class ProfileModalComponent implements OnInit {
 
+  modal: any;
   userName: any;
   loggedInUser: any;
   jobTitles: any;
@@ -20,7 +21,6 @@ export class ProfileModalComponent implements OnInit {
   jobSubTitleList: any;
   jobSubTitleID: any;
   jobSubTitleName: any;
-  editToggle: boolean;
   newJobTitleData: any;
   newJobTitleID: number;
   subTitleEmpty: boolean;
@@ -31,7 +31,6 @@ export class ProfileModalComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.editToggle = false;
     this.getUserProfile();
   }
 
@@ -46,7 +45,6 @@ export class ProfileModalComponent implements OnInit {
 
   // called on profile button click on top-nav
   getJobTitleList() {
-    this.editToggle = false;
     this.apiDataJobTitleService.getJobTitleList()
       .subscribe(
         // pulls JobTitleID, JobTitleName and  all subtitles from Jarvis Employees table
@@ -56,14 +54,13 @@ export class ProfileModalComponent implements OnInit {
           // Loop through res and find matching name to jobTitleID
           for (let i = 0; i < this.jobTitles.length; i++) {
             if (this.jobTitles[i].id === this.jobTitleID) {
-                this.jobTitleName = this.jobTitles[i].jobTitleName;
-                this.jobTitleIndex = i;
-                console.log('My Job Title: ' + this.jobTitleName);
+              this.jobTitleName = this.jobTitles[i].jobTitleName;
+              this.jobTitleIndex = i;
+              console.log('My Job Title: ' + this.jobTitleName);
             }
           }
           // Load the appropriate list of subtitles
           this.getJobSubTitleList();
-
         },
         err => {
           console.log(err);
@@ -72,11 +69,14 @@ export class ProfileModalComponent implements OnInit {
   }
 
   getJobSubTitleList() {
-    this.jobSubTitleList = this.jobTitles[this.jobTitleIndex].jobSubTitles;
-    console.log('JobSubTitleList:', this.jobSubTitleList);
+
+    if (this.jobTitleIndex) {
+      this.jobSubTitleList = this.jobTitles[this.jobTitleIndex].jobSubTitles;
+      console.log('JobSubTitleList:', this.jobSubTitleList);
+    }
 
     // loop through jobSubTitlelist to get jobSubTitleName
-    if (this.jobSubTitleID !== null) {
+    if (this.jobSubTitleID !== null && this.jobSubTitleList) {
       for (let i = 0; i < this.jobSubTitleList.length; i++) {
         if (this.jobSubTitleList[i].id === this.jobSubTitleID) {
             this.jobSubTitleName = this.jobSubTitleList[i].jobSubTitleName;
@@ -126,23 +126,23 @@ export class ProfileModalComponent implements OnInit {
   onUpdateButtonClick() {
     // create json with new job titles to send to server
     this.newJobTitleData = {'newJobTitleID': this.jobTitleID, 'newJobSubTitleID': this.jobSubTitleID};
-    this.editToggle = !this.editToggle;
 
     // write new values to database
-    this.apiDataJobTitleService.updateEmployeeJobTitle(this.loggedInUser.id, this.newJobTitleData)
+    this.apiDataJobTitleService.updateEmployeeJobTitle(this.newJobTitleData)
       .subscribe(
         res => {
           console.log(res);
           this.newJobTitleID = this.jobTitleID;
+          // TEMP CODE: update the loggedInUser object with the saved jobTitleID and jobSubTitleID
+          // this should be refactored to get a new token first, and also get the job title and subtitle names in the token payload so
+          // don't have to retrive job title data and 'map'
+          this.authService.loggedInUser.jobTitleID = this.jobTitleID;
+          this.authService.loggedInUser.jobSubTitleID = this.jobSubTitleID;
         },
         err => {
           console.log(err);
         }
       );
-  }
-
-  onEditButtonClick() {
-    this.editToggle = !this.editToggle;
   }
 
 }

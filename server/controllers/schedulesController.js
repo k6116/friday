@@ -86,8 +86,7 @@ function indexProjectSchedule(req, res) {
     });
 
   } else { // CREATE NEW 
-		   // (TO-DO use a single sequelize for both Edit and Add executions using a variable replacement object as parameters)
-		   // (On first try using a replacement object there were syntax errors for ':')
+		   // (TO-DO: Mike - use a single sequelize for both Edit and Add executions using a variable replacement object as parameters)
 		sequelize.query(`EXECUTE dbo.Schedules 
 		:executeType, 
 		:scheduleID,
@@ -209,8 +208,7 @@ function updatePartSchedule(req,res) {
     });
 
   } else { // CREATE NEW 
-		   // (TO-DO use a single sequelize for both Edit and Add executions using a variable replacement object as parameters)
-		   // (On first try using a replacement object there were syntax errors for ':')
+		   // (TO-DO use a single sequelize for both Edit and Add executions using a variable replacement object as parameters)		  
 		sequelize.query(`EXECUTE dbo.Schedules 
 		:executeType, 
 		:scheduleID,

@@ -6,7 +6,8 @@ import * as Highcharts from 'highcharts';
 
 declare var require: any;
 const moment = require('moment');
-require('highcharts/modules/annotations')(Highcharts);
+
+// require('highcharts/modules/annotations')(Highcharts);
 
 @Component({
   selector: 'app-reports-topprojects',

@@ -1,69 +1,73 @@
-
 <div class="projects-modal-outer-cont" [@modalStateOuter]="outerDivState">
-  <!-- <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState" (appClickOutside)="onClickOutside($event)" [exception]="clickOutsideException"> -->
-  <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState">
-    <div class="projects-modal-body">
-
-      <div class="projects-filter-cont">
-
-        <div class="projects-modal-filter tutorial-part2" id="intro-search-project">
-          <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter" appAutofocus>
-        </div>
-
-        <div class="projects-modal-close">
-          <i class="nc-icon nc-small-remove projects-modal-close-button" (click)="onCancelClicked()"></i>
-        </div>
-
-      </div>
-
-      
-
-      <div class="project-table-cont tutorial-part2" (scroll)="onScroll()" id="intro-select-project">   
-        
-        <div class="cards-cont">
-          
-          <div class="card" *ngFor="let project of projects | filter :filterString:'ProjectName':{limitTo: numProjectsToDisplay, matchFuzzy: true}">
-            <div class="card-header-cont">
-              <div class="card-header-img" *ngIf="project.avatar">
-                <img class="card-project-avatar" [src]="project.avatar" alt="">
-              </div>
-              <div class="card-header-text">
-                {{ project.ProjectName }}
-              </div>
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">{{ project.ProjectTypeName }}</h5>
-              <p class="card-text">{{ project.Description }}</p>
-            </div>
-            <div class="card-buttons-underlay"></div>
-            <div class="card-buttons">
-              <a tabindex="0" class="card-button info" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Project Details', 'info', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('info', project.ProjectID)" (click)="onProjectInfoClick($event.target)">
-                <i class="fa fa-info" aria-hidden="true"></i>
-              </a>
-              <a tabindex="0" class="card-button roster" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Team Roster', 'roster', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('roster', project.ProjectID)" (click)="onProjectRosterClick($event.target)">
-                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-              </a>
-              <!-- <a tabindex="0" class="card-button other" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Something Else', 'other', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('other', project.ProjectID)" (click)="onProjectTestClick($event.target)">
-                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-              </a> -->
-            </div>
-            <div class="card-footer">
-                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectPermissionApprovedList?.indexOf(project.ProjectID)!=-1 || projectPermissionTeamList?.indexOf(project.ProjectID)!=-1"
-                  class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
-                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)===-1 && projectPermissionApprovedList?.indexOf(project.ProjectID)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)===-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
-                  class="btn btn-outline-warning project-select-button" (click)="onProjectPermissionClick(project, 'Request')">Request Access</button>
-                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
-                  class="btn btn-outline-info" (click)="onProjectPermissionClick(project, 'Submitted')">Access Request Submitted...</button>
-                <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1" 
-                  class="btn btn-outline-danger" (click)="onProjectPermissionClick(project, 'Denied')">Access Request DENIED</button>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
+    <!-- <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState" (appClickOutside)="onClickOutside($event)" [exception]="clickOutsideException"> -->
+    <div class="projects-modal-inner-cont" [@modalStateInner]="innerDivState">
+      <div class="projects-modal-body">
   
+        <div class="projects-filter-cont">
+  
+          <div class="projects-modal-filter tutorial-part2" id="intro-search-project">
+            <input type="text" [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="filter" appAutofocus>
+          </div>&nbsp;&nbsp;
+          
+          <!-- Checkbox Filter -->         
+            <div *ngFor="let filterItem of filterItems; let i = index;" class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" [attr.id]="filterItem.id" [(ngModel)]="filterItem.checked" (change)="onFilterItemsChange(filterItem.id)">{{ filterItem.title }}
+              <label class="custom-control-label" [attr.for]="filterItem.id"></label>
+            </div>
+          <!--  -->
+
+          <div class="projects-modal-close">
+            <i class="nc-icon nc-small-remove projects-modal-close-button" (click)="onCancelClicked()"></i>
+          </div>
+  
+        </div>  
+  
+        <div class="project-table-cont tutorial-part2" (scroll)="onScroll()" id="intro-select-project">   
+          
+          <div class="cards-cont">
+            
+            <div class="card" *ngFor="let project of filterProjects | projectsFilter : filterItems | filter : filterString : filterItems[2].value : {limitTo: numProjectsToDisplay, matchFuzzy: true}">
+              <div class="card-header-cont">
+                <div class="card-header-img" *ngIf="project.avatar">
+                  <img class="card-project-avatar" [src]="project.avatar" alt="">
+                </div>
+                <div class="card-header-text">
+                  {{ project.ProjectName }}
+                </div>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{ project.ProjectTypeName }}</h5>
+                <p class="card-text">{{ project.Description }}</p>
+              </div>
+              <div class="card-buttons-underlay"></div>
+              <div class="card-buttons">
+                <a tabindex="0" class="card-button info" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Project Details', 'info', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('info', project.ProjectID)" (click)="onProjectInfoClick($event.target)">
+                  <i class="fa fa-info" aria-hidden="true"></i>
+                </a>
+                <a tabindex="0" class="card-button roster" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Team Roster', 'roster', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('roster', project.ProjectID)" (click)="onProjectRosterClick($event.target)">
+                  <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                </a>
+                <!-- <a tabindex="0" class="card-button other" [attr.data-id]="project.ProjectID" (mouseenter)="onCardButtonMouseEnter('Something Else', 'other', project.ProjectID)" (mouseleave)="onCardButtonMouseLeave('other', project.ProjectID)" (click)="onProjectTestClick($event.target)">
+                  <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                </a> -->
+              </div>
+              <div class="card-footer">
+                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectPermissionApprovedList?.indexOf(project.ProjectID)!=-1 || projectPermissionTeamList?.indexOf(project.ProjectID)!=-1"
+                    class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
+                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)===-1 && projectPermissionApprovedList?.indexOf(project.ProjectID)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)===-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
+                    class="btn btn-outline-warning project-select-button" (click)="onProjectPermissionClick(project, 'Request')">Request Access</button>
+                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
+                    class="btn btn-outline-info" (click)="onProjectPermissionClick(project, 'Submitted')">Access Request Submitted...</button>
+                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1" 
+                    class="btn btn-outline-danger" (click)="onProjectPermissionClick(project, 'Denied')">Access Request DENIED</button>
+              </div>
+            </div>
+  
+          </div>
+  
+        </div>
+  
+    
+      </div>
     </div>
   </div>
-</div>

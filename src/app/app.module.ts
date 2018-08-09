@@ -23,22 +23,29 @@ import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
 import { ProjectTypePipe } from './_shared/pipes/project-type.pipe';
 import { TitleCasePipe } from '@angular/common';
+import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
-import { ApiDataService, CacheService, ClickTrackingService, CookiesService,
+import { CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
-import { AuthGuardService } from './_shared/guards/auth.guard';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService, ApiDataPartService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
+  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
+
 
 // GUARDS
+import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
+import { BrowserGuard } from './_shared/guards/browser.guard';
+import { PermissionsGuard } from './_shared/guards/permissions.guard';
+import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
 
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
+import { TreeModule } from 'ng2-tree';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -56,7 +63,7 @@ import { MyProjectsComponent } from './my-projects/my-projects.component';
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
-import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
+import { OrgDropdownComponent } from './reports/team-fte-summary/org-dropdown/org-dropdown.component';
 import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
 import { ChartsModule } from 'ng2-charts';
@@ -77,6 +84,11 @@ import { FooterComponent } from './footer/footer.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
 import { PartSetupComponent } from './setups/parts/parts.component';
+import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
+
+// BOM module stuff
+import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
+import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
 
 
 @NgModule({
@@ -88,6 +100,7 @@ import { PartSetupComponent } from './setups/parts/parts.component';
     NoticeModalComponent,
     ConfirmModalComponent,
     SafeHtmlPipe,
+    ProjectsFilterPipe,
     FteInputRestrictDirective,
     FteEntryEmployeeComponent,
     FteInputRestrictDirective,
@@ -123,7 +136,10 @@ import { PartSetupComponent } from './setups/parts/parts.component';
     FooterComponent,
     ProjectsSetupsComponent,
     CarouselModalComponent,
-    PartSetupComponent
+    PartSetupComponent,
+    BomEditorComponent,
+    BomViewerComponent,
+    SupplyDemandComponent
   ],
   imports: [
     AppRoutingModule,
@@ -140,10 +156,10 @@ import { PartSetupComponent } from './setups/parts/parts.component';
     NouisliderModule,
     ClickOutsideModule,
     ChartsModule,
-    Ng2CompleterModule
+    Ng2CompleterModule,
+    TreeModule
   ],
   providers: [
-    ApiDataService,
     ApiDataAuthService,
     ApiDataClickTrackingService,
     ApiDataEmailService,
@@ -158,6 +174,8 @@ import { PartSetupComponent } from './setups/parts/parts.component';
     ApiDataDashboardService,
     ApiDataSchedulesService,
     ApiDataPartService,
+    ApiDataAnalyticsService,
+    ApiDataBomService,
     CacheService,
     AuthService,
     AuthGuardService,
@@ -167,6 +185,9 @@ import { PartSetupComponent } from './setups/parts/parts.component';
     WebsocketService,
     CookiesService,
     UnsavedChangesGuard,
+    BrowserGuard,
+    PermissionsGuard,
+    FteEntryGuard,
     TitleCasePipe
   ],
   bootstrap: [AppComponent]

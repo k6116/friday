@@ -6,11 +6,13 @@ import { CarouselModalOptions } from '../../modals/carousel-modal/carousel-modal
 @Injectable()
 export class CacheService {
 
-
-  // TO-DO MIKE: rename app-data service to cache service EVERYWHERE!!
   // app data service serves as a central data store (global variables, constants, emitters)
 
-  apiDataTimeout = 100 * 60 * 20; // set the api data service timeout to 15 seconds
+  // jwt token object with signedToken property (encoded string), issuedAt, and expiringAt (unix/epoch time)
+  // userData object will be encoded in the signedToken string
+  token: any;
+
+  apiDataTimeout = 100 * 60 * 15; // set the api data service timeout to 15 seconds
   loggedInUser = new EventEmitter<any>();
   loggedInUser$: any;
 
@@ -49,6 +51,11 @@ export class CacheService {
 
   // standard red color for alert icon
   alertIconColor = 'rgb(193, 27, 27)';
+
+  // emit data from the permissions guard to the sidenav component, with the path, so that it can be hightlighted
+  // this is needed since the permissions guard makes a request from the server so takes some time
+  navigatedPath = new EventEmitter<string>();
+
 
   constructor() { }
 

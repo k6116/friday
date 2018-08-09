@@ -1,0 +1,11 @@
+.details-box {
+  position: sticky;
+  padding: 10px;
+  top: 70px;
+  width: 400px;
+  height: 200px;
+  font-size: 13;
+  border: 1px solid;
+  border-radius: 10px;
+  background-color: white;
+}

@@ -1,3 +1,80 @@
+<a name="1.6.0"></a>
+# [1.6.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.5.1...v1.6.0) (2018-08-06)
+
+
+### Features
+
+* **fte-entry component adn projects-modal component:** remember user-chosen filters after modal is ([105ca0e](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/105ca0e))
+* **projects-modal:** Added project details ([9152125](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9152125))
+* **projects-modal and projects-filter pipe:** Filtering with checkboxes using projects-filter pipe ([fc59380](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/fc59380))
+* **projects-modal component:** add search by description feature ([60c6be7](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/60c6be7))
+
+
+
+<a name="1.5.1"></a>
+## [1.5.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.5.0...v1.5.1) (2018-08-06)
+
+
+### Bug Fixes
+
+* **FTE Component:** when user adds a project that's already in their FTE table (but hidden), show th ([ce788d8](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/ce788d8))
+* **FTE Input page:** changed inputs to be whole numbers instead of decimals, displaying a percent si ([36bb300](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/36bb300))
+* **Toast component:** moved toasts to more visible location, switched to bootstrap colors, and made ([f83ec6e](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f83ec6e))
+* **Toast component:** toasts are now dismissable, and error toasts require dismissal ([e1a5f22](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/e1a5f22))
+
+
+
+<a name="1.5.0"></a>
+# [1.5.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.4.1...v1.5.0) (2018-08-02)
+
+
+### Features
+
+* **supply-demand-component:** Added an experimental supply demand feature ([81a8635](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/81a8635))
+* **supply-demand-component:** added supply demand charts for NCI Projects ([a0c0659](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a0c0659))
+
+
+
+<a name="1.4.1"></a>
+## [1.4.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.4.0...v1.4.1) (2018-07-26)
+
+
+### Bug Fixes
+
+* **app-routing.module.ts:** fixed dashboard stuck on loading ([20bdd16](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/20bdd16))
+
+
+
+<a name="1.4.0"></a>
+# [1.4.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.3.1...v1.4.0) (2018-07-25)
+
+
+### Features
+
+* **team-fte-summary component:** Added org dropdown ([38358cc](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/38358cc))
+
+
+
+<a name="1.3.1"></a>
+## [1.3.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.3.0...v1.3.1) (2018-07-24)
+
+
+### Bug Fixes
+
+* **projects-component:** BETA fixes ([cf53e14](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/cf53e14))
+
+
+
+<a name="1.3.0"></a>
+# [1.3.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.2.1...v1.3.0) (2018-07-23)
+
+
+### Features
+
+* **projects-modal component:** add my team's projects filter ([3bc5f62](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/3bc5f62))
+
+
+
 <a name="1.2.1"></a>
 ## [1.2.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.2.0...v1.2.1) (2018-07-19)
 

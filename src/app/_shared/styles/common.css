@@ -1,11 +1,10 @@
 
-
 /* TO-DO: maybe change custom to jarvis or standard, because it is the default for us, not custom */
 /* how to organize css files better */
 
 /* customized bootstrap fluid container (to accomodate navbar and sidebar) */
 .container-fluid {
-  margin: 115px 75px 50px 255px;
+  margin: 115px 75px 150px 255px;
   padding: 0;
   width: unset;
 }

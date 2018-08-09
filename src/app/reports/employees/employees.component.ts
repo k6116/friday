@@ -20,6 +20,12 @@ require('highcharts/modules/export-data')(Highcharts);
 })
 export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
+  // TO-DO BILL: move employee dropdown to its own shared component
+
+  // Paul moved the org-dropdown component into the team-fte-summary component.
+  // No changes were made in the employees component and org-dropdown component.
+  // So the org-dropdown component can be moved back to the employees component and everything should work the same.
+
   nestedOrgData: any;
   flatOrgData: any;
   subscription1: Subscription;

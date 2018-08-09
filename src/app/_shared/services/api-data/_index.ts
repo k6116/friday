@@ -1,4 +1,5 @@
 export * from './api-data-auth.service';
+export * from './api-data-bom.service';
 export * from './api-data-click-tracking.service';
 export * from './api-data-email.service';
 export * from './api-data-employee.service';
@@ -12,3 +13,4 @@ export * from './api-data-part.service';
 export * from './api-data-report.service';
 export * from './api-data-dashboard.service';
 export * from './api-data-schedules.service';
+export * from './api-data-analytics.service';

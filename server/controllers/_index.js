@@ -1,6 +1,7 @@
 
 module.exports = {
   auth: require('./authController'),
+  bom: require('./bomController'),
   fte: require('./fteController'),
   employee: require('./employeeController'),
   org: require('./orgController'),
@@ -14,5 +15,6 @@ module.exports = {
   metaData: require('./metaDataController'),
   dashboard: require('./dashboardController'),
   schedules: require('./schedulesController'),
-  parts: require('./partController')
+  parts: require('./partController'),
+  analytics: require('./analyticsController')
 }

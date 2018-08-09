@@ -3,7 +3,7 @@
   <div class="jumbotron">
     <!-- Jobtitle Fuzzy Search Bar -->
     <div class="input-group">
-      <input class="searchInput" type="text" [(ngModel)]="searchProjects" (change)="onSearchInputChange($event)" placeholder="Search Projects">
+      <input class="searchInput" type="text" maxlength="500"  [(ngModel)]="searchProjects" (change)="onSearchInputChange($event)" placeholder="Search Projects">
       <div class="input-group-append">
         <button class="btn btn-primary btn-fte-toolbar" (click)="onCreateProjectClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
@@ -18,12 +18,11 @@
         <ul class="list-group list-group-flush" *ngFor="let project of filteredProjectList | slice:0:10; let i=index">
           <button class="list-group-item list-group-item-action" (click)="onProjectClick(project)">
             {{ project.ProjectName }}<span *ngIf="project.ProjecTypeName"> - {{project.ProjecTypeName}}</span>
-          </button>
+          </button>        
         </ul>
       </ng-container>
     </div>
 
-  
     <div class="col-5">
       <div class="card" *ngIf="showProjectCard">
         <div class="card-header">
@@ -31,14 +30,9 @@
             <div class="col-8">
                 <form [formGroup] = 'form'>
                   <input type=text readonly=true formControlName="projectName" class="form-control">
-                </form>
-              <!-- <h6>{{ part.PartName }}         
-              </h6> -->
+                </form>            
             </div>
-            <div class="col-4 text-right">
-              <!-- <button class="btn btn-primary btn-fte-toolbar">
-                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#partEditModal"></i>&nbsp;&nbsp;Edit
-              </button> -->
+            <div class="col-4 text-right">           
               <button *ngIf=project class="btn btn-primary btn-fte-toolbar" (click)="onDeleteProjectClick(project)">
                 <i class="fa fa-trash-o fa-lg" ></i>&nbsp;&nbsp;Delete
               </button>
@@ -53,7 +47,7 @@
            <table class="table table-bordered table-light">
              <tr>
                <td>Project Name</td>
-               <td colspan="3"><input type=text class="form-control" formControlName="projectName"></td>            
+               <td colspan="3"><input type=text readonly=true class="form-control" formControlName="projectName"></td>            
              </tr>
              <tr>
                 <td>Description</td>
@@ -77,7 +71,7 @@
                 </tr>
               <tr>
                   <td>MU</td>
-                  <td><input type=text class="form-control" formControlName="mu"></td>
+                  <td><input type=text maxlength="20" class="form-control" formControlName="mu"></td>
                   <td>Project Type</td>
                   <td><select class="form-control" formControlName="projectTypeID"><option class="dropdown-item" *ngFor="let item of projectTypeChoices" [value]= "item.id">
                     {{item.projectTypeName}}
@@ -85,7 +79,7 @@
                 </tr>
                 <tr>
                     <td>IBO</td>
-                    <td><input type=text class="form-control" formControlName="ibo"></td>
+                    <td><input type=text maxlength="20" class="form-control" formControlName="ibo"></td>
                     <td>Department</td>
                   <td><select class="form-control" formControlName="departmentID"><option class="dropdown-item" *ngFor="let item of departmentChoices" [value]= "item.DepartmentID">
                     {{item.Department}}
@@ -125,7 +119,7 @@
             <div class="col-5">
               <table>
                 <td> <h6>Revision Notes</h6></td>
-                <td><input type=text class=form-control [(ngModel)]="revisionNotes"></td>
+                <td><input type=text class=form-control maxlength="500" [(ngModel)]="revisionNotes"></td>
               </table>                      
             </div>
            
@@ -150,7 +144,7 @@
                 {{item.PLCStatusName}}
               </option></select></td>
               <td><input [(ngModel)]="sched.PLCDate" type=date class=form-control ></td>      
-              <td><input [(ngModel)]="sched.Notes" type=text class=form-control></td>
+              <td><input [(ngModel)]="sched.Notes" maxlength="500" type=text class=form-control></td>
               <td><input type="checkbox" [(ngModel)]="sched.DeleteRow"></td>
             </tbody>
             <tfoot>
@@ -169,6 +163,6 @@
 
   </div>
 
-  </div>
+</div>
 
 

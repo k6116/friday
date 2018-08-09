@@ -33,7 +33,7 @@
           <div class="row">
             <div class="col-8">
                 <form [formGroup] = 'form'>
-                  <input type=text readonly=true formControlName="partName" class="form-control">
+                  <input type=text readonly=true formControlName="partName" maxlength="50" class="form-control">
                 </form>
               <!-- <h6>{{ part.PartName }}         
               </h6> -->
@@ -64,7 +64,7 @@
               </tr>
               <tr>
                   <td>Oracle Item #</td>
-                  <td><input type=text class="form-control" formControlName="oracleItemNumber"></td>
+                  <td><input type=text class="form-control" maxlength="100" formControlName="oracleItemNumber"></td>
                   <td>Part Type</td>
                   <td><select class="form-control" formControlName="partTypeID"><option class="dropdown-item" *ngFor="let item of partTypeChoices" [value]= "item.PartTypeID">
                     {{item.PartTypeName}}
@@ -72,7 +72,7 @@
                 </tr>
                 <tr>
                     <td>DUT Family</td>
-                    <td><input type=text class="form-control" formControlName="dutFamily"></td>
+                    <td><input type=text class="form-control" maxlength="100" formControlName="dutFamily"></td>
                     <td>Designer</td>
                   <td><select class="form-control" formControlName="designerEmployeeID"><option class="dropdown-item" *ngFor="let item of designerChoices" [value]= "item.EmployeeID">
                     {{item.FullName}}
@@ -80,7 +80,7 @@
                   </tr>
                   <tr>
                     <td>Item Status</td>
-                    <td><input type=text class="form-control" formControlName="itemStatus"></td>
+                    <td><input type=text class="form-control" maxlength="100" formControlName="itemStatus"></td>
                     <td>Planner</td>
                     <td><select class="form-control" formControlName="plannerEmployeeID"><option class="dropdown-item" *ngFor="let item of plannerChoices" [value]= "item.EmployeeID">
                       {{item.FullName}}
@@ -88,7 +88,7 @@
                     </tr>
                   <tr>
                         <td>Notes</td>
-                        <td colspan="3" rowspan="2"><textarea  class="form-control" formControlName="notes"></textarea></td>                     
+                        <td colspan="3" rowspan="2"><textarea  class="form-control" maxlength="500" formControlName="notes"></textarea></td>                     
                    </tr>
                    <tr></tr>             
   
@@ -112,7 +112,7 @@
             <div class="col-5">
               <table>
                 <td> <h6>Revision Notes</h6></td>
-                <td><input type=text class=form-control [(ngModel)]="revisionNotes"></td>
+                <td><input type=text class=form-control maxlength="500" [(ngModel)]="revisionNotes"></td>
               </table>                      
             </div>
            
@@ -139,7 +139,7 @@
               <td><select [(ngModel)]="sched.BuildStatusID" class=form-control><option *ngFor="let item of buildStatusChoices" [value]= "item.BuildStatusID">
                 {{item.BuildStatusName}}
               </option></select></td>
-              <td><input [(ngModel)]="sched.Notes" type=text class=form-control></td>
+              <td><input [(ngModel)]="sched.Notes" maxlength="500" type=text class=form-control></td>
               <td><input type="checkbox" [(ngModel)]="sched.DeleteRow"></td>
             </tbody>
             <tfoot>

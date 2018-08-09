@@ -16,9 +16,11 @@ declare var require: any;
 import * as Highcharts from 'highcharts';
 require('highcharts/modules/data.js')(Highcharts);
 require('highcharts/modules/drilldown.js')(Highcharts);
+require('highcharts/modules/no-data-to-display.js')(Highcharts);
 require('highcharts/highcharts-more.js')(Highcharts);
 require('highcharts/modules/solid-gauge.js')(Highcharts);
 import * as moment from 'moment';
+import * as momentTimezone from 'moment-timezone';
 
 
 @Component({
@@ -38,6 +40,7 @@ export class DashboardComponent implements OnInit {
   notCompletedFTEs: string;
   completedPrefix: string;
   notCompletedPrefix: string;
+  displayProgressGauge: boolean;
   subscription1: Subscription;
 
 
@@ -78,8 +81,7 @@ export class DashboardComponent implements OnInit {
     // get the dashboard data from the database
     // returns as a single response array using forkjoin:
     // [fteData, firstLogin, projectRequests]
-    this.apiDataDashboardService.getDashboardData(this.authService.loggedInUser.email, fiscalQuarterRange[0], fiscalQuarterRange[1],
-      this.authService.loggedInUser.userName, this.authService.loggedInUser.id)
+    this.apiDataDashboardService.getDashboardData(fiscalQuarterRange[0], fiscalQuarterRange[1])
       .subscribe(
         res => {
           console.log('dashboard data:');
@@ -90,9 +92,17 @@ export class DashboardComponent implements OnInit {
           this.showSpinner = false;
         },
         err => {
+          console.log('error response from get dashboard data:');
           console.log(err);
           this.showSpinner = false;
-          this.toolsService.displayTimeoutError();
+          // TO-DO BILL: create function in tools service that takes err and handles it from there
+          if (err.status === 401) {
+            this.authService.logout(true);
+            setTimeout(() => {
+              this.toolsService.displayTokenError();
+            }, 500);
+          }
+          // this.toolsService.displayTimeoutError();
         }
       );
 
@@ -102,9 +112,14 @@ export class DashboardComponent implements OnInit {
     this.displayMessages();
     this.renderPieChart();
     // // this.renderParetoChart();
-    this.renderProgressGauge();
     this.renderDonutChart();
     this.renderStackedColumnChart();
+    if (this.authService.loggedInUser.isManager) {
+      this.displayProgressGauge = true;
+      this.renderProgressGauge();
+    } else {
+      this.displayProgressGauge = false;
+    }
   }
 
   displayMessages() {

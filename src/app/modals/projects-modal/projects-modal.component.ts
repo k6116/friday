@@ -73,13 +73,20 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   clickOutsideException: string;
   selProject: any;
   subscription1: Subscription;
+  filterProjects: any;
+
+  // for checkbox pipe
+  filterItems: Array<any>;
+  managerEmailAddress: string;
 
   @Input() projects: any;
   @Input() fteTutorialState: number;
+  @Input() savedProjectFilters: any;
   @Output() tutorialStateEmitter = new EventEmitter<number>();
   @Output() selectedProject = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<boolean>();
   @Output() addedProjects = new EventEmitter<any>();
+  @Output() filterItemsEmit = new EventEmitter<any>();
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -96,9 +103,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     private cacheService: CacheService,
     private authService: AuthService,
     private websocketService: WebsocketService
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {
 
@@ -143,6 +148,12 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       this.refreshProjectCards();
     });
 
+    // for checkbox filter
+    this.filterProjects = this.projects;
+    this.managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+
+    // initialize project filters
+    this.setFilterItems();
   }
 
   ngAfterViewInit() {
@@ -156,6 +167,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       .subscribe(
         res => {
           this.projects = res;
+          // Need to refresh the project permissions list when a new one is created live through websockets
+          this.getProjectPermissionTeamList();
+          // this.filterProjects = this.projects;
           this.addedProjects.emit(this.projects);
         },
         err => {
@@ -301,7 +315,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       placement: 'right',
       html: true,
       trigger: 'focus',
-      title: `${project.ProjectName} Project Details`,
+      // title: `${project.ProjectName} Project Details`,
+      title: `Project Details`,
       content: content
     };
 
@@ -320,29 +335,137 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     return `
       <style>
+        .projects-info-details {
+          overflow-y: auto;
+          max-height: 265px;
+          line-height: 40px;
+        }
+
+        .projects-info-table-row {
+          border-bottom: 1px solid lightgrey;
+        }
+
+        .project-info-label {
+          display: block;
+          margin-bottom: -24px;
+          color: #7b7b7b;
+        }
+
+        .project-info-p {
+          margin-bottom: 0rem;
+        }
+
+        .project-info-description {
+          overflow-y: auto;
+          position: relative;
+          line-height: 1.4em;
+          height: 70px;
+          width: 200px;
+          text-align: left;
+          font-size: 15px;
+          margin-top: 14px;
+          margin-bottom: -18px;
+          border-color: lightgray;
+        }
 
       </style>
     `;
-
   }
 
 
   getProjectDetailsContent(project): string {
+    let active = '';
+    if (project.Active === true) {
+      active = 'Active';
+    } else if (project.Active === false) {
+      active = 'Inactive';
+    } else if ( project.Active === null) {
+      active = '--';
+    }
 
+    let priorityName = project.PriorityName;
+    if (priorityName === null) {
+      priorityName = '--';
+    }
+
+    let projectManager = project.NPIHWProjectManager;
+    if (projectManager === null) {
+      projectManager = '--';
+    }
+
+    let description = project.Description;
+    if (description === null) {
+      description = '--';
+    }
+
+    let notes = project.Notes;
+    if (notes === null) {
+      notes = '--';
+    }
+
+    const groups = project.GroupName;
+    const entity = project.EntityName;
+    const entityOwner = project.EntityOwnerName;
 
     let content = `
-      <div class="projects-info-description">
-        <p>Project Description</p>
-      </div>
+    <div class="projects-info-details">
+      <table>
     `;
 
-    content += ``;
+    // Create string for groups>entity>entityOwner.
+    // If any one of them exists, start a new row and cell.
+    if (groups !== null || entity !== null || entityOwner !== null) {
+      content += `
+      <tr  class="projects-info-table-row">
+        <td colspan="2">
+      `;
+      // Check them individually and append the one's that exist to the string
+      if (groups !== null) {
+        content += `
+            <span>${groups}</span>
+        `;
+      }
+      if (entity !== null) {
+        content += `
+            <span> > ${entity}</span>
+        `;
+      }
+      if (entityOwner !== null) {
+        content += `
+            <span> > ${entityOwner}</span>
+        `;
+      }
+      content += `
+        </td>
+      </tr>
+      `;
+    }
+
+    // Continue with the rest of the content
+    content += `
+        <tr class="projects-info-table-row">
+          <td><label class="project-info-label">Status</label><p class="project-info-p">${active}</p></td>
+          <td><label class="project-info-label">Priority</label><p class="project-info-p">${priorityName}</p></td>
+        </tr>
+        <tr class="projects-info-table-row">
+          <td colspan="2"><label class="project-info-label">Project Manager</label><p class="project-info-p">${projectManager}</p></td>
+        </tr>
+        <tr>
+          <td colspan="2"><label class="project-info-label">Project Description</label>
+            <textarea class="project-info-description">${description}</textarea>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"><label class="project-info-label">Notes</label>
+            <textarea class="project-info-description">${notes}</textarea>
+          </td>
+        </tr>
+      </table>
+    </div>
+    `;
 
     return content;
-
   }
-
-
 
   onProjectRosterClick(element) {
 
@@ -596,6 +719,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       }
       updateModalSubscription.unsubscribe();
     });
+
+    this.onRequestedProject(project);
   }
 
 
@@ -622,6 +747,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   closeModal() {
+    console.log('CLOSE MODAL');
     this.outerDivState = 'out';
     this.innerDivState = 'out';
     this.cancel.emit(true);
@@ -773,6 +899,51 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.getProjectPermissionList();
   }
 
+  // Checkbox Filter
+  onFilterItemsChange(id: string) {
+    // send filterItems to FTE entry page to remember user's filters
+    this.filterItemsEmit.emit(this.filterItems);
+
+    // toggle filterString in filter pipe between Description and ProjectName depending on checkbox state of check2 (searchByDescription)
+    if (id === 'check2') {
+      if (this.filterItems[2].checked === true) {
+        this.filterItems[2].value = 'Description';
+      } else {
+        this.filterItems[2].value = 'ProjectName';
+      }
+    }
+  }
+
+  // Gets called onInit.
+  setFilterItems() {
+    if (this.savedProjectFilters === undefined) {
+      // for pipe: id is used to apply filter; value is used for filtercondition and checked is ckeckbox state
+      // title is used in html as checkbox label
+      this.filterItems = [
+      {
+      id: 'check0',
+      title: 'My Team',
+      value: this.managerEmailAddress,
+      checked: false
+      },
+      {
+      id: 'check1',
+      title: 'NPI',
+      value: 'NPI',
+      checked: false
+      },
+      {
+      id: 'check2',
+      title: 'Search By Description',
+      value: 'ProjectName',
+      checked: false
+      },
+    ];
+    } else {
+      // remember user-chosen filters after modal is closed
+      this.filterItems = this.savedProjectFilters;
+    }
+  }
 
 }
 

@@ -20,13 +20,11 @@ export class ProjectsSetupsComponent implements OnInit {
   schedule: any;
   showProjectCard: boolean;
   showScheduleCard: boolean;
-
   projectTypeChoices: any;
   departmentChoices: any;
   groupChoices: any;
   priorityChoices: any;
   plcStatusChoices: any;
-
   revisionNotes: string;
   scheduleId: number;
 
@@ -40,10 +38,16 @@ export class ProjectsSetupsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.initFormValues();
     this.getProjects();
     this.getSelectionChoices();
+  }
+
+  onSearchInputChange(event: any) {
+    if (this.searchProjects.length === 0) {
+      this.showProjectCard = false;
+      this.showScheduleCard = false;
+    }
   }
 
   initFormValues() {
@@ -65,8 +69,80 @@ export class ProjectsSetupsComponent implements OnInit {
     createdAt: [null, [Validators.required]],
     updatedBy: [null, [Validators.required]],
     updatedAt: [null, [Validators.required]]
-  });
-}
+    });
+  }
+
+  getProjects() {
+    this.apiDataProjectService.getProjects()
+    .subscribe(
+      res => {
+        console.log('Projects List:', this.projectList);
+        this.projectList = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  getSelectionChoices() {
+
+    this.apiDataProjectService.getProjectTypesList()
+    .subscribe(
+      res => {
+        console.log('Project Types:', res);
+        this.projectTypeChoices = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+    this.apiDataProjectService.getProjectDepartments()
+    .subscribe(
+      res => {
+        console.log('Project Departments:', res);
+        this.departmentChoices = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+    this.apiDataProjectService.getProjectGroups()
+    .subscribe(
+      res => {
+        console.log('Project Groups:', res);
+        this.groupChoices = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+    this.apiDataProjectService.getProjectPriorities()
+    .subscribe(
+      res => {
+        console.log('Project Priorities:', res);
+        this.priorityChoices = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+
+    this.apiDataProjectService.getProjectPLCStatus()
+    .subscribe(
+      res => {
+        console.log('Project PLC Status:', res);
+        this.plcStatusChoices = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
   onCreateProjectClick() {
 
     this.showProjectCard = true;
@@ -85,9 +161,41 @@ export class ProjectsSetupsComponent implements OnInit {
 
   }
 
+  onProjectClick(project: any) {
+
+    this.project = project;
+    this.showProjectCard = true;
+    this.showScheduleCard = true;
+    console.log(project);
+
+    this.form.patchValue(
+      {
+        projectID: this.project.ProjectID,
+        projectName: this.project.ProjectName,
+        projectTypeID: this.project.ProjectTypeID,
+        active: this.project.Active,
+        planOfRecord: this.project.PlanOfRecordFlag,
+        description: this.project.Description,
+        notes: this.project.Notes,
+        departmentID: this.project.DepartmentID,
+        groupID: this.project.GroupID,
+        priorityID: this.project.PriorityID,
+        projectNumber: this.project.ProjectNumber,
+        ibo: this.project.IBO,
+        mu: this.project.MU,
+        createdBy: this.project.CreatedBy,
+        createdAt: this.project.CreationDate,
+        updatedBy: this.project.LastUpdatedBy,
+        updatedAt: this.project.LastUpdateDate
+      });
+    this.getSchedule();
+  }
+
   onSaveProjectClick() {
 
-    if (this.form.value.projectID > 0) { // EXISTING PROJECT
+    // Save: Either Update or Create
+
+    if (this.form.value.projectID > 0) {
     this.apiDataProjectService.updateProjectSetup(this.form.value, this.authService.loggedInUser.id)
       .subscribe(
         res => {
@@ -96,7 +204,7 @@ export class ProjectsSetupsComponent implements OnInit {
           console.log(err);
         }
       );
-    } else { // NEW PROJECT
+    } else {
 
       this.apiDataProjectService.createProjectSetup(this.form.value, this.authService.loggedInUser.id)
       .subscribe(
@@ -105,6 +213,10 @@ export class ProjectsSetupsComponent implements OnInit {
             {
               projectID: res.newProjectID
             });
+            // this.schedule = [];
+            // this.scheduleId = 0;
+            // this.createDefaultScheduleRow();
+            // this.showScheduleCard = true;
         },
         err => {
           console.log(err);
@@ -184,6 +296,7 @@ export class ProjectsSetupsComponent implements OnInit {
 
   onSaveSchedule() {
 
+    // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
     this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
       .subscribe(
@@ -195,6 +308,7 @@ export class ProjectsSetupsComponent implements OnInit {
         }
       );
     } else {
+      // no detail records so remove the schedule header record
       this.apiDataSchedulesService.destroySchedule(this.scheduleId, this.authService.loggedInUser.id)
       .subscribe(
         res => {
@@ -206,77 +320,6 @@ export class ProjectsSetupsComponent implements OnInit {
       );
     }
     this.getSchedule();
-  }
-
-  getProjects() {
-    this.apiDataProjectService.getProjects()
-    .subscribe(
-      res => {
-        console.log('Projects List:', this.projectList);
-        this.projectList = res;
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
-  getSelectionChoices() {
-
-    this.apiDataProjectService.getProjectTypesList()
-    .subscribe(
-      res => {
-        console.log('Project Types:', res);
-        this.projectTypeChoices = res;
-      },
-      err => {
-        console.log(err);
-      }
-    );
-
-    this.apiDataProjectService.getProjectDepartments()
-    .subscribe(
-      res => {
-        console.log('Project Departments:', res);
-        this.departmentChoices = res;
-      },
-      err => {
-        console.log(err);
-      }
-    );
-
-    this.apiDataProjectService.getProjectGroups()
-    .subscribe(
-      res => {
-        console.log('Project Groups:', res);
-        this.groupChoices = res;
-      },
-      err => {
-        console.log(err);
-      }
-    );
-
-    this.apiDataProjectService.getProjectPriorities()
-    .subscribe(
-      res => {
-        console.log('Project Priorities:', res);
-        this.priorityChoices = res;
-      },
-      err => {
-        console.log(err);
-      }
-    );
-
-    this.apiDataProjectService.getProjectPLCStatus()
-    .subscribe(
-      res => {
-        console.log('Project PLC Status:', res);
-        this.plcStatusChoices = res;
-      },
-      err => {
-        console.log(err);
-      }
-    );
   }
 
   getSchedule() {
@@ -298,42 +341,5 @@ export class ProjectsSetupsComponent implements OnInit {
         console.log(err);
       }
     );
-  }
-
-  onProjectClick(project: any) {
-
-    this.project = project;
-    this.showProjectCard = true;
-    this.showScheduleCard = true;
-    console.log(project);
-
-    this.form.patchValue(
-      {
-        projectID: this.project.ProjectID,
-        projectName: this.project.ProjectName,
-        projectTypeID: this.project.ProjectTypeID,
-        active: this.project.Active,
-        planOfRecord: this.project.PlanOfRecordFlag,
-        description: this.project.Description,
-        notes: this.project.Notes,
-        departmentID: this.project.DepartmentID,
-        groupID: this.project.GroupID,
-        priorityID: this.project.PriorityID,
-        projectNumber: this.project.ProjectNumber,
-        ibo: this.project.IBO,
-        mu: this.project.MU,
-        createdBy: this.project.CreatedBy,
-        createdAt: this.project.CreationDate,
-        updatedBy: this.project.LastUpdatedBy,
-        updatedAt: this.project.LastUpdateDate
-      });
-    this.getSchedule();
-  }
-
-  onSearchInputChange(event: any) {
-    if (this.searchProjects.length === 0) {
-      this.showProjectCard = false;
-      this.showScheduleCard = false;
-    }
   }
 }
