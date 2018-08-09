@@ -114,16 +114,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           ]
         },
         {
-          title: 'Admin',
-          iconClass: 'nc-l-security',
-          alias: 'admin',
-          path: 'main/admin',
-          expanded: false,
-          active: false,
-          permissionProtected: true,
-          hidden: false
-        },
-        {
           title: 'BOM',
           iconClass: 'nc-chart-bar-33',
           alias: 'bom',
@@ -152,6 +142,16 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               hidden: false
             }
           ]
+        },
+        {
+          title: 'Admin',
+          iconClass: 'nc-l-security',
+          alias: 'admin',
+          path: 'main/admin',
+          expanded: false,
+          active: false,
+          permissionProtected: true,
+          hidden: false
         }
         // {
         //   title: 'Websockets',
