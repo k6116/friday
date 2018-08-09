@@ -1,3 +1,6 @@
+thead {
+  font-weight: bold;
+}
 
 div.org-dropdown-control {
     position: relative;

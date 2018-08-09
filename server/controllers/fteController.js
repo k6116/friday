@@ -83,7 +83,7 @@ function updateUserData(req, res) {
             projectID: data.projectID,
             employeeID: userID,
             fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
-            fte: +data.fte,
+            fte: +data.fte / 100, // convert the FTE value to a decimal
             updatedBy: userID,
             updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
           }
@@ -95,7 +95,7 @@ function updateUserData(req, res) {
           projectID: data.projectID,
           employeeID: userID,
           fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
-          fte: +data.fte,
+          fte: +data.fte / 100, // convert the FTE value to a decimal
           updatedBy: userID,
           updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
         })

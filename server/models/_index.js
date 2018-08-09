@@ -13,4 +13,5 @@ module.exports = {
   ProjectTypes: require('./project.js').ProjectTypes,
   ProjectTypeDisplayFields: require('./project.js').ProjectTypeDisplayFields,
   ProjectPermissionRequests: require('./project.js').ProjectPermissionRequests,
+  NCISupplyDemandExclusionList: require('./analytics.js').NCISupplyDemandExclusionList
 }

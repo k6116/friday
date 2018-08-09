@@ -23,6 +23,7 @@ import { ClickOutsideDirective } from './_shared/directives/click-outside.direct
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
 import { TitleCasePipe } from '@angular/common';
+import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
 import { CacheService, ClickTrackingService, CookiesService,
@@ -30,7 +31,7 @@ import { CacheService, ClickTrackingService, CookiesService,
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { AuthGuardService } from './_shared/guards/auth.guard';
@@ -42,6 +43,7 @@ import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
+import { TreeModule } from 'ng2-tree';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -80,6 +82,10 @@ import { FooterComponent } from './footer/footer.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 
+// BOM module stuff
+import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
+import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
+
 
 @NgModule({
   declarations: [
@@ -90,6 +96,7 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     NoticeModalComponent,
     ConfirmModalComponent,
     SafeHtmlPipe,
+    ProjectsFilterPipe,
     FteInputRestrictDirective,
     FteEntryEmployeeComponent,
     FteInputRestrictDirective,
@@ -123,6 +130,8 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     DashboardComponent,
     FooterComponent,
     CarouselModalComponent,
+    BomEditorComponent,
+    BomViewerComponent,
     SupplyDemandComponent
   ],
   imports: [
@@ -141,7 +150,8 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     ClickOutsideModule,
     ChartsModule,
     Ng2CompleterModule,
-    MultiselectDropdownModule
+    MultiselectDropdownModule,
+    TreeModule
   ],
   providers: [
     ApiDataAuthService,
@@ -157,6 +167,7 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
     ApiDataReportService,
     ApiDataDashboardService,
     ApiDataAnalyticsService,
+    ApiDataBomService,
     CacheService,
     AuthService,
     AuthGuardService,
