@@ -183,11 +183,20 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.filterEmployeesOptions = [];
     this.filterProjectsModel = [];
     this.filterProjectsOptions = [];
-    // this.projectList = [
-    //   {projectID: 9990, projectName: 'testawef1'},
-    //   {projectID: 9991, projectName: 'testawef2'},
-    //   {projectID: 1164, projectName: 'Jarvis'}
-    // ];
+
+    this.apiDataProjectService.getProjects()
+      .subscribe(
+        res => {
+          console.log('get project data successfull:');
+          console.log(res);
+          this.projectList = res;
+          // this.trimProjects(500);
+        },
+        err => {
+          console.log('get project data error:');
+          console.log(err);
+        }
+    );
 
     // Using promises to avoid async
     // First, get the list of Plans for current user
@@ -256,32 +265,87 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     }, 500);
 
     // verify selectedProject has not already been added
-    const fteFormArray = this.FTEFormGroup.controls.FTEFormArray;
+    // const fteFormArray = this.FTEFormGroup.controls.FTEFormArray;
+    const fteFormArray = this.FTEFormGroupLive;
+
     const currentProjectsList = [];
-    fteFormArray['controls'].forEach( project => {
-      currentProjectsList.push(project.projectID);
+    fteFormArray.forEach( project => {
+      if (project.length !== 0) {
+        currentProjectsList.push(project[0].projectID);
+      }
     });
+
     const alreadyExists = currentProjectsList.find( value => {
       return value === selectedProject.ProjectID;
     });
     if (!alreadyExists) {
+
       const newProject = new TeamFTEs;
       newProject.userID = this.authService.loggedInUser.id;
       newProject.projectID = selectedProject.ProjectID;
       newProject.projectName = selectedProject.ProjectName;
-
+      console.log('newProject', newProject)
       // loop through the already-built months array and initialize null FTEs for each month in this new project
       newProject.allocations = new Array<AllocationsArray>();
-      this.months.forEach( month => {
-        const newMonth = new AllocationsArray;
-        // newMonth.fullName = moment(month).utc().format();
-        newMonth.fte = null;
-        newMonth.recordID = null;
-        newProject.allocations.push(newMonth);
-      });
+      // this.months.forEach( month => {
+      //   const newMonth = new AllocationsArray;
+      //   // newMonth.fullName = moment(month).utc().format();
+      //   newMonth.fte = null;
+      //   newMonth.recordID = null;
+      //   newProject.allocations.push(newMonth);
+      // });
 
       const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
       this.addProjectToFteForm(FTEFormArray, newProject, true);
+
+      // Since a new project is being added, we need to move the last array thats
+      //  being used dynamically for case-by-case updates, back to the end
+      const tempArr = this.FTEFormGroupLive[this.FTEFormGroupLive.length - 1];
+      this.FTEFormGroupLive.pop();
+      this.FTEFormGroupLive.push(this.FTEFormGroup.value.FTEFormArray[this.FTEFormGroup.value.FTEFormArray.length - 1]);
+      this.FTEFormGroupLive.push(tempArr);
+
+      this.teamFTEs.push({
+        planName: this.currentPlan,
+        projectID: newProject.projectID,
+        projectName: newProject.projectName,
+        allocations: newProject.allocations
+      });
+
+      this.allTeamFTEs.push({
+        planName: this.currentPlan,
+        projectID: newProject.projectID,
+        projectName: newProject.projectName,
+        allocations: newProject.allocations
+      });
+
+      this.allProjects.push(FTEFormArray.controls[FTEFormArray.controls.length - 1]);
+      this.projects = FTEFormArray.controls;
+
+      // Update the project filter to add the newly added project
+      this.filterProjectsOptions.push({
+        id: this.allProjects.length,
+        name: this.allProjects[this.allProjects.length - 1].projectName
+      });
+      this.filterProjectsModel.push(this.allProjects.length);
+      this.filterProjectsDropdown.renderFilteredOptions = this.filterProjectsOptions;
+      this.filterProjectsDropdown.model = this.filterProjectsModel;
+
+      // In order for the user to filter on and off the newly added project,
+      //  a psuedo object referring to that project is needed in the teamFTEsFlatLive array so
+      //  when the form entry is built, it will detect this project and add it, even if all the entries are null
+      // Also a placeholder employee is needed to match the emailAddress condition in the buildFTEEntryForm function
+      this.teamFTEsFlatLive.push({
+        planName: this.currentPlan,
+        projectID: 12,
+        projectName: 'Arges50',
+        ['allocations:recordID']: null,
+        ['allocations:fullName']: this.allEmployees[0].fullName,
+        ['allocations:emailAddress']: this.allEmployees[0].emailAddress,
+        ['allocations:fiscalDate']: this.currentMonth,
+        ['allocations:fte']: null
+      });
+
       this.displayFTETable = true;
     } else {
       this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
@@ -368,6 +432,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // set the border color for the monthly totals inputs
     this.setMonthlyTotalsBorder();
 
+    console.log('FTEFormProjectArray', FTEFormProjectArray)
+    console.log('FTEFormGroup', FTEFormGroup)
+    console.log('FTEFormGroupLive', this.FTEFormGroupLive[i][j])
+
     // In order to browse month by month without having to click "Save" everytime,
     // we need to cache all the modified data and either update it as it changes or add a new object if its a new instance
     // The teamFTEsFlatLive is a realtime array that will track the updates and be referenced everytime the buildFTEEntryForm is called
@@ -430,10 +498,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         updated: FTEFormGroup.value.updated
       });
     }
-
-    // console.log('FTEFormProjectArray', FTEFormProjectArray)
-    // console.log('FTEFormGroup', FTEFormGroup)
-
 
   }
 
@@ -523,9 +587,15 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     console.log('fte-project-visible array');
     console.log(this.fteProjectVisible);
     console.log('teamFTE', this.teamFTEs);
+    console.log('allTeamFTE', this.allTeamFTEs);
     console.log('teamFTEFlat', this.teamFTEsFlat);
     console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
     console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
+    console.log('this.allProjects', this.allProjects)
+    console.log('this.projects', this.projects)
+    console.log('this.allEmployees', this.allEmployees);
+    console.log('this.employees', this.employees)
+
   }
 
   onSaveClick() {
@@ -544,6 +614,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         this.cacheService.raiseToast('success', res.message);
         // this.resetProjectFlags();
         // this.fteComponentInit();  // re-fetch the data to get newly inserted recordIDs
+
+        // rebuild the FTE entry page to show selected month
+        this.buildFteEntryForm();
+        this.displayFTETable = true;
         this.FTEFormGroup.markAsUntouched();
       },
       err => {
