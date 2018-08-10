@@ -115,7 +115,7 @@ function createPart(req, res) {
                 {        
                     partName: part.partName,          
                     description: part.description,      
-                    partTypeID: part.partTypeID ? part.PartTypeID : 0,       
+                    partTypeID: part.partTypeID ? part.partTypeID : 0,       
                     designerEmployeeID: part.designerEmployeeID,
                     plannerEmployeeID: part.plannerEmployeeID,
                     dutFamily: part.dutFamily,

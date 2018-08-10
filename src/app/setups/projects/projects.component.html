@@ -5,7 +5,7 @@
     <div class="input-group">
       <input class="searchInput" type="text" maxlength="500"  [(ngModel)]="searchProjects" (change)="onSearchInputChange($event)" placeholder="Search Projects">
       <div class="input-group-append">
-        <button class="btn btn-primary btn-fte-toolbar" (click)="onCreateProjectClick()" style="display: block">
+        <button [disabled]="!searchProjects" class="btn btn-primary btn-fte-toolbar" (click)="onCreateProjectClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
         </button>       
       </div>
@@ -44,11 +44,7 @@
         </div>
         <form [formGroup] = 'form'>
           <div class="card-body">
-           <table class="table table-bordered table-light">
-             <tr>
-               <td>Project Name</td>
-               <td colspan="3"><input type=text readonly=true class="form-control" formControlName="projectName"></td>            
-             </tr>
+           <table class="table table-bordered table-light">            
              <tr>
                 <td>Description</td>
                 <td colspan="3"><input type=text class="form-control" formControlName="description"></td>             
@@ -56,10 +52,8 @@
               <tr>
                 <td>Active</td>
                 <td><input type="checkbox" formControlName="active"></td>
-                <td>Groups</td>
-                <td><select class="form-control" formControlName="groupID"><option class="dropdown-item" *ngFor="let item of groupChoices" [value]= "item.GroupID">
-                    {{item.GroupName}}
-                  </option></select></td>               
+                <td>POR</td>
+                <td><input type="checkbox" formControlName="planOfRecord"></td>               
               </tr>
               <tr>
                   <td>Project Number</td>
@@ -86,16 +80,16 @@
                   </option></select></td>
                   </tr>
                   <tr>
-                    <td>POR</td>
-                    <td><input type="checkbox" formControlName="planOfRecord"></td>
-                    <td>Priority</td>
-                    <td><select class="form-control" formControlName="priorityID"><option class="dropdown-item" *ngFor="let item of priorityChoices" [value]= "item.PriorityID">
-                        {{item.PriorityName}}
-                      </option></select></td>                
+                    <td></td>
+                    <td></td>
+                    <td>Groups</td>
+                    <td><select class="form-control" formControlName="groupID"><option class="dropdown-item" *ngFor="let item of groupChoices" [value]= "item.GroupID">
+                      {{item.GroupName}}
+                    </option></select></td>                
                     </tr>
                   <tr>
-                        <td>Notes</td>
-                        <td colspan="3" rowspan="2"><textarea  class="form-control" formControlName="notes"></textarea></td>                     
+                      <td>Notes</td>
+                      <td colspan="3" rowspan="2"><textarea  class="form-control" formControlName="notes"></textarea></td>                     
                    </tr>
                    <tr></tr>             
   

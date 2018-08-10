@@ -5,7 +5,7 @@
     <div class="input-group">
       <input class="searchInput" type="text" [(ngModel)]="searchParts" (change)="onSearchInputChange($event)" placeholder="Search Parts">
       <div class="input-group-append">
-        <button class="btn btn-primary btn-fte-toolbar" (click)="onCreatePartClick()" style="display: block">
+        <button [disabled]="!searchParts" class="btn btn-primary btn-fte-toolbar" (click)="onCreatePartClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
         </button>       
       </div>

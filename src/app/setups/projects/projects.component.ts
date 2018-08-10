@@ -290,9 +290,8 @@ export class ProjectsSetupsComponent implements OnInit {
       ProjectID: this.project ? this.project.ProjectID : this.form.value.projectID,
       CurrentRevision: 0,
       RevisionNotes: '',
-      NeedByDate: new Date(),
-      NeededQuantity: 0,
-      BuildStatusID: 0,
+      PLCStatusID: 0,
+      PLCDate: new Date(),
       Notes: '',
       DeleteRow: 0
     });
