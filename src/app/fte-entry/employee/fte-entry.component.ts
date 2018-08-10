@@ -469,7 +469,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       const t0 = performance.now();
 
       // call the api data service to send the put request
-      this.apiDataFteService.updateUserData(fteData, this.authService.loggedInUser.id)
+      this.apiDataFteService.updateUserData(fteData)
       .subscribe(
         res => {
           const t1 = performance.now();
@@ -522,37 +522,20 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         }
       });
       const invalidProjectsString = invalidProjects.toString();
-      this.cacheService.raiseToast('error', `Error: All projects in your table must have FTE entries.
+      this.cacheService.raiseToast('error', `All projects in your table must have FTE entries.
       Please add FTE entries for the following projects:${invalidProjectsString} and try again`);
-    } else if (!currentQuarterValid) {
-      // if the save was disallowed because there are invalid sums in the current quarter, let the user know how many
-      const invalidValues = [];
-      this.monthlyTotals.slice(firstEditableMonth, firstEditableMonth + 3).forEach( value => {
-        if (value !== 1) {
-          invalidValues.push(value);
-        }
-      });
-      this.cacheService.raiseToast('error', `Error: FTE totals in each month cannot exceed 100%.
-      Please correct the ${invalidValues.length} months in the current quarter and try again.`);
-    } else if (!futureQuartersValid) {
-      // if the save was disallowed because there are invalid sums in future quarters, let the user know how many
-      const invalidValues = [];
-      this.monthlyTotals.slice(firstEditableMonth + 3).forEach( value => {
-        if (value > 1) {
-          invalidValues.push(value);
-        }
-      });
-      this.cacheService.raiseToast('error', `Error: FTE totals in each month cannot exceed 100%.
-      Please correct the ${invalidValues.length} months in future quarters and try again.`);
+    } else if (!currentQuarterValid || !futureQuartersValid) {
+      this.cacheService.raiseToast('error', `FTE totals in each month cannot exceed 100%.`);
     } else {
-      this.cacheService.raiseToast('error', 'Error: An unknown error has occurred while saving.  Please contact the administrators.');
+      this.cacheService.raiseToast('error', 'An unknown error has occurred while saving.  Please contact the administrators.');
     }
   }
 
 
   fteComponentInit() {
     // get FTE data
-    this.apiDataFteService.indexUserData(this.authService.loggedInUser.id)
+    // this.apiDataFteService.indexUserData(this.authService.loggedInUser.id)
+    this.apiDataFteService.indexUserData()
     .subscribe(
       res => {
         // console.log('indexUserData', res.nested);
@@ -840,7 +823,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           newlyAdded: deletedProject.newlyAdded
         };
 
-        const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
+        const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted.projectID).subscribe(
           deleteResponse => {
             // only delete from the projectemployeerole table if user is deleting a non-newlyAdded project
             if (!toBeDeleted.newlyAdded) {
@@ -856,7 +839,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
             deleteActionSubscription.unsubscribe();
           },
           deleteErr => {
-            this.cacheService.raiseToast('warn', `${deleteErr.status}: ${deleteErr.statusText}`);
+            this.cacheService.raiseToast('warning', `${deleteErr.status}: ${deleteErr.statusText}`);
             deleteActionSubscription.unsubscribe();
           }
         );
@@ -900,7 +883,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         this.cacheService.raiseToast('success', 'Your FTE form has been reset');
       } else {
         console.log('reset aborted');
-        this.cacheService.raiseToast('warn', 'Reset was aborted');
+        this.cacheService.raiseToast('warning', 'Reset was aborted');
       }
       resetModalSubscription.unsubscribe();
     });
@@ -1082,7 +1065,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   showSliderDisabledToast() {
     const name = this.checkIfEmptyProjects();
     if (this.sliderDisabled) {
-      this.cacheService.raiseToast('warn', `Please enter FTE values for project ${name}, before dragging the slider`);
+      this.cacheService.raiseToast('warning', `Please enter FTE values for project ${name}, before dragging the slider`);
     }
   }
 

@@ -1,2 +1,7 @@
 
-<div [class]="toastType" [class.toast-show]="toastVisible" (click)="dismissToast()">{{toastText}}</div>
+<div [class]="toastClass" [class.toast-show]="toastVisible" (click)="dismissToast()">
+  <span class="toast-title">
+    {{toastType | titlecase}}:
+  </span><br />
+  {{toastText}}
+</div>
