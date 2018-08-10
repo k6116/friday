@@ -95,6 +95,7 @@ export class ProjectsSetupsComponent implements OnInit {
       },
       err => {
         console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project Types: ${err}`);
       }
     );
 
@@ -106,6 +107,7 @@ export class ProjectsSetupsComponent implements OnInit {
       },
       err => {
         console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project Departments: ${err}`);
       }
     );
 
@@ -117,6 +119,7 @@ export class ProjectsSetupsComponent implements OnInit {
       },
       err => {
         console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project Groups: ${err}`);
       }
     );
 
@@ -128,6 +131,7 @@ export class ProjectsSetupsComponent implements OnInit {
       },
       err => {
         console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project Priorities: ${err}`);
       }
     );
 
@@ -139,6 +143,7 @@ export class ProjectsSetupsComponent implements OnInit {
       },
       err => {
         console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain PLC Status: ${err}`);
       }
     );
   }
@@ -199,9 +204,11 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.updateProjectSetup(this.form.value, this.authService.loggedInUser.id)
       .subscribe(
         res => {
+          this.cacheService.raiseToast('success', 'Project Updated Successfully');
         },
         err => {
           console.log(err);
+          this.cacheService.raiseToast('error', `Project Schedule Failed to Update: ${err}`);
         }
       );
     } else {
@@ -213,13 +220,15 @@ export class ProjectsSetupsComponent implements OnInit {
             {
               projectID: res.newProjectID
             });
-            // this.schedule = [];
-            // this.scheduleId = 0;
-            // this.createDefaultScheduleRow();
-            // this.showScheduleCard = true;
+            this.schedule = [];
+            this.scheduleId = 0;
+            this.createDefaultScheduleRow();
+            this.showScheduleCard = true;
+            this.cacheService.raiseToast('success', 'New Project Created');
         },
         err => {
           console.log(err);
+          this.cacheService.raiseToast('error', `Create Project Failed: ${err}`);
         }
       );
     }
@@ -258,6 +267,7 @@ export class ProjectsSetupsComponent implements OnInit {
           .subscribe(
             del => {
               console.log('project deleted');
+              this.cacheService.raiseToast('success', 'Project Removed Successfully');
               this.project = null;
               this.schedule = null;
               this.showProjectCard = false;
@@ -267,6 +277,7 @@ export class ProjectsSetupsComponent implements OnInit {
             },
             err => {
               console.log(err);
+              this.cacheService.raiseToast('error', `Delete Propject Failed: ${err}`);
             }
           );
         }
@@ -276,7 +287,7 @@ export class ProjectsSetupsComponent implements OnInit {
   createDefaultScheduleRow() {
     this.schedule.push({
       ScheduleID: this.scheduleId,
-      ProjectID: this.project.ProjectID,
+      ProjectID: this.project ? this.project.ProjectID : this.form.value.projectID,
       CurrentRevision: 0,
       RevisionNotes: '',
       NeedByDate: new Date(),
@@ -301,7 +312,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
       .subscribe(
         res => {
+          if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
           console.log('Saved Project Schedule');
+          this.cacheService.raiseToast('success', 'Project Schedule Saved');
         },
         err => {
           console.log(err);
@@ -313,6 +326,7 @@ export class ProjectsSetupsComponent implements OnInit {
       .subscribe(
         res => {
           console.log('Deleted Schedule');
+          this.cacheService.raiseToast('success', 'Project Schedule Removed');
         },
         err => {
           console.log(err);
@@ -323,7 +337,7 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   getSchedule() {
-    this.apiDataSchedulesService.getProjectSchedule(this.project.ProjectID)
+    this.apiDataSchedulesService.getProjectSchedule(this.project ? this.project.ProjectID : this.form.value.projectID)
     .subscribe(
       res => {
         if (res.length > 0) {

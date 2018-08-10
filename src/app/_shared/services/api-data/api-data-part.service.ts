@@ -38,7 +38,7 @@ export class ApiDataPartService {
   updatePart(partData: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(`/api/updatePart/${userID}`, JSON.stringify(partData), options)
+    return this.http.post(`/api/updatePart`, JSON.stringify(partData), options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -46,7 +46,7 @@ export class ApiDataPartService {
   createPart(partData: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(`/api/createPart/${userID}`, JSON.stringify(partData), options)
+    return this.http.post(`/api/createPart`, JSON.stringify(partData), options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

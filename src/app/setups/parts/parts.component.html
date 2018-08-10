@@ -111,13 +111,13 @@
             </div>
             <div class="col-5">
               <table>
-                <td> <h6>Revision Notes</h6></td>
+                <td> <h6>* Revision Notes </h6></td>
                 <td><input type=text class=form-control maxlength="500" [(ngModel)]="revisionNotes"></td>
               </table>                      
             </div>
            
             <div class="col-4 text-right">
-              <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
+              <button [disabled]="!revisionNotes" class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
                 <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
               </button>              
             </div>
@@ -135,7 +135,7 @@
          
             <tbody *ngFor="let sched of schedule">
               <td><input [(ngModel)]="sched.NeedByDate" type=date class=form-control ></td>
-              <td><input [(ngModel)]="sched.NeededQuantity" type=number class=form-control></td>
+              <td><input [(ngModel)]="sched.NeededQuantity" type=number class=form-control min=0></td>
               <td><select [(ngModel)]="sched.BuildStatusID" class=form-control><option *ngFor="let item of buildStatusChoices" [value]= "item.BuildStatusID">
                 {{item.BuildStatusName}}
               </option></select></td>
