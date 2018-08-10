@@ -1,3 +1,14 @@
+<a name="1.6.1"></a>
+## [1.6.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.6.0...v1.6.1) (2018-08-10)
+
+
+### Bug Fixes
+
+* **Auth:** adding security guards to FTE component to prevent unauthorized FTE submissions ([fadcefa](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/fadcefa))
+* **FTE Entry page:** improved toast css ([12248ff](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/12248ff))
+
+
+
 <a name="1.6.0"></a>
 # [1.6.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.5.1...v1.6.0) (2018-08-06)
 

@@ -4,11 +4,13 @@ const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize')
 const Treeize = require('treeize');
 const moment = require('moment');
+const token = require('../token/token');
 
 
 function indexUserData(req, res) {
 
-    const userID = req.params.userID;
+    const decodedToken = token.decode(req.header('X-Token'), res);
+    const userID = decodedToken.userData.id;
     sequelize.query('EXECUTE resources.DisplayFTE :userID', {replacements: {userID: userID}, type: sequelize.QueryTypes.SELECT})
     .then(results => {
         const fteTree = new Treeize();
@@ -29,19 +31,32 @@ function indexUserData(req, res) {
 
 function destroyUserProject(req, res) {
   
-  const userID = req.params.userID;
-  const toBeDeletedID = req.body.projectID;
-  const toBeDeletedName = req.body.projectName;
-  return models.ProjectEmployee
-  .destroy({
-    where: {
-      projectID: toBeDeletedID,
-      employeeID: userID
-    }})
+  const decodedToken = token.decode(req.header('X-Token'), res);
+  const userID = decodedToken.userData.id;
+  const toBeDeletedID = req.params.projectID;
+  return sequelize.transaction((t) => {
+    return models.ProjectEmployee
+    .destroy({
+      where: {
+        projectID: toBeDeletedID,
+        employeeID: userID
+      },
+      transaction: t
+    })
+      .then( deletedRows => {
+        return models.ProjectEmployeeRoles
+        .destroy({
+          where: {
+            projectID: toBeDeletedID,
+            employeeID: userID
+          },
+          transaction: t
+        })
+      })
+  })
   .then(deletedRows => {
-    console.log(`${deletedRows} project employee records deleted`);
     res.json({
-      message: `Successfully deleted project ${toBeDeletedName}`
+      message: `Project successfully deleted`
     });
   })
   .catch(error => {
@@ -56,8 +71,9 @@ function destroyUserProject(req, res) {
 
 function updateUserData(req, res) {
 
+  const decodedToken = token.decode(req.header('X-Token'), res);
+  const userID = decodedToken.userData.id;
   const formData = req.body;
-  const userID = req.params.userID;
   const updatedValues = [];
 
   // combine all project arrays into a single array
