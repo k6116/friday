@@ -104,10 +104,10 @@ export class DashboardDonutService {
     // build the data arrays
     for (let i = 0; i < data.length; i += 1) {
 
-      // add project types data (innder data)
+      // add project types data (inner data)
       projectTypesData.push({
         name: categories[i],
-        y: this.toolsService.roundTo((data[i].y / allFTEs) * 100, 0),
+        y: (data[i].y / allFTEs) * 100,
         color: data[i].color
       });
 
@@ -117,7 +117,7 @@ export class DashboardDonutService {
         const brightness = 0.5 - (j / drillDataLen) / 5;
         projectsData.push({
           name: data[i].drilldown.categories[j],
-          y: this.toolsService.roundTo((data[i].drilldown.data[j] / allFTEs) * 100, 0),
+          y: (data[i].drilldown.data[j] / allFTEs) * 100,
           color: this.toolsService.shadeHexColor(data[i].color, brightness)
         });
       }
@@ -167,7 +167,7 @@ export class DashboardDonutService {
         }
       },
       tooltip: {
-        valueSuffix: '%'
+        pointFormat: '{series.name}: <b>{point.percentage:.0f}%</b>'
       },
       series: [{
         name: 'Project Type',
