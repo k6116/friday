@@ -30,6 +30,7 @@ router.get('/indexProjectsFilterProjectType', controllers.project.indexProjectsF
 router.get('/indexProjectRoster/:projectID', controllers.project.indexProjectRoster);
 router.get('/indexUserProjectList/:userID', controllers.project.indexUserProjectList);
 router.get('/indexProjectTypesList/', controllers.project.indexProjectTypesList);
+router.get('/indexProjectStatusesList/', controllers.project.indexProjectStatusesList);
 router.post('/insertProject/:userID', controllers.project.insertProject);
 router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/destroyProject/:userID', controllers.project.destroyProject);   // PROTECT

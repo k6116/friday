@@ -45,6 +45,19 @@ const ProjectTypes = sequelize.define('projectTypes',
   }
 );
 
+const ProjectStatuses = sequelize.define('projectStatuses',
+  {
+    id: { type: Sequelize.INTEGER, field: 'ProjectStatusID', primaryKey: true, autoIncrement: true },
+    projectStatusName: { type: Sequelize.STRING, field: 'ProjectStatusName' },
+    description: { type: Sequelize.STRING, field: 'Description' }
+  },
+  {
+    schema: 'projects',
+    tableName: 'ProjectStatus',
+    timestamps: false
+  }
+);
+
 const ProjectPermissionRequests = sequelize.define('projectPermissionRequests',
   {
     id: { type: Sequelize.INTEGER, field: 'RequestID', primaryKey: true, autoIncrement: true },
@@ -95,6 +108,7 @@ ProjectTypeDisplayFields.belongsTo(ProjectTypes, {foreignKey: 'projectTypeID'});
 module.exports = {
   Projects: Projects, 
   ProjectTypes: ProjectTypes,
+  ProjectStatuses: ProjectStatuses,
   ProjectPermissionRequests: ProjectPermissionRequests,
   ProjectTypeDisplayFields: ProjectTypeDisplayFields,
 }

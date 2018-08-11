@@ -320,6 +320,26 @@ function indexProjectTypesList(req, res) {
   });
 }
 
+
+function indexProjectStatusesList(req, res) {
+
+  models.ProjectStatuses.findAll({
+    attributes: ['id', 'projectStatusName', 'description'],
+  })
+  .then(projectStatuses => {
+    console.log('Returning Project Statuses List')
+    res.json(projectStatuses);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+
+  });
+}
+
+
 function indexProjectSchedule(req, res) {
 
   const projectName = req.params.projectName;
@@ -560,6 +580,7 @@ module.exports = {
   updateProject: updateProject,
   destroyProject: destroyProject,
   indexProjectTypesList: indexProjectTypesList,
+  indexProjectStatusesList: indexProjectStatusesList,
   indexProjectSchedule: indexProjectSchedule,
   indexProjectTypeDisplayFields: indexProjectTypeDisplayFields,
   insertProjectEmployeeRole: insertProjectEmployeeRole,
