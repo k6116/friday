@@ -19,14 +19,18 @@ export class BrowseProjectsComponent implements OnInit {
   showPage: boolean;
   projectTypeBinding: any;
   numProjectsToDisplayAtOnce: number;
-  numProjectsToDisplay: number;
   filterString: string;
   totalProjects: number;
+  totalProjectsCount: number;  // total number of projects
+  addedProjectsCount: number;  // number of projects currently added to the page via infinate scroll (increments of 100)
+  filteredProjectsCount: number;  // number of project currently displayed, if there is a filter set
+  numProjectsToDisplay: number; // number of projects to show initially and to add for infinate scroll
   displayedProjects: number;
   filters: any[];
   filterProperty: string;
   matchFuzzy: boolean;
   matchExact: boolean;
+  matchOptimistic: boolean;
 
   constructor(
     private apiDataProjectService: ApiDataProjectService,
@@ -36,6 +40,7 @@ export class BrowseProjectsComponent implements OnInit {
     // set the number of projects to display initially, and to add for infinite scroll
     this.numProjectsToDisplayAtOnce = 100;
     this.numProjectsToDisplay = 100;
+    this.addedProjectsCount = 100;
 
     // this.filters = ['Project Name', 'Project Type', 'Description', 'Priority', 'Project Status'];
 
@@ -44,31 +49,36 @@ export class BrowseProjectsComponent implements OnInit {
         displayName: 'Project Name',
         columnName: 'ProjectName',
         matchFuzzy: true,
-        matchExact: false
+        matchExact: false,
+        matchOptimistic: false
       },
       {
         displayName: 'Project Type',
         columnName: 'ProjectTypeName',
         matchFuzzy: false,
-        matchExact: true
+        matchExact: true,
+        matchOptimistic: false
       },
       {
         displayName: 'Description',
         columnName: 'Description',
-        matchFuzzy: true,
-        matchExact: false
+        matchFuzzy: false,
+        matchExact: false,
+        matchOptimistic: true
       },
       {
         displayName: 'Priority',
         columnName: 'PriorityName',
         matchFuzzy: false,
-        matchExact: true
+        matchExact: true,
+        matchOptimistic: false
       },
       {
         displayName: 'Project Status',
         columnName: 'ProjectStatusName',
         matchFuzzy: false,
-        matchExact: true
+        matchExact: true,
+        matchOptimistic: false
       }
     ];
 
@@ -90,6 +100,7 @@ export class BrowseProjectsComponent implements OnInit {
           this.projects = res;
           // store the number of projects, to display in the page 'showing x of y projects'
           this.totalProjects = this.projects.length;
+          this.totalProjectsCount = this.projects.length;
           // set the number of displayed projects
           this.displayedProjects = this.projects.length;
           // fire the filter string change to run it through the pipe
@@ -132,6 +143,7 @@ export class BrowseProjectsComponent implements OnInit {
       this.filterProperty = foundFilter.columnName;
       this.matchFuzzy = foundFilter.matchFuzzy;
       this.matchExact = foundFilter.matchExact;
+      this.matchOptimistic = foundFilter.matchOptimistic;
     }
     console.log(`filterProperty: ${this.filterProperty}, matchFuzzy: ${this.matchFuzzy}, matchExact: ${this.matchExact}`);
     // set the focus on the filter input
@@ -142,8 +154,10 @@ export class BrowseProjectsComponent implements OnInit {
   onFilterStringChange() {
     console.log('filter string change fired');
     const projects = this.filterPipe.transform(this.projects, this.filterString, this.filterProperty,
-      {limitTo: this.numProjectsToDisplay, matchFuzzy: this.matchFuzzy, matchExact: this.matchExact});
+      {limitTo: this.numProjectsToDisplay, matchFuzzy: this.matchFuzzy,
+      matchOptimistic: this.matchOptimistic, matchExact: this.matchExact});
     this.displayedProjects = projects.length;
+    this.filteredProjectsCount = projects.length;
     console.log('filter string returned projects:');
     console.log(projects);
   }
@@ -275,7 +289,7 @@ export class BrowseProjectsComponent implements OnInit {
     const numDisplayedProjects = this.numProjectsToDisplay;
     // get the number of total projects
     const numProjects = this.projects.length;
-    // calculate the number of remaining projects that could be displaed
+    // calculate the number of remaining projects that could be displayed
     const numRemainingProjects = numProjects - numDisplayedProjects;
     // take the minimum of X projects or remaining projects
     const numProjectsToAdd = Math.min(this.numProjectsToDisplayAtOnce, numRemainingProjects);
@@ -285,6 +299,10 @@ export class BrowseProjectsComponent implements OnInit {
       this.numProjectsToDisplay += numProjectsToAdd;
       console.log(`added ${numProjectsToAdd} projects; now showing ${this.numProjectsToDisplay} projects`);
       this.onFilterStringChange();
+      this.addedProjectsCount += numProjectsToAdd;
+      console.log(`current added projects to page: ${this.addedProjectsCount} projects;
+        displaying ${this.filteredProjectsCount} filtered projects, there are ${this.totalProjectsCount} total projects`);
+        // current added projects to page: 200 projects; displaying 475 filtered projects, there are 986 total projects
     }
 
   }

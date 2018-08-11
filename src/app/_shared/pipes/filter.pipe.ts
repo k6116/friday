@@ -85,12 +85,16 @@ export class FilterPipe implements PipeTransform {
 
     // matchOptimistic filter option
     if (options.hasOwnProperty('matchOptimistic')) {
-      if (options.matchcOptimistic) {
+      if (options.matchOptimistic) {
 
         return objects.filter(object => {
-          const p = object[property].replace(/[^a-zA-Z0-9\\s]/gm, '').toLowerCase();
-          const f = filter.replace(/[^a-zA-Z0-9\\s]/gm, '').toLowerCase();
-          return p.includes(f);
+          if (object[property]) {
+            const p = object[property].replace(/[^a-zA-Z0-9\\s]/gm, '').toLowerCase();
+            const f = filter.replace(/[^a-zA-Z0-9\\s]/gm, '').toLowerCase();
+            return p.includes(f);
+          } else {
+            return false;
+          }
         });
 
       }
@@ -111,8 +115,9 @@ export class FilterPipe implements PipeTransform {
     }
 
     // default option (no options passed): do a trimmed, lowercase match
+    // for description etc. might be null so need to do the test with ?
     return objects.filter(object => {
-      return object[property].trim().toLowerCase() === filter.trim().toLowerCase();
+      return object[property] ? object[property].trim().toLowerCase() === filter.trim().toLowerCase() : false;
     });
 
 
