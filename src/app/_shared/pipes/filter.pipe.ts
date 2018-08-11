@@ -22,28 +22,31 @@ export class FilterPipe implements PipeTransform {
     } else {
       hasFilter = false;
     }
-    // const hasFilter = options.hasOwnProperty('paginationFilter') || filter ? true : false;
+
+
+    // return filtered, or non filtered array of objects depending on filter string and options
 
     // return all (or nothing) if no objects or no filter given
     if (!objects || !hasFilter) {
-      console.log('returning all objects (no filter provided');
+      console.log('no filter provided, returning all objects');
       return objects;
     }
 
-    // no string filter, but has pagination filter turned on
+    // no string filter, but has the pagination filter turned on
     if (!filter && options.hasOwnProperty('paginationFilter')) {
       if (options.paginationFilter.on) {
         const regexp = new RegExp(options.paginationFilter.regexp, 'i');
         const prop = options.paginationFilter.property;
+        console.log('returning filtered objects by pagination');
         return objects.filter(object => {
           return regexp.test(object[prop][0]);
         });
       }
     }
 
-    // no string filter, but has limitTo filter turned on
+    // no string filter, but has the limitTo filter turned on
     if (!filter && options.hasOwnProperty('limitTo')) {
-      console.log('returning limit to filter');
+      console.log(`returning limit to filter (${+options.limitTo}`);
       return objects.filter((object, index) => {
         return index < +options.limitTo;
       });
@@ -51,49 +54,69 @@ export class FilterPipe implements PipeTransform {
 
     // fuzzy filter using fuse.js
     if (options.hasOwnProperty('matchFuzzy')) {
+      if (options.matchFuzzy) {
+        const t0 = performance.now();
 
-      const t0 = performance.now();
+        // set the threshold (sensitivity), either passed in the options, or the default of 0.4
+        let threshold;
+        if (options.hasOwnProperty('matchFuzzy.threshold')) {
+          threshold = options.matchFuzzy.threshold;
+        } else {
+          threshold = 0.4;
+        }
 
-      const fuseOptions = {
-        threshold: 0.4,
-        location: 0,
-        distance: 100,
-        maxPatternLength: 16,
-        minMatchCharLength: 1,
-        keys: [property]
-      };
-      const fuse = new Fuse(objects, fuseOptions);
-      const result = fuse.search(filter);
+        const fuseOptions = {
+          threshold: threshold,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 16,
+          minMatchCharLength: 1,
+          keys: [property]
+        };
+        const fuse = new Fuse(objects, fuseOptions);
+        const result = fuse.search(filter);
 
-      const t1 = performance.now();
-      console.log(`fuzzy search took ${t1 - t0} milliseconds`);
+        const t1 = performance.now();
+        console.log(`returning fuzzy search filter; took ${t1 - t0} milliseconds`);
 
-      return result;
-
+        return result;
+      }
     }
 
-    // for string filter
-    return objects.filter(object => {
-      if (options.matchAny) {
-        return (object[property] ? object[property] : '').toString().toLowerCase().includes(filter.toString().toLowerCase());
+    // matchOptimistic filter option
+    if (options.hasOwnProperty('matchOptimistic')) {
+      if (options.matchcOptimistic) {
 
-      } else if (options.matchOptimistic) {
-        try {
-            if (object[property]) {
-              const p = object[property].replace(/[^a-zA-Z0-9\\s]/gm, '').toLowerCase();
-              const f = filter.replace(/[^a-zA-Z0-9\\s]/gm, '').toLowerCase();
-              return p.includes(f);
-            }
+        return objects.filter(object => {
+          const p = object[property].replace(/[^a-zA-Z0-9\\s]/gm, '').toLowerCase();
+          const f = filter.replace(/[^a-zA-Z0-9\\s]/gm, '').toLowerCase();
+          return p.includes(f);
+        });
 
-         } catch (RegexMatchTimeoutException) {
-           console.log('optimistic search regex error');
-            return false;
-         }
-
-      } else {
-        return (object[property] ? object[property] : '').substring(0, filter.length).toLowerCase() === filter.toLowerCase();
       }
+    }
+
+    // match exact option
+    if (options.hasOwnProperty('matchExact')) {
+      if (options.matchExact) {
+
+        console.log('returning from match exact filter');
+        // must be an exact match - good for dropdown selections where you can guarantee an exact match
+        // and don't want any extra matches (like NPIs)
+        return objects.filter(object => {
+          return object[property] === filter;
+        });
+
+      }
+    }
+
+    // default option (no options passed): do a trimmed, lowercase match
+    return objects.filter(object => {
+      return object[property].trim().toLowerCase() === filter.trim().toLowerCase();
     });
+
+
+
   }
 
 }

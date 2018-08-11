@@ -24,6 +24,9 @@ export class BrowseProjectsComponent implements OnInit {
   totalProjects: number;
   displayedProjects: number;
   filters: any[];
+  filterProperty: string;
+  matchFuzzy: boolean;
+  matchExact: boolean;
 
   constructor(
     private apiDataProjectService: ApiDataProjectService,
@@ -39,23 +42,33 @@ export class BrowseProjectsComponent implements OnInit {
     this.filters = [
       {
         displayName: 'Project Name',
-        apiName: 'projectName'
+        columnName: 'ProjectName',
+        matchFuzzy: true,
+        matchExact: false
       },
       {
         displayName: 'Project Type',
-        apiName: 'projectName'
+        columnName: 'ProjectTypeName',
+        matchFuzzy: false,
+        matchExact: true
       },
       {
         displayName: 'Description',
-        apiName: 'projectName'
+        columnName: 'Description',
+        matchFuzzy: true,
+        matchExact: false
       },
       {
         displayName: 'Priority',
-        apiName: 'projectName'
+        columnName: 'PriorityName',
+        matchFuzzy: false,
+        matchExact: true
       },
       {
         displayName: 'Project Status',
-        apiName: 'projectName'
+        columnName: 'ProjectStatusName',
+        matchFuzzy: false,
+        matchExact: true
       }
     ];
 
@@ -64,6 +77,10 @@ export class BrowseProjectsComponent implements OnInit {
 
 
   ngOnInit() {
+
+    // set the default filter settings (search by dropdown value)
+    this.filterProperty = 'ProjectName';
+    this.matchFuzzy = true;
 
     // get all the projects
     this.apiDataProjectService.getProjects()
@@ -102,9 +119,21 @@ export class BrowseProjectsComponent implements OnInit {
   }
 
 
-  onFilterByChange(value) {
+  onFilterByChange(filterBy) {
     console.log('filter by change event fired');
-    console.log(value);
+    console.log(filterBy);
+    // get the column name that will be used by the filter pipe
+    const foundFilter = this.filters.find(filter => {
+      return filter.displayName === filterBy;
+    });
+    console.log('found filter:');
+    console.log(foundFilter);
+    if (foundFilter) {
+      this.filterProperty = foundFilter.columnName;
+      this.matchFuzzy = foundFilter.matchFuzzy;
+      this.matchExact = foundFilter.matchExact;
+    }
+    console.log(`filterProperty: ${this.filterProperty}, matchFuzzy: ${this.matchFuzzy}, matchExact: ${this.matchExact}`);
     // set the focus on the filter input
     this.filterVC.nativeElement.focus();
   }
@@ -112,8 +141,8 @@ export class BrowseProjectsComponent implements OnInit {
 
   onFilterStringChange() {
     console.log('filter string change fired');
-    const projects = this.filterPipe.transform(this.projects, this.filterString, 'ProjectName',
-      {limitTo: this.numProjectsToDisplay, matchFuzzy: true});
+    const projects = this.filterPipe.transform(this.projects, this.filterString, this.filterProperty,
+      {limitTo: this.numProjectsToDisplay, matchFuzzy: this.matchFuzzy, matchExact: this.matchExact});
     this.displayedProjects = projects.length;
     console.log('filter string returned projects:');
     console.log(projects);

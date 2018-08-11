@@ -115,6 +115,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         },
         err => {
           console.log(err);
+          this.backgroundImage = this.cacheService.backgroundImage;
         }
       );
 
@@ -125,6 +126,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
     this.backgroundImage = this.backgroundImages[imageIndex];
     this.showLoginPage = true;
+    // save the last shown image in the cache service
+    this.cacheService.backgroundImage = this.backgroundImage;
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)

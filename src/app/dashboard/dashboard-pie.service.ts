@@ -166,7 +166,15 @@ export class DashboardPieService {
       series: [{
         name: 'FTE %',
         colorByPoint: true,
-          data: seriesData
+        data: seriesData,
+        point: {
+          events: {
+            click: function(e) {
+              const p = e.point;
+              console.log(p);
+            }.bind(this)
+          }
+        }
       }],
       drilldown: {
         series: drilldownSeries
