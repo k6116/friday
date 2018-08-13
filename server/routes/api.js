@@ -12,7 +12,7 @@ var controllers = require('../controllers/_index.js');
 // TO-DO ALL: rename controller functions to index, show, insert, update, destory if it fits
 
 // AUTH CONTROLLER 
-router.post('/auth/authenticate', controllers.auth.authenticate);
+router.post('/auth/authenticate', controllers.auth.authenticateOverride);
 router.get('/auth/getInfoFromToken', controllers.auth.getInfoFromToken);
 router.post('/auth/resetToken', controllers.auth.resetToken);
 router.get('/auth/verifyRoutePermissions', controllers.auth.verifyRoutePermissions);
@@ -161,9 +161,9 @@ router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 
 // SCHEDULES CONTROLLER
 router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
-router.post('/updateProjectSchedule', controllers.schedules.updateProjectSchedule);
+router.post('/updateProjectSchedule/:userID/:revisionNotes', controllers.schedules.updateProjectSchedule);
 router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
-router.post('/updatePartSchedule/:revisionNotes', controllers.schedules.updatePartSchedule);
+router.post('/updatePartSchedule/:userID/:revisionNotes', controllers.schedules.updatePartSchedule); //TO-DO user Token for userID and put revisionNotes in header
 router.get('/destroySchedule/:scheduleID', controllers.schedules.destroySchedule);
 
 // middleware to protect permissions protected routes

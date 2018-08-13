@@ -35,7 +35,7 @@ export class ApiDataPartService {
     .map((response: Response) => response.json());
   }
 
-  updatePart(partData: any, userID: number) {
+  updatePart(partData: any) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({ headers: headers });
     return this.http.post(`/api/updatePart`, JSON.stringify(partData), options)

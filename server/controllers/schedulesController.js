@@ -33,7 +33,8 @@ function indexProjectSchedule(req, res) {
 
   function updateProjectSchedule(req,res) {
 
-	const decodedToken = token.decode(req.header('X-Token'), res);	
+	// const decodedToken = token.decode(req.header('X-Token'), res);	//TO-DO fix decode
+	const userID = req.params.userID;
 	const revisionNotes = req.params.revisionNotes;
 	
 	const schedule = req.body;
@@ -69,7 +70,7 @@ function indexProjectSchedule(req, res) {
 			projectID: schedule[0].ProjectID,
 			partID: null,
 			notes: revisionNotes,
-			employeeID: decodedToken.userData.id,
+			employeeID: userID, // decodedToken.userData.id,
 			schedule: scheduleXML,
 			rowCount: null,
 			errorNumber: null,
@@ -104,7 +105,7 @@ function indexProjectSchedule(req, res) {
 				projectID: schedule[0].ProjectID,
 				partID: null,
 				notes: revisionNotes,
-				employeeID: decodedToken.userData.id,
+				employeeID: userID, // decodedToken.userData.id,
 				schedule: scheduleXML,
 				rowCount: null,
 				errorNumber: null,
@@ -155,9 +156,10 @@ function indexPartSchedule(req, res) {
 
 function updatePartSchedule(req,res) {
 
-	const decodedToken = token.decode(req.header('X-Token'), res);
-	const revisionNotes = req.params.revisionNotes;
+//	const decodedToken = token.decode(req.header('X-Token'), res); //ERRORS!
 	const schedule = req.body;
+	const userID = req.params.userID;
+	const revisionNotes = req.params.revisionNotes;
 
 	var scheduleXML = `<Schedules>`;
 	schedule.forEach(element => {
@@ -191,7 +193,7 @@ function updatePartSchedule(req,res) {
 			projectID: null,
 			partID: schedule[0].PartID,
 			notes: revisionNotes,
-			employeeID: decodedToken.userData.id,
+			employeeID: userID, // decodedToken.userData.id,
 			schedule: scheduleXML,
 			rowCount: null,
 			errorNumber: null,
@@ -226,7 +228,7 @@ function updatePartSchedule(req,res) {
 				projectID: null,
 				partID: schedule[0].PartID,
 				notes: revisionNotes,
-				employeeID: decodedToken.userData.id,
+				employeeID: userID, // decodedToken.userData.id,
 				schedule: scheduleXML,
 				rowCount: null,
 				errorNumber: null,

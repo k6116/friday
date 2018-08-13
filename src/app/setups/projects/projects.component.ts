@@ -287,6 +287,9 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   createDefaultScheduleRow() {
+    if (this.schedule === null) {
+      this.schedule = [];
+    }
     this.schedule.push({
       ScheduleID: this.scheduleId,
       ProjectID: this.project ? this.project.ProjectID : this.form.value.projectID,
@@ -300,9 +303,7 @@ export class ProjectsSetupsComponent implements OnInit {
   }
 
   onAddScheduleRow() {
-    if (this.schedule === null) {
-        this.schedule = [];
-    }
+
     this.createDefaultScheduleRow();
   }
 
@@ -310,7 +311,7 @@ export class ProjectsSetupsComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes)
+    this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule

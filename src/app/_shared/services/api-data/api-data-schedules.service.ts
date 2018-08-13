@@ -20,12 +20,11 @@ export class ApiDataSchedulesService {
     .map((response: Response) => response.json());
   }
 
-  updateProjectSchedule(schedule: any, revisionNotes: string): Observable<any> {
+  updateProjectSchedule(schedule: any, revisionNotes: string, userID: number): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({ headers: headers });
-
-    if (!revisionNotes) { revisionNotes = ' '; }
-    return this.http.post(`api/updateProjectSchedule/${revisionNotes}`, JSON.stringify(schedule), options)
+  // TO-DO Fix Decode Token Issue in Controller to hide userID
+    return this.http.post(`api/updateProjectSchedule/${userID}/${revisionNotes}`, JSON.stringify(schedule), options)
     .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
@@ -39,12 +38,11 @@ export class ApiDataSchedulesService {
     .map((response: Response) => response.json());
   }
 
-  updatePartSchedule(schedule: any, revisionNotes: string): Observable<any> {
+  updatePartSchedule(schedule: any, revisionNotes: string, userID: number): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({ headers: headers });
-    if (!revisionNotes) { revisionNotes = ' '; }
-
-    return this.http.post(`api/updatePartSchedule/${revisionNotes}`, JSON.stringify(schedule), options)
+   // MG: Putting userID back in as a parameter until decode token works. Put breakpoint in controller to see error.
+    return this.http.post(`api/updatePartSchedule/${userID}/${revisionNotes}`, JSON.stringify(schedule), options)
     .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }

@@ -203,7 +203,7 @@ export class PartSetupComponent implements OnInit {
     // Save: Either Update or Create
 
     if (this.form.value.partID > 0) {
-    this.apiDataPartService.updatePart(this.form.value, this.authService.loggedInUser.id)
+    this.apiDataPartService.updatePart(this.form.value)
       .subscribe(
         res => {
           this.cacheService.raiseToast('success', 'Part Saved');
@@ -305,9 +305,6 @@ export class PartSetupComponent implements OnInit {
   }
 
   onAddScheduleRow() {
-    if (this.schedule === null) {
-        this.schedule = []; // create default array in order to push default values
-    }
     this.createDefaultScheduleRow();
   }
 
@@ -315,7 +312,7 @@ export class PartSetupComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updatePartSchedule(this.schedule, this.revisionNotes)
+    this.apiDataSchedulesService.updatePartSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
