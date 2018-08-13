@@ -27,6 +27,8 @@ export class ProjectsSetupsComponent implements OnInit {
   plcStatusChoices: any;
   revisionNotes: string;
   scheduleId: number;
+  typeSortCoefficient = -1;
+  nameSortCoefficient = -1;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -42,7 +44,25 @@ export class ProjectsSetupsComponent implements OnInit {
     this.initFormValues();
     this.getProjects();
     this.getSelectionChoices();
-    this.searchProjects = ' '; // this will avoid shoing a blank list of projects.
+  }
+
+  orderByType(type: boolean) {
+
+    if (type) {
+      this.typeSortCoefficient = -this.typeSortCoefficient;
+            this.projectList.sort((a, b) =>
+            a.ProjectTypeName < b.ProjectTypeName ? -this.typeSortCoefficient
+            : a.ProjectTypeName > b.ProjectTypeName ? this.typeSortCoefficient : 0);
+      } else {
+        this.nameSortCoefficient = -this.nameSortCoefficient;
+            this.projectList.sort((a, b) =>
+            a.ProjectName < b.ProjectName ? -this.nameSortCoefficient
+            : a.ProjectName > b.ProjectName ? this.nameSortCoefficient : 0);
+      }
+
+   // Triggers Refresh of Filtered Projects
+   // TO-DO: Find a better way to refresh the list
+    this.searchProjects = this.searchProjects + ' ';
   }
 
   onSearchInputChange(event: any) {
@@ -79,7 +99,7 @@ export class ProjectsSetupsComponent implements OnInit {
     .subscribe(
       res => {
         this.projectList = res;
-        console.log('Projects List:', this.projectList);
+        this.searchProjects = ' '; // this will avoid shoing a blank list of projects.
       },
       err => {
         console.log(err);
@@ -163,9 +183,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.form.reset();
     this.form.patchValue(
       {
-        projectName: this.searchProjects
+        projectName: this.searchProjects.trim()
       });
-      this.cacheService.raiseToast('success', 'New Project Entry Form Created.');
+      this.cacheService.raiseToast('info', 'New Project Entry Form Created.');
   }
 
   onProjectClick(project: any) {
@@ -311,7 +331,7 @@ export class ProjectsSetupsComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
+    this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule

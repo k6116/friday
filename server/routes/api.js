@@ -161,9 +161,9 @@ router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 
 // SCHEDULES CONTROLLER
 router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
-router.post('/updateProjectSchedule/:userID/:revisionNotes', controllers.schedules.updateProjectSchedule);
+router.post('/updateProjectSchedule/:revisionNotes', controllers.schedules.updateProjectSchedule);
 router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
-router.post('/updatePartSchedule/:userID/:revisionNotes', controllers.schedules.updatePartSchedule); //TO-DO user Token for userID and put revisionNotes in header
+router.post('/updatePartSchedule/:revisionNotes', controllers.schedules.updatePartSchedule); //TO-DO user Token for userID and put revisionNotes in header
 router.get('/destroySchedule/:scheduleID', controllers.schedules.destroySchedule);
 
 // middleware to protect permissions protected routes

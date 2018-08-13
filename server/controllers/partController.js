@@ -7,9 +7,11 @@ function indexParts(req, res) {
 
     const sql = `
     SELECT 
-        *   
+        p.*, t.PartTypeName   
     FROM  
-        parts.Parts    
+        parts.Parts p
+    INNER JOIN    
+        parts.PartTypes t ON p.PartTypeID = t.PartTypeID
     ORDER BY 
         PartName`
 

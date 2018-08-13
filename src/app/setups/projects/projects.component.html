@@ -5,7 +5,7 @@
     <div class="input-group">
       <input class="searchInput" type="text" maxlength="500"  [(ngModel)]="searchProjects" (change)="onSearchInputChange($event)" placeholder="Search Projects">
       <div class="input-group-append">
-        <button [disabled]="!searchProjects" class="btn btn-primary btn-fte-toolbar" (click)="onCreateProjectClick()" style="display: block">
+        <button [disabled]="!searchProjects.trim()" class="btn btn-primary btn-fte-toolbar" (click)="onCreateProjectClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
         </button>       
       </div>
@@ -14,15 +14,29 @@
 
   <div class="row">  
     <div class="col-2">
-      <ng-container *ngIf="(projectList | filter : searchProjects : 'ProjectName':{limitTo: -1, matchOptimistic: true}) as filteredProjectList">
-        <ul class="list-group list-group-flush" *ngFor="let project of filteredProjectList | slice:0:20; let i=index">
-          <button class="list-group-item list-group-item-action" (click)="onProjectClick(project)">
-            {{ project.ProjectName }}<span *ngIf="project.ProjectTypeName"> - {{project.ProjectTypeName}}</span>
-          </button>        
-        </ul>
-      </ng-container>
-    </div>
-
+        <table class="table table-wrapper-scroll-y table-hover" *ngIf="(projectList | filter : searchProjects : 'ProjectName':{limitTo: -1, matchOptimistic: true}) as filteredProjectList">
+            <thead>
+                <tr>
+                  <th class="th-sm" (click)="orderByType(true)">Type
+                      <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th class="th-sm" (click)="orderByType(false)">Name
+                      <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>                   
+                  </tr>
+              </thead>
+          <tbody>
+          <tr  *ngFor="let project of filteredProjectList" (click)="$event.stopPropagation();onProjectClick(project)">
+              <td class="projecttype">               
+                  {{ project.ProjectTypeName }}           
+              </td>
+              <td >           
+                {{ project.ProjectName  }}         
+              </td>            
+          </tr>
+        </tbody>
+        </table>
+      </div>
     <div class="col-5">
       <div class="card" *ngIf="showProjectCard">
         <div class="card-header">
@@ -33,16 +47,12 @@
                 </form>            
             </div>
             <div class="col-4 text-right">  
-              <table>
-                <tr>
-                  <td>  <button *ngIf=project class="btn btn-primary btn-fte-toolbar" (click)="onDeleteProjectClick(project)">
-                      <i class="fa fa-trash-o fa-lg" ></i>&nbsp;&nbsp;Delete
-                    </button></td>
-                  <td> <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveProjectClick()">
-                      <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
-                    </button></td>
-                </tr>
-              </table>
+               <button *ngIf=project class="btn btn-primary btn-fte-toolbar" (click)="onDeleteProjectClick(project)">
+                  <i class="fa fa-trash-o fa-lg" ></i>&nbsp;&nbsp;Delete
+               </button>
+               <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveProjectClick()">
+                  <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+                </button>        
             </div>
           </div>
         </div>
@@ -114,14 +124,14 @@
                   </table>    
                       
             </div>
-            <div class="col-5">
+            <div class="col-7">
               <table>
                 <td> <h6>* Revision Notes</h6></td>
                 <td><input type=text class=form-control maxlength="500" [(ngModel)]="revisionNotes"></td>
               </table>                      
             </div>
            
-            <div class="col-4 text-right">
+            <div class="col-2 text-right">
               <button [disabled]="!revisionNotes" class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
                 <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
               </button>              

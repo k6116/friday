@@ -27,6 +27,8 @@ export class PartSetupComponent implements OnInit {
   buildStatusChoices: any;
   revisionNotes: string;
   scheduleId: number;
+  typeSortCoefficient = -1;
+  nameSortCoefficient = -1;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,11 +41,28 @@ export class PartSetupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.initFormValues();
     this.getParts();
     this.getSelectionChoices();
-    this.searchParts = ' '; // this will avoid shoing a blank list of parts.
+  }
+
+  orderByType(type: boolean) {
+
+    if (type) {
+      this.typeSortCoefficient = -this.typeSortCoefficient;
+            this.partList.sort((a, b) =>
+            a.PartTypeName < b.PartTypeName ? -this.typeSortCoefficient
+            : a.PartTypeName > b.PartTypeName ? this.typeSortCoefficient : 0);
+      } else {
+        this.nameSortCoefficient = -this.nameSortCoefficient;
+            this.partList.sort((a, b) =>
+            a.PartName < b.PartName ? -this.nameSortCoefficient
+            : a.PartName > b.PartName ? this.nameSortCoefficient : 0);
+      }
+
+   // Triggers Refresh of Filtered Projects
+   // TO-DO: Find a better way to refresh the list
+    this.searchParts = this.searchParts + ' ';
   }
 
   onSearchInputChange(event: any) {
@@ -87,6 +106,7 @@ export class PartSetupComponent implements OnInit {
       res => {
         console.log('Parts List:', this.partList);
         this.partList = res;
+        this.searchParts = ' '; // this will avoid shoing a blank list of parts.
       },
       err => {
         console.log(err);
@@ -194,9 +214,9 @@ export class PartSetupComponent implements OnInit {
     this.form.reset();
     this.form.patchValue(
       {
-        partName: this.searchParts
+        partName: this.searchParts.trim()
       });
-      this.cacheService.raiseToast('success', 'New Part Entry Form Created.');
+      this.cacheService.raiseToast('info', 'New Part Entry Form Created.');
   }
 
   onSavePartClick() {

@@ -5,7 +5,7 @@
     <div class="input-group">
       <input class="searchInput" type="text" [(ngModel)]="searchParts" (change)="onSearchInputChange($event)" placeholder="Search Parts">
       <div class="input-group-append">
-        <button [disabled]="!searchParts" class="btn btn-primary btn-fte-toolbar" (click)="onCreatePartClick()" style="display: block">
+        <button [disabled]="!searchParts.trim()" class="btn btn-primary btn-fte-toolbar" (click)="onCreatePartClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
         </button>       
       </div>
@@ -15,18 +15,30 @@
 
 
   <div class="row">
-  
     <div class="col-2">
-      <ng-container *ngIf="(partList | filter : searchParts : 'PartName':{limitTo: -1, matchOptimistic: true}) as filteredPartList">
-        <ul class="list-group list-group-flush" *ngFor="let part of filteredPartList | slice:0:10; let i=index">
-          <button class="list-group-item list-group-item-action" (click)="onPartClick(part)">
-            {{ part.PartName }}<span *ngIf="part.partTypeName"> - {{part.PartTypeName}}</span>
-          </button>
-        </ul>
-      </ng-container>
-    </div>
-
-  
+      <table class="table table-wrapper-scroll-y table-hover" *ngIf="(partList | filter : searchParts : 'PartName':{limitTo: -1, matchOptimistic: true}) as filteredPartList">
+          <thead>
+              <tr>
+                <th class="th-sm" (click)="orderByType(true)">Type
+                    <i class="fa fa-sort" aria-hidden="true"></i>
+                  </th>
+                  <th class="th-sm" (click)="orderByType(false)">Name
+                    <i class="fa fa-sort" aria-hidden="true"></i>
+                  </th>                   
+                </tr>
+            </thead>
+        <tbody>
+          <tr  *ngFor="let part of filteredPartList" (click)="$event.stopPropagation();onPartClick(part)">
+              <td class="parttype">               
+                  {{ part.PartTypeName }}           
+              </td>
+              <td>           
+                {{ part.PartName  }}         
+              </td>       
+          </tr>
+      </tbody>
+      </table>
+    </div>  
     <div class="col-5">
       <div class="card" *ngIf="showPartCard">
         <div class="card-header">

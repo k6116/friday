@@ -80,3 +80,15 @@ h2.view-encap-test {
   margin-right: 0 !important; 
   margin-left: 0;
 }
+
+.table-wrapper-scroll-y {
+  display: block;
+  max-height: 800px;
+  overflow-y: auto;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  background-color: white
+}
+.projecttype {   
+  color: white;
+  background-color: lightslategray;
+}

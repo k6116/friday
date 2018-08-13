@@ -1,3 +1,13 @@
+<a name="1.7.1"></a>
+## [1.7.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.7.0...v1.7.1) (2018-08-13)
+
+
+### Bug Fixes
+
+* **FTE Entry Page:** fixed problem where users could type dots into FTE entry boxes, causing saving ([d46cb46](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/d46cb46))
+
+
+
 <a name="1.7.0"></a>
 # [1.7.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.6.1...v1.7.0) (2018-08-13)
 
