@@ -205,7 +205,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         height: 500
       },
       title: {
-        text: this.userIsManager ? `My Team's Projects` : `My Peers' Projects`
+        text: `My Team's Projects`
       },
       subtitle: {
         text: `Time Period: ${timePeriod.text}`
@@ -215,7 +215,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       },
       yAxis: [
         { // primary y-axis
-          title: {text: 'FTEs'}
+          title: {text: 'FTEs per month'}
         },
           { // secondary y-axis
           title: {text: 'Percent of Team'},
@@ -230,7 +230,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       },
       series: [
         {
-          name: 'Total Team FTEs',
+          name: 'Total Team FTEs per month',
           type: 'column',
           data: projectFTEs,
           tooltip: {
