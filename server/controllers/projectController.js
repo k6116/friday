@@ -8,19 +8,26 @@ function indexProjects(req, res) {
     const sql = `
      SELECT 
         p.ProjectID, 
-        p.ProjectName, 
-        p.Description,
+        substring(p.ProjectName,1,30) as \'ProjectName\', 
+        substring(p.Description,1,500) as \'Description\', 
+        e.FullName, 
+        p.MU,
+        p.IBO,
+        p.DepartmentID,
+        p.GroupID,
+        p.PriorityID,
+        p.ProjectNumber,
+        p.PlanOfRecordFlag,        
+        p.ProjectTypeID,    
+        p.CreationDate,      
         p.Notes,
         p.Active,
-        py.PriorityID,
         py.PriorityName,
         p.NPIHWProjectManager,
         g.GroupName,
         ey.EntityName,
-        eo.EntityOwnerName, 
-        e.FullName,
-        e2.EmailAddress, 
-        p.CreationDate, 
+        eo.EntityOwnerName,   
+        e2.EmailAddress,    
         t.ProjectTypeName, 
         p.CreatedBy,
         p.ProjectOrgManager
@@ -549,6 +556,262 @@ function insertBulkProjectEmployeeRole(req, res) {
 }
 
 
+function indexBuildStatus(req, res) {
+  const sql = `
+   SELECT 
+      BuildStatusID, 
+      BuildStatusName                
+  FROM  
+      projects.BuildStatus
+  ORDER BY
+      BuildStatusName`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+}
+
+function indexPLCStatus(req, res) {
+  const sql = `
+   SELECT 
+      PLCStatusID, 
+      PLCStatusName                
+  FROM  
+      projects.PLCStatus
+  ORDER BY
+      PLCStatusName`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+}
+
+function indexSetupProjects(req, res) {
+
+  const sql = `
+   SELECT 
+     *
+  FROM  
+      projects.Projects
+  ORDER BY 
+      ProjectName`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+
+}
+
+function indexProjectDepartments(req, res) {
+
+  const sql = `
+   SELECT 
+     *
+  FROM  
+      projects.Department
+  ORDER BY 
+      Department`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+
+}
+
+function indexProjectGroups(req, res) {
+
+  const sql = `
+   SELECT 
+     *
+  FROM  
+      projects.[Group]
+  ORDER BY 
+      GroupName`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+
+}
+
+function indexProjectPriorities(req, res) {
+
+  const sql = `
+   SELECT 
+     *
+  FROM  
+      projects.Priority
+  ORDER BY 
+      PriorityName`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+
+}
+
+function updateProjectSetup(req, res) {
+
+  const project = req.body;
+  const userID = req.params.userID;
+  const today = new Date();
+
+  return sequelize.transaction((t) => {
+
+    return models.Projects
+      .update(
+        {
+          projectName: project.projectName, 
+          projectTypeID: project.projectTypeID,
+          active: project.active == true ? 1 : 0,  
+          planOfRecord: project.planOfRecord == true ? 1 : 0,        
+          description: project.description,
+          notes: project.notes,
+          departmentID: project.departmentID,
+          groupID: project.groupID,
+          priorityID: project.priorityID,
+          projectNumber: project.projectNumber,
+          ibo: project.ibo,
+          mu: project.mu,
+          updatedBy: userID,
+          updatedAt: today
+        },
+        {
+          where: {id: project.projectID},
+          transaction: t
+        }
+      )
+    }).then(() => {
+      res.json({
+        message: `The project '${project.projectName}' has been updated successfully`
+      })
+
+    }).catch(error => {
+      console.log(error);
+      res.status(500).json({
+        title: 'update project setup failed',
+        error: {message: error}
+      });
+    })
+}
+
+function insertProjectSetup(req, res) {
+
+  // index the project object from the request body
+  const project = req.body;
+  const userID = req.params.userID;
+  const today = new Date();
+
+
+  return sequelize.transaction((t) => {
+
+    return models.Projects
+      .create(
+        {
+          projectName: project.projectName, 
+          projectTypeID: project.projectTypeID,
+          active: project.active == true ? 1 : 0,  
+          planOfRecord: project.planOfRecord == true ? 1 : 0,        
+          description: project.description,
+          notes: project.notes,
+          departmentID: project.departmentID,
+          groupID: project.groupID,
+          priorityID: project.priorityID,
+          projectNumber: project.projectNumber,
+          ibo: project.ibo,
+          mu: project.mu,
+          createdBy: userID,
+          createdAt: today,
+          updatedBy: userID,
+          updatedAt: today
+        },
+        {
+          transaction: t
+        }
+      )
+      .then(newProject => {
+
+        console.log('created project id is: ' + newProject.id);
+        res.json({newProjectID: newProject.id})
+      })
+
+    }).then(() => {
+
+      // res.json({
+      //   message: `The project '${project.projectName}' has been added successfully`,
+      // })
+
+    }).catch(error => {
+
+      console.log(error);
+      res.status(500).json({
+        title: 'update failed',
+        error: {message: error}
+      });
+
+    })
+
+}
+
+function destroyProjectSetup(req, res) {
+
+  const projectID = req.params.projectID;   
+  const scheduleID = req.params.scheduleID;   
+  const userID = req.params.userID;          
+
+  // delete schedules first
+  return sequelize.transaction((t) => {    
+    return  sequelize.query(`EXECUTE dbo.Schedules 
+    :executeType, 
+    :scheduleID,
+    :projectID,  
+    :partID,
+    :notes,
+    :employeeID,
+    :schedule,
+    :rowCount,
+    :errorNumber,
+    :errorMessage`, { replacements: {
+        executeType: 'Delete',
+        scheduleID: scheduleID,
+        projectID: projectID,
+        partID: null,
+        notes: null,
+        employeeID: userID,
+        schedule: null,
+        rowCount: null,
+        errorNumber: null,
+        errorMessage: null 
+    }, type: sequelize.QueryTypes.SELECT})
+      .then(sched => {  
+       
+       // delete project        
+       return models.Projects
+       .destroy(
+         {
+           where: {id: projectID}          
+         }
+       )
+     })
+    }).then(() => {    
+       res.json({
+       message: `The Project '${projectID}' has been deleted successfully`,
+      })
+
+    }).catch(error => {    
+      console.log(error);
+      res.status(500).json({
+        title: 'destroy project setup failed',
+        error: {message: error}
+      });    
+    })    
+}
 
 
 module.exports = {
@@ -565,5 +828,14 @@ module.exports = {
   insertProjectEmployeeRole: insertProjectEmployeeRole,
   updateProjectEmployeeRole: updateProjectEmployeeRole,
   destroyProjectEmployeeRole: destroyProjectEmployeeRole,
-  insertBulkProjectEmployeeRole: insertBulkProjectEmployeeRole
+  insertBulkProjectEmployeeRole: insertBulkProjectEmployeeRole,
+  indexBuildStatus: indexBuildStatus,
+  indexPLCStatus: indexPLCStatus,
+  indexSetupProjects: indexSetupProjects,
+  indexProjectDepartments: indexProjectDepartments,
+  indexProjectGroups: indexProjectGroups,
+  indexProjectPriorities: indexProjectPriorities,
+  updateProjectSetup: updateProjectSetup,
+  insertProjectSetup: insertProjectSetup,
+  destroyProjectSetup:  destroyProjectSetup
 }

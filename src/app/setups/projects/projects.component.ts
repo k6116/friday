@@ -1,222 +1,85 @@
-import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
-import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
-  ApiDataMetaDataService, ApiDataEmailService } from '../../_shared/services/api-data/_index';
+import { Component, OnInit } from '@angular/core';
+import { ApiDataSchedulesService, ApiDataProjectService,
+  ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
-import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
-import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
-import { User } from '../../_shared/models/user.model';
 import * as moment from 'moment';
+import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 
 @Component({
-  selector: 'app-projects-setups',
+  selector: 'app-projects',
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.css', '../../_shared/styles/common.css']
 })
 export class ProjectsSetupsComponent implements OnInit {
 
-
-  // TO-DO PAUL: create model for at least projects
-
-  loggedInUser: User;
+  form: FormGroup;
+  searchProjects: string;
   projectList: any;
-  projectData: any;
-  projectPermissionRequestsList: any;
-  showProjectsEditModal: boolean;
-  showProjectsCreateModal: boolean;
-  selectedRow: any;
-  selectdProject: any;
-  projectRoster: any;
-  pKeyRefList: any;
-  showDetails: boolean;
-  projectID: number;
-  requestResponseFlag: boolean;
-  request: any;
-  projectSchedule: any;
-  toggleEditProjectRole: boolean;
-  projectRolesList: any;
-  projectRole: any;
-  replyComment: string;
-  deleteModalMessage: string;
-  deleteModalButtons: any;
-  projectTypeDisplayFields: any;
-  projectBasicInfo = [];
-  filterString: any;
-
-  @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
-  @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
-  // @Output() deleteSuccess = new EventEmitter<boolean>();
+  project: any;
+  schedule: any;
+  showProjectCard: boolean;
+  showScheduleCard: boolean;
+  projectTypeChoices: any;
+  departmentChoices: any;
+  groupChoices: any;
+  priorityChoices: any;
+  plcStatusChoices: any;
+  revisionNotes: string;
+  scheduleId: number;
 
   constructor(
-    private apiDataEmployeeService: ApiDataEmployeeService,
+    private formBuilder: FormBuilder,
+    private apiDataSchedulesService: ApiDataSchedulesService,
     private apiDataProjectService: ApiDataProjectService,
-    private apiDataPermissionService: ApiDataPermissionService,
-    private apiDataMetaDataService: ApiDataMetaDataService,
-    private apiDataEmailService: ApiDataEmailService,
-    private cacheService: CacheService,
+    private apiDataEmployeeService: ApiDataEmployeeService,
     private authService: AuthService,
-  ) {
-    this.loggedInUser = this.authService.loggedInUser;
-  }
+    private cacheService: CacheService
+  ) { }
 
   ngOnInit() {
-    this.getUserProjectList();
-    this.getProjectPermissionRequestsList();
-    this.getProjectTypeDisplayFields();
+
+    this.initFormValues();
+    this.getProjects();
+    this.getSelectionChoices();
+    this.searchProjects = ' '; // this will avoid shoing a blank list of projects.
   }
 
-  editProject(project: any) {
-    this.showProjectsEditModal = true;
-    this.projectData = project;
-    setTimeout(() => {
-      this.projectsEditModalComponent.populateForm();
-    }, 0);
-  }
-
-  getUserProjectList() {
-    this.apiDataProjectService.getUserProjectList(this.authService.loggedInUser.id)
-    .subscribe(
-      res => {
-        console.log('Project List: ', res);
-        // Sort the project list by project Name
-        this.projectList = res.sort(function(a, b) {
-          return a.projectName > b.projectName;
-        });
-        // Move user created projects to the bottom
-        for (let i = 0; i < this.projectList.length; i++) {
-          if (this.projectList[i].createdBy === this.authService.loggedInUser.id) {
-            this.projectList.push(this.projectList.splice(i, 1)[0]);
-          }
-        }
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
-  // List of all requests that have been made to join a project.
-  //  Gets called onInit and requestResponse()
-  getProjectPermissionRequestsList() {
-    this.apiDataPermissionService.getProjectPermissionRequestsList(this.authService.loggedInUser.id)
-    .subscribe(
-      res => {
-        this.projectPermissionRequestsList = res;
-        // console.log('projectPermissionRequest: ', this.projectPermissionRequestsList);
-        for (let i = 0; i < this.projectPermissionRequestsList.length; i++) {
-          if ( this.projectPermissionRequestsList[i].requestStatus === 'Submitted') {
-            this.requestResponseFlag = true;
-          }
-        }
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
-  createProject() {
-    this.showProjectsCreateModal = true;
-    setTimeout(() => {
-      this.projectsCreateModalComponent.resetForm();
-    }, 0);
-  }
-
-  onCreateSuccess() {
-    console.log('Create project success. My Project List Refreshed');
-    this.getUserProjectList();
-  }
-
-  onUpdateSuccess() {
-    console.log('Update project success. My Project List Refreshed');
-    this.getUserProjectList();
-  }
-
-  onDeleteSuccess() {
-    console.log('Delete project success. My Project List Refreshed');
-    this.getUserProjectList();
-  }
-
-  onCollapseClick(project: any, k) {
-    // k is index of projectList; selected row gets highlighted
-    if ( this.selectedRow === k) {
-      this.selectedRow = null;
-    } else {
-        this.selectedRow = k;
-        this.projectBasicInfo.length = 0;
-        // Assign projectList values to projectTypeDisplayFields object
-        for (let i = 0; i < this.projectTypeDisplayFields.length; i++) {
-          for (let j = 0; j < Object.keys(project).length; j++) {
-            if (this.projectTypeDisplayFields[i]['projectType.projectTypeName'] === project['projectType.projectTypeName'] &&
-              this.projectTypeDisplayFields[i].projectField.toUpperCase() === Object.keys(project)[j].toUpperCase()) {
-                this.projectBasicInfo.push({
-                  field: Object.keys(project)[j],
-                  value: Object.values(project)[j]
-                });
-            }
-          }
-        }
+  onSearchInputChange(event: any) {
+    if (this.searchProjects.length === 0) {
+      this.showProjectCard = false;
+      this.showScheduleCard = false;
     }
-    this.getProjectRoster(project.id);
-    this.getProjectSchedule(project.projectName);
-
   }
 
-  // Accept or deny a request
-  requestResponse(request: any, reply: string, replyComment: string) {
-    this.requestResponseFlag = false;
+  initFormValues() {
+    this.form = this.formBuilder.group({
+    projectID: [null, [Validators.required]],
+    projectName: [null, [Validators.required]],
+    projectTypeID: [null, [Validators.required]],
+    active: [null, [Validators.required]],
+    planOfRecord: [null, [Validators.required]],
+    description: [null, [Validators.required]],
+    notes: [null, [Validators.required]],
+    departmentID: [null, [Validators.required]],
+    groupID: [null, [Validators.required]],
+    priorityID: [null, [Validators.required]],
+    projectNumber: [null, [Validators.required]],
+    ibo: [null, [Validators.required]],
+    mu: [null, [Validators.required]],
+    createdBy: [null, [Validators.required]],
+    createdAt: [null, [Validators.required]],
+    updatedBy: [null, [Validators.required]],
+    updatedAt: [null, [Validators.required]]
+    });
+  }
 
-    this.apiDataPermissionService.updateProjectPermissionResponse(request, reply, replyComment, this.authService.loggedInUser.id)
+  getProjects() {
+    this.apiDataProjectService.getProjects()
     .subscribe(
       res => {
-
-        // send email
-        this.apiDataEmailService.sendProjectApprovalEmail(request['user.id'], this.authService.loggedInUser.id,
-        request['project.projectName'], reply === 'Approved' ? true : false, replyComment).subscribe(
-          eSnd => {
-            this.cacheService.raiseToast('success',
-            `Email on Approval Decision delivered to ${request['user.fullName']}.`);
-            this.getProjectPermissionRequestsList();
-          },
-          err => {
-            console.log(err);
-          }
-        );
-        console.log(res);
-
-      },
-      err => {
-        console.log(err);
-      }
-    );
-
-    this.getProjectPermissionRequestsList();
-  }
-
-  onDenyClick(request: any) {
-    // So that request can be used in request-denied modal
-    this.request = request;
-  }
-
-  getProjectRoster(projectID: number) {
-    this.apiDataProjectService.getProjectRoster(projectID)
-    .subscribe(
-      res => {
-        console.log('project roster:', res);
-        // Check if roster for this project exists
-          if ('teamMembers' in res[0]) {
-            // This loop will move the loggedInUser to the top of the project roster list
-            for (let i = 0; i < res[0].teamMembers.length; i++) {
-              if (res[0].teamMembers[i].employeeID === this.authService.loggedInUser.id) {
-                  const a = res[0].teamMembers.splice(i, 1);   // removes the item
-                  res[0].teamMembers.unshift(a[0]);         // adds it back to the beginning
-                  this.projectRoster = res[0];
-                  break;
-              }
-            }
-          } else {
-            this.projectRoster = undefined;
-          }
+        this.projectList = res;
+        console.log('Projects List:', this.projectList);
       },
       err => {
         console.log(err);
@@ -224,182 +87,275 @@ export class ProjectsSetupsComponent implements OnInit {
     );
   }
 
+  getSelectionChoices() {
 
-  // Get the primary key references for "ProjectID". This searches all Jarvis tables
-  getPrimaryKeyRefs(projectID: number) {
-    const pKeyName = 'ProjectID';
-    this.projectID = projectID;
-    this.apiDataMetaDataService.getPrimaryKeyRefs(pKeyName, this.projectID, this.authService.loggedInUser.id)
+    this.apiDataProjectService.getProjectTypesList()
+    .subscribe(
+      res => {
+        console.log('Project Types:', res);
+        this.projectTypeChoices = res;
+      },
+      err => {
+        console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project Types: ${err}`);
+      }
+    );
+
+    this.apiDataProjectService.getProjectDepartments()
+    .subscribe(
+      res => {
+        console.log('Project Departments:', res);
+        this.departmentChoices = res;
+      },
+      err => {
+        console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project Departments: ${err}`);
+      }
+    );
+
+    this.apiDataProjectService.getProjectGroups()
+    .subscribe(
+      res => {
+        console.log('Project Groups:', res);
+        this.groupChoices = res;
+      },
+      err => {
+        console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project Groups: ${err}`);
+      }
+    );
+
+    this.apiDataProjectService.getProjectPriorities()
+    .subscribe(
+      res => {
+        console.log('Project Priorities:', res);
+        this.priorityChoices = res;
+      },
+      err => {
+        console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project Priorities: ${err}`);
+      }
+    );
+
+    this.apiDataProjectService.getProjectPLCStatus()
+    .subscribe(
+      res => {
+        console.log('Project PLC Status:', res);
+        this.plcStatusChoices = res;
+      },
+      err => {
+        console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain PLC Status: ${err}`);
+      }
+    );
+  }
+
+  onCreateProjectClick() {
+
+    this.showProjectCard = true;
+    this.showScheduleCard = false;
+
+    this.schedule = null;
+    this.scheduleId = 0;
+    this.revisionNotes = '';
+    this.project = null;
+
+    this.form.reset();
+    this.form.patchValue(
+      {
+        projectName: this.searchProjects
+      });
+      this.cacheService.raiseToast('success', 'New Project Entry Form Created.');
+  }
+
+  onProjectClick(project: any) {
+
+    this.project = project;
+    this.showProjectCard = true;
+    this.showScheduleCard = true;
+
+    this.form.patchValue(
+      {
+        projectID: this.project.ProjectID,
+        projectName: this.project.ProjectName,
+        projectTypeID: this.project.ProjectTypeID,
+        active: this.project.Active,
+        planOfRecord: this.project.PlanOfRecordFlag,
+        description: this.project.Description,
+        notes: this.project.Notes,
+        departmentID: this.project.DepartmentID,
+        groupID: this.project.GroupID,
+        priorityID: this.project.PriorityID,
+        projectNumber: this.project.ProjectNumber,
+        ibo: this.project.IBO,
+        mu: this.project.MU,
+        createdBy: this.project.CreatedBy,
+        createdAt: this.project.CreationDate,
+        updatedBy: this.project.LastUpdatedBy,
+        updatedAt: this.project.LastUpdateDate
+      });
+    this.getSchedule();
+  }
+
+  onSaveProjectClick() {
+
+    // Save: Either Update or Create
+
+    if (this.form.value.projectID > 0) {
+    this.apiDataProjectService.updateProjectSetup(this.form.value, this.authService.loggedInUser.id)
       .subscribe(
         res => {
-          // console.log('PrimaryKeyRefs', res);
-          this.pKeyRefList = res;
-          if (this.pKeyRefList.length === 0) {
-            this.deleteModalMessage = `Are you sure you want to delete "${this.selectdProject.projectName}"?`;
-            this.deleteModalButtons = [
-              {
-                text: 'Delete',
-                bsClass: 'btn-success',
-                emit: true
-              },
-              {
-                text: 'Cancel',
-                bsClass: 'btn-secondary',
-                emit: false
-              }
-            ];
-          } else {
-            // If the project is a foreign key to other tables, display the list
-            this.deleteModalMessage = `
-              <div>
-              <div class="row" style="padding-bottom: 15px"><div class="col">
-              "${this.selectdProject.projectName}" cannot be deleted because of referential integrity:
-              </div></div>
-              <div class="row"><div class="col">
-                  <table class="table table-bordered table-sm">
-                    <thead>
-                      <tr>
-                        <th>Jarvis Tables (where used)</th>
-                        <th>Instances</th>
-                      </tr>
-                    </thead>
-                    </tbody>
-            `;
-            for (let i = 0; i < this.pKeyRefList.length; i++) {
-              this.deleteModalMessage = this.deleteModalMessage + `
-                  <tr>
-                    <td>${this.pKeyRefList[i].TableName}</td>
-                    <td>${this.pKeyRefList[i].NumOfRows}</td>
-                  </tr>
-              `;
+          this.cacheService.raiseToast('success', 'Project Updated Successfully');
+          this.getProjects();
+        },
+        err => {
+          console.log(err);
+          this.cacheService.raiseToast('error', `Project Schedule Failed to Update: ${err}`);
+        }
+      );
+    } else {
+
+      this.apiDataProjectService.createProjectSetup(this.form.value, this.authService.loggedInUser.id)
+      .subscribe(
+        res => {
+          this.form.patchValue(
+            {
+              projectID: res.newProjectID
+            });
+            this.schedule = [];
+            this.scheduleId = 0;
+            this.createDefaultScheduleRow();
+            this.showScheduleCard = true;
+            this.cacheService.raiseToast('success', 'New Project Created');
+            this.getProjects();
+        },
+        err => {
+          console.log(err);
+          this.cacheService.raiseToast('error', `Create Project Failed: ${err}`);
+        }
+      );
+    }
+  }
+
+  onDeleteProjectClick() {
+
+      // emit confirmation modal after they click request button
+      this.cacheService.confirmModalData.emit(
+        {
+          title: 'Delete Project Confirmation',
+          message: `Are you sure you want to delete ${this.project.ProjectName} ?`,
+          iconClass: 'fa-exclamation-triangle',
+          iconColor: 'rgb(193, 193, 27)',
+          closeButton: true,
+          allowOutsideClickDismiss: true,
+          allowEscKeyDismiss: true,
+          buttons: [
+            {
+              text: 'Delete',
+              bsClass: 'btn-success',
+              emit: true
+            },
+            {
+              text: 'Cancel',
+              bsClass: 'btn-secondary',
+              emit: false
             }
-            this.deleteModalMessage = this.deleteModalMessage + `</tbody></table></div></div></div>`;
-            this.deleteModalButtons = [
-              {
-                text: 'Cancel',
-                bsClass: 'btn-secondary',
-                emit: false
-              }
-            ];
-          }
-          this.deleteModal();
+          ]
+        }
+      );
+      const deleteModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
+        if (res) {
+          this.apiDataProjectService.deleteProjectSetup(this.project.ProjectID, this.scheduleId, this.authService.loggedInUser.id)
+          .subscribe(
+            del => {
+              console.log('project deleted');
+              this.cacheService.raiseToast('success', 'Project Removed Successfully');
+              this.project = null;
+              this.schedule = null;
+              this.showProjectCard = false;
+              this.showScheduleCard = false;
+              this.getProjects();
+              deleteModalSubscription.unsubscribe();
+            },
+            err => {
+              console.log(err);
+              this.cacheService.raiseToast('error', `Delete Propject Failed: ${err}`);
+            }
+          );
+        }
+      });
+  }
+
+  createDefaultScheduleRow() {
+    if (this.schedule === null) {
+      this.schedule = [];
+    }
+    this.schedule.push({
+      ScheduleID: this.scheduleId,
+      ProjectID: this.project ? this.project.ProjectID : this.form.value.projectID,
+      CurrentRevision: 0,
+      RevisionNotes: '',
+      PLCStatusID: 0,
+      PLCDate: new Date(),
+      Notes: '',
+      DeleteRow: 0
+    });
+  }
+
+  onAddScheduleRow() {
+
+    this.createDefaultScheduleRow();
+  }
+
+  onSaveSchedule() {
+
+    // If detail records exist, update the schedule
+    if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
+    this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
+      .subscribe(
+        res => {
+          if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
+          console.log('Saved Project Schedule');
+          this.cacheService.raiseToast('success', 'Project Schedule Saved');
         },
         err => {
           console.log(err);
         }
       );
-  }
-
-  getProjectSchedule(projectName: string) {
-
-    this.apiDataProjectService.getProjectSchedule(projectName)
-    .subscribe(
-      res => {
-        console.log('project schedule:', res);
-        if (res.length !== 0) {
-          this.projectSchedule = res;
-          for (let i = 0; i < this.projectSchedule.length; i++) {
-            this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
-          }
-        } else {
-          this.projectSchedule = undefined;
+    } else {
+      // no detail records so remove the schedule header record
+      this.apiDataSchedulesService.destroySchedule(this.scheduleId)
+      .subscribe(
+        res => {
+          console.log('Deleted Schedule');
+          this.cacheService.raiseToast('success', 'Project Schedule Removed');
+        },
+        err => {
+          console.log(err);
         }
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
-  onProjectRoleEditClick() {
-    this.toggleEditProjectRole = !this.toggleEditProjectRole;
-  }
-
-  selectProjectRoleChangeHandler(event: any, project: any) {
-
-    // create object for api post
-    const projectEmployeeRoleData = {
-      projectRoleID: null,
-      projectRole: null,
-      projectID: null
-    };
-    projectEmployeeRoleData.projectRole = event.target.value;
-    for (let i = 0; i < this.projectRolesList.length; i++) {
-      if (this.projectRolesList[i].projectRole === event.target.value) {
-        projectEmployeeRoleData.projectRoleID = this.projectRolesList[i].id;
-      }
+      );
     }
-    projectEmployeeRoleData.projectID = project.id;
+    this.getSchedule();
+  }
 
-    this.apiDataProjectService.updateProjectEmployeeRole(projectEmployeeRoleData, this.authService.loggedInUser.id)
+  getSchedule() {
+    this.apiDataSchedulesService.getProjectSchedule(this.project ? this.project.ProjectID : this.form.value.projectID)
     .subscribe(
       res => {
-        console.log(res);
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
-  onDeleteProjectClick(project: any) {
-
-    this.selectdProject = project;
-
-    // First check if the project has referential integrity to other tables in the database
-    this.getPrimaryKeyRefs(this.selectdProject.id);
-
-  }
-
-  deleteModal() {
-    const projectData = {projectID: this.selectdProject.id};
-
-    // emit confirmation modal after they click request button
-    this.cacheService.confirmModalData.emit(
-      {
-        title: `Confirm Project Delete`,
-        message: this.deleteModalMessage,
-        iconClass: 'fa-exclamation-triangle',
-        iconColor: 'rgb(193, 193, 27)',
-        closeButton: true,
-        allowOutsideClickDismiss: true,
-        allowEscKeyDismiss: true,
-        buttons: this.deleteModalButtons
-      }
-    );
-
-    const deleteModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
-      if (res) {
-        // if they click ok, grab the deleted project info and exec db call to delete
-        this.apiDataProjectService.deleteProject(projectData, this.authService.loggedInUser.id)
-        .subscribe(
-          del => {
-            // this.deleteSuccess.emit(true);
-            this.onDeleteSuccess();
-          },
-          err => {
-            console.log(err);
-          }
-        );
+        if (res.length > 0) {
+        this.schedule = res;
+        this.revisionNotes = res[0].RevisionNotes;
+        this.scheduleId = res[0].ScheduleID;
+        console.log('Project Schedule:', this.schedule);
       } else {
-        console.log('delete confirm aborted');
+        this.schedule = [];
+        this.scheduleId = 0;
+        this.createDefaultScheduleRow();
       }
-      deleteModalSubscription.unsubscribe();
-    });
-  }
-
-  getProjectTypeDisplayFields() {
-    this.apiDataProjectService.getProjectTypeDisplayFields()
-    .subscribe(
-      res => {
-        // console.log(res);
-        this.projectTypeDisplayFields = res;
       },
       err => {
         console.log(err);
       }
     );
   }
-
-
 }

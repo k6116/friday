@@ -21,6 +21,7 @@ import { ClickOutsideDirective } from './_shared/directives/click-outside.direct
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
+import { ProjectTypePipe } from './_shared/pipes/project-type.pipe';
 import { TitleCasePipe } from '@angular/common';
 import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
@@ -30,7 +31,9 @@ import { CacheService, ClickTrackingService, CookiesService,
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
+  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
+
 
 // GUARDS
 import { AuthGuardService } from './_shared/guards/auth.guard';
@@ -56,7 +59,7 @@ import { TopNavComponent } from './navs/top-nav/top-nav.component';
 import { SideNavComponent } from './navs/side-nav/side-nav.component';
 import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
-import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { MyProjectsComponent } from './my-projects/my-projects.component';
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
@@ -78,7 +81,9 @@ import { AdminComponent } from './admin/admin.component';
 import { ProjectAttributesComponent } from './admin/project-attributes/project-attributes.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
+import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
+import { PartSetupComponent } from './setups/parts/parts.component';
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 
 // BOM module stuff
@@ -103,11 +108,12 @@ import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
     SideNavComponent,
     TopProjectsReportsComponent,
     EmployeesReportsComponent,
-    ProjectsSetupsComponent,
+    MyProjectsComponent,
     FteEntryTeamComponent,
     ProfileModalComponent,
     ProjectsModalComponent,
     FilterPipe,
+    ProjectTypePipe,
     TestComponent,
     OrgDropdownComponent,
     ProjectsEditModalComponent,
@@ -128,7 +134,9 @@ import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
     FooterComponent,
     DashboardComponent,
     FooterComponent,
+    ProjectsSetupsComponent,
     CarouselModalComponent,
+    PartSetupComponent,
     BomEditorComponent,
     BomViewerComponent,
     SupplyDemandComponent
@@ -164,6 +172,8 @@ import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
     ApiDataProjectService,
     ApiDataReportService,
     ApiDataDashboardService,
+    ApiDataSchedulesService,
+    ApiDataPartService,
     ApiDataAnalyticsService,
     ApiDataBomService,
     CacheService,
