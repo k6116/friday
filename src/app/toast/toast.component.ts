@@ -12,8 +12,9 @@ export class ToastComponent implements OnInit, OnDestroy {
   constructor(private cacheService: CacheService) { }
 
   toastSubscription: Subscription;
-  toastType: string;
+  toastClass = 'toast'; // default css class
   toastText: string;
+  toastType: string;
   toastVisible = false;
   timer: any;
 
@@ -32,7 +33,8 @@ export class ToastComponent implements OnInit, OnDestroy {
 
   onToastReceive(toast: any) {
     // set type CSS class for toast, and the body of the message
-    this.toastType = `toast toast-${toast.type}`;
+    this.toastType = toast.type;
+    this.toastClass = `toast toast-${this.toastType}`;
     this.toastText = toast.text;
     if (toast.type === 'error') {
       // if it's a warning toast, require the user to dismiss it

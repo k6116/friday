@@ -12,25 +12,33 @@ export class ApiDataBomService {
 
   // get FTE data from db
   index() {
-    return this.http.get(`/api/bom/index`)
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/bom/bom/index`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   showSingleBom(parentID: number) {
-    return this.http.get(`/api/bom/showSingleBom/${parentID}`)
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/bom/bom/show/showSingleBom/${parentID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   showPartInfo(partID: number) {
-    return this.http.get(`/api/bom/showPartInfo/${partID}`)
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/bom/bom/show/showPartInfo/${partID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   showProjectInfo(projectID: number) {
-    return this.http.get(`/api/bom/showProjectInfo/${projectID}`)
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/bom/bom/show/showProjectInfo/${projectID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

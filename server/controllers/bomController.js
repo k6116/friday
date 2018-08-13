@@ -6,7 +6,6 @@ const sequelize = require('../db/sequelize').sequelize;
 function index(req, res) {
   sequelize.query('SELECT COALESCE(ParentPartID, ParentProjectID) AS ParentPartID, PartOrProjectName FROM vBillsList ORDER BY PartOrProjectName', {type: sequelize.QueryTypes.SELECT})
     .then(bomsList => {
-      // console.log("returning nested org data");
       res.json(bomsList);
     })
     .catch(error => {
@@ -21,7 +20,6 @@ function showSingleBom(req, res) {
   const parentID = req.params.parentID;
   sequelize.query('EXECUTE dbo.BillsDrillDownNew :parentID', {replacements: {parentID: parentID}, type: sequelize.QueryTypes.SELECT})
     .then(bom => {
-      // console.log("returning nested org data");
       res.json(bom);
     })
     .catch(error => {
@@ -46,7 +44,6 @@ function showPartInfo(req, res) {
     WHERE T1.partID = :partID
   `, {replacements: {partID: partID}, type: sequelize.QueryTypes.SELECT})
     .then(bom => {
-      // console.log("returning nested org data");
       res.json(bom);
     })
     .catch(error => {
@@ -70,7 +67,6 @@ function showProjectInfo(req, res) {
     WHERE T1.ProjectID = :projectID
   `, {replacements: {projectID: projectID}, type: sequelize.QueryTypes.SELECT})
     .then(bom => {
-      // console.log("returning nested org data");
       res.json(bom);
     })
     .catch(error => {

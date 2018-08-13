@@ -1,48 +1,54 @@
 div.toast {
-    opacity: 0;
-    min-width: 380px;
-    max-width: 380px;
-    text-align: center;
-    padding: 25px 5px 25px 5px;
-    position: fixed;
-    right: 30px;
-    top: 140px;
-    font-size: 15px;
-    background-color: #333; /* default */
-    color: #fff;
-    border-radius: 4px;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-  
-  div.toast.toast-success {
-    background-color: #28A745; /* bootstrap4 success */
-    color: #fff;
-  }
+  opacity: 0;
+  min-width: 360px;
+  max-width: 360px;
+  padding: 15px;
+  position: fixed;
+  right: 30px;
+  top: 140px;
+  font-size: 15px;
+  background-color: #333; /* default */
+  color: #fff;
+  border-radius: 4px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
 
-  div.toast.toast-success:hover {
-    box-shadow: 0px 0px 14px rgb(133, 189, 146);
-  }
-  
-  div.toast.toast-warn {
-    background-color: #FFC107; /* bootstrap4 warning */
-    color: #000;
-  }
+div.toast.toast-success {
+  background-color: #28A745; /* bootstrap4 success */
+  color: #fff;
+}
 
-  div.toast.toast-warn:hover {
-    box-shadow: 0px 0px 14px rgb(236, 201, 95);
-  }
+div.toast.toast-success:hover {
+  box-shadow: 0px 0px 14px rgb(133, 189, 146);
+  cursor: pointer;
+}
 
-  div.toast.toast-error {
-    background-color: #C82333; /* bootstrap4 danger-red */
-    color: #fff;
-  }
+div.toast.toast-warning {
+  background-color: #FFC107; /* bootstrap4 warning */
+  color: #000;
+}
 
-  div.toast.toast-error:hover {
-    box-shadow: 0px 0px 14px rgb(197, 121, 128);
-  }
-  
-  div.toast-show {
-    transform: translateY(-30px);
-    opacity: 1;
-    z-index: 100;
-  }
+div.toast.toast-warning:hover {
+  box-shadow: 0px 0px 14px rgb(236, 201, 95);
+  cursor: pointer;
+}
+
+div.toast.toast-error {
+  background-color: #C82333; /* bootstrap4 danger-red */
+  color: #fff;
+}
+
+div.toast.toast-error:hover {
+  box-shadow: 0px 0px 14px rgb(197, 121, 128);
+  cursor: pointer;
+}
+
+div.toast-show {
+  transform: translateY(-30px);
+  opacity: 1;
+  z-index: 100;
+}
+
+span.toast-title {
+  font-weight: bold;
+}

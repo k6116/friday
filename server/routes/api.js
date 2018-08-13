@@ -100,16 +100,6 @@ router.post('/insertLotExclusion/:userID', controllers.analytics.insertLotExclus
 router.post('/destroyLotExclusion/:userID', controllers.analytics.destroyLotExclusion);
 
 
-
-// BOM CONTROLLER
-router.get('/bom/index', controllers.bom.index);
-router.get('/bom/showSingleBom/:parentID', controllers.bom.showSingleBom);
-router.get('/bom/showPartInfo/:partID', controllers.bom.showPartInfo);
-router.get('/bom/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
-
-
-// NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
-
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
 // NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
@@ -150,6 +140,12 @@ router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', contro
 // JOB TITLE CONTROLLER (ADMIN)
 router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
 router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
+
+// FTE CONTROLLER
+router.get('/fte/fte/index/indexUserData', controllers.fte.indexUserData);
+router.delete('/fte/fte/destroy/destroyUserProject/:projectID', controllers.fte.destroyUserProject);   // PROTECT
+router.put('/fte/fte/update/updateUserData', controllers.fte.updateUserData);
+
 // TEMP JOB TITLE CONTROLLER
 router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
@@ -234,5 +230,10 @@ router.put('/jobTitle/admin/update/updateJobSubTitle', controllers.jobTitle.upda
 router.post('/jobTitle/admin/insert/insertJobTitleMap', controllers.jobTitle.insertJobTitleMap);
 router.post('/jobTitle/admin/destroy/deleteJobTitleMap', controllers.jobTitle.deleteJobTitleMap);
 
+// BOM CONTROLLER
+router.get('/bom/bom/index', controllers.bom.index);
+router.get('/bom/bom/show/showSingleBom/:parentID', controllers.bom.showSingleBom);
+router.get('/bom/bom/show/showPartInfo/:partID', controllers.bom.showPartInfo);
+router.get('/bom/bom/show/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
 
 module.exports = router;
