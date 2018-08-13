@@ -12,7 +12,7 @@ var controllers = require('../controllers/_index.js');
 // TO-DO ALL: rename controller functions to index, show, insert, update, destory if it fits
 
 // AUTH CONTROLLER 
-router.post('/auth/authenticate', controllers.auth.authenticateOverride);
+router.post('/auth/authenticate', controllers.auth.authenticate);
 router.get('/auth/getInfoFromToken', controllers.auth.getInfoFromToken);
 router.post('/auth/resetToken', controllers.auth.resetToken);
 router.get('/auth/verifyRoutePermissions', controllers.auth.verifyRoutePermissions);
