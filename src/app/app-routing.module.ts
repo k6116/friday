@@ -7,7 +7,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { MainComponent } from './main/main.component';
 import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.component';
 import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
-import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { MyProjectsComponent } from './my-projects/my-projects.component';
 import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
@@ -27,6 +27,8 @@ import { TestComponent } from './test/test.component';
 import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
 import { UserResolverService } from './_shared/services/user-resolver.service';
+import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { PartSetupComponent } from './setups/parts/parts.component';
 
 // BOM module stuff
 import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
@@ -46,7 +48,9 @@ const routes: Routes = [
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
         canActivate: [FteEntryGuard], canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
-      { path: 'setups/projects', component: ProjectsSetupsComponent },
+      { path: 'my-projects', component: MyProjectsComponent },
+      { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/bom-editor', component: BomEditorComponent },
       { path: 'reports/bom-viewer', component: BomViewerComponent },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
@@ -56,7 +60,7 @@ const routes: Routes = [
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'chat', component: ChatComponent },
-      { path: 'admin', component: AdminComponent, canActivate: [PermissionsGuard] },
+      { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }
     ]
   },
   { path: '**', redirectTo: '/login' }

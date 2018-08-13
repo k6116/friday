@@ -1,0 +1,163 @@
+<div class="container-fluid">
+
+  <div class="jumbotron">
+    <!-- Jobtitle Fuzzy Search Bar -->
+    <div class="input-group">
+      <input class="searchInput" type="text" [(ngModel)]="searchParts" (change)="onSearchInputChange($event)" placeholder="Search Parts">
+      <div class="input-group-append">
+        <button [disabled]="!searchParts" class="btn btn-primary btn-fte-toolbar" (click)="onCreatePartClick()" style="display: block">
+          <i class="fa fa-plus"></i>&nbsp;&nbsp;New
+        </button>       
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="row">
+  
+    <div class="col-2">
+      <ng-container *ngIf="(partList | filter : searchParts : 'PartName':{limitTo: -1, matchOptimistic: true}) as filteredPartList">
+        <ul class="list-group list-group-flush" *ngFor="let part of filteredPartList | slice:0:10; let i=index">
+          <button class="list-group-item list-group-item-action" (click)="onPartClick(part)">
+            {{ part.PartName }}<span *ngIf="part.partTypeName"> - {{part.PartTypeName}}</span>
+          </button>
+        </ul>
+      </ng-container>
+    </div>
+
+  
+    <div class="col-5">
+      <div class="card" *ngIf="showPartCard">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-8">
+                <form [formGroup] = 'form'>
+                  <input type=text readonly=true formControlName="partName" maxlength="50" class="form-control">
+                </form>
+              <!-- <h6>{{ part.PartName }}         
+              </h6> -->
+            </div>
+            <div class="col-4 text-right">
+              <!-- <button class="btn btn-primary btn-fte-toolbar">
+                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#partEditModal"></i>&nbsp;&nbsp;Edit
+              </button> -->
+              <button *ngIf=part class="btn btn-primary btn-fte-toolbar" (click)="onDeletePartClick(part)">
+                <i class="fa fa-trash-o fa-lg" ></i>&nbsp;&nbsp;Delete
+              </button>
+              <button class="btn btn-primary btn-fte-toolbar" (click)="onSavePartClick()">
+                  <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+                </button>
+            </div>
+          </div>
+        </div>
+        <form [formGroup] = 'form'>
+          <div class="card-body">
+           <table class="table table-bordered table-light">
+             <tr>
+               <td>Description</td>
+               <td colspan="3"><input type=text class="form-control" formControlName="description"></td>            
+             </tr>
+             <tr>
+                <td>Oracle Description</td>
+                <td colspan="3"><input type=text class="form-control" formControlName="oracleDescription"></td>             
+              </tr>
+              <tr>
+                  <td>Oracle Item #</td>
+                  <td><input type=text class="form-control" maxlength="100" formControlName="oracleItemNumber"></td>
+                  <td>Part Type</td>
+                  <td><select class="form-control" formControlName="partTypeID"><option class="dropdown-item" *ngFor="let item of partTypeChoices" [value]= "item.PartTypeID">
+                    {{item.PartTypeName}}
+                  </option></select></td>
+                </tr>
+                <tr>
+                    <td>DUT Family</td>
+                    <td><input type=text class="form-control" maxlength="100" formControlName="dutFamily"></td>
+                    <td>Designer</td>
+                  <td><select class="form-control" formControlName="designerEmployeeID"><option class="dropdown-item" *ngFor="let item of designerChoices" [value]= "item.EmployeeID">
+                    {{item.FullName}}
+                  </option></select></td>
+                  </tr>
+                  <tr>
+                    <td>Item Status</td>
+                    <td><input type=text class="form-control" maxlength="100" formControlName="itemStatus"></td>
+                    <td>Planner</td>
+                    <td><select class="form-control" formControlName="plannerEmployeeID"><option class="dropdown-item" *ngFor="let item of plannerChoices" [value]= "item.EmployeeID">
+                      {{item.FullName}}
+                    </option></select></td>
+                    </tr>
+                  <tr>
+                        <td>Notes</td>
+                        <td colspan="3" rowspan="2"><textarea  class="form-control" maxlength="500" formControlName="notes"></textarea></td>                     
+                   </tr>
+                   <tr></tr>             
+  
+             </table>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-5">
+      <div class="card" *ngIf="showScheduleCard">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-3">
+                <table>
+                   <tr><td> <h6>Schedule Revision</h6></td></tr>
+                  <tr><td><span class=revision *ngIf='schedule'>[ {{ schedule[0].CurrentRevision }} ]</span></td></tr>
+                </table>    
+                      
+            </div>
+            <div class="col-5">
+              <table>
+                <td> <h6>* Revision Notes </h6></td>
+                <td><input type=text class=form-control maxlength="500" [(ngModel)]="revisionNotes"></td>
+              </table>                      
+            </div>
+           
+            <div class="col-4 text-right">
+              <button [disabled]="!revisionNotes" class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
+                <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+              </button>              
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-hover table-light">
+            <thead>
+              <th>Need By</th>
+              <th>Quantity</th>
+              <th>Project Status</th>
+              <th>Notes</th>
+              <th>Del</th>
+            </thead>
+         
+            <tbody *ngFor="let sched of schedule">
+              <td><input [(ngModel)]="sched.NeedByDate" type=date class=form-control ></td>
+              <td><input [(ngModel)]="sched.NeededQuantity" type=number class=form-control min=0></td>
+              <td><select [(ngModel)]="sched.BuildStatusID" class=form-control><option *ngFor="let item of buildStatusChoices" [value]= "item.BuildStatusID">
+                {{item.BuildStatusName}}
+              </option></select></td>
+              <td><input [(ngModel)]="sched.Notes" maxlength="500" type=text class=form-control></td>
+              <td><input type="checkbox" [(ngModel)]="sched.DeleteRow"></td>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="5">
+                    <button 
+                    class="btn btn-primary btn-fte-toolbar" (click)="onAddScheduleRow()" 
+                     style="display: block">+</button> 
+                </td>
+              </tr>
+           </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  </div>
+
+

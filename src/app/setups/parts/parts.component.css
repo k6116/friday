@@ -1,0 +1,30 @@
+.btn-primary {
+    color: #fff;
+    background-color: rgb(108, 117, 125);;
+    border-color: rgb(108, 117, 125);;
+  }
+
+  .btn-fte-toolbar {
+    width: 90px;
+    height: 35px;
+  }
+
+  .searchInput {
+    width: 300px;
+  }
+
+  h6 {
+    line-height: 2.2 !important;
+    margin-bottom: 0;
+  }
+
+  select {
+    max-height: 35px;
+    
+  }
+
+  .revision {
+    color: green;
+    font-weight: bold;
+    font-size: 14px;
+  }
