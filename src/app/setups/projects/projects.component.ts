@@ -38,9 +38,11 @@ export class ProjectsSetupsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
     this.initFormValues();
     this.getProjects();
     this.getSelectionChoices();
+    this.searchProjects = ' '; // this will avoid shoing a blank list of projects.
   }
 
   onSearchInputChange(event: any) {
@@ -76,8 +78,8 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjects()
     .subscribe(
       res => {
-        console.log('Projects List:', this.projectList);
         this.projectList = res;
+        console.log('Projects List:', this.projectList);
       },
       err => {
         console.log(err);
@@ -163,7 +165,7 @@ export class ProjectsSetupsComponent implements OnInit {
       {
         projectName: this.searchProjects
       });
-
+      this.cacheService.raiseToast('success', 'New Project Entry Form Created.');
   }
 
   onProjectClick(project: any) {
@@ -171,7 +173,6 @@ export class ProjectsSetupsComponent implements OnInit {
     this.project = project;
     this.showProjectCard = true;
     this.showScheduleCard = true;
-    console.log(project);
 
     this.form.patchValue(
       {
@@ -205,6 +206,7 @@ export class ProjectsSetupsComponent implements OnInit {
       .subscribe(
         res => {
           this.cacheService.raiseToast('success', 'Project Updated Successfully');
+          this.getProjects();
         },
         err => {
           console.log(err);
@@ -225,6 +227,7 @@ export class ProjectsSetupsComponent implements OnInit {
             this.createDefaultScheduleRow();
             this.showScheduleCard = true;
             this.cacheService.raiseToast('success', 'New Project Created');
+            this.getProjects();
         },
         err => {
           console.log(err);
@@ -232,7 +235,6 @@ export class ProjectsSetupsComponent implements OnInit {
         }
       );
     }
-    this.getProjects();
   }
 
   onDeleteProjectClick() {
@@ -308,7 +310,7 @@ export class ProjectsSetupsComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
+    this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
@@ -321,7 +323,7 @@ export class ProjectsSetupsComponent implements OnInit {
       );
     } else {
       // no detail records so remove the schedule header record
-      this.apiDataSchedulesService.destroySchedule(this.scheduleId, this.authService.loggedInUser.id)
+      this.apiDataSchedulesService.destroySchedule(this.scheduleId)
       .subscribe(
         res => {
           console.log('Deleted Schedule');

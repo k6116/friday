@@ -83,16 +83,6 @@ router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
-// SCHEDULES CONTROLLER
-router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
-router.post('/updateProjectSchedule/:userID/:revisionNotes', controllers.schedules.updateProjectSchedule);
-router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
-router.post('/updatePartSchedule/:userID/:revisionNotes', controllers.schedules.updatePartSchedule);
-router.get('/destroySchedule/:scheduleID/:userID', controllers.schedules.destroySchedule);
-
-
-
-
 // DASHBOARD CONTROLLER
 router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);
 router.get('/dashboard/checkFirstLogin/:employeeID/:userName', controllers.dashboard.checkFirstLogin);
@@ -168,6 +158,13 @@ router.get('/getPartTypes', controllers.parts.indexPartTypes);
 router.post('/updatePart', controllers.parts.updatePart);
 router.post('/createPart', controllers.parts.createPart);
 router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
+
+// SCHEDULES CONTROLLER
+router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
+router.post('/updateProjectSchedule', controllers.schedules.updateProjectSchedule);
+router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
+router.post('/updatePartSchedule/:revisionNotes', controllers.schedules.updatePartSchedule);
+router.get('/destroySchedule/:scheduleID', controllers.schedules.destroySchedule);
 
 // middleware to protect permissions protected routes
 // if it is verified, it will continue (next) and allow the routes

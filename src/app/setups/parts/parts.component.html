@@ -111,13 +111,13 @@
             </div>
             <div class="col-5">
               <table>
-                <td> <h6>* Revision Notes </h6></td>
+                <td> <h6>Revision Notes </h6></td>
                 <td><input type=text class=form-control maxlength="500" [(ngModel)]="revisionNotes"></td>
               </table>                      
             </div>
            
             <div class="col-4 text-right">
-              <button [disabled]="!revisionNotes" class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
+              <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
                 <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
               </button>              
             </div>

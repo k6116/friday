@@ -195,7 +195,7 @@ export class PartSetupComponent implements OnInit {
       {
         partName: this.searchParts
       });
-
+      this.cacheService.raiseToast('success', 'New Part Entry Form Created.');
   }
 
   onSavePartClick() {
@@ -207,6 +207,7 @@ export class PartSetupComponent implements OnInit {
       .subscribe(
         res => {
           this.cacheService.raiseToast('success', 'Part Saved');
+          this.getParts();
         },
         err => {
           console.log(err);
@@ -227,6 +228,7 @@ export class PartSetupComponent implements OnInit {
             this.createDefaultScheduleRow();
             this.showScheduleCard = true;
             this.cacheService.raiseToast('success', 'New Part Created');
+            this.getParts();
         },
         err => {
           console.log(err);
@@ -234,7 +236,6 @@ export class PartSetupComponent implements OnInit {
         }
       );
     }
-    this.getParts();
   }
 
   onDeletePartClick() {
@@ -287,6 +288,9 @@ export class PartSetupComponent implements OnInit {
   }
 
   createDefaultScheduleRow() {
+    if (!this.schedule) {
+      this.schedule = [];
+    }
     this.schedule.push({
       ScheduleID: this.scheduleId,
       PartID: this.part ? this.part.PartID : this.form.value.partID,
@@ -311,7 +315,7 @@ export class PartSetupComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updatePartSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
+    this.apiDataSchedulesService.updatePartSchedule(this.schedule, this.revisionNotes)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
@@ -324,7 +328,7 @@ export class PartSetupComponent implements OnInit {
       );
     } else {
       // no detail records so remove the schedule header record
-      this.apiDataSchedulesService.destroySchedule(this.scheduleId, this.authService.loggedInUser.id)
+      this.apiDataSchedulesService.destroySchedule(this.scheduleId)
       .subscribe(
         res => {
           console.log('Deleted Schedule');
@@ -339,6 +343,7 @@ export class PartSetupComponent implements OnInit {
   }
 
   getSchedule() {
+    console.log(`get part with id: ${this.part ? this.part.PartID : this.form.value.partID}`);
     this.apiDataSchedulesService.getPartSchedule(this.part ? this.part.PartID : this.form.value.partID)
     .subscribe(
       res => {

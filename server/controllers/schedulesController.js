@@ -33,8 +33,9 @@ function indexProjectSchedule(req, res) {
 
   function updateProjectSchedule(req,res) {
 
-	const userID = req.params.userID;
+	const decodedToken = token.decode(req.header('X-Token'), res);	
 	const revisionNotes = req.params.revisionNotes;
+	
 	const schedule = req.body;
 
 	var scheduleXML = `<Schedules>`;
@@ -68,7 +69,7 @@ function indexProjectSchedule(req, res) {
 			projectID: schedule[0].ProjectID,
 			partID: null,
 			notes: revisionNotes,
-			employeeID: userID,
+			employeeID: decodedToken.userData.id,
 			schedule: scheduleXML,
 			rowCount: null,
 			errorNumber: null,
@@ -103,7 +104,7 @@ function indexProjectSchedule(req, res) {
 				projectID: schedule[0].ProjectID,
 				partID: null,
 				notes: revisionNotes,
-				employeeID: userID,
+				employeeID: decodedToken.userData.id,
 				schedule: scheduleXML,
 				rowCount: null,
 				errorNumber: null,
@@ -154,7 +155,7 @@ function indexPartSchedule(req, res) {
 
 function updatePartSchedule(req,res) {
 
-	const userID = req.params.userID;
+	const decodedToken = token.decode(req.header('X-Token'), res);
 	const revisionNotes = req.params.revisionNotes;
 	const schedule = req.body;
 
@@ -190,7 +191,7 @@ function updatePartSchedule(req,res) {
 			projectID: null,
 			partID: schedule[0].PartID,
 			notes: revisionNotes,
-			employeeID: userID,
+			employeeID: decodedToken.userData.id,
 			schedule: scheduleXML,
 			rowCount: null,
 			errorNumber: null,
@@ -225,7 +226,7 @@ function updatePartSchedule(req,res) {
 				projectID: null,
 				partID: schedule[0].PartID,
 				notes: revisionNotes,
-				employeeID: userID,
+				employeeID: decodedToken.userData.id,
 				schedule: scheduleXML,
 				rowCount: null,
 				errorNumber: null,
@@ -246,9 +247,8 @@ function updatePartSchedule(req,res) {
 
 
 function destroySchedule(req, res) {
-
+	const decodedToken = token.decode(req.header('X-Token'), res);
 	const scheduleID = req.params.scheduleID;   
-	const userID = req.params.userID;    
 
     sequelize.query(`EXECUTE dbo.Schedules 
 	:executeType, 
@@ -266,7 +266,7 @@ function destroySchedule(req, res) {
 			projectID: null,
 			partID: null,
 			notes: null,
-			employeeID: userID,
+			employeeID: decodedToken.userData.id,
 			schedule: null,
 			rowCount: null,
 			errorNumber: null,

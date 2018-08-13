@@ -15,9 +15,9 @@
   <div class="row">  
     <div class="col-2">
       <ng-container *ngIf="(projectList | filter : searchProjects : 'ProjectName':{limitTo: -1, matchOptimistic: true}) as filteredProjectList">
-        <ul class="list-group list-group-flush" *ngFor="let project of filteredProjectList | slice:0:10; let i=index">
+        <ul class="list-group list-group-flush" *ngFor="let project of filteredProjectList | slice:0:20; let i=index">
           <button class="list-group-item list-group-item-action" (click)="onProjectClick(project)">
-            {{ project.ProjectName }}<span *ngIf="project.ProjecTypeName"> - {{project.ProjecTypeName}}</span>
+            {{ project.ProjectName }}<span *ngIf="project.ProjectTypeName"> - {{project.ProjectTypeName}}</span>
           </button>        
         </ul>
       </ng-container>
@@ -32,13 +32,17 @@
                   <input type=text readonly=true formControlName="projectName" class="form-control">
                 </form>            
             </div>
-            <div class="col-4 text-right">           
-              <button *ngIf=project class="btn btn-primary btn-fte-toolbar" (click)="onDeleteProjectClick(project)">
-                <i class="fa fa-trash-o fa-lg" ></i>&nbsp;&nbsp;Delete
-              </button>
-              <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveProjectClick()">
-                  <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
-                </button>
+            <div class="col-4 text-right">  
+              <table>
+                <tr>
+                  <td>  <button *ngIf=project class="btn btn-primary btn-fte-toolbar" (click)="onDeleteProjectClick(project)">
+                      <i class="fa fa-trash-o fa-lg" ></i>&nbsp;&nbsp;Delete
+                    </button></td>
+                  <td> <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveProjectClick()">
+                      <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+                    </button></td>
+                </tr>
+              </table>
             </div>
           </div>
         </div>
@@ -118,7 +122,7 @@
             </div>
            
             <div class="col-4 text-right">
-              <button [disabled]="!revisionNotes" class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
+              <button class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
                 <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
               </button>              
             </div>
