@@ -43,6 +43,7 @@ export class PartSetupComponent implements OnInit {
     this.initFormValues();
     this.getParts();
     this.getSelectionChoices();
+    this.searchParts = ' '; // this will avoid shoing a blank list of parts.
   }
 
   onSearchInputChange(event: any) {
