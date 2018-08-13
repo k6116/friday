@@ -22,6 +22,8 @@ import { yearsPerPage } from '../../../../node_modules/@angular/material/datepic
 
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts, MultiselectDropdownComponent } from 'angular-2-dropdown-multiselect';
 
+import * as Highcharts from 'highcharts';
+
 const moment = require('moment');
 require('moment-fquarter');
 
@@ -43,7 +45,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   fqLabelArray = new Array; // for labeling fiscal quarters in FTE table
   fyLabelArray = new Array; // for labeling fiscal years in slider header
   fteProjectVisible = new Array;  // boolean array for by-project row display
-  fteProjectDeletable = new Array;  // boolean array for by-project delete-ability
   FTEFormGroup: FormGroup;
   sliderRange: number[] = []; // contains the live slider values
   allTeamFTEs: any;
@@ -77,6 +78,12 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   currentPlan: any;
   disablePreviousMonth: boolean;
   FTEFormGroupLive: any;
+
+  // Highchart Declarations
+  ftePlanningChart: any;
+  ftePlanningSeriesOptions: any;
+  fteMonthsChart: string[] = [];
+  fteChartData: any[] = [];
 
   // Multiselect Declarations
   filterProjectsModelStaging: any[] = [];
@@ -206,10 +213,15 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.getPlanList(this.authService.loggedInUser.id).then(
       res1 => {
       if (this.defaultPlan === undefined) {
-        this.getTeam('ethan_hunt@keysight.com').then(
+        this.getTeam('benjamin_zaks@keysight.com').then(
           res2 => this.createNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1'));
       } else {
-        this.getTeam('ethan_hunt@keysight.com').then(res => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan));
+        this.getTeam('benjamin_zaks@keysight.com').then(res => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan).then(
+          res2 => {
+            this.createFtePlanningChartXAxis();
+            this.createFtePlanningChartData();
+          }
+        ));
       }}
     );
 
@@ -230,6 +242,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     } else {
       this.disablePreviousMonth = false;
     }
+
+    
 
   }
 
@@ -499,6 +513,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       });
     }
 
+    this.createFtePlanningChartData();
+
   }
 
 
@@ -580,21 +596,23 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
 
   onTestFormClick() {
-    console.log('form object (this.form):');
-    console.log(this.FTEFormGroup);
-    console.log('form data (this.form.value.FTEFormArray):');
-    console.log(this.FTEFormGroup.value.FTEFormArray);
-    console.log('fte-project-visible array');
-    console.log(this.fteProjectVisible);
-    console.log('teamFTE', this.teamFTEs);
-    console.log('allTeamFTE', this.allTeamFTEs);
-    console.log('teamFTEFlat', this.teamFTEsFlat);
+    // console.log('form object (this.form):');
+    // console.log(this.FTEFormGroup);
+    // console.log('form data (this.form.value.FTEFormArray):');
+    // console.log(this.FTEFormGroup.value.FTEFormArray);
+    // console.log('fte-project-visible array');
+    // console.log(this.fteProjectVisible);
+    // console.log('teamFTE', this.teamFTEs);
+    // console.log('allTeamFTE', this.allTeamFTEs);
+    // console.log('teamFTEFlat', this.teamFTEsFlat);
     console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
-    console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
+    // console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
     console.log('this.allProjects', this.allProjects)
-    console.log('this.projects', this.projects)
-    console.log('this.allEmployees', this.allEmployees);
-    console.log('this.employees', this.employees)
+    // console.log('this.projects', this.projects)
+    // console.log('this.allEmployees', this.allEmployees);
+    // console.log('this.employees', this.employees)
+    // console.log('this.fteMonthsChart', this.fteMonthsChart)
+    console.log('this.fteChartData', this.fteChartData)
 
   }
 
@@ -699,18 +717,13 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
     this.checkIfNoProjectsVisible();
 
-    // this.updateProjectDeletability();
-
   }
 
   addProjectToFteForm(FTEFormArray: FormArray, proj: TeamFTEs, newProject: boolean) {
 
     // make each project visible to start
     this.fteProjectVisible.push(true);
-    if (newProject) {
-      // if function call is triggered by a new project addition, automatically make it deletable
-      this.fteProjectDeletable.push(true);
-    }
+
     const projFormArray = this.fb.array([]); // instantiating a temp formarray for each project
 
     this.employees.forEach(employee => {
@@ -761,7 +774,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.cacheService.confirmModalData.emit(
       {
         title: 'Confirm Deletion',
-        message: `Are you sure you want to permanently delete all of your FTE values for project ${deletedProject.projectName}?`,
+        message: `Are you sure you want to permanently delete all FTE values for project ${deletedProject.projectName}?`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
         closeButton: true,
@@ -791,17 +804,18 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           newlyAdded: deletedProject.newlyAdded
         };
 
-        const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted, this.authService.loggedInUser.id).subscribe(
+        const deleteActionSubscription = this.apiDataFteService.destroyTeamProject(toBeDeleted).subscribe(
           deleteResponse => {
             // only delete from the projectemployeerole table if user is deleting a non-newlyAdded project
             this.fteProjectVisible.splice(index, 1);
-            this.fteProjectDeletable.splice(index, 1);
             FTEFormArray.controls.splice(index, 1);
             this.updateMonthlyTotals();
             this.setMonthlyTotalsBorder();
             console.log('stuff was updated');
             this.cacheService.raiseToast('success', deleteResponse.message);
             deleteActionSubscription.unsubscribe();
+
+            this.getPlan(this.authService.loggedInUser.id, this.currentPlan);
           },
           deleteErr => {
             this.cacheService.raiseToast('warn', `${deleteErr.status}: ${deleteErr.statusText}`);
@@ -862,34 +876,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       }
     });
   }
-
-  // updateProjectDeletability() {
-  //   // reset project deletability
-  //   this.fteProjectDeletable.length = 0;
-
-  //   const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
-  //   const firstDeletableMonth = this.fteMonthEditable.findIndex( value => {
-  //     return value; // look for the first month that is editable
-  //   });
-
-  //   FTEFormArray.controls.forEach( project => {
-  //     let nullCounter = 0;
-
-  //     for (let i = 0; i < firstDeletableMonth; i++) {
-  //       const currProjControls = project['controls'][i].controls;
-  //       if (currProjControls.fte.value) {
-  //         // if any of the controls have an FTE value, break out of the loop and make the whole project not deletable
-  //         i = firstDeletableMonth;
-  //         nullCounter = 0; // reset nullCounter
-  //         this.fteProjectDeletable.push(false);
-  //       } else { nullCounter++; }
-  //     }
-  //     if (nullCounter === firstDeletableMonth) {
-  //       // all historic FTE values are null, so project can safely be deleted
-  //       this.fteProjectDeletable.push(true);
-  //     }
-  //   });
-  // }
 
   checkIfEmptyProjects(): string {
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
@@ -1008,31 +994,34 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   getPlan(userID: any, planName: string) {
-    // get FTE data for specific plan
-    this.apiDataFteService.indexPlan(userID, planName)
-    .subscribe(
-      res => {
-        this.allTeamFTEs = res.nested;
-        this.teamFTEs = this.allTeamFTEs;
-        this.teamFTEsFlat = res.flat;
-        this.teamFTEsFlatLive = this.teamFTEsFlat;
-        this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
-        this.display = true;  // ghetto way to force rendering after FTE data is fetched
-        const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-        this.allProjects = FTEFormArray.controls;
-        this.projects = this.allProjects;
+    return new Promise((p_res, p_err) => {
+      // get FTE data for specific plan
+      this.apiDataFteService.indexPlan(userID, planName)
+      .subscribe(
+        res => {
+          this.allTeamFTEs = res.nested;
+          this.teamFTEs = this.allTeamFTEs;
+          this.teamFTEsFlat = res.flat;
+          this.teamFTEsFlatLive = this.teamFTEsFlat;
+          this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+          this.display = true;  // ghetto way to force rendering after FTE data is fetched
+          const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+          this.allProjects = FTEFormArray.controls;
+          this.projects = this.allProjects;
 
-        // Initialize the cache array for the FTEFormGroup, then add an extra element to add all edits in months other than the current
-        this.FTEFormGroupLive = this.FTEFormGroup.value.FTEFormArray;
-        this.FTEFormGroupLive.push([]);
+          // Initialize the cache array for the FTEFormGroup, then add an extra element to add all edits in months other than the current
+          this.FTEFormGroupLive = this.FTEFormGroup.value.FTEFormArray;
+          this.FTEFormGroupLive.push([]);
 
-        this.updateProjectFilters();
-
-      },
-      err => {
-        console.error(err);
-      }
-    );
+          this.updateProjectFilters();
+          p_res();
+        },
+        err => {
+          console.error(err);
+          p_err();
+        }
+      );
+    });
   }
 
   updateEmployeeFilters() {
@@ -1130,10 +1119,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           this.getPlanList(this.authService.loggedInUser.id).then(
             res1 => {
             if (this.defaultPlan === undefined) {
-              this.getTeam('ethan_hunt@keysight.com').then(
+              this.getTeam('benjamin_zaks@keysight.com').then(
                 res2 => this.createNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1'));
             } else {
-              this.getTeam('ethan_hunt@keysight.com').then(res3 => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan));
+              this.getTeam('benjamin_zaks@keysight.com').then(res3 => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan));
             }
           });
           this.currentMonth = moment(1, 'DD');
@@ -1230,4 +1219,94 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.display = true;  // ghetto way to force rendering after FTE data is fetched
   }
 
+  // Highchart Functions
+  createFtePlanningChartXAxis() {
+    // Generate X-Axis with months starting from current
+    this.fteMonthsChart.push(moment(this.currentMonth).format('MMM'));
+    for (let i = 1; i < 12; i++) {
+      this.fteMonthsChart.push(moment(this.currentMonth).add(i, 'month').format('MMM'));
+    }
+  }
+
+  createFtePlanningChartData() {
+
+    this.fteChartData = [];
+
+    const currentMonthNumber = moment(this.currentMonth).format('M');
+
+    for (let i = 0; i < this.allProjects.length; i++) {
+
+      // Initialize the data object
+      this.fteChartData.push({
+        name: this.allProjects[i].projectName,
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      });
+
+      for (let j = 0; j < this.teamFTEsFlatLive.length; j++) {
+        if (this.teamFTEsFlatLive[j].projectName === this.allProjects[i].projectName) {
+
+          let fiscalMonthFound = moment(this.teamFTEsFlatLive[j]['allocations:fiscalDate']).utc().format('M');
+          const fiscalYearFound = moment(this.teamFTEsFlatLive[j]['allocations:fiscalDate']).utc().format('YYYY');
+
+          if (fiscalMonthFound >= currentMonthNumber && fiscalYearFound === moment(this.currentMonth).format('YYYY')) {
+            this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber] =
+              Number(this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber]) +
+                Number(this.teamFTEsFlatLive[j]['allocations:fte']);
+          } else if (fiscalMonthFound < currentMonthNumber && fiscalYearFound === moment(this.currentMonth).add(1, 'year').format('YYYY')) {
+            fiscalMonthFound = Number(fiscalMonthFound) + 12;
+            this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber] =
+              Number(this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber]) +
+                Number(this.teamFTEsFlatLive[j]['allocations:fte']);
+          }
+
+          console.log('Project: ' + this.allProjects[i].projectName + ' | fullName: ' + this.teamFTEsFlatLive[j]['allocations:fullName'] +  ' | fiscalDate: ' +
+              fiscalMonthFound + '/' + fiscalYearFound + ' | fte: ', this.teamFTEsFlatLive[j]['allocations:fte'])
+        }
+      }
+    }
+
+    this.plotFtePlanningChart();
+  }
+
+  plotFtePlanningChart() {
+    // if chart already exists, destroy it before re-drawing
+    this.ftePlanningSeriesOptions = {
+        chart: {
+          type: 'column'
+        },
+        title: {
+          text: 'Team FTE Planning for FY' + this.setYear
+        },
+        // subtitle: {
+        //   text: 'Viewing Plan: ' + this.currentPlan
+        // },
+        xAxis: {
+          categories: this.fteMonthsChart,
+          crosshair: true
+        },
+        yAxis: {
+          min: 0,
+          title: {
+            text: 'FTE Count'
+          }
+        },
+        tooltip: {
+          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true
+        },
+        plotOptions: {
+          column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+          }
+        },
+        series: this.fteChartData
+    };
+
+    this.ftePlanningChart = Highcharts.chart('FTEPlanningChart', this.ftePlanningSeriesOptions);
+  }
 }

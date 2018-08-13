@@ -55,6 +55,15 @@ export class ApiDataFteService {
       .map((response: Response) => response.json());
   }
 
+  // delete an entire project from team's planning FTE table
+  destroyTeamProject(projectID: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+    return this.http.post(`/api/fte/destroyTeamProject/`, JSON.stringify(projectID), options)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
   // create a new FTE Plan and return it
   indexNewPlan(emailAddress: string, userID: number, planName: string) {
     return this.http.get(`/api/fte/indexNewPlan/${emailAddress}/${userID}/${planName}`)

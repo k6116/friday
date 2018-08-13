@@ -364,6 +364,32 @@ function updateTeamData(req, res) {
 
 }
 
+function destroyTeamProject(req, res) {
+  
+  const toBeDeletedID = req.body.projectID;
+  const toBeDeletedName = req.body.projectName;
+
+  return models.ProjectEmployeePlanning
+  .destroy({
+    where: {
+      projectID: toBeDeletedID,
+    }})
+  .then(deletedRows => {
+    console.log(`${deletedRows} project employee records deleted`);
+    res.json({
+      message: `Successfully deleted project ${toBeDeletedName}`
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({
+      message: 'Delete Failed',
+      error: error
+    });
+  })
+
+}
+
 function indexNewPlan(req, res) {
 
   // this function executes an SP that will copy all subordinates fte data into the 
@@ -501,6 +527,7 @@ module.exports = {
   updateUserData: updateUserData,
   indexTeamData: indexTeamData,
   updateTeamData: updateTeamData,
+  destroyTeamProject: destroyTeamProject,
   indexNewPlan: indexNewPlan,
   indexPlan: indexPlan,
   indexPlanList: indexPlanList,
