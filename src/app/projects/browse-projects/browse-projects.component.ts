@@ -12,7 +12,8 @@ declare var $: any;
 })
 export class BrowseProjectsComponent implements OnInit {
 
-  @ViewChild('filterVC') filterVC: ElementRef;
+  @ViewChild('filterStringVC') filterStringVC: ElementRef;
+  @ViewChild('filterDropDownVC') filterDropDownVC: ElementRef;
 
   projects: any;
   projectsToDisplay: any;
@@ -27,10 +28,9 @@ export class BrowseProjectsComponent implements OnInit {
   numProjectsToDisplay: number; // number of projects to show initially and to add for infinate scroll
   displayedProjects: number;
   filters: any[];
-  filterProperty: string;
-  matchFuzzy: boolean;
-  matchExact: boolean;
-  matchOptimistic: boolean;
+  selectedFilter: any;  // selected filter object from the dropdown (from this.filters)
+  dropDownData: any;
+
 
   constructor(
     private apiDataProjectService: ApiDataProjectService,
@@ -42,43 +42,52 @@ export class BrowseProjectsComponent implements OnInit {
     this.numProjectsToDisplay = 100;
     this.addedProjectsCount = 100;
 
-    // this.filters = ['Project Name', 'Project Type', 'Description', 'Priority', 'Project Status'];
-
     this.filters = [
       {
         displayName: 'Project Name',
         columnName: 'ProjectName',
         matchFuzzy: true,
         matchExact: false,
-        matchOptimistic: false
+        matchOptimistic: false,
+        isDropdown: false
       },
       {
         displayName: 'Project Type',
         columnName: 'ProjectTypeName',
         matchFuzzy: false,
         matchExact: true,
-        matchOptimistic: false
+        matchOptimistic: false,
+        isDropdown: true,
+        dropDownArrayIndex: 0,
+        dropDownProperty: 'projectTypeName'
       },
       {
         displayName: 'Description',
         columnName: 'Description',
         matchFuzzy: false,
         matchExact: false,
-        matchOptimistic: true
+        matchOptimistic: true,
+        isDropdown: false
       },
       {
         displayName: 'Priority',
         columnName: 'PriorityName',
         matchFuzzy: false,
         matchExact: true,
-        matchOptimistic: false
+        matchOptimistic: false,
+        isDropdown: true,
+        dropDownArrayIndex: 2,
+        dropDownProperty: 'priorityName'
       },
       {
         displayName: 'Project Status',
         columnName: 'ProjectStatusName',
         matchFuzzy: false,
         matchExact: true,
-        matchOptimistic: false
+        matchOptimistic: false,
+        isDropdown: true,
+        dropDownArrayIndex: 1,
+        dropDownProperty: 'projectStatusName'
       }
     ];
 
@@ -88,21 +97,28 @@ export class BrowseProjectsComponent implements OnInit {
 
   ngOnInit() {
 
-    // set the default filter settings (search by dropdown value)
-    this.filterProperty = 'ProjectName';
-    this.matchFuzzy = true;
+    // set the default filter (search by Project Name)
+    this.selectedFilter = this.filters[0];
 
-    // get all the projects
-    this.apiDataProjectService.getProjects()
+    // get all the data for the page using forkjoin - projects, and dropdowns
+    this.apiDataProjectService.getProjectsBrowseData()
       .subscribe(
         res => {
-          // store the response in the projects array of objects
-          this.projects = res;
+          console.log('projects browse response:');
+          console.log(res);
+          // store the projects
+          this.projects = res[0];
+          // store the dropdown data
+          this.dropDownData = res.slice(1);
+          // add an empty object to each drop down list, for the default first selection
+          this.addEmptyObjectsToDropDowns();
           // store the number of projects, to display in the page 'showing x of y projects'
           this.totalProjects = this.projects.length;
           this.totalProjectsCount = this.projects.length;
           // set the number of displayed projects
           this.displayedProjects = this.projects.length;
+          // set the selected filter to the first one ('Project Name')
+          this.selectedFilter = this.filters[0];
           // fire the filter string change to run it through the pipe
           // TO-DO: rename this method
           this.onFilterStringChange();
@@ -118,55 +134,95 @@ export class BrowseProjectsComponent implements OnInit {
   }
 
 
+  // add an object to the beginning of the dropdowns arrays
+  // with an empty string, as the default selection
+  addEmptyObjectsToDropDowns() {
+
+    this.dropDownData.forEach(dropDown => {
+      // take a copy of the first object
+      const firstObject = $.extend(true, {}, dropDown[0]);
+      // replace the properties with zeros, empty strings
+      for (const property in firstObject) {
+        if (firstObject.hasOwnProperty(property)) {
+          if (typeof firstObject[property] === 'number') {
+            firstObject[property] = 0;
+          } else if (typeof firstObject[property] === 'string') {
+            firstObject[property] = '';
+          }
+        }
+      }
+      // add it to the first position (zero index)
+      dropDown.splice(0, 0, firstObject);
+    });
+
+  }
 
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
     // clear the filter string
     this.filterString = undefined;
     // reset the focus on the filter input
-    this.filterVC.nativeElement.focus();
+    this.filterStringVC.nativeElement.focus();
     // update the count display (showing x of y) by calling onFilterStringChange()
     this.onFilterStringChange();
   }
 
 
   onFilterByChange(filterBy) {
-    console.log('filter by change event fired');
-    console.log(filterBy);
-    // get the column name that will be used by the filter pipe
+    // find the filter object based on the selected dropdown value
     const foundFilter = this.filters.find(filter => {
       return filter.displayName === filterBy;
     });
-    console.log('found filter:');
-    console.log(foundFilter);
     if (foundFilter) {
-      this.filterProperty = foundFilter.columnName;
-      this.matchFuzzy = foundFilter.matchFuzzy;
-      this.matchExact = foundFilter.matchExact;
-      this.matchOptimistic = foundFilter.matchOptimistic;
+      // clear the existing filter
+      this.clearFilter();
+      // set the filter object
+      this.selectedFilter = foundFilter;
     }
-    console.log(`filterProperty: ${this.filterProperty}, matchFuzzy: ${this.matchFuzzy}, matchExact: ${this.matchExact}`);
-    // set the focus on the filter input
-    this.filterVC.nativeElement.focus();
+    // set the focus on the input box, if it is not a dropdown
+    if (!foundFilter.isDropdown) {
+      setTimeout(() => {
+        this.filterStringVC.nativeElement.focus();
+      }, 100);
+    // otherwise, set the focus on the dropdown
+    } else {
+      setTimeout(() => {
+        this.filterDropDownVC.nativeElement.focus();
+      }, 100);
+    }
+  }
+
+  onFilterSelectChange(dropDownValue) {
+    console.log('dropdown value:');
+    console.log(dropDownValue);
+    if (dropDownValue) {
+      this.filterString = dropDownValue;
+      this.onFilterStringChange();
+    } else {
+      this.clearFilter();
+    }
+  }
+
+  // clear the existing filter string; if a different search by is selected for example
+  clearFilter() {
+    this.filterString = undefined;
+    this.onFilterStringChange();
   }
 
 
   onFilterStringChange() {
-    console.log('filter string change fired');
-    const projects = this.filterPipe.transform(this.projects, this.filterString, this.filterProperty,
-      {limitTo: this.numProjectsToDisplay, matchFuzzy: this.matchFuzzy,
-      matchOptimistic: this.matchOptimistic, matchExact: this.matchExact});
+    const projects = this.filterPipe.transform(this.projects, this.filterString, this.selectedFilter.columnName,
+      {limitTo: this.numProjectsToDisplay, matchFuzzy: this.selectedFilter.matchFuzzy,
+      matchOptimistic: this.selectedFilter.matchOptimistic, matchExact: this.selectedFilter.matchExact});
     this.displayedProjects = projects.length;
     this.filteredProjectsCount = projects.length;
-    console.log('filter string returned projects:');
-    console.log(projects);
   }
+
+
 
 
   // display a popover with the full description
   onDescriptionMouseEnter(project: any) {
-
-    // console.log(project);
 
     console.log('project description and length:');
     console.log(project.Description);

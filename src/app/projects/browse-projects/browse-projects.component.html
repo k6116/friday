@@ -18,10 +18,16 @@ considering topnav, sidenav, and footer -->
         </select>
       </div>
 
-      <div class="projects-filter-string">
-        <input type="text" #filterVC [(ngModel)]="filterString" class="form-control projects-filter-input" (ngModelChange)="onFilterStringChange()" appAutofocus>
+      <div *ngIf="!selectedFilter.isDropdown" class="projects-filter-string">
+        <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (ngModelChange)="onFilterStringChange()" appAutofocus>
         <i class="projects-filter-icon-search fa fa-search"></i>
         <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
+      </div>
+
+      <div *ngIf="selectedFilter.isDropdown" class="projects-filter-select">
+        <select #filterDropDownVC class="form-control projects-filter-select" (change)="onFilterSelectChange($event.target.value)">
+          <option *ngFor="let data of dropDownData[selectedFilter.dropDownArrayIndex]">{{ data[selectedFilter.dropDownProperty] }}</option>
+        </select>
       </div>
 
       <div class="projects-display-count">
@@ -33,7 +39,7 @@ considering topnav, sidenav, and footer -->
     <div class="projects-cards-cont" (scroll)="onScroll()">
 
       <!-- each row is a project card, with bottom margin separating it from the next one -->
-      <div *ngFor="let project of projects | filter : filterString : filterProperty : {limitTo: numProjectsToDisplay, matchFuzzy: matchFuzzy, matchOptimistic: matchOptimistic, matchExact: matchExact}" class="row row-custom row-project-card">
+      <div *ngFor="let project of projects | filter : filterString : selectedFilter.columnName : {limitTo: numProjectsToDisplay, matchFuzzy: selectedFilter.matchFuzzy, matchOptimistic: selectedFilter.matchOptimistic, matchExact: selectedFilter.matchExact}" class="row row-custom row-project-card">
 
         <!-- 12 columns width project card container-->
         <div class="project-card">

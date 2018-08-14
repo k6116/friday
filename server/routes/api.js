@@ -31,6 +31,7 @@ router.get('/indexProjectRoster/:projectID', controllers.project.indexProjectRos
 router.get('/indexUserProjectList/:userID', controllers.project.indexUserProjectList);
 router.get('/indexProjectTypesList/', controllers.project.indexProjectTypesList);
 router.get('/indexProjectStatusesList/', controllers.project.indexProjectStatusesList);
+router.get('/indexProjectPrioritiesList/', controllers.project.indexProjectPrioritiesList);
 router.post('/insertProject/:userID', controllers.project.insertProject);
 router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/destroyProject/:userID', controllers.project.destroyProject);   // PROTECT

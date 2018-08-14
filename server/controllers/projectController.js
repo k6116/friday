@@ -14,6 +14,7 @@ function indexProjects(req, res) {
         p.Active,
         py.PriorityID,
         py.PriorityName,
+        ps.ProjectStatusName,
         p.NPIHWProjectManager,
         g.GroupName,
         ey.EntityName,
@@ -33,6 +34,7 @@ function indexProjects(req, res) {
         LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
         LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
         LEFT JOIN accesscontrol.Employees e2 ON P.CreatedBy = e2.EmployeeID
+        LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
     ORDER BY 
         p.ProjectName`
     
@@ -340,6 +342,25 @@ function indexProjectStatusesList(req, res) {
 }
 
 
+function indexProjectPrioritiesList(req, res) {
+
+  models.ProjectPriorities.findAll({
+    attributes: ['id', 'priorityName', 'description'],
+  })
+  .then(projectPriorities => {
+    console.log('Returning Project Priorities List')
+    res.json(projectPriorities);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+
+  });
+}
+
+
 function indexProjectSchedule(req, res) {
 
   const projectName = req.params.projectName;
@@ -581,6 +602,7 @@ module.exports = {
   destroyProject: destroyProject,
   indexProjectTypesList: indexProjectTypesList,
   indexProjectStatusesList: indexProjectStatusesList,
+  indexProjectPrioritiesList: indexProjectPrioritiesList,
   indexProjectSchedule: indexProjectSchedule,
   indexProjectTypeDisplayFields: indexProjectTypeDisplayFields,
   insertProjectEmployeeRole: insertProjectEmployeeRole,

@@ -25,6 +25,7 @@ select.form-control.projects-filter-select {
 div.projects-filter-string {
   position: relative;
   display: inline-block;
+  margin-right: 10px;
 }
 
 input.projects-filter-input {
@@ -47,6 +48,11 @@ i.projects-filter-icon-close {
   right: 10px;
   font-size: 16px;
   cursor: pointer;
+}
+
+div.projects-filter-select {
+  display: inline-block;
+  width: 200px;
 }
 
 div.projects-display-count {

@@ -58,6 +58,20 @@ const ProjectStatuses = sequelize.define('projectStatuses',
   }
 );
 
+
+const ProjectPriorities = sequelize.define('projectPriorities',
+  {
+    id: { type: Sequelize.INTEGER, field: 'PriorityID', primaryKey: true, autoIncrement: true },
+    priorityName: { type: Sequelize.STRING, field: 'PriorityName' },
+    description: { type: Sequelize.STRING, field: 'Description' }
+  },
+  {
+    schema: 'projects',
+    tableName: 'Priority',
+    timestamps: false
+  }
+);
+
 const ProjectPermissionRequests = sequelize.define('projectPermissionRequests',
   {
     id: { type: Sequelize.INTEGER, field: 'RequestID', primaryKey: true, autoIncrement: true },
@@ -109,6 +123,7 @@ module.exports = {
   Projects: Projects, 
   ProjectTypes: ProjectTypes,
   ProjectStatuses: ProjectStatuses,
+  ProjectPriorities: ProjectPriorities,
   ProjectPermissionRequests: ProjectPermissionRequests,
   ProjectTypeDisplayFields: ProjectTypeDisplayFields,
 }
