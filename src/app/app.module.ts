@@ -87,8 +87,8 @@ import { PartSetupComponent } from './setups/parts/parts.component';
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 
 // BOM module stuff
-import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
-import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
+import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
+import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 
 
 @NgModule({

@@ -126,7 +126,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
             {
               title: 'BOM Viewer',
               alias: 'bom-viewer',
-              path: 'main/reports/bom-viewer',
+              path: 'main/bom/bom-viewer',
               parentAlias: 'bom',
               active: false,
               permissionProtected: false,
@@ -135,7 +135,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
             {
               title: 'BOM Editor',
               alias: 'bom-editor',
-              path: 'main/reports/bom-editor',
+              path: 'main/bom/bom-editor',
               parentAlias: 'bom',
               active: false,
               permissionProtected: true,
