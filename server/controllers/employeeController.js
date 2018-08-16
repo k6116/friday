@@ -47,7 +47,47 @@ function showUserPLMData(req, res) {
     });
 }
 
+function getDesigners(req, res) {    
+
+  const sql = `
+    SELECT 
+      EmployeeID, 
+      FullName
+    FROM  
+      accesscontrol.Employees
+    WHERE
+      RoleID = 7
+    ORDER BY 
+      FullName`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+}
+
+function getPlanners(req, res) {    
+
+  const sql = `
+   SELECT 
+      EmployeeID, 
+      FullName
+    FROM  
+      accesscontrol.Employees
+    WHERE
+      RoleID = 8
+    ORDER BY 
+      FullName`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+}
+
 module.exports = {
   show: show,
-  showUserPLMData: showUserPLMData
+  showUserPLMData: showUserPLMData,
+  getDesigners: getDesigners,
+  getPlanners: getPlanners
 }

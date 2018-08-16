@@ -20,4 +20,15 @@ export class ApiDataEmployeeService {
       .map((response: Response) => response.json());
   }
 
+  getDesigners() {
+    return this.http.get(`/api/getDesigners`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  getPlanners() {
+    return this.http.get(`/api/getPlanners`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
 }

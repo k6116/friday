@@ -1,3 +1,30 @@
+<a name="1.7.1"></a>
+## [1.7.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.7.0...v1.7.1) (2018-08-13)
+
+
+### Bug Fixes
+
+* **FTE Entry Page:** fixed problem where users could type dots into FTE entry boxes, causing saving ([d46cb46](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/d46cb46))
+
+
+
+<a name="1.7.0"></a>
+# [1.7.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.6.1...v1.7.0) (2018-08-13)
+
+
+### Bug Fixes
+
+* **bug fix:** bug fix ([1b0bdae](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/1b0bdae))
+* **bug fix (see PR notes):** bug fix ([f3f8df8](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f3f8df8))
+* **bug fixes:** bug fixes ([398e71c](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/398e71c))
+
+
+### Features
+
+* **Implemented Setups for Parts and Projects:** CRUD on Parts and Projects in Setups ([99575dc](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/99575dc))
+
+
+
 <a name="1.6.1"></a>
 ## [1.6.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.6.0...v1.6.1) (2018-08-10)
 

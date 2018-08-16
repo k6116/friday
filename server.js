@@ -8,6 +8,7 @@ const https = require('https');
 const dotevnv = require('dotenv').config()
 
 const api = require('./server/routes/api');
+
 const sequelize = require('./server/db/sequelize');
 const email = require('./server/email/email');
 const websockets = require('./server/websockets/websockets');

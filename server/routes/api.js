@@ -30,6 +30,14 @@ router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/destroyProject/:userID', controllers.project.destroyProject);   // PROTECT
 router.get('/indexProjectSchedule/:projectName', controllers.project.indexProjectSchedule);
 router.get('/indexProjectTypeDisplayFields/', controllers.project.indexProjectTypeDisplayFields);
+router.get('/indexBuildStatus', controllers.project.indexBuildStatus);
+router.get('/indexPLCStatus', controllers.project.indexPLCStatus);
+router.get('/indexProjectDepartments', controllers.project.indexProjectDepartments);
+router.get('/indexProjectGroups', controllers.project.indexProjectGroups);
+router.get('/indexProjectPriorities', controllers.project.indexProjectPriorities);
+router.post('/updateProjectSetup/:userID', controllers.project.updateProjectSetup);
+router.post('/insertProjectSetup/:userID', controllers.project.insertProjectSetup);
+router.delete('/destroyProjectSetup/:projectID/:scheduleID/:userID', controllers.project.destroyProjectSetup);
 router.post('/insertProjectEmployeeRole/:userID', controllers.project.insertProjectEmployeeRole);   // PROTECT
 router.post('/updateProjectEmployeeRole/:userID', controllers.project.updateProjectEmployeeRole);   // PROTECT
 router.post('/destroyProjectEmployeeRole/:userID', controllers.project.destroyProjectEmployeeRole);   // PROTECT
@@ -41,6 +49,8 @@ router.get('/indexPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.meta
 // EMPLOYEE CONTROLLER
 router.get('/employeeList/:managerEmailAddress', controllers.employee.show);
 router.get('/showUserPLMData/:userEmailAddress', controllers.employee.showUserPLMData);
+router.get('/getDesigners', controllers.employee.getDesigners);
+router.get('/getPlanners', controllers.employee.getPlanners);
 
 // ORG CONTROLLER
 router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
@@ -73,6 +83,11 @@ router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
+// DASHBOARD CONTROLLER
+router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);
+router.get('/dashboard/checkFirstLogin/:employeeID/:userName', controllers.dashboard.checkFirstLogin);
+router.get('/dashboard/checkJobTitle/:employeeID', controllers.dashboard.checkJobTitle);
+router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
 
 // ANALYTICS CONTROLLER
 router.get('/getNCIProjectsParentChildList', controllers.analytics.getNCIProjectsParentChildList);
@@ -136,6 +151,20 @@ router.put('/fte/fte/update/updateUserData', controllers.fte.updateUserData);
 // TEMP JOB TITLE CONTROLLER
 router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
+// SETUP PARTS
+router.get('/getParts', controllers.parts.indexParts);
+router.get('/getPart/:partID', controllers.parts.getPart);
+router.get('/getPartTypes', controllers.parts.indexPartTypes);
+router.post('/updatePart', controllers.parts.updatePart);
+router.post('/createPart', controllers.parts.createPart);
+router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
+
+// SCHEDULES CONTROLLER
+router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
+router.post('/updateProjectSchedule/:userID/:revisionNotes', controllers.schedules.updateProjectSchedule);
+router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
+router.post('/updatePartSchedule/:userID/:revisionNotes', controllers.schedules.updatePartSchedule); //TO-DO user Token for userID and put revisionNotes in header
+router.get('/destroySchedule/:scheduleID', controllers.schedules.destroySchedule);
 
 // middleware to protect permissions protected routes
 // if it is verified, it will continue (next) and allow the routes
@@ -204,6 +233,8 @@ router.use('/', function(req, res, next) {
   next();
 
 });
+
+// SETUPS MENU VIEW
 
 
 // JOB TITLE CONTROLLER (ADMIN)

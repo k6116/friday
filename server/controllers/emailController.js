@@ -24,6 +24,9 @@ const templates = new EmailTemplates({
 
 function sendFTEReminder(req, res) {
 
+  // TO-DO: Mike - narrow set of users for email blast. 
+  // Only those who have FTE entries 
+  // OR obtain email list from deisignated Managers via PLM
   models.User.findAll({
     attributes: ['email'],
     where: {

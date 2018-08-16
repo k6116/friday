@@ -42,8 +42,8 @@ function translateTimePeriods(period) {
       break;
     }
     case 'all-time': {
-      startMonth = moment.utc().startOf('year').set('year', 1900);
-      endMonth = moment.utc().startOf('year').set('year', 9000);
+      startMonth = moment.utc().startOf('year').set('year', 2018).set('month', 4);  // when Jarvis FTE data starts
+      endMonth = moment.utc().startOf('month'); // first day of the current month
       break;
     }
   }

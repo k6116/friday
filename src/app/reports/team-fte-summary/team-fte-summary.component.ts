@@ -25,20 +25,10 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   userIsManagerSubscription: Subscription;  // for fetching subordinate info
   managerEmail: string;
 
-  teamOrgStructure: any;
-  getOrgSubscription: Subscription;
-
   chartIsLoading = true;  // display boolean for "Loading" spinner
   paretoChart: any; // chart obj
   paretoChartOptions: any;  // chart options
   paretoChartSubscription: Subscription;  // for subordinates roster under a given project
-
-  teamFteData: any;
-  teamFteSubscription: Subscription;
-
-  dataCompleteSubscription: Subscription;
-  dataIsComplete = new EventEmitter;
-  dataCounter = 0;
 
   teamSummaryData: any; // for teamwide FTE summary data
   displaySelectedProjectRoster = false;
@@ -85,7 +75,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
                                        'mike.galasso@non.keysight.com'];
 
     // find out if user is a manager and store it for future display use
-    this.userIsManagerSubscription = this.apiDataOrgService.getOrgData(this.authService.loggedInUser.email).subscribe( res => {
+    this.userIsManagerSubscription = this.apiDataOrgService.getOrgData(this.loggedInUserEmail).subscribe( res => {
       // parse the json response. we only want the top level user, so use only the first index
       const userOrgData = JSON.parse('[' + res[0].json + ']')[0];
       this.userIsManager = userOrgData.numEmployees > 0 ? true : false;
@@ -101,8 +91,6 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     if (this.cacheService.$nestedOrgData) {
       this.nestedOrgData = this.cacheService.$nestedOrgData;
       this.cacheService.nestedOrgDataCached = true;
-      // console.log('nested org data picked up in employee reports');
-      // console.log(this.nestedOrgData);
       this.waitingForOrgData = false;
       this.setInitialDropDownEmployee();
       this.cacheService.nestedOrgDataRequested = undefined;
@@ -114,8 +102,6 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
           this.nestedOrgData = nestedOrgData;
           this.cacheService.$nestedOrgData = nestedOrgData;
           this.cacheService.nestedOrgDataCached = true;
-          // console.log('nested org data received in employee reports component via subscription');
-          // console.log(this.nestedOrgData);
           this.waitingForOrgData = false;
           this.setInitialDropDownEmployee();
           this.cacheService.nestedOrgDataRequested = undefined;
@@ -139,15 +125,6 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     if (this.userIsManagerSubscription) {
       this.userIsManagerSubscription.unsubscribe();
     }
-    if (this.getOrgSubscription) {
-      this.getOrgSubscription.unsubscribe();
-    }
-    if (this.teamFteSubscription) {
-      this.teamFteSubscription.unsubscribe();
-    }
-    if (this.dataCompleteSubscription) {
-      this.dataCompleteSubscription.unsubscribe();
-    }
     if (this.paretoChartSubscription) {
       this.paretoChartSubscription.unsubscribe();
     }
@@ -162,48 +139,13 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
   componentDataInit(period: string) {
 
-    this.dataCounter = 0;
     this.displaySelectedProjectRoster = false;
     this.chartIsLoading = true;
 
-    this.getTeam(this.managerEmail);
     this.getTeamFtePareto(this.managerEmail, period);
-    this.getTeamFteData(this.managerEmail, period);
 
-    this.dataCompleteSubscription = this.dataIsComplete.subscribe( event => {
-      if (event) {
-        this.dataCounter++;
-      }
-      if (this.dataCounter === 2) {
-        this.dataCounter = 0;
-        this.dataCompleteSubscription.unsubscribe();
-        this.showTeamFteTable();
-      }
-    });
   }
 
-  getTeam(email: string) {
-    // get list of subordinates
-    this.getOrgSubscription = this.apiDataOrgService.getOrgData(email)
-    .subscribe(
-      res => {
-        this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
-        this.dataIsComplete.emit(true); // send a message to listener that this piece of data has arrived
-      },
-      err => {
-        console.error('error getting nested org data');
-      }
-    );
-  }
-
-  getTeamFteData(email: string, period: string) {
-    // get sum of FTEs for selected time period for all subordinates (may be missing team members if they have no entries)
-    this.teamFteSubscription = this.apiDataReportService.getSubordinateFtes(email, period)
-    .subscribe( res => {
-      this.teamFteData = res;
-      this.dataIsComplete.emit(true);
-    });
-  }
 
   getTeamFtePareto(email: string, period: string) {
     // get nested project pareto with list of team members and their FTEs underneath each project
@@ -224,23 +166,10 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       });
       console.log(this.teamSummaryData);
       this.plotFteSummaryPareto(period);
+      this.chartIsLoading = false;
     });
   }
 
-  showTeamFteTable() {
-    // once data has all arrived, show the data
-    // loop through the team roster and look for matches in the teamFtes data pull
-    this.teamOrgStructure.employees.forEach( employee => {
-      employee.fte = 0;
-      this.teamFteData.forEach( teamFte => {
-        // if there's a match, copy the value into the team org structure.  otherwise it will be initialized to 0
-        if (employee.emailAddress === teamFte.EMAIL_ADDRESS) {
-          employee.fte = teamFte.fte;
-        }
-      });
-    });
-    this.chartIsLoading = false;
-  }
 
   plotFteSummaryPareto(period: string) {
     // get the requested time period string's index
@@ -276,7 +205,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         height: 500
       },
       title: {
-        text: this.userIsManager ? `My Team's Projects` : `My Peers' Projects`
+        text: `My Team's Projects`
       },
       subtitle: {
         text: `Time Period: ${timePeriod.text}`
@@ -286,7 +215,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       },
       yAxis: [
         { // primary y-axis
-          title: {text: 'FTEs'}
+          title: {text: 'FTEs per month'}
         },
           { // secondary y-axis
           title: {text: 'Percent of Team'},
@@ -301,7 +230,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       },
       series: [
         {
-          name: 'Total Team FTEs',
+          name: 'Total Team FTEs per month',
           type: 'column',
           data: projectFTEs,
           tooltip: {

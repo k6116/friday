@@ -6,9 +6,9 @@ import { Directive, Input, HostListener, ElementRef, Renderer } from '@angular/c
 export class FteInputRestrictDirective {
 
   @HostListener('keypress', ['$event']) onKeyPress(event) {
-    if (event.keyCode === 8 || event.keyCode === 9 || event.keyCode === 37 || event.keyCode === 39 || event.keyCode === 46 ) {
-      // do nothing. Firefox interprets backspace (8), tab (9), arrow keys (37, 39), and delete (46) as 'keypress' events
-      // while Chrome and Edge do not.  having this case allows us to manually allow those keystrokes through the filter
+    const allowedKeys = ['ArrowRight', 'ArrowLeft', 'Delete', 'Backspace', 'Tab'];
+    if (allowedKeys.includes(event.code)) {
+      // do nothing. manually allowing some 'keypress' events through the filter
     } else {
       this.restrictToNumeric(event);
     }
