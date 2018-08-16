@@ -150,6 +150,8 @@ export class DashboardComponent implements OnInit {
   }
 
   renderStackedColumnChart() {
+    console.log('stacked column data');
+    console.log(this.dashboardData[0]);
     const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
     Highcharts.chart('stackedColumnChart', chartOptions);
   }

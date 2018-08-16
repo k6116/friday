@@ -9,6 +9,7 @@ const dotevnv = require('dotenv').config()
 const winston = require('winston');
 
 const api = require('./server/routes/api');
+
 const sequelize = require('./server/db/sequelize');
 const email = require('./server/email/email');
 const websockets = require('./server/websockets/websockets');

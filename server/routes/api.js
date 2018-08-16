@@ -19,11 +19,6 @@ router.get('/auth/verifyRoutePermissions', controllers.auth.verifyRoutePermissio
 router.get('/auth/logout/:userName', controllers.auth.logout);
 router.get('/auth/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
 
-// FTE CONTROLLER
-router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
-router.post('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProject);   // PROTECT
-router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
-
 // PROJECT CONTROLLER
 router.get('/indexProjects', controllers.project.indexProjects)
 router.get('/indexProjectsFilterProjectType', controllers.project.indexProjectsFilterProjectType)
@@ -37,6 +32,14 @@ router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/destroyProject/:userID', controllers.project.destroyProject);   // PROTECT
 router.get('/indexProjectSchedule/:projectName', controllers.project.indexProjectSchedule);
 router.get('/indexProjectTypeDisplayFields/', controllers.project.indexProjectTypeDisplayFields);
+router.get('/indexBuildStatus', controllers.project.indexBuildStatus);
+router.get('/indexPLCStatus', controllers.project.indexPLCStatus);
+router.get('/indexProjectDepartments', controllers.project.indexProjectDepartments);
+router.get('/indexProjectGroups', controllers.project.indexProjectGroups);
+router.get('/indexProjectPriorities', controllers.project.indexProjectPriorities);
+router.post('/updateProjectSetup/:userID', controllers.project.updateProjectSetup);
+router.post('/insertProjectSetup/:userID', controllers.project.insertProjectSetup);
+router.delete('/destroyProjectSetup/:projectID/:scheduleID/:userID', controllers.project.destroyProjectSetup);
 router.post('/insertProjectEmployeeRole/:userID', controllers.project.insertProjectEmployeeRole);   // PROTECT
 router.post('/updateProjectEmployeeRole/:userID', controllers.project.updateProjectEmployeeRole);   // PROTECT
 router.post('/destroyProjectEmployeeRole/:userID', controllers.project.destroyProjectEmployeeRole);   // PROTECT
@@ -48,6 +51,8 @@ router.get('/indexPrimaryKeyRefs/:pKeyName/:pKeyValue/:userID', controllers.meta
 // EMPLOYEE CONTROLLER
 router.get('/employeeList/:managerEmailAddress', controllers.employee.show);
 router.get('/showUserPLMData/:userEmailAddress', controllers.employee.showUserPLMData);
+router.get('/getDesigners', controllers.employee.getDesigners);
+router.get('/getPlanners', controllers.employee.getPlanners);
 
 // ORG CONTROLLER
 router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
@@ -80,6 +85,11 @@ router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
+// DASHBOARD CONTROLLER
+router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);
+router.get('/dashboard/checkFirstLogin/:employeeID/:userName', controllers.dashboard.checkFirstLogin);
+router.get('/dashboard/checkJobTitle/:employeeID', controllers.dashboard.checkJobTitle);
+router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
 
 // ANALYTICS CONTROLLER
 router.get('/getNCIProjectsParentChildList', controllers.analytics.getNCIProjectsParentChildList);
@@ -93,15 +103,6 @@ router.get('/execUpdateSupplyDemand/', controllers.analytics.execUpdateSupplyDem
 router.post('/insertLotExclusion/:userID', controllers.analytics.insertLotExclusion);
 router.post('/destroyLotExclusion/:userID', controllers.analytics.destroyLotExclusion);
 
-
-
-// BOM CONTROLLER
-router.get('/bom/index', controllers.bom.index);
-router.get('/bom/showSingleBom/:parentID', controllers.bom.showSingleBom);
-router.get('/bom/showPartInfo/:partID', controllers.bom.showPartInfo);
-router.get('/bom/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
-
-// NOTE: all routes before this middleware function WILL NOT be protected in the case of invalid token
 
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
@@ -145,7 +146,28 @@ router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobT
 router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
 router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
+// FTE CONTROLLER
+router.get('/fte/fte/index/indexUserData', controllers.fte.indexUserData);
+router.delete('/fte/fte/destroy/destroyUserProject/:projectID', controllers.fte.destroyUserProject);   // PROTECT
+router.put('/fte/fte/update/updateUserData', controllers.fte.updateUserData);
 
+// TEMP JOB TITLE CONTROLLER
+router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
+
+// SETUP PARTS
+router.get('/getParts', controllers.parts.indexParts);
+router.get('/getPart/:partID', controllers.parts.getPart);
+router.get('/getPartTypes', controllers.parts.indexPartTypes);
+router.post('/updatePart', controllers.parts.updatePart);
+router.post('/createPart', controllers.parts.createPart);
+router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
+
+// SCHEDULES CONTROLLER
+router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
+router.post('/updateProjectSchedule/:userID/:revisionNotes', controllers.schedules.updateProjectSchedule);
+router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
+router.post('/updatePartSchedule/:userID/:revisionNotes', controllers.schedules.updatePartSchedule); //TO-DO user Token for userID and put revisionNotes in header
+router.get('/destroySchedule/:scheduleID', controllers.schedules.destroySchedule);
 
 // middleware to protect permissions protected routes
 // if it is verified, it will continue (next) and allow the routes
@@ -215,8 +237,11 @@ router.use('/', function(req, res, next) {
 
 });
 
+// SETUPS MENU VIEW
+
 
 // JOB TITLE CONTROLLER (ADMIN)
+// router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 router.post('/jobTitle/admin/insert/insertJobTitle', controllers.jobTitle.insertJobTitle);
 router.post('/jobTitle/admin/insert/insertJobSubTitle', controllers.jobTitle.insertJobSubTitle);
 router.post('/jobTitle/admin/destroy/deleteJobTitle', controllers.jobTitle.deleteJobTitle);
@@ -226,5 +251,10 @@ router.put('/jobTitle/admin/update/updateJobSubTitle', controllers.jobTitle.upda
 router.post('/jobTitle/admin/insert/insertJobTitleMap', controllers.jobTitle.insertJobTitleMap);
 router.post('/jobTitle/admin/destroy/deleteJobTitleMap', controllers.jobTitle.deleteJobTitleMap);
 
+// BOM CONTROLLER
+router.get('/bom/bom/index', controllers.bom.index);
+router.get('/bom/bom/show/showSingleBom/:parentID', controllers.bom.showSingleBom);
+router.get('/bom/bom/show/showPartInfo/:partID', controllers.bom.showPartInfo);
+router.get('/bom/bom/show/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
 
 module.exports = router;

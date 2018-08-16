@@ -21,6 +21,7 @@ import { ClickOutsideDirective } from './_shared/directives/click-outside.direct
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
+import { ProjectTypePipe } from './_shared/pipes/project-type.pipe';
 import { TitleCasePipe } from '@angular/common';
 import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
@@ -30,7 +31,8 @@ import { CacheService, ClickTrackingService, CookiesService,
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
+  ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
+  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { AuthGuardService } from './_shared/guards/auth.guard';
@@ -78,7 +80,9 @@ import { AdminComponent } from './admin/admin.component';
 import { ProjectAttributesComponent } from './admin/project-attributes/project-attributes.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './footer/footer.component';
+import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
+import { PartSetupComponent } from './setups/parts/parts.component';
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 import { Error403Component } from './error-pages/error-403/error-403.component';
 import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
@@ -109,6 +113,7 @@ import { BrowseProjectsComponent } from './projects/browse-projects/browse-proje
     ProfileModalComponent,
     ProjectsModalComponent,
     FilterPipe,
+    ProjectTypePipe,
     TestComponent,
     OrgDropdownComponent,
     ProjectsEditModalComponent,
@@ -129,9 +134,11 @@ import { BrowseProjectsComponent } from './projects/browse-projects/browse-proje
     FooterComponent,
     DashboardComponent,
     FooterComponent,
+    ProjectsSetupsComponent,
     CarouselModalComponent,
     SupplyDemandComponent,
     Error403Component,
+    PartSetupComponent,
     BomEditorComponent,
     BomViewerComponent,
     ProjectRequestsComponent,
@@ -168,6 +175,8 @@ import { BrowseProjectsComponent } from './projects/browse-projects/browse-proje
     ApiDataProjectService,
     ApiDataReportService,
     ApiDataDashboardService,
+    ApiDataSchedulesService,
+    ApiDataPartService,
     ApiDataAnalyticsService,
     ApiDataBomService,
     CacheService,

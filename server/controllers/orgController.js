@@ -4,6 +4,7 @@ const sequelizePLM = require('../db/sequelize').sequelizePLM;
 const sequelize = require('../db/sequelize').sequelize2017;
 
 
+// right now, this function doesn't seem to fetch all subordinates.  Example - George Nacouzi doesn't show up under Ethan
 function show(req, res) {
   const emailAddress = req.params.emailAddress;
   sequelize.query('EXECUTE dbo.GetNestedOrgJson :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})

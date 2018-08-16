@@ -58,6 +58,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           title: 'Projects',
           iconClass: 'nc-gantt',
           alias: 'projects',
+          path: 'main/my-projects',
           expanded: false,
           active: false,
           highlighted: false,
@@ -133,6 +134,65 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           ]
         },
         {
+          title: 'BOM',
+          iconClass: 'nc-chart-bar-33',
+          alias: 'bom',
+          expanded: false,
+          active: false,
+          highlighted: false,
+          permissionProtected: true,
+          hidden: false,
+          subItems: [
+            {
+              title: 'BOM Viewer',
+              alias: 'bom-viewer',
+              path: 'main/reports/bom-viewer',
+              parentAlias: 'bom',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            },
+            {
+              title: 'BOM Editor',
+              alias: 'bom-editor',
+              path: 'main/reports/bom-editor',
+              parentAlias: 'bom',
+              active: false,
+              permissionProtected: true,
+              hidden: false
+            }
+          ]
+        },
+        {
+          title: 'Setups',
+          iconClass: 'nc-chart-bar-33',
+          alias: 'setups',
+          expanded: false,
+          active: false,
+          permissionProtected: true,
+          hidden: false,
+          subItems: [
+            {
+              title: 'Projects',
+              alias: 'setups-projects',
+              path: 'main/setups/projects',
+              parentAlias: 'setups',
+              active: false,
+              permissionProtected: true,
+              hidden: false
+            },
+            {
+              title: 'Parts',
+              alias: 'setups-parts',
+              path: 'main/setups/parts',
+              parentAlias: 'setups',
+              active: false,
+              permissionProtected: true,
+              hidden: false
+            }
+          ]
+        },
+        {
           title: 'Admin',
           iconClass: 'nc-l-security',
           alias: 'admin',
@@ -153,7 +213,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         //   permissionProtected: false,
         //   hidden: false
         // }
-      ];
+      ];  // end menuStructure array of objects
 
 
   }

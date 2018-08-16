@@ -7,11 +7,11 @@ import * as moment from 'moment';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 
 @Component({
-  selector: 'app-myprojects',
-  templateUrl: './my-projects.component.html',
-  styleUrls: ['./my-projects.component.css', '../../_shared/styles/common.css']
+  selector: 'app-projects',
+  templateUrl: './projects.component.html',
+  styleUrls: ['./projects.component.css', '../../_shared/styles/common.css']
 })
-export class MyProjectsComponent implements OnInit {
+export class ProjectsSetupsComponent implements OnInit {
 
   form: FormGroup;
   searchProjects: string;

@@ -2,6 +2,18 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
+// GUARDS
+// ------
+
+import { AuthGuardService } from './_shared/guards/auth.guard';
+import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
+import { BrowserGuard } from './_shared/guards/browser.guard';
+import { PermissionsGuard } from './_shared/guards/permissions.guard';
+import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
+
+// COMPONENTS
+// ----------
+
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { MainComponent } from './main/main.component';
@@ -26,13 +38,8 @@ import { UserResolverService } from './_shared/services/user-resolver.service';
 import { Error403Component } from './error-pages/error-403/error-403.component';
 import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
 import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
-
-import { AuthGuardService } from './_shared/guards/auth.guard';
-
-import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
-import { BrowserGuard } from './_shared/guards/browser.guard';
-import { PermissionsGuard } from './_shared/guards/permissions.guard';
-import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
+import { PartSetupComponent } from './setups/parts/parts.component';
+import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 
 
 const routes: Routes = [
@@ -53,6 +60,8 @@ const routes: Routes = [
       { path: 'projects/my-projects', component: MyProjectsComponent },
       { path: 'projects/requests', component: ProjectRequestsComponent },
       { path: 'projects/search', component: BrowseProjectsComponent },
+      { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/bom-editor', component: BomEditorComponent },
       { path: 'reports/bom-viewer', component: BomViewerComponent },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
@@ -62,7 +71,7 @@ const routes: Routes = [
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'chat', component: ChatComponent },
-      { path: 'admin', component: AdminComponent, canActivate: [PermissionsGuard] },
+      { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }
     ]
   },
   { path: '**', redirectTo: '/login' }
