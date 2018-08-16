@@ -57,7 +57,7 @@ router.post('/sendProjectApprovalEmail/:userID/:ownerID/:projectName/:approved/:
 // PERMISSION CONTROLLER
 router.get('/indexPublicProjectTypes/:userID', controllers.permission.indexPublicProjectTypes);
 router.get('/indexProjectPermissionRequestsList/:userID', controllers.permission.indexProjectPermissionRequestsList);
-router.get('/indexProjectPermissionTeamList/:userID/:managerEmailAddress', controllers.permission.indexProjectPermissionTeamList);
+router.get('/indexProjectPermissionTeamList/:userID/:emailAddress/:managerEmailAddress', controllers.permission.indexProjectPermissionTeamList);
 router.get('/indexProjectPermissionRequestedList/:userID', controllers.permission.indexProjectPermissionRequestedList);
 router.post('/insertProjectPermissionRequest/:userID', controllers.permission.insertProjectPermissionRequest);
 router.post('/updateProjectPermissionResponse/:userID/:reply/:replyComment', controllers.permission.updateProjectPermissionResponse);
