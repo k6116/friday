@@ -647,29 +647,33 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Requesting access';
       confirmButton = 'Request Access';
+      message = `Do you want to request access to the project "${project.ProjectName}"?<br><br>
+                This will send an email notification to ${project.FullName}`;
     } else if (action === 'Submitted') {
       requestData.requestStatus = 'Cancelled';
       requestData.requestNotes = 'Cancelling request access';
-      confirmButton = 'Rescind Access';
+      confirmButton = 'Cancel Request';
+      message = `Do you want to cancel your request to the project "${project.ProjectName}"?<br><br>
+                This will send an email notification to ${project.FullName}`;
     } else if (action === 'Denied') {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Resubmitting request access';
       confirmButton = 'Re-Request Access';
+      message = `Do you want to re-request access to the project "${project.ProjectName}"?<br><br>
+                This will send an email notification to ${project.FullName}`;
     }
 
     // check if this is the first time the request is being made, then insert the row, otherwise update the row
     if (requestData.requestID === null) {
       firstRequest = true;
-      message = `Do you want to request access to the project "${project.ProjectName}"?`;
     } else {
       firstRequest = false;
-      message = `Do you want to update the request status to ${requestData.requestStatus}?`;
     }
 
     // emit confirmation modal after they click request button
     this.cacheService.confirmModalData.emit(
       {
-        title: `Confirm ${action}`,
+        title: confirmButton,
         message: message,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
@@ -891,7 +895,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // send email
     this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName, requestStatus).subscribe(
       eRes => {
-        this.cacheService.raiseToast('success', 'Request Access Email Delivered.');
+        if (requestStatus === 'Submitted') {
+          this.cacheService.raiseToast('success', 'Request Access Email Delivered.');
+        } else if (requestStatus === 'Cancelled') {
+          this.cacheService.raiseToast('success', 'Cancelled Request Email Delivered.');
+        }
       },
       err => {
         console.log(err);
