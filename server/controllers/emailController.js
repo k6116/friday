@@ -103,6 +103,17 @@ function sendRequestProject(req, res) {
   const userID = req.params.userID;
   const ownerID = req.params.ownerID;
   const projectName = req.params.projectName;
+  const requestStatus = req.params.requestStatus;
+
+  if (requestStatus === 'Submitted') {
+    subjectText = 'Request for Project Participation';
+    actionText = 'requesting';
+    ownerActionText = 'Please visit Jarvis Resources to either <b>Accept</b> or <b>Deny</b>';
+  } else if (requestStatus === 'Cancelled') {
+    subjectText = 'Cancelled Request for Project Participation';
+    actionText = 'cancelling';
+    ownerActionText = 'No action is required';
+  }
 
   models.User.findOne({
     attributes: ['fullName','email'],
@@ -128,7 +139,7 @@ function sendRequestProject(req, res) {
         }
       }
     }).then(userOwner => {
-
+      
       if (userOwner) {     
 
        templates.render('request-project.html', null, function(err, html, text, subject) {      
@@ -137,9 +148,10 @@ function sendRequestProject(req, res) {
           from: '"Jarvis" <jarvis@no-reply.com>',
           to: userOwner.email,
           bcc: userRequestor.email,
-          subject: 'Request for Project Participation',
+          subject: subjectText,
           text: text,
-          html: html.replace('{owner}', userOwner.fullName).replace('{requestor}', userRequestor.fullName).replace('{project}', projectName),
+          html: html.replace('{owner}', userOwner.fullName).replace('{requestor}', userRequestor.fullName).replace('{action}', actionText)
+                    .replace('{ownerAction}', ownerActionText).replace('{project}', projectName),
           attachments: [{
             filename: 'EmailLogo.png',
             path: logoPath + '/EmailLogo.png',

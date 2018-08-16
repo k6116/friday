@@ -74,7 +74,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   selProject: any;
   subscription1: Subscription;
   filterProjects: any;
-  
+
   // for checkbox pipe
   filterItems: Array<any>;
   managerEmailAddress: string;
@@ -699,7 +699,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
             .subscribe(
               apiRes => {
                 console.log(apiRes);
-                this.onRequestUpdateSuccess(project);
+                this.onRequestUpdateSuccess(project, requestData.requestStatus);
                 insertActionSubscription.unsubscribe();
               },
               err => {
@@ -713,7 +713,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
             .subscribe(
               apiRes => {
                 console.log(apiRes);
-                this.onRequestUpdateSuccess(project);
+                this.onRequestUpdateSuccess(project, requestData.requestStatus);
                 updateActionSubscription.unsubscribe();
               },
               err => {
@@ -729,8 +729,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     });
 
   }
-
-
 
   // update the clickedProject that is passed to the component through @input
   getProject(element): any {
@@ -889,9 +887,9 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onRequestUpdateSuccess(project: any) {
+  onRequestUpdateSuccess(project: any, requestStatus: string) {
     // send email
-    this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
+    this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName, requestStatus).subscribe(
       eRes => {
         this.cacheService.raiseToast('success', 'Request Access Email Delivered.');
       },
