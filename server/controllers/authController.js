@@ -30,7 +30,9 @@ function authenticate(req, res) {
     bindDN: `cn=${user.userName},cn=users,dc=ad,dc=keysight,dc=com`,
     bindCredentials: user.password,
     searchBase: 'cn=users,dc=ad,dc=keysight,dc=com',
-    searchFilter: '(cn={{username}})'
+    searchFilter: '(cn={{username}})',
+    reconnect: true,
+    queueDisable: false
   };
   
   // create an instance of the ldap auth fork 
