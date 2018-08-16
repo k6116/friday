@@ -181,12 +181,10 @@ div.project-status-name-text, div.project-priority-name-text {
 
 
 
-
 div.project-creation-cont {
   display: inline-block;
   vertical-align: top;
   padding: 20px;
-  float: right;
   border-left: 1px solid lightgrey;
   height: 100%;
   width: 250px;
