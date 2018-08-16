@@ -9,6 +9,7 @@ div.projects-filters-cont {
 div.projects-filter-label {
   display: inline-block;
   margin-right: 10px;
+  font-weight: 500;
 }
 
 div.projects-filter-dropdown {
@@ -29,7 +30,7 @@ div.projects-filter-string {
 }
 
 input.projects-filter-input {
-  width: 200px;
+  width: 225px;
   padding-left: 30px;
   padding-right: 30px;
 }
@@ -52,12 +53,13 @@ i.projects-filter-icon-close {
 
 div.projects-filter-select {
   display: inline-block;
-  width: 200px;
+  width: 225px;
 }
 
 div.projects-display-count {
   /* display: inline-block; */
   float: right;
+  font-weight: 500;
 }
 
 
@@ -70,11 +72,11 @@ div.projects-cards-cont {
 }
 
 div.row.row-custom.row-project-card {
-  border-bottom: 30px;
+  border-bottom: 20px;
 }
 
 div.row.row-custom.row-project-card:not(:last-child) {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 div.project-card {
@@ -84,6 +86,7 @@ div.project-card {
   border: 1px solid lightgrey;
   background-color: white;
   transition: box-shadow 0.2s;
+  overflow: hidden;
 }
 
 div.project-card:hover {
@@ -129,8 +132,9 @@ div.project-details-cont {
 }
 
 div.project-name {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 500;
+  width: 500px;
 }
 
 div.project-description {
@@ -154,4 +158,45 @@ div.project-description:after {
   height: 1.4em;
   background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(50%, rgba(255, 255, 255, 1)));
   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+
+
+div.project-status-cont {
+  display: inline-block;
+  vertical-align: top;
+  padding: 20px;
+  height: 100%;
+  margin-left: 50px;
+}
+
+div.project-status-name-text, div.project-priority-name-text {
+  display: inline-block;
+  margin-left: 5px;
+  position: relative;
+  top: -2px;
+  font-weight: 500;
+}
+
+
+
+
+
+div.project-creation-cont {
+  display: inline-block;
+  vertical-align: top;
+  padding: 20px;
+  float: right;
+  border-left: 1px solid lightgrey;
+  height: 100%;
+  width: 250px;
+}
+
+span.project-created-by-label, span.project-creation-date-label {
+  width: 100px;
+  display: inline-block;
+}
+
+div.project-created-by {
+  margin-bottom: 5px;
 }

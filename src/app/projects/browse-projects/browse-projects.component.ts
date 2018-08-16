@@ -30,6 +30,7 @@ export class BrowseProjectsComponent implements OnInit {
   filters: any[];
   selectedFilter: any;  // selected filter object from the dropdown (from this.filters)
   dropDownData: any;
+  numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
 
 
   constructor(
@@ -96,9 +97,6 @@ export class BrowseProjectsComponent implements OnInit {
 
 
   ngOnInit() {
-
-    // set the default filter (search by Project Name)
-    this.selectedFilter = this.filters[0];
 
     // get all the data for the page using forkjoin - projects, and dropdowns
     this.apiDataProjectService.getProjectsBrowseData()
@@ -216,9 +214,20 @@ export class BrowseProjectsComponent implements OnInit {
       matchOptimistic: this.selectedFilter.matchOptimistic, matchExact: this.selectedFilter.matchExact});
     this.displayedProjects = projects.length;
     this.filteredProjectsCount = projects.length;
+    this.setNumProjectsDisplayString();
   }
 
 
+  setNumProjectsDisplayString() {
+    // no projects displayed
+    if (this.filteredProjectsCount === 0) {
+      this.numProjectsDisplayString = `Showing 0 of ${this.totalProjectsCount} Projects`;
+    } else if (this.filteredProjectsCount === this.totalProjectsCount) {
+      this.numProjectsDisplayString = `Showing All ${this.totalProjectsCount} Projects`;
+    } else {
+      this.numProjectsDisplayString = `Showing ${this.filteredProjectsCount} of ${this.totalProjectsCount} Projects`;
+    }
+  }
 
 
   // display a popover with the full description

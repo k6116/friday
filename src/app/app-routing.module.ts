@@ -52,7 +52,7 @@ const routes: Routes = [
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
       { path: 'projects/my-projects', component: MyProjectsComponent },
       { path: 'projects/requests', component: ProjectRequestsComponent },
-      { path: 'projects/browse', component: BrowseProjectsComponent },
+      { path: 'projects/search', component: BrowseProjectsComponent },
       { path: 'reports/bom-editor', component: BomEditorComponent },
       { path: 'reports/bom-viewer', component: BomViewerComponent },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },

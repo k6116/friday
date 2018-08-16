@@ -31,7 +31,8 @@ considering topnav, sidenav, and footer -->
       </div>
 
       <div class="projects-display-count">
-        Showing {{ filteredProjectsCount === 0 ? 'All' : filteredProjectsCount + ' of' }} {{ totalProjectsCount }} Projects
+        <!-- Showing {{ filteredProjectsCount === 0 ? 'All' : filteredProjectsCount + ' of' }} {{ totalProjectsCount }} Projects -->
+        {{ numProjectsDisplayString }}
       </div>
 
     </div>
@@ -71,6 +72,41 @@ considering topnav, sidenav, and footer -->
             </div>
             
           </div>
+
+
+          <!-- container for project status, priority, and department -->
+          <div class="project-status-cont">
+
+            <div *ngIf="project.ProjectStatusName" class="project-status">
+              <i class="nc-icon nc-todo"></i>
+              <div class="project-status-name-text">
+                {{ project.ProjectStatusName }}
+              </div>
+            </div>
+
+            <div *ngIf="project.PriorityName" class="project-priority">
+              <i class="nc-icon nc-code-editor"></i>
+              <div class="project-priority-name-text">
+                {{ project.PriorityName }}
+              </div>
+            </div>
+            
+          </div>
+
+
+          <!-- container for created by and creation date (fourth container) -->
+          <div class="project-creation-cont">
+
+            <div class="project-created-by">
+              <span class="project-created-by-label">Created By:</span>{{ project.FullName }}
+            </div>
+
+            <div class="project-creation-date">
+              <span class="project-creation-date-label">Creation Date:</span>{{ project.CreationDate | date:'mediumDate' }}
+            </div>
+            
+          </div>
+
 
         </div>
 

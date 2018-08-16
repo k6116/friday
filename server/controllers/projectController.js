@@ -18,7 +18,9 @@ function indexProjects(req, res) {
         p.NPIHWProjectManager,
         g.GroupName,
         ey.EntityName,
-        eo.EntityOwnerName, 
+        eo.EntityOwnerName,
+        e.FirstName,
+        e.LastName,
         e.FullName,
         e2.EmailAddress, 
         p.CreationDate, 
@@ -306,18 +308,32 @@ function destroyProject(req, res) {
 
 function indexProjectTypesList(req, res) {
 
-  models.ProjectTypes.findAll({
-    attributes: ['id', 'projectTypeName', 'description'],
-  })
-  .then(projectType => {
-    console.log('Returning Project Type List')
-    res.json(projectType);
-  })
-  .catch(error => {
-    res.status(400).json({
-      title: 'Error (in catch)',
-      error: {message: error}
+  const sql = `
+    SELECT
+      T2.ProjectTypeID as [id],
+      T2.ProjectTypeName as [projectTypeName],
+      T2.Description as [description]
+    FROM 
+      projects.projects T1
+      INNER JOIN projects.ProjectTypes T2 ON T1.ProjectTypeID = T2.ProjectTypeID
+    GROUP BY
+      T2.ProjectTypeID,
+      T2.ProjectTypeName,
+      T2.Description
+    ORDER BY
+      T2.ProjectTypeName
+  `
+
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(projectType => {
+      console.log('Returning Project Type List')
+      res.json(projectType);
     })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
 
   });
 }
@@ -344,20 +360,34 @@ function indexProjectStatusesList(req, res) {
 
 function indexProjectPrioritiesList(req, res) {
 
-  models.ProjectPriorities.findAll({
-    attributes: ['id', 'priorityName', 'description'],
-  })
-  .then(projectPriorities => {
-    console.log('Returning Project Priorities List')
-    res.json(projectPriorities);
-  })
-  .catch(error => {
-    res.status(400).json({
-      title: 'Error (in catch)',
-      error: {message: error}
-    })
+  const sql = `
+    SELECT
+      T2.PriorityID as [id],
+      T2.PriorityName as [priorityName],
+      T2.Description as [description]
+    FROM 
+      projects.projects T1
+      INNER JOIN projects.Priority T2 ON T1.PriorityID = T2.PriorityID
+    GROUP BY
+      T2.PriorityID,
+      T2.PriorityName,
+      T2.Description
+    ORDER BY
+      T2.PriorityName
+  `
 
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(projectPriorities => {
+      console.log('Returning Project Priorities List')
+      res.json(projectPriorities);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
   });
+
 }
 
 

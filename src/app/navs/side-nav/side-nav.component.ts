@@ -74,18 +74,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               hidden: false
             },
             {
-              title: 'Requests',
-              alias: 'project-requests',
-              path: 'main/projects/requests',
-              parentAlias: 'projects',
-              active: false,
-              permissionProtected: false,
-              hidden: false
-            },
-            {
-              title: 'Browse',
-              alias: 'browse',
-              path: 'main/projects/browse',
+              title: 'Search',
+              alias: 'search',
+              path: 'main/projects/search',
               parentAlias: 'projects',
               active: false,
               permissionProtected: false,
