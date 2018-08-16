@@ -58,7 +58,6 @@ import { TopNavComponent } from './navs/top-nav/top-nav.component';
 import { SideNavComponent } from './navs/side-nav/side-nav.component';
 import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
-import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
@@ -87,8 +86,9 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
 import { Error403Component } from './error-pages/error-403/error-403.component';
 import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
 import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
-import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
 import { BrowseProjectsComponent } from './projects/browse-projects/browse-projects.component';
+import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
+import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
 
 
 @NgModule({
