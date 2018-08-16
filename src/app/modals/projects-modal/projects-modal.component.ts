@@ -74,8 +74,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   selProject: any;
   subscription1: Subscription;
   filterProjects: any;
-  displayProjectsModal: boolean;
-
+  
   // for checkbox pipe
   filterItems: Array<any>;
   managerEmailAddress: string;
@@ -112,6 +111,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.userID = this.authService.loggedInUser.id;
     this.userEmail = this.authService.loggedInUser.email;
 
+    // Using promises to ensure all permissions lists are retrived before displaying the project cards
     this.getUserPLMData(this.userEmail).then(res1 => {
       this.getProjectPermissionTeamList().then(res2 => {
         this.getProjectPermissionList().then(res3 => {
@@ -699,7 +699,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
             .subscribe(
               apiRes => {
                 console.log(apiRes);
-                this.onRequestUpdateSuccess();
+                this.onRequestUpdateSuccess(project);
                 insertActionSubscription.unsubscribe();
               },
               err => {
@@ -713,7 +713,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
             .subscribe(
               apiRes => {
                 console.log(apiRes);
-                this.onRequestUpdateSuccess();
+                this.onRequestUpdateSuccess(project);
                 updateActionSubscription.unsubscribe();
               },
               err => {
@@ -728,7 +728,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       updateModalSubscription.unsubscribe();
     });
 
-    this.onRequestedProject(project);
   }
 
 
@@ -786,28 +785,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // hide and destroy the button element's tooltip
     $(`.card-button.${buttonClass}[data-id=${projectID}]`).tooltip('dispose');
 
-  }
-
-  onRequestedProject(project: any) {
-    this.apiDataPermissionService.insertProjectPermissionRequest(project, this.userID)
-    .subscribe(
-      res => {
-
-        // send email
-        this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
-          eRes => {
-            this.cacheService.raiseToast('success', 'Request Access Email Delivered.');
-          },
-          err => {
-            console.log(err);
-          }
-        );
-        console.log(res);
-      },
-      err => {
-        console.log(err);
-      }
-    );
   }
 
   getUserPLMData(userEmailAddress: string) {
@@ -912,7 +889,16 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onRequestUpdateSuccess() {
+  onRequestUpdateSuccess(project: any) {
+    // send email
+    this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
+      eRes => {
+        this.cacheService.raiseToast('success', 'Request Access Email Delivered.');
+      },
+      err => {
+        console.log(err);
+      }
+    );
     // refresh project access list to update the request buttons
     this.getProjectPermissionList();
   }
