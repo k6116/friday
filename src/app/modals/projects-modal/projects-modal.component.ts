@@ -664,7 +664,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Resubmitting request access';
       confirmButton = 'Re-Request Access';
-      message = `Do you want to re-request access to the project "${project.ProjectName}"?<br><br>
+      message = `Your initial request to access this project was denied.<br><br>
+                Do you want to re-request access to the project "${project.ProjectName}"?<br><br>
                 This will send an email notification to ${project.FullName}`;
     }
 
