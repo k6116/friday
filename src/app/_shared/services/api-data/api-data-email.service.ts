@@ -13,8 +13,8 @@ export class ApiDataEmailService {
     private cacheService: CacheService
   ) { }
 
-  sendRequestProjectEmail(userID: number, ownerID: number, projectName: string) {
-    return this.http.post(`/api/sendRequestProjectEmail/${userID}/${ownerID}/${projectName}`, null)
+  sendRequestProjectEmail(userID: number, ownerID: number, projectName: string, requestStatus: string) {
+    return this.http.post(`/api/sendRequestProjectEmail/${userID}/${ownerID}/${projectName}/${requestStatus}`, null)
     .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
