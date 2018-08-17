@@ -22,6 +22,7 @@ export class ProjectsCreateModalComponent implements OnInit {
   projectTypesList: any;
   userPLMData: any;
   createdProject: any;
+  projectNameRegex: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -46,9 +47,10 @@ export class ProjectsCreateModalComponent implements OnInit {
   }
 
   resetForm() {
+    this.projectNameRegex = /^[a-zA-Z0-9][^-\s][\w\s-]+$/;
     // initialize the formgroup
     this.form = this.formBuilder.group({
-      projectName: [null, [Validators.required]],
+      projectName: [null, [Validators.required, Validators.minLength(2), Validators.pattern(this.projectNameRegex)]],
       // projectTypeID: [null, [Validators.required]],
       projectDescription: [null],
       projectNotes: [null],
@@ -118,6 +120,9 @@ export class ProjectsCreateModalComponent implements OnInit {
     );
   }
 
+  testButton() {
+    console.log('Form', this.form);
+  }
   // formValidation() {
   //   'use strict';
   //   window.addEventListener('load', function() {
