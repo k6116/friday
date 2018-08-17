@@ -1,3 +1,17 @@
+<a name="1.7.2"></a>
+## [1.7.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.7.1...v1.7.2) (2018-08-17)
+
+
+### Bug Fixes
+
+* **emailController:** updated to reflect cancelled (rescinded) requests ([2e8bf52](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/2e8bf52))
+* **projects-modal:** disabled request button after request is made so user cannot send mutliple requ ([782bbd7](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/782bbd7))
+* **projects-modal:** fixed async issue with request permissions ([3ae769e](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/3ae769e))
+* **projects-modal:** fixed request access button not changing ([4715deb](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/4715deb))
+* **projects-modal:** updated confirm modal messages and button text ([78e11f1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/78e11f1))
+
+
+
 <a name="1.7.1"></a>
 ## [1.7.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.7.0...v1.7.1) (2018-08-13)
 
