@@ -60,6 +60,7 @@ considering topnav, sidenav, and footer -->
             
           </div>
 
+
           <!-- container for project name, description, etc. (middle element) -->
           <div class="project-details-cont">
 
@@ -74,38 +75,51 @@ considering topnav, sidenav, and footer -->
           </div>
 
 
-          <!-- container for project status, priority, and department -->
-          <div class="project-status-cont">
+          <!-- container for all other details (right element) -->
+          <div class="project-card-right-cont">
 
-            <div *ngIf="project.ProjectStatusName" class="project-status">
-              <i class="nc-icon nc-todo"></i>
-              <div class="project-status-name-text">
-                {{ project.ProjectStatusName }}
+            <!-- container for project status, priority, and department -->
+            <div class="project-status-cont">
+
+              <div *ngIf="project.ProjectStatusName" class="project-status">
+                <i class="nc-icon nc-light-traffic project-info-icon"></i>
+                <div class="project-status-name-label">
+                  Status:
+                </div>
+                <div class="project-status-name-text">
+                  {{ project.ProjectStatusName }}
+                </div>
               </div>
-            </div>
 
-            <div *ngIf="project.PriorityName" class="project-priority">
-              <i class="nc-icon nc-code-editor"></i>
-              <div class="project-priority-name-text">
-                {{ project.PriorityName }}
+              <div *ngIf="project.PriorityName" class="project-priority">
+                <i class="nc-icon nc-priority-high-2 project-info-icon"></i>
+                <div class="project-priority-name-label">
+                  Priority:
+                </div>
+                <div class="project-priority-name-text">
+                  {{ project.PriorityName }}
+                </div>
               </div>
+              
             </div>
-            
+
+
+            <!-- container for created by and creation date (fourth container) -->
+            <div class="project-creation-cont">
+
+              <div class="project-created-by">
+                <span class="project-created-by-label">Created By:</span>{{ project.FullName }}
+              </div>
+
+              <div class="project-creation-date">
+                <span class="project-creation-date-label">Creation Date:</span>{{ project.CreationDate | date:'mediumDate' }}
+              </div>
+              
+            </div>
+
+
           </div>
-
-
-          <!-- container for created by and creation date (fourth container) -->
-          <div class="project-creation-cont">
-
-            <div class="project-created-by">
-              <span class="project-created-by-label">Created By:</span>{{ project.FullName }}
-            </div>
-
-            <div class="project-creation-date">
-              <span class="project-creation-date-label">Creation Date:</span>{{ project.CreationDate | date:'mediumDate' }}
-            </div>
-            
-          </div>
+          <!-- end of right container -->
 
 
         </div>

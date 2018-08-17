@@ -135,6 +135,7 @@ div.project-name {
   font-size: 18px;
   font-weight: 500;
   width: 500px;
+  color: rgb(50, 50, 50);
 }
 
 div.project-description {
@@ -160,7 +161,11 @@ div.project-description:after {
   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
-
+div.project-card-right-cont {
+  /* display: inline-block; */
+  float: right;
+  height: 100%;
+}
 
 div.project-status-cont {
   display: inline-block;
@@ -170,24 +175,31 @@ div.project-status-cont {
   margin-left: 50px;
 }
 
+div.project-status-name-label, div.project-priority-name-label {
+  display: inline-block;
+  margin-left: 5px;
+}
+
 div.project-status-name-text, div.project-priority-name-text {
   display: inline-block;
   margin-left: 5px;
-  position: relative;
-  top: -2px;
   font-weight: 500;
 }
 
-
+i.project-info-icon {
+  position: relative;
+  top: 2px;
+}
 
 
 div.project-creation-cont {
-  display: inline-block;
+  /* display: inline-block; */
   vertical-align: top;
   padding: 20px;
   border-left: 1px solid lightgrey;
   height: 100%;
   width: 250px;
+  float: right;
 }
 
 span.project-created-by-label, span.project-creation-date-label {
