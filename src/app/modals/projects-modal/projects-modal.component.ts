@@ -74,6 +74,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   selProject: any;
   subscription1: Subscription;
   filterProjects: any;
+  disabledRequestBtn: boolean;
 
   // for checkbox pipe
   filterItems: Array<any>;
@@ -110,6 +111,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // get the user id and email
     this.userID = this.authService.loggedInUser.id;
     this.userEmail = this.authService.loggedInUser.email;
+
+    this.disabledRequestBtn = false;
 
     // Using promises to ensure all permissions lists are retrived before displaying the project cards
     this.getUserPLMData(this.userEmail).then(res1 => {
@@ -624,6 +627,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onProjectPermissionClick(project: any, action: string) {
 
+    this.disabledRequestBtn = true;
+
     let confirmButton: any;
     let firstRequest: boolean;
     let message: string;
@@ -708,6 +713,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
               },
               err => {
                 console.log(err);
+                this.disabledRequestBtn = false;
                 insertActionSubscription.unsubscribe();
               }
             );
@@ -722,12 +728,14 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
               },
               err => {
                 console.log(err);
+                this.disabledRequestBtn = false;
                 updateActionSubscription.unsubscribe();
               }
             );
           }
       } else {
         console.log('request confirm aborted');
+        this.disabledRequestBtn = false;
       }
       updateModalSubscription.unsubscribe();
     });
@@ -900,6 +908,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         } else if (requestStatus === 'Cancelled') {
           this.cacheService.raiseToast('success', 'Cancelled Request Email Delivered.');
         }
+        this.disabledRequestBtn = false;
       },
       err => {
         console.log(err);
