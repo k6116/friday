@@ -19,7 +19,7 @@ constructor (private apiDataEmailService: ApiDataEmailService) {
   }
 
   requestClick() {
-      this.apiDataEmailService.sendRequestProjectEmail(125, 125, 'Some Project Name').subscribe(
+      this.apiDataEmailService.sendRequestProjectEmail(125, 125, 'Some Project Name', 'Some Action').subscribe(
         res => {
 
         },
