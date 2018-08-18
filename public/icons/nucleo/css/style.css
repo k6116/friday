@@ -298,3 +298,11 @@ Generated using nucleoapp.com
   content: "\ea48";
 }
 
+.nc-time-clock::before {
+  content: "\ea49";
+}
+
+.nc-a-edit::before {
+  content: "\ea4a";
+}
+

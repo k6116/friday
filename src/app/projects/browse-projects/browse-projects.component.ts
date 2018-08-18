@@ -32,6 +32,7 @@ export class BrowseProjectsComponent implements OnInit {
   selectedFilter: any;  // selected filter object from the dropdown (from this.filters)
   dropDownData: any;
   numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
+  showSpinner: boolean;
 
 
   constructor(
@@ -103,6 +104,9 @@ export class BrowseProjectsComponent implements OnInit {
     // hide the footer until the page is ready to be rendered
     this.toolsService.hideFooter();
 
+    // show the waiting to render spinner
+    this.showSpinner = true;
+
     // get all the data for the page using forkjoin - projects, and dropdowns
     this.apiDataProjectService.getProjectsBrowseData()
       .subscribe(
@@ -125,12 +129,16 @@ export class BrowseProjectsComponent implements OnInit {
           // fire the filter string change to run it through the pipe
           // TO-DO: rename this method
           this.onFilterStringChange();
+          // hide the spinner
+          this.showSpinner = false;
           // display the page
           this.showPage = true;
           // show the footer
           this.toolsService.showFooter();
         },
         err => {
+          // hide the spinner
+          this.showSpinner = false;
           // console.log('get project data error:');
           // console.log(err);
         }

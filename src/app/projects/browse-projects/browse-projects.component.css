@@ -64,7 +64,6 @@ div.projects-display-count {
   top: 5px;
 }
 
-
 /* search bar (end) */
 
 
@@ -148,7 +147,6 @@ div.project-description {
   line-height: 1.4em;
   overflow: hidden;
   text-align: left;
-  /* border: 1px solid lightgrey; */
 }
 
 div.project-description:after {
@@ -169,96 +167,85 @@ div.project-card-right-cont {
   height: 100%;
 }
 
-div.project-status-cont {
-  display: inline-block;
-  vertical-align: top;
-  padding: 20px;
-  height: 100%;
-  margin-left: 50px;
+
+
+
+/* general css for project attributes sections (two right bordered sections) */
+
+div.project-attributes-table {
+  display: table;
 }
 
-div.project-status-name-label, div.project-priority-name-label {
-  display: inline-block;
-  margin-left: 5px;
+div.project-attributes-row {
+  display: table-row;
 }
 
-div.project-status-name-text, div.project-priority-name-text {
-  display: inline-block;
-  margin-left: 5px;
-  font-weight: 500;
+div.project-attributes-cell {
+  display: table-cell;
+  padding-bottom: 5px;
 }
 
-i.project-info-icon {
+div.icon-cell {
   position: relative;
   top: 2px;
 }
 
 
-div.project-creation-cont {
-  /* display: inline-block; */
-  vertical-align: top;
-  padding: 20px;
-  border-left: 1px solid lightgrey;
-  height: 100%;
-  width: 250px;
-  float: right;
-}
+/* project attributes section - status, priority, and department */
 
-span.project-created-by-label, span.project-creation-date-label {
-  width: 100px;
-  display: inline-block;
-}
-
-div.project-created-by {
-  margin-bottom: 5px;
-}
-
-
-/* css table test */
-
-div.table-test {
+div.project-attributes-cont {
   display: inline-block;
   padding: 20px;
   border-left: 1px solid lightgrey;
   height: 100%;
 }
 
-.tablec {
-  display: table;
-}
-
-.table-row {
-  display: table-row;
-}
-
-.table-cell {
-  display: table-cell;
-  /* padding: 10px; */
-  /* border: 1px solid lightgrey; */
-  /* padding-right: 15px; */
-  padding-bottom: 5px;
-}
-
-.table-cell.first-col {
+div.project-attributes-cell.attributes.icon-cell {
   width: 30px;
 }
 
-.table-cell.second-col {
-  width: 100px;
+div.project-attributes-cell.attributes.label-cell {
+  /* width: 100px; */
+  padding-right: 15px;
 }
 
-.table-cell.third-col.bold {
+div.project-attributes-cell.attributes.value-cell {
   width: 150px;
   font-weight: 500;
 }
 
-/* .table-row:nth-child(even) {
-  background: lightblue;
-} */
-
-
-@media (max-width: 1650px) {
-  div.table-test {
+@media (max-width: 1700px) {
+  div.project-attributes-cont {
     display: none;
   }
+}
+
+
+/* project record into section - created by and creation date */
+
+div.project-creation-cont {
+  padding: 20px;
+  border-left: 1px solid lightgrey;
+  height: 100%;
+  float: right;
+}
+
+div.project-attributes-cell.creation.icon-cell {
+  width: 30px;
+}
+
+div.project-attributes-cell.creation.label-cell {
+  /* width: 120px; */
+  padding-right: 15px;  
+  /* use padding instaed of fixed width for consistency; note this won't work for value cell 
+  because you will end up with different overall container sizes for each card*/
+}
+
+div.project-attributes-cell.creation.value-cell {
+  /* use a combination of min and max width here to allow overflow to work
+  the text will break to the next line, and will not push the container to the left */
+  max-width: 125px;
+  min-width: 125px;
+  font-weight: 500;
+  overflow: hidden;
 }

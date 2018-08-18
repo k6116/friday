@@ -3,6 +3,13 @@
 considering topnav, sidenav, and footer -->
 <div class="container-fluid">
 
+  <!-- spinner -->
+  <div class="row row-custom" *ngIf="showSpinner">
+    <div class="col-lg-12 col-custom">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_bars-rotate-32" transform="rotate(270 16 16)"> <rect x="14" fill="#111111" width="4" height="7"></rect> <rect x="22.83883" y="3.66117" transform="matrix(0.70711 0.70711 -0.70711 0.70711 12.33883 -15.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="25" y="14" fill="#111111" width="7" height="4" style="opacity: 0.4;"></rect> <rect x="22.83883" y="21.33883" transform="matrix(-0.70711 0.70711 -0.70711 -0.70711 59.96625 24.83883)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="14" y="25" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="5.16117" y="21.33883" transform="matrix(-0.70711 -0.70711 0.70711 -0.70711 -5.33883 47.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="0" y="14" fill="#111111" width="7" height="4" style="opacity: 0.6;"></rect> <rect x="5.16117" y="3.66117" transform="matrix(0.70711 -0.70711 0.70711 0.70711 -2.96625 7.16117)" fill="#111111" width="4" height="7" style="opacity: 0.8;"></rect> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_bars-rotate-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg>
+    </div>
+  </div>
+
   <!-- outer page container; don't show until data is ready -->
   <div class="page-cont" *ngIf="showPage">
 
@@ -78,82 +85,77 @@ considering topnav, sidenav, and footer -->
           <!-- container for all other details (right element) -->
           <div class="project-card-right-cont">
 
-            <div class="table-test">
-              <div class="tablec">
-                <div class="table-row">
-                  <div class="table-cell first-col">
-                    <i class="nc-icon nc-light-traffic project-info-icon"></i>
+
+            <!-- project attributes section - status, priority, and department -->
+            <div class="project-attributes-cont">
+
+              <div class="project-attributes-table">
+                <div class="project-attributes-row">
+                  <div class="project-attributes-cell attributes icon-cell">
+                    <i class="nc-icon nc-light-traffic"></i>
                   </div>
-                  <div class="table-cell second-col">
+                  <div class="project-attributes-cell attributes label-cell">
                     Status:
                   </div>
-                  <div class="table-cell third-col bold">
+                  <div class="project-attributes-cell attributes value-cell">
                     {{ project.ProjectStatusName ? project.ProjectStatusName : '--' }}
                   </div>
                 </div>
-                <div class="table-row">
-                  <div class="table-cell first-col">
-                    <i class="nc-icon nc-priority-high-2 project-info-icon"></i>
+                <div class="project-attributes-row">
+                  <div class="project-attributes-cell attributes icon-cell">
+                    <i class="nc-icon nc-priority-high-2"></i>
                   </div>
-                  <div class="table-cell second-col">
+                  <div class="project-attributes-cell attributes label-cell">
                     Priority:
                   </div>
-                  <div class="table-cell third-col bold">
+                  <div class="project-attributes-cell attributes value-cell">
                     {{ project.PriorityName ? project.PriorityName : '--' }}
                   </div>
                 </div>
-                <div class="table-row">
-                  <div class="table-cell first-col">
-                    <i class="nc-icon nc-hierarchy-53 project-info-icon"></i>
+                <div class="project-attributes-row">
+                  <div class="project-attributes-cell attributes icon-cell">
+                    <i class="nc-icon nc-hierarchy-53"></i>
                   </div>
-                  <div class="table-cell second-col">
+                  <div class="project-attributes-cell attributes label-cell">
                     Department:
                   </div>
-                  <div class="table-cell third-col bold">
+                  <div class="project-attributes-cell attributes value-cell">
                     {{ (project.GroupName && project.EntityName && project.EntityOwnerName) ? project.GroupName + ' > ' + project.EntityName + ' > ' + project.EntityOwnerName : '--' }}
                   </div>
                 </div>
               </div>
+
             </div>
 
 
-
-            <!-- container for project status, priority, and department -->
-            <!-- <div class="project-status-cont">
-
-              <div *ngIf="project.ProjectStatusName" class="project-status">
-                <i class="nc-icon nc-light-traffic project-info-icon"></i>
-                <label class="project-status-name-label">
-                  Status:
-                </label>
-                <div class="project-status-name-text">
-                  {{ project.ProjectStatusName }}
-                </div>
-              </div>
-
-              <div *ngIf="project.PriorityName" class="project-priority">
-                <i class="nc-icon nc-priority-high-2 project-info-icon"></i>
-                <div class="project-priority-name-label">
-                  Priority:
-                </div>
-                <div class="project-priority-name-text">
-                  {{ project.PriorityName }}
-                </div>
-              </div>
-              
-            </div> -->
-
-
-            <!-- container for created by and creation date (fourth container) -->
+            <!-- project record into section - created by and creation date-->
             <div class="project-creation-cont">
 
-              <div class="project-created-by">
-                <span class="project-created-by-label">Created By:</span>{{ project.FullName }}
+              <div class="project-attributes-table">
+                <div class="project-attributes-row">
+                  <div class="project-attributes-cell creation icon-cell">
+                    <i class="nc-icon nc-a-edit"></i>
+                  </div>
+                  <div class="project-attributes-cell creation label-cell">
+                    Created By:
+                  </div>
+                  <div class="project-attributes-cell creation value-cell">
+                      {{ project.FullName ? project.FullName : '--' }}
+                  </div>
+                </div>
+                <div class="project-attributes-row">
+                  <div class="project-attributes-cell creation icon-cell">
+                    <i class="nc-icon nc-time-clock"></i>
+                  </div>
+                  <div class="project-attributes-cell creation label-cell">
+                    Creation Date:
+                  </div>
+                  <div class="project-attributes-cell creation value-cell">
+                    {{ project.CreationDate ? (project.CreationDate | date:'mediumDate') : '--' }}
+                  </div>
+                </div>
               </div>
 
-              <div class="project-creation-date">
-                <span class="project-creation-date-label">Creation Date:</span>{{ project.CreationDate | date:'mediumDate' }}
-              </div>
               
             </div>
 
