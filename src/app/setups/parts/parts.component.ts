@@ -313,7 +313,7 @@ export class PartSetupComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updatePartSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
+    this.apiDataSchedulesService.updatePartScheduleXML(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
@@ -326,7 +326,7 @@ export class PartSetupComponent implements OnInit {
       );
     } else {
       // no detail records so remove the schedule header record
-      this.apiDataSchedulesService.destroySchedule(this.scheduleId)
+      this.apiDataSchedulesService.destroyScheduleSP(this.scheduleId)
       .subscribe(
         res => {
           console.log('Deleted Schedule');

@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener} from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { ApiDataEmployeeService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
+import { ApiDataEmployeeService, ApiDataProjectService, ApiDataSchedulesService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { WebsocketService } from '../../_shared/services/websocket.service';
@@ -28,6 +28,7 @@ export class ProjectsCreateModalComponent implements OnInit {
     private formBuilder: FormBuilder,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataEmployeeService: ApiDataEmployeeService,
+    private apiDataSchedulesService: ApiDataSchedulesService,
     private cacheService: CacheService,
     private authService: AuthService,
     private websocketService: WebsocketService
@@ -122,6 +123,51 @@ export class ProjectsCreateModalComponent implements OnInit {
 
   testButton() {
     console.log('Form', this.form);
+    const today = new Date();
+    const scheduleData = {projectID: 1112, notes: 'aweiufhalwieuhf'};
+        // [{
+    //   id: null,
+    //   currentRevision: null,
+    //   needByDate: null,
+    //   neededQuantity: null,
+    //   buildStatusID: null,
+    //   plcDateEstimate: null,
+    //   plcDateCommit: null,
+    //   plcDate: null,
+    //   plcStatusID: null,
+    //   notes: null, 
+    // },
+    const scheduleDataBulk = [{
+      scheduleID: 320,
+      currentRevision: 1,
+      plcDate: '2018-11-17',
+      plcStatusID: 4,
+      notes: 'aweiufhalwieuhf'
+    },
+    {
+      scheduleID: 320,
+      currentRevision: 1,
+      plcDate: '2013-11-17',
+      plcStatusID: 5,
+      notes: 'aweiufhalwieuhf'
+    },
+    {
+      scheduleID: 320,
+      currentRevision: 1,
+      plcDate: '2012-11-17',
+      plcStatusID: 6,
+      notes: 'aweiufhalwieuhf'
+    }];
+    this.apiDataSchedulesService.insertScheduleDetailBulk(scheduleDataBulk, 1)
+    .subscribe(
+      res => {
+        console.log('User PLM Data Retrieved');
+        this.cacheService.userPLMData = res;
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
   // formValidation() {
   //   'use strict';
