@@ -83,16 +83,16 @@ export class DashboardComponent implements OnInit {
     this.apiDataDashboardService.getDashboardData(fiscalQuarterRange[0], fiscalQuarterRange[1])
       .subscribe(
         res => {
-          console.log('dashboard data:');
-          console.log(res);
+          // console.log('dashboard data:');
+          // console.log(res);
           this.dashboardData = res;
           this.renderDashboard();
           this.showDashboard = true;
           this.showSpinner = false;
         },
         err => {
-          console.log('error response from get dashboard data:');
-          console.log(err);
+          // console.log('error response from get dashboard data:');
+          // console.log(err);
           this.showSpinner = false;
           // TO-DO BILL: create function in tools service that takes err and handles it from there
           if (err.status === 401) {
@@ -150,8 +150,8 @@ export class DashboardComponent implements OnInit {
   }
 
   renderStackedColumnChart() {
-    console.log('stacked column data');
-    console.log(this.dashboardData[0]);
+    // console.log('stacked column data');
+    // console.log(this.dashboardData[0]);
     const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
     Highcharts.chart('stackedColumnChart', chartOptions);
   }

@@ -57,8 +57,8 @@ export class DashboardStackedColumnService {
       }
     });
 
-    console.log('employeeProjectFTEs:');
-    console.log(employeeProjectFTEs);
+    // console.log('employeeProjectFTEs:');
+    // console.log(employeeProjectFTEs);
 
     // get a unique list of employee names for the xAxis categories, into a string array
     // ['Bill Schuetzle', 'Brian Ivanoff', 'Bryan Cheung', ...]
@@ -93,8 +93,8 @@ export class DashboardStackedColumnService {
     employeeProjectFTEs = _.reverse(_.sortBy(employeeProjectFTEs, ['percentage']));
     employeeProjectFTEs = _.sortBy(employeeProjectFTEs, ['name']);
 
-    console.log('employeeProjectFTEs with percentages:');
-    console.log(employeeProjectFTEs);
+    // console.log('employeeProjectFTEs with percentages:');
+    // console.log(employeeProjectFTEs);
 
     // get a unique list of project names, into an array of objects, omitting nulls
     // [{

@@ -28,7 +28,7 @@ export class FilterPipe implements PipeTransform {
 
     // return all (or nothing) if no objects or no filter given
     if (!objects || !hasFilter) {
-      console.log('no filter provided, returning all objects');
+      // console.log('no filter provided, returning all objects');
       return objects;
     }
 
@@ -37,7 +37,7 @@ export class FilterPipe implements PipeTransform {
       if (options.paginationFilter.on) {
         const regexp = new RegExp(options.paginationFilter.regexp, 'i');
         const prop = options.paginationFilter.property;
-        console.log('returning filtered objects by pagination');
+        // console.log('returning filtered objects by pagination');
         return objects.filter(object => {
           return regexp.test(object[prop][0]);
         });
@@ -46,7 +46,7 @@ export class FilterPipe implements PipeTransform {
 
     // no string filter, but has the limitTo filter turned on
     if (!filter && options.hasOwnProperty('limitTo')) {
-      console.log(`returning limit to filter (${+options.limitTo}`);
+      // console.log(`returning limit to filter (${+options.limitTo}`);
       return objects.filter((object, index) => {
         return index < +options.limitTo;
       });
@@ -77,7 +77,7 @@ export class FilterPipe implements PipeTransform {
         const result = fuse.search(filter);
 
         const t1 = performance.now();
-        console.log(`returning fuzzy search filter; took ${t1 - t0} milliseconds`);
+        // console.log(`returning fuzzy search filter; took ${t1 - t0} milliseconds`);
 
         return result;
       }
@@ -104,7 +104,7 @@ export class FilterPipe implements PipeTransform {
     if (options.hasOwnProperty('matchExact')) {
       if (options.matchExact) {
 
-        console.log('returning from match exact filter');
+        // console.log('returning from match exact filter');
         // must be an exact match - good for dropdown selections where you can guarantee an exact match
         // and don't want any extra matches (like NPIs)
         return objects.filter(object => {

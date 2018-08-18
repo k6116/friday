@@ -171,7 +171,7 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
   showProjectRoster(projectID: number) {
     this.rosterDataSubscription = this.apiDataProjectService.getProjectRoster(projectID).subscribe( res => {
       this.projectRoster = res[0].teamMembers;
-      console.log(this.projectRoster);
+      // console.log(this.projectRoster);
       this.displayRosterTable = true;
     });
   }

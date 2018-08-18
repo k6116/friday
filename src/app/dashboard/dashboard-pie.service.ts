@@ -171,7 +171,7 @@ export class DashboardPieService {
           events: {
             click: function(e) {
               const p = e.point;
-              console.log(p);
+              // console.log(p);
             }.bind(this)
           }
         }

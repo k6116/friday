@@ -116,7 +116,7 @@ export class ClickTrackingService {
       .subscribe(
         res => {
           // click tracking record was inserted successfully
-          console.log(res);
+          // console.log(res);
         },
         err => {
           console.error(err);

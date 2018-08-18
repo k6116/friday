@@ -108,13 +108,13 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
           });
 
-          console.log(`number of background images: ${this.backgroundImages.length}`);
+          // console.log(`number of background images: ${this.backgroundImages.length}`);
 
           // set random background image
           this.setBackgroundImage();
         },
         err => {
-          console.log(err);
+          // console.log(err);
           this.backgroundImage = this.cacheService.backgroundImage;
         }
       );
@@ -158,13 +158,13 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   async authenticateSync(user): Promise<any> {
 
-    console.log('within authenticateSync');
+    // console.log('within authenticateSync');
     const response = await this.apiDataAuthService.authenticateSync(user)
       .catch(err => {
         return err;
       });
-    console.log('response within authenticateSync');
-    console.log(response);
+    // console.log('response within authenticateSync');
+    // console.log(response);
     return response;
 
   }
@@ -172,21 +172,21 @@ export class LoginComponent implements OnInit, OnDestroy {
   // this is the best, but need to also use async on your calling function
   async authenticate(user) {
 
-    console.log('within authenticateSync');
+    // console.log('within authenticateSync');
     const response = await this.apiDataAuthService.authenticate(user).toPromise()
       .catch(err => {
-        console.log('error response within authenticate');
+        // console.log('error response within authenticate');
         return err;
       });
-    console.log('response within authenticate');
-    console.log(response);
+    // console.log('response within authenticate');
+    // console.log(response);
     return response;
 
   }
 
   async authenticate2(user) {
 
-    console.log('within authenticate2');
+    // console.log('within authenticate2');
     let response;
     await this.apiDataAuthService.authenticate(user)
       .subscribe(
@@ -196,8 +196,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         err => {
           response = err;
         });
-    console.log('response within authenticate2');
-    console.log(response);
+    // console.log('response within authenticate2');
+    // console.log(response);
     return response;
 
   }
@@ -229,42 +229,42 @@ export class LoginComponent implements OnInit, OnDestroy {
     let storedAuthResponse;
     await this.authenticateSync(user)
       .then(authResponse => {
-        console.log('synch auth response:');
-        console.log(authResponse);
+        // console.log('synch auth response:');
+        // console.log(authResponse);
         storedAuthResponse = authResponse;
       });
-    console.log('stored auth response:');
-    console.log(storedAuthResponse);
+    // console.log('stored auth response:');
+    // console.log(storedAuthResponse);
 
     let storedAuthResponse2;
     await this.authenticate(user)
       .then(authResponse => {
-        console.log('synch auth response 2:');
-        console.log(authResponse);
+        // console.log('synch auth response 2:');
+        // console.log(authResponse);
         storedAuthResponse2 = authResponse;
       });
-    console.log('stored auth response 2:');
-    console.log(storedAuthResponse2);
+    // console.log('stored auth response 2:');
+    // console.log(storedAuthResponse2);
 
 
     const storedAuthResponse3 = this.authenticate2(user);
-    console.log('stored auth response 3:');
-    console.log(storedAuthResponse3);
+    // console.log('stored auth response 3:');
+    // console.log(storedAuthResponse3);
 
     // call the api data service to authenticate the user credentials
-    console.log('before async authenticate');
+    // console.log('before async authenticate');
     await this.apiDataAuthService.authenticate(user)
       .subscribe(
         res => {
 
-          console.log('within authenticate (response');
+          // console.log('within authenticate (response');
 
           // log the time it took to authenticate
           this.logAuthPerformance(t0);
 
           // TEMP CODE: to log the response
-          console.log('authentication was successfull:');
-          console.log(res);
+          // console.log('authentication was successfull:');
+          // console.log(res);
 
           // set or clear the username cookie depending on whether remember me is selected
           this.setCookie();
@@ -272,13 +272,13 @@ export class LoginComponent implements OnInit, OnDestroy {
           // store the logged in user in the auth service
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
           // this.authService.loggedInUser = res.jarvisUser;
-          console.log('logged in user:');
-          console.log(this.authService.loggedInUser);
+          // console.log('logged in user:');
+          // console.log(this.authService.loggedInUser);
 
           // store the jwt token in the cache service
           this.cacheService.token = res.token;
-          console.log('token saved in cache service (this.token):');
-          console.log(this.cacheService.token);
+          // console.log('token saved in cache service (this.token):');
+          // console.log(this.cacheService.token);
 
           // store the jwt token in local storage
           localStorage.setItem('jarvisToken', res.token.signedToken);
@@ -371,7 +371,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // TEMP CODE to log the total time it took to authenticate
   logAuthPerformance(t0: number) {
     const t1 = performance.now();
-    console.log(`authentication took ${t1 - t0} milliseconds`);
+    // console.log(`authentication took ${t1 - t0} milliseconds`);
   }
 
   // display authentication error or success message
@@ -421,8 +421,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // when the slide toggle is changed, update the rememberMe property (boolean)
   onRememberMeChange(event) {
-    console.log('on remember me change event triggered');
-    console.log(event.target.checked);
+    // console.log('on remember me change event triggered');
+    // console.log(event.target.checked);
     this.rememberMe = event.target.checked;
   }
 

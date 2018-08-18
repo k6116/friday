@@ -102,8 +102,8 @@ export class BrowseProjectsComponent implements OnInit {
     this.apiDataProjectService.getProjectsBrowseData()
       .subscribe(
         res => {
-          console.log('projects browse response:');
-          console.log(res);
+          // console.log('projects browse response:');
+          // console.log(res);
           // store the projects
           this.projects = res[0];
           // store the dropdown data
@@ -124,8 +124,8 @@ export class BrowseProjectsComponent implements OnInit {
           this.showPage = true;
         },
         err => {
-          console.log('get project data error:');
-          console.log(err);
+          // console.log('get project data error:');
+          // console.log(err);
         }
     );
 
@@ -191,8 +191,8 @@ export class BrowseProjectsComponent implements OnInit {
   }
 
   onFilterSelectChange(dropDownValue) {
-    console.log('dropdown value:');
-    console.log(dropDownValue);
+    // console.log('dropdown value:');
+    // console.log(dropDownValue);
     if (dropDownValue) {
       this.filterString = dropDownValue;
       this.onFilterStringChange();
@@ -233,9 +233,9 @@ export class BrowseProjectsComponent implements OnInit {
   // display a popover with the full description
   onDescriptionMouseEnter(project: any) {
 
-    console.log('project description and length:');
-    console.log(project.Description);
-    console.log(project.Description ? project.Description.length : 0);
+    // console.log('project description and length:');
+    // console.log(project.Description);
+    // console.log(project.Description ? project.Description.length : 0);
 
     // only show the popover if there is a description (not null) and it is over 200 characters
     if (project.Description) {
@@ -322,7 +322,7 @@ export class BrowseProjectsComponent implements OnInit {
     // if the scrollbar is at the bottom, and there is no active filter
     // add another chunk of projects
     if (this.scrollAtBottom() && !this.filterString) {
-      console.log('scrollbar is at the bottom');
+      // console.log('scrollbar is at the bottom');
       this.addProjectsForInfiniteScroll();
     }
   }
@@ -362,12 +362,9 @@ export class BrowseProjectsComponent implements OnInit {
     if (numProjectsToAdd > 0) {
       // update / increment the number of projects to display (using the filter pipe)
       this.numProjectsToDisplay += numProjectsToAdd;
-      console.log(`added ${numProjectsToAdd} projects; now showing ${this.numProjectsToDisplay} projects`);
+      // console.log(`added ${numProjectsToAdd} projects; now showing ${this.numProjectsToDisplay} projects`);
       this.onFilterStringChange();
       this.addedProjectsCount += numProjectsToAdd;
-      console.log(`current added projects to page: ${this.addedProjectsCount} projects;
-        displaying ${this.filteredProjectsCount} filtered projects, there are ${this.totalProjectsCount} total projects`);
-        // current added projects to page: 200 projects; displaying 475 filtered projects, there are 986 total projects
     }
 
   }

@@ -80,7 +80,7 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
         this.plotTimeSeries(period);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }

@@ -60,6 +60,8 @@ div.projects-display-count {
   /* display: inline-block; */
   float: right;
   font-weight: 500;
+  position: relative;
+  top: 5px;
 }
 
 
@@ -253,3 +255,10 @@ div.table-test {
 /* .table-row:nth-child(even) {
   background: lightblue;
 } */
+
+
+@media (max-width: 1650px) {
+  div.table-test {
+    display: none;
+  }
+}
