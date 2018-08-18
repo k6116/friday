@@ -104,8 +104,9 @@ export class ClickTrackingService {
     // log warnings if certain required properties are null (but still log to database)
     for (const key in clickObj) {
       if (clickObj.hasOwnProperty(key)) {
-        if (!clickObj[key] && (key === 'page' || key === 'clickedOn')) {
+        if (!clickObj[key] && (key === 'page')) {
           console.warn(`click tracking missing required property ${key}`);
+          console.warn(clickObj);
         }
       }
     }

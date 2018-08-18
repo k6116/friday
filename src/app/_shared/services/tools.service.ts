@@ -3,6 +3,8 @@ import { FormArray } from '@angular/forms';
 
 import { CacheService } from './cache.service';
 
+declare var $: any;
+
 import * as moment from 'moment';
 import * as momentTimezone from 'moment-timezone';
 import * as _ from 'lodash';
@@ -369,6 +371,14 @@ export class ToolsService {
     return pacificTimeFinal;
 
 
+  }
+
+  hideFooter() {
+    $('div.footer-container').css('display', 'none');
+  }
+
+  showFooter() {
+    $('div.footer-container').css('display', 'block');
   }
 
 

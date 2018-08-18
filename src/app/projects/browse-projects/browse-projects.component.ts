@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
+import { ToolsService } from '../../_shared/services/tools.service';
 
 declare var $: any;
 
@@ -35,7 +36,8 @@ export class BrowseProjectsComponent implements OnInit {
 
   constructor(
     private apiDataProjectService: ApiDataProjectService,
-    private filterPipe: FilterPipe
+    private filterPipe: FilterPipe,
+    private toolsService: ToolsService
   ) {
 
     // set the number of projects to display initially, and to add for infinite scroll
@@ -98,6 +100,9 @@ export class BrowseProjectsComponent implements OnInit {
 
   ngOnInit() {
 
+    // hide the footer until the page is ready to be rendered
+    this.toolsService.hideFooter();
+
     // get all the data for the page using forkjoin - projects, and dropdowns
     this.apiDataProjectService.getProjectsBrowseData()
       .subscribe(
@@ -122,6 +127,8 @@ export class BrowseProjectsComponent implements OnInit {
           this.onFilterStringChange();
           // display the page
           this.showPage = true;
+          // show the footer
+          this.toolsService.showFooter();
         },
         err => {
           // console.log('get project data error:');
@@ -368,6 +375,7 @@ export class BrowseProjectsComponent implements OnInit {
     }
 
   }
+
 
 
 }
