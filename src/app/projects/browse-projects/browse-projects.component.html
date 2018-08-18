@@ -78,14 +78,54 @@ considering topnav, sidenav, and footer -->
           <!-- container for all other details (right element) -->
           <div class="project-card-right-cont">
 
+            <div class="table-test">
+              <div class="tablec">
+                <div class="table-row">
+                  <div class="table-cell first-col">
+                    <i class="nc-icon nc-light-traffic project-info-icon"></i>
+                  </div>
+                  <div class="table-cell second-col">
+                    Status:
+                  </div>
+                  <div class="table-cell third-col bold">
+                    {{ project.ProjectStatusName ? project.ProjectStatusName : '--' }}
+                  </div>
+                </div>
+                <div class="table-row">
+                  <div class="table-cell first-col">
+                    <i class="nc-icon nc-priority-high-2 project-info-icon"></i>
+                  </div>
+                  <div class="table-cell second-col">
+                    Priority:
+                  </div>
+                  <div class="table-cell third-col bold">
+                    {{ project.PriorityName ? project.PriorityName : '--' }}
+                  </div>
+                </div>
+                <div class="table-row">
+                  <div class="table-cell first-col">
+                    <i class="nc-icon nc-hierarchy-53 project-info-icon"></i>
+                  </div>
+                  <div class="table-cell second-col">
+                    Department:
+                  </div>
+                  <div class="table-cell third-col bold">
+                    {{ (project.GroupName && project.EntityName && project.EntityOwnerName) ? project.GroupName + ' > ' + project.EntityName + ' > ' + project.EntityOwnerName : '--' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
             <!-- container for project status, priority, and department -->
-            <div class="project-status-cont">
+            <!-- <div class="project-status-cont">
 
               <div *ngIf="project.ProjectStatusName" class="project-status">
                 <i class="nc-icon nc-light-traffic project-info-icon"></i>
-                <div class="project-status-name-label">
+                <label class="project-status-name-label">
                   Status:
-                </div>
+                </label>
                 <div class="project-status-name-text">
                   {{ project.ProjectStatusName }}
                 </div>
@@ -101,7 +141,7 @@ considering topnav, sidenav, and footer -->
                 </div>
               </div>
               
-            </div>
+            </div> -->
 
 
             <!-- container for created by and creation date (fourth container) -->

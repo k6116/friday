@@ -210,3 +210,46 @@ span.project-created-by-label, span.project-creation-date-label {
 div.project-created-by {
   margin-bottom: 5px;
 }
+
+
+/* css table test */
+
+div.table-test {
+  display: inline-block;
+  padding: 20px;
+  border-left: 1px solid lightgrey;
+  height: 100%;
+}
+
+.tablec {
+  display: table;
+}
+
+.table-row {
+  display: table-row;
+}
+
+.table-cell {
+  display: table-cell;
+  /* padding: 10px; */
+  /* border: 1px solid lightgrey; */
+  /* padding-right: 15px; */
+  padding-bottom: 5px;
+}
+
+.table-cell.first-col {
+  width: 30px;
+}
+
+.table-cell.second-col {
+  width: 100px;
+}
+
+.table-cell.third-col.bold {
+  width: 150px;
+  font-weight: 500;
+}
+
+/* .table-row:nth-child(even) {
+  background: lightblue;
+} */
