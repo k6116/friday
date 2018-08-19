@@ -54,16 +54,20 @@ export class FilterPipe implements PipeTransform {
 
     // fuzzy filter using fuse.js
     if (options.hasOwnProperty('matchFuzzy')) {
-      if (options.matchFuzzy) {
+      if (options.matchFuzzy.on) {
         const t0 = performance.now();
+
+        console.log(options);
 
         // set the threshold (sensitivity), either passed in the options, or the default of 0.4
         let threshold;
-        if (options.hasOwnProperty('matchFuzzy.threshold')) {
+        if (options.matchFuzzy.hasOwnProperty('threshold')) {
           threshold = options.matchFuzzy.threshold;
         } else {
           threshold = 0.4;
         }
+
+        console.log(`threshold is set to ${threshold}`);
 
         const fuseOptions = {
           threshold: threshold,

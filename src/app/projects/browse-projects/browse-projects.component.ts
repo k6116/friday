@@ -225,7 +225,7 @@ export class BrowseProjectsComponent implements OnInit {
 
   onFilterStringChange() {
     const projects = this.filterPipe.transform(this.projects, this.filterString, this.selectedFilter.columnName,
-      {limitTo: this.numProjectsToDisplay, matchFuzzy: this.selectedFilter.matchFuzzy,
+      {limitTo: this.numProjectsToDisplay, matchFuzzy: {on: this.selectedFilter.matchFuzzy, threshold: 0.3},
       matchOptimistic: this.selectedFilter.matchOptimistic, matchExact: this.selectedFilter.matchExact});
     this.displayedProjects = projects.length;
     this.filteredProjectsCount = projects.length;
