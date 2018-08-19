@@ -151,7 +151,6 @@ export class BrowseProjectsComponent implements OnInit {
   }
 
 
-
   // refresh the project cards if another user has added a new project while user is on the page
   // replaces the need for a refresh button
   refreshProjectCards() {
@@ -196,6 +195,7 @@ export class BrowseProjectsComponent implements OnInit {
 
   }
 
+
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
     // clear the filter string
@@ -231,6 +231,7 @@ export class BrowseProjectsComponent implements OnInit {
     }
   }
 
+
   onFilterSelectChange(dropDownValue) {
     if (dropDownValue) {
       // set the filter string to the selected dropdown value
@@ -242,6 +243,7 @@ export class BrowseProjectsComponent implements OnInit {
       this.clearFilter();
     }
   }
+
 
   // clear the existing filter string; if a different search by is selected for example
   clearFilter() {
@@ -264,6 +266,7 @@ export class BrowseProjectsComponent implements OnInit {
     this.setNumProjectsDisplayString();
   }
 
+
   // set/update the record count string (Showing X of Y Projects)
   setNumProjectsDisplayString() {
     // no projects are displayed
@@ -276,6 +279,49 @@ export class BrowseProjectsComponent implements OnInit {
     } else {
       this.numProjectsDisplayString = `Showing ${this.filteredProjectsCount} of ${this.totalProjectsCount} Projects`;
     }
+  }
+
+
+  // display a popover with the full project name (for long overflowing project names)
+  onNameMouseEnter(project: any) {
+
+    // only show the popover if there is a project name (not null) and it is over X characters
+    if (project.ProjectName) {
+      if (project.ProjectName.length >= 50) {
+
+        // set the jquery element
+        const $el = $(`div.project-name[data-id="${project.ProjectID}"]`);
+
+        // set the popover options
+        const options = {
+          animation: true,
+          placement: 'top',
+          html: true,
+          trigger: 'focus',
+          title: `Project Name`,
+          content: project.ProjectName
+        };
+
+        // show the popover
+        $el.popover(options);
+        $el.popover('show');
+
+      }
+
+    }
+
+  }
+
+
+  // hide/destroy the popover
+  onNameMouseLeave(projectID: number) {
+
+    // set the jquery element
+    const $el = $(`div.project-name[data-id="${projectID}"]`);
+
+    // dispose of the popover
+    $el.popover('dispose');
+
   }
 
 

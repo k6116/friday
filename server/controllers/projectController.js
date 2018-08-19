@@ -8,8 +8,8 @@ function indexProjects(req, res) {
     const sql = `
      SELECT 
         p.ProjectID, 
-        substring(p.ProjectName,1,30) as \'ProjectName\', 
-        substring(p.Description,1,500) as \'Description\', 
+        p.ProjectName, 
+        p.Description, 
         e.FullName, 
         p.MU,
         p.IBO,

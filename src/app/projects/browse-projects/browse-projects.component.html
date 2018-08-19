@@ -72,7 +72,7 @@ considering topnav, sidenav, and footer -->
           <!-- container for project name, description, etc. (middle element) -->
           <div class="project-details-cont">
 
-            <div class="project-name">
+            <div class="project-name" [attr.data-id]="project.ProjectID" (mouseenter)="onNameMouseEnter(project)" (mouseleave)="onNameMouseLeave(project.ProjectID)">
               {{ project.ProjectName }}
             </div>
 
