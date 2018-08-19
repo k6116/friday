@@ -71,6 +71,9 @@ export class DashboardComponent implements OnInit {
 
   getDashboardData() {
 
+    // hide the footer until the page is ready to be rendered
+    this.toolsService.hideFooter();
+
     // show the waiting to render spinner
     this.showSpinner = true;
 
@@ -89,11 +92,15 @@ export class DashboardComponent implements OnInit {
           this.renderDashboard();
           this.showDashboard = true;
           this.showSpinner = false;
+          // show the footer
+          this.toolsService.showFooter();
         },
         err => {
           // console.log('error response from get dashboard data:');
           // console.log(err);
           this.showSpinner = false;
+          // show the footer
+          this.toolsService.showFooter();
           // TO-DO BILL: create function in tools service that takes err and handles it from there
           if (err.status === 401) {
             this.authService.logout(true);

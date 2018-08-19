@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ToolsService } from '../../_shared/services/tools.service';
+import { WebsocketService } from '../../_shared/services/websocket.service';
 
 declare var $: any;
 
@@ -22,23 +24,23 @@ export class BrowseProjectsComponent implements OnInit {
   projectTypeBinding: any;
   numProjectsToDisplayAtOnce: number;
   filterString: string;
-  totalProjects: number;
   totalProjectsCount: number;  // total number of projects
   addedProjectsCount: number;  // number of projects currently added to the page via infinate scroll (increments of 100)
   filteredProjectsCount: number;  // number of project currently displayed, if there is a filter set
   numProjectsToDisplay: number; // number of projects to show initially and to add for infinate scroll
-  displayedProjects: number;
   filters: any[];
   selectedFilter: any;  // selected filter object from the dropdown (from this.filters)
   dropDownData: any;
   numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
   showSpinner: boolean;
+  subscription1: Subscription;
 
 
   constructor(
     private apiDataProjectService: ApiDataProjectService,
     private filterPipe: FilterPipe,
-    private toolsService: ToolsService
+    private toolsService: ToolsService,
+    private websocketService: WebsocketService
   ) {
 
     // set the number of projects to display initially, and to add for infinite scroll
@@ -120,14 +122,10 @@ export class BrowseProjectsComponent implements OnInit {
           // add an empty object to each drop down list, for the default first selection
           this.addEmptyObjectsToDropDowns();
           // store the number of projects, to display in the page 'showing x of y projects'
-          this.totalProjects = this.projects.length;
           this.totalProjectsCount = this.projects.length;
-          // set the number of displayed projects
-          this.displayedProjects = this.projects.length;
           // set the selected filter to the first one ('Project Name')
           this.selectedFilter = this.filters[0];
           // fire the filter string change to run it through the pipe
-          // TO-DO: rename this method
           this.onFilterStringChange();
           // hide the spinner
           this.showSpinner = false;
@@ -144,6 +142,34 @@ export class BrowseProjectsComponent implements OnInit {
         }
     );
 
+    // listen for websocket message for newly created projects
+    this.subscription1 = this.websocketService.getNewProject().subscribe(project => {
+      // make an api call to get new projects data
+      this.refreshProjectCards();
+    });
+
+  }
+
+
+
+  // refresh the project cards if another user has added a new project while user is on the page
+  // replaces the need for a refresh button
+  refreshProjectCards() {
+    this.apiDataProjectService.getProjects()
+      .subscribe(
+        res => {
+          // update the projects array of objects
+          this.projects = res;
+          // update the number of projects, to display in the page 'showing x of y projects'
+          this.totalProjectsCount = this.projects.length;
+          // // call filter string change to update the record count string
+          this.onFilterStringChange();
+        },
+        err => {
+          // console.log('get projects data error:');
+          // console.log(err);
+        }
+    );
   }
 
 
@@ -154,7 +180,7 @@ export class BrowseProjectsComponent implements OnInit {
     this.dropDownData.forEach(dropDown => {
       // take a copy of the first object
       const firstObject = $.extend(true, {}, dropDown[0]);
-      // replace the properties with zeros, empty strings
+      // replace the properties with zeros or empty strings
       for (const property in firstObject) {
         if (firstObject.hasOwnProperty(property)) {
           if (typeof firstObject[property] === 'number') {
@@ -206,12 +232,13 @@ export class BrowseProjectsComponent implements OnInit {
   }
 
   onFilterSelectChange(dropDownValue) {
-    // console.log('dropdown value:');
-    // console.log(dropDownValue);
     if (dropDownValue) {
+      // set the filter string to the selected dropdown value
       this.filterString = dropDownValue;
+      // call filter string change to update the record count string
       this.onFilterStringChange();
     } else {
+      // if there is no dropdown value (first selection, which is null), clear the filter
       this.clearFilter();
     }
   }
@@ -219,26 +246,33 @@ export class BrowseProjectsComponent implements OnInit {
   // clear the existing filter string; if a different search by is selected for example
   clearFilter() {
     this.filterString = undefined;
+    // call filter string change to update the record count string
     this.onFilterStringChange();
   }
 
 
+  // use the same filter pipe, with the same options passed, to get an array of object that should be displayed with the filter
+  // the sole purpose is to show the number of projects (Showing X of Y Projects)
   onFilterStringChange() {
+    // get the array of projects objects that are displayed
     const projects = this.filterPipe.transform(this.projects, this.filterString, this.selectedFilter.columnName,
       {limitTo: this.numProjectsToDisplay, matchFuzzy: {on: this.selectedFilter.matchFuzzy, threshold: 0.3},
       matchOptimistic: this.selectedFilter.matchOptimistic, matchExact: this.selectedFilter.matchExact});
-    this.displayedProjects = projects.length;
+    // get the number of displayed/filtered projects
     this.filteredProjectsCount = projects.length;
+    // update the record count (Showing X of Y Projects)
     this.setNumProjectsDisplayString();
   }
 
-
+  // set/update the record count string (Showing X of Y Projects)
   setNumProjectsDisplayString() {
-    // no projects displayed
+    // no projects are displayed
     if (this.filteredProjectsCount === 0) {
       this.numProjectsDisplayString = `Showing 0 of ${this.totalProjectsCount} Projects`;
+    // all projects are displayed
     } else if (this.filteredProjectsCount === this.totalProjectsCount) {
       this.numProjectsDisplayString = `Showing All ${this.totalProjectsCount} Projects`;
+    // some projects are displayed (there is a filter)
     } else {
       this.numProjectsDisplayString = `Showing ${this.filteredProjectsCount} of ${this.totalProjectsCount} Projects`;
     }
@@ -292,6 +326,8 @@ export class BrowseProjectsComponent implements OnInit {
   }
 
 
+  // class binding using the ngClass directive in the html
+  // to set project type icon (icon font class)
   setProjctTypeIconClass(projectTypeName) {
     const classes = {
       'nc-icon': true,
@@ -311,6 +347,9 @@ export class BrowseProjectsComponent implements OnInit {
     return classes;
   }
 
+
+  // style binding using the ngStyle directive in the html
+  // to set the color for the project type name and icon
   setProjctTypeColor(projectTypeName) {
     switch (projectTypeName) {
       case 'NCI':
@@ -377,7 +416,6 @@ export class BrowseProjectsComponent implements OnInit {
     if (numProjectsToAdd > 0) {
       // update / increment the number of projects to display (using the filter pipe)
       this.numProjectsToDisplay += numProjectsToAdd;
-      // console.log(`added ${numProjectsToAdd} projects; now showing ${this.numProjectsToDisplay} projects`);
       this.onFilterStringChange();
       this.addedProjectsCount += numProjectsToAdd;
     }
