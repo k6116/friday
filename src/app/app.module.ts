@@ -86,7 +86,7 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
 import { Error403Component } from './error-pages/error-403/error-403.component';
 import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
 import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
-import { BrowseProjectsComponent } from './projects/browse-projects/browse-projects.component';
+import { SearchProjectsComponent } from './projects/search-projects/search-projects.component';
 import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
 
@@ -142,7 +142,7 @@ import { ProjectRequestsComponent } from './projects/project-requests/project-re
     BomEditorComponent,
     BomViewerComponent,
     ProjectRequestsComponent,
-    BrowseProjectsComponent
+    SearchProjectsComponent
   ],
   imports: [
     AppRoutingModule,

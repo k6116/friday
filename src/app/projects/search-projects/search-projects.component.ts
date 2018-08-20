@@ -8,12 +8,12 @@ import { WebsocketService } from '../../_shared/services/websocket.service';
 declare var $: any;
 
 @Component({
-  selector: 'app-browse-projects',
-  templateUrl: './browse-projects.component.html',
-  styleUrls: ['./browse-projects.component.css', '../../_shared/styles/common.css'],
+  selector: 'app-search-projects',
+  templateUrl: './search-projects.component.html',
+  styleUrls: ['./search-projects.component.css', '../../_shared/styles/common.css'],
   providers: [FilterPipe]
 })
-export class BrowseProjectsComponent implements OnInit {
+export class SearchProjectsComponent implements OnInit {
 
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
   @ViewChild('filterDropDownVC') filterDropDownVC: ElementRef;

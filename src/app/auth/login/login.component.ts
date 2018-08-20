@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-// import { ApiDataService } from '../../_shared/services/api-data.service';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
@@ -10,7 +9,6 @@ import { User } from '../../_shared/models/user.model';
 import { WebsocketService } from '../../_shared/services/websocket.service';
 import { CookiesService } from '../../_shared/services/cookies.service';
 import { ApiDataAuthService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
-import 'rxjs/observable';
 
 import * as moment from 'moment';
 
@@ -20,7 +18,7 @@ import * as moment from 'moment';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css', '../../_shared/styles/common.css']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
 
   // view childs are set up for the user name and password inputs so the focus() method can be used
   // tied to #userNameVC and #passwordVC in the html
@@ -88,9 +86,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy() {
-  }
-
 
   getBackgroundImages() {
 
@@ -156,54 +151,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
 
-  async authenticateSync(user): Promise<any> {
 
-    // console.log('within authenticateSync');
-    const response = await this.apiDataAuthService.authenticateSync(user)
-      .catch(err => {
-        return err;
-      });
-    // console.log('response within authenticateSync');
-    // console.log(response);
-    return response;
-
-  }
-
-  // this is the best, but need to also use async on your calling function
-  async authenticate(user) {
-
-    // console.log('within authenticateSync');
-    const response = await this.apiDataAuthService.authenticate(user).toPromise()
-      .catch(err => {
-        // console.log('error response within authenticate');
-        return err;
-      });
-    // console.log('response within authenticate');
-    // console.log(response);
-    return response;
-
-  }
-
-  async authenticate2(user) {
-
-    // console.log('within authenticate2');
-    let response;
-    await this.apiDataAuthService.authenticate(user)
-      .subscribe(
-        res => {
-          response = res;
-        },
-        err => {
-          response = err;
-        });
-    // console.log('response within authenticate2');
-    // console.log(response);
-    return response;
-
-  }
-
-
-  async onLoginClick() {
+  onLoginClick() {
 
     // reset and hide the error message if any is already displayed
     this.resetErrorMessage();
@@ -226,34 +175,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     // show the animated svg
     this.showPendingLoginAnimation = true;
 
-    let storedAuthResponse;
-    await this.authenticateSync(user)
-      .then(authResponse => {
-        // console.log('synch auth response:');
-        // console.log(authResponse);
-        storedAuthResponse = authResponse;
-      });
-    // console.log('stored auth response:');
-    // console.log(storedAuthResponse);
-
-    let storedAuthResponse2;
-    await this.authenticate(user)
-      .then(authResponse => {
-        // console.log('synch auth response 2:');
-        // console.log(authResponse);
-        storedAuthResponse2 = authResponse;
-      });
-    // console.log('stored auth response 2:');
-    // console.log(storedAuthResponse2);
-
-
-    const storedAuthResponse3 = this.authenticate2(user);
-    // console.log('stored auth response 3:');
-    // console.log(storedAuthResponse3);
-
     // call the api data service to authenticate the user credentials
     // console.log('before async authenticate');
-    await this.apiDataAuthService.authenticate(user)
+    this.apiDataAuthService.authenticate(user)
       .subscribe(
         res => {
 

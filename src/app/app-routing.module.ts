@@ -21,7 +21,7 @@ import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.compon
 import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
 import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
-import { BrowseProjectsComponent } from './projects/browse-projects/browse-projects.component';
+import { SearchProjectsComponent } from './projects/search-projects/search-projects.component';
 import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
@@ -59,7 +59,7 @@ const routes: Routes = [
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
       { path: 'projects/my-projects', component: MyProjectsComponent },
       { path: 'projects/requests', component: ProjectRequestsComponent },
-      { path: 'projects/search', component: BrowseProjectsComponent },
+      { path: 'projects/search', component: SearchProjectsComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/bom-editor', component: BomEditorComponent },
