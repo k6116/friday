@@ -1,4 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* import google fonts here */
+
+@import url('https://fonts.googleapis.com/css?family=Do+Hyeon|Londrina+Outline|Ubuntu');
+
 /* input, textarea, button {
     outline: none !important; 
     box-shadow: none !important; } */
@@ -8,6 +13,7 @@ body.body-custom {
   font-size: 14px;
 }
 
+/* revert to bootstrap 3 font sizes */
 button.btn {
   font-size: 14px;
 }

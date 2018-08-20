@@ -56,33 +56,33 @@ export class SupplyDemandComponent implements OnInit {
     this.apiDataAnalyticsService.getNCIProjectsParentChildList()
     .subscribe(
       res => {
-        console.log('Project Parent Child List Data: ', res);
+        // console.log('Project Parent Child List Data: ', res);
         this.projectParentChildList = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
 
     this.apiDataAnalyticsService.getNCISupplyDemandDatesList()
     .subscribe(
       res => {
-        console.log('Date List Data: ', res);
+        // console.log('Date List Data: ', res);
         this.supplyDemandDatesList = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
 
     this.apiDataAnalyticsService.getNCISupplyDemandProjectList()
     .subscribe(
       res => {
-        console.log('Project List Data: ', res);
+        // console.log('Project List Data: ', res);
         this.supplyDemandProjectList = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
 
@@ -103,7 +103,7 @@ export class SupplyDemandComponent implements OnInit {
         this.supplyDemandList = res[0].Details;
         // initialize an array row state, whether the project is displayed in the chart or not
         // this.isProjectSelected = new Array(this.supplyDemandList.length).fill(false);
-        console.log('Supply Demand List Data: ', this.supplyDemandList);
+        // console.log('Supply Demand List Data: ', this.supplyDemandList);
 
         // Convert table to array for HighChart data series format
         // also, convert fiscal date from js datetime to unix (ms) timestamp for proper plotting in highcharts
@@ -121,12 +121,12 @@ export class SupplyDemandComponent implements OnInit {
           name: 'Demand',
           data: demandQty
         });
-        console.log('supply qty', supplyQty);
+        // console.log('supply qty', supplyQty);
 
         this.plotFteHistoryChart();
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
 
@@ -134,7 +134,7 @@ export class SupplyDemandComponent implements OnInit {
     this.apiDataAnalyticsService.getNCISupplyDemandPartList(project.NCIProjectName)
     .subscribe(
       res1 => {
-        console.log('Part List', res1);
+        // console.log('Part List', res1);
         this.supplyDemandPartList = res1;
 
         if (this.supplyDemandPartList.length) {
@@ -150,11 +150,11 @@ export class SupplyDemandComponent implements OnInit {
           this.apiDataAnalyticsService.getNCISupplyLotList(this.strPartList)
           .subscribe(
             res2 => {
-              console.log('Lot List', res2);
+              // console.log('Lot List', res2);
               this.supplyLotList = res2;
             },
             err => {
-              console.log(err);
+              // console.log(err);
             }
           );
 
@@ -177,17 +177,17 @@ export class SupplyDemandComponent implements OnInit {
           this.apiDataAnalyticsService.getNCISupplyLotExclusionList(this.selectedProjectChildList)
           .subscribe(
             res3 => {
-              console.log('Lot Exclusion List', res3);
+              // console.log('Lot Exclusion List', res3);
               this.supplyLotExclusionList = res3;
             },
             err => {
-              console.log(err);
+              // console.log(err);
             }
           );
         }
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
 
@@ -201,13 +201,13 @@ export class SupplyDemandComponent implements OnInit {
       // console.log(this.supplyDemandList[i].SupplyDemandDate);
       if (this.supplyDemandList[i].SupplyDemandDate === supplyDemandDate) {
         if (this.supplyDemandList[i].SupplyOrDemand === 'Supply') {
-          console.log('Supply: ' + this.supplyDemandList[i].SupplyQty);
-          console.log('Fab: ' + this.supplyDemandList[i].LotListFab);
-          console.log('ICTest: ' + this.supplyDemandList[i].LotListICTest);
-          console.log('DieFab: ' + this.supplyDemandList[i].LotListDieFab);
-          console.log('Storage: ' + this.supplyDemandList[i].LotListStorage);
+          // console.log('Supply: ' + this.supplyDemandList[i].SupplyQty);
+          // console.log('Fab: ' + this.supplyDemandList[i].LotListFab);
+          // console.log('ICTest: ' + this.supplyDemandList[i].LotListICTest);
+          // console.log('DieFab: ' + this.supplyDemandList[i].LotListDieFab);
+          // console.log('Storage: ' + this.supplyDemandList[i].LotListStorage);
         } else {
-          console.log('Demand ' + this.supplyDemandList[i].DemandQty);
+          // console.log('Demand ' + this.supplyDemandList[i].DemandQty);
         }
       }
     }
@@ -219,11 +219,11 @@ export class SupplyDemandComponent implements OnInit {
     this.apiDataAnalyticsService.insertLotExclusion(partData, this.authService.loggedInUser.id)
     .subscribe(
       res => {
-        console.log('Added to Lot Excluded List');
+        // console.log('Added to Lot Excluded List');
         this.onProjectClick(this.selectedProject);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -233,11 +233,11 @@ export class SupplyDemandComponent implements OnInit {
     this.apiDataAnalyticsService.deleteLotExclusion(partData, this.authService.loggedInUser.id)
     .subscribe(
       res => {
-        console.log('Removed from Lot Excluded List');
+        // console.log('Removed from Lot Excluded List');
         this.onProjectClick(this.selectedProject);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -247,10 +247,10 @@ export class SupplyDemandComponent implements OnInit {
     this.apiDataAnalyticsService.execUpdateSupplyDemand()
     .subscribe(
       res => {
-        console.log('Updated Suply Demand Tables');
+        // console.log('Updated Suply Demand Tables');
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }

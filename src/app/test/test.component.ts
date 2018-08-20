@@ -24,7 +24,7 @@ constructor (private apiDataEmailService: ApiDataEmailService) {
 
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
   }
@@ -36,7 +36,7 @@ constructor (private apiDataEmailService: ApiDataEmailService) {
 
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }

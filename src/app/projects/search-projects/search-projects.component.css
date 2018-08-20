@@ -1,0 +1,267 @@
+
+
+/* search bar */
+
+div.projects-filters-cont {
+  margin-bottom: 40px;
+}
+
+div.projects-filter-label {
+  display: inline-block;
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+div.projects-filter-dropdown {
+  display: inline-block;
+  width: 175px;
+  margin-right: 10px;
+}
+
+select.form-control.projects-filter-select {
+  font-size: 14px;
+  height: 35px;
+}
+
+div.projects-filter-string {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+input.projects-filter-input {
+  width: 225px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+i.projects-filter-icon-search, i.projects-filter-icon-close {
+  position: absolute;
+  top: 10px;
+  color: grey;
+}
+
+i.projects-filter-icon-search {
+  left: 10px;
+}
+
+i.projects-filter-icon-close {
+  right: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+div.projects-filter-select {
+  display: inline-block;
+  width: 225px;
+}
+
+div.projects-display-count {
+  /* display: inline-block; */
+  float: right;
+  font-weight: 500;
+  position: relative;
+  top: 5px;
+}
+
+/* search bar (end) */
+
+
+div.projects-cards-cont {
+  height: 70vh;  /* TO-DO: replace with javascipt */
+  overflow-y: auto;
+}
+
+div.row.row-custom.row-project-card {
+  border-bottom: 20px;
+}
+
+div.row.row-custom.row-project-card:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+div.project-card {
+  height: 125px;
+  width: 100%;
+  margin-right: 10px;  /* leaves a bit of space between the card and the vertical scrollbar */
+  border: 1px solid lightgrey;
+  background-color: white;
+  transition: box-shadow 0.2s;
+  overflow: hidden;
+}
+
+div.project-card:hover {
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+div.project-type-cont {
+  display: inline-block;
+  position: relative;
+  width: 150px;
+  height: 100%;
+  border-right: 1px solid lightgrey;
+  background-color: rgb(232, 232, 232);
+  vertical-align: top;  /* this is key, otherwise will push down the inline block to the right if it has top padding */
+  padding-top: 20px;
+}
+
+div.project-type-name {
+  margin: 0 auto;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+div.project-type-icon {
+  width: 50px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  font-size: 25px;
+  text-align: center;
+}
+
+div.project-details-cont {
+  display: inline-block;
+  padding-top: 20px;
+  padding-left: 25px;
+}
+
+div.project-name {
+  position: relative;
+  font-size: 18px;
+  font-weight: 500;
+  width: 500px;
+  color: rgb(50, 50, 50);
+  height: 1.4em;
+  line-height: 1.4em;
+  overflow: hidden;
+}
+
+div.project-name:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 1.4em;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(50%, rgba(255, 255, 255, 1)));
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+div.project-description {
+  position: relative;
+  margin-top: 10px;
+  width: 500px;
+  height: 2.8em;
+  line-height: 1.4em;
+  overflow: hidden;
+  text-align: left;
+}
+
+div.project-description:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 1.4em;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(50%, rgba(255, 255, 255, 1)));
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+div.project-card-right-cont {
+  /* display: inline-block; */
+  float: right;
+  height: 100%;
+}
+
+
+
+
+/* general css for project attributes sections (two right bordered sections) */
+
+div.project-attributes-table {
+  display: table;
+}
+
+div.project-attributes-row {
+  display: table-row;
+}
+
+div.project-attributes-cell {
+  display: table-cell;
+  padding-bottom: 5px;
+}
+
+div.icon-cell {
+  position: relative;
+  top: 2px;
+}
+
+
+/* project attributes section - status, priority, and department */
+
+div.project-attributes-cont {
+  display: inline-block;
+  padding: 20px;
+  border-left: 1px solid lightgrey;
+  height: 100%;
+}
+
+div.project-attributes-cell.attributes.icon-cell {
+  width: 30px;
+}
+
+div.project-attributes-cell.attributes.label-cell {
+  /* width: 100px; */
+  padding-right: 15px;
+}
+
+div.project-attributes-cell.attributes.value-cell {
+  width: 150px;
+  font-weight: 500;
+}
+
+@media (max-width: 1700px) {
+  div.project-attributes-cont {
+    display: none;
+  }
+}
+
+
+/* project record into section - created by and creation date */
+
+div.project-creation-cont {
+  padding: 20px;
+  border-left: 1px solid lightgrey;
+  height: 100%;
+  float: right;
+}
+
+div.project-attributes-cell.creation.icon-cell {
+  width: 30px;
+}
+
+div.project-attributes-cell.creation.label-cell {
+  /* width: 120px; */
+  padding-right: 15px;  
+  /* use padding instaed of fixed width for consistency; note this won't work for value cell 
+  because you will end up with different overall container sizes for each card*/
+}
+
+div.project-attributes-cell.creation.value-cell {
+  /* use a combination of min and max width here to allow overflow to work
+  the text will break to the next line, and will not push the container to the left */
+  max-width: 125px;
+  min-width: 125px;
+  font-weight: 500;
+  overflow: hidden;
+}

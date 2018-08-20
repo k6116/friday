@@ -61,7 +61,8 @@ input.form-control.form-control-custom[disabled], select.form-control.form-contr
   background-color: rgb(253, 253, 253);
 }
 
-input.form-control:focus {
+/* revert to bootstrap 3 focused control outline style */
+input.form-control:focus, select.form-control:focus, textarea.form-control:focus {
   /* bootstrap 3 blue shadow color: rgb(102, 175, 233); */
   border-color: rgb(163, 197, 255);
   outline: 0;

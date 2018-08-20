@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-// import { ApiDataService } from '../../_shared/services/api-data.service';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
@@ -19,7 +18,7 @@ import * as moment from 'moment';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css', '../../_shared/styles/common.css']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
 
   // view childs are set up for the user name and password inputs so the focus() method can be used
   // tied to #userNameVC and #passwordVC in the html
@@ -87,9 +86,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy() {
-  }
-
 
   getBackgroundImages() {
 
@@ -107,13 +103,14 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
           });
 
-          console.log(`number of background images: ${this.backgroundImages.length}`);
+          // console.log(`number of background images: ${this.backgroundImages.length}`);
 
           // set random background image
           this.setBackgroundImage();
         },
         err => {
-          console.log(err);
+          // console.log(err);
+          this.backgroundImage = this.cacheService.backgroundImage;
         }
       );
 
@@ -124,6 +121,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
     this.backgroundImage = this.backgroundImages[imageIndex];
     this.showLoginPage = true;
+    // save the last shown image in the cache service
+    this.cacheService.backgroundImage = this.backgroundImage;
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)
@@ -151,6 +150,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.onLoginClick();
   }
 
+
+
   onLoginClick() {
 
     // reset and hide the error message if any is already displayed
@@ -175,16 +176,19 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.showPendingLoginAnimation = true;
 
     // call the api data service to authenticate the user credentials
+    // console.log('before async authenticate');
     this.apiDataAuthService.authenticate(user)
       .subscribe(
         res => {
+
+          // console.log('within authenticate (response');
 
           // log the time it took to authenticate
           this.logAuthPerformance(t0);
 
           // TEMP CODE: to log the response
-          console.log('authentication was successfull:');
-          console.log(res);
+          // console.log('authentication was successfull:');
+          // console.log(res);
 
           // set or clear the username cookie depending on whether remember me is selected
           this.setCookie();
@@ -192,13 +196,13 @@ export class LoginComponent implements OnInit, OnDestroy {
           // store the logged in user in the auth service
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
           // this.authService.loggedInUser = res.jarvisUser;
-          console.log('logged in user:');
-          console.log(this.authService.loggedInUser);
+          // console.log('logged in user:');
+          // console.log(this.authService.loggedInUser);
 
           // store the jwt token in the cache service
           this.cacheService.token = res.token;
-          console.log('token saved in cache service (this.token):');
-          console.log(this.cacheService.token);
+          // console.log('token saved in cache service (this.token):');
+          // console.log(this.cacheService.token);
 
           // store the jwt token in local storage
           localStorage.setItem('jarvisToken', res.token.signedToken);
@@ -291,7 +295,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // TEMP CODE to log the total time it took to authenticate
   logAuthPerformance(t0: number) {
     const t1 = performance.now();
-    console.log(`authentication took ${t1 - t0} milliseconds`);
+    // console.log(`authentication took ${t1 - t0} milliseconds`);
   }
 
   // display authentication error or success message
@@ -341,8 +345,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // when the slide toggle is changed, update the rememberMe property (boolean)
   onRememberMeChange(event) {
-    console.log('on remember me change event triggered');
-    console.log(event.target.checked);
+    // console.log('on remember me change event triggered');
+    // console.log(event.target.checked);
     this.rememberMe = event.target.checked;
   }
 

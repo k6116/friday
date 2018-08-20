@@ -59,7 +59,7 @@ export class TopNavComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(`top nav component has been initialized`);
+    // console.log(`top nav component has been initialized`);
 
     this.loggedInUser = this.authService.loggedInUser;
 

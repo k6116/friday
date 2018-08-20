@@ -115,8 +115,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     .subscribe(
       res => {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');
-        console.log('nested org object retrieved from api data service in employee reports component');
-        console.log(nestedOrgData);
+        // console.log('nested org object retrieved from api data service in employee reports component');
+        // console.log(nestedOrgData);
         this.nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
         this.cacheService.$nestedOrgData = this.nestedOrgData;
@@ -177,8 +177,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
   onclickedEmployee(employee) {
     this.displayOrgDropDown = false;
     this.displayedEmployee = employee;
-    console.log('displayed employee');
-    console.log(this.displayedEmployee);
+    // console.log('displayed employee');
+    // console.log(this.displayedEmployee);
 
     this.manager = this.getManager(this.nestedOrgData, employee);
     // console.log('manager:');
@@ -208,7 +208,7 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
     // console.log(manager);
 
     setTimeout(() => {
-      console.log('Employee ' + this.displayedEmployee.employeeID);
+      // console.log('Employee ' + this.displayedEmployee.employeeID);
       this.getQuarterlyEmployeeFTETotals();
     }, 0);
 
@@ -486,11 +486,11 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.quarterlyEmployeeFTETotals = res;
-          console.log('Project FTE List: ',  this.quarterlyEmployeeFTETotals);
+          // console.log('Project FTE List: ',  this.quarterlyEmployeeFTETotals);
           this.employeeProjectChart();
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
   }

@@ -63,12 +63,12 @@ export class JobTitlesComponent implements OnInit {
     this.apiDataJobTitleService.getJobTitleList()
       .subscribe(
         res => {
-          console.log('JobTitleList:', res);
+          // console.log('JobTitleList:', res);
           this.jobTitleList = res;
           this.numJobTitlesToDisplay = this.jobTitleList.length;
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
   }
@@ -77,12 +77,12 @@ export class JobTitlesComponent implements OnInit {
     this.apiDataJobTitleService.getJobSubTitleList()
     .subscribe(
       res => {
-        console.log('getJobSubTitleList:', res);
+        // console.log('getJobSubTitleList:', res);
         this.jobSubTitleList = res;
         this.numJobSubTitlesToDisplay = this.jobSubTitleList.length;
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -126,11 +126,11 @@ export class JobTitlesComponent implements OnInit {
   }
 
   onCheckboxChange(id: number) {
-    console.log('Changed ID: ', id);
+    // console.log('Changed ID: ', id);
     for (let k = 0; k < this.jobSubTitleList.length; k++) {
       if (this.jobSubTitleList[k].id === id) {
         this.jobSubTitleList[k].checked = !this.jobSubTitleList[k].checked;
-        console.log('Changed Checkbox Status:', this.jobSubTitleList[k].checked);
+        // console.log('Changed Checkbox Status:', this.jobSubTitleList[k].checked);
         this.updateJobTitleList(this.jobSubTitleList[k].checked, id);
         return;
       }
@@ -139,16 +139,16 @@ export class JobTitlesComponent implements OnInit {
 
   updateJobTitleList(updateTo: boolean, idToUpdate: number) {
     const mapData = [{jobTitleID: this.jobTitleID, jobSubTitleID: idToUpdate}];
-    console.log('MAPDATA:', mapData);
+    // console.log('MAPDATA:', mapData);
     if (updateTo === true) {
       // Add new mapping
       this.apiDataJobTitleService.insertJobTitleMap(mapData)
       .subscribe(
         res => {
-          console.log(res);
+          // console.log(res);
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
     } else if (updateTo === false) {
@@ -156,10 +156,10 @@ export class JobTitlesComponent implements OnInit {
       this.apiDataJobTitleService.deletejobTitleMap(mapData)
       .subscribe(
         res => {
-          console.log(res);
+          // console.log(res);
         },
         err => {
-          console.log(err);
+         // console.log(err);
         }
       );
     }
@@ -170,10 +170,10 @@ export class JobTitlesComponent implements OnInit {
     this.apiDataJobTitleService.deleteJobTitle(jobTitleData)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
     this.getJobTitleList();
@@ -190,10 +190,10 @@ export class JobTitlesComponent implements OnInit {
     this.apiDataJobTitleService.deleteJobSubTitle(jobSubTitleData)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
     this.getJobSubTitleList();
@@ -205,10 +205,10 @@ export class JobTitlesComponent implements OnInit {
     this.apiDataJobTitleService.insertJobTitle(jobTitleData)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
     this.getJobTitleList();
@@ -217,14 +217,14 @@ export class JobTitlesComponent implements OnInit {
 
   onCreateJobSubTitleClick(jobSubTitleName: string, description: string) {
     const jobSubTitleData = {jobSubTitleName: jobSubTitleName, description: description};
-    console.log('jobSubTitle DATA:', jobSubTitleData);
+    // console.log('jobSubTitle DATA:', jobSubTitleData);
     this.apiDataJobTitleService.insertJobSubTitle(jobSubTitleData)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
     this.getJobSubTitleList();
@@ -246,15 +246,15 @@ export class JobTitlesComponent implements OnInit {
     const jobTitleName = this.formTitles.controls.name.value;
     const description = this.formTitles.controls.description.value;
     const jobTitleData = {id: id, jobTitleName: jobTitleName, description: description};
-    console.log('Form DATA:', jobTitleData);
+    // console.log('Form DATA:', jobTitleData);
 
     this.apiDataJobTitleService.updateJobTitle(jobTitleData)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
     this.getJobTitleList();
@@ -278,7 +278,7 @@ export class JobTitlesComponent implements OnInit {
         }
       }
     }
-    console.log('This jobSubTitle is mapped to:', mappedTo);
+    // console.log('This jobSubTitle is mapped to:', mappedTo);
   }
 
   // EDIT JobSubTitle
@@ -296,15 +296,15 @@ export class JobTitlesComponent implements OnInit {
     const jobSubTitleName = this.formTitles.controls.name.value;
     const description = this.formTitles.controls.description.value;
     const jobSubTitleData = {id: id, jobSubTitleName: jobSubTitleName, description: description};
-    console.log('jobSubTitle DATA:', jobSubTitleData);
+    // console.log('jobSubTitle DATA:', jobSubTitleData);
 
     this.apiDataJobTitleService.updateJobSubTitle(jobSubTitleData)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
     this.getJobSubTitleList();

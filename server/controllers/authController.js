@@ -31,7 +31,15 @@ function authenticate(req, res) {
     bindCredentials: user.password,
     searchBase: 'cn=users,dc=ad,dc=keysight,dc=com',
     searchFilter: '(cn={{username}})'
+    // reconnect: true
+    // queueDisable: false,
+    // tlsOptions: {
+    //   ca: [
+    //     fs.readFileSync(path.join(__dirname, '../../etc/ssl/Keysight_Root.crt'))
+    //   ]
+    // }
   };
+
   
   // create an instance of the ldap auth fork 
   const auth = new ldapAuth(options);
