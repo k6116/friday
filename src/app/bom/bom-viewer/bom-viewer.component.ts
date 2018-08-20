@@ -32,6 +32,7 @@ export class BomViewerComponent implements OnInit {
     this.billListSub = this.apiDataBomService.index().subscribe( res => {
       this.billList = res;
     });
+
   }
 
   onBomSelect(selected: number) {
@@ -39,6 +40,8 @@ export class BomViewerComponent implements OnInit {
 
     // get the selected BOM as flat array
     const bomSubscription = this.apiDataBomService.showSingleBom(selected).subscribe( res => {
+
+
       this.bill = res;
       bomSubscription.unsubscribe();
       console.log(this.bill);
@@ -48,18 +51,20 @@ export class BomViewerComponent implements OnInit {
           container: '#tree-simple',
           levelSeparation: 100,
           siblingSeparation: 20,
-          padding: 100,
+          // padding: 100,
           connectors: {type: 'curve'},
           rootOrientation: 'NORTH',
-          nodeAlign: 'BOTTOM',
+          nodeAlign: 'TOP',
           node: {collapsable: true}
         }
       };
       // initialize bomtree
       this.bomChartOptions.nodeStructure = {
-        text: {name: {val: this.bill[0].ParentName}},
-        id: this.bill[0].ParentID,
-        type: this.bill[0].ParentEntity
+        text: {
+          name: {val: this.bill[0].ParentName},
+          title: `${this.bill[0].ParentEntity} - ${this.bill[0].ParentType}`
+        },
+        id: this.bill[0].ParentID
       };
 
       // recursively parse the BOM structure
@@ -67,10 +72,18 @@ export class BomViewerComponent implements OnInit {
 
       // add the recursive output as 'children' property of the tree nodeStructure
       this.bomChartOptions.nodeStructure.children = jsonBom.nextLvData;
+
+      // if the parent has more than 9 children, initailize it collapsed
+      if (this.bomChartOptions.nodeStructure.children.length > 9) {
+        this.bomChartOptions.nodeStructure.collapsed = true;
+      }
+
       if (this.bomChart) {
         this.bomChart.destroy();
       }
       this.bomChart = new Treant(this.bomChartOptions, this.onTreeLoadComplete, $);
+      console.log('finalized bom structure');
+      console.log(this.bomChartOptions.nodeStructure);
     });
   }
 
@@ -86,11 +99,19 @@ export class BomViewerComponent implements OnInit {
     while (i < this.bill.length) {
       if (this.bill[i].Level === lv) {
         // traverse down and collect all the siblings in this level
-        children.push({
-          text: {name: this.bill[i].ChildName},
-          id: this.bill[i].ChildID,
-          type: this.bill[i].ChildEntity
-        });
+        let newNode: any;
+        newNode = {
+          text: {
+            name: this.bill[i].ChildName,
+            title: `${this.bill[i].ChildDepartment} ${this.bill[i].ChildEntity} - ${this.bill[i].ChildType}`,
+            desc: `Qty: ${this.bill[i].QtyPer}`
+          },
+          id: this.bill[i].ChildID
+        };
+        if (this.bill[i].ChildEntity === 'Part') {
+          newNode.HTMLclass = this.bill[i].ChildDepartment;
+        }
+        children.push(newNode);
         i++;
       } else if (this.bill[i].Level > lv) {
         // if the next record is a child, recurse
@@ -98,7 +119,8 @@ export class BomViewerComponent implements OnInit {
         const output = this.bomTraverse(i, lv + 1);
         const lastIndex = children.length - 1;
         children[lastIndex].children = output.nextLvData;
-        if (output.nextLvData.length > 10) {
+        // if there are 10+ children, initialize the node as collapsed
+        if (output.nextLvData.length > 9) {
           children[lastIndex].collapsed = true;
         }
         i = Number(output.nextRow);

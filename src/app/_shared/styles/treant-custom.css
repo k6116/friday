@@ -17,11 +17,9 @@
   justify-content: center;
   align-content: center;
   flex-direction: column;
-  /* height: 30px; */
-  min-width: 90px;
-  /* line-height: 30px; */
-  /* vertical-align: middle; */
-  text-align: center;
+  min-width: 150px;
+  padding: 10px;
+  text-align: left;
   background-color: #FFFFFF;
   border: 1px solid;
   border-radius: 4px;
@@ -35,4 +33,42 @@
 .Treant .node p.node-name {
   margin-top: unset;
   margin-bottom: unset;
+  font-weight: bold;
+}
+
+.Treant .node p.node-title {
+  margin-top: unset;
+  margin-bottom: unset;
+  font-style: italic;
+}
+
+.Treant .node p.node-desc {
+  margin-top: unset;
+  margin-bottom: unset;
+}
+
+
+/* css classes for part-department coloration */
+.node.HFTC {
+  background-color: #058DC7;
+}
+
+.node.PMTC {
+  background-color: #50B432;
+}
+
+.node.PICO {
+  background-color: #ED561B;
+}
+
+.node.ThinFilm {
+  background-color: #DDDF00;
+}
+
+.node.EXT {
+  background-color: #24CBE5;
+}
+
+.node.NPSS {
+  background-color: #64E572;
 }
