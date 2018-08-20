@@ -13,6 +13,7 @@ body.body-custom {
   font-size: 14px;
 }
 
+/* revert to bootstrap 3 font sizes */
 button.btn {
   font-size: 14px;
 }

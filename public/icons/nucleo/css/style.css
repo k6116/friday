@@ -306,3 +306,15 @@ Generated using nucleoapp.com
   content: "\ea4a";
 }
 
+.nc-dots-06::before {
+  content: "\ea4b";
+}
+
+.nc-pulse-phone::before {
+  content: "\ea4c";
+}
+
+.nc-keyboard::before {
+  content: "\ea4d";
+}
+

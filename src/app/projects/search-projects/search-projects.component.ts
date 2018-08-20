@@ -179,13 +179,15 @@ export class SearchProjectsComponent implements OnInit {
     this.dropDownData.forEach(dropDown => {
       // take a copy of the first object
       const firstObject = $.extend(true, {}, dropDown[0]);
+      console.log(firstObject);
       // replace the properties with zeros or empty strings
       for (const property in firstObject) {
         if (firstObject.hasOwnProperty(property)) {
+          console.log(property);
           if (typeof firstObject[property] === 'number') {
             firstObject[property] = 0;
           } else if (typeof firstObject[property] === 'string') {
-            firstObject[property] = '';
+            firstObject[property] = '(Select Option)';
           }
         }
       }
@@ -233,7 +235,7 @@ export class SearchProjectsComponent implements OnInit {
 
 
   onFilterSelectChange(dropDownValue) {
-    if (dropDownValue) {
+    if (dropDownValue && dropDownValue !== '(Select Option)') {
       // set the filter string to the selected dropdown value
       this.filterString = dropDownValue;
       // call filter string change to update the record count string
@@ -378,6 +380,7 @@ export class SearchProjectsComponent implements OnInit {
     const classes = {
       'nc-icon': true,
       'nc-ram': projectTypeName === 'NCI',
+      'nc-keyboard': projectTypeName === 'NMI',
       'nc-keyboard-wireless': projectTypeName === 'NPI',
       'nc-socket-europe-1': projectTypeName === 'NPPI',
       'nc-lab': projectTypeName === 'NTI',
