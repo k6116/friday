@@ -74,8 +74,8 @@ const logger = winston.createLogger({
   ]
 });
 
-logger.log('info', 'Hello simple log!');
-logger.info('Hello log with metas',{color: 'blue' });
+// logger.log('info', 'Hello simple log!');
+// logger.info('Hello log with metas',{color: 'blue' });
 
 
 // middleware function to send any api requests to the server/routes/api.js file
