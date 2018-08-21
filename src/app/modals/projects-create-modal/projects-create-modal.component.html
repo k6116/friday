@@ -18,14 +18,6 @@
                 <i *ngIf="!form.valid" class="fa fa-times" style="padding: 10px 5px 10px 15px; color: red" aria-hidden="true"></i>
               </div>
             </div>
-            <!-- <div class="form-group">
-              <label for="project-type">*Project Type:</label>
-              <select formControlName="projectTypeID" class="form-control" (change)="selectedProjectType($event.target)">
-                <option *ngFor="let projectType of projectTypesList" [value]="projectType.id">
-                  {{ projectType.projectTypeName }}
-                </option>
-              </select>
-            </div> -->
             <div class="form-group">
               <label for="description-text" class="col-form-label">Description:</label>
               <textarea formControlName="projectDescription" class="form-control" id="description-text"></textarea>
@@ -42,7 +34,6 @@
               <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
           </button>
           <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
-          <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="testButton()">test</button>
         </div>
       </div>
     </div>

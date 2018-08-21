@@ -62,7 +62,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   numProjectsToDisplay: number;
   userID: any;
   userEmail: string;
-  userPLMData: any;
   publicProjectTypes: any;
   projectPermissionList: any;
   projectPermissionTeamList: any;
@@ -115,22 +114,20 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.disabledRequestBtn = false;
 
     // Using promises to ensure all permissions lists are retrived before displaying the project cards
-    this.getUserPLMData(this.userEmail).then(res1 => {
-      this.getProjectPermissionTeamList().then(res2 => {
-        this.getProjectPermissionList().then(res3 => {
+    this.getProjectPermissionTeamList().then(res1 => {
+      this.getProjectPermissionList().then(res2 => {
 
-          this.resizeProjectCardsContainer();
+        this.resizeProjectCardsContainer();
 
-          this.outerDivState = 'out';
-          this.innerDivState = 'out';
-          setTimeout(() => {
-            this.outerDivState = 'in';
-          }, 0);
-          setTimeout(() => {
-            this.innerDivState = 'in';
-          }, 0);
+        this.outerDivState = 'out';
+        this.innerDivState = 'out';
+        setTimeout(() => {
+          this.outerDivState = 'in';
+        }, 0);
+        setTimeout(() => {
+          this.innerDivState = 'in';
+        }, 0);
 
-        });
       });
     });
 
@@ -160,7 +157,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     // for checkbox filter
     this.filterProjects = this.projects;
-    this.managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+    this.managerEmailAddress = this.authService.loggedInUser.managerEmailAddress;
 
     // initialize project filters
     this.setFilterItems();
@@ -798,23 +795,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
-  getUserPLMData(userEmailAddress: string) {
-    return new Promise((p_res, p_err) => {
-      this.apiDataEmployeeService.getUserPLMData(userEmailAddress)
-      .subscribe(
-        res => {
-          // console.log('User PLM Data Retrieved');
-          this.cacheService.userPLMData = res;
-          p_res();
-        },
-        err => {
-          // console.log(err);
-          p_err();
-        }
-      );
-    });
-  }
-
   getPublicProjectTypes() {
     this.apiDataPermissionService.getPublicProjectTypes(this.userID)
     .subscribe(
@@ -830,8 +810,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   getProjectPermissionTeamList() {
     return new Promise((p_res, p_err) => {
-      const managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
-      this.apiDataPermissionService.getProjectPermissionTeamList(this.userID, this.userEmail, managerEmailAddress)
+      this.apiDataPermissionService.getProjectPermissionTeamList(this.userID, this.userEmail, this.managerEmailAddress)
       .subscribe(
         res => {
           this.projectPermissionTeamList = Object.keys(res).map(i => res[i].id);

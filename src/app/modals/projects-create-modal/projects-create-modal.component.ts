@@ -20,9 +20,9 @@ export class ProjectsCreateModalComponent implements OnInit {
   userID: any;
   userEmail: string;
   projectTypesList: any;
-  userPLMData: any;
   createdProject: any;
   projectNameRegex: any;
+  managerEmailAddress: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -41,10 +41,8 @@ export class ProjectsCreateModalComponent implements OnInit {
      // get the user id
      this.userID = this.authService.loggedInUser.id;
      this.userEmail = this.authService.loggedInUser.email;
+     this.managerEmailAddress = this.authService.loggedInUser.managerEmailAddress;
 
-     if (!this.cacheService.userPLMData) {
-      this.getUserPLMData(this.userEmail);
-     }
   }
 
   resetForm() {
@@ -91,7 +89,7 @@ export class ProjectsCreateModalComponent implements OnInit {
       }
     }
 
-    project.projectOrgManager = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+    project.projectOrgManager = this.managerEmailAddress;
 
     this.apiDataProjectService.createProject(project, this.userID)
     .subscribe(
@@ -107,84 +105,5 @@ export class ProjectsCreateModalComponent implements OnInit {
     );
 
   }
-
-  getUserPLMData(userEmailAddress: string) {
-    this.apiDataEmployeeService.getUserPLMData(userEmailAddress)
-    .subscribe(
-      res => {
-        // console.log('User PLM Data Retrieved');
-        this.cacheService.userPLMData = res;
-      },
-      err => {
-        // console.log(err);
-      }
-    );
-  }
-
-  testButton() {
-    console.log('Form', this.form);
-    const today = new Date();
-    const scheduleData = {scheduleID: 320, projectID: 1112, notes: 'aweiufhalwieuhf'};
-        // [{
-    //   id: null,
-    //   currentRevision: null,
-    //   needByDate: null,
-    //   neededQuantity: null,
-    //   buildStatusID: null,
-    //   plcDateEstimate: null,
-    //   plcDateCommit: null,
-    //   plcDate: null,
-    //   plcStatusID: null,
-    //   notes: null,
-    // },
-    const scheduleDataBulk = [{
-      scheduleID: 320,
-      currentRevision: 1,
-      plcDate: '2019-11-17',
-      plcStatusID: 4,
-      notes: 'aweiufhalwieuhf'
-    },
-    {
-      scheduleID: 320,
-      currentRevision: 1,
-      plcDate: '2019-11-17',
-      plcStatusID: 5,
-      notes: 'aweiufhalwieuhf'
-    },
-    {
-      scheduleID: 320,
-      currentRevision: 1,
-      plcDate: '2019-11-17',
-      plcStatusID: 6,
-      notes: 'aweiufhalwieuhf'
-    }];
-    this.apiDataSchedulesService.destroySchedule(scheduleData, 1)
-    .subscribe(
-      res => {
-        console.log('Schedule inserted');
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-  // formValidation() {
-  //   'use strict';
-  //   window.addEventListener('load', function() {
-  //     // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  //     const forms = document.getElementsByClassName('needs-validation');
-
-  //     // Loop over them and prevent submission
-  //     const validation = Array.prototype.filter.call(forms, function(form) {
-  //       form.addEventListener('submit', function(event) {
-  //         if (form.checkValidity() === false) {
-  //           event.preventDefault();
-  //           event.stopPropagation();
-  //         }
-  //         form.classList.add('was-validated');
-  //       }, false);
-  //     });
-  //   }, false);
-  // }
 
 }
