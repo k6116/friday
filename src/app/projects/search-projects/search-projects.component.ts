@@ -117,6 +117,8 @@ export class SearchProjectsComponent implements OnInit {
           // console.log(res);
           // store the projects
           this.projects = res[0];
+          console.log('projects list:');
+          console.log(this.projects);
           // store the dropdown data
           this.dropDownData = res.slice(1);
           // add an empty object to each drop down list, for the default first selection
@@ -179,11 +181,9 @@ export class SearchProjectsComponent implements OnInit {
     this.dropDownData.forEach(dropDown => {
       // take a copy of the first object
       const firstObject = $.extend(true, {}, dropDown[0]);
-      console.log(firstObject);
       // replace the properties with zeros or empty strings
       for (const property in firstObject) {
         if (firstObject.hasOwnProperty(property)) {
-          console.log(property);
           if (typeof firstObject[property] === 'number') {
             firstObject[property] = 0;
           } else if (typeof firstObject[property] === 'string') {
