@@ -88,5 +88,12 @@ export class ApiDataSchedulesService {
       .map((response: Response) => response.json());
   }
 
+  updateScheduleDetailBulk(scheduleData: any, userID: number, scheduleID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/updateScheduleDetailBulk/${userID}/${scheduleID}`, JSON.stringify(scheduleData), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
 
 }

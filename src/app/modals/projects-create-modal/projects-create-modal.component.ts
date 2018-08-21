@@ -124,7 +124,7 @@ export class ProjectsCreateModalComponent implements OnInit {
   testButton() {
     console.log('Form', this.form);
     const today = new Date();
-    const scheduleData = {projectID: 1112, notes: 'aweiufhalwieuhf'};
+    const scheduleData = {scheduleID: 320, projectID: 1112, notes: 'aweiufhalwieuhf'};
         // [{
     //   id: null,
     //   currentRevision: null,
@@ -135,34 +135,33 @@ export class ProjectsCreateModalComponent implements OnInit {
     //   plcDateCommit: null,
     //   plcDate: null,
     //   plcStatusID: null,
-    //   notes: null, 
+    //   notes: null,
     // },
     const scheduleDataBulk = [{
       scheduleID: 320,
       currentRevision: 1,
-      plcDate: '2018-11-17',
+      plcDate: '2019-11-17',
       plcStatusID: 4,
       notes: 'aweiufhalwieuhf'
     },
     {
       scheduleID: 320,
       currentRevision: 1,
-      plcDate: '2013-11-17',
+      plcDate: '2019-11-17',
       plcStatusID: 5,
       notes: 'aweiufhalwieuhf'
     },
     {
       scheduleID: 320,
       currentRevision: 1,
-      plcDate: '2012-11-17',
+      plcDate: '2019-11-17',
       plcStatusID: 6,
       notes: 'aweiufhalwieuhf'
     }];
-    this.apiDataSchedulesService.insertScheduleDetailBulk(scheduleDataBulk, 1)
+    this.apiDataSchedulesService.destroySchedule(scheduleData, 1)
     .subscribe(
       res => {
-        console.log('User PLM Data Retrieved');
-        this.cacheService.userPLMData = res;
+        console.log('Schedule inserted');
       },
       err => {
         console.log(err);

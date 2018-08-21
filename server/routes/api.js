@@ -106,6 +106,7 @@ router.post('/insertSchedule/:userID', controllers.schedules.insertSchedule);
 router.post('/updateSchedule/:userID', controllers.schedules.updateSchedule);
 router.post('/destroySchedule/:userID', controllers.schedules.destroySchedule);
 router.post('/insertScheduleDetailBulk/:userID', controllers.schedules.insertScheduleDetailBulk);
+router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedules.updateScheduleDetailBulk);
 
 
 // middleware to return an error if the token cannot be verified

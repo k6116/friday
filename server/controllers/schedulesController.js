@@ -358,7 +358,7 @@ function destroyScheduleSP(req, res) {
 	// get the schedule object from the request body
 	// schedule object should be in the format
 	// {
-  //  id: null, <-- this is the scheduleID
+  //  scheduleID: null, <-- this is the scheduleID
 	// 	currentRevision: null,
 	// 	notes: null
 	// }
@@ -378,7 +378,7 @@ function destroyScheduleSP(req, res) {
         updatedAt: today
 		  },
 		  {
-        where: {id: scheduleData.id},
+        where: {id: scheduleData.scheduleID},
         transaction: t
 		  }
 		)
@@ -391,7 +391,7 @@ function destroyScheduleSP(req, res) {
 	  }).then(() => {
   
 		res.json({
-		  message: `The scheduleID '${scheduleData.id}' has been updated successfully`
+		  message: `The scheduleID '${scheduleData.scheduleID}' has been updated successfully`
 		})
   
 	  }).catch(error => {
@@ -408,34 +408,41 @@ function destroyScheduleSP(req, res) {
 
   function destroySchedule(req, res) {
 
+		// If foreign keys exists in the SchedulesDetail table, delete those first
+
     // get the schedule object from the request body
     // schedule object should be in the format
     // {
-    //  id: null, <-- this is the scheduleID
+    //  scheduleID: null
     // }
 
     const scheduleData = req.body;
     const userID = req.params.userID;
 
     return sequelize.transaction((t) => {
-  
-      return models.Schedules
-        .destroy(
-          {
-            where: {id: scheduleData.id},
-            transaction: t
-          }
-        )
-        .then(destroySchedule => {
-  
-          console.log(`ScheduleID ${scheduleData.id} destroyed`)
-  
-        })
+
+			return models.SchedulesDetail
+				.destroy({
+					where: {scheduleID: scheduleData.scheduleID},
+					transaction: t
+				}).then(destroySchedulesDetail => {
+
+					return models.Schedules
+						.destroy({
+							where: {id: scheduleData.scheduleID},
+							transaction: t
+						}).then(destroySchedule => {
+			
+							console.log(`ScheduleID ${scheduleData.scheduleID} destroyed`)
+			
+						})
+
+				})
   
       }).then(() => {
   
         res.json({
-          message: `The scheduleID ${scheduleData.id} has been deleted successfully`,
+          message: `The scheduleID ${scheduleData.scheduleID} has been deleted successfully`,
         })
   
       }).catch(error => {
@@ -457,7 +464,7 @@ function destroyScheduleSP(req, res) {
     // - OR a PLC type schedule which includes the fields plcDateEstimate, plcDateCommit, plcDate, plcStatusID
     // Should not mix build and plc type schedules
     //
-    // bulk schedule object should be in the format. Remember, this accepts mulitples objects in a single array for multiple inserts:
+    // bulk schedule object should be in the format. Remember, this accepts mulitple objects in a single array for multiple inserts:
     // [{
     //   id: null,
     //   currentRevision: null,
@@ -502,121 +509,96 @@ function destroyScheduleSP(req, res) {
     
       }).then(() => {
     
-      res.json({
-        message: `The bulk schedule insert has been made successfully`,
-      })
+				res.json({
+					message: `The bulk schedule insert has been made successfully`,
+				})
     
       }).catch(error => {
     
-      console.log(error);
-      res.status(500).json({
-        title: 'update failed',
-        error: {message: error}
-      });
-    
+				console.log(error);
+				res.status(500).json({
+					title: 'update failed',
+					error: {message: error}
+				});
+			
       })
     
     }
   
-    // function updateSchedule(req, res) {
+  function updateScheduleDetailBulk(req, res) {
   
-    // // This function should only be used to update the "notes". CurrentRevision should be incremented automatically
+    // bulk update schedule object should be in the format. Remember, this accepts mulitple objects in a single array for multiple inserts:
+    // [{
+    //   scheduleID: null,
+    //   currentRevision: null,
+    //   needByDate: null,
+    //   neededQuantity: null,
+    //   buildStatusID: null,
+    //   plcDateEstimate: null,
+    //   plcDateCommit: null,
+    //   plcDate: null, <-- Date format can be 'YYYY-MM-DD'
+    //   plcStatusID: null,
+    //   notes: null, 
+    // }, 
+    // {...}, {...}]
   
-    // // get the schedule object from the request body
-    // // schedule object should be in the format
-    // // {
-    // //  id: null, <-- this is the scheduleID
-    // // 	currentRevision: null,
-    // // 	notes: null
-    // // }
-  
-    // const scheduleData = req.body;
-    // const userID = req.params.userID;
-    // const today = new Date();
-    
-    // return sequelize.transaction((t) => {
-    
-    //   return models.Schedules
-    //   .update(
-    //     {
-    //       currentRevision: scheduleData.currentRevision + 1,
-    //       notes: scheduleData.notes, 
-    //       updatedBy: userID,
-    //       updatedAt: today
-    //     },
-    //     {
-    //       where: {id: scheduleData.id},
-    //       transaction: t
-    //     }
-    //   )
-    //   .then(updateSchedules => {
-    
-    //     console.log('Updated Schedules')
-    
-    //   })
-    
-    //   }).then(() => {
-    
-    //   res.json({
-    //     message: `The scheduleID '${scheduleData.id}' has been updated successfully`
-    //   })
-    
-    //   }).catch(error => {
-    
-    //   console.log(error);
-    //   res.status(500).json({
-    //     title: 'update failed',
-    //     error: {message: error}
-    //   });
-    
-    //   })
-    
-    // }
-  
-    // function destroySchedule(req, res) {
-  
-    //   // get the schedule object from the request body
-    //   // schedule object should be in the format
-    //   // {
-    //   //  id: null, <-- this is the scheduleID
-    //   // }
-  
-    //   const scheduleData = req.body;
-    //   const userID = req.params.userID;
-  
-    //   return sequelize.transaction((t) => {
-    
-    //     return models.Schedules
-    //       .destroy(
-    //         {
-    //           where: {id: scheduleData.id},
-    //           transaction: t
-    //         }
-    //       )
-    //       .then(destroySchedule => {
-    
-    //         console.log(`ScheduleID ${scheduleData.id} destroyed`)
-    
-    //       })
-    
-    //     }).then(() => {
-    
-    //       res.json({
-    //         message: `The scheduleID ${scheduleData.id} has been deleted successfully`,
-    //       })
-    
-    //     }).catch(error => {
-    
-    //       console.log(error);
-    //       res.status(500).json({
-    //         title: 'update failed',
-    //         error: {message: error}
-    //       });
-    
-    //     })
-    
-    // }
+		const scheduleData = req.body;
+		const scheduleID = req.params.scheduleID
+		const userID = req.params.userID;
+		const today = new Date();
 
+		// append a keys to format the created and updated fields
+		scheduleData.forEach(schedule => {
+			schedule.createdBy = userID
+      schedule.createdAt = today,
+      schedule.updatedBy = userID
+      schedule.updatedAt = today
+			});
+
+			console.log('Schedule Data', scheduleData)
+
+		return sequelize.transaction((t) => {
+
+			// delete all scheduleID and insert new ones as replacements
+			return models.SchedulesDetail
+				.destroy({
+					where: {
+						scheduleID: scheduleID
+					},
+					transaction: t
+				}).then( deletedRows => {
+					
+				return models.SchedulesDetail
+					.bulkCreate(
+						scheduleData,
+						{
+							transaction: t
+						}).then(updateScheduleDetailBulk => {
+
+							console.log(`bulk update for scheduleID ${scheduleID}`);
+				
+						})
+			
+				})
+				
+		}).then(() => {
+
+			res.json({
+				message: 'Your updated schedules have been successfully saved!'
+			})
+
+		}).catch(error => {
+
+			// console.log(error);
+			res.status(500).json({
+				message: 'update failed',
+				error: error
+			});
+
+		})
+    
+  }
+  
 module.exports = {
 	indexProjectSchedule: indexProjectSchedule,
 	indexPartSchedule: indexPartSchedule,
@@ -626,5 +608,6 @@ module.exports = {
   insertSchedule: insertSchedule,
   updateSchedule: updateSchedule,
   destroySchedule: destroySchedule,
-  insertScheduleDetailBulk: insertScheduleDetailBulk
+	insertScheduleDetailBulk: insertScheduleDetailBulk,
+	updateScheduleDetailBulk: updateScheduleDetailBulk
 }
