@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
@@ -13,7 +13,7 @@ declare var $: any;
   styleUrls: ['./search-projects.component.css', '../../_shared/styles/common.css'],
   providers: [FilterPipe]
 })
-export class SearchProjectsComponent implements OnInit {
+export class SearchProjectsComponent implements OnInit, AfterViewInit {
 
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
   @ViewChild('filterDropDownVC') filterDropDownVC: ElementRef;
@@ -33,7 +33,13 @@ export class SearchProjectsComponent implements OnInit {
   dropDownData: any;
   numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
   showSpinner: boolean;
+  cardFixedWidth: number; // total width of fixed width areas of the card (type, attributes)
   subscription1: Subscription;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.resizeProjectCardsNameCont();
+  }
 
 
   constructor(
@@ -135,6 +141,10 @@ export class SearchProjectsComponent implements OnInit {
           this.showPage = true;
           // show the footer
           this.toolsService.showFooter();
+          setTimeout(() => {
+            this.calcFixedWidthArea();
+            this.resizeProjectCardsNameCont();
+          }, 0);
         },
         err => {
           // hide the spinner
@@ -150,6 +160,48 @@ export class SearchProjectsComponent implements OnInit {
       this.refreshProjectCards();
     });
 
+  }
+
+
+  ngAfterViewInit() {
+    // setTimeout(() => {
+    //   this.calcFixedWidthArea();
+    // }, 1000);
+  }
+
+
+  calcFixedWidthArea() {
+    // note: use outerWidth to get the width including the borders
+    // note: use eq(0) to return the first card; since all the cards will be the same
+    const projectTypeContWidth = $('div.project-type-cont').eq(0).outerWidth();
+    const projectAttrsContWidth = $('div.project-card-right-cont').eq(0).outerWidth();
+    // store the total fixed width (for performance, these will not change)
+    this.cardFixedWidth = projectTypeContWidth + projectAttrsContWidth;
+    console.log('fixed width area:');
+    console.log(this.cardFixedWidth);
+  }
+
+
+  resizeProjectCardsNameCont() {
+    const t0 = performance.now();
+    // get the total card width
+    const projectCardWidth = $('div.project-card').eq(0).outerWidth();
+    // calculate the space available for the project name and description
+    const availableWidth = projectCardWidth - this.cardFixedWidth - (40 * 2);
+    console.log('availalbe width for name and description');
+    console.log(availableWidth);
+    // determine the width
+    let setWidth;
+    if (availableWidth >= 1000) {
+      setWidth = 1000;
+    } else if (availableWidth <= 500) {
+      setWidth = 500;
+    } else {
+      setWidth = availableWidth;
+    }
+    $('div.project-details-cont').css('width', setWidth);
+    const t1 = performance.now();
+    console.log(`resize project cards name container took ${t1 - t0} milliseconds`);
   }
 
 
@@ -197,6 +249,12 @@ export class SearchProjectsComponent implements OnInit {
 
   }
 
+
+  onFilterStringKeypress(event) {
+    setTimeout(() => {
+      this.resizeProjectCardsNameCont();
+    }, 0);
+  }
 
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
@@ -287,9 +345,20 @@ export class SearchProjectsComponent implements OnInit {
   // display a popover with the full project name (for long overflowing project names)
   onNameMouseEnter(project: any) {
 
+    const $ruler = $('span.project-name-ruler');
+    $ruler.html(project.ProjectName);
+    // console.log('measured width of project name:');
+    const measuredWidth = $ruler.outerWidth();
+    // console.log($ruler.outerWidth());
+
+    // get the current width of the container (500 to 800 px)
+    const currentWidth = $(`div.project-name[data-id="${project.ProjectID}"]`).outerWidth();
+    // console.log('current allowed width of project name');
+    // console.log(currentWidth);
+
     // only show the popover if there is a project name (not null) and it is over X characters
     if (project.ProjectName) {
-      if (project.ProjectName.length >= 50) {
+      if (measuredWidth >= (currentWidth - 60)) {
 
         // set the jquery element
         const $el = $(`div.project-name[data-id="${project.ProjectID}"]`);
@@ -330,13 +399,20 @@ export class SearchProjectsComponent implements OnInit {
   // display a popover with the full description
   onDescriptionMouseEnter(project: any) {
 
-    // console.log('project description and length:');
-    // console.log(project.Description);
-    // console.log(project.Description ? project.Description.length : 0);
+    const $ruler = $('span.project-description-ruler');
+    $ruler.html(project.Description);
+    // console.log('measured width of project description:');
+    const measuredWidth = $ruler.outerWidth();
+    // console.log($ruler.outerWidth());
+
+    // get the current width of the container (500 to 800 px)
+    const currentWidth = $(`div.project-description[data-id="${project.ProjectID}"]`).outerWidth();
+    // console.log('current allowed width of project description');
+    // console.log(currentWidth);
 
     // only show the popover if there is a description (not null) and it is over 200 characters
     if (project.Description) {
-      if (project.Description.length >= 130) {
+      if ((measuredWidth / 2) >= (currentWidth - 60)) {
 
         // set the jquery element
         const $el = $(`div.project-description[data-id="${project.ProjectID}"]`);
