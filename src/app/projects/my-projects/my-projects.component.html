@@ -66,7 +66,7 @@
 
   <!-- Create New Project Button -->
   <button class="btn btn-primary btn-fte-toolbar" style="display: block" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
-    <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
+    <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
   </button>
   <!--  -->
 
@@ -110,7 +110,7 @@
         <!-- <div class="card-header-custom" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)"> -->
             <div class="card-header-custom" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)">
           <div class="col-2" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
-            <div>{{ (project['projectName'].length > 50) ? (project['projectName'] | slice:0:50) + '...' : (project['projectName']) }}</div>
+            <div>{{ (project['projectName'].length > 35) ? (project['projectName'] | slice:0:35) + '...' : (project['projectName']) }}</div>
           </div>
           <div class="col-2" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
             <div>{{ project['projectType.projectTypeName'] }}</div>

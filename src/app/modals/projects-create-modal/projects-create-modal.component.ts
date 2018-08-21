@@ -46,7 +46,7 @@ export class ProjectsCreateModalComponent implements OnInit {
   }
 
   resetForm() {
-    this.projectNameRegex = /^[a-zA-Z0-9][^-\s][\w\s-]+$/;
+    this.projectNameRegex = /^[-_a-zA-Z0-9]+(\s+[-_a-zA-Z0-9]+)*$/;
     // initialize the formgroup
     this.form = this.formBuilder.group({
       projectName: [null, [Validators.required, Validators.minLength(2), Validators.pattern(this.projectNameRegex)]],
