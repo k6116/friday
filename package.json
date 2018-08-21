@@ -1,6 +1,6 @@
 {
   "name": "jarvis-rt",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -72,6 +72,7 @@
     "tedious": "^2.3.1",
     "treant-js": "^1.0.1",
     "treeize": "^2.1.2",
+    "winston": "^3.0.0",
     "xlsx": "^0.12.9",
     "zone.js": "^0.8.19"
   },

@@ -26,8 +26,8 @@
           
           <div class="cards-cont">
             
-            <div class="card" *ngFor="let project of filterProjects | projectsFilter : filterItems | filter : filterString : filterItems[2].value : {limitTo: numProjectsToDisplay, matchFuzzy: true}">
-              <div class="card-header-cont">
+            <div class="card" *ngFor="let project of filterProjects | projectsFilter : filterItems | filter : filterString : filterItems[2].value : {limitTo: numProjectsToDisplay, matchFuzzy: {on: true}}">
+              <div class="card-header-cont"> 
                 <div class="card-header-img" *ngIf="project.avatar">
                   <img class="card-project-avatar" [src]="project.avatar" alt="">
                 </div>
@@ -55,11 +55,11 @@
                   <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectPermissionApprovedList?.indexOf(project.ProjectID)!=-1 || projectPermissionTeamList?.indexOf(project.ProjectID)!=-1"
                     class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
                   <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)===-1 && projectPermissionApprovedList?.indexOf(project.ProjectID)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)===-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
-                    class="btn btn-outline-warning project-select-button" (click)="onProjectPermissionClick(project, 'Request')">Request Access</button>
+                    class="btn btn-outline-warning project-select-button" [disabled]="disabledRequestBtn"  (click)="onProjectPermissionClick(project, 'Request')">Request Access</button>
                   <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
-                    class="btn btn-outline-info" (click)="onProjectPermissionClick(project, 'Submitted')">Access Request Submitted...</button>
+                    class="btn btn-outline-info" [disabled]="disabledRequestBtn"  (click)="onProjectPermissionClick(project, 'Submitted')">Cancel Request</button>
                   <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1" 
-                    class="btn btn-outline-danger" (click)="onProjectPermissionClick(project, 'Denied')">Access Request DENIED</button>
+                    class="btn btn-outline-danger" [disabled]="disabledRequestBtn" (click)="onProjectPermissionClick(project, 'Denied')">Re-Request Access</button>
               </div>
             </div>
   

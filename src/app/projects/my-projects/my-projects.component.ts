@@ -1,17 +1,17 @@
 import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
-  ApiDataMetaDataService, ApiDataEmailService } from '../_shared/services/api-data/_index';
-import { CacheService } from '../_shared/services/cache.service';
-import { AuthService } from '../_shared/services/auth.service';
-import { ProjectsEditModalComponent } from '../modals/projects-edit-modal/projects-edit-modal.component';
-import { ProjectsCreateModalComponent } from '../modals/projects-create-modal/projects-create-modal.component';
-import { User } from '../_shared/models/user.model';
+  ApiDataMetaDataService, ApiDataEmailService } from '../../_shared/services/api-data/_index';
+import { CacheService } from '../../_shared/services/cache.service';
+import { AuthService } from '../../_shared/services/auth.service';
+import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
+import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
+import { User } from '../../_shared/models/user.model';
 import * as moment from 'moment';
 
 @Component({
   selector: 'app-projects-setups',
   templateUrl: './my-projects.component.html',
-  styleUrls: ['./my-projects.component.css', '../_shared/styles/common.css']
+  styleUrls: ['./my-projects.component.css', '../../_shared/styles/common.css']
 })
 export class MyProjectsComponent implements OnInit {
 
@@ -76,11 +76,11 @@ export class MyProjectsComponent implements OnInit {
     this.apiDataProjectService.getUserProjectList(this.authService.loggedInUser.id)
     .subscribe(
       res => {
-        console.log('Project List: ', res);
+        // console.log('Project List: ', res);
         this.projectList = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -100,7 +100,7 @@ export class MyProjectsComponent implements OnInit {
         }
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -113,17 +113,17 @@ export class MyProjectsComponent implements OnInit {
   }
 
   onCreateSuccess() {
-    console.log('Create project success. My Project List Refreshed');
+    // console.log('Create project success. My Project List Refreshed');
     this.getUserProjectList();
   }
 
   onUpdateSuccess() {
-    console.log('Update project success. My Project List Refreshed');
+    // console.log('Update project success. My Project List Refreshed');
     this.getUserProjectList();
   }
 
   onDeleteSuccess() {
-    console.log('Delete project success. My Project List Refreshed');
+    // console.log('Delete project success. My Project List Refreshed');
     this.getUserProjectList();
   }
 
@@ -169,14 +169,14 @@ export class MyProjectsComponent implements OnInit {
             this.getProjectPermissionRequestsList();
           },
           err => {
-            console.log(err);
+            // console.log(err);
           }
         );
-        console.log(res);
+        // console.log(res);
 
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
 
@@ -192,7 +192,7 @@ export class MyProjectsComponent implements OnInit {
     this.apiDataProjectService.getProjectRoster(projectID)
     .subscribe(
       res => {
-        console.log('project roster:', res);
+        // console.log('project roster:', res);
         // Check if roster for this project exists
         if ('teamMembers' in res[0]) {
           // This loop will move the loggedInUser to the top of the project roster list
@@ -207,7 +207,7 @@ export class MyProjectsComponent implements OnInit {
         }
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -273,7 +273,7 @@ export class MyProjectsComponent implements OnInit {
           this.deleteModal();
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
   }
@@ -290,7 +290,7 @@ export class MyProjectsComponent implements OnInit {
         }
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -318,10 +318,10 @@ export class MyProjectsComponent implements OnInit {
     this.apiDataProjectService.updateProjectEmployeeRole(projectEmployeeRoleData, this.authService.loggedInUser.id)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -362,11 +362,11 @@ export class MyProjectsComponent implements OnInit {
             this.onDeleteSuccess();
           },
           err => {
-            console.log(err);
+            // console.log(err);
           }
         );
       } else {
-        console.log('delete confirm aborted');
+        // console.log('delete confirm aborted');
       }
       deleteModalSubscription.unsubscribe();
     });
@@ -380,7 +380,7 @@ export class MyProjectsComponent implements OnInit {
         this.projectTypeDisplayFields = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }

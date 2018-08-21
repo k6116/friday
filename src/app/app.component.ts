@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
 
   // NOTE: this is the 'new' way to do it but not working
   // @HostListener('click') onDocumentClicked() {
-  //   console.log('document was clicked');
+  //   // console.log('document was clicked');
   // }
 
   constructor(
@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(`app component has been initialized`);
+    // console.log(`app component has been initialized`);
 
     // connect to the websocket
     this.websocketService.connect();
@@ -55,7 +55,7 @@ export class AppComponent implements OnInit {
     this.clickTrackingService.logClickWithEvent(`page: App Load, clickedOn: null`);
 
     // start a timer to fire every x minutes to check the login status
-    console.log('starting timer for auth service');
+    // console.log('starting timer for auth service');
     this.startTimer();
 
     // update the last activity property with a new timestamp

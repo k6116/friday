@@ -22,11 +22,11 @@ export class AuthGuardService implements CanActivate {
 
     // call the authservice method to check if the user is logged in (return early approach, no else here)
     if (this.authService.isLoggedIn()) {
-      console.log(`auth guard returning true, allowing navigation to ${state.url}`);
+      // console.log(`auth guard returning true, allowing navigation to ${state.url}`);
       return true;
     }
 
-    console.log(`auth guard returning false, blocking navigation to ${state.url} and kicking out to login page`);
+    // console.log(`auth guard returning false, blocking navigation to ${state.url} and kicking out to login page`);
 
     // if the user is not logged in, re-route them to the login page
     this.router.navigate(['/login']);

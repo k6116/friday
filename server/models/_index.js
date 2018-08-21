@@ -11,6 +11,8 @@ module.exports = {
   JobTitleMap: require('./jobTitle').JobTitleMap,
   Projects: require('./project.js').Projects,
   ProjectTypes: require('./project.js').ProjectTypes,
+  ProjectStatuses: require('./project.js').ProjectStatuses,
+  ProjectPriorities: require('./project.js').ProjectPriorities,
   ProjectTypeDisplayFields: require('./project.js').ProjectTypeDisplayFields,
   ProjectPermissionRequests: require('./project.js').ProjectPermissionRequests,
   NCISupplyDemandExclusionList: require('./analytics.js').NCISupplyDemandExclusionList,

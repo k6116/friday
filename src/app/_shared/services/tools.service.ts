@@ -3,7 +3,10 @@ import { FormArray } from '@angular/forms';
 
 import { CacheService } from './cache.service';
 
+declare var $: any;
+
 import * as moment from 'moment';
+import * as momentTimezone from 'moment-timezone';
 import * as _ from 'lodash';
 
 @Injectable()
@@ -317,6 +320,65 @@ export class ToolsService {
     // return the string
     return `${firstMonth} - ${lastMonth}`;
 
+  }
+
+
+  // use to get a standardized time (pst / pdt) to insert or update into a sql server datetime2(3) column
+  // approach: use moment timezone to convert into pacific time (los angeles),
+  // then subtract the utc/gmt offset hours (7 or 8), because the sequelize DATE datatype will always assume you want to use gmt
+  // and will add those hours
+  pacificTime(): any {
+
+    // NOTES:
+    // The Pacific Timezone is an area 8 hours behind Greenwich Mean Time (GMT-8) during the winter months (referred to as PST)
+    // and 7 hours behind Greenwich Mean Time ( GMT-7 ) during the summer months (referred to as PDT).
+    // At the moment, the following schedule is used:
+    // From 2 A.M. on the second Sunday in March to 2 A.M. on the first Sunday in November, Daylight Saving Time is in effect.
+
+    // console.log('moment string, local time:');
+    // const localTimeString = moment().format('dddd, MMMM Do YYYY, h:mm:ss a');
+    // console.log(localTimeString);
+
+    // console.log('utc offset, local time:');
+    // const localTimeOffset = -(moment().utcOffset() / 60);
+    // console.log(localTimeOffset);
+
+    // get a moment in pacific time
+    const pacificTime = momentTimezone(moment().format('YYYY-MM-DDTHH:mm:ssZ')).tz('America/Los_Angeles');
+    // console.log('pacific time moment:');
+    // console.log(pacificTime);
+
+    // console.log('pacific time string');
+    // const pacificTimeString = pacificTime.format('MMMM Do YYYY, h:mm:ss a Z z');
+    // console.log(pacificTimeString);
+
+    // get the utc / greenwich mean time offset of the pacific time (either 7 or 8 hours depending on daylight saving time)
+    const pacificTimeOffset = -(pacificTime.utcOffset() / 60);
+    // console.log('utc offset, pacific time:');
+    // console.log(pacificTimeOffset);
+
+    // console.log('pacific time final string:');
+    // console.log(pacificTime.subtract(pacificTimeOffset, 'hours').format('MMMM Do YYYY, h:mm:ss a Z z'));
+
+    // substract the utc offset, since the sequelize date datatype will automatically add this offset
+    // sequelize will handle the conversion:  https://github.com/sequelize/sequelize/issues/854
+    // "When you pass a date object to sequelize it is converted to UTC before it is saved, not matter what local time zone it has"
+    const pacificTimeFinal = pacificTime.subtract(pacificTimeOffset, 'hours');
+    // console.log('pacific time final:');
+    // console.log(pacificTimeFinal);
+
+    // return the moment
+    return pacificTimeFinal;
+
+
+  }
+
+  hideFooter() {
+    $('div.footer-container').css('display', 'none');
+  }
+
+  showFooter() {
+    $('div.footer-container').css('display', 'block');
   }
 
 

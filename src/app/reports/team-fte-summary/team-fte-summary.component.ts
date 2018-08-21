@@ -164,7 +164,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       this.teamSummaryData.forEach( project => {
         project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
       });
-      console.log(this.teamSummaryData);
+      // console.log(this.teamSummaryData);
       this.plotFteSummaryPareto(period);
       this.chartIsLoading = false;
     });
@@ -279,8 +279,8 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     .subscribe(
       res => {
         const nestedOrgData = JSON.parse('[' + res[0].json + ']');
-        console.log('nested org object retrieved from api data service in employee reports component');
-        console.log(nestedOrgData);
+        // console.log('nested org object retrieved from api data service in employee reports component');
+        // console.log(nestedOrgData);
         this.nestedOrgData = nestedOrgData;
         this.waitingForOrgData = false;
         this.cacheService.$nestedOrgData = this.nestedOrgData;
@@ -566,7 +566,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   }
 
   onclickedEmployee(employee) {
-    console.log('Employee', employee);
+    // console.log('Employee', employee);
     this.managerEmail = employee.emailAddress;
     this.componentDataInit('current-quarter');
   }

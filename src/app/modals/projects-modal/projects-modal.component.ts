@@ -57,7 +57,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   innerDivState: string;
   filterString: string;
   checkboxValue: any;
-  projectsDisplay: any;
+  // projectsDisplay: any;
   numProjectsToDisplayAtOnce: number;
   numProjectsToDisplay: number;
   userID: any;
@@ -74,6 +74,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   selProject: any;
   subscription1: Subscription;
   filterProjects: any;
+  disabledRequestBtn: boolean;
 
   // for checkbox pipe
   filterItems: Array<any>;
@@ -107,35 +108,44 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
-    this.resizeProjectCardsContainer();
+    // get the user id and email
+    this.userID = this.authService.loggedInUser.id;
+    this.userEmail = this.authService.loggedInUser.email;
 
-    this.outerDivState = 'out';
-    this.innerDivState = 'out';
-    setTimeout(() => {
-      this.outerDivState = 'in';
-    }, 0);
-    setTimeout(() => {
-      this.innerDivState = 'in';
-    }, 0);
+    this.disabledRequestBtn = false;
+
+    // Using promises to ensure all permissions lists are retrived before displaying the project cards
+    this.getUserPLMData(this.userEmail).then(res1 => {
+      this.getProjectPermissionTeamList().then(res2 => {
+        this.getProjectPermissionList().then(res3 => {
+
+          this.resizeProjectCardsContainer();
+
+          this.outerDivState = 'out';
+          this.innerDivState = 'out';
+          setTimeout(() => {
+            this.outerDivState = 'in';
+          }, 0);
+          setTimeout(() => {
+            this.innerDivState = 'in';
+          }, 0);
+
+        });
+      });
+    });
+
+    this.getPublicProjectTypes();
 
     // set the number of projects to display initially, and to add for infinite scroll
     this.numProjectsToDisplayAtOnce = 100;
     this.numProjectsToDisplay = 100;
 
-    console.log('projects received in projects modal');
-    console.log(this.projects);
-    console.log(`number of projects: ${this.projects.length}`);
+    // console.log('projects received in projects modal');
+    // console.log(this.projects);
+    // console.log(`number of projects: ${this.projects.length}`);
 
-    this.projectsDisplay = this.projects.slice(0, this.numProjectsToDisplayAtOnce);
-    console.log(`number of displayed projects: ${this.projectsDisplay.length}`);
-
-
-    // get the user id and email
-    this.userID = this.authService.loggedInUser.id;
-    this.userEmail = this.authService.loggedInUser.email;
-
-    this.getUserPLMData(this.userEmail);
-    this.getPublicProjectTypes();
+    // this.projectsDisplay = this.projects.slice(0, this.numProjectsToDisplayAtOnce);
+    // console.log(`number of displayed projects: ${this.projectsDisplay.length}`);
 
     // when the project modal is initialized, if we are in tutorial part2, launch the tutorial
     if (this.fteTutorialState === 2) {
@@ -144,7 +154,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     // listen for websocket message for newly created projects
     this.subscription1 = this.websocketService.getNewProject().subscribe(project => {
-      console.log(project);
+      // console.log(project);
       this.refreshProjectCards();
     });
 
@@ -154,6 +164,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     // initialize project filters
     this.setFilterItems();
+
   }
 
   ngAfterViewInit() {
@@ -173,8 +184,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
           this.addedProjects.emit(this.projects);
         },
         err => {
-          console.log('get projects data error:');
-          console.log(err);
+          // console.log('get projects data error:');
+          // console.log(err);
         }
     );
   }
@@ -222,11 +233,11 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.selProject.JobTitleID = this.authService.loggedInUser.jobTitleID;
     this.selProject.JobSubTitleID = this.authService.loggedInUser.jobSubTitleID;
 
-    console.log('Selected Project Id:');
-    console.log(this.selProject);
+    // console.log('Selected Project Id:');
+    // console.log(this.selProject);
 
-    console.log('Selected Project:');
-    console.log(this.selProject.ProjectName);
+    // console.log('Selected Project:');
+    // console.log(this.selProject.ProjectName);
 
     this.outerDivState = 'out';
     this.innerDivState = 'out';
@@ -298,8 +309,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // get the project object
     const project = this.getProject(element);
 
-    console.log('project object for project info modal:');
-    console.log(project);
+    // console.log('project object for project info modal:');
+    // console.log(project);
 
     // get the styles/css and html content
     const css = this.getProjectDetailsStyle();
@@ -507,8 +518,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
         },
         err => {
-          console.log('error:');
-          console.log(err);
+          // console.log('error:');
+          // console.log(err);
         }
       );
 
@@ -616,6 +627,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   onProjectPermissionClick(project: any, action: string) {
 
+    this.disabledRequestBtn = true;
+
     let confirmButton: any;
     let firstRequest: boolean;
     let message: string;
@@ -626,7 +639,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       requestStatus: null,
       requestNotes: null
     };
-    console.log('proj perm list', this.projectPermissionList);
+    // console.log('proj perm list', this.projectPermissionList);
     // find requestID and append it to requestData
     for (let i = 0; i < this.projectPermissionList.length; i++) {
       if (this.projectPermissionList[i].projectID === project.ProjectID) {
@@ -639,29 +652,34 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Requesting access';
       confirmButton = 'Request Access';
+      message = `Do you want to request access to the project "${project.ProjectName}"?<br><br>
+                This will send an email notification to ${project.FullName}`;
     } else if (action === 'Submitted') {
       requestData.requestStatus = 'Cancelled';
       requestData.requestNotes = 'Cancelling request access';
-      confirmButton = 'Rescind Access';
+      confirmButton = 'Cancel Request';
+      message = `Do you want to cancel your request to the project "${project.ProjectName}"?<br><br>
+                This will send an email notification to ${project.FullName}`;
     } else if (action === 'Denied') {
       requestData.requestStatus = 'Submitted';
       requestData.requestNotes = 'Resubmitting request access';
       confirmButton = 'Re-Request Access';
+      message = `Your initial request to access this project was denied.<br><br>
+                Do you want to re-request access to the project "${project.ProjectName}"?<br><br>
+                This will send an email notification to ${project.FullName}`;
     }
 
     // check if this is the first time the request is being made, then insert the row, otherwise update the row
     if (requestData.requestID === null) {
       firstRequest = true;
-      message = `Do you want to request access to the project "${project.ProjectName}"?`;
     } else {
       firstRequest = false;
-      message = `Do you want to update the request status to ${requestData.requestStatus}?`;
     }
 
     // emit confirmation modal after they click request button
     this.cacheService.confirmModalData.emit(
       {
-        title: `Confirm ${action}`,
+        title: confirmButton,
         message: message,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
@@ -690,12 +708,13 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
           this.apiDataPermissionService.insertProjectPermissionRequest(project, this.userID)
             .subscribe(
               apiRes => {
-                console.log(apiRes);
-                this.onRequestUpdateSuccess();
+                // console.log(apiRes);
+                this.onRequestUpdateSuccess(project, requestData.requestStatus);
                 insertActionSubscription.unsubscribe();
               },
               err => {
-                console.log(err);
+                // console.log(err);
+                this.disabledRequestBtn = false;
                 insertActionSubscription.unsubscribe();
               }
             );
@@ -704,26 +723,25 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
           this.apiDataPermissionService.updateProjectPermissionRequest(requestData, this.userID)
             .subscribe(
               apiRes => {
-                console.log(apiRes);
-                this.onRequestUpdateSuccess();
+                // console.log(apiRes);
+                this.onRequestUpdateSuccess(project, requestData.requestStatus);
                 updateActionSubscription.unsubscribe();
               },
               err => {
-                console.log(err);
+                // console.log(err);
+                this.disabledRequestBtn = false;
                 updateActionSubscription.unsubscribe();
               }
             );
           }
       } else {
-        console.log('request confirm aborted');
+        // console.log('request confirm aborted');
+        this.disabledRequestBtn = false;
       }
       updateModalSubscription.unsubscribe();
     });
 
-    this.onRequestedProject(project);
   }
-
-
 
   // update the clickedProject that is passed to the component through @input
   getProject(element): any {
@@ -747,7 +765,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   closeModal() {
-    console.log('CLOSE MODAL');
+    // console.log('CLOSE MODAL');
     this.outerDivState = 'out';
     this.innerDivState = 'out';
     this.cancel.emit(true);
@@ -780,41 +798,21 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
   }
 
-  onRequestedProject(project: any) {
-    this.apiDataPermissionService.insertProjectPermissionRequest(project, this.userID)
-    .subscribe(
-      res => {
-
-        // send email
-        this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName).subscribe(
-          eRes => {
-            this.cacheService.raiseToast('success', 'Request Access Email Delivered.');
-          },
-          err => {
-            console.log(err);
-          }
-        );
-        console.log(res);
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-
   getUserPLMData(userEmailAddress: string) {
-    this.apiDataEmployeeService.getUserPLMData(userEmailAddress)
-    .subscribe(
-      res => {
-        console.log('User PLM Data Retrieved');
-        this.cacheService.userPLMData = res;
-        this.getProjectPermissionTeamList();
-        this.getProjectPermissionList();
-      },
-      err => {
-        console.log(err);
-      }
-    );
+    return new Promise((p_res, p_err) => {
+      this.apiDataEmployeeService.getUserPLMData(userEmailAddress)
+      .subscribe(
+        res => {
+          // console.log('User PLM Data Retrieved');
+          this.cacheService.userPLMData = res;
+          p_res();
+        },
+        err => {
+          // console.log(err);
+          p_err();
+        }
+      );
+    });
   }
 
   getPublicProjectTypes() {
@@ -825,76 +823,98 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
         // console.log(this.publicProjectTypes.indexOf('N1CI'));
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
 
   getProjectPermissionTeamList() {
-    const managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
-    this.apiDataPermissionService.getProjectPermissionTeamList(this.userID, managerEmailAddress)
-    .subscribe(
-      res => {
-        this.projectPermissionTeamList = Object.keys(res).map(i => res[i].id);
-        console.log('Team List');
-        console.log(this.projectPermissionTeamList);
-      },
-      err => {
-        console.log(err);
-      }
-    );
+    return new Promise((p_res, p_err) => {
+      const managerEmailAddress = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+      this.apiDataPermissionService.getProjectPermissionTeamList(this.userID, this.userEmail, managerEmailAddress)
+      .subscribe(
+        res => {
+          this.projectPermissionTeamList = Object.keys(res).map(i => res[i].id);
+          // console.log('Team List');
+          // console.log(this.projectPermissionTeamList);
+          p_res();
+        },
+        err => {
+          // console.log(err);
+          p_err();
+        }
+      );
+    });
   }
 
   getProjectPermissionList() {
-    this.apiDataPermissionService.getProjectPermissionList(this.userID)
-    .subscribe(
-      res => {
+    return new Promise((p_res, p_err) => {
+      this.apiDataPermissionService.getProjectPermissionList(this.userID)
+      .subscribe(
+        res => {
 
-        this.projectPermissionList = res;
+          this.projectPermissionList = res;
 
-        // Convert into an array of Approved ProjectIDs
-        this.projectPermissionApprovedList = Object.keys(res)
-          .filter(i => res[i].requestStatus === 'Approved')
-          .reduce((obj, i) => {
-              obj[i] = res[i]; return obj;
-            }, {});
-        this.projectPermissionApprovedList = Object.keys(this.projectPermissionApprovedList)
-          .map(i => this.projectPermissionApprovedList[i].projectID);
+          // Convert into an array of Approved ProjectIDs
+          this.projectPermissionApprovedList = Object.keys(res)
+            .filter(i => res[i].requestStatus === 'Approved')
+            .reduce((obj, i) => {
+                obj[i] = res[i]; return obj;
+              }, {});
+          this.projectPermissionApprovedList = Object.keys(this.projectPermissionApprovedList)
+            .map(i => this.projectPermissionApprovedList[i].projectID);
 
-        // Convert into an array of Submitted ProjectIDs
-        this.projectPermissionSubmittedList = Object.keys(res)
-          .filter(i => res[i].requestStatus === 'Submitted')
-          .reduce((obj, i) => {
-              obj[i] = res[i]; return obj;
-            }, {});
-        this.projectPermissionSubmittedList = Object.keys(this.projectPermissionSubmittedList)
-          .map(i => this.projectPermissionSubmittedList[i].projectID);
+          // Convert into an array of Submitted ProjectIDs
+          this.projectPermissionSubmittedList = Object.keys(res)
+            .filter(i => res[i].requestStatus === 'Submitted')
+            .reduce((obj, i) => {
+                obj[i] = res[i]; return obj;
+              }, {});
+          this.projectPermissionSubmittedList = Object.keys(this.projectPermissionSubmittedList)
+            .map(i => this.projectPermissionSubmittedList[i].projectID);
 
-        // Convert into an array of Denied ProjectIDs
-        this.projectPermissionDeniedList = Object.keys(res)
-          .filter(i => res[i].requestStatus === 'Denied')
-          .reduce((obj, i) => {
-              obj[i] = res[i]; return obj;
-            }, {});
-        this.projectPermissionDeniedList = Object.keys(this.projectPermissionDeniedList)
-          .map(i => this.projectPermissionDeniedList[i].projectID);
+          // Convert into an array of Denied ProjectIDs
+          this.projectPermissionDeniedList = Object.keys(res)
+            .filter(i => res[i].requestStatus === 'Denied')
+            .reduce((obj, i) => {
+                obj[i] = res[i]; return obj;
+              }, {});
+          this.projectPermissionDeniedList = Object.keys(this.projectPermissionDeniedList)
+            .map(i => this.projectPermissionDeniedList[i].projectID);
 
-        console.log('Access List');
-        console.log(this.projectPermissionList);
-        // console.log('Approved List');
-        // console.log(this.projectPermissionApprovedList);
-        // console.log('Submitted List');
-        // console.log(this.projectPermissionSubmittedList);
-        // console.log('Denied List');
-        // console.log(this.projectPermissionDeniedList);
-      },
-      err => {
-        console.log(err);
-      }
-    );
+          // console.log('Access List');
+          // console.log(this.projectPermissionList);
+          // console.log('Approved List');
+          // console.log(this.projectPermissionApprovedList);
+          // console.log('Submitted List');
+          // console.log(this.projectPermissionSubmittedList);
+          // console.log('Denied List');
+          // console.log(this.projectPermissionDeniedList);
+          p_res();
+        },
+        err => {
+          // console.log(err);
+          p_err();
+        }
+      );
+    });
   }
 
-  onRequestUpdateSuccess() {
+  onRequestUpdateSuccess(project: any, requestStatus: string) {
+    // send email
+    this.apiDataEmailService.sendRequestProjectEmail(this.userID, project.CreatedBy, project.ProjectName, requestStatus).subscribe(
+      eRes => {
+        if (requestStatus === 'Submitted') {
+          this.cacheService.raiseToast('success', 'Request Access Email Delivered.');
+        } else if (requestStatus === 'Cancelled') {
+          this.cacheService.raiseToast('success', 'Cancelled Request Email Delivered.');
+        }
+        this.disabledRequestBtn = false;
+      },
+      err => {
+        // console.log(err);
+      }
+    );
     // refresh project access list to update the request buttons
     this.getProjectPermissionList();
   }
