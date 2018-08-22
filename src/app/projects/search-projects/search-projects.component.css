@@ -147,9 +147,10 @@ div.project-type-icon {
 
 div.project-details-cont {
   display: inline-block;
-  padding-top: 20px;
-  padding-left: 25px;
-  width: 500px;
+  padding: 20px 25px;
+  min-width: 500px;
+  width: calc(100% - 800px);
+  max-width: 1000px;
 }
 
 div.project-name {

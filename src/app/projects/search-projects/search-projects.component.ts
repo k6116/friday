@@ -4,6 +4,7 @@ import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { WebsocketService } from '../../_shared/services/websocket.service';
+import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 
 declare var $: any;
 
@@ -38,7 +39,7 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.resizeProjectCardsNameCont();
+    // this.resizeProjectCardsNameCont();
   }
 
 
@@ -46,7 +47,8 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
     private apiDataProjectService: ApiDataProjectService,
     private filterPipe: FilterPipe,
     private toolsService: ToolsService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private clickTrackingService: ClickTrackingService
   ) {
 
     // set the number of projects to display initially, and to add for infinite scroll
@@ -143,7 +145,7 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
           this.toolsService.showFooter();
           setTimeout(() => {
             this.calcFixedWidthArea();
-            this.resizeProjectCardsNameCont();
+            // this.resizeProjectCardsNameCont();
           }, 0);
         },
         err => {
@@ -183,25 +185,27 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
 
 
   resizeProjectCardsNameCont() {
-    const t0 = performance.now();
-    // get the total card width
-    const projectCardWidth = $('div.project-card').eq(0).outerWidth();
-    // calculate the space available for the project name and description
-    const availableWidth = projectCardWidth - this.cardFixedWidth - (40 * 2);
-    console.log('availalbe width for name and description');
-    console.log(availableWidth);
-    // determine the width
-    let setWidth;
-    if (availableWidth >= 1000) {
-      setWidth = 1000;
-    } else if (availableWidth <= 500) {
-      setWidth = 500;
-    } else {
-      setWidth = availableWidth;
-    }
-    $('div.project-details-cont').css('width', setWidth);
-    const t1 = performance.now();
-    console.log(`resize project cards name container took ${t1 - t0} milliseconds`);
+    setTimeout(() => {
+      const t0 = performance.now();
+      // get the total card width
+      const projectCardWidth = $('div.project-card').eq(0).outerWidth();
+      // calculate the space available for the project name and description
+      const availableWidth = projectCardWidth - this.cardFixedWidth - (40 * 2);
+      // console.log('availalbe width for name and description');
+      // console.log(availableWidth);
+      // determine the width
+      let setWidth;
+      if (availableWidth >= 1000) {
+        setWidth = 1000;
+      } else if (availableWidth <= 500) {
+        setWidth = 500;
+      } else {
+        setWidth = availableWidth;
+      }
+      $('div.project-details-cont').css('width', setWidth);
+      const t1 = performance.now();
+      // console.log(`resize project cards name container took ${t1 - t0} milliseconds`);
+    }, 100);
   }
 
 
@@ -250,11 +254,40 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
   }
 
 
-  onFilterStringKeypress(event) {
-    setTimeout(() => {
-      this.resizeProjectCardsNameCont();
-    }, 0);
+  // onFilterStringKeypress(event) {
+  //   // setTimeout(() => {
+  //   //   this.resizeProjectCardsNameCont();
+  //   // }, 0);
+  //   console.log('filter string keypress event triggered:');
+  //   console.log(event);
+  // }
+
+
+  onFilterStringKeydown(event) {
+    const key = event.keyCode || event.charCode;
+    // console.log('filter string keydown event triggered with key:');
+    // console.log(key);
+    // 8 = backspace; 46 = delete
+    if ( key === 8 || key === 46 ) {
+      console.log('backspace or delete key pressed');
+      console.log(event);
+      console.log(this.filterStringVC.nativeElement.selectionStart);
+      console.log(this.filterStringVC.nativeElement.selectionEnd);
+      const highlightIndexStart = this.filterStringVC.nativeElement.selectionStart;
+      const highlightIndexEnd = this.filterStringVC.nativeElement.selectionEnd;
+      const numHighlightedCharacters = highlightIndexEnd - highlightIndexStart;
+      console.log('number of highlighted characters:');
+      console.log(numHighlightedCharacters);
+      console.log('filter string:');
+      console.log(this.filterString);
+      if (numHighlightedCharacters === this.filterString.length) {
+        console.log('click tracking record logged, on filter clear with backspace or delete');
+        this.clickTrackingService.logClickWithEvent(`page: Search Projects,
+          text: ${this.selectedFilter.displayName} > ${this.filterString}`);
+      }
+    }
   }
+
 
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
@@ -264,6 +297,9 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
     this.filterStringVC.nativeElement.focus();
     // update the count display (showing x of y) by calling onFilterStringChange()
     this.onFilterStringChange();
+    // update the width of the project name and description container using jQuery
+    // must be done because filter pipe will add and remove cards from the dom
+    // this.resizeProjectCardsNameCont();
   }
 
 
@@ -277,6 +313,8 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
       this.clearFilter();
       // set the filter object
       this.selectedFilter = foundFilter;
+      console.log('selected filter:');
+      console.log(this.selectedFilter);
     }
     // set the focus on the input box, if it is not a dropdown
     if (!foundFilter.isDropdown) {
@@ -298,9 +336,23 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
       this.filterString = dropDownValue;
       // call filter string change to update the record count string
       this.onFilterStringChange();
+      // log a record in the click tracking table
+      this.clickTrackingService.logClickWithEvent(`page: Search Projects, text: ${this.selectedFilter.displayName} > ${dropDownValue}`);
     } else {
       // if there is no dropdown value (first selection, which is null), clear the filter
       this.clearFilter();
+    }
+    // update the width of the project name and description container using jQuery
+    // must be done because filter pipe will add and remove cards from the dom
+    // this.resizeProjectCardsNameCont();
+  }
+
+
+  // log a click on filter input box if there is a filter/search term entered
+  onFilterLostFocus() {
+    if (this.filterString) {
+      console.log('click tracking record logged, on filter lost focus');
+      this.clickTrackingService.logClickWithEvent(`page: Search Projects, text: ${this.selectedFilter.displayName} > ${this.filterString}`);
     }
   }
 
