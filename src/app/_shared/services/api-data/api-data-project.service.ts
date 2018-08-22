@@ -148,8 +148,9 @@ export class ApiDataProjectService {
   }
 
   updateProjectSetup(project: any, userID: number) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({ headers: headers });
+
     return this.http.post(`/api/updateProjectSetup/${userID}`, JSON.stringify(project), options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());

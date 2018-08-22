@@ -103,6 +103,13 @@ router.get('/execUpdateSupplyDemand/', controllers.analytics.execUpdateSupplyDem
 router.post('/insertLotExclusion/:userID', controllers.analytics.insertLotExclusion);
 router.post('/destroyLotExclusion/:userID', controllers.analytics.destroyLotExclusion);
 
+// SCHEDULES CONTROLLER
+router.post('/insertSchedule/:userID', controllers.schedules.insertSchedule);
+router.post('/updateSchedule/:userID', controllers.schedules.updateSchedule);
+router.post('/destroySchedule/:userID', controllers.schedules.destroySchedule);
+router.post('/insertScheduleDetailBulk/:userID', controllers.schedules.insertScheduleDetailBulk);
+router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedules.updateScheduleDetailBulk);
+
 
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
@@ -164,10 +171,11 @@ router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 
 // SCHEDULES CONTROLLER
 router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
-router.post('/updateProjectSchedule/:revisionNotes', controllers.schedules.updateProjectSchedule);
+router.post('/updateProjectScheduleXML/:revisionNotes', controllers.schedules.updateProjectScheduleXML);
 router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
-router.post('/updatePartSchedule/:revisionNotes', controllers.schedules.updatePartSchedule); //TO-DO user Token for userID and put revisionNotes in header
-router.get('/destroySchedule/:scheduleID', controllers.schedules.destroySchedule);
+router.post('/updatePartScheduleXML/:revisionNotes', controllers.schedules.updatePartScheduleXML); //TO-DO user Token for userID and put revisionNotes in header
+router.get('/destroyScheduleSP/:scheduleID', controllers.schedules.destroyScheduleSP);
+
 
 // middleware to protect permissions protected routes
 // if it is verified, it will continue (next) and allow the routes

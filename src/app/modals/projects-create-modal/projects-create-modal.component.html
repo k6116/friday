@@ -8,20 +8,16 @@
           </button>
         </div>
         <div class="modal-body">
-          <div align="right">* Required</div>
           <form [formGroup]="form">
+            <p><i>**Project names cannot start with a space or contain any special characters. Hyphens (-) are allowed. Must be at least two characters.</i></p>
             <div class="form-group">
               <label for="project-name" class="col-form-label">*Project Name:</label>
-              <input formControlName="projectName" type="text" class="form-control" id="project-name">
+              <div style="display: flex">
+                <input formControlName="projectName" type="text" class="form-control" id="project-name">
+                <i *ngIf="form.valid" class="fa fa-check" style="padding: 10px 5px 10px 15px; color: green" aria-hidden="true"></i>
+                <i *ngIf="!form.valid" class="fa fa-times" style="padding: 10px 5px 10px 15px; color: red" aria-hidden="true"></i>
+              </div>
             </div>
-            <!-- <div class="form-group">
-              <label for="project-type">*Project Type:</label>
-              <select formControlName="projectTypeID" class="form-control" (change)="selectedProjectType($event.target)">
-                <option *ngFor="let projectType of projectTypesList" [value]="projectType.id">
-                  {{ projectType.projectTypeName }}
-                </option>
-              </select>
-            </div> -->
             <div class="form-group">
               <label for="description-text" class="col-form-label">Description:</label>
               <textarea formControlName="projectDescription" class="form-control" id="description-text"></textarea>
@@ -30,11 +26,12 @@
               <label for="notes-text" class="col-form-label">Notes:</label>
               <textarea formControlName="projectNotes" class="form-control" id="notes-text"></textarea>
             </div>
+            <div align="right">* Required</div>
           </form>
         </div>
         <div class="modal-footer">
           <button [disabled]="!form.valid" type="button" class="btn btn-primary btn-fte-toolbar"  data-dismiss="modal" (click)="createProject()">
-              <i class="fa fa-plus"></i>&nbsp;&nbsp;Create
+              <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
           </button>
           <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
         </div>

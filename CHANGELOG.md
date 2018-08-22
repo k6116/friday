@@ -1,3 +1,15 @@
+<a name="1.8.1"></a>
+## [1.8.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.0...v1.8.1) (2018-08-22)
+
+
+### Bug Fixes
+
+* **authService:** updated token to store user manager email address ([9eb3a10](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9eb3a10))
+* **projects-create-modal:** added validators to projectname ([efbe7c5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/efbe7c5))
+* **projects-modal:** updated infinite scroll settings from 100 to 50 ([9efce3f](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9efce3f))
+
+
+
 <a name="1.8.0"></a>
 # [1.8.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.7.2...v1.8.0) (2018-08-20)
 

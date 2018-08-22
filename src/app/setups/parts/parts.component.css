@@ -36,7 +36,10 @@
     -ms-overflow-style: -ms-autohiding-scrollbar;
     background-color: white
   }
-  .parttype {   
-    color: white;
-    background-color: lightslategray
+  
+  .parttype {      
+    background-color: lightgray;
+    vertical-align: middle;
   }
+
+

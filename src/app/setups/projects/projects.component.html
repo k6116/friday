@@ -5,7 +5,7 @@
     <div class="input-group">
       <input class="searchInput" type="text" maxlength="500"  [(ngModel)]="searchProjects" (change)="onSearchInputChange($event)" placeholder="Search Projects">
       <div class="input-group-append">
-        <button [disabled]="!searchProjects.trim()" class="btn btn-primary btn-fte-toolbar" (click)="onCreateProjectClick()" style="display: block">
+        <button [disabled]="searchProjects && !searchProjects.trim()" class="btn btn-primary btn-fte-toolbar" (click)="onCreateProjectClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
         </button>       
       </div>
@@ -13,7 +13,7 @@
   </div>
 
   <div class="row">  
-    <div class="col-2.3">
+    <div class="col-2">
         <table class="table table-wrapper-scroll-y" *ngIf="(projectList | filter : searchProjects : 'ProjectName':{limitTo: -1, matchOptimistic: true}) as filteredProjectList">
             <thead>
                 <tr>
@@ -27,29 +27,12 @@
               </thead>
           <tbody>
           <tr  *ngFor="let project of filteredProjectList" (click)="$event.stopPropagation();onProjectClick(project)">
-                   
-            <td>  
-                <div class="project-card">  
-                <div class="project-type-cont" [ngStyle]="{ 'color': setProjctTypeColor(project.ProjectTypeName) }">
-                  <!-- project type name text -->
-                  <div class="project-type-name"> 
-                    {{ project.ProjectTypeName }}
-                  </div>      
-                  <!-- project type icon -->
-                  <div class="project-type-icon"> 
-                    <i [ngClass]="setProjctTypeIconClass(project.ProjectTypeName)"></i>
-                  </div>                  
-                </div> 
-                </div>
+              <td class="projecttype">               
+                  {{ project.ProjectTypeName }}           
               </td>
-              <td>                   
-                <div class=project-name>
-                    <div class="project-details-cont">
-                     {{ project.ProjectName.substring(0, 30)  }} 
-                  </div>
-                </div>                    
-              </td>                     
-             
+              <td>           
+                {{ project.ProjectName.substring(0,30) }}         
+              </td>       
           </tr>
         </tbody>
         </table>
@@ -168,7 +151,7 @@
               <td><select [(ngModel)]="sched.PLCStatusID" class=form-control><option *ngFor="let item of plcStatusChoices" [value]= "item.PLCStatusID">
                 {{item.PLCStatusName}}
               </option></select></td>
-              <td><input [(ngModel)]="sched.PLCDate" type=date class=form-control ></td>      
+              <td><input [(ngModel)]="sched.PLCDate" type=date class=form-control></td>      
               <td><input [(ngModel)]="sched.Notes" maxlength="500" type=text class=form-control></td>
               <td><input type="checkbox" [(ngModel)]="sched.DeleteRow"></td>
             </tbody>

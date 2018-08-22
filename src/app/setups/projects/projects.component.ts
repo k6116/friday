@@ -3,7 +3,6 @@ import { ApiDataSchedulesService, ApiDataProjectService,
   ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
-import { ToolsService } from '../../_shared/services/tools.service';
 import * as moment from 'moment';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 
@@ -36,7 +35,6 @@ export class ProjectsSetupsComponent implements OnInit {
     private apiDataSchedulesService: ApiDataSchedulesService,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataEmployeeService: ApiDataEmployeeService,
-    private toolsService: ToolsService,
     private authService: AuthService,
     private cacheService: CacheService
   ) { }
@@ -175,7 +173,7 @@ export class ProjectsSetupsComponent implements OnInit {
     this.form.reset();
     this.form.patchValue(
       {
-        projectName: this.searchProjects.trim()
+        projectName: this.searchProjects ? this.searchProjects.trim() : this.searchProjects
       });
       this.cacheService.raiseToast('info', 'New Project Entry Form Created.');
   }
@@ -319,7 +317,7 @@ export class ProjectsSetupsComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes)
+    this.apiDataSchedulesService.updateProjectScheduleXML(this.schedule, this.revisionNotes)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
@@ -331,7 +329,7 @@ export class ProjectsSetupsComponent implements OnInit {
       );
     } else {
       // no detail records so remove the schedule header record
-      this.apiDataSchedulesService.destroySchedule(this.scheduleId)
+      this.apiDataSchedulesService.destroyScheduleSP(this.scheduleId)
       .subscribe(
         res => {
           this.cacheService.raiseToast('success', 'Project Schedule Removed');
@@ -349,7 +347,12 @@ export class ProjectsSetupsComponent implements OnInit {
     .subscribe(
       res => {
         if (res.length > 0) {
+
         this.schedule = res;
+        this.schedule.forEach(element => {
+          element.PLCDate = moment(element.PLCDate).format('YYYY-MM-DD');
+        });
+
         this.revisionNotes = res[0].RevisionNotes;
         this.scheduleId = res[0].ScheduleID;
         } else {
@@ -362,17 +365,5 @@ export class ProjectsSetupsComponent implements OnInit {
         this.cacheService.raiseToast('error', `Unable to Obtain Project Schedule: ${err}`);
       }
     );
-  }
-
-  // class binding using the ngClass directive in the html
-  // to set project type icon (icon font class)
-  setProjctTypeIconClass(projectTypeName) {
-     return this.toolsService.setProjctTypeIconClass(projectTypeName);
-  }
-
-  // style binding using the ngStyle directive in the html
-  // to set the color for the project type name and icon
-  setProjctTypeColor(projectTypeName) {
-    return this.toolsService.setProjctTypeColor(projectTypeName);
   }
 }

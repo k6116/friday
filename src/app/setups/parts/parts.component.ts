@@ -66,6 +66,7 @@ export class PartSetupComponent implements OnInit {
   }
 
   onSearchInputChange(event: any) {
+
     if (this.searchParts.length === 0) {
       this.showPartCard = false;
       this.showScheduleCard = false;
@@ -104,12 +105,10 @@ export class PartSetupComponent implements OnInit {
     this.apiDataPartService.getParts()
     .subscribe(
       res => {
-        // console.log('Parts List:', this.partList);
         this.partList = res;
         this.searchParts = ' '; // this will avoid shoing a blank list of parts.
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Parts: ${err}`);
       }
     );
@@ -120,11 +119,9 @@ export class PartSetupComponent implements OnInit {
     this.apiDataPartService.getPartTypes()
     .subscribe(
       res => {
-        // console.log('Part Types:', res);
         this.partTypeChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Part Types: ${err}`);
       }
     );
@@ -132,11 +129,9 @@ export class PartSetupComponent implements OnInit {
     this.apiDataEmployeeService.getDesigners()
     .subscribe(
       res => {
-        // console.log('Designers:', res);
         this.designerChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Designers: ${err}`);
       }
     );
@@ -144,22 +139,18 @@ export class PartSetupComponent implements OnInit {
     this.apiDataEmployeeService.getPlanners()
     .subscribe(
       res => {
-        // console.log('Planners:', res);
         this.plannerChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Planners: ${err}`);
       }
     );
 
     this.apiDataProjectService.getBuildStatus().subscribe(
       res => {
-        // console.log('Build Status:', res);
         this.buildStatusChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Build Status: ${err}`);
       });
   }
@@ -169,7 +160,6 @@ export class PartSetupComponent implements OnInit {
     this.part = part;
     this.showPartCard = true;
     this.showScheduleCard = true;
-    // console.log(part);
 
     this.form.patchValue(
       {
@@ -251,7 +241,6 @@ export class PartSetupComponent implements OnInit {
             this.getParts();
         },
         err => {
-          // console.log(err);
           this.cacheService.raiseToast('error', `Create Part Failed: ${err}`);
         }
       );
@@ -289,7 +278,6 @@ export class PartSetupComponent implements OnInit {
           this.apiDataPartService.deletePart(this.part.PartID, this.scheduleId)
           .subscribe(
             del => {
-              // console.log('part deleted');
               this.cacheService.raiseToast('success', 'Part Deleted Successfully');
               this.part = null;
               this.schedule = null;
@@ -299,7 +287,6 @@ export class PartSetupComponent implements OnInit {
               deleteModalSubscription.unsubscribe();
             },
             err => {
-              // console.log(err);
               this.cacheService.raiseToast('error', `Delete Part Failed: ${err}`);
             }
           );
@@ -332,27 +319,25 @@ export class PartSetupComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updatePartSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
+    this.apiDataSchedulesService.updatePartScheduleXML(this.schedule, this.revisionNotes)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
-          // console.log('Saved Part Schedule');
           this.cacheService.raiseToast('success', 'Part Schedule Saved');
         },
         err => {
-          // console.log(err);
+          this.cacheService.raiseToast('error', `Unable to Save Part Schedule: ${err}`);
         }
       );
     } else {
       // no detail records so remove the schedule header record
-      this.apiDataSchedulesService.destroySchedule(this.scheduleId)
+      this.apiDataSchedulesService.destroyScheduleSP(this.scheduleId)
       .subscribe(
         res => {
-          // console.log('Deleted Schedule');
           this.cacheService.raiseToast('success', 'Part Schedule Removed');
         },
         err => {
-          // console.log(err);
+          this.cacheService.raiseToast('error', `Unable to Remove Part Schedule: ${err}`);
         }
       );
     }
@@ -360,15 +345,17 @@ export class PartSetupComponent implements OnInit {
   }
 
   getSchedule() {
-    // console.log(`get part with id: ${this.part ? this.part.PartID : this.form.value.partID}`);
     this.apiDataSchedulesService.getPartSchedule(this.part ? this.part.PartID : this.form.value.partID)
     .subscribe(
       res => {
         if (res.length > 0) {
         this.schedule = res;
+        this.schedule.forEach(element => {
+          element.NeedByDate = moment(element.NeedByDate).format('YYYY-MM-DD');
+        });
         this.revisionNotes = res[0].RevisionNotes;
         this.scheduleId = res[0].ScheduleID;
-        // console.log('Part Schedule:', this.schedule);
+
       } else {
         this.schedule = [];
         this.scheduleId = 0;
@@ -376,7 +363,7 @@ export class PartSetupComponent implements OnInit {
       }
       },
       err => {
-        // console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Get Part Schedule: ${err}`);
       }
     );
   }

@@ -1,7 +1,10 @@
 const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize');
+const models = require('../models/_index')
 const Treeize = require('treeize');
 const token = require('../token/token');
+const moment = require('moment');
+var dateFormat = require('dateformat');
 
 
 function indexProjectSchedule(req, res) {
@@ -13,7 +16,7 @@ function indexProjectSchedule(req, res) {
 			f.ProjectID,				
 			f.CurrentRevision,
 			f.notes as 'RevisionNotes', 
-			convert(varchar(10), d.PLCDate, 120) as 'PLCDate', 	
+			convert(char(10), d.PLCDate, 126) as 'PLCDate', 	
 			d.PLCStatusID,
 			d.Notes,
 			DeleteRow = 0
@@ -24,15 +27,16 @@ function indexProjectSchedule(req, res) {
 		WHERE
 			f.ProjectID = '${projectID}'
 		ORDER BY 
-			NeedByDate`
+			PLCDate`
 
 	sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
 		.then(schedule => {		
+			// the date conversion for PLCDate as YYYY-MM-DD is lost with this sequelize function. Formatting is done in the .ts file
 			res.json(schedule);
 		})
 }
 
-  function updateProjectSchedule(req,res) {
+  function updateProjectScheduleXML(req,res) {
 
  	const decodedToken = token.decode(req.header('X-Token'), res);
 	const revisionNotes = req.params.revisionNotes;
@@ -133,7 +137,7 @@ function indexPartSchedule(req, res) {
 			f.PartID,		
 			f.CurrentRevision,
 			f.notes as 'RevisionNotes', 
-			convert(varchar(10), d.needbydate, 120) as 'NeedByDate', 
+			convert(char(10), d.needbydate, 126) as 'NeedByDate', 
 			d.NeededQuantity, 
 			d.BuildStatusID,
 			d.Notes,
@@ -154,7 +158,7 @@ function indexPartSchedule(req, res) {
 }
 
 
-function updatePartSchedule(req,res) {
+function updatePartScheduleXML(req,res) {
 
 	const decodedToken = token.decode(req.header('X-Token'), res); //ERRORS!
 	const schedule = req.body;
@@ -248,7 +252,7 @@ function updatePartSchedule(req,res) {
 }
 
 
-function destroySchedule(req, res) {
+function destroyScheduleSP(req, res) {
 	const decodedToken = token.decode(req.header('X-Token'), res);
 	const scheduleID = req.params.scheduleID;   
 
@@ -288,10 +292,324 @@ function destroySchedule(req, res) {
 	  })    
   }
 
+  ////////////////////////////////////////////////
+  //////////// THE SEQUELIZE WAY /////////////////
+  ////////////////////////////////////////////////
+
+  function insertSchedule(req, res) {
+
+	// get the schedule object from the request body
+	// schedule object should be in the format:
+	// {
+	// 	projectID: null,
+	// 	partID: null,
+	// 	notes: null
+	// }
+
+	const scheduleData = req.body;
+	const userID = req.params.userID;
+  const today = new Date();
+
+	return sequelize.transaction((t) => {
+  
+	  return models.Schedules
+		.create(
+		  {
+        projectID: scheduleData.projectID,
+        partID: scheduleData.partID,
+        currentRevision: 1,
+        notes: scheduleData.notes, 
+        createdBy: userID,
+        createdAt: today,
+        updatedBy: userID,
+        updatedAt: today
+		  },
+		  {
+			  transaction: t
+		  }
+		)
+		.then(insertSchedule => {
+  
+		  const scheduleID = insertSchedule.id;
+		  console.log('created scheduleID is: ' + scheduleID);
+  
+		})
+  
+	  }).then(() => {
+  
+		res.json({
+		  message: `The new schedule insert has been made successfully`,
+		})
+  
+	  }).catch(error => {
+  
+		console.log(error);
+		res.status(500).json({
+		  title: 'update failed',
+		  error: {message: error}
+		});
+  
+	  })
+  
+  }
+
+  function updateSchedule(req, res) {
+
+  // This function should only be used to update the "notes". CurrentRevision should be incremented automatically
+
+	// get the schedule object from the request body
+	// schedule object should be in the format
+	// {
+  //  scheduleID: null, <-- this is the scheduleID
+	// 	currentRevision: null,
+	// 	notes: null
+	// }
+
+	const scheduleData = req.body;
+	const userID = req.params.userID;
+	const today = new Date();
+  
+	return sequelize.transaction((t) => {
+  
+	  return models.Schedules
+		.update(
+		  {
+        currentRevision: scheduleData.currentRevision + 1,
+        notes: scheduleData.notes, 
+        updatedBy: userID,
+        updatedAt: today
+		  },
+		  {
+        where: {id: scheduleData.scheduleID},
+        transaction: t
+		  }
+		)
+		.then(updateSchedules => {
+  
+		  console.log('Updated Schedules')
+  
+		})
+  
+	  }).then(() => {
+  
+		res.json({
+		  message: `The scheduleID '${scheduleData.scheduleID}' has been updated successfully`
+		})
+  
+	  }).catch(error => {
+  
+		console.log(error);
+		res.status(500).json({
+		  title: 'update failed',
+		  error: {message: error}
+		});
+  
+	  })
+  
+  }
+
+  function destroySchedule(req, res) {
+
+		// If foreign keys exists in the SchedulesDetail table, delete those first
+
+    // get the schedule object from the request body
+    // schedule object should be in the format
+    // {
+    //  scheduleID: null
+    // }
+
+    const scheduleData = req.body;
+    const userID = req.params.userID;
+
+    return sequelize.transaction((t) => {
+
+			return models.SchedulesDetail
+				.destroy({
+					where: {scheduleID: scheduleData.scheduleID},
+					transaction: t
+				}).then(destroySchedulesDetail => {
+
+					return models.Schedules
+						.destroy({
+							where: {id: scheduleData.scheduleID},
+							transaction: t
+						}).then(destroySchedule => {
+			
+							console.log(`ScheduleID ${scheduleData.scheduleID} destroyed`)
+			
+						})
+
+				})
+  
+      }).then(() => {
+  
+        res.json({
+          message: `The scheduleID ${scheduleData.scheduleID} has been deleted successfully`,
+        })
+  
+      }).catch(error => {
+  
+        console.log(error);
+        res.status(500).json({
+          title: 'update failed',
+          error: {message: error}
+        });
+  
+      })
+  
+  }
+
+  function insertScheduleDetailBulk(req, res) {
+
+    // There are certain constraints to be aware of:
+    // - schedule should either be a set of "BuildSchedule" which includes the fields needByDate, neededQuantity, buildStatusID
+    // - OR a PLC type schedule which includes the fields plcDateEstimate, plcDateCommit, plcDate, plcStatusID
+    // Should not mix build and plc type schedules
+    //
+    // bulk schedule object should be in the format. Remember, this accepts mulitple objects in a single array for multiple inserts:
+    // [{
+    //   id: null,
+    //   currentRevision: null,
+    //   needByDate: null,
+    //   neededQuantity: null,
+    //   buildStatusID: null,
+    //   plcDateEstimate: null,
+    //   plcDateCommit: null,
+    //   plcDate: null, <-- Date format can be 'YYYY-MM-DD'
+    //   plcStatusID: null,
+    //   notes: null, 
+    // }, 
+    // {...}, {...}]
+  
+    const scheduleData = req.body;
+    const userID = req.params.userID;
+    const today = new Date();
+
+    // append a keys to format the created and updated fields
+    scheduleData.forEach(schedule => {
+      schedule.createdBy = userID
+      schedule.createdAt = today,
+      schedule.updatedBy = userID
+      schedule.updatedAt = today
+    });
+    console.log("awlieiolwauehfliawehflaiweuh")
+    console.log(scheduleData)
+    return sequelize.transaction((t) => {
+    
+      return models.SchedulesDetail
+      .bulkCreate(
+        scheduleData,
+        {
+          transaction: t
+        }
+      )
+      .then(insertScheduleDetailBulk => {
+
+        console.log('bulk creation for scheduleID scheduleData.id');
+    
+      })
+    
+      }).then(() => {
+    
+				res.json({
+					message: `The bulk schedule insert has been made successfully`,
+				})
+    
+      }).catch(error => {
+    
+				console.log(error);
+				res.status(500).json({
+					title: 'update failed',
+					error: {message: error}
+				});
+			
+      })
+    
+    }
+  
+  function updateScheduleDetailBulk(req, res) {
+  
+    // bulk update schedule object should be in the format. Remember, this accepts mulitple objects in a single array for multiple inserts:
+    // [{
+    //   scheduleID: null,
+    //   currentRevision: null,
+    //   needByDate: null,
+    //   neededQuantity: null,
+    //   buildStatusID: null,
+    //   plcDateEstimate: null,
+    //   plcDateCommit: null,
+    //   plcDate: null, <-- Date format can be 'YYYY-MM-DD'
+    //   plcStatusID: null,
+    //   notes: null, 
+    // }, 
+    // {...}, {...}]
+  
+		const scheduleData = req.body;
+		const scheduleID = req.params.scheduleID
+		const userID = req.params.userID;
+		const today = new Date();
+
+		// append a keys to format the created and updated fields
+		scheduleData.forEach(schedule => {
+			schedule.createdBy = userID
+      schedule.createdAt = today,
+      schedule.updatedBy = userID
+      schedule.updatedAt = today
+			});
+
+			console.log('Schedule Data', scheduleData)
+
+		return sequelize.transaction((t) => {
+
+			// delete all scheduleID and insert new ones as replacements
+			return models.SchedulesDetail
+				.destroy({
+					where: {
+						scheduleID: scheduleID
+					},
+					transaction: t
+				}).then( deletedRows => {
+					
+				return models.SchedulesDetail
+					.bulkCreate(
+						scheduleData,
+						{
+							transaction: t
+						}).then(updateScheduleDetailBulk => {
+
+							console.log(`bulk update for scheduleID ${scheduleID}`);
+				
+						})
+			
+				})
+				
+		}).then(() => {
+
+			res.json({
+				message: 'Your updated schedules have been successfully saved!'
+			})
+
+		}).catch(error => {
+
+			// console.log(error);
+			res.status(500).json({
+				message: 'update failed',
+				error: error
+			});
+
+		})
+    
+  }
+  
 module.exports = {
 	indexProjectSchedule: indexProjectSchedule,
 	indexPartSchedule: indexPartSchedule,
-	updateProjectSchedule: updateProjectSchedule,
-	updatePartSchedule: updatePartSchedule,	
-	destroySchedule: destroySchedule
+	updateProjectScheduleXML: updateProjectScheduleXML,
+	updatePartScheduleXML: updatePartScheduleXML,	
+  destroyScheduleSP: destroyScheduleSP,
+  insertSchedule: insertSchedule,
+  updateSchedule: updateSchedule,
+  destroySchedule: destroySchedule,
+	insertScheduleDetailBulk: insertScheduleDetailBulk,
+	updateScheduleDetailBulk: updateScheduleDetailBulk
 }

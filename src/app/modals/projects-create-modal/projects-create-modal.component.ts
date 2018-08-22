@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener} from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { ApiDataEmployeeService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
+import { ApiDataEmployeeService, ApiDataProjectService, ApiDataSchedulesService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { WebsocketService } from '../../_shared/services/websocket.service';
@@ -20,13 +20,15 @@ export class ProjectsCreateModalComponent implements OnInit {
   userID: any;
   userEmail: string;
   projectTypesList: any;
-  userPLMData: any;
   createdProject: any;
+  projectNameRegex: any;
+  managerEmailAddress: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataEmployeeService: ApiDataEmployeeService,
+    private apiDataSchedulesService: ApiDataSchedulesService,
     private cacheService: CacheService,
     private authService: AuthService,
     private websocketService: WebsocketService
@@ -39,16 +41,15 @@ export class ProjectsCreateModalComponent implements OnInit {
      // get the user id
      this.userID = this.authService.loggedInUser.id;
      this.userEmail = this.authService.loggedInUser.email;
+     this.managerEmailAddress = this.authService.loggedInUser.managerEmailAddress;
 
-     if (!this.cacheService.userPLMData) {
-      this.getUserPLMData(this.userEmail);
-     }
   }
 
   resetForm() {
+    this.projectNameRegex = /^[-a-zA-Z0-9]+(\s+[-a-zA-Z0-9]+)*$/;
     // initialize the formgroup
     this.form = this.formBuilder.group({
-      projectName: [null, [Validators.required]],
+      projectName: [null, [Validators.required, Validators.minLength(2), Validators.pattern(this.projectNameRegex)]],
       // projectTypeID: [null, [Validators.required]],
       projectDescription: [null],
       projectNotes: [null],
@@ -88,7 +89,7 @@ export class ProjectsCreateModalComponent implements OnInit {
       }
     }
 
-    project.projectOrgManager = this.cacheService.userPLMData[0].SUPERVISOR_EMAIL_ADDRESS;
+    project.projectOrgManager = this.managerEmailAddress;
 
     this.apiDataProjectService.createProject(project, this.userID)
     .subscribe(
@@ -104,37 +105,5 @@ export class ProjectsCreateModalComponent implements OnInit {
     );
 
   }
-
-  getUserPLMData(userEmailAddress: string) {
-    this.apiDataEmployeeService.getUserPLMData(userEmailAddress)
-    .subscribe(
-      res => {
-        // console.log('User PLM Data Retrieved');
-        this.cacheService.userPLMData = res;
-      },
-      err => {
-        // console.log(err);
-      }
-    );
-  }
-
-  // formValidation() {
-  //   'use strict';
-  //   window.addEventListener('load', function() {
-  //     // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  //     const forms = document.getElementsByClassName('needs-validation');
-
-  //     // Loop over them and prevent submission
-  //     const validation = Array.prototype.filter.call(forms, function(form) {
-  //       form.addEventListener('submit', function(event) {
-  //         if (form.checkValidity() === false) {
-  //           event.preventDefault();
-  //           event.stopPropagation();
-  //         }
-  //         form.classList.add('was-validated');
-  //       }, false);
-  //     });
-  //   }, false);
-  // }
 
 }
