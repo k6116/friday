@@ -3,6 +3,7 @@ import { ApiDataSchedulesService, ApiDataProjectService,
   ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
+import { ToolsService } from '../../_shared/services/tools.service';
 import * as moment from 'moment';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 
@@ -35,6 +36,7 @@ export class ProjectsSetupsComponent implements OnInit {
     private apiDataSchedulesService: ApiDataSchedulesService,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataEmployeeService: ApiDataEmployeeService,
+    private toolsService: ToolsService,
     private authService: AuthService,
     private cacheService: CacheService
   ) { }
@@ -102,7 +104,7 @@ export class ProjectsSetupsComponent implements OnInit {
         this.searchProjects = ' '; // this will avoid shoing a blank list of projects.
       },
       err => {
-        console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project: ${err}`);
       }
     );
   }
@@ -112,11 +114,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectTypesList()
     .subscribe(
       res => {
-        console.log('Project Types:', res);
         this.projectTypeChoices = res;
       },
       err => {
-        console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Types: ${err}`);
       }
     );
@@ -124,11 +124,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectDepartments()
     .subscribe(
       res => {
-        console.log('Project Departments:', res);
         this.departmentChoices = res;
       },
       err => {
-        console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Departments: ${err}`);
       }
     );
@@ -136,11 +134,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectGroups()
     .subscribe(
       res => {
-        console.log('Project Groups:', res);
         this.groupChoices = res;
       },
       err => {
-        console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Groups: ${err}`);
       }
     );
@@ -148,11 +144,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectPriorities()
     .subscribe(
       res => {
-        console.log('Project Priorities:', res);
         this.priorityChoices = res;
       },
       err => {
-        console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Priorities: ${err}`);
       }
     );
@@ -160,11 +154,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectPLCStatus()
     .subscribe(
       res => {
-        console.log('Project PLC Status:', res);
         this.plcStatusChoices = res;
       },
       err => {
-        console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain PLC Status: ${err}`);
       }
     );
@@ -229,7 +221,6 @@ export class ProjectsSetupsComponent implements OnInit {
           this.getProjects();
         },
         err => {
-          console.log(err);
           this.cacheService.raiseToast('error', `Project Schedule Failed to Update: ${err}`);
         }
       );
@@ -250,7 +241,6 @@ export class ProjectsSetupsComponent implements OnInit {
             this.getProjects();
         },
         err => {
-          console.log(err);
           this.cacheService.raiseToast('error', `Create Project Failed: ${err}`);
         }
       );
@@ -288,7 +278,6 @@ export class ProjectsSetupsComponent implements OnInit {
           this.apiDataProjectService.deleteProjectSetup(this.project.ProjectID, this.scheduleId, this.authService.loggedInUser.id)
           .subscribe(
             del => {
-              console.log('project deleted');
               this.cacheService.raiseToast('success', 'Project Removed Successfully');
               this.project = null;
               this.schedule = null;
@@ -298,7 +287,6 @@ export class ProjectsSetupsComponent implements OnInit {
               deleteModalSubscription.unsubscribe();
             },
             err => {
-              console.log(err);
               this.cacheService.raiseToast('error', `Delete Propject Failed: ${err}`);
             }
           );
@@ -335,11 +323,10 @@ export class ProjectsSetupsComponent implements OnInit {
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
-          console.log('Saved Project Schedule');
           this.cacheService.raiseToast('success', 'Project Schedule Saved');
         },
         err => {
-          console.log(err);
+          this.cacheService.raiseToast('error', `Unable to Update Project Schedule: ${err}`);
         }
       );
     } else {
@@ -347,11 +334,10 @@ export class ProjectsSetupsComponent implements OnInit {
       this.apiDataSchedulesService.destroySchedule(this.scheduleId)
       .subscribe(
         res => {
-          console.log('Deleted Schedule');
           this.cacheService.raiseToast('success', 'Project Schedule Removed');
         },
         err => {
-          console.log(err);
+          this.cacheService.raiseToast('error', `Unable to Remove Project Schedule: ${err}`);
         }
       );
     }
@@ -366,16 +352,27 @@ export class ProjectsSetupsComponent implements OnInit {
         this.schedule = res;
         this.revisionNotes = res[0].RevisionNotes;
         this.scheduleId = res[0].ScheduleID;
-        console.log('Project Schedule:', this.schedule);
-      } else {
+        } else {
         this.schedule = [];
         this.scheduleId = 0;
         this.createDefaultScheduleRow();
       }
       },
       err => {
-        console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project Schedule: ${err}`);
       }
     );
+  }
+
+  // class binding using the ngClass directive in the html
+  // to set project type icon (icon font class)
+  setProjctTypeIconClass(projectTypeName) {
+     return this.toolsService.setProjctTypeIconClass(projectTypeName);
+  }
+
+  // style binding using the ngStyle directive in the html
+  // to set the color for the project type name and icon
+  setProjctTypeColor(projectTypeName) {
+    return this.toolsService.setProjctTypeColor(projectTypeName);
   }
 }

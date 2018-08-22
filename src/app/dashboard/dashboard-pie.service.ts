@@ -153,20 +153,28 @@ export class DashboardPieService {
         }
       },
       tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        pointFormat: '{series.name}: <b>{point.percentage:.0f}%</b>'
       },
       plotOptions: {
         series: {
           dataLabels: {
             enabled: true,
-            format: '{point.name}: {point.y}%'
+            format: '{point.name}: {point.y:.0f}%'
           }
         }
       },
       series: [{
         name: 'FTE %',
         colorByPoint: true,
-          data: seriesData
+        data: seriesData,
+        point: {
+          events: {
+            click: function(e) {
+              const p = e.point;
+              // console.log(p);
+            }.bind(this)
+          }
+        }
       }],
       drilldown: {
         series: drilldownSeries

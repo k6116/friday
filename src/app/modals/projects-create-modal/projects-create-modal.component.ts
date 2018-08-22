@@ -63,7 +63,7 @@ export class ProjectsCreateModalComponent implements OnInit {
         this.projectTypesList = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -93,13 +93,13 @@ export class ProjectsCreateModalComponent implements OnInit {
     this.apiDataProjectService.createProject(project, this.userID)
     .subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
         project.projectID = res.newProjectID;
         this.createSuccess.emit(project);
         this.websocketService.sendNewProject(res);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
 
@@ -109,11 +109,11 @@ export class ProjectsCreateModalComponent implements OnInit {
     this.apiDataEmployeeService.getUserPLMData(userEmailAddress)
     .subscribe(
       res => {
-        console.log('User PLM Data Retrieved');
+        // console.log('User PLM Data Retrieved');
         this.cacheService.userPLMData = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }

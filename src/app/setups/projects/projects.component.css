@@ -88,7 +88,55 @@ h2.view-encap-test {
   -ms-overflow-style: -ms-autohiding-scrollbar;
   background-color: white
 }
-.projecttype {   
-  color: white;
-  background-color: lightslategray;
+
+div.project-card {
+  height: 100px;
+  width: 90%;
+  margin-right: 10px;  /* leaves a bit of space between the card and the vertical scrollbar */
+  border: 1px solid lightgrey;
+  background-color: white;
+  transition: box-shadow 0.2s;
+  overflow: hidden;
+}
+
+div.project-details-cont {
+  display: inline-block;
+  padding-top: 20px;
+  padding-left: 5px;
+}
+
+div.project-card:hover {
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+div.project-type-cont {
+  display: inline-block;
+  position: relative;
+  width: 150px;
+  height: 100%;
+  border-right: 1px solid lightgrey;
+  background-color: rgb(232, 232, 232);
+  vertical-align: top;  /* this is key, otherwise will push down the inline block to the right if it has top padding */
+  padding-top: 20px;
+}
+
+div.project-type-name {
+  margin: 0 auto;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+div.project-type-icon {
+  width: 50px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  font-size: 25px;
+  text-align: center;
 }

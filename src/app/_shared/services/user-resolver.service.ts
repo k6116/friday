@@ -26,17 +26,17 @@ export class UserResolverService implements Resolve<Observable<string>> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     if (this.authService.loggedInUser) {
-      console.log('returning logged in user data from memory');
-      console.log(this.authService.loggedInUser);
+      // console.log('returning logged in user data from memory');
+      // console.log(this.authService.loggedInUser);
       return Observable.of({jarvisUser: this.authService.loggedInUser});
     } else {
       const token = localStorage.getItem('jarvisToken');
       if (token) {
-        console.log('logged in user does not exist in memory, getting from token instead');
+        // console.log('logged in user does not exist in memory, getting from token instead');
         return this.apiDataAuthService.getInfoFromToken(token);
       } else {
         // use router to reroute to login page or error page?
-        console.error('returning empty observable due to no token');
+        // console.error('returning empty observable due to no token');
         return Observable.empty();
       }
     }

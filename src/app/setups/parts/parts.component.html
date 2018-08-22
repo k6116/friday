@@ -5,7 +5,7 @@
     <div class="input-group">
       <input class="searchInput" type="text" [(ngModel)]="searchParts" (change)="onSearchInputChange($event)" placeholder="Search Parts">
       <div class="input-group-append">
-        <button [disabled]="!searchParts.trim()" class="btn btn-primary btn-fte-toolbar" (click)="onCreatePartClick()" style="display: block">
+        <button [disabled]="searchParts && !searchParts.trim()" class="btn btn-primary btn-fte-toolbar" (click)="onCreatePartClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
         </button>       
       </div>
@@ -65,7 +65,7 @@
         </div>
         <form [formGroup] = 'form'>
           <div class="card-body">
-           <table class="table table-bordered table-light">
+           <table class="table table-bordered">
              <tr>
                <td>Description</td>
                <td colspan="3"><input type=text class="form-control" formControlName="description"></td>            
@@ -92,7 +92,7 @@
                   </tr>
                   <tr>
                     <td>Item Status</td>
-                    <td><input type=text class="form-control" maxlength="100" formControlName="itemStatus"></td>
+                    <td><input type=text class="form-control" maxlength="100" formControlName="itemStatus"></td>                                  
                     <td>Planner</td>
                     <td><select class="form-control" formControlName="plannerEmployeeID"><option class="dropdown-item" *ngFor="let item of plannerChoices" [value]= "item.EmployeeID">
                       {{item.FullName}}
@@ -136,7 +136,7 @@
           </div>
         </div>
         <div class="card-body">
-          <table class="table table-bordered table-hover table-light">
+          <table class="table table-bordered table-hover">
             <thead>
               <th>Need By</th>
               <th>Quantity</th>

@@ -66,7 +66,7 @@ export class BomEditorComponent implements OnInit {
     const bomSubscription = this.apiDataBomService.showSingleBom(selected).subscribe( res => {
       this.bill = res;
       bomSubscription.unsubscribe();
-      console.log(this.bill);
+      // console.log(this.bill);
 
       // initialize bomtree
       this.bomTree = {
@@ -79,7 +79,7 @@ export class BomEditorComponent implements OnInit {
       const blaa = this.bomTraverse(0, 1);
       this.bomTree.children = blaa[0];
       this.showBom = true;
-      console.log(this.bomTree);
+      // console.log(this.bomTree);
     });
   }
 

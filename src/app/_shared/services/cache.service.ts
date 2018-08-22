@@ -56,6 +56,10 @@ export class CacheService {
   // this is needed since the permissions guard makes a request from the server so takes some time
   navigatedPath = new EventEmitter<string>();
 
+  // used to store the background image object (path, caption) in the event they can't be retrived from the server
+  // (user is offline), the cached version will be used
+  backgroundImage: any;
+
 
   constructor() { }
 

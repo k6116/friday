@@ -25,6 +25,8 @@ router.get('/indexProjectsFilterProjectType', controllers.project.indexProjectsF
 router.get('/indexProjectRoster/:projectID', controllers.project.indexProjectRoster);
 router.get('/indexUserProjectList/:userID', controllers.project.indexUserProjectList);
 router.get('/indexProjectTypesList/', controllers.project.indexProjectTypesList);
+router.get('/indexProjectStatusesList/', controllers.project.indexProjectStatusesList);
+router.get('/indexProjectPrioritiesList/', controllers.project.indexProjectPrioritiesList);
 router.post('/insertProject/:userID', controllers.project.insertProject);
 router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/destroyProject/:userID', controllers.project.destroyProject);   // PROTECT
@@ -142,6 +144,7 @@ router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', contro
 // JOB TITLE CONTROLLER (ADMIN)
 router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
 router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
+router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
 // FTE CONTROLLER
 router.get('/fte/fte/index/indexUserData', controllers.fte.indexUserData);

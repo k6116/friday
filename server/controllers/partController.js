@@ -101,8 +101,9 @@ function updatePart(req, res) {
         .catch( error => {                   
             res.status(500).json({
             title: 'update part failed',
-            error: {message: error}
-            });    
+            error: {message: error.message}
+            }); 
+           
         })          
 }
 
@@ -124,7 +125,7 @@ function createPart(req, res) {
                     oracleItemNumber: part.oracleItemNumber,      
                     oracleDescription: part.oracleDescription,      
                     notes: part.notes,      
-                    itemStatus: part.itemStatus,
+                  //  itemStatus: part.itemStatus,
                     createdBy: decodedToken.userData.id,
                     createdAt: new Date(),
                     updatedBy: decodedToken.userData.id,

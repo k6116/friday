@@ -49,21 +49,21 @@ export class ProfileModalComponent implements OnInit {
       .subscribe(
         // pulls JobTitleID, JobTitleName and  all subtitles from Jarvis Employees table
         res => {
-          console.log('JobTitleList:', res);
+          // console.log('JobTitleList:', res);
           this.jobTitles = res;
           // Loop through res and find matching name to jobTitleID
           for (let i = 0; i < this.jobTitles.length; i++) {
             if (this.jobTitles[i].id === this.jobTitleID) {
               this.jobTitleName = this.jobTitles[i].jobTitleName;
               this.jobTitleIndex = i;
-              console.log('My Job Title: ' + this.jobTitleName);
+              // console.log('My Job Title: ' + this.jobTitleName);
             }
           }
           // Load the appropriate list of subtitles
           this.getJobSubTitleList();
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
   }
@@ -72,7 +72,7 @@ export class ProfileModalComponent implements OnInit {
 
     if (this.jobTitleIndex) {
       this.jobSubTitleList = this.jobTitles[this.jobTitleIndex].jobSubTitles;
-      console.log('JobSubTitleList:', this.jobSubTitleList);
+      // console.log('JobSubTitleList:', this.jobSubTitleList);
     }
 
     // loop through jobSubTitlelist to get jobSubTitleName
@@ -95,7 +95,7 @@ export class ProfileModalComponent implements OnInit {
   selectJobTitleChangeHandler (event: any) {
     // get updated jobtitle from combobox with event.target.value
     this.jobTitleName = event.target.value;
-    console.log('Job Title Changed to:', this.jobTitleName);
+    // console.log('Job Title Changed to:', this.jobTitleName);
     // find id to jobTitleName => REPLACED WITH FIND
     for (let i = 0; i < this.jobTitles.length; i++) {
       if (this.jobTitles[i].jobTitleName === this.jobTitleName) {
@@ -120,7 +120,7 @@ export class ProfileModalComponent implements OnInit {
           this.jobSubTitleID = this.jobSubTitleList[i].id;
       }
     }
-    console.log('My New Job Sutitle: ' + this.jobSubTitleName + ', ' + this.jobSubTitleID);
+    // console.log('My New Job Sutitle: ' + this.jobSubTitleName + ', ' + this.jobSubTitleID);
   }
 
   onUpdateButtonClick() {
@@ -131,7 +131,7 @@ export class ProfileModalComponent implements OnInit {
     this.apiDataJobTitleService.updateEmployeeJobTitle(this.newJobTitleData)
       .subscribe(
         res => {
-          console.log(res);
+          // console.log(res);
           this.newJobTitleID = this.jobTitleID;
           // TEMP CODE: update the loggedInUser object with the saved jobTitleID and jobSubTitleID
           // this should be refactored to get a new token first, and also get the job title and subtitle names in the token payload so
@@ -140,7 +140,7 @@ export class ProfileModalComponent implements OnInit {
           this.authService.loggedInUser.jobSubTitleID = this.jobSubTitleID;
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
   }

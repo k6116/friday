@@ -1,3 +1,13 @@
+<a name="1.8.0"></a>
+# [1.8.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.7.2...v1.8.0) (2018-08-20)
+
+
+### Features
+
+* **Project Search:** added projects search page ([ce77080](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/ce77080))
+
+
+
 <a name="1.7.2"></a>
 ## [1.7.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.7.1...v1.7.2) (2018-08-17)
 

@@ -83,7 +83,7 @@ export class PerformanceComponent implements OnInit {
       // myWorker.postMessage(2);
       // myWorker.onmessage = function(e) {
 
-      //   console.log('Message received from worker: ' + e.data);
+      //   // console.log('Message received from worker: ' + e.data);
       // };
     }
 
@@ -110,7 +110,7 @@ export class PerformanceComponent implements OnInit {
           const t1 = performance.now();
           const tDiff = moment.utc(t1 - t0);
 
-          console.log(`retrieve projects took ${tDiff} milliseconds`);
+          // console.log(`retrieve projects took ${tDiff} milliseconds`);
 
           if (iteration % (this.cycles / 10) === 0) {
           this.singleCycleLabels.push('C' + iteration.toString());
@@ -118,11 +118,11 @@ export class PerformanceComponent implements OnInit {
           }
 
           if (iteration === this.cycles) {
-            console.log('length before reduction');
-            console.log(this.singleCycleData[0].data.length);
+            // console.log('length before reduction');
+            // console.log(this.singleCycleData[0].data.length);
             const sum = this.singleCycleData[0].data.reduce(this.getSum) / this.singleCycleData[0].data.length;
             const sumAvg = Math.floor(sum);  // convert to integer
-            console.log(`full cycle took ${sumAvg} milliseconds`);
+            // console.log(`full cycle took ${sumAvg} milliseconds`);
 
             this.cycleChartLabels.push('T' + (this.cycleChartLabels.length + 1).toString() + '(' + this.cycles.toString() + ')');
             this.cycleChartData[0].data.push(sumAvg);
@@ -135,8 +135,8 @@ export class PerformanceComponent implements OnInit {
 
        },
         err => {
-          console.log('get project data error:');
-          console.log(err);
+          // console.log('get project data error:');
+          // console.log(err);
 
         }
       );
@@ -153,7 +153,7 @@ export class PerformanceComponent implements OnInit {
     }
 
     public chartClicked(e: any): void {
-      console.log(e);
+      // console.log(e);
     }
 
 

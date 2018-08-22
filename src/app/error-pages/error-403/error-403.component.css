@@ -1,0 +1,54 @@
+
+
+div.error-cont {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 1000px;
+  height: 400px;
+}
+
+div.error-header-cont {
+  text-align: center;
+}
+
+div.error-icon-cont {
+  font-size: 100px;
+  display: inline-block;
+  color: #9f1010;
+  margin-right: 25px;
+  position: relative;
+  top: 5px;
+  line-height: 1;
+}
+
+div.error-status-code-cont {
+  display: inline-block;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 125px;
+  font-weight: 600;
+  color: #6d6e6e;
+  letter-spacing: 12px;
+  line-height: 1;
+}
+
+div.error-status-text-cont {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 65px;
+  font-weight: 600;
+  color: #919191;
+  text-align: center;
+}
+
+div.error-description-cont {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 27px;
+  font-weight: 600;
+  color: #919191;
+  text-align: center;
+  margin-top: 20px;
+}
+
