@@ -139,3 +139,7 @@ websockets.listen(server);
 //SET EMAIL SCHEDULES
 email.setSchedules();
 
+process.on('SIGINT', () => {
+  console.log('node process stopping...');
+  process.exit();
+});
