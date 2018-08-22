@@ -20,21 +20,18 @@ export class SearchProjectsComponent implements OnInit {
   @ViewChild('filterDropDownVC') filterDropDownVC: ElementRef;
 
   projects: any;
-  projectsToDisplay: any;
+  showSpinner: boolean;
   showPage: boolean;
-  projectTypeBinding: any;
   numProjectsToDisplayAtOnce: number;
-  filterString: string;
   totalProjectsCount: number;  // total number of projects
   addedProjectsCount: number;  // number of projects currently added to the page via infinate scroll (increments of 100)
   filteredProjectsCount: number;  // number of project currently displayed, if there is a filter set
   numProjectsToDisplay: number; // number of projects to show initially and to add for infinate scroll
+  numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
   filters: any[];
+  filterString: string;
   selectedFilter: any;  // selected filter object from the dropdown (from this.filters)
   dropDownData: any;
-  numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
-  showSpinner: boolean;
-  cardFixedWidth: number; // total width of fixed width areas of the card (type, attributes)
   subscription1: Subscription;
 
 
