@@ -35,6 +35,7 @@ div.login-cont {
   bottom: 50px;
   background-color: white;
   opacity: 0.9;
+  overflow: hidden;
 }
 
 @media (max-height: 650px) {
