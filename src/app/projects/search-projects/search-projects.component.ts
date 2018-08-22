@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
@@ -14,7 +14,7 @@ declare var $: any;
   styleUrls: ['./search-projects.component.css', '../../_shared/styles/common.css'],
   providers: [FilterPipe]
 })
-export class SearchProjectsComponent implements OnInit, AfterViewInit {
+export class SearchProjectsComponent implements OnInit {
 
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
   @ViewChild('filterDropDownVC') filterDropDownVC: ElementRef;
@@ -36,11 +36,6 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
   showSpinner: boolean;
   cardFixedWidth: number; // total width of fixed width areas of the card (type, attributes)
   subscription1: Subscription;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    // this.resizeProjectCardsNameCont();
-  }
 
 
   constructor(
@@ -125,8 +120,8 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
           // console.log(res);
           // store the projects
           this.projects = res[0];
-          console.log('projects list:');
-          console.log(this.projects);
+          // console.log('projects list:');
+          // console.log(this.projects);
           // store the dropdown data
           this.dropDownData = res.slice(1);
           // add an empty object to each drop down list, for the default first selection
@@ -143,10 +138,6 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
           this.showPage = true;
           // show the footer
           this.toolsService.showFooter();
-          setTimeout(() => {
-            this.calcFixedWidthArea();
-            // this.resizeProjectCardsNameCont();
-          }, 0);
         },
         err => {
           // hide the spinner
@@ -162,50 +153,6 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
       this.refreshProjectCards();
     });
 
-  }
-
-
-  ngAfterViewInit() {
-    // setTimeout(() => {
-    //   this.calcFixedWidthArea();
-    // }, 1000);
-  }
-
-
-  calcFixedWidthArea() {
-    // note: use outerWidth to get the width including the borders
-    // note: use eq(0) to return the first card; since all the cards will be the same
-    const projectTypeContWidth = $('div.project-type-cont').eq(0).outerWidth();
-    const projectAttrsContWidth = $('div.project-card-right-cont').eq(0).outerWidth();
-    // store the total fixed width (for performance, these will not change)
-    this.cardFixedWidth = projectTypeContWidth + projectAttrsContWidth;
-    console.log('fixed width area:');
-    console.log(this.cardFixedWidth);
-  }
-
-
-  resizeProjectCardsNameCont() {
-    setTimeout(() => {
-      const t0 = performance.now();
-      // get the total card width
-      const projectCardWidth = $('div.project-card').eq(0).outerWidth();
-      // calculate the space available for the project name and description
-      const availableWidth = projectCardWidth - this.cardFixedWidth - (40 * 2);
-      // console.log('availalbe width for name and description');
-      // console.log(availableWidth);
-      // determine the width
-      let setWidth;
-      if (availableWidth >= 1000) {
-        setWidth = 1000;
-      } else if (availableWidth <= 500) {
-        setWidth = 500;
-      } else {
-        setWidth = availableWidth;
-      }
-      $('div.project-details-cont').css('width', setWidth);
-      const t1 = performance.now();
-      // console.log(`resize project cards name container took ${t1 - t0} milliseconds`);
-    }, 100);
   }
 
 
@@ -254,34 +201,23 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
   }
 
 
-  // onFilterStringKeypress(event) {
-  //   // setTimeout(() => {
-  //   //   this.resizeProjectCardsNameCont();
-  //   // }, 0);
-  //   console.log('filter string keypress event triggered:');
-  //   console.log(event);
-  // }
-
-
+  // look for instances where we want to log the search for click tracking
   onFilterStringKeydown(event) {
+    // get the key code
+    // REF: https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
     const key = event.keyCode || event.charCode;
-    // console.log('filter string keydown event triggered with key:');
-    // console.log(key);
     // 8 = backspace; 46 = delete
-    if ( key === 8 || key === 46 ) {
-      console.log('backspace or delete key pressed');
-      console.log(event);
-      console.log(this.filterStringVC.nativeElement.selectionStart);
-      console.log(this.filterStringVC.nativeElement.selectionEnd);
-      const highlightIndexStart = this.filterStringVC.nativeElement.selectionStart;
-      const highlightIndexEnd = this.filterStringVC.nativeElement.selectionEnd;
-      const numHighlightedCharacters = highlightIndexEnd - highlightIndexStart;
-      console.log('number of highlighted characters:');
-      console.log(numHighlightedCharacters);
-      console.log('filter string:');
-      console.log(this.filterString);
-      if (numHighlightedCharacters === this.filterString.length) {
-        console.log('click tracking record logged, on filter clear with backspace or delete');
+    // if ( key === 8 || key === 46 ) {
+    if (this.filterString) {
+      // get the number of selected characters
+      const selectedIndexStart = this.filterStringVC.nativeElement.selectionStart;
+      const selectedIndexEnd = this.filterStringVC.nativeElement.selectionEnd;
+      const numSelectedCharacters = selectedIndexEnd - selectedIndexStart;
+      // if all of the text is selected, and the user either hits the backspace, delete,
+      // or any other character (starting a new search), log the search for click tracking
+      // NOTE: since this is key down event the filter string will be the previous string (no need to cache)
+      if (numSelectedCharacters === this.filterString.length) {
+        // log a record in the click tracking table
         this.clickTrackingService.logClickWithEvent(`page: Search Projects,
           text: ${this.selectedFilter.displayName} > ${this.filterString}`);
       }
@@ -297,9 +233,6 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
     this.filterStringVC.nativeElement.focus();
     // update the count display (showing x of y) by calling onFilterStringChange()
     this.onFilterStringChange();
-    // update the width of the project name and description container using jQuery
-    // must be done because filter pipe will add and remove cards from the dom
-    // this.resizeProjectCardsNameCont();
   }
 
 
@@ -313,8 +246,6 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
       this.clearFilter();
       // set the filter object
       this.selectedFilter = foundFilter;
-      console.log('selected filter:');
-      console.log(this.selectedFilter);
     }
     // set the focus on the input box, if it is not a dropdown
     if (!foundFilter.isDropdown) {
@@ -339,19 +270,17 @@ export class SearchProjectsComponent implements OnInit, AfterViewInit {
       // log a record in the click tracking table
       this.clickTrackingService.logClickWithEvent(`page: Search Projects, text: ${this.selectedFilter.displayName} > ${dropDownValue}`);
     } else {
-      // if there is no dropdown value (first selection, which is null), clear the filter
+      // if there is no dropdown value, clear the filter
       this.clearFilter();
     }
-    // update the width of the project name and description container using jQuery
-    // must be done because filter pipe will add and remove cards from the dom
-    // this.resizeProjectCardsNameCont();
   }
 
 
-  // log a click on filter input box if there is a filter/search term entered
+  // if there is a filter/search term entered, log it for click tracking on lose focus
+  // NOTE: clicking the x icon will also trigger this
   onFilterLostFocus() {
     if (this.filterString) {
-      console.log('click tracking record logged, on filter lost focus');
+      // log a record in the click tracking table
       this.clickTrackingService.logClickWithEvent(`page: Search Projects, text: ${this.selectedFilter.displayName} > ${this.filterString}`);
     }
   }
