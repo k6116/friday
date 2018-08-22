@@ -213,10 +213,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.getPlanList(this.authService.loggedInUser.id).then(
       res1 => {
       if (this.defaultPlan === undefined) {
-        this.getTeam('ethan_hunt@keysight.com').then(
+        this.getTeam('benjamin_zaks@keysight.com').then(
           res2 => this.createNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1'));
       } else {
-        this.getTeam('ethan_hunt@keysight.com').then(res => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan).then(
+        this.getTeam('benjamin_zaks@keysight.com').then(res => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan).then(
           res2 => {
             this.createFtePlanningChartXAxis();
             this.createFtePlanningChartData();
@@ -1119,10 +1119,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           this.getPlanList(this.authService.loggedInUser.id).then(
             res1 => {
             if (this.defaultPlan === undefined) {
-              this.getTeam('ethan_hunt@keysight.com').then(
+              this.getTeam('benjamin_zaks@keysight.com').then(
                 res2 => this.createNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1'));
             } else {
-              this.getTeam('ethan_hunt@keysight.com').then(res3 => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan));
+              this.getTeam('benjamin_zaks@keysight.com').then(res3 => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan));
             }
           });
           this.currentMonth = moment(1, 'DD');
@@ -1305,6 +1305,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           }
         },
         series: this.fteChartData
+        // series: {name: 'TEST', data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
     };
 
     this.ftePlanningChart = Highcharts.chart('FTEPlanningChart', this.ftePlanningSeriesOptions);

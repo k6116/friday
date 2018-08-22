@@ -167,7 +167,7 @@ div.fte-table-row.tutorial-part3.introjs-showElement.introjs-relativePosition {
     background-color: rgb(245, 245, 245);
     position: sticky;
     left: 30px;
-    min-width: 170px;
+    min-width: 220px;
     text-align: left;
     font-weight: bold;
     z-index: 3;
@@ -205,7 +205,7 @@ div.fte-table-row.tutorial-part3.introjs-showElement.introjs-relativePosition {
     background-color: rgb(245, 245, 245);
     position: sticky;
     left: 30px;
-    min-width: 170px;
+    min-width: 220px;
     z-index: 1;
   }
   

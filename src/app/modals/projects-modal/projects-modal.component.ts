@@ -119,8 +119,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     }, 0);
 
     // set the number of projects to display initially, and to add for infinite scroll
-    this.numProjectsToDisplayAtOnce = 100;
-    this.numProjectsToDisplay = 100;
+    this.numProjectsToDisplayAtOnce = 50;
+    this.numProjectsToDisplay = 50;
 
     console.log('projects received in projects modal');
     console.log(this.projects);
