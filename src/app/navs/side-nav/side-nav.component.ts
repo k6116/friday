@@ -119,7 +119,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               path: 'main/reports/top-projects',
               parentAlias: 'reports',
               active: false,
-              permissionProtected: false,
+              permissionProtected: true,
               hidden: false
             },
             {
@@ -128,7 +128,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               path: 'main/reports/top-projects-bubble',
               parentAlias: 'reports',
               active: false,
-              permissionProtected: false,
+              permissionProtected: true,
               hidden: false
             },
           ]

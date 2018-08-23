@@ -77,7 +77,6 @@ router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', c
 router.get('/report/getSubordinateFtes/:managerEmailAddress/:period', controllers.report.getSubordinateFtes);
 router.get('/report/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
 router.get('/report/getProjectFTEHistory/:projectID', controllers.report.getProjectFTEHistory);
-router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.report.getTopFTEProjectList);   // PROTECT
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
@@ -127,9 +126,6 @@ router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate', controlle
 router.get('/dashboard/checkFirstLogin', controllers.dashboard.checkFirstLogin);
 router.get('/dashboard/checkJobTitle', controllers.dashboard.checkJobTitle);
 router.get('/dashboard/checkProjectRequests', controllers.dashboard.checkProjectRequests);
-
-// REPORT CONTROLLER
-router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', controllers.report.getAggregatedFteData);
 
 // JOB TITLE CONTROLLER (ADMIN)
 router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
@@ -247,5 +243,10 @@ router.get('/bom/bom/index', controllers.bom.index);
 router.get('/bom/bom/show/showSingleBom/:parentID', controllers.bom.showSingleBom);
 router.get('/bom/bom/show/showPartInfo/:partID', controllers.bom.showPartInfo);
 router.get('/bom/bom/show/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
+
+// REPORT CONTROLLER
+router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.report.getTopFTEProjectList);
+router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', controllers.report.getAggregatedFteData);
+
 
 module.exports = router;

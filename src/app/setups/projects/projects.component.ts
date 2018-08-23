@@ -43,6 +43,7 @@ export class ProjectsSetupsComponent implements OnInit {
     this.getProjects();
     this.getSelectionChoices();
     this.searchProjects = ' '; // this will avoid shoing a blank list of projects.
+
   }
 
   onSearchInputChange(event: any) {
@@ -296,7 +297,7 @@ export class ProjectsSetupsComponent implements OnInit {
       CurrentRevision: 0,
       RevisionNotes: '',
       PLCStatusID: 0,
-      PLCDate: new Date(),
+      PLCDate: moment().format('MM/DD/YYYY'),
       Notes: '',
       DeleteRow: 0
     });
