@@ -9,7 +9,6 @@ const dotevnv = require('dotenv').config()
 const winston = require('winston');
 
 const api = require('./server/routes/api');
-
 const sequelize = require('./server/db/sequelize');
 const email = require('./server/email/email');
 const websockets = require('./server/websockets/websockets');
@@ -140,6 +139,9 @@ websockets.listen(server);
 email.setSchedules();
 
 process.on('SIGINT', () => {
-  console.log('node process stopping...');
-  process.exit();
+  console.log('SIGINT message received');
+  server.close(() => {
+    console.log('node process stopping...');
+    process.exit(0);
+  });
 });

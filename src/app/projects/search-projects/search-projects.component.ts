@@ -436,7 +436,7 @@ export class SearchProjectsComponent implements OnInit {
       'nc-ram': projectTypeName === 'NCI',
       'nc-keyboard': projectTypeName === 'NMI',
       'nc-keyboard-wireless': projectTypeName === 'NPI',
-      'nc-socket-europe-1': projectTypeName === 'NPPI',
+      'nc-microcircuit': projectTypeName === 'NPPI',
       'nc-lab': projectTypeName === 'NTI',
       'nc-microscope': projectTypeName === 'Research',
       'nc-settings-91': projectTypeName === 'MFG',
