@@ -1222,6 +1222,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   // Highchart Functions
   createFtePlanningChartXAxis() {
     // Generate X-Axis with months starting from current
+    // This month = 0, this month next year = 12
     this.fteMonthsChart.push(moment(this.currentMonth).format('MMM'));
     for (let i = 1; i < 12; i++) {
       this.fteMonthsChart.push(moment(this.currentMonth).add(i, 'month').format('MMM'));
@@ -1234,33 +1235,47 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
     const currentMonthNumber = moment(this.currentMonth).format('M');
 
-    // for (let i = 0; i < this.allProjects.length; i++) {
-    for (let i = 0; i < 42; i++) {
+    for (let i = 0; i < this.allProjects.length; i++) {
+    // for (let i = 0; i < 41; i++) {
       // Initialize the data object
       this.fteChartData.push({
         name: this.allProjects[i].projectName,
         data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       });
 
+      // Loop through all projects the team is engaged in
       for (let j = 0; j < this.teamFTEsFlatLive.length; j++) {
         if (this.teamFTEsFlatLive[j].projectName === this.allProjects[i].projectName) {
 
+          // Store the fiscal month and fiscal year for the found project
           let fiscalMonthFound = moment(this.teamFTEsFlatLive[j]['allocations:fiscalDate']).utc().format('M');
           const fiscalYearFound = moment(this.teamFTEsFlatLive[j]['allocations:fiscalDate']).utc().format('YYYY');
 
-          if (fiscalMonthFound >= currentMonthNumber && fiscalYearFound === moment(this.currentMonth).format('YYYY')) {
-            this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber] =
-              Number(this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber]) +
-                Number(this.teamFTEsFlatLive[j]['allocations:fte']);
-          } else if (fiscalMonthFound < currentMonthNumber && fiscalYearFound === moment(this.currentMonth).add(1, 'year').format('YYYY')) {
-            fiscalMonthFound = Number(fiscalMonthFound) + 12;
-            this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber] =
-              Number(this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber]) +
-                Number(this.teamFTEsFlatLive[j]['allocations:fte']);
+          // If the month found is current or later than current month, and if the fiscal year is current year, then calculate difference
+          if (
+            Number(fiscalMonthFound) >= Number(currentMonthNumber) &&
+            Number(fiscalYearFound) === Number(moment(this.currentMonth).format('YYYY'))
+            ) {
+                this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber] =
+                  Number(this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber]) +
+                    Number(this.teamFTEsFlatLive[j]['allocations:fte']);
+          // If the month found is less than current month, and if the fiscal year is next year,
+          //  then calculate difference with an offset of 12
+          // So if this month is Aug-2018, currentmonth  = 8,
+          //  then Feb-2019 would be 2 (Feb month num) + 12 (months in a year) - 8 (Aug month num) = 6.
+          //  If the chart starts with August which would be index 0, then Feb is index 6
+          } else if (
+              Number(fiscalMonthFound) < Number(currentMonthNumber) &&
+              Number(fiscalYearFound) === Number(moment(this.currentMonth).add(1, 'year').format('YYYY'))
+            ) {
+                fiscalMonthFound = Number(fiscalMonthFound) + 12;
+                this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber] =
+                  Number(this.fteChartData[i].data[fiscalMonthFound - currentMonthNumber]) +
+                    Number(this.teamFTEsFlatLive[j]['allocations:fte']);
           }
 
-          console.log('Project: ' + this.allProjects[i].projectName + ' | fullName: ' + this.teamFTEsFlatLive[j]['allocations:fullName'] +  ' | fiscalDate: ' +
-              fiscalMonthFound + '/' + fiscalYearFound + ' | fte: ', this.teamFTEsFlatLive[j]['allocations:fte'])
+          // console.log('Project: ' + this.allProjects[i].projectName + ' | fullName: ' + this.teamFTEsFlatLive[j]['allocations:fullName'] +  ' | fiscalDate: ' +
+          //     fiscalMonthFound + '/' + fiscalYearFound + ' | fte: ', this.teamFTEsFlatLive[j]['allocations:fte'])
         }
       }
     }
