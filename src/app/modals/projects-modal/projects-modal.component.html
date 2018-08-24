@@ -26,7 +26,7 @@
           
           <div class="cards-cont">
             
-            <div class="card" *ngFor="let project of filterProjects | projectsFilter : filterItems | filter : filterString : filterItems[2].value : {limitTo: numProjectsToDisplay, matchFuzzy: {on: true}}">
+            <div class="card" *ngFor="let project of filterProjects | projectsFilter : filterItems | filter : filterString : filterItems[2].value : {limitTo: numProjectsToDisplay, matchFuzzy: {on: filterItems[2].value === 'ProjectName' ? true : false}, matchOptimistic: filterItems[2].value === 'Description' ? true : false}">
               <div class="card-header-cont"> 
                 <div class="card-header-img" *ngIf="project.avatar">
                   <img class="card-project-avatar" [src]="project.avatar" alt="">

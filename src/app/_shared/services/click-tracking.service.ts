@@ -113,7 +113,7 @@ export class ClickTrackingService {
 
     // if the object looks good, send the data to the database to insert
     if (!error) {
-      this.apiDataClickTrackingService.logClick(clickObj, userID)
+      this.apiDataClickTrackingService.logClick(clickObj)
       .subscribe(
         res => {
           // click tracking record was inserted successfully

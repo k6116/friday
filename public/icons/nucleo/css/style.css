@@ -318,3 +318,11 @@ Generated using nucleoapp.com
   content: "\ea4d";
 }
 
+.nc-microcircuit::before {
+  content: "\ea4e";
+}
+
+.nc-settings::before {
+  content: "\ea4f";
+}
+

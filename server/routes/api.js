@@ -9,15 +9,15 @@ const token = require('../token/token');
 
 var controllers = require('../controllers/_index.js');
 
-// TO-DO ALL: rename controller functions to index, show, insert, update, destory if it fits
+// TO-DO ALL: update per Security Confluence page
 
 // AUTH CONTROLLER 
 router.post('/auth/authenticate', controllers.auth.authenticate);
-router.get('/auth/getInfoFromToken', controllers.auth.getInfoFromToken);
-router.post('/auth/resetToken', controllers.auth.resetToken);
-router.get('/auth/verifyRoutePermissions', controllers.auth.verifyRoutePermissions);
-router.get('/auth/logout/:userName', controllers.auth.logout);
 router.get('/auth/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
+router.get('/auth/logout/:userName', controllers.auth.logout);  // TEMP CODE: for websockets
+
+// CLICK TRACKING CONTROLLER
+router.post('/clickTracking', controllers.clickTracking.insert);
 
 // PROJECT CONTROLLER
 router.get('/indexProjects', controllers.project.indexProjects)
@@ -58,9 +58,6 @@ router.get('/getPlanners', controllers.employee.getPlanners);
 router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
 router.get('/org/:emailAddress', controllers.org.show);
 
-// CLICK TRACKING CONTROLLER
-router.post('/clickTracking/:userID', controllers.clickTracking.insert);
-
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
 router.post('/sendRequestProjectEmail/:userID/:ownerID/:projectName/:requestStatus', controllers.email.sendRequestProject); 
@@ -75,21 +72,13 @@ router.post('/insertProjectPermissionRequest/:userID', controllers.permission.in
 router.post('/updateProjectPermissionResponse/:userID/:reply/:replyComment', controllers.permission.updateProjectPermissionResponse);
 router.post('/updateProjectPermissionRequest/:userID', controllers.permission.updateProjectPermissionRequest);
 
-
 // REPORTS PROJECT CONTROLLER
 router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
 router.get('/report/getSubordinateFtes/:managerEmailAddress/:period', controllers.report.getSubordinateFtes);
 router.get('/report/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
 router.get('/report/getProjectFTEHistory/:projectID', controllers.report.getProjectFTEHistory);
-router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.report.getTopFTEProjectList);   // PROTECT
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
-
-// DASHBOARD CONTROLLER
-router.get('/dashboard/getFTEData/:emailAddress/:startDate/:endDate', controllers.dashboard.getFTEData);
-router.get('/dashboard/checkFirstLogin/:employeeID/:userName', controllers.dashboard.checkFirstLogin);
-router.get('/dashboard/checkJobTitle/:employeeID', controllers.dashboard.checkJobTitle);
-router.get('/dashboard/checkProjectRequests/:employeeID', controllers.dashboard.checkProjectRequests);
 
 // ANALYTICS CONTROLLER
 router.get('/getNCIProjectsParentChildList', controllers.analytics.getNCIProjectsParentChildList);
@@ -135,18 +124,15 @@ router.use('/', function(req, res, next) {
 
 // AUTH CONTROLLER
 router.get('/auth/websockets/index/getLoggedInUsers', controllers.auth.getLoggedInUsers);
-
+router.get('/auth/getInfoFromToken', controllers.auth.getInfoFromToken);
+router.post('/auth/resetToken', controllers.auth.resetToken);
+router.get('/auth/verifyRoutePermissions', controllers.auth.verifyRoutePermissions);
 
 // DASHBOARD CONTROLLER
 router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate', controllers.dashboard.getFTEData);
 router.get('/dashboard/checkFirstLogin', controllers.dashboard.checkFirstLogin);
 router.get('/dashboard/checkJobTitle', controllers.dashboard.checkJobTitle);
 router.get('/dashboard/checkProjectRequests', controllers.dashboard.checkProjectRequests);
-
-
-// REPORT CONTROLLER
-router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', controllers.report.getAggregatedFteData);
-
 
 // JOB TITLE CONTROLLER (ADMIN)
 router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
@@ -175,6 +161,7 @@ router.post('/updateProjectScheduleXML/:userID/:revisionNotes', controllers.sche
 router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
 router.post('/updatePartScheduleXML/:userID/:revisionNotes', controllers.schedules.updatePartScheduleXML); //TO-DO user Token for userID and put revisionNotes in header
 router.get('/destroyScheduleSP/:scheduleID', controllers.schedules.destroyScheduleSP);
+
 
 
 // middleware to protect permissions protected routes
@@ -264,5 +251,10 @@ router.get('/bom/bom/index', controllers.bom.index);
 router.get('/bom/bom/show/showSingleBom/:parentID', controllers.bom.showSingleBom);
 router.get('/bom/bom/show/showPartInfo/:partID', controllers.bom.showPartInfo);
 router.get('/bom/bom/show/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
+
+// REPORT CONTROLLER
+router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.report.getTopFTEProjectList);
+router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', controllers.report.getAggregatedFteData);
+
 
 module.exports = router;

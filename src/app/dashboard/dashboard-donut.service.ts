@@ -167,7 +167,7 @@ export class DashboardDonutService {
         }
       },
       tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.0f}%</b>'
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
       },
       series: [{
         name: 'Project Type',

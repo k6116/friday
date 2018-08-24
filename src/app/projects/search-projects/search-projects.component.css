@@ -1,5 +1,24 @@
 
 
+/* ruler */
+
+div.page-cont {
+  overflow-x: hidden;
+}
+span.project-name-ruler { 
+  /* visibility: hidden; */
+  display: none;
+  white-space: nowrap;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+span.project-description-ruler { 
+  /* visibility: hidden; */
+  display: none;
+  white-space: nowrap;
+}
+
 /* search bar */
 
 div.projects-filters-cont {
@@ -128,19 +147,23 @@ div.project-type-icon {
 
 div.project-details-cont {
   display: inline-block;
-  padding-top: 20px;
-  padding-left: 25px;
+  padding: 20px 25px;
+  min-width: 500px;
+  width: calc(100% - 800px);
+  max-width: 1000px;
 }
 
 div.project-name {
   position: relative;
   font-size: 18px;
   font-weight: 500;
-  width: 500px;
+  /* width: 500px; */
   color: rgb(50, 50, 50);
   height: 1.4em;
   line-height: 1.4em;
   overflow: hidden;
+  /* white-space: nowrap;
+  text-overflow: ellipsis; */
 }
 
 div.project-name:after {
@@ -158,12 +181,32 @@ div.project-name:after {
 div.project-description {
   position: relative;
   margin-top: 10px;
-  width: 500px;
+  /* width: 500px; */
   height: 2.8em;
   line-height: 1.4em;
   overflow: hidden;
   text-align: left;
+  /* margin-right: -1em;
+  padding-right: 1em; */
 }
+
+/* div.project-description:before {
+  content: "...";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+div.project-description:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 1em;
+  height: 1.4em;
+  background: white;
+} */
 
 div.project-description:after {
   content: "";
