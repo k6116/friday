@@ -3,6 +3,8 @@
 considering topnav, sidenav, and footer -->
 <div class="container-fluid">
 
+  
+
   <!-- spinner -->
   <div class="row row-custom" *ngIf="showSpinner">
     <div class="col-lg-12 col-custom">
@@ -13,6 +15,10 @@ considering topnav, sidenav, and footer -->
 
   <!-- outer page container; don't show until data is ready -->
   <div class="page-cont" *ngIf="showPage">
+
+    <!-- hidden element for measuring text width, to detect overflows -->
+    <span class="project-name-ruler"></span>
+    <span class="project-description-ruler"></span>
 
     <div class="projects-filters-cont">
 
@@ -27,7 +33,7 @@ considering topnav, sidenav, and footer -->
       </div>
 
       <div *ngIf="!selectedFilter.isDropdown" class="projects-filter-string">
-        <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (ngModelChange)="onFilterStringChange()" appAutofocus>
+        <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (ngModelChange)="onFilterStringChange()" (keydown)="onFilterStringKeydown($event)" (focusout)="onFilterLostFocus()" appAutofocus>
         <i class="projects-filter-icon-search fa fa-search"></i>
         <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
       </div>

@@ -119,7 +119,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               path: 'main/reports/top-projects',
               parentAlias: 'reports',
               active: false,
-              permissionProtected: false,
+              permissionProtected: true,
               hidden: false
             },
             {
@@ -128,14 +128,14 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               path: 'main/reports/top-projects-bubble',
               parentAlias: 'reports',
               active: false,
-              permissionProtected: false,
+              permissionProtected: true,
               hidden: false
             },
           ]
         },
         {
           title: 'BOM',
-          iconClass: 'nc-chart-bar-33',
+          iconClass: 'nc-hierarchy-53',
           alias: 'bom',
           expanded: false,
           active: false,
@@ -165,7 +165,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         },
         {
           title: 'Setups',
-          iconClass: 'nc-chart-bar-33',
+          iconClass: 'nc-settings',
           alias: 'setups',
           expanded: false,
           active: false,

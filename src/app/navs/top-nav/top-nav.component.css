@@ -30,15 +30,9 @@ h2.view-encap-test {
 .app-logo-cont {
   float: left;
   line-height: 65px;
-  height: 65px;
-  width: 130px;
-  overflow: hidden;
-}
-
-.app-logo-img {
-  height: 84px;
-  width: 200px;
-  margin: -35px 0 -32px -28px;
+  width: 120px;
+  position: relative;
+  top: 2px;
 }
 
 .app-title-cont {
@@ -61,10 +55,10 @@ h2.view-encap-test {
   font-weight: 600;
   color: #fde772;
   display: inline;
-  padding-left: 5px;
+  padding-left: 10px;
   line-height: 65px;
   position: relative;
-  top: 11px;
+  top: 10px;
 }
 
 
