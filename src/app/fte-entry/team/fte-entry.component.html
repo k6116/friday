@@ -46,16 +46,18 @@
         <h4>{{ setMonthName }} {{ setYear }}</h4>
       </div>
   </div>
-
-  <div class="col-sm-3 col-custom col-multiselect">
+  <div class="col-sm-1 col-custom col-multiselect">
+    <div style="float: right; padding-top: 6px">
+      <h6>Filters:</h6>
+    </div>
+  </div>
+  <div class="col-sm-5 col-custom col-multiselect">
       <ss-multiselect-dropdown #filterEmployeesDropdown [options]="filterEmployeesOptions" [texts]="filterEmployeesTexts" 
             [settings]="filterEmployeesSettings" [(ngModel)]="filterEmployeesModel" (ngModelChange)="onFilterEmployeesChange($event)"></ss-multiselect-dropdown>
-  </div>
-
-  <div class="col-sm-3 col-custom col-multiselect">
       <ss-multiselect-dropdown #filterProjectsDropdown [options]="filterProjectsOptions" [texts]="filterProjectsTexts" 
             [settings]="filterProjectsSettings" [(ngModel)]="filterProjectsModel" (ngModelChange)="onFilterProjectsChange($event)"></ss-multiselect-dropdown>
   </div>
+  
 
   <div class="col-sm-3 col-custom">
     <div class="col-newplan" style="display: inline-flex">

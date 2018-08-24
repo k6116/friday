@@ -150,7 +150,7 @@ div.fte-table-row.tutorial-part3.introjs-showElement.introjs-relativePosition {
   div.fte-table-header div.fte-table-row div.fte-table-cell.icon-month-header {
     /* css for trash icons in the header */
     position: sticky;
-    top: 30px;
+    top: 0px;
   }
   
   div.fte-table-footer div.fte-table-row div.fte-table-cell {
