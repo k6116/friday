@@ -46,7 +46,7 @@
   },
   {
     "fileName": "moab_utah.jpg",
-    "caption": "Spider Mesa (Moab Utah)",
+    "caption": "Spider Mesa, Moab, Utah",
     "winnerDate": "March, 2017"
   },
   {
@@ -178,5 +178,21 @@
     "fileName": "hohenschwangau_castle.jpg",
     "caption": "Hohenschwangau Castle, Germany",
     "winnerDate": "January, 2015"
+  },
+  {
+    "fileName": "la_jolla_tidepools.jpg",
+    "caption": "La Jolla Tide Pool Park, San Diego, California",
+    "winnerDate": "July 2018"
+  },
+  {
+    "fileName": "asher_cliff_switzerland.jpg",
+    "caption": "Äscher Cliff Restaurant in Switzerland",
+    "winnerDate": "July 2018"
+  },
+  {
+    "fileName": "county_donegal_ireland.jpg",
+    "caption": "Sandhouse Hotel at Rossnowlagh Beach in County Donegal, Ireland",
+    "winnerDate": "June 2018"
   }
+
 ]
