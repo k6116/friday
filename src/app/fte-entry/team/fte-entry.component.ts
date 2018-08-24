@@ -942,8 +942,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       // loop through the already-built months array and initialize null FTEs for each month in this new project
       newProject.allocations = new Array<AllocationsArray>();
 
-console.log('STEP 1', newProject)
-console.log('STEP 1', newProject.projectName)
       const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
       this.addProjectToFteForm(FTEFormArray, newProject, true);
 
