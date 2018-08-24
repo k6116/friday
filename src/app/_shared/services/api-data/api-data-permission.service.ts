@@ -27,8 +27,8 @@ export class ApiDataPermissionService {
       .map((response: Response) => response.json());
   }
 
-  getProjectPermissionTeamList(userID: number, managerEmailAddress: string) {
-    return this.http.get(`/api/indexProjectPermissionTeamList/${userID}/${managerEmailAddress}`)
+  getProjectPermissionTeamList(userID: number, emailAddress: string, managerEmailAddress: string) {
+    return this.http.get(`/api/indexProjectPermissionTeamList/${userID}/${emailAddress}/${managerEmailAddress}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

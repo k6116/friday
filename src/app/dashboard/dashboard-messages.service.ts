@@ -67,7 +67,7 @@ export class DashboardMessagesService {
     if (check.clickCount[0].ClickCount === 0) {
       return {
         id: 'welcomeMessage',
-        iconFontClass: 'nc-privacy-policy',
+        iconFontClass: 'nc-privacy-policy-2',
         iconType: 'info',
         messageText: `Welcome to Jarvis Resources! You will be given a short
           guided tutorial when you go to the FTE Entry Page.`

@@ -133,14 +133,14 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.apiDataProjectService.getProjects()
       .subscribe(
         res => {
-          console.log('get project data successfull:');
-          console.log(res);
+          // console.log('get project data successfull:');
+          // console.log(res);
           this.projectList = res;
           // this.trimProjects(500);
         },
         err => {
-          console.log('get project data error:');
-          console.log(err);
+          // console.log('get project data error:');
+          // console.log(err);
         }
     );
 
@@ -248,7 +248,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   onModalClosed(selectedProject: any) {
-    console.log('on modal closed fired');
+    // console.log('on modal closed fired');
     this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
@@ -306,7 +306,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   onModalCancelClick() {
-    console.log('on modal cancel fired');
+    // console.log('on modal cancel fired');
     this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
@@ -430,12 +430,12 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
 
   onTestFormClick() {
-    console.log('form object (this.form):');
-    console.log(this.FTEFormGroup);
-    console.log('form data (this.form.value.FTEFormArray):');
-    console.log(this.FTEFormGroup.value.FTEFormArray);
-    console.log('fte-project-visible array');
-    console.log(this.fteProjectVisible);
+    // console.log('form object (this.form):');
+    // console.log(this.FTEFormGroup);
+    // console.log('form data (this.form.value.FTEFormArray):');
+    // console.log(this.FTEFormGroup.value.FTEFormArray);
+    // console.log('fte-project-visible array');
+    // console.log(this.fteProjectVisible);
   }
 
   onSaveClick() {
@@ -473,14 +473,14 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
       .subscribe(
         res => {
           const t1 = performance.now();
-          console.log(`save fte values took ${t1 - t0} milliseconds`);
+          // console.log(`save fte values took ${t1 - t0} milliseconds`);
           this.cacheService.raiseToast('success', res.message);
           this.resetProjectFlags();
           this.fteComponentInit();  // re-fetch the data to get newly inserted recordIDs
           this.FTEFormGroup.markAsUntouched();
         },
         err => {
-          console.log(err);
+          // console.log(err);
           this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
         }
       );
@@ -504,7 +504,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
             // console.log('Successfully inserted bulk data into project employee role table');
           },
           err => {
-            console.log(err);
+            // console.log(err);
           }
         );
       }
@@ -786,7 +786,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   onTrashClick(index: number) {
-    console.log('user clicked to delete project index ' + index);
+    // console.log('user clicked to delete project index ' + index);
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
     // emit confirmation modal after they click delete button
@@ -834,7 +834,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
             FTEFormArray.controls.splice(index, 1);
             this.updateMonthlyTotals();
             this.setMonthlyTotalsBorder();
-            console.log('stuff was updated');
+            // console.log('stuff was updated');
             this.cacheService.raiseToast('success', deleteResponse.message);
             deleteActionSubscription.unsubscribe();
           },
@@ -844,7 +844,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
           }
         );
       } else {
-        console.log('delete aborted');
+        // console.log('delete aborted');
       }
       deleteModalSubscription.unsubscribe();
     });
@@ -882,7 +882,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         this.FTEFormGroup.markAsUntouched();
         this.cacheService.raiseToast('success', 'Your FTE form has been reset');
       } else {
-        console.log('reset aborted');
+        // console.log('reset aborted');
         this.cacheService.raiseToast('warning', 'Reset was aborted');
       }
       resetModalSubscription.unsubscribe();
@@ -1074,10 +1074,10 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     .subscribe(
       res => {
         this.jobTitleList = res;
-        console.log('jobTitleList', res);
+        // console.log('jobTitleList', res);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
 
@@ -1087,10 +1087,10 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.apiDataProjectService.deleteProjectEmployeeRole(projectID, this.authService.loggedInUser.id)
     .subscribe(
       res => {
-        console.log('Successful deletion in project employee role table');
+        // console.log('Successful deletion in project employee role table');
       },
       err => {
-        console.log(err);
+        // console.log(err);
       });
   }
 
@@ -1154,9 +1154,9 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     const carouselModalSubscription = this.cacheService.carouselModalResponse.subscribe( res => {
       if (res) {
         // if they click ok, grab the deleted project info and exec db call to delete
-        console.log('CAROUSEL!');
+        // console.log('CAROUSEL!');
       } else {
-        console.log('delete confirm aborted');
+        // console.log('delete confirm aborted');
       }
       carouselModalSubscription.unsubscribe();
     });
@@ -1169,8 +1169,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   onCreateSuccess(selectedProject: any) {
-    console.log('Create project success. My Project List Refreshed');
-    console.log('selectedProject', selectedProject);
+    // console.log('Create project success. My Project List Refreshed');
+    // console.log('selectedProject', selectedProject);
     this.display = true;  // make sure FTE entry form is visible
 
     // verify selectedProject has not already been added
@@ -1224,7 +1224,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   updateProjectFilters(filterItems: any) {
     this.savedProjectFilters = filterItems;
-    console.log('Emitted filterItems:', this.savedProjectFilters);
+    // console.log('Emitted filterItems:', this.savedProjectFilters);
   }
 
 }

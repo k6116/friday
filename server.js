@@ -6,6 +6,7 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const dotevnv = require('dotenv').config()
+const winston = require('winston');
 
 const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
@@ -52,6 +53,29 @@ app.use(express.static('public'));
 
 // middleware for datadog express integration (for metrics)
 app.use(connect_datadog);
+
+// var logger = new (winston.Logger) ({
+//   transports: [
+//     new (winston.transports.File) ({
+//       name: 'your_logger_name',
+//       filename: path.join(__dirname, 'datadog.log'),
+//       json: true,
+//       level: 'info'
+//     })
+//   ]
+// });
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({ filename: path.join(__dirname, 'datadog.log'), level: 'info' })
+  ]
+});
+
+// logger.log('info', 'Hello simple log!');
+// logger.info('Hello log with metas',{color: 'blue' });
+
 
 // middleware function to send any api requests to the server/routes/api.js file
 app.use('/api', api);
@@ -111,6 +135,14 @@ if (env === 'dev') {
 // send and receive real-time websockets messages
 websockets.listen(server);
 
-//SET EMAIL SCHEDULES
+// set email schedules
 email.setSchedules();
 
+// TEMP CODE: attempting to fix issue with blue/green deployment - Error: listen EADDRINUSE :::443
+process.on('SIGINT', () => {
+  console.log('SIGINT message received');
+  server.close(() => {
+    console.log('node process stopping...');
+    process.exit(0);
+  });
+});

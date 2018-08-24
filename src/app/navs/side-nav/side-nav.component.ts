@@ -55,15 +55,35 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           hidden: false
         },
         {
-          title: 'My Projects',
+          title: 'Projects',
           iconClass: 'nc-gantt',
           alias: 'projects',
-          path: 'main/setups/projects',
+          path: 'main/my-projects',
           expanded: false,
           active: false,
           highlighted: false,
           permissionProtected: false,
-          hidden: false
+          hidden: false,
+          subItems: [
+            {
+              title: 'My Projects',
+              alias: 'my-projects',
+              path: 'main/projects/my-projects',
+              parentAlias: 'projects',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            },
+            {
+              title: 'Search',
+              alias: 'search',
+              path: 'main/projects/search',
+              parentAlias: 'projects',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            }
+          ]
         },
         {
           title: 'Reports',
@@ -99,7 +119,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               path: 'main/reports/top-projects',
               parentAlias: 'reports',
               active: false,
-              permissionProtected: false,
+              permissionProtected: true,
               hidden: false
             },
             {
@@ -108,14 +128,14 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               path: 'main/reports/top-projects-bubble',
               parentAlias: 'reports',
               active: false,
-              permissionProtected: false,
+              permissionProtected: true,
               hidden: false
             },
           ]
         },
         {
           title: 'BOM',
-          iconClass: 'nc-chart-bar-33',
+          iconClass: 'nc-hierarchy-53',
           alias: 'bom',
           expanded: false,
           active: false,
@@ -137,6 +157,35 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               alias: 'bom-editor',
               path: 'main/reports/bom-editor',
               parentAlias: 'bom',
+              active: false,
+              permissionProtected: true,
+              hidden: false
+            }
+          ]
+        },
+        {
+          title: 'Setups',
+          iconClass: 'nc-settings',
+          alias: 'setups',
+          expanded: false,
+          active: false,
+          permissionProtected: true,
+          hidden: false,
+          subItems: [
+            {
+              title: 'Projects',
+              alias: 'setups-projects',
+              path: 'main/setups/projects',
+              parentAlias: 'setups',
+              active: false,
+              permissionProtected: true,
+              hidden: false
+            },
+            {
+              title: 'Parts',
+              alias: 'setups-parts',
+              path: 'main/setups/parts',
+              parentAlias: 'setups',
               active: false,
               permissionProtected: true,
               hidden: false
@@ -172,7 +221,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
-    console.log('side nav component has been initialized');
+    // console.log('side nav component has been initialized');
 
     // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
     const path = this.router.url.slice(1, this.router.url.length);
@@ -226,13 +275,13 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     // NOTE, TO-DO BILL: when jwt is refactored from local storage into a cookie not accessible from code,
     // we will no longer be able to decodeon the client side
     const tokenPayload = this.authService.decodedToken();
-    console.log('token payload:');
-    console.log(tokenPayload);
+    // console.log('token payload:');
+    // console.log(tokenPayload);
 
     // get the permissions out of the token payload
     const permissions = tokenPayload.userData.permissions;
-    console.log('user permissions:');
-    console.log(permissions);
+    // console.log('user permissions:');
+    // console.log(permissions);
 
     // go through each menu item and set the hidden property by checking the permissions
     // only if the permissionProtected property is set to true
@@ -244,8 +293,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         const foundPermission = permissions.find(permission => {
           return permission.permissionName === `Resources > ${menuItem.title} > View`;
         });
-        console.log('found permission object:');
-        console.log(foundPermission);
+        // console.log('found permission object:');
+        // console.log(foundPermission);
         // if the permission was not found, set the hidden property to true
         if (!foundPermission) {
           menuItem.hidden = true;
@@ -326,7 +375,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
   highlightMainOfSubMenuItem2(path) {
     // highlight the main menu item of a sub menu item in white (with no yellow left border)
     // go through each main menu object in the menu structure
-    console.log(path);
+    // console.log(path);
     this.menuStructure.forEach(menuItem => {
       // if the menu item has sub menu items
       if (menuItem.hasOwnProperty('subItems')) {

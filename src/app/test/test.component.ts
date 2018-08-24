@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiDataEmailService } from '../_shared/services/api-data/_index';
+import { AuthService } from '../_shared/services/auth.service';
 
 
 @Component({
@@ -10,7 +11,10 @@ import { ApiDataEmailService } from '../_shared/services/api-data/_index';
 export class TestComponent implements OnInit {
 
 
-constructor (private apiDataEmailService: ApiDataEmailService) {
+constructor (
+  private apiDataEmailService: ApiDataEmailService,
+  private authService: AuthService
+) {
 
   }
 
@@ -19,12 +23,12 @@ constructor (private apiDataEmailService: ApiDataEmailService) {
   }
 
   requestClick() {
-      this.apiDataEmailService.sendRequestProjectEmail(125, 125, 'Some Project Name').subscribe(
+      this.apiDataEmailService.sendRequestProjectEmail(125, 125, 'Some Project Name', 'Some Action').subscribe(
         res => {
 
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
   }
@@ -36,8 +40,12 @@ constructor (private apiDataEmailService: ApiDataEmailService) {
 
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
+  }
+
+  testClick() {
+    console.log('manageremail', this.authService.loggedInUser.managerEmailAddress)
   }
 }

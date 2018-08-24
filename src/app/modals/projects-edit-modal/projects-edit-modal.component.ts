@@ -55,7 +55,7 @@ export class ProjectsEditModalComponent implements OnInit {
   }
 
   getProjectData() {
-    console.log(this.projectPermissionRequestsList);
+    // console.log(this.projectPermissionRequestsList);
   }
 
   getProjectTypesList() {
@@ -66,7 +66,7 @@ export class ProjectsEditModalComponent implements OnInit {
         this.projectTypesList = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -82,7 +82,7 @@ export class ProjectsEditModalComponent implements OnInit {
         this.updateSuccess.emit(true);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -98,7 +98,7 @@ export class ProjectsEditModalComponent implements OnInit {
         this.deleteSuccess.emit(true);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -142,7 +142,7 @@ export class ProjectsEditModalComponent implements OnInit {
           }
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
   }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
 import { Observable } from 'rxjs/observable';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 import { CacheService } from '../cache.service';
 import 'rxjs/add/operator/map';
 
@@ -72,8 +73,8 @@ export class ApiDataProjectService {
     .map((response: Response) => response.json());
   }
 
-  getProjectSchedule(projectName: string) {
-    return this.http.get(`/api/indexProjectSchedule/${projectName}`)
+  getProjectSchedule(projectID: number) {
+    return this.http.get(`/api/indexProjectSchedule/${projectID}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -114,6 +115,83 @@ export class ApiDataProjectService {
     return this.http.post(`/api/insertBulkProjectEmployeeRole/${userID}`, JSON.stringify(projectEmployeeRoleData), options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
+  }
+
+  getBuildStatus(): Observable<any> {
+    return this.http.get('api/indexBuildStatus')
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  getProjectPLCStatus(): Observable<any> {
+    return this.http.get('api/indexPLCStatus')
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  getProjectDepartments(): Observable<any> {
+    return this.http.get('api/indexProjectDepartments')
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  getProjectGroups(): Observable<any> {
+    return this.http.get('api/indexProjectGroups')
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  getProjectPriorities(): Observable<any> {
+    return this.http.get('api/indexProjectPriorities')
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  updateProjectSetup(project: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/updateProjectSetup/${userID}`, JSON.stringify(project), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  createProjectSetup(project: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(`/api/insertProjectSetup/${userID}`, JSON.stringify(project), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  deleteProjectSetup(projectID: number, scheduleID: number, userID: number) {
+    return this.http.delete(`/api/destroyProjectSetup/${projectID}/${scheduleID}/${userID}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  getProjectsBrowseData(): Observable<any> {
+
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+
+    const projects = this.http.get('api/indexProjects', options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    const projectTypes = this.http.get(`/api/indexProjectTypesList`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    const projectStatuses = this.http.get(`/api/indexProjectStatusesList`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    const projectPriorities = this.http.get(`/api/indexProjectPrioritiesList`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    return forkJoin([projects, projectTypes, projectStatuses, projectPriorities]);
+
   }
 
 

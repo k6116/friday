@@ -75,7 +75,7 @@ export class AuthService {
   // TO-DO BILL: get rid of this; should be replaced by user resolver
   // get user information for components that need the data, to deal with scenario where there may or may not be user info in the cache
   getLoggedInUser(callback: (user: User, error?: string) => void): void {
-    console.log('getLoggedInUser method called');
+    // console.log('getLoggedInUser method called');
     // if the data is already stored in memory, just return that
     if (this.loggedInUser) {
       // console.log('returning logged in user data from memory');
@@ -84,13 +84,13 @@ export class AuthService {
     } else {
       const token = localStorage.getItem('jarvisToken');
       if (token) {
-        console.log('logged in user does not exist in memory, getting from token instead');
+        // console.log('logged in user does not exist in memory, getting from token instead');
         const t0 = performance.now();
         this.apiDataAuthService.getInfoFromToken(token)
           .subscribe(
             res => {
               const t1 = performance.now();
-              console.log(`get info from token took ${t1 - t0} milliseconds`);
+              // console.log(`get info from token took ${t1 - t0} milliseconds`);
               this.loggedInUser = new User().deserialize(res.jarvisUser);
               callback(this.loggedInUser);
             },
@@ -107,7 +107,7 @@ export class AuthService {
   // if there is no token in local storage or it is expired, make sure they are re-routed to the login page and it is cleard
   // if there is a valid token; refresh it to get a new expiration date and new user data just in case some info may have changed
   getInfoFromToken() {
-    console.log('get info from token started');
+    // console.log('get info from token started');
     // get the token from local storage
     const token = localStorage.getItem('jarvisToken');
     // if the token exists (if is doesn't the token constant will be set to null)
@@ -117,23 +117,23 @@ export class AuthService {
           res => {
             // update the token info in memory
             this.cacheService.token = res.token;
-            console.log('token has been updated');
-            console.log(this.cacheService.token);
+            // console.log('token has been updated');
+            // console.log(this.cacheService.token);
             // if the token is expired, clear the user data/cache (properties in this service) and token, and re-route to the login page
             if (this.tokenIsExpired()) {
-              console.log('logging out within getInfoFromToken function, due to expired token');
+              // console.log('logging out within getInfoFromToken function, due to expired token');
               this.logout(true);
             // if the token is not expired
             } else {
               // store the data in this service
-              console.log('within getInfoFromToken; token is valid');
+              // console.log('within getInfoFromToken; token is valid');
               // this jarvis user will be the have the same data as in the token that was sent
               this.loggedInUser = new User().deserialize(res.jarvisUser);
-              console.log('get info from token; same logged in user');
-              console.log(this.loggedInUser);
+              // console.log('get info from token; same logged in user');
+              // console.log(this.loggedInUser);
               this.setLoggedIn(true);
               // reset the token
-              console.log('resetting the token');
+              // console.log('resetting the token');
               this.resetToken();
             }
             // TEMP CODE to log the token status
@@ -145,18 +145,18 @@ export class AuthService {
             // check for token has expired error, just for logging (for now)
             if (error.error.hasOwnProperty('name') && error.error.hasOwnProperty('message') && error.error.hasOwnProperty('expiredAt')) {
               if (error.error.message === 'jwt expired') {
-                console.log(`jwt token expired at ${error.error.expiredAt}`);
+                // console.log(`jwt token expired at ${error.error.expiredAt}`);
               }
             }
             // regardless of the cause, clear the user data/cache (properties in this service) and token, and re-route to the login page
-            console.log('logging out within getInfoFromToken function, due to response error');
+            // console.log('logging out within getInfoFromToken function, due to response error');
             this.logout(true);
           }
         );
     // if there is no 'jarvisToken' in local storage
     } else {
       // clear the user data/cache (properties in this service) and token, and re-route to the login page
-      console.log('logging out within getInfoFromToken function, due to no jarvisToken in local storage');
+      // console.log('logging out within getInfoFromToken function, due to no jarvisToken in local storage');
       this.logout(false);
     }
 
@@ -177,13 +177,13 @@ export class AuthService {
     const numInactivitySeconds = moment().diff(moment.unix(this.lastActivity), 'seconds');
 
     // TEMP CODE: to test the timer is working properly
-    console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
-    console.log(`time since last activity: ${numInactivityMins} (minutes); ${numInactivitySeconds} (seconds)`);
+    // console.log(`checked auth status at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
+    // console.log(`time since last activity: ${numInactivityMins} (minutes); ${numInactivitySeconds} (seconds)`);
     this.logTokenStatus();
 
     // if the token is expired, log the user out and display a message on the login page
     if (this.tokenIsExpired()) {
-      console.log('logging out within checkAuthStatus function, due to expired token');
+      // console.log('logging out within checkAuthStatus function, due to expired token');
       this.logout(true);
 
     // if there is a logged in user and there has been activity within the last 60 seconds
@@ -214,7 +214,7 @@ export class AuthService {
     this.apiDataAuthService.resetToken(token)
       .subscribe(
         res => {
-          console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
+          // console.log(`reset token at: ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`);
           // update the token info in memory
           this.cacheService.token = res.token;
           // remove and reset the token in local storage
@@ -224,8 +224,8 @@ export class AuthService {
           this.cacheService.resetTimer.emit(true);
           // this jarvis user will be the have the same data as in the token that was sent
           this.loggedInUser = new User().deserialize(res.jarvisUser);
-          console.log('get info from token; new logged in user');
-          console.log(this.loggedInUser);
+          // console.log('get info from token; new logged in user');
+          // console.log(this.loggedInUser);
           // TEMP CODE to log the token status
           this.logTokenStatus();
         },
@@ -267,7 +267,7 @@ export class AuthService {
     if (this.cacheService.token) {
       const expiringAt = moment.unix(this.cacheService.token.expiringAt);
       const now = moment();
-      console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
+      // console.log(`time to expiration: ${expiringAt.diff(now, 'minutes')} (minutes); ${expiringAt.diff(now, 'seconds')} (seconds)`);
       if (expiringAt.diff(now, 'seconds') <= this.warnBeforeExpiration * 60) {
         return true;
       }
@@ -335,11 +335,11 @@ export class AuthService {
       this.apiDataAuthService.logout(this.loggedInUser.userName)
         .subscribe(
           res => {
-            console.log('success on logout from the auth service');
-            console.log(res);
+            // console.log('success on logout from the auth service');
+            // console.log(res);
           },
           err => {
-            console.error('error on logout from the auth service');
+            // console.error('error on logout from the auth service');
           }
         );
     }
@@ -364,7 +364,7 @@ export class AuthService {
 
       // hide the extend session modal if it is displayed
       if (this.modalIsDisplayed) {
-        console.log('hiding extend session modal');
+        // console.log('hiding extend session modal');
         this.hideExtendSessionModal();
         this.modalIsDisplayed = undefined;
       }
@@ -389,7 +389,7 @@ export class AuthService {
   // TEMP CODE: to log the token status
   logTokenStatus() {
     if (this.cacheService.token) {
-      console.log(`token was issued at: ${this.tokenIssuedDate()}; expiring at: ${this.tokenExpirationDate()}`);
+      // console.log(`token was issued at: ${this.tokenIssuedDate()}; expiring at: ${this.tokenExpirationDate()}`);
     }
   }
 
@@ -427,7 +427,7 @@ export class AuthService {
       if (res) {
         this.resetToken();
       } else {
-        console.log('logging out within displayExtendSessionModal, due to response received false (no button');
+        // console.log('logging out within displayExtendSessionModal, due to response received false (no button');
         this.logout(false);
       }
       this.modalIsDisplayed = undefined;

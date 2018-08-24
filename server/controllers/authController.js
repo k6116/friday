@@ -27,13 +27,20 @@ function authenticate(req, res) {
   // set the ldap options object
   const options = {
     url: 'ldap://adldap.cos.is.keysight.com',
+    // url: 'ldap://us-srs-dc1.ad.keysight.com us-srs-dc2.ad.keysight.com us-srs-dc3.ad.keysight.com us-cos-dc1.ad.keysight.com us-cos-dc2.ad.keysight.com',
     bindDN: `cn=${user.userName},cn=users,dc=ad,dc=keysight,dc=com`,
     bindCredentials: user.password,
     searchBase: 'cn=users,dc=ad,dc=keysight,dc=com',
-    searchFilter: '(cn={{username}})',
-    reconnect: true,
-    queueDisable: false
+    searchFilter: '(cn={{username}})'
+    // reconnect: true
+    // queueDisable: false,
+    // tlsOptions: {
+    //   ca: [
+    //     fs.readFileSync(path.join(__dirname, '../../etc/ssl/Keysight_Root.crt'))
+    //   ]
+    // }
   };
+
   
   // create an instance of the ldap auth fork 
   const auth = new ldapAuth(options);

@@ -2,12 +2,26 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
+// GUARDS
+// ------
+
+import { AuthGuardService } from './_shared/guards/auth.guard';
+import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
+import { BrowserGuard } from './_shared/guards/browser.guard';
+import { PermissionsGuard } from './_shared/guards/permissions.guard';
+import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
+
+// COMPONENTS
+// ----------
+
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { MainComponent } from './main/main.component';
 import { FteEntryEmployeeComponent } from './fte-entry/employee/fte-entry.component';
 import { FteEntryTeamComponent } from './fte-entry/team/fte-entry.component';
-import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
+import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
+import { SearchProjectsComponent } from './projects/search-projects/search-projects.component';
 import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { TopProjectsBubbleComponent } from './reports/top-projects-bubble/top-projects-bubble.component';
 import { MyFteSummaryComponent } from './reports/my-fte-summary/my-fte-summary.component';
@@ -17,20 +31,16 @@ import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.com
 import { BlockAppUseComponent } from './block-app-use/block-app-use.component';
 import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-
-import { AuthGuardService } from './_shared/guards/auth.guard';
-import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
-import { BrowserGuard } from './_shared/guards/browser.guard';
-import { PermissionsGuard } from './_shared/guards/permissions.guard';
-import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
 import { TestComponent } from './test/test.component';
 import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
 import { UserResolverService } from './_shared/services/user-resolver.service';
-
-// BOM module stuff
+import { Error403Component } from './error-pages/error-403/error-403.component';
 import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
 import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
+import { PartSetupComponent } from './setups/parts/parts.component';
+import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -38,6 +48,7 @@ const routes: Routes = [
   { path: 'test', component: TestComponent, canActivate: [BrowserGuard] },
   { path: 'perf', component: PerformanceComponent, canActivate: [BrowserGuard] },
   { path: 'login', component: LoginComponent, canActivate: [BrowserGuard] },
+  { path: 'error403', component: Error403Component },
   {
     path: 'main', component: MainComponent, canActivate: [BrowserGuard, AuthGuardService], resolve: { loggedInUser: UserResolverService },
     children: [
@@ -46,7 +57,11 @@ const routes: Routes = [
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
         canActivate: [FteEntryGuard], canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
-      { path: 'setups/projects', component: ProjectsSetupsComponent },
+      { path: 'projects/my-projects', component: MyProjectsComponent },
+      { path: 'projects/requests', component: ProjectRequestsComponent },
+      { path: 'projects/search', component: SearchProjectsComponent },
+      { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/bom-editor', component: BomEditorComponent },
       { path: 'reports/bom-viewer', component: BomViewerComponent },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
@@ -56,7 +71,7 @@ const routes: Routes = [
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'chat', component: ChatComponent },
-      { path: 'admin', component: AdminComponent, canActivate: [PermissionsGuard] },
+      { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }
     ]
   },
   { path: '**', redirectTo: '/login' }

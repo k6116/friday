@@ -12,13 +12,18 @@ const Projects = sequelize.define('projects',
     tcNumber: { type: Sequelize.STRING, field: 'TCNumber' },
     projectStatusID: { type: Sequelize.INTEGER, field: 'ProjectStatusID' },
     projectTypeID: { type: Sequelize.INTEGER, field: 'ProjectTypeID' },
+    priorityID: { type: Sequelize.INTEGER, field: 'PriorityID' },
     projectNumber: { type: Sequelize.INTEGER, field: 'ProjectNumber' },
     oracleItemNumber: { type: Sequelize.STRING, field: 'OracleItemNumber' },
     ibo: { type: Sequelize.STRING, field: 'IBO' },
-    mu: { type: Sequelize.INTEGER, field: 'MU' },
+    mu: { type: Sequelize.STRING, field: 'MU' },
     active: { type: Sequelize.INTEGER, field: 'Active' },
     notes: { type: Sequelize.STRING, field: 'Notes' },
     projectOrgManager: { type: Sequelize.STRING, field: 'ProjectOrgManager'},
+    departmentID: { type: Sequelize.INTEGER, field: 'DepartmentID'},
+    planOfRecord: { type: Sequelize.INTEGER, field: 'PlanOfRecordFlag'},
+    groupID: { type: Sequelize.INTEGER, field: 'GroupID'},
+    priorityID: { type: Sequelize.INTEGER, field: 'PriorityID'},
     createdBy: { type: Sequelize.INTEGER, field: 'CreatedBy' },
     createdAt: { type: Sequelize.DATE, field: 'CreationDate' },
     updatedBy: { type: Sequelize.INTEGER, field: 'LastUpdatedBy' },
@@ -41,6 +46,33 @@ const ProjectTypes = sequelize.define('projectTypes',
   {
     schema: 'projects',
     tableName: 'ProjectTypes',
+    timestamps: false
+  }
+);
+
+const ProjectStatuses = sequelize.define('projectStatuses',
+  {
+    id: { type: Sequelize.INTEGER, field: 'ProjectStatusID', primaryKey: true, autoIncrement: true },
+    projectStatusName: { type: Sequelize.STRING, field: 'ProjectStatusName' },
+    description: { type: Sequelize.STRING, field: 'Description' }
+  },
+  {
+    schema: 'projects',
+    tableName: 'ProjectStatus',
+    timestamps: false
+  }
+);
+
+
+const ProjectPriorities = sequelize.define('projectPriorities',
+  {
+    id: { type: Sequelize.INTEGER, field: 'PriorityID', primaryKey: true, autoIncrement: true },
+    priorityName: { type: Sequelize.STRING, field: 'PriorityName' },
+    description: { type: Sequelize.STRING, field: 'Description' }
+  },
+  {
+    schema: 'projects',
+    tableName: 'Priority',
     timestamps: false
   }
 );
@@ -95,6 +127,8 @@ ProjectTypeDisplayFields.belongsTo(ProjectTypes, {foreignKey: 'projectTypeID'});
 module.exports = {
   Projects: Projects, 
   ProjectTypes: ProjectTypes,
+  ProjectStatuses: ProjectStatuses,
+  ProjectPriorities: ProjectPriorities,
   ProjectPermissionRequests: ProjectPermissionRequests,
   ProjectTypeDisplayFields: ProjectTypeDisplayFields,
 }
