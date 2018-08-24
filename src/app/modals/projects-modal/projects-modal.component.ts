@@ -762,7 +762,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
   }
 
   closeModal() {
-    // console.log('CLOSE MODAL');
+    // dispose of all card button tooltips, in case any are still lingering (mouseleave did not properly dispose for some reason)
+    $(`.card-button`).tooltip('dispose');
     this.outerDivState = 'out';
     this.innerDivState = 'out';
     this.cancel.emit(true);
@@ -921,7 +922,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       this.filterItems = [
       {
       id: 'check0',
-      title: 'My Team',
+      title: 'Created By My Team',
       value: this.managerEmailAddress,
       checked: false
       },

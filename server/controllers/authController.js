@@ -27,6 +27,7 @@ function authenticate(req, res) {
   // set the ldap options object
   const options = {
     url: 'ldap://adldap.cos.is.keysight.com',
+    // url: 'ldap://us-srs-dc1.ad.keysight.com us-srs-dc2.ad.keysight.com us-srs-dc3.ad.keysight.com us-cos-dc1.ad.keysight.com us-cos-dc2.ad.keysight.com',
     bindDN: `cn=${user.userName},cn=users,dc=ad,dc=keysight,dc=com`,
     bindCredentials: user.password,
     searchBase: 'cn=users,dc=ad,dc=keysight,dc=com',
@@ -150,67 +151,7 @@ function authenticate(req, res) {
       }
     
     // if an ldap error object is returned, this indicates authentication failure
-    } 
-    
-    else if (process.env.ENVIRONMENT === 'dev') {
-      // LDAP Failed: For DEV ENV fake login with anonymous dev user
-      let userName = 'developer';
-      //TO-DO: All Developers:  put your email address here when LDAP fails so stored procedure can obtain your permissions
-      let emailAddress = 'mike.galasso@non.keysight.com'; 
-      let firstName = 'LDAP';
-      let lastName = 'OVERRIDE';
-      let fullName = firstName + ' ' + lastName;
-
-  
-      sequelize.query('EXECUTE resources.AuthData :emailAddress, :firstName, :lastName, :fullName, :userName', 
-        {replacements: {emailAddress: emailAddress, firstName: firstName, lastName: lastName, fullName: fullName, userName: userName}, type: sequelize.QueryTypes.SELECT})
-        .then(userData => {
-
-          // treeize the data to get a nested object (for permissions)
-          const userDataTree = new Treeize();
-          userDataTree.grow(userData);
-          const userDataTreeized = userDataTree.getData();
-
-          // build a token using jwt
-          const newToken = jwt.sign(
-            {
-              userData: userDataTreeized[0]
-            }, 
-            tokenSecret, 
-            {expiresIn: expirationTime}
-          );
-
-          // decode the token to get the issued at and expiring at timestamps
-          const decodedToken = token.decode(newToken, res);
-
-          // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
-          res.json({
-            ldapUser: null,
-            jarvisUser: userDataTreeized[0],
-            token: {
-              signedToken: newToken,
-              issuedAt: decodedToken.iat,
-              expiringAt: decodedToken.exp
-            }
-          });
-
-          // TEMP CODE: testing websockets
-          loggedInUsers.push(userDataTreeized[0]);
-        
-
-      })
-      .catch(error => {
-        res.status(400).json({
-          title: 'Error (in catch)',
-          error: {message: error}
-        })
-      });
-
-  } // ldap override login
-    
-    
-    
-    else if (err) { // general error message of non-dev users
+    } else if (err) {
 
       // log the ldap response time
       const timeDiff = process.hrtime(startTime);

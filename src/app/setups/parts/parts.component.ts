@@ -59,18 +59,18 @@ export class PartSetupComponent implements OnInit {
             a.PartName < b.PartName ? -this.nameSortCoefficient
             : a.PartName > b.PartName ? this.nameSortCoefficient : 0);
       }
-
-   // Triggers Refresh of Filtered Projects
-   // TO-DO: Find a better way to refresh the list
-    this.searchParts = this.searchParts + ' ';
+      this.searchParts = ' ';
   }
 
-  onSearchInputChange(event: any) {
+  onSearchChanged(event: any) {
+    this.part = null;
+    this.showPartCard = false;
+    this.showScheduleCard = false;
 
-    if (this.searchParts.length === 0) {
-      this.showPartCard = false;
-      this.showScheduleCard = false;
-    }
+    // if (this.searchParts.length === 0) {
+    //   this.showPartCard = false;
+    //   this.showScheduleCard = false;
+    // }
   }
 
   initFormValues() {
@@ -204,7 +204,7 @@ export class PartSetupComponent implements OnInit {
     this.form.reset();
     this.form.patchValue(
       {
-        partName: this.searchParts ? this.searchParts.trim() : null
+        partName: this.searchParts ? this.searchParts.trim().replace(/[^a-zA-Z0-9\\s\\-]/gm, '') : null
       });
       this.cacheService.raiseToast('info', 'New Part Entry Form Created.');
   }

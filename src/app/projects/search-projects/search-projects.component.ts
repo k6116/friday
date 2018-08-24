@@ -4,6 +4,7 @@ import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { WebsocketService } from '../../_shared/services/websocket.service';
+import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 
 declare var $: any;
 
@@ -19,20 +20,18 @@ export class SearchProjectsComponent implements OnInit {
   @ViewChild('filterDropDownVC') filterDropDownVC: ElementRef;
 
   projects: any;
-  projectsToDisplay: any;
+  showSpinner: boolean;
   showPage: boolean;
-  projectTypeBinding: any;
   numProjectsToDisplayAtOnce: number;
-  filterString: string;
   totalProjectsCount: number;  // total number of projects
   addedProjectsCount: number;  // number of projects currently added to the page via infinate scroll (increments of 100)
   filteredProjectsCount: number;  // number of project currently displayed, if there is a filter set
   numProjectsToDisplay: number; // number of projects to show initially and to add for infinate scroll
+  numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
   filters: any[];
+  filterString: string;
   selectedFilter: any;  // selected filter object from the dropdown (from this.filters)
   dropDownData: any;
-  numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
-  showSpinner: boolean;
   subscription1: Subscription;
 
 
@@ -40,7 +39,8 @@ export class SearchProjectsComponent implements OnInit {
     private apiDataProjectService: ApiDataProjectService,
     private filterPipe: FilterPipe,
     private toolsService: ToolsService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private clickTrackingService: ClickTrackingService
   ) {
 
     // set the number of projects to display initially, and to add for infinite scroll
@@ -117,6 +117,8 @@ export class SearchProjectsComponent implements OnInit {
           // console.log(res);
           // store the projects
           this.projects = res[0];
+          // console.log('projects list:');
+          // console.log(this.projects);
           // store the dropdown data
           this.dropDownData = res.slice(1);
           // add an empty object to each drop down list, for the default first selection
@@ -179,11 +181,9 @@ export class SearchProjectsComponent implements OnInit {
     this.dropDownData.forEach(dropDown => {
       // take a copy of the first object
       const firstObject = $.extend(true, {}, dropDown[0]);
-      console.log(firstObject);
       // replace the properties with zeros or empty strings
       for (const property in firstObject) {
         if (firstObject.hasOwnProperty(property)) {
-          console.log(property);
           if (typeof firstObject[property] === 'number') {
             firstObject[property] = 0;
           } else if (typeof firstObject[property] === 'string') {
@@ -195,6 +195,30 @@ export class SearchProjectsComponent implements OnInit {
       dropDown.splice(0, 0, firstObject);
     });
 
+  }
+
+
+  // look for instances where we want to log the search for click tracking
+  onFilterStringKeydown(event) {
+    // get the key code
+    // REF: https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+    const key = event.keyCode || event.charCode;
+    // 8 = backspace; 46 = delete
+    // if ( key === 8 || key === 46 ) {
+    if (this.filterString) {
+      // get the number of selected characters
+      const selectedIndexStart = this.filterStringVC.nativeElement.selectionStart;
+      const selectedIndexEnd = this.filterStringVC.nativeElement.selectionEnd;
+      const numSelectedCharacters = selectedIndexEnd - selectedIndexStart;
+      // if all of the text is selected, and the user either hits the backspace, delete,
+      // or any other character (starting a new search), log the search for click tracking
+      // NOTE: since this is key down event the filter string will be the previous string (no need to cache)
+      if (numSelectedCharacters === this.filterString.length) {
+        // log a record in the click tracking table
+        this.clickTrackingService.logClickWithEvent(`page: Search Projects,
+          text: ${this.selectedFilter.displayName} > ${this.filterString}`);
+      }
+    }
   }
 
 
@@ -240,9 +264,21 @@ export class SearchProjectsComponent implements OnInit {
       this.filterString = dropDownValue;
       // call filter string change to update the record count string
       this.onFilterStringChange();
+      // log a record in the click tracking table
+      this.clickTrackingService.logClickWithEvent(`page: Search Projects, text: ${this.selectedFilter.displayName} > ${dropDownValue}`);
     } else {
-      // if there is no dropdown value (first selection, which is null), clear the filter
+      // if there is no dropdown value, clear the filter
       this.clearFilter();
+    }
+  }
+
+
+  // if there is a filter/search term entered, log it for click tracking on lose focus
+  // NOTE: clicking the x icon will also trigger this
+  onFilterLostFocus() {
+    if (this.filterString) {
+      // log a record in the click tracking table
+      this.clickTrackingService.logClickWithEvent(`page: Search Projects, text: ${this.selectedFilter.displayName} > ${this.filterString}`);
     }
   }
 
@@ -287,9 +323,20 @@ export class SearchProjectsComponent implements OnInit {
   // display a popover with the full project name (for long overflowing project names)
   onNameMouseEnter(project: any) {
 
+    const $ruler = $('span.project-name-ruler');
+    $ruler.html(project.ProjectName);
+    // console.log('measured width of project name:');
+    const measuredWidth = $ruler.outerWidth();
+    // console.log($ruler.outerWidth());
+
+    // get the current width of the container (500 to 800 px)
+    const currentWidth = $(`div.project-name[data-id="${project.ProjectID}"]`).outerWidth();
+    // console.log('current allowed width of project name');
+    // console.log(currentWidth);
+
     // only show the popover if there is a project name (not null) and it is over X characters
     if (project.ProjectName) {
-      if (project.ProjectName.length >= 50) {
+      if (measuredWidth >= (currentWidth - 60)) {
 
         // set the jquery element
         const $el = $(`div.project-name[data-id="${project.ProjectID}"]`);
@@ -330,13 +377,20 @@ export class SearchProjectsComponent implements OnInit {
   // display a popover with the full description
   onDescriptionMouseEnter(project: any) {
 
-    // console.log('project description and length:');
-    // console.log(project.Description);
-    // console.log(project.Description ? project.Description.length : 0);
+    const $ruler = $('span.project-description-ruler');
+    $ruler.html(project.Description);
+    // console.log('measured width of project description:');
+    const measuredWidth = $ruler.outerWidth();
+    // console.log($ruler.outerWidth());
+
+    // get the current width of the container (500 to 800 px)
+    const currentWidth = $(`div.project-description[data-id="${project.ProjectID}"]`).outerWidth();
+    // console.log('current allowed width of project description');
+    // console.log(currentWidth);
 
     // only show the popover if there is a description (not null) and it is over 200 characters
     if (project.Description) {
-      if (project.Description.length >= 130) {
+      if ((measuredWidth / 2) >= (currentWidth - 60)) {
 
         // set the jquery element
         const $el = $(`div.project-description[data-id="${project.ProjectID}"]`);
@@ -382,7 +436,7 @@ export class SearchProjectsComponent implements OnInit {
       'nc-ram': projectTypeName === 'NCI',
       'nc-keyboard': projectTypeName === 'NMI',
       'nc-keyboard-wireless': projectTypeName === 'NPI',
-      'nc-socket-europe-1': projectTypeName === 'NPPI',
+      'nc-microcircuit': projectTypeName === 'NPPI',
       'nc-lab': projectTypeName === 'NTI',
       'nc-microscope': projectTypeName === 'Research',
       'nc-settings-91': projectTypeName === 'MFG',

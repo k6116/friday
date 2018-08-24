@@ -17,6 +17,7 @@ export class ProjectsSetupsComponent implements OnInit {
   searchProjects: string;
   projectList: any;
   project: any;
+  projectNameRegex: any;
   schedule: any;
   showProjectCard: boolean;
   showScheduleCard: boolean;
@@ -59,20 +60,17 @@ export class ProjectsSetupsComponent implements OnInit {
             a.ProjectName < b.ProjectName ? -this.nameSortCoefficient
             : a.ProjectName > b.ProjectName ? this.nameSortCoefficient : 0);
       }
-
-   // Triggers Refresh of Filtered Projects
-   // TO-DO: Find a better way to refresh the list
-    this.searchProjects = this.searchProjects + ' ';
+      this.searchProjects =  ' '; // Refresh Project Search
   }
 
-  onSearchInputChange(event: any) {
-    if (this.searchProjects.length === 0) {
+  onSearchChanged(event: any) {
+      this.project = null;
       this.showProjectCard = false;
       this.showScheduleCard = false;
-    }
   }
 
   initFormValues() {
+
     this.form = this.formBuilder.group({
     projectID: [null, [Validators.required]],
     projectName: [null, [Validators.required]],
@@ -173,7 +171,7 @@ export class ProjectsSetupsComponent implements OnInit {
     this.form.reset();
     this.form.patchValue(
       {
-        projectName: this.searchProjects ? this.searchProjects.trim() : this.searchProjects
+        projectName: this.searchProjects ? this.searchProjects.trim().replace(/[^a-zA-Z0-9\\s\\-]/gm, '') : null
       });
       this.cacheService.raiseToast('info', 'New Project Entry Form Created.');
   }
@@ -187,7 +185,7 @@ export class ProjectsSetupsComponent implements OnInit {
     this.form.patchValue(
       {
         projectID: this.project.ProjectID,
-        projectName: this.project.ProjectName,
+        projectName:  this.project.ProjectName,
         projectTypeID: this.project.ProjectTypeID,
         active: this.project.Active,
         planOfRecord: this.project.PlanOfRecordFlag,
@@ -302,7 +300,7 @@ export class ProjectsSetupsComponent implements OnInit {
       CurrentRevision: 0,
       RevisionNotes: '',
       PLCStatusID: 0,
-      PLCDate: new Date(),
+      PLCDate: moment().format('MM/DD/YYYY'),
       Notes: '',
       DeleteRow: 0
     });

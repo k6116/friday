@@ -3,7 +3,7 @@
   <div class="jumbotron">
     <!-- Jobtitle Fuzzy Search Bar -->
     <div class="input-group">
-      <input class="searchInput" type="text" [(ngModel)]="searchParts" (change)="onSearchInputChange($event)" placeholder="Search Parts">
+      <input class="searchInput" type="text" [(ngModel)]="searchParts" (input)="onSearchChanged($event.target.value)" placeholder="Search Parts">
       <div class="input-group-append">
         <button [disabled]="searchParts && !searchParts.trim()" class="btn btn-primary btn-fte-toolbar" (click)="onCreatePartClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
@@ -15,7 +15,7 @@
 
 
   <div class="row">
-    <div class="col-2.5">
+    <div class="col-2.1">
       <table class="table table-wrapper-scroll-y table-hover" *ngIf="(partList | filter : searchParts : 'PartName':{limitTo: -1, matchOptimistic: true}) as filteredPartList">
           <thead>
               <tr>
@@ -39,25 +39,20 @@
       </tbody>
       </table>
     </div>  
-    <div class="col-5">
+    <div class="col-sm">
       <div class="card" *ngIf="showPartCard">
         <div class="card-header">
           <div class="row">
-            <div class="col-8">
+            <div class="col-6">
                 <form [formGroup] = 'form'>
                   <input type=text readonly=true formControlName="partName" maxlength="50" class="form-control">
-                </form>
-              <!-- <h6>{{ part.PartName }}         
-              </h6> -->
+                </form>             
             </div>
-            <div class="col-4 text-right">
-              <!-- <button class="btn btn-primary btn-fte-toolbar">
-                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#partEditModal"></i>&nbsp;&nbsp;Edit
-              </button> -->
+            <div class="col-6 text-right">             
               <button *ngIf=part class="btn btn-primary btn-fte-toolbar" (click)="onDeletePartClick(part)">
                 <i class="fa fa-trash-o fa-lg" ></i>&nbsp;&nbsp;Delete
               </button>
-              <button class="btn btn-primary btn-fte-toolbar" (click)="onSavePartClick()">
+              <button class="btn btn-primary btn-fte-toolbar" (click)="onSavePartClick()" [disabled]="form.value.partTypeID < 1">
                   <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
                 </button>
             </div>
@@ -77,7 +72,7 @@
               <tr>
                   <td>Oracle Item #</td>
                   <td><input type=text class="form-control" maxlength="100" formControlName="oracleItemNumber"></td>
-                  <td>Part Type</td>
+                  <td>* Part Type</td>
                   <td><select class="form-control" formControlName="partTypeID"><option class="dropdown-item" *ngFor="let item of partTypeChoices" [value]= "item.PartTypeID">
                     {{item.PartTypeName}}
                   </option></select></td>
@@ -110,25 +105,25 @@
       </div>
     </div>
 
-    <div class="col-4">
+    <div class="col-sm">
       <div class="card" *ngIf="showScheduleCard">
         <div class="card-header">
           <div class="row">
-            <div class="col-3">
+            <div class="col">
                 <table>
                    <tr><td> <h6>Schedule Revision</h6></td></tr>
                   <tr><td><span class=revision *ngIf='schedule'>[ {{ schedule[0].CurrentRevision }} ]</span></td></tr>
                 </table>    
                       
             </div>
-            <div class="col-5">
+            
               <table>
                 <td> <h6>* Revision Notes </h6></td>
                 <td><input type=text class=form-control maxlength="500" [(ngModel)]="revisionNotes"></td>
               </table>                      
-            </div>
+       
            
-            <div class="col-4 text-right">
+            <div class="col text-right">
               <button [disabled]="!revisionNotes" class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
                 <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
               </button>              

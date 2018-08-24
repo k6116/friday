@@ -33,6 +33,13 @@ export class ApiDataAuthService {
       .map((response: Response) => response.json()).toPromise();
   }
 
+  // get a list of the background image file names and captions
+  getLoginBackgroundImages(): Observable<any> {
+    return this.http.get(`/api/auth/getLoginBackgroundImages`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   // decode the jwt token to get the user info, issued and expiration dates
   getInfoFromToken(token: string): Observable<any> {
     const headers = new Headers({'X-Token': token});
@@ -58,13 +65,6 @@ export class ApiDataAuthService {
     return await this.http.get(`/api/auth/verifyRoutePermissions`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json()).toPromise();
-  }
-
-  // get a list of the background image file names and captions
-  getLoginBackgroundImages(): Observable<any> {
-    return this.http.get(`/api/auth/getLoginBackgroundImages`)
-      .timeout(this.cacheService.apiDataTimeout)
-      .map((response: Response) => response.json());
   }
 
   // TEMP CODE: for websockets testing

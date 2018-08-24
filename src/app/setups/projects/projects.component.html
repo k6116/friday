@@ -3,9 +3,9 @@
   <div class="jumbotron">
     <!-- Jobtitle Fuzzy Search Bar -->
     <div class="input-group">
-      <input class="searchInput" type="text" maxlength="500"  [(ngModel)]="searchProjects" (change)="onSearchInputChange($event)" placeholder="Search Projects">
+      <input class="searchInput" type="text" maxlength="500" [(ngModel)]="searchProjects" (input)="onSearchChanged($event.target.value)" placeholder="Search Projects">
       <div class="input-group-append">
-        <button [disabled]="searchProjects && !searchProjects.trim()" class="btn btn-primary btn-fte-toolbar" (click)="onCreateProjectClick()" style="display: block">
+        <button  [disabled]="searchProjects && !searchProjects.trim()" class="btn btn-primary btn-fte-toolbar" (click)="onCreateProjectClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
         </button>       
       </div>
@@ -13,7 +13,7 @@
   </div>
 
   <div class="row">  
-    <div class="col-2">
+    <div class="col-2.1">
         <table class="table table-wrapper-scroll-y" *ngIf="(projectList | filter : searchProjects : 'ProjectName':{limitTo: -1, matchOptimistic: true}) as filteredProjectList">
             <thead>
                 <tr>
@@ -37,16 +37,16 @@
         </tbody>
         </table>
       </div>
-    <div class="col-5">
+    <div class="col-sm">
       <div class="card" *ngIf="showProjectCard">
         <div class="card-header">
           <div class="row">
-            <div class="col-8">
+            <div class="col-6">
                 <form [formGroup] = 'form'>
                   <input type=text readonly=true formControlName="projectName" class="form-control">
                 </form>            
             </div>
-            <div class="col-4 text-right">  
+            <div class="col-6 text-right">  
                <button *ngIf=project class="btn btn-primary btn-fte-toolbar" (click)="onDeleteProjectClick(project)">
                   <i class="fa fa-trash-o fa-lg" ></i>&nbsp;&nbsp;Delete
                </button>
@@ -113,25 +113,21 @@
       </div>
     </div>
 
-    <div class="col-4">
+    <div class="col-sm">
       <div class="card" *ngIf="showScheduleCard">
         <div class="card-header">
           <div class="row">
-            <div class="col-3">
+            <div class="col">
                 <table>
                    <tr><td> <h6>Schedule Revision</h6></td></tr> 
                     <tr><td><span class=revision *ngIf='schedule'>[ {{ schedule[0].CurrentRevision }} ]</span> </td></tr>
-                  </table>    
-                      
-            </div>
-            <div class="col-7">
+                  </table> 
+            </div>            
               <table>
                 <td> <h6>* Revision Notes</h6></td>
                 <td><input type=text class=form-control maxlength="500" [(ngModel)]="revisionNotes"></td>
-              </table>                      
-            </div>
-           
-            <div class="col-2 text-right">
+              </table> 
+            <div class="col text-right">
               <button [disabled]="!revisionNotes" class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
                 <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
               </button>              
