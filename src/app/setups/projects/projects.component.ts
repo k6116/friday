@@ -79,10 +79,10 @@ export class ProjectsSetupsComponent implements OnInit {
     .subscribe(
       res => {
         this.projectList = res;
-        console.log('Projects List:', this.projectList);
+        // console.log('Projects List:', this.projectList);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -92,11 +92,11 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectTypesList()
     .subscribe(
       res => {
-        console.log('Project Types:', res);
+        // console.log('Project Types:', res);
         this.projectTypeChoices = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Types: ${err}`);
       }
     );
@@ -104,11 +104,11 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectDepartments()
     .subscribe(
       res => {
-        console.log('Project Departments:', res);
+        // console.log('Project Departments:', res);
         this.departmentChoices = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Departments: ${err}`);
       }
     );
@@ -116,11 +116,11 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectGroups()
     .subscribe(
       res => {
-        console.log('Project Groups:', res);
+        // console.log('Project Groups:', res);
         this.groupChoices = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Groups: ${err}`);
       }
     );
@@ -128,11 +128,11 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectPriorities()
     .subscribe(
       res => {
-        console.log('Project Priorities:', res);
+        // console.log('Project Priorities:', res);
         this.priorityChoices = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Priorities: ${err}`);
       }
     );
@@ -140,11 +140,11 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectPLCStatus()
     .subscribe(
       res => {
-        console.log('Project PLC Status:', res);
+        // console.log('Project PLC Status:', res);
         this.plcStatusChoices = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain PLC Status: ${err}`);
       }
     );
@@ -209,7 +209,7 @@ export class ProjectsSetupsComponent implements OnInit {
           this.getProjects();
         },
         err => {
-          console.log(err);
+          // console.log(err);
           this.cacheService.raiseToast('error', `Project Schedule Failed to Update: ${err}`);
         }
       );
@@ -230,7 +230,7 @@ export class ProjectsSetupsComponent implements OnInit {
             this.getProjects();
         },
         err => {
-          console.log(err);
+          // console.log(err);
           this.cacheService.raiseToast('error', `Create Project Failed: ${err}`);
         }
       );
@@ -268,7 +268,7 @@ export class ProjectsSetupsComponent implements OnInit {
           this.apiDataProjectService.deleteProjectSetup(this.project.ProjectID, this.scheduleId, this.authService.loggedInUser.id)
           .subscribe(
             del => {
-              console.log('project deleted');
+              // console.log('project deleted');
               this.cacheService.raiseToast('success', 'Project Removed Successfully');
               this.project = null;
               this.schedule = null;
@@ -278,7 +278,7 @@ export class ProjectsSetupsComponent implements OnInit {
               deleteModalSubscription.unsubscribe();
             },
             err => {
-              console.log(err);
+              // console.log(err);
               this.cacheService.raiseToast('error', `Delete Propject Failed: ${err}`);
             }
           );
@@ -311,27 +311,27 @@ export class ProjectsSetupsComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updateProjectSchedule(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
+    this.apiDataSchedulesService.updateProjectScheduleXML(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
-          console.log('Saved Project Schedule');
+          // console.log('Saved Project Schedule');
           this.cacheService.raiseToast('success', 'Project Schedule Saved');
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
     } else {
       // no detail records so remove the schedule header record
-      this.apiDataSchedulesService.destroySchedule(this.scheduleId)
+      this.apiDataSchedulesService.destroyScheduleSP(this.scheduleId)
       .subscribe(
         res => {
-          console.log('Deleted Schedule');
+          // console.log('Deleted Schedule');
           this.cacheService.raiseToast('success', 'Project Schedule Removed');
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
     }
@@ -346,7 +346,7 @@ export class ProjectsSetupsComponent implements OnInit {
         this.schedule = res;
         this.revisionNotes = res[0].RevisionNotes;
         this.scheduleId = res[0].ScheduleID;
-        console.log('Project Schedule:', this.schedule);
+        // console.log('Project Schedule:', this.schedule);
       } else {
         this.schedule = [];
         this.scheduleId = 0;
@@ -354,7 +354,7 @@ export class ProjectsSetupsComponent implements OnInit {
       }
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }

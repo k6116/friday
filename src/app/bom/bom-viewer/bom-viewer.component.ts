@@ -44,7 +44,7 @@ export class BomViewerComponent implements OnInit {
 
       this.bill = res;
       bomSubscription.unsubscribe();
-      console.log(this.bill);
+      // console.log(this.bill);
 
       this.bomChartOptions = {
         chart: {
@@ -89,7 +89,7 @@ export class BomViewerComponent implements OnInit {
 
   onTreeLoadComplete() {
     // callback function executed when Treant is done drawing the tree, currently unused
-    console.log('completed');
+    // console.log('completed');
   }
 
   bomTraverse(i: number, lv: number) {

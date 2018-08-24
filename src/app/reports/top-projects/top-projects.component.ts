@@ -48,7 +48,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
     this.topFteProjectSubscription = this.apiDataReportService.getTopFTEProjectList()
     .subscribe(
       res => {
-        console.log('Top FTE Project List Data: ', res);
+        // console.log('Top FTE Project List Data: ', res);
         this.topFTEProjectList = res;
         this.displayTopFTEProjectList = true;
         this.chartIsLoading = false;
@@ -56,7 +56,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
         this.isProjectSelected = new Array(this.topFTEProjectList.length).fill(false);
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }
@@ -106,12 +106,12 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
             projectName: project.projectName,
             data: fiscalDate
           });
-          console.log('fiscalDate', fiscalDate);
-          console.log(this.historicFteData);
+          // console.log('fiscalDate', fiscalDate);
+          // console.log(this.historicFteData);
           this.plotFteHistoryChart();
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
     }
@@ -128,7 +128,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
         this.projectEmployeeData = res;
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     );
   }

@@ -15,7 +15,7 @@ export class AdminComponent implements OnInit {
 
   onSelectionClick(event: any) {
     this.selection = event.target.value;
-    console.log('Selected:', this.selection);
+    // console.log('Selected:', this.selection);
   }
 
 }

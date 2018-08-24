@@ -16,7 +16,7 @@
         <br/>
         <!-- List of all Jobtitles -->
         <div class="list-group">
-          <ng-container *ngIf="(jobTitleList | filter : jobTitleName : 'jobTitleName':{limitTo: numJobTitlesToDisplay, matchFuzzy: true}) as filteredJobTitle">
+          <ng-container *ngIf="(jobTitleList | filter : jobTitleName : 'jobTitleName':{limitTo: numJobTitlesToDisplay, matchFuzzy: {on: true}}) as filteredJobTitle">
             <div *ngFor="let list of filteredJobTitle">
               <button type="button" class="list-group-item list-group-item-action" (click)="getJobSubTitleListMap(list.id)" [class.highlighted]="list.id===jobTitleID">
                 <div class="row">
@@ -53,7 +53,7 @@
       <br/>
       <!-- List of Subtitles with checkbox: Show only when clicked on a specific job title -->
       <div class="list-group">
-        <ng-container *ngIf="(jobSubTitleList | filter : jobSubTitleName : 'jobSubTitleName':{limitTo: numJobSubTitlesToDisplay, matchFuzzy: true}) as filteredJobSubTitle">
+        <ng-container *ngIf="(jobSubTitleList | filter : jobSubTitleName : 'jobSubTitleName':{limitTo: numJobSubTitlesToDisplay, matchFuzzy: {on: true}}) as filteredJobSubTitle">
           <div *ngFor="let sublist of filteredJobSubTitle; let i = index">
           <button type="button" [disabled]="subTitlesInit" class="list-group-item list-group-item-action" [class.selected]="sublist.checked===true" (click)="onSubTitleButtonClick(sublist.id)">
             <div class="row">

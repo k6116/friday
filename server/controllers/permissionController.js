@@ -69,25 +69,8 @@ function indexProjectPermissionRequestsList(req, res) {
 function indexProjectPermissionTeamList(req, res) {
 
   const managerEmailAddress = req.params.managerEmailAddress;
+  const emailAddress = req.params.emailAddress;
   const userID = req.params.userID;
-
-  // models.Projects.findAll({
-  //   where: 
-  //     {
-  //       [Op.or]: [{projectOrgManager: managerEmailAddress}, {createdBy: userID}]
-  //     },
-  //   attributes: ['id', 'projectName'],
-  // })
-  // .then(ProjectPermissionTeamList => {
-  //   console.log('returning project permission team list')
-  //   res.json(ProjectPermissionTeamList);
-  // })
-  // .catch(error => {
-  //   res.status(400).json({
-  //     title: 'Error (in catch)',
-  //     error: {message: error}
-  //   })
-  // });
 
   const sql = `
     SELECT
@@ -96,7 +79,7 @@ function indexProjectPermissionTeamList(req, res) {
       projects.Projects P
       LEFT JOIN accesscontrol.Employees E ON P.CreatedBy = E.EmployeeID
     WHERE
-      P.ProjectOrgManager = '${managerEmailAddress}' OR P.CreatedBy = ${userID} OR E.EmailAddress = '${managerEmailAddress}'
+      P.ProjectOrgManager = '${managerEmailAddress}' OR P.ProjectOrgManager = '${emailAddress}' OR P.CreatedBy = ${userID} OR E.EmailAddress = '${managerEmailAddress}'
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(indexProjectPermissionTeamList => {

@@ -20,7 +20,6 @@ require('highcharts/modules/no-data-to-display.js')(Highcharts);
 require('highcharts/highcharts-more.js')(Highcharts);
 require('highcharts/modules/solid-gauge.js')(Highcharts);
 import * as moment from 'moment';
-import * as momentTimezone from 'moment-timezone';
 
 
 @Component({
@@ -72,6 +71,9 @@ export class DashboardComponent implements OnInit {
 
   getDashboardData() {
 
+    // hide the footer until the page is ready to be rendered
+    this.toolsService.hideFooter();
+
     // show the waiting to render spinner
     this.showSpinner = true;
 
@@ -84,17 +86,21 @@ export class DashboardComponent implements OnInit {
     this.apiDataDashboardService.getDashboardData(fiscalQuarterRange[0], fiscalQuarterRange[1])
       .subscribe(
         res => {
-          console.log('dashboard data:');
-          console.log(res);
+          // console.log('dashboard data:');
+          // console.log(res);
           this.dashboardData = res;
           this.renderDashboard();
           this.showDashboard = true;
           this.showSpinner = false;
+          // show the footer
+          this.toolsService.showFooter();
         },
         err => {
-          console.log('error response from get dashboard data:');
-          console.log(err);
+          // console.log('error response from get dashboard data:');
+          // console.log(err);
           this.showSpinner = false;
+          // show the footer
+          this.toolsService.showFooter();
           // TO-DO BILL: create function in tools service that takes err and handles it from there
           if (err.status === 401) {
             this.authService.logout(true);
@@ -151,8 +157,8 @@ export class DashboardComponent implements OnInit {
   }
 
   renderStackedColumnChart() {
-    console.log('stacked column data');
-    console.log(this.dashboardData[0]);
+    // console.log('stacked column data');
+    // console.log(this.dashboardData[0]);
     const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
     Highcharts.chart('stackedColumnChart', chartOptions);
   }

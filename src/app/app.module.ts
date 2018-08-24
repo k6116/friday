@@ -34,7 +34,6 @@ import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, A
   ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
   ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
 
-
 // GUARDS
 import { AuthGuardService } from './_shared/guards/auth.guard';
 import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
@@ -59,7 +58,6 @@ import { TopNavComponent } from './navs/top-nav/top-nav.component';
 import { SideNavComponent } from './navs/side-nav/side-nav.component';
 import { TopProjectsReportsComponent } from './reports/top-projects/top-projects.component';
 import { EmployeesReportsComponent } from './reports/employees/employees.component';
-import { MyProjectsComponent } from './my-projects/my-projects.component';
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
@@ -85,10 +83,12 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.component';
 import { PartSetupComponent } from './setups/parts/parts.component';
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
-
-// BOM module stuff
+import { Error403Component } from './error-pages/error-403/error-403.component';
 import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
 import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
+import { SearchProjectsComponent } from './projects/search-projects/search-projects.component';
+import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
+import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
 
 
 @NgModule({
@@ -136,10 +136,13 @@ import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
     FooterComponent,
     ProjectsSetupsComponent,
     CarouselModalComponent,
+    SupplyDemandComponent,
+    Error403Component,
     PartSetupComponent,
     BomEditorComponent,
     BomViewerComponent,
-    SupplyDemandComponent
+    ProjectRequestsComponent,
+    SearchProjectsComponent
   ],
   imports: [
     AppRoutingModule,

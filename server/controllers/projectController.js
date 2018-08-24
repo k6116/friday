@@ -8,8 +8,8 @@ function indexProjects(req, res) {
     const sql = `
      SELECT 
         p.ProjectID, 
-        substring(p.ProjectName,1,30) as \'ProjectName\', 
-        substring(p.Description,1,500) as \'Description\', 
+        p.ProjectName, 
+        p.Description, 
         e.FullName, 
         p.MU,
         p.IBO,
@@ -23,11 +23,16 @@ function indexProjects(req, res) {
         p.Notes,
         p.Active,
         py.PriorityName,
+        ps.ProjectStatusName,
         p.NPIHWProjectManager,
         g.GroupName,
         ey.EntityName,
-        eo.EntityOwnerName,   
-        e2.EmailAddress,    
+        eo.EntityOwnerName,
+        e.FirstName,
+        e.LastName,
+        e.FullName,
+        e2.EmailAddress, 
+        p.CreationDate, 
         t.ProjectTypeName, 
         p.CreatedBy,
         p.ProjectOrgManager
@@ -40,6 +45,7 @@ function indexProjects(req, res) {
         LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
         LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
         LEFT JOIN accesscontrol.Employees e2 ON P.CreatedBy = e2.EmployeeID
+        LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
     ORDER BY 
         p.ProjectName`
     
@@ -311,12 +317,45 @@ function destroyProject(req, res) {
 
 function indexProjectTypesList(req, res) {
 
-  models.ProjectTypes.findAll({
-    attributes: ['id', 'projectTypeName', 'description'],
+  const sql = `
+    SELECT
+      T2.ProjectTypeID as [id],
+      T2.ProjectTypeName as [projectTypeName],
+      T2.Description as [description]
+    FROM 
+      projects.projects T1
+      INNER JOIN projects.ProjectTypes T2 ON T1.ProjectTypeID = T2.ProjectTypeID
+    GROUP BY
+      T2.ProjectTypeID,
+      T2.ProjectTypeName,
+      T2.Description
+    ORDER BY
+      T2.ProjectTypeName
+  `
+
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(projectType => {
+      console.log('Returning Project Type List')
+      res.json(projectType);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+
+  });
+}
+
+
+function indexProjectStatusesList(req, res) {
+
+  models.ProjectStatuses.findAll({
+    attributes: ['id', 'projectStatusName', 'description'],
   })
-  .then(projectType => {
-    console.log('Returning Project Type List')
-    res.json(projectType);
+  .then(projectStatuses => {
+    console.log('Returning Project Statuses List')
+    res.json(projectStatuses);
   })
   .catch(error => {
     res.status(400).json({
@@ -326,6 +365,40 @@ function indexProjectTypesList(req, res) {
 
   });
 }
+
+
+function indexProjectPrioritiesList(req, res) {
+
+  const sql = `
+    SELECT
+      T2.PriorityID as [id],
+      T2.PriorityName as [priorityName],
+      T2.Description as [description]
+    FROM 
+      projects.projects T1
+      INNER JOIN projects.Priority T2 ON T1.PriorityID = T2.PriorityID
+    GROUP BY
+      T2.PriorityID,
+      T2.PriorityName,
+      T2.Description
+    ORDER BY
+      T2.PriorityName
+  `
+
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(projectPriorities => {
+      console.log('Returning Project Priorities List')
+      res.json(projectPriorities);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+  });
+
+}
+
 
 function indexProjectSchedule(req, res) {
 
@@ -823,6 +896,8 @@ module.exports = {
   updateProject: updateProject,
   destroyProject: destroyProject,
   indexProjectTypesList: indexProjectTypesList,
+  indexProjectStatusesList: indexProjectStatusesList,
+  indexProjectPrioritiesList: indexProjectPrioritiesList,
   indexProjectSchedule: indexProjectSchedule,
   indexProjectTypeDisplayFields: indexProjectTypeDisplayFields,
   insertProjectEmployeeRole: insertProjectEmployeeRole,

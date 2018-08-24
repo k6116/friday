@@ -26,6 +26,7 @@ export class User implements Deserializable<User> {
   isManager: boolean;
   isExistingUser: boolean;
   permissions: Permission[];
+  managerEmailAddress: string;
 
   // TO-DO BILL: add comments for these three methods
 

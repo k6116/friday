@@ -25,6 +25,8 @@ router.get('/indexProjectsFilterProjectType', controllers.project.indexProjectsF
 router.get('/indexProjectRoster/:projectID', controllers.project.indexProjectRoster);
 router.get('/indexUserProjectList/:userID', controllers.project.indexUserProjectList);
 router.get('/indexProjectTypesList/', controllers.project.indexProjectTypesList);
+router.get('/indexProjectStatusesList/', controllers.project.indexProjectStatusesList);
+router.get('/indexProjectPrioritiesList/', controllers.project.indexProjectPrioritiesList);
 router.post('/insertProject/:userID', controllers.project.insertProject);
 router.post('/updateProject/:userID', controllers.project.updateProject);
 router.post('/destroyProject/:userID', controllers.project.destroyProject);   // PROTECT
@@ -61,13 +63,13 @@ router.post('/clickTracking/:userID', controllers.clickTracking.insert);
 
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
-router.post('/sendRequestProjectEmail/:userID/:ownerID/:projectName', controllers.email.sendRequestProject); 
+router.post('/sendRequestProjectEmail/:userID/:ownerID/:projectName/:requestStatus', controllers.email.sendRequestProject); 
 router.post('/sendProjectApprovalEmail/:userID/:ownerID/:projectName/:approved/:comment', controllers.email.sendProjectApproval);
 
 // PERMISSION CONTROLLER
 router.get('/indexPublicProjectTypes/:userID', controllers.permission.indexPublicProjectTypes);
 router.get('/indexProjectPermissionRequestsList/:userID', controllers.permission.indexProjectPermissionRequestsList);
-router.get('/indexProjectPermissionTeamList/:userID/:managerEmailAddress', controllers.permission.indexProjectPermissionTeamList);
+router.get('/indexProjectPermissionTeamList/:userID/:emailAddress/:managerEmailAddress', controllers.permission.indexProjectPermissionTeamList);
 router.get('/indexProjectPermissionRequestedList/:userID', controllers.permission.indexProjectPermissionRequestedList);
 router.post('/insertProjectPermissionRequest/:userID', controllers.permission.insertProjectPermissionRequest);
 router.post('/updateProjectPermissionResponse/:userID/:reply/:replyComment', controllers.permission.updateProjectPermissionResponse);
@@ -100,6 +102,13 @@ router.get('/getNCISupplyLotExclusionList/:partName', controllers.analytics.getN
 router.get('/execUpdateSupplyDemand/', controllers.analytics.execUpdateSupplyDemand);
 router.post('/insertLotExclusion/:userID', controllers.analytics.insertLotExclusion);
 router.post('/destroyLotExclusion/:userID', controllers.analytics.destroyLotExclusion);
+
+// SCHEDULES CONTROLLER
+router.post('/insertSchedule/:userID', controllers.schedules.insertSchedule);
+router.post('/updateSchedule/:userID', controllers.schedules.updateSchedule);
+router.post('/destroySchedule/:userID', controllers.schedules.destroySchedule);
+router.post('/insertScheduleDetailBulk/:userID', controllers.schedules.insertScheduleDetailBulk);
+router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedules.updateScheduleDetailBulk);
 
 
 // middleware to return an error if the token cannot be verified
@@ -142,6 +151,7 @@ router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', contro
 // JOB TITLE CONTROLLER (ADMIN)
 router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
 router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
+router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
 // FTE CONTROLLER
 router.get('/fte/fte/index/indexUserData', controllers.fte.indexUserData);
@@ -161,10 +171,11 @@ router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 
 // SCHEDULES CONTROLLER
 router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
-router.post('/updateProjectSchedule/:userID/:revisionNotes', controllers.schedules.updateProjectSchedule);
+router.post('/updateProjectScheduleXML/:userID/:revisionNotes', controllers.schedules.updateProjectScheduleXML);
 router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
-router.post('/updatePartSchedule/:userID/:revisionNotes', controllers.schedules.updatePartSchedule); //TO-DO user Token for userID and put revisionNotes in header
-router.get('/destroySchedule/:scheduleID', controllers.schedules.destroySchedule);
+router.post('/updatePartScheduleXML/:userID/:revisionNotes', controllers.schedules.updatePartScheduleXML); //TO-DO user Token for userID and put revisionNotes in header
+router.get('/destroyScheduleSP/:scheduleID', controllers.schedules.destroyScheduleSP);
+
 
 // middleware to protect permissions protected routes
 // if it is verified, it will continue (next) and allow the routes
