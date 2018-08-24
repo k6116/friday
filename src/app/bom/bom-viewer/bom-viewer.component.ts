@@ -103,8 +103,8 @@ export class BomViewerComponent implements OnInit {
         newNode = {
           text: {
             name: this.bill[i].ChildName,
-            title: `${this.bill[i].ChildDepartment} ${this.bill[i].ChildEntity} - ${this.bill[i].ChildType}`,
-            desc: `Qty: ${this.bill[i].QtyPer}`
+            title: `${this.bill[i].ChildType} | Qty: ${this.bill[i].QtyPer}`,
+            // desc: `Qty: ${this.bill[i].QtyPer}`
           },
           id: this.bill[i].ChildID
         };

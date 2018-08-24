@@ -17,8 +17,8 @@
   justify-content: center;
   align-content: center;
   flex-direction: column;
-  min-width: 150px;
-  padding: 10px;
+  min-width: 90px;
+  padding: 1px;
   text-align: left;
   background-color: #FFFFFF;
   border: 1px solid;
@@ -50,19 +50,19 @@
 
 /* css classes for part-department coloration */
 .node.HFTC {
-  background-color: #058DC7;
+  background-color: #c2b1ff;
 }
 
 .node.PMTC {
-  background-color: #50B432;
+  background-color: #67c44b;
 }
 
 .node.PICO {
-  background-color: #ED561B;
+  background-color: #fc8c60;
 }
 
 .node.ThinFilm {
-  background-color: #DDDF00;
+  background-color: #ffaae6;
 }
 
 .node.EXT {
@@ -70,5 +70,9 @@
 }
 
 .node.NPSS {
-  background-color: #64E572;
+  background-color: #ffe881;
+}
+
+.legend {
+  padding: 2px 6px 2px 6px;
 }
