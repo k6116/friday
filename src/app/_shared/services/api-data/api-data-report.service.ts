@@ -43,7 +43,9 @@ export class ApiDataReportService {
 
   // Top Projects report
   getTopFTEProjectList() {
-    return this.http.get(`/api/report/reports-topProjects/show/getTopFTEProjectList`)
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/report/reports-topProjects/show/getTopFTEProjectList`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

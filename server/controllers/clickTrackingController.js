@@ -3,13 +3,12 @@ const models = require('../models/_index')
 const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize')
 const moment = require('moment');
-
+const token = require('../token/token');
 
 
 function insert(req, res) {
 
   const formData = req.body;
-  const userID = req.params.userID;
 
   models.ClickTracking.create(req.body)
   .then(savedClick => {

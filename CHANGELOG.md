@@ -1,3 +1,13 @@
+<a name="1.8.2"></a>
+## [1.8.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.1...v1.8.2) (2018-08-24)
+
+
+### Bug Fixes
+
+* added SIGINT code to server.js ([0519110](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/0519110))
+
+
+
 <a name="1.8.1"></a>
 ## [1.8.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.0...v1.8.1) (2018-08-22)
 
