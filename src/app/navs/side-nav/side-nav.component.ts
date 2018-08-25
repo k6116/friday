@@ -160,6 +160,15 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               active: false,
               permissionProtected: true,
               hidden: false
+            },
+            {
+              title: 'BOM Map',
+              alias: 'bom-map',
+              path: 'main/bom/bom-map',
+              parentAlias: 'bom',
+              active: false,
+              permissionProtected: false,
+              hidden: false
             }
           ]
         },
