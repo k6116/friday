@@ -428,6 +428,78 @@ export class SearchProjectsComponent implements OnInit {
   }
 
 
+  // display a popover with the status, priority, and department
+  onAttributesMouseEnter(project: any) {
+
+    // set the jquery element
+    const $el = $(`div.attributes-hover[data-id="${project.ProjectID}"]`);
+
+    // set the popover options
+    // NOTE: getting the content from the hidden div (display: none)
+    const options = {
+      animation: true,
+      placement: 'top',
+      html: true,
+      trigger: 'focus',
+      title: `Project Attributes`,
+      content: $(`div.project-attributes-cont[data-id="${project.ProjectID}"]`).html()
+    };
+
+    // show the popover
+    $el.popover(options);
+    $el.popover('show');
+
+  }
+
+
+  // hide/destroy the popover
+  onAttributesMouseLeave(projectID: number) {
+
+    // set the jquery element
+    const $el = $(`div.attributes-hover[data-id="${projectID}"]`);
+
+    // dispose of the popover
+    $el.popover('dispose');
+
+  }
+
+
+  // display a popover with the record history/info - created by and creation date
+  onRecordHistoryMouseEnter(project: any) {
+
+    // set the jquery element
+    const $el = $(`div.record-history[data-id="${project.ProjectID}"]`);
+
+    // set the popover options
+    // NOTE: getting the content from the hidden div (display: none)
+    const options = {
+      animation: true,
+      placement: 'top',
+      html: true,
+      trigger: 'focus',
+      title: `Record History`,
+      content: $(`div.project-creation-cont[data-id="${project.ProjectID}"]`).html()
+    };
+
+    // show the popover
+    $el.popover(options);
+    $el.popover('show');
+
+  }
+
+
+  // hide/destroy the popover
+  onRecordHistoryMouseLeave(projectID: number) {
+
+    // set the jquery element
+    const $el = $(`div.record-history[data-id="${projectID}"]`);
+
+    // dispose of the popover
+    $el.popover('dispose');
+
+  }
+
+
   // class binding using the ngClass directive in the html
   // to set project type icon (icon font class)
   setProjctTypeIconClass(projectTypeName) {
