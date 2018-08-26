@@ -55,7 +55,7 @@ export class BomMapComponent implements OnInit {
 
       console.log('finalized bom structure');
       console.log(this.billHierarchy);
-      window.setTimeout( () => {this.drawD3Plot(); }, 5000);
+      window.setTimeout( () => {this.drawD3Plot(); }, 2000);
     });
 
 
@@ -104,16 +104,19 @@ export class BomMapComponent implements OnInit {
     // start d3
 
     // Set the dimensions and margins of the diagram
-    const margin = {top: 20, right: 90, bottom: 30, left: 90};
-    const width = 960 - margin.left - margin.right;
-    const height = 500 - margin.top - margin.bottom;
+    const margin = {top: 65 + 50, right: 30, bottom: 0, left: 180};
+    const width = $(window).width() - margin.left - margin.right;
+    const height = $(window).height() - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
     const svg = d3.select('#d3-container').append('svg')
-    .attr('width', width + margin.right + margin.left)
-    .attr('height', height + margin.top + margin.bottom)
+    .attr('width', '100%')
+    .attr('height', '100%')
+    .call(d3.zoom().on('zoom', function () {
+      svg.attr('transform', d3.event.transform);
+    }))
     .append('g')
     .attr('transform', 'translate('
           + margin.left + ',' + margin.top + ')');
