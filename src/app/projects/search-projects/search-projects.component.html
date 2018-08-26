@@ -56,7 +56,7 @@ considering topnav, sidenav, and footer -->
         <div *ngFor="let project of projects | filter : filterString : selectedFilter.columnName : {limitTo: numProjectsToDisplay, matchFuzzy: {on: selectedFilter.matchFuzzy, threshold: 0.3}, matchOptimistic: selectedFilter.matchOptimistic, matchExact: selectedFilter.matchExact}" class="row row-custom row-project-card">
   
           <!-- single project card container-->
-          <div class="project-card">
+          <div class="project-card" (click)="onProjectClick(project)">
   
             <!-- container for project type (left side element) -->
             <div class="project-type-cont" [ngStyle]="{ 'color': setProjctTypeColor(project.ProjectTypeName) }">

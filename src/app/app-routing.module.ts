@@ -40,6 +40,7 @@ import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
 import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
 import { PartSetupComponent } from './setups/parts/parts.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 
 
 const routes: Routes = [
@@ -60,6 +61,7 @@ const routes: Routes = [
       { path: 'projects/my-projects', component: MyProjectsComponent },
       { path: 'projects/requests', component: ProjectRequestsComponent },
       { path: 'projects/search', component: SearchProjectsComponent },
+      { path: 'projects/display/:id', component: DisplayProjectComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/bom-editor', component: BomEditorComponent },

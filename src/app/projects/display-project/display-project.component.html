@@ -1,3 +1,21 @@
-<p>
-  display-project works!
-</p>
+
+<!-- fluid bootstrap container with margins to center page content
+considering topnav, sidenav, and footer -->
+<div class="container-fluid">
+
+    <!-- spinner -->
+    <div class="row row-custom" *ngIf="showSpinner">
+      <div class="col-lg-12 col-custom">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_bars-rotate-32" transform="rotate(270 16 16)"> <rect x="14" fill="#111111" width="4" height="7"></rect> <rect x="22.83883" y="3.66117" transform="matrix(0.70711 0.70711 -0.70711 0.70711 12.33883 -15.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="25" y="14" fill="#111111" width="7" height="4" style="opacity: 0.4;"></rect> <rect x="22.83883" y="21.33883" transform="matrix(-0.70711 0.70711 -0.70711 -0.70711 59.96625 24.83883)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="14" y="25" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="5.16117" y="21.33883" transform="matrix(-0.70711 -0.70711 0.70711 -0.70711 -5.33883 47.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="0" y="14" fill="#111111" width="7" height="4" style="opacity: 0.6;"></rect> <rect x="5.16117" y="3.66117" transform="matrix(0.70711 -0.70711 0.70711 0.70711 -2.96625 7.16117)" fill="#111111" width="4" height="7" style="opacity: 0.8;"></rect> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_bars-rotate-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg>
+        <!-- <svg viewBox="0 0 32 32" width="32" height="32"><title>dots 06</title><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_dots-06-32" transform="rotate(0 16 16)"> <circle fill="#111111" cx="16" cy="3" r="3"></circle> <circle fill="#111111" cx="25.19239" cy="6.80761" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="29" cy="16" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="25.19239" cy="25.19239" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="16" cy="29" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="6.80761" cy="25.19239" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="3" cy="16" r="3" style="opacity: 0.6;"></circle> <circle fill="#111111" cx="6.80761" cy="6.80761" r="3" style="opacity: 0.8;"></circle> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_dots-06-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg> -->
+      </div>
+    </div>
+  
+    <!-- outer page container; don't show until data is ready -->
+    <div class="page-cont" *ngIf="showPage">
+  
+      Project ID: {{ projectID }}
+  
+    </div>  
+  
+  </div>

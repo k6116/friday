@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
@@ -36,6 +37,7 @@ export class SearchProjectsComponent implements OnInit {
 
 
   constructor(
+    private router: Router,
     private apiDataProjectService: ApiDataProjectService,
     private filterPipe: FilterPipe,
     private toolsService: ToolsService,
@@ -595,6 +597,13 @@ export class SearchProjectsComponent implements OnInit {
       this.addedProjectsCount += numProjectsToAdd;
     }
 
+  }
+
+
+  onProjectClick(project) {
+    console.log('project card clicked:');
+    console.log(project);
+    this.router.navigate([`/main/projects/display/${project.ProjectID}`]);
   }
 
 
