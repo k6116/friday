@@ -5,23 +5,8 @@
         <option *ngFor="let bill of billList" [value]="bill.ParentPartID">{{bill.PartOrProjectName}}</option>
       </select>
     </div>
-    <div class="col-sm-3">
-      <table>
-        <tr>
-          <td colspan="6">Part Department Legend:</td>
-        </tr>
-        <tr>
-          <td class="legend node HFTC">HFTC</td>
-          <td class="legend node PICO">PICO</td>
-          <td class="legend node PMTC">PMTC</td>
-          <td class="legend node ThinFilm">Thin Film</td>
-          <td class="legend node EXT">External</td>
-          <td class="legend node NPSS">NPSS</td>
-        </tr>
-      </table>
-    </div>
   </div>
-  <div class="row row-custom row-custom-treant">
-    <div id="tree-simple" class="tree-container"></div>
+  <div class="row row-custom">
+    <div id="d3-container"></div>
   </div>
 </div>

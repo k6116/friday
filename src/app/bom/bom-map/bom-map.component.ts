@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { TreeModel } from 'ng2-tree';
 import { ApiDataBomService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 import { ViewEncapsulation } from '@angular/core';
+import * as d3 from 'd3';
 
-declare var Treant: any;
 declare var $: any;
 
 @Component({
@@ -20,8 +19,7 @@ export class BomMapComponent implements OnInit {
   billListSub: Subscription;
   bill: any;  // for storing the selected bill as flat array
 
-  bomChart: any;  // treant chart object
-  bomChartOptions: any; // object of options for treant chart
+  billHierarchy: any;
 
 
   constructor(private apiDataBomService: ApiDataBomService) { }
@@ -35,7 +33,6 @@ export class BomMapComponent implements OnInit {
   }
 
   onBomSelect(selected: number) {
-    this.bomChartOptions = {};
 
     // get the selected BOM as flat array
     const bomSubscription = this.apiDataBomService.showSingleBom(selected).subscribe( res => {
@@ -43,26 +40,10 @@ export class BomMapComponent implements OnInit {
 
       this.bill = res;
       bomSubscription.unsubscribe();
-      // console.log(this.bill);
 
-      this.bomChartOptions = {
-        chart: {
-          container: '#tree-simple',
-          levelSeparation: 100,
-          siblingSeparation: 20,
-          // padding: 100,
-          connectors: {type: 'curve'},
-          rootOrientation: 'NORTH',
-          nodeAlign: 'TOP',
-          node: {collapsable: true}
-        }
-      };
       // initialize bomtree
-      this.bomChartOptions.nodeStructure = {
-        text: {
-          name: {val: this.bill[0].ParentName},
-          title: `${this.bill[0].ParentEntity} - ${this.bill[0].ParentType}`
-        },
+      this.billHierarchy = {
+        name: this.bill[0].ParentName,
         id: this.bill[0].ParentID
       };
 
@@ -70,25 +51,14 @@ export class BomMapComponent implements OnInit {
       const jsonBom = this.bomTraverse(0, 1);
 
       // add the recursive output as 'children' property of the tree nodeStructure
-      this.bomChartOptions.nodeStructure.children = jsonBom.nextLvData;
+      this.billHierarchy.children = jsonBom.nextLvData;
 
-      // if the parent has more than 9 children, initailize it collapsed
-      if (this.bomChartOptions.nodeStructure.children.length > 9) {
-        this.bomChartOptions.nodeStructure.collapsed = true;
-      }
-
-      if (this.bomChart) {
-        this.bomChart.destroy();
-      }
-      this.bomChart = new Treant(this.bomChartOptions, this.onTreeLoadComplete, $);
       console.log('finalized bom structure');
-      console.log(this.bomChartOptions.nodeStructure);
+      console.log(this.billHierarchy);
+      window.setTimeout( () => {this.drawD3Plot(); }, 5000);
     });
-  }
 
-  onTreeLoadComplete() {
-    // callback function executed when Treant is done drawing the tree, currently unused
-    // console.log('completed');
+
   }
 
   bomTraverse(i: number, lv: number) {
@@ -100,16 +70,10 @@ export class BomMapComponent implements OnInit {
         // traverse down and collect all the siblings in this level
         let newNode: any;
         newNode = {
-          text: {
-            name: this.bill[i].ChildName,
-            title: `${this.bill[i].ChildType} | Qty: ${this.bill[i].QtyPer}`,
-            // desc: `Qty: ${this.bill[i].QtyPer}`
-          },
+          name: this.bill[i].ChildName,
+          qty: this.bill[i].QtyPer,
           id: this.bill[i].ChildID
         };
-        if (this.bill[i].ChildEntity === 'Part') {
-          newNode.HTMLclass = this.bill[i].ChildDepartment;
-        }
         children.push(newNode);
         i++;
       } else if (this.bill[i].Level > lv) {
@@ -118,10 +82,6 @@ export class BomMapComponent implements OnInit {
         const output = this.bomTraverse(i, lv + 1);
         const lastIndex = children.length - 1;
         children[lastIndex].children = output.nextLvData;
-        // if there are 10+ children, initialize the node as collapsed
-        if (output.nextLvData.length > 9) {
-          children[lastIndex].collapsed = true;
-        }
         i = Number(output.nextRow);
       } else if (this.bill[i].Level < lv) {
         // if the next record is a parent, return the complete set of nested children
@@ -138,4 +98,191 @@ export class BomMapComponent implements OnInit {
     };
   } // end bomTraverse
 
+
+
+  drawD3Plot() {
+    // start d3
+
+    // Set the dimensions and margins of the diagram
+    const margin = {top: 20, right: 90, bottom: 30, left: 90};
+    const width = 960 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    // appends a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+    const svg = d3.select('#d3-container').append('svg')
+    .attr('width', width + margin.right + margin.left)
+    .attr('height', height + margin.top + margin.bottom)
+    .append('g')
+    .attr('transform', 'translate('
+          + margin.left + ',' + margin.top + ')');
+
+    let i = 0;
+    const duration = 750;
+    let root;
+
+    // declares a tree layout and assigns the size
+    const treemap = d3.tree().size([height, width]);
+
+    // Assigns parent, children, height, depth
+    root = d3.hierarchy(this.billHierarchy, function(d) { return d.children; });
+    root.x0 = height / 2;
+    root.y0 = 0;
+
+    // Collapse after the second level
+    root.children.forEach(collapse);
+
+    update(root);
+
+    // Collapse the node and all it's children
+    function collapse(d) {
+      if (d.children) {
+      d._children = d.children;
+      d._children.forEach(collapse);
+      d.children = null;
+      }
+    }
+
+    function update(source) {
+
+      // Assigns the x and y position for the nodes
+      const treeData = treemap(root);
+
+      // Compute the new tree layout.
+      const nodes = treeData.descendants();
+      const links = treeData.descendants().slice(1);
+
+      // Normalize for fixed-depth.
+      nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+      // ****************** Nodes section ***************************
+
+      // Update the nodes...
+      const node = svg.selectAll('g.node')
+        .data(nodes, function(d) {return d.id || (d.id = ++i); });
+
+      // Enter any new modes at the parent's previous position.
+      const nodeEnter = node.enter().append('g')
+        .attr('class', 'node')
+        .attr('transform', function(d) {
+          return 'translate(' + source.y0 + ',' + source.x0 + ')';
+      })
+      .on('click', click);
+
+      // Add Circle for the nodes
+      nodeEnter.append('circle')
+        .attr('class', 'node')
+        .attr('r', 1e-6)
+        .style('fill', function(d) {
+            return d._children ? 'lightsteelblue' : '#fff';
+        });
+
+      // Add labels for the nodes
+      nodeEnter.append('text')
+        .attr('dy', '.35em')
+        .attr('x', function(d) {
+            return d.children || d._children ? -13 : 13;
+        })
+        .attr('text-anchor', function(d) {
+            return d.children || d._children ? 'end' : 'start';
+        })
+        .text(function(d) { return d.data.name; });
+
+      // UPDATE
+      const nodeUpdate = nodeEnter.merge(node);
+
+      // Transition to the proper position for the node
+      nodeUpdate.transition()
+      .duration(duration)
+      .attr('transform', function(d) {
+          return 'translate(' + d.y + ',' + d.x + ')';
+      });
+
+      // Update the node attributes and style
+      nodeUpdate.select('circle.node')
+      .attr('r', 10)
+      .style('fill', function(d) {
+          return d._children ? 'lightsteelblue' : '#fff';
+      })
+      .attr('cursor', 'pointer');
+
+
+      // Remove any exiting nodes
+      const nodeExit = node.exit().transition()
+        .duration(duration)
+        .attr('transform', function(d) {
+            return 'translate(' + source.y + ',' + source.x + ')';
+        })
+        .remove();
+
+      // On exit reduce the node circles size to 0
+      nodeExit.select('circle')
+      .attr('r', 1e-6);
+
+      // On exit reduce the opacity of text labels
+      nodeExit.select('text')
+      .style('fill-opacity', 1e-6);
+
+      // ****************** links section ***************************
+
+      // Update the links...
+      const link = svg.selectAll('path.link')
+        .data(links, function(d) { return d.id; });
+
+      // Enter any new links at the parent's previous position.
+      const linkEnter = link.enter().insert('path', 'g')
+        .attr('class', 'link')
+        .attr('d', function(d) {
+          const o = {x: source.x0, y: source.y0};
+          return diagonal(o, o);
+        });
+
+      // UPDATE
+      const linkUpdate = linkEnter.merge(link);
+
+      // Transition back to the parent element position
+      linkUpdate.transition()
+        .duration(duration)
+        .attr('d', function(d) { return diagonal(d, d.parent); });
+
+      // Remove any exiting links
+      const linkExit = link.exit().transition()
+        .duration(duration)
+        .attr('d', function(d) {
+          const o = {x: source.x, y: source.y};
+          return diagonal(o, o);
+        })
+        .remove();
+
+      // Store the old positions for transition.
+      nodes.forEach(function(d) {
+        d.x0 = d.x;
+        d.y0 = d.y;
+      });
+
+      // Creates a curved (diagonal) path from parent to the child nodes
+      function diagonal(s, d) {
+
+      const path = `M ${s.y} ${s.x}
+              C ${(s.y + d.y) / 2} ${s.x},
+                ${(s.y + d.y) / 2} ${d.x},
+                ${d.y} ${d.x}`;
+
+      return path;
+      }
+
+      // Toggle children on click.
+      function click(d) {
+      if (d.children) {
+          d._children = d.children;
+          d.children = null;
+        } else {
+          d.children = d._children;
+          d._children = null;
+        }
+      update(d);
+      }
+    }
+  }
 }

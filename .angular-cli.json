@@ -30,6 +30,7 @@
         "../node_modules/ng2-tree/styles.css",
         "../node_modules/treant-js/Treant.css",
         "../src/app/_shared/styles/treant-custom.css",
+        "../src/app/_shared/styles/d3-custom.css",
         "../node_modules/simplebar/dist/simplebar.css",
         "../src/app/_shared/styles/simplebar-custom.css"
       ],
