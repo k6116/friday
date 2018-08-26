@@ -147,6 +147,9 @@ router.put('/fte/fte/update/updateUserData', controllers.fte.updateUserData);
 // TEMP JOB TITLE CONTROLLER
 router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
+// PROJECT CONTROLER
+router.get('/project/displayProject/show/getProject/:projectID', controllers.project.getProject);
+
 // SETUP PARTS
 router.get('/getParts', controllers.parts.indexParts);
 router.get('/getPart/:partID', controllers.parts.getPart);

@@ -56,6 +56,63 @@ function indexProjects(req, res) {
 
 }
 
+
+function getProject(req, res) {
+
+  const projectID = req.params.projectID;
+
+  const sql = `
+    SELECT 
+      p.ProjectID, 
+      p.ProjectName, 
+      p.Description, 
+      e.FullName, 
+      p.MU,
+      p.IBO,
+      p.DepartmentID,
+      p.GroupID,
+      p.PriorityID,
+      p.ProjectNumber,
+      p.PlanOfRecordFlag,        
+      p.ProjectTypeID,    
+      p.CreationDate,      
+      p.Notes,
+      p.Active,
+      py.PriorityName,
+      ps.ProjectStatusName,
+      p.NPIHWProjectManager,
+      g.GroupName,
+      ey.EntityName,
+      eo.EntityOwnerName,
+      e.FirstName,
+      e.LastName,
+      e.FullName,
+      e2.EmailAddress, 
+      p.CreationDate, 
+      t.ProjectTypeName, 
+      p.CreatedBy,
+      p.ProjectOrgManager
+    FROM  
+      projects.Projects p 
+      LEFT JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
+      LEFT JOIN projects.Priority py ON p.PriorityID = py.PriorityID
+      INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
+      LEFT JOIN projects."Group" g ON p.GroupID = g.GroupID
+      LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
+      LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
+      LEFT JOIN accesscontrol.Employees e2 ON P.CreatedBy = e2.EmployeeID
+      LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
+    WHERE 
+      p.ProjectID = ${projectID}`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+  .then(project => {    
+    res.json(project);
+  })
+
+}
+
+
 function indexProjectsFilterProjectType(req, res) {
 
   const projectTypes = req.body
@@ -889,6 +946,7 @@ function destroyProjectSetup(req, res) {
 
 module.exports = {
   indexProjects: indexProjects,
+  getProject: getProject,
   indexProjectsFilterProjectType: indexProjectsFilterProjectType,
   indexProjectRoster: indexProjectRoster,
   indexUserProjectList: indexUserProjectList,
