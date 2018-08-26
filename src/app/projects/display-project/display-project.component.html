@@ -13,9 +13,10 @@ considering topnav, sidenav, and footer -->
   
     <!-- outer page container; don't show until data is ready -->
     <div class="page-cont" *ngIf="showPage">
-  
-      Project ID: {{ projectID }}
-  
+      
+      <div>Project ID: {{ project.ProjectID }}</div>
+      <div>Project Name: {{ project.ProjectName }}</div>
+      
     </div>  
   
   </div>

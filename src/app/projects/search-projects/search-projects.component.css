@@ -89,6 +89,7 @@ div.projects-display-count {
 div.projects-cards-cont {
   height: 70vh;  /* TO-DO: replace with javascipt */
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 div.row.row-custom.row-project-card {
