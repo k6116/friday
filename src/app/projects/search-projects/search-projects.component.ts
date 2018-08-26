@@ -6,6 +6,7 @@ import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { WebsocketService } from '../../_shared/services/websocket.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
+import { CacheService } from '../../_shared/services/cache.service';
 
 declare var $: any;
 
@@ -42,7 +43,8 @@ export class SearchProjectsComponent implements OnInit {
     private filterPipe: FilterPipe,
     private toolsService: ToolsService,
     private websocketService: WebsocketService,
-    private clickTrackingService: ClickTrackingService
+    private clickTrackingService: ClickTrackingService,
+    private cacheService: CacheService
   ) {
 
     // set the number of projects to display initially, and to add for infinite scroll
@@ -117,8 +119,10 @@ export class SearchProjectsComponent implements OnInit {
         res => {
           // console.log('projects browse response:');
           // console.log(res);
-          // store the projects
+          // store the projects in the component
           this.projects = res[0];
+          // store the projects in the app cache
+          this.cacheService.projects = this.projects;
           // console.log('projects list:');
           // console.log(this.projects);
           // store the dropdown data
@@ -603,6 +607,7 @@ export class SearchProjectsComponent implements OnInit {
   onProjectClick(project) {
     console.log('project card clicked:');
     console.log(project);
+    this.cacheService.project = project;
     this.router.navigate([`/main/projects/display/${project.ProjectID}`]);
   }
 

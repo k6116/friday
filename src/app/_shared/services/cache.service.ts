@@ -60,6 +60,10 @@ export class CacheService {
   // (user is offline), the cached version will be used
   backgroundImage: any;
 
+  // used for caching projects list (index) and selected project (show)
+  // for data transfer between search projects and display project
+  projects: any;
+  project: any;
 
   constructor() { }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { CacheService } from '../../_shared/services/cache.service';
 
 @Component({
   selector: 'app-display-project',
@@ -14,7 +15,8 @@ export class DisplayProjectComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private cacheService: CacheService
   ) {
 
     // get the project id from the route params
@@ -26,6 +28,12 @@ export class DisplayProjectComponent implements OnInit {
 
     this.showPage = true;
     console.log(`project id: ${this.projectID}`);
+
+    console.log('all projects from the cache service');
+    console.log(this.cacheService.projects);
+
+    console.log('clicked project from the cache service');
+    console.log(this.cacheService.project);
 
 
   }
