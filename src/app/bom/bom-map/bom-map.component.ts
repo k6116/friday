@@ -107,6 +107,19 @@ export class BomMapComponent implements OnInit {
     const margin = {top: 65 + 50, right: 30, bottom: 0, left: 180};
     const width = $(window).width() - margin.left - margin.right;
     const height = $(window).height() - margin.top - margin.bottom;
+    const zoomSpeed = 1500; // some number between 400 and 2000
+
+    // set zoom restrictions
+    const zoom = d3.zoom()
+      .scaleExtent([0.4, 4])
+      // .translateExtent([[20, 20], [width, height]])
+      .wheelDelta(customWheelDelta)
+      .on('zoom', zoomed);
+
+    // custom wheel delta function
+    function customWheelDelta() {
+      return -d3.event.deltaY * (d3.event.deltaMode ? 120 : 1) / zoomSpeed;
+    }
 
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
@@ -114,12 +127,15 @@ export class BomMapComponent implements OnInit {
     const svg = d3.select('#d3-container').append('svg')
     .attr('width', '100%')
     .attr('height', '100%')
-    .call(d3.zoom().on('zoom', function () {
-      svg.attr('transform', d3.event.transform);
-    }))
+    .call(zoom)
     .append('g')
     .attr('transform', 'translate('
           + margin.left + ',' + margin.top + ')');
+
+
+    function zoomed() {
+      svg.attr('transform', d3.event.transform);
+    }
 
     let i = 0;
     const duration = 750;
