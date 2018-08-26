@@ -89,6 +89,7 @@ import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
 import { SearchProjectsComponent } from './projects/search-projects/search-projects.component';
 import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
+import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 
 
 @NgModule({
@@ -142,7 +143,8 @@ import { ProjectRequestsComponent } from './projects/project-requests/project-re
     BomEditorComponent,
     BomViewerComponent,
     ProjectRequestsComponent,
-    SearchProjectsComponent
+    SearchProjectsComponent,
+    DisplayProjectComponent
   ],
   imports: [
     AppRoutingModule,
