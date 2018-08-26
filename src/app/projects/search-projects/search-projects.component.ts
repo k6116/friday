@@ -35,6 +35,7 @@ export class SearchProjectsComponent implements OnInit {
   selectedFilter: any;  // selected filter object from the dropdown (from this.filters)
   dropDownData: any;
   subscription1: Subscription;
+  popoverProjectID: number;
 
 
   constructor(
@@ -361,6 +362,9 @@ export class SearchProjectsComponent implements OnInit {
         $el.popover(options);
         $el.popover('show');
 
+        // store the project id
+        this.popoverProjectID = project.ProjectID;
+
       }
 
     }
@@ -376,6 +380,9 @@ export class SearchProjectsComponent implements OnInit {
 
     // dispose of the popover
     $el.popover('dispose');
+
+    // clear the project id
+    this.popoverProjectID = undefined;
 
   }
 
@@ -415,6 +422,9 @@ export class SearchProjectsComponent implements OnInit {
         $el.popover(options);
         $el.popover('show');
 
+        // store the project id
+        this.popoverProjectID = project.ProjectID;
+
       }
 
     }
@@ -430,6 +440,9 @@ export class SearchProjectsComponent implements OnInit {
 
     // dispose of the popover
     $el.popover('dispose');
+
+    // clear the project id
+    this.popoverProjectID = undefined;
 
   }
 
@@ -455,6 +468,9 @@ export class SearchProjectsComponent implements OnInit {
     $el.popover(options);
     $el.popover('show');
 
+    // store the project id
+    this.popoverProjectID = project.ProjectID;
+
   }
 
 
@@ -466,6 +482,9 @@ export class SearchProjectsComponent implements OnInit {
 
     // dispose of the popover
     $el.popover('dispose');
+
+    // clear the project id
+    this.popoverProjectID = undefined;
 
   }
 
@@ -491,6 +510,9 @@ export class SearchProjectsComponent implements OnInit {
     $el.popover(options);
     $el.popover('show');
 
+    // store the project id
+    this.popoverProjectID = project.ProjectID;
+
   }
 
 
@@ -502,6 +524,9 @@ export class SearchProjectsComponent implements OnInit {
 
     // dispose of the popover
     $el.popover('dispose');
+
+    // clear the project id
+    this.popoverProjectID = undefined;
 
   }
 
@@ -605,6 +630,13 @@ export class SearchProjectsComponent implements OnInit {
 
 
   onProjectClick(project) {
+    // destroy any popovers that may still be displayed
+    if (this.popoverProjectID) {
+      $(`div.project-name[data-id="${this.popoverProjectID}"]`).popover('dispose');
+      $(`div.project-description[data-id="${this.popoverProjectID}"]`).popover('dispose');
+      $(`div.attributes-hover[data-id="${this.popoverProjectID}"]`).popover('dispose');
+      $(`div.record-history[data-id="${this.popoverProjectID}"]`).popover('dispose');
+    }
     console.log('project card clicked:');
     console.log(project);
     this.cacheService.project = project;
