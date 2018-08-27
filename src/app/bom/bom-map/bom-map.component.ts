@@ -38,6 +38,7 @@ export class BomMapComponent implements OnInit {
 
 
       this.bill = res;
+      console.log(this.bill);
       bomSubscription.unsubscribe();
 
       // initialize bomtree
@@ -45,7 +46,9 @@ export class BomMapComponent implements OnInit {
         name: this.bill[0].ParentName.length > 19 ? `${this.bill[0].ParentName.slice(0, 20)}...` : this.bill[0].ParentName,
         longName: this.bill[0].ParentName,
         id: this.bill[0].ParentID,
-        qty: 1
+        qty: 1,
+        dept: this.bill[0].ParentDepartment,
+        type: this.bill[0].ParentType
       };
 
       // using async/await to wait for BOM parser to finish
@@ -81,7 +84,9 @@ export class BomMapComponent implements OnInit {
           name: this.bill[i].ChildName.length > 19 ? `${this.bill[i].ChildName.slice(0, 20)}...` : this.bill[i].ChildName,
           longName: this.bill[i].ChildName,
           qty: this.bill[i].QtyPer,
-          id: this.bill[i].ChildID
+          id: this.bill[i].ChildID,
+          dept: this.bill[i].ChildDepartment,
+          type: this.bill[i].ChildType
         };
         children.push(newNode);
         i++;
@@ -138,6 +143,11 @@ export class BomMapComponent implements OnInit {
       .call(zoom)
       .append('g')
       .attr('transform', `translate(${origin.left}, ${origin.top})`);
+
+    // create tooltip object
+    const tooltip = d3.select('#d3-container').append('div')
+    .attr('class', 'part-details')
+    .style('opacity', 0);
 
 
     let i = 0;
@@ -208,7 +218,21 @@ export class BomMapComponent implements OnInit {
         .attr('dy', '.35em')
         .attr('cursor', 'pointer')
         .attr('text-anchor', 'start')
-        .text(function(d) { return `${d.data.qty}x ${d.data.name}`; });
+        .text(function(d) { return `${d.data.qty}x ${d.data.name}`; })
+        .on('mouseover', (d) => {
+          tooltip.transition()
+          .duration(100)
+          .style('opacity', 1);
+          tooltip.html(`<strong>${d.data.longName}</strong><br /><br />
+            Dept: ${d.data.dept}<br />
+            Type: ${d.data.type}<br />
+            Qty: ${d.data.qty}<br />`);
+        })
+        .on('mouseout', (d) => {
+          tooltip.transition()
+            .duration(100)
+            .style('opacity', 0);
+        });
 
       // UPDATE
       const nodeUpdate = nodeEnter.merge(node);
