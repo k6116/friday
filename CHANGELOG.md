@@ -1,3 +1,14 @@
+<a name="1.8.4"></a>
+## [1.8.4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.3...v1.8.4) (2018-08-27)
+
+
+### Bug Fixes
+
+* **Fixed Schedule Date Save:** Fixed Schedule Date Save ([db21f8f](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/db21f8f))
+* **Get Schedule Fix:** Get Schedule Fix ([bc24e1b](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/bc24e1b))
+
+
+
 <a name="1.8.3"></a>
 ## [1.8.3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.2...v1.8.3) (2018-08-25)
 
