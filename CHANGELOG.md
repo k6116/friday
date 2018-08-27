@@ -1,3 +1,13 @@
+<a name="1.8.3"></a>
+## [1.8.3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.2...v1.8.3) (2018-08-25)
+
+
+### Bug Fixes
+
+* **bom-viewer:** condensed boxes and added color legend for parts ([83a027a](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/83a027a))
+
+
+
 <a name="1.8.2"></a>
 ## [1.8.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.1...v1.8.2) (2018-08-24)
 
