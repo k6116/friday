@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiDataBomService } from '../../_shared/services/api-data/_index';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
@@ -28,7 +29,6 @@ export class BomMapComponent implements OnInit {
     this.billListSub = this.apiDataBomService.index().subscribe( res => {
       this.billList = res;
     });
-
   }
 
   onBomSelect(selected: number) {
@@ -46,18 +46,24 @@ export class BomMapComponent implements OnInit {
         id: this.bill[0].ParentID
       };
 
-      // recursively parse the BOM structure
-      const jsonBom = this.bomTraverse(0, 1);
+      // using async/await to wait for BOM parser to finish
+      const bomSetup = async () => {
+        // recursively parse the BOM structure
+        const jsonBom = await this.bomTraverse(0, 1);
 
-      // add the recursive output as 'children' property of the tree nodeStructure
-      this.billHierarchy.children = jsonBom.nextLvData;
+        // add the recursive output as 'children' property of the tree nodeStructure
+        this.billHierarchy.children = jsonBom.nextLvData;
+        console.log('finalized bom structure');
+        console.log(this.billHierarchy);
 
-      console.log('finalized bom structure');
-      console.log(this.billHierarchy);
-      d3.select('#d3-container').selectAll('*').remove();
-      window.setTimeout( () => {this.drawD3Plot(); }, 2000);
+        // kill any existing plots within the container, and then draw
+        d3.select('#d3-container').selectAll('*').remove();
+        this.drawD3Plot();
+      };
+
+      // execute our async function
+      bomSetup();
     });
-
 
   }
 
@@ -101,51 +107,45 @@ export class BomMapComponent implements OnInit {
 
 
   drawD3Plot() {
-    // start d3
 
     // Set the dimensions and margins of the diagram
-    const margin = {top: 65 + 50, right: 30, bottom: 0, left: 180};
+    const margin = {top: 65, right: 30, bottom: 0, left: 180};
     const width = $(window).width() - margin.left - margin.right;
     const height = $(window).height() - margin.top - margin.bottom;
     const zoomSpeed = 1500; // some number between 400 and 2000
 
-    // set zoom restrictions
+    // set custom zoom settings
     const zoom = d3.zoom()
-      .scaleExtent([0.4, 4])
-      // .translateExtent([[20, 20], [width, height]])
-      .wheelDelta(customWheelDelta)
-      .on('zoom', zoomed);
+      .scaleExtent([0.4, 4])  // restrict zoom to this scale range
+      // .translateExtent([[20, 20], [width, height]])  // restict panning to this [x0, y0] [x1, y1] range
+      .wheelDelta(() => {
+        // custom wheel delta function to reduce zoom speed
+        return -d3.event.deltaY * (d3.event.deltaMode ? 120 : 1) / zoomSpeed;
+      })
+      .on('zoom', () => {
+        // when zoomed, actually perform the transform on the 'svg' object using d3.event.transform
+        svg.attr('transform', d3.event.transform);
+      });
 
-    // custom wheel delta function
-    function customWheelDelta() {
-      return -d3.event.deltaY * (d3.event.deltaMode ? 120 : 1) / zoomSpeed;
-    }
 
-    // append the svg object to the body of the page
-    // appends a 'group' element to 'svg'
+    // append the svg object to the body of the page and appends a 'group' container element to 'svg'
     // moves the 'group' element to the top left margin
     const svg = d3.select('#d3-container').append('svg')
-    .attr('width', '100%')
-    .attr('height', '100%')
-    .call(zoom)
-    .append('g')
-    .attr('transform', 'translate('
-          + margin.left + ',' + margin.top + ')');
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .call(zoom)
+      .append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-
-    function zoomed() {
-      svg.attr('transform', d3.event.transform);
-    }
 
     let i = 0;
     const duration = 750;
-    let root;
 
     // declares a tree layout and assigns the size
     const treemap = d3.tree().size([height, width]);
 
-    // Assigns parent, children, height, depth
-    root = d3.hierarchy(this.billHierarchy, function(d) { return d.children; });
+    // Assigns data for root node, and the starting location of the root node
+    const root = d3.hierarchy(this.billHierarchy);
     root.x0 = height / 2;
     root.y0 = 0;
 
@@ -279,25 +279,23 @@ export class BomMapComponent implements OnInit {
 
       // Creates a curved (diagonal) path from parent to the child nodes
       function diagonal(s, d) {
-
-      const path = `M ${s.y} ${s.x}
+        const path = `M ${s.y} ${s.x}
               C ${(s.y + d.y) / 2} ${s.x},
                 ${(s.y + d.y) / 2} ${d.x},
                 ${d.y} ${d.x}`;
-
-      return path;
+        return path;
       }
 
-      // Toggle children on click.
+      // Toggle children on click
       function click(d) {
-      if (d.children) {
+        if (d.children) {
           d._children = d.children;
           d.children = null;
         } else {
           d.children = d._children;
           d._children = null;
         }
-      update(d);
+        update(d);
       }
     }
   }
