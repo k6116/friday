@@ -346,11 +346,10 @@ export class ProjectsSetupsComponent implements OnInit {
     .subscribe(
       res => {
         if (res.length > 0) {
-
+          res.forEach(element => {
+            element.PLCDate = moment(element.PLCDate).format('YYYY-MM-DD');
+          });
         this.schedule = res;
-        this.schedule.forEach(element => {
-          element.PLCDate = moment(element.PLCDate).format('YYYY-MM-DD');
-        });
         this.revisionNotes = res[0].RevisionNotes;
         this.scheduleId = res[0].ScheduleID;
         } else {

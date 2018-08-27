@@ -351,10 +351,10 @@ export class PartSetupComponent implements OnInit {
     .subscribe(
       res => {
         if (res.length > 0) {
+          res.forEach(element => {
+            element.NeedByDate = moment(element.NeedByDate).format('YYYY-MM-DD');
+          });
         this.schedule = res;
-        this.schedule.forEach(element => {
-          element.NeedByDate = moment(element.NeedByDate).format('YYYY-MM-DD');
-        });
         this.revisionNotes = res[0].RevisionNotes;
         this.scheduleId = res[0].ScheduleID;
 
