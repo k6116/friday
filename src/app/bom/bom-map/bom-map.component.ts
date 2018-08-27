@@ -21,6 +21,10 @@ export class BomMapComponent implements OnInit {
 
   billHierarchy: any;
 
+  // for search box
+  searchBills: string;
+  searching = false;
+
 
   constructor(private apiDataBomService: ApiDataBomService) { }
 
@@ -28,10 +32,21 @@ export class BomMapComponent implements OnInit {
     // get list of bills in drop-down
     this.billListSub = this.apiDataBomService.index().subscribe( res => {
       this.billList = res;
+      console.log(this.billList);
     });
   }
 
-  onBomSelect(selected: number) {
+  onSearchFocus(searching: boolean) {
+    this.searching = true;
+  }
+
+  onBomSelect(selection: any) {
+    const selected = selection.ParentPartID;
+    const selectedName = selection.PartOrProjectName;
+
+    // reset the filterbox
+    this.searchBills = selectedName;
+    this.searching = false;
 
     // get the selected BOM as flat array
     const bomSubscription = this.apiDataBomService.showSingleBom(selected).subscribe( res => {
