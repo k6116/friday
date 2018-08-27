@@ -381,5 +381,51 @@ export class ToolsService {
     $('div.footer-container').css('display', 'block');
   }
 
+    // class binding using the ngClass directive in the html
+  // to set project type icon (icon font class)
+  setProjctTypeIconClass(projectTypeName) {
+    const classes = {
+      'nc-icon': true,
+      'nc-ram': projectTypeName === 'NCI',
+      'nc-keyboard': projectTypeName === 'NMI',
+      'nc-keyboard-wireless': projectTypeName === 'NPI',
+      'nc-socket-europe-1': projectTypeName === 'NPPI',
+      'nc-lab': projectTypeName === 'NTI',
+      'nc-microscope': projectTypeName === 'Research',
+      'nc-settings-91': projectTypeName === 'MFG',
+      'nc-code-editor': projectTypeName === 'Program',
+      'nc-book-open-2': projectTypeName === 'Solution',
+      'nc-board-28': projectTypeName === 'Initiative',
+      'nc-bulb-63': projectTypeName === 'TOF Engaged',
+      'nc-sign-closed': projectTypeName === 'Completed',
+      'nc-gantt': projectTypeName === 'General'
+    };
+    return classes;
+  }
+
+
+  // style binding using the ngStyle directive in the html
+  // to set the color for the project type name and icon
+  setProjctTypeColor(projectTypeName) {
+    switch (projectTypeName) {
+      case 'NCI':
+        return 'rgb(139, 0, 0)';  // red
+      case 'NPI':
+        return 'rgb(0, 0, 139)';  // dark blue
+      case 'NPPI':
+        return 'rgb(16, 140, 160)';  // turquiose
+      case 'NTI':
+        return 'rgb(215, 123, 10)';  // orange
+      case 'Research':
+        return 'rgb(0, 100, 0)';  // green
+      case 'Initiative':
+        return 'rgb(184, 134, 11)';  // dark yellow-gold
+      case 'General':
+        return 'rgb(0, 101, 209)';  // blue
+      default:
+        return 'rgb(139, 0, 139)';  // magenta
+    }
+  }
+
 
 }
