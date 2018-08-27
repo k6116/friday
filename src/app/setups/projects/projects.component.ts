@@ -42,6 +42,7 @@ export class ProjectsSetupsComponent implements OnInit {
 
   ngOnInit() {
 
+    this.revisionNotes = null;
     this.initFormValues();
     this.getProjects();
     this.getSelectionChoices();
@@ -354,6 +355,7 @@ export class ProjectsSetupsComponent implements OnInit {
         this.revisionNotes = res[0].RevisionNotes;
         this.scheduleId = res[0].ScheduleID;
         } else {
+        this.revisionNotes = null;
         this.schedule = [];
         this.scheduleId = 0;
         this.createDefaultScheduleRow();

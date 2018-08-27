@@ -41,6 +41,8 @@ export class PartSetupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.revisionNotes = null;
     this.initFormValues();
     this.getParts();
     this.getSelectionChoices();
@@ -357,6 +359,7 @@ export class PartSetupComponent implements OnInit {
         this.scheduleId = res[0].ScheduleID;
 
       } else {
+        this.revisionNotes = null;
         this.schedule = [];
         this.scheduleId = 0;
         this.createDefaultScheduleRow();
