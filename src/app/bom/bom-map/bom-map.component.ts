@@ -42,8 +42,10 @@ export class BomMapComponent implements OnInit {
 
       // initialize bomtree
       this.billHierarchy = {
-        name: this.bill[0].ParentName,
-        id: this.bill[0].ParentID
+        name: this.bill[0].ParentName.length > 19 ? `${this.bill[0].ParentName.slice(0, 20)}...` : this.bill[0].ParentName,
+        longName: this.bill[0].ParentName,
+        id: this.bill[0].ParentID,
+        qty: 1
       };
 
       // using async/await to wait for BOM parser to finish
@@ -76,7 +78,8 @@ export class BomMapComponent implements OnInit {
         // traverse down and collect all the siblings in this level
         let newNode: any;
         newNode = {
-          name: this.bill[i].ChildName,
+          name: this.bill[i].ChildName.length > 19 ? `${this.bill[i].ChildName.slice(0, 20)}...` : this.bill[i].ChildName,
+          longName: this.bill[i].ChildName,
           qty: this.bill[i].QtyPer,
           id: this.bill[i].ChildID
         };
@@ -109,14 +112,13 @@ export class BomMapComponent implements OnInit {
   drawD3Plot() {
 
     // Set the dimensions and margins of the diagram
-    const margin = {top: 65, right: 30, bottom: 0, left: 180};
-    const width = $(window).width() - margin.left - margin.right;
-    const height = $(window).height() - margin.top - margin.bottom;
+    const origin = {top: 200, left: 180};
+    const nodeSize = {height: 28, width: 20};
     const zoomSpeed = 1500; // some number between 400 and 2000
 
     // set custom zoom settings
     const zoom = d3.zoom()
-      .scaleExtent([0.4, 4])  // restrict zoom to this scale range
+      .scaleExtent([0.25, 4])  // restrict zoom to this scale range
       // .translateExtent([[20, 20], [width, height]])  // restict panning to this [x0, y0] [x1, y1] range
       .wheelDelta(() => {
         // custom wheel delta function to reduce zoom speed
@@ -135,18 +137,19 @@ export class BomMapComponent implements OnInit {
       .attr('height', '100%')
       .call(zoom)
       .append('g')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+      .attr('transform', `translate(${origin.left}, ${origin.top})`);
 
 
     let i = 0;
     const duration = 750;
 
     // declares a tree layout and assigns the size
-    const treemap = d3.tree().size([height, width]);
+    // const treemap = d3.tree().size([height, width]);
+    const treemap = d3.tree().nodeSize([nodeSize.height, nodeSize.width]);
 
     // Assigns data for root node, and the starting location of the root node
     const root = d3.hierarchy(this.billHierarchy);
-    root.x0 = height / 2;
+    root.x0 = 0;
     root.y0 = 0;
 
     update(root);
@@ -154,9 +157,9 @@ export class BomMapComponent implements OnInit {
     // describes how to collapse a node and all its children
     function collapse(d) {
       if (d.children) {
-      d._children = d.children;
-      d._children.forEach(collapse);
-      d.children = null;
+        d._children = d.children;
+        d._children.forEach(collapse);
+        d.children = null;
       }
     }
 
@@ -187,23 +190,25 @@ export class BomMapComponent implements OnInit {
       .on('click', click);
 
       // Add Circle for the nodes
-      nodeEnter.append('circle')
+      nodeEnter.append('rect')
         .attr('class', 'node')
-        .attr('r', 1e-6)
-        .style('fill', function(d) {
-            return d._children ? 'lightsteelblue' : '#fff';
-        });
+        .attr('width', (d) => Math.max(75, 48 + 5 * d.data.name.length))
+        .attr('height', 20)
+        .attr('x', -8)
+        .attr('y', -11)
+        .attr('rx', 4)
+        .attr('ry', 4)
+        .attr('cursor', 'pointer')
+        .style('stroke-width', 1)
+        .style('stroke', '#aaf')
+        .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
 
       // Add labels for the nodes
       nodeEnter.append('text')
         .attr('dy', '.35em')
-        .attr('x', function(d) {
-            return d.children || d._children ? -13 : 13;
-        })
-        .attr('text-anchor', function(d) {
-            return d.children || d._children ? 'end' : 'start';
-        })
-        .text(function(d) { return d.data.name; });
+        .attr('cursor', 'pointer')
+        .attr('text-anchor', 'start')
+        .text(function(d) { return `${d.data.qty}x ${d.data.name}`; });
 
       // UPDATE
       const nodeUpdate = nodeEnter.merge(node);
@@ -216,25 +221,27 @@ export class BomMapComponent implements OnInit {
       });
 
       // Update the node attributes and style
-      nodeUpdate.select('circle.node')
-      .attr('r', 10)
-      .style('fill', function(d) {
-          return d._children ? 'lightsteelblue' : '#fff';
-      })
-      .attr('cursor', 'pointer');
+      nodeUpdate.select('rect.node')
+      .attr('width', (d) => Math.max(75, 48 + 5 * d.data.name.length))
+      .attr('height', 20)
+      .attr('x', -8)
+      .attr('y', -11)
+      .attr('rx', 4)
+      .attr('ry', 4)
+      .attr('cursor', 'pointer')
+      .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
 
 
       // Remove any exiting nodes
       const nodeExit = node.exit().transition()
         .duration(duration)
-        .attr('transform', function(d) {
-            return 'translate(' + source.y + ',' + source.x + ')';
-        })
+        .attr('transform', (d) => `translate(${source.y},${source.x})`)
         .remove();
 
       // On exit reduce the node circles size to 0
-      nodeExit.select('circle')
-      .attr('r', 1e-6);
+      nodeExit.select('rect')
+      .attr('width', 1e-6)
+      .attr('height', 1e-6);
 
       // On exit reduce the opacity of text labels
       nodeExit.select('text')
@@ -244,7 +251,7 @@ export class BomMapComponent implements OnInit {
 
       // Update the links...
       const link = svg.selectAll('path.link')
-        .data(links, function(d) { return d.id; });
+        .data(links, (d) => d.id);
 
       // Enter any new links at the parent's previous position.
       const linkEnter = link.enter().insert('path', 'g')
