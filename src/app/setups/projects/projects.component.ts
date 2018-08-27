@@ -351,7 +351,6 @@ export class ProjectsSetupsComponent implements OnInit {
         this.schedule.forEach(element => {
           element.PLCDate = moment(element.PLCDate).format('YYYY-MM-DD');
         });
-
         this.revisionNotes = res[0].RevisionNotes;
         this.scheduleId = res[0].ScheduleID;
         } else {
