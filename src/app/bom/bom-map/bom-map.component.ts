@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiDataBomService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
-import { ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
 
 declare var $: any;
@@ -55,6 +54,7 @@ export class BomMapComponent implements OnInit {
 
       console.log('finalized bom structure');
       console.log(this.billHierarchy);
+      d3.select('#d3-container').selectAll('*').remove();
       window.setTimeout( () => {this.drawD3Plot(); }, 2000);
     });
 
@@ -149,12 +149,9 @@ export class BomMapComponent implements OnInit {
     root.x0 = height / 2;
     root.y0 = 0;
 
-    // Collapse after the second level
-    root.children.forEach(collapse);
-
     update(root);
 
-    // Collapse the node and all it's children
+    // describes how to collapse a node and all its children
     function collapse(d) {
       if (d.children) {
       d._children = d.children;
