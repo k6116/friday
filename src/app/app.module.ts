@@ -85,8 +85,8 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
 import { PartSetupComponent } from './setups/parts/parts.component';
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 import { Error403Component } from './error-pages/error-403/error-403.component';
-import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
-import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
+import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
+import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 import { SearchProjectsComponent } from './projects/search-projects/search-projects.component';
 import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
