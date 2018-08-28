@@ -203,4 +203,24 @@ export class ApiDataProjectService {
   }
 
 
+  // using forkjoin to get data for the display project component for better performance
+  getProjectDisplayData(projectID: number): Observable<any> {
+
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+
+    const scheduleData = this.http.get(`api/getProjectSchedule/${projectID}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    const rosterData = this.http.get(`/api/indexProjectRoster/${projectID}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    return forkJoin([scheduleData, rosterData]);
+
+  }
+
+
+
 }
