@@ -141,6 +141,17 @@ export class DisplayProjectComponent implements OnInit {
       legend: {
         enabled: false
       },
+      tooltip: {
+        formatter: function () {
+          // console.log(this);
+          return `<b>${this.point.yCategory}</b><br/>
+            <span style="font-size: 12px">${moment(this.point.x).format('MMM D, YYYY')} -
+            ${moment(this.point.x2).format('MMM D, YYYY')}</span>`;
+        }
+        // useHTML: true,
+        // headerFormat: `<b>{point.yCategory}</b><br/>`,
+        // pointFormat: `<span style="font-size: 12px">{point.x} - {point.x2}</span>`
+      },
       xAxis: {
         type: 'datetime',
         minTickInterval: moment.duration(1, 'month').asMilliseconds(),
@@ -161,8 +172,6 @@ export class DisplayProjectComponent implements OnInit {
       },
       series: [{
         name: 'Baymax',
-        // pointPadding: 0,
-        // groupPadding: 0,
         borderColor: 'gray',
         pointWidth: 20,
         data: [{
@@ -202,12 +211,6 @@ export class DisplayProjectComponent implements OnInit {
             // console.log(this);
             return this.point.shapeArgs.width >= 100 ? this.point.description : '';
           }
-        },
-        label: {
-          enabled: false
-        },
-        marker: {
-          enabled: false
         }
       }]
     };
