@@ -1,10 +1,22 @@
-.tree-container {
-  width: 100%;
-  min-height: 500px;
+.bom-selector {
+  position: absolute;
+  top: 90px;
+  left: 220px;
+  z-index: 1;
 }
 
-.row-custom-treant {
-  padding-top: 30px;
-  height: 80vh;
-  width: 85vw;
+#d3-container {
+  height: 90vh;
+  width: 88vw;
+  margin-left: -65px;
+  margin-top: -40px;
+  margin-bottom: -150px;
+}
+
+.bill-searchbox {
+  width: 400px;
+}
+
+.list-group-item {
+  padding: 6px 10px;
 }

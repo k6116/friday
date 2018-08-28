@@ -42,7 +42,6 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 // BOM module stuff
 import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
 import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
-import { BomMapComponent } from './bom/bom-map/bom-map.component';
 
 
 const routes: Routes = [
@@ -67,7 +66,6 @@ const routes: Routes = [
       { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'bom/bom-editor', component: BomEditorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'bom/bom-viewer', component: BomViewerComponent, canActivate: [AuthGuardService] },
-      { path: 'bom/bom-map', component: BomMapComponent, canActivate: [AuthGuardService] },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },
