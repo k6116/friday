@@ -362,7 +362,6 @@ function logout(req, res) {
 
 }
 
-
 module.exports = {
   authenticate: authenticate,
   getInfoFromToken: getInfoFromToken,
