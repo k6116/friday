@@ -5,10 +5,10 @@ import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 
 declare var require: any;
 import * as Highcharts from 'highcharts';
-require('highcharts/modules/data.js')(Highcharts);
+// require('highcharts/modules/data.js')(Highcharts);
 require('highcharts/modules/xrange.js')(Highcharts);
-require('highcharts/modules/accessibility.js')(Highcharts);
-require('highcharts/highcharts-more.js')(Highcharts);
+// require('highcharts/modules/accessibility.js')(Highcharts);
+// require('highcharts/highcharts-more.js')(Highcharts);
 import * as moment from 'moment';
 
 @Component({
@@ -123,11 +123,11 @@ export class DisplayProjectComponent implements OnInit {
     // Hardware Qualification (HQ)	10/6/2017
     // Ship (SHP)	1/19/2018
 
-    // Highcharts.setOptions({
-    //   global: {
-    //     useUTC: false
-    //   }
-    // });
+    Highcharts.setOptions({
+      global: {
+        useUTC: false
+      }
+    });
 
 
     // set the chart options
