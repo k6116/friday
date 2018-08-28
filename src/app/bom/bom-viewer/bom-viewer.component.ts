@@ -36,7 +36,7 @@ export class BomViewerComponent implements OnInit {
     });
   }
 
-  onSearchFocus(searching: boolean) {
+  onSearchFocus() {
     this.searching = true;
   }
 
