@@ -131,10 +131,10 @@ export class BomMapComponent implements OnInit {
 
   drawD3Plot() {
 
-    // Set the dimensions and margins of the diagram
-    const origin = {top: 200, left: 180};
+    // set start position of drawing, and size of nodes (to set default node spacing)
+    const origin = {top: 400, left: 400};
     const nodeSize = {height: 28, width: 20};
-    const zoomSpeed = 1500; // some number between 400 and 2000
+    const zoomSpeed = 1700; // some number between 400 and 2000
 
     // set custom zoom settings
     const zoom = d3.zoom()
@@ -217,7 +217,7 @@ export class BomMapComponent implements OnInit {
       // Add Circle for the nodes
       nodeEnter.append('rect')
         .attr('class', 'node')
-        .attr('width', (d) => Math.max(75, 48 + 5 * d.data.name.length))
+        .attr('width', (d) => Math.max(80, 52 + 6 * d.data.name.length))
         .attr('height', 20)
         .attr('x', -8)
         .attr('y', -11)
@@ -233,7 +233,7 @@ export class BomMapComponent implements OnInit {
         .attr('dy', '.35em')
         .attr('cursor', 'pointer')
         .attr('text-anchor', 'start')
-        .text(function(d) { return `${d.data.qty}x ${d.data.name}`; })
+        .text(function(d) { return `${d.data.qty}  |  ${d.data.name}`; })
         .on('mouseover', (d) => {
           tooltip.transition()
           .duration(100)
@@ -269,7 +269,6 @@ export class BomMapComponent implements OnInit {
       .attr('ry', 4)
       .attr('cursor', 'pointer')
       .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
-
 
       // Remove any exiting nodes
       const nodeExit = node.exit().transition()
