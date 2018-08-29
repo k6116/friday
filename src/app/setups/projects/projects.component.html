@@ -14,7 +14,7 @@
 
   <div class="row">  
     <div class="col-2.1">
-        <table class="table table-wrapper-scroll-y" *ngIf="(projectList | filter : searchProjects : 'ProjectName':{limitTo: -1, matchOptimistic: true}) as filteredProjectList">
+        <table class="table table-wrapper-scroll-y table-hover" *ngIf="(projectList | filter : searchProjects : 'ProjectName':{limitTo: -1, matchOptimistic: true}) as filteredProjectList">
             <thead>
                 <tr>
                   <th class="th-sm" (click)="orderByType(true)">Type
@@ -27,8 +27,12 @@
               </thead>
           <tbody>
           <tr  *ngFor="let project of filteredProjectList" (click)="$event.stopPropagation();onProjectClick(project)">
-              <td class="projecttype">               
-                  {{ project.ProjectTypeName }}           
+              <td>    
+                <div [ngStyle]="{ 'color': setProjctTypeColor(project.ProjectTypeName) }">
+                    <i [ngClass]="setProjctTypeIconClass(project.ProjectTypeName)"></i>
+                    {{ project.ProjectTypeName }}   
+                </div>           
+                         
               </td>
               <td>           
                 {{ project.ProjectName.substring(0,30) }}         

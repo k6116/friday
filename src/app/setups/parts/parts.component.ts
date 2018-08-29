@@ -3,6 +3,7 @@ import { ApiDataSchedulesService, ApiDataPartService, ApiDataProjectService,
   ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
+import { ToolsService } from '../../_shared/services/tools.service';
 import * as moment from 'moment';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 
@@ -37,7 +38,8 @@ export class PartSetupComponent implements OnInit {
     private apiDataProjectService: ApiDataProjectService,
     private apiDataEmployeeService: ApiDataEmployeeService,
     private authService: AuthService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private toolsService: ToolsService
   ) { }
 
   ngOnInit() {
@@ -370,4 +372,12 @@ export class PartSetupComponent implements OnInit {
       }
     );
   }
+
+  setPartTypeIconClass(partTypeName) {
+    return this.toolsService.setPartTypeIconClass(partTypeName);
+   }
+
+   setPartTypeColor(partTypeName) {
+    return this.toolsService.setPartTypeColor(partTypeName);
+   }
 }
