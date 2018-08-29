@@ -127,8 +127,8 @@ export class BomViewerComponent implements OnInit {
 
   drawD3Plot() {
 
-    // set start position of drawing, and size of nodes (to set default node spacing)
-    const origin = {top: 400, left: 400};
+    // set start position/scale of drawing, and size of nodes (to set default node spacing)
+    const initialTransform = d3.zoomIdentity.translate(400, 400).scale(1);
     const nodeSize = {height: 28, width: 20};
     const zoomSpeed = 1700; // some number between 400 and 2000
 
@@ -147,13 +147,16 @@ export class BomViewerComponent implements OnInit {
 
 
     // append the svg object to the body of the page and appends a 'group' container element to 'svg'
-    // moves the 'group' element to the top left margin
     const svg = d3.select('#d3-container').append('svg')
       .attr('width', '100%')
       .attr('height', '100%')
-      .call(zoom)
-      .append('g')
-      .attr('transform', `translate(${origin.left}, ${origin.top})`);
+      .append('g');
+
+    // define a zoom function for the SVG, and an initial transform for the zoom
+    // if you don't set the initial transform using the defined zoom function, it will 'snap' back to the origin on first move
+    d3.select('svg')
+      .call(zoom) // adds zoom functionality
+      .call(zoom.transform, initialTransform);  // applies initial transform
 
     // create tooltip object
     const tooltip = d3.select('#d3-container').append('div')
@@ -170,8 +173,8 @@ export class BomViewerComponent implements OnInit {
 
     // Assigns data for root node, and the starting location of the root node
     const root = d3.hierarchy(this.billHierarchy);
-    root.x0 = 400;
-    root.y0 = 400;
+    root.x0 = 0;
+    root.y0 = 0;
 
     update(root);
 
@@ -210,7 +213,7 @@ export class BomViewerComponent implements OnInit {
       })
       .on('click', click);
 
-      // Add Circle for the nodes
+      // draw rectangle for each node
       nodeEnter.append('rect')
         .attr('class', 'node')
         .attr('width', (d) => Math.max(80, 52 + 6 * d.data.name.length))
