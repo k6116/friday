@@ -61,7 +61,7 @@ export class ProjectsSetupsComponent implements OnInit {
             a.ProjectName < b.ProjectName ? -this.nameSortCoefficient
             : a.ProjectName > b.ProjectName ? this.nameSortCoefficient : 0);
       }
-      this.searchProjects =  ' '; // Refresh Project Search
+      this.searchProjects = this.searchProjects +  ' '; // Refresh Project Search
   }
 
   onSearchChanged(event: any) {
