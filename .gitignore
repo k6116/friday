@@ -9,6 +9,9 @@
 # .env files
 .env
 
+# SSL certs
+/etc/ssl
+
 # dependencies
 /node_modules
 

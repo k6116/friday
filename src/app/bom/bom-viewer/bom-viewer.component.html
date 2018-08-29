@@ -1,27 +1,21 @@
 <div class="container-fluid">
-  <div class="row row-custom">
-    <div class="col-sm-3">
-      <select class="form-control form-inline" (change)="onBomSelect($event.target.value)">
-        <option *ngFor="let bill of billList" [value]="bill.ParentPartID">{{bill.PartOrProjectName}}</option>
-      </select>
-    </div>
-    <div class="col-sm-3">
-      <table>
-        <tr>
-          <td colspan="6">Part Department Legend:</td>
-        </tr>
-        <tr>
-          <td class="legend node HFTC">HFTC</td>
-          <td class="legend node PICO">PICO</td>
-          <td class="legend node PMTC">PMTC</td>
-          <td class="legend node ThinFilm">Thin Film</td>
-          <td class="legend node EXT">External</td>
-          <td class="legend node NPSS">NPSS</td>
-        </tr>
-      </table>
-    </div>
+  <div class="bom-selector">
+
+    <input class="form-control bill-searchbox" type="text" [(ngModel)]="searchBills" (focus)="onSearchFocus()" placeholder="Search for a BOM (ie, G-Max)">
+
+    <ng-container *ngIf="searching">
+      <ng-container *ngIf="(billList | filter : searchBills : 'PartOrProjectName':{limitTo: -1, matchOptimistic: true}) as filteredBillList">
+        <ul class="list-group list-group-flush" *ngFor="let bill of filteredBillList | slice:0:6; let i=index">
+          <button class="list-group-item list-group-item-action" (click)="onBomSelect(bill)">
+            {{ bill.PartOrProjectName }}
+          </button>
+        </ul>
+      </ng-container>
+    </ng-container>
+
+    <!-- <select class="form-control form-inline" (change)="onBomSelect($event.target.value)">
+      <option *ngFor="let bill of billList" [value]="bill.ParentPartID">{{bill.PartOrProjectName}}</option>
+    </select> -->
   </div>
-  <div class="row row-custom row-custom-treant">
-    <div id="tree-simple" class="tree-container"></div>
-  </div>
+  <div id="d3-container"></div>
 </div>
