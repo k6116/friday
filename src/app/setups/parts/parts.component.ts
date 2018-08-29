@@ -63,7 +63,7 @@ export class PartSetupComponent implements OnInit {
             a.PartName < b.PartName ? -this.nameSortCoefficient
             : a.PartName > b.PartName ? this.nameSortCoefficient : 0);
       }
-      this.searchParts = this.searchParts + ' ';
+      this.searchParts = this.searchParts + ' '; // Refresh Parts List
   }
 
   onSearchChanged(event: any) {

@@ -1,3 +1,19 @@
+<a name="1.9.0"></a>
+# [1.9.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.4...v1.9.0) (2018-08-29)
+
+
+### Bug Fixes
+
+* **Project and Parts setups:** fixed sorting, per Mike's request ([5f80b0d](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/5f80b0d))
+* **Project Create modal:** allows dots in new project names ([2039e15](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/2039e15))
+
+
+### Features
+
+* **BOM Viewer:** Rewrote BOM viewer to use D3 ([93b4f21](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/93b4f21))
+
+
+
 <a name="1.8.4"></a>
 ## [1.8.4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.3...v1.8.4) (2018-08-27)
 
