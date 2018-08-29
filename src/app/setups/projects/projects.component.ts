@@ -359,7 +359,7 @@ export class ProjectsSetupsComponent implements OnInit {
         this.schedule = [];
         this.scheduleId = 0;
         this.createDefaultScheduleRow();
-      }
+        }
       },
       err => {
         this.cacheService.raiseToast('error', `Unable to Obtain Project Schedule: ${err}`);
