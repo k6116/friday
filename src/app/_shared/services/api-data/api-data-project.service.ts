@@ -209,7 +209,7 @@ export class ApiDataProjectService {
     const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
 
-    const scheduleData = this.http.get(`api/getProjectSchedule/${projectID}`, options)
+    const scheduleData = this.http.get(`api/getProjectSchedule2/${projectID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
 

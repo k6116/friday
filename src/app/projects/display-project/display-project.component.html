@@ -17,6 +17,22 @@ considering topnav, sidenav, and footer -->
       <div>Project ID: {{ project.ProjectID }}</div>
       <div>Project Name: {{ project.ProjectName }}</div>
 
+
+      <div class="chart-options-cont">
+
+        <div class="chart-option">
+          <label class="chart-options-label">Show Commit</label>
+          <input class="chart-options-checkbox" type="checkbox" [(ngModel)]="showPlannedChecked" (change)="onShowPlannedClick()">
+        </div>
+
+        <div class="chart-option">
+          <label class="chart-options-label">Show Actual</label>
+          <input class="chart-options-checkbox" type="checkbox" [(ngModel)]="showActualsChecked" (change)="onShowActualsClick()">
+        </div>
+
+      </div>
+      
+
       <!-- schedule x-range series chart -->
       <div class="col-lg-12 col-custom schedule-chart-cont">
         <div class="highchart schedule-chart" id="scheduleChart">

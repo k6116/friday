@@ -1,0 +1,18 @@
+div.chart-options-cont {
+  position: relative;
+  top: 40px;
+  left: 20px;
+  z-index: 1;
+}
+
+div.chart-option {
+  display: inline-block;
+}
+
+div.chart-option:first-child {
+  margin-right: 10px;
+}
+
+label.chart-options-label {
+  margin-right: 5px;
+}
