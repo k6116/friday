@@ -3,6 +3,7 @@ import { ApiDataSchedulesService, ApiDataProjectService,
   ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
+import { ToolsService } from '../../_shared/services/tools.service';
 import * as moment from 'moment';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 
@@ -37,7 +38,8 @@ export class ProjectsSetupsComponent implements OnInit {
     private apiDataProjectService: ApiDataProjectService,
     private apiDataEmployeeService: ApiDataEmployeeService,
     private authService: AuthService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private toolsService: ToolsService
   ) { }
 
   ngOnInit() {
@@ -357,11 +359,19 @@ export class ProjectsSetupsComponent implements OnInit {
         this.schedule = [];
         this.scheduleId = 0;
         this.createDefaultScheduleRow();
-      }
+        }
       },
       err => {
         this.cacheService.raiseToast('error', `Unable to Obtain Project Schedule: ${err}`);
       }
     );
+  }
+
+  setProjctTypeIconClass(projectTypeName) {
+   return this.toolsService.setProjctTypeIconClass(projectTypeName);
+  }
+
+  setProjctTypeColor(projectTypeName) {
+   return this.toolsService.setProjctTypeColor(projectTypeName);
   }
 }

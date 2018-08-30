@@ -427,5 +427,47 @@ export class ToolsService {
     }
   }
 
+  // TO-DO Create Icons for Part Types and replace icons below which came from Project Types
+  setPartTypeIconClass(partTypeName) {
+    const classes = {
+      'nc-icon': true,
+      'nc-ram': partTypeName === 'Assembly' || partTypeName === 'Turning',
+      'nc-keyboard': partTypeName === 'Board' || partTypeName === 'Wafer',
+      'nc-keyboard-wireless': partTypeName === 'ChemMill' || partTypeName === 'WireEDM',
+      'nc-socket-europe-1': partTypeName === 'Chip',
+      'nc-lab': partTypeName === 'External',
+      'nc-microscope': partTypeName === 'LLM',
+      'nc-settings-91': partTypeName === 'MicroCircuit',
+      'nc-code-editor': partTypeName === 'Milling',
+      'nc-book-open-2': partTypeName === 'Package',
+      'nc-board-28': partTypeName === 'PCA',
+      'nc-bulb-63': partTypeName === 'PCB',
+      'nc-sign-closed': partTypeName === 'Puck',
+      'nc-gantt': partTypeName === 'Sub-Assembly'
+    };
+    return classes;
+  }
 
+  setPartTypeColor(partTypeName) {
+    switch (partTypeName) {
+      case 'Assembly':
+        return 'rgb(139, 0, 0)';  // red
+      case 'Chip':
+        return 'rgb(0, 0, 139)';  // dark blue
+      case 'ChemMill':
+        return 'rgb(16, 140, 160)';  // turquiose
+      case 'Chip':
+        return 'rgb(215, 123, 10)';  // orange
+      case 'External':
+        return 'rgb(0, 100, 0)';  // green
+      case 'LLM':
+        return 'rgb(184, 134, 11)';  // dark yellow-gold
+      case 'MicroCircuit':
+        return 'rgb(0, 101, 209)';  // blue
+      case 'Milling':
+        return 'rgb(0, 101, 209)';  // blue
+      default:
+        return 'rgb(139, 0, 139)';  // magenta
+    }
+  }
 }
