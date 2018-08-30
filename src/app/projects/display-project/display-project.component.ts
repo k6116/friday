@@ -120,22 +120,21 @@ export class DisplayProjectComponent implements OnInit {
           console.log('roster:');
           console.log(this.roster);
 
-          const categories = this.buildChartCategories();
-          console.log('chart categories');
-          console.log(categories);
-          this.chartCategories = categories;
+          this.chartCategories = this.buildChartCategories();
+          // console.log('chart categories');
+          // console.log(this.chartCategories);
 
           this.chartData = this.buildChartData();
-          console.log('chart data');
-          console.log(this.chartData);
+          // console.log('chart data');
+          // console.log(this.chartData);
 
-          console.log('moment date testing:');
-          if (this.schedule) {
-            console.log(this.schedule[0].PLCDate);
-            console.log(moment(this.schedule[0].PLCDate));
-            console.log('utc offset');
-            console.log(moment(this.schedule[0].PLCDate).utcOffset());
-          }
+          // console.log('moment date testing:');
+          // if (this.schedule) {
+          //   console.log(this.schedule[0].PLCDate);
+          //   console.log(moment(this.schedule[0].PLCDate));
+          //   console.log('utc offset');
+          //   console.log(moment(this.schedule[0].PLCDate).utcOffset());
+          // }
 
           this.renderScheduleChart();
 
@@ -163,26 +162,6 @@ export class DisplayProjectComponent implements OnInit {
 
   }
 
-
-  updateScheduleChart() {
-
-    console.log(this.chartOptions.series[0].data);
-    const filteredData = this.chartOptions.series[0].data.filter(data => {
-      return data.y % 2 === 0;
-    });
-
-    console.log('filtered data:');
-    console.log(filteredData);
-
-    this.chartOptions.series[0].data = filteredData;
-
-    this.chartOptions.yAxis.categories = this.chartOptions.yAxis.categories.filter((category, index) => {
-      return index % 2 === 0;
-    });
-
-    Highcharts.chart('scheduleChart', this.chartOptions);
-
-  }
 
   onShowPlannedClick() {
     this.updateChart();
@@ -256,11 +235,11 @@ export class DisplayProjectComponent implements OnInit {
                   break;
                 }
               }
-              console.log(`previous index for checkpoint ${checkPoint.PLCStatusName}:`);
-              console.log(prevIndex);
+              // console.log(`previous index for checkpoint ${checkPoint.PLCStatusName}:`);
+              // console.log(prevIndex);
               const prevCheckpoint = this.schedule[prevIndex];
-              console.log(`previous checkpoint object for checkpoint ${checkPoint.PLCStatusName}:`);
-              console.log(prevCheckpoint);
+              // console.log(`previous checkpoint object for checkpoint ${checkPoint.PLCStatusName}:`);
+              // console.log(prevCheckpoint);
               bar.x = moment(prevCheckpoint[columnName]).add(8, 'hours').valueOf();
               bar.x2 = moment(checkPoint[columnName]).add(8, 'hours').valueOf();
               if (bar.x === bar.x2) {
@@ -406,7 +385,7 @@ export class DisplayProjectComponent implements OnInit {
             xAxis: 0,
             yAxis: 0
           },
-          text: '8/26/2018'
+          text: '4/26/2018'
         }],
         labelOptions: {
           backgroundColor: 'white'

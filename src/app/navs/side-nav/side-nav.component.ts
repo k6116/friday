@@ -413,9 +413,39 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       if (menuItem.hasOwnProperty('subItems')) {
         menuItem.subItems.forEach(subMenuItem => {
           subMenuItem.active = subMenuItem.path === path ? true : false;
+          // check alternative paths
+          if (!subMenuItem.active && subMenuItem.hasOwnProperty('subPaths')) {
+            subMenuItem.active = this.checkAlternativePaths(subMenuItem.subPaths, path);
+            // console.log('sub menu item active?');
+            // console.log(subMenuItem.active);
+          }
         });
       }
     });
+  }
+
+  checkAlternativePaths(subPaths: any[], path: string): boolean {
+    let returnVal = false;
+    if (subPaths.length) {
+      subPaths.forEach(subPath => {
+        let regexString;
+        // replace the '/' with '\/' (escape char for regex)
+        regexString = subPath.replace(/\//g, '\\/');
+        regexString = regexString.replace(/(:.+(?=\/))|(:.+$)/g, '.+');
+        // console.log(`regex string to look for path match on ${path}:`);
+        // console.log(regexString);
+        const regexTest = new RegExp(regexString, 'g');
+        // console.log('regex test expression');
+        // console.log(regexTest);
+        if (regexTest.test(path)) {
+          // console.log('test returned true');
+          returnVal = true;
+        }
+      });
+      return returnVal;
+    } else {
+      return returnVal;
+    }
   }
 
   // get the parent of the selected/active menu item based on the path
@@ -426,7 +456,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       // if the main menu item has a subItems property, attempt to find it within that array
       if (menuItem.hasOwnProperty('subItems')) {
         const foundSubMenuItem = menuItem.subItems.find(subItem => {
-          return subItem.path === path;
+          return subItem.active;
         });
         // once the sub menu item is found, find it's parent main menu item (matching using the parentAlias)
         if (foundSubMenuItem) {
