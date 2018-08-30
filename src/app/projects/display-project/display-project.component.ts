@@ -24,10 +24,12 @@ export class DisplayProjectComponent implements OnInit {
   showPage: boolean;
   chartOptions: any;
   chartData: any;
+  chartLabels: any;
   chartCategories: any;
   animateChart: boolean;
   showPlannedChecked: boolean;
   showActualsChecked: boolean;
+  showLabels: boolean;
 
   constructor(
     private router: Router,
@@ -41,6 +43,7 @@ export class DisplayProjectComponent implements OnInit {
 
     this.showPlannedChecked = true;
     this.showActualsChecked = true;
+    this.showLabels = false;
 
     this.animateChart = true;
 
@@ -128,6 +131,10 @@ export class DisplayProjectComponent implements OnInit {
           // console.log('chart data');
           // console.log(this.chartData);
 
+          this.chartLabels = this.buildChartLabels();
+          console.log('chart labels');
+          console.log(this.chartLabels);
+
           // console.log('moment date testing:');
           // if (this.schedule) {
           //   console.log(this.schedule[0].PLCDate);
@@ -171,9 +178,14 @@ export class DisplayProjectComponent implements OnInit {
     this.updateChart();
   }
 
+  onShowLabelsClick() {
+    this.renderScheduleChart();
+  }
+
   updateChart() {
     this.chartCategories = this.buildChartCategories();
     this.chartData = this.buildChartData();
+    this.chartLabels = this.buildChartLabels();
     this.renderScheduleChart();
   }
 
@@ -192,6 +204,7 @@ export class DisplayProjectComponent implements OnInit {
     }
     return categories;
   }
+
 
   buildChartData(): any[] {
     const chartData = [];
@@ -257,8 +270,35 @@ export class DisplayProjectComponent implements OnInit {
       }
     });
 
-
     return chartData;
+  }
+
+
+  buildChartLabels(): any[] {
+
+    const chartLabels = [];
+
+    this.chartData.forEach(bar => {
+
+      console.log('bar object:');
+      console.log(bar);
+
+      const labelObj = {
+        point: {
+          x: bar.x2,
+          y: bar.y,
+          xAxis: 0,
+          yAxis: 0
+        },
+        text: moment(bar.x2).format('MMM D, YYYY')
+      };
+
+      chartLabels.push(labelObj);
+
+    });
+
+    return chartLabels;
+
   }
 
 
@@ -321,72 +361,73 @@ export class DisplayProjectComponent implements OnInit {
         }]
       },
       annotations: [{
-        visible: true,
-        labels: [{
-          point: {
-            x: 1392364800000,
-            y: 0,
-            xAxis: 0,
-            yAxis: 0
-          },
-          text: '2/14/2014'
-        }, {
-          point: {
-            x: 1392364800000,
-            y: 1,
-            xAxis: 0,
-            yAxis: 0
-          },
-          text: '2/14/2014'
-        }, {
-          point: {
-            x: 1408089600000,
-            y: 2,
-            xAxis: 0,
-            yAxis: 0
-          },
-          text: '8/14/2014'
-        }, {
-          point: {
-            x: 1409212800000,
-            y: 3,
-            xAxis: 0,
-            yAxis: 0
-          },
-          text: '8/28/2014'
-        }, {
-          point: {
-            x: 1493625600000,
-            y: 4,
-            xAxis: 0,
-            yAxis: 0
-          },
-          text: '5/1/2017'
-        }, {
-          point: {
-            x: 1494489600000,
-            y: 5,
-            xAxis: 0,
-            yAxis: 0
-          },
-          text: '5/11/2017'
-        }, {
-          point: {
-            x: 1495699200000,
-            y: 6,
-            xAxis: 0,
-            yAxis: 0
-          },
-          text: '5/25/2017'
-        }, {
-          point: {
-            x: 1524729600000,
-            y: 7,
-            xAxis: 0,
-            yAxis: 0
-          },
-          text: '4/26/2018'
-        }],
+        visible: this.showLabels,
+        labels: this.chartLabels,
+        // [{
+        //   point: {
+        //     x: 1392364800000,
+        //     y: 0,
+        //     xAxis: 0,
+        //     yAxis: 0
+        //   },
+        //   text: '2/14/2014'
+        // }, {
+        //   point: {
+        //     x: 1392364800000,
+        //     y: 1,
+        //     xAxis: 0,
+        //     yAxis: 0
+        //   },
+        //   text: '2/14/2014'
+        // }, {
+        //   point: {
+        //     x: 1408089600000,
+        //     y: 2,
+        //     xAxis: 0,
+        //     yAxis: 0
+        //   },
+        //   text: '8/14/2014'
+        // }, {
+        //   point: {
+        //     x: 1409212800000,
+        //     y: 3,
+        //     xAxis: 0,
+        //     yAxis: 0
+        //   },
+        //   text: '8/28/2014'
+        // }, {
+        //   point: {
+        //     x: 1493625600000,
+        //     y: 4,
+        //     xAxis: 0,
+        //     yAxis: 0
+        //   },
+        //   text: '5/1/2017'
+        // }, {
+        //   point: {
+        //     x: 1494489600000,
+        //     y: 5,
+        //     xAxis: 0,
+        //     yAxis: 0
+        //   },
+        //   text: '5/11/2017'
+        // }, {
+        //   point: {
+        //     x: 1495699200000,
+        //     y: 6,
+        //     xAxis: 0,
+        //     yAxis: 0
+        //   },
+        //   text: '5/25/2017'
+        // }, {
+        //   point: {
+        //     x: 1524729600000,
+        //     y: 7,
+        //     xAxis: 0,
+        //     yAxis: 0
+        //   },
+        //   text: '4/26/2018'
+        // }],
         labelOptions: {
           backgroundColor: 'white'
         }

@@ -9,7 +9,7 @@ div.chart-option {
   display: inline-block;
 }
 
-div.chart-option:first-child {
+div.chart-option {
   margin-right: 10px;
 }
 
@@ -17,10 +17,7 @@ label.chart-options-label {
   margin-right: 5px;
 }
 
-.highcharts-container {
-  position: inherit !important;
-}
-
-.highcharts-tooltip {
-  z-index: 9998;
+input.chart-options-checkbox {
+  position: relative;
+  top: 2px;
 }
