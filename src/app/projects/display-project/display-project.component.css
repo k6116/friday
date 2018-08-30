@@ -16,3 +16,11 @@ div.chart-option:first-child {
 label.chart-options-label {
   margin-right: 5px;
 }
+
+.highcharts-container {
+  position: inherit !important;
+}
+
+.highcharts-tooltip {
+  z-index: 9998;
+}

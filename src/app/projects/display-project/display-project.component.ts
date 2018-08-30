@@ -6,6 +6,7 @@ import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 declare var require: any;
 import * as Highcharts from 'highcharts';
 require('highcharts/modules/xrange.js')(Highcharts);
+require('highcharts/modules/annotations.js')(Highcharts);
 import * as moment from 'moment';
 
 @Component({
@@ -288,7 +289,7 @@ export class DisplayProjectComponent implements OnInit {
 
     Highcharts.setOptions({
       global: {
-        useUTC: true
+        useUTC: false
       }
     });
 
@@ -296,7 +297,13 @@ export class DisplayProjectComponent implements OnInit {
     // set the chart options
     this.chartOptions = {
       chart: {
-        type: 'xrange'
+        type: 'xrange',
+        marginTop: 75,
+        marginBottom: 65,
+        spacingLeft: 25,
+        spacingRight: 25,
+        spacingTop: 25
+        // backgroundColor: 'transparent'
       },
       title: {
         // text: `${this.project.ProjectName} PLC Schedule`
@@ -323,9 +330,88 @@ export class DisplayProjectComponent implements OnInit {
       },
       xAxis: {
         type: 'datetime',
-        minTickInterval: moment.duration(1, 'month').asMilliseconds(),
-        gridLineWidth: 1
+        startOnTick: true,
+        tickAmount: 10,
+        // minTickInterval: moment.duration(1, 'month').asMilliseconds(),
+        gridLineWidth: 1,
+        plotLines: [{
+          color: '#FF0000', // Red
+          width: 1,
+          dashStyle: 'Dash',
+          value: new Date().getTime() // Position, you'll have to translate this to the values on your x axis
+        }]
       },
+      annotations: [{
+        visible: true,
+        labels: [{
+          point: {
+            x: 1392364800000,
+            y: 0,
+            xAxis: 0,
+            yAxis: 0
+          },
+          text: '2/14/2014'
+        }, {
+          point: {
+            x: 1392364800000,
+            y: 1,
+            xAxis: 0,
+            yAxis: 0
+          },
+          text: '2/14/2014'
+        }, {
+          point: {
+            x: 1408089600000,
+            y: 2,
+            xAxis: 0,
+            yAxis: 0
+          },
+          text: '8/14/2014'
+        }, {
+          point: {
+            x: 1409212800000,
+            y: 3,
+            xAxis: 0,
+            yAxis: 0
+          },
+          text: '8/28/2014'
+        }, {
+          point: {
+            x: 1493625600000,
+            y: 4,
+            xAxis: 0,
+            yAxis: 0
+          },
+          text: '5/1/2017'
+        }, {
+          point: {
+            x: 1494489600000,
+            y: 5,
+            xAxis: 0,
+            yAxis: 0
+          },
+          text: '5/11/2017'
+        }, {
+          point: {
+            x: 1495699200000,
+            y: 6,
+            xAxis: 0,
+            yAxis: 0
+          },
+          text: '5/25/2017'
+        }, {
+          point: {
+            x: 1524729600000,
+            y: 7,
+            xAxis: 0,
+            yAxis: 0
+          },
+          text: '8/26/2018'
+        }],
+        labelOptions: {
+          backgroundColor: 'white'
+        }
+      }],
       yAxis: {
         title: {
           text: ''
