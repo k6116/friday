@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
@@ -14,8 +14,9 @@ import * as moment from 'moment';
   templateUrl: './display-project.component.html',
   styleUrls: ['./display-project.component.css', '../../_shared/styles/common.css']
 })
-export class DisplayProjectComponent implements OnInit {
+export class DisplayProjectComponent implements OnInit, AfterViewInit {
 
+  allData: any;
   project: any;
   projectID: number;
   schedule: any;
@@ -31,6 +32,7 @@ export class DisplayProjectComponent implements OnInit {
   showActualsChecked: boolean;
   showLabels: boolean;
 
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -41,63 +43,192 @@ export class DisplayProjectComponent implements OnInit {
     // get the project id from the route params
     this.projectID = activatedRoute.snapshot.params['id'];
 
+    // initialize properties
     this.showPlannedChecked = true;
     this.showActualsChecked = true;
     this.showLabels = false;
-
     this.animateChart = true;
 
   }
 
-  ngOnInit() {
 
-    console.log('date test');
-    console.log(Date.UTC(2014, 11, 2));
-    // 5/13/2017
-    // console.log(moment('5/13/2017'));
-    console.log(new Date('5/13/2017').getTime());
+  async ngOnInit() {
 
-    console.log('project id from the router (url');
-    console.log(`project id: ${this.projectID}`);
+    // get all data for the page using forkjoin: project, schedule, and roster
+    console.log('getting data');
+    await this.getData();
 
-    console.log('all projects from the cache service');
-    console.log(this.cacheService.projects);
+    // store the data in component properties
+    console.log('storing data');
+    this.storeData();
 
-    const color = this.getBarColor('CON', false);
-    console.log('bar color test:');
-    console.log(color);
+    // hide the spinner
+    this.showSpinner = false;
+
+    // show the page
+    this.showPage = true;
+
+    // display the schedule gantt chart
+    console.log('displaying chart');
+    this.displayChart();
+
+    // console.log('waiting for data');
+    // const res = await this.getDisplayData();
+    // console.log('received data:');
+    // console.log(res);
+
+    // console.log('date test');
+    // console.log(Date.UTC(2014, 11, 2));
+    // // 5/13/2017
+    // // console.log(moment('5/13/2017'));
+    // console.log(new Date('5/13/2017').getTime());
+
+    // console.log('project id from the router (url');
+    // console.log(`project id: ${this.projectID}`);
+
+    // console.log('all projects from the cache service');
+    // console.log(this.cacheService.projects);
+
+    // const color = this.getBarColor('CON', false);
+    // console.log('bar color test:');
+    // console.log(color);
 
 
-    if (this.cacheService.project) {
+    // if (this.cacheService.project) {
 
-      this.project = this.cacheService.project;
-      this.showPage = true;
-      console.log('clicked project from the cache service');
-      console.log(this.project);
-      this.getRemainingData();
-      // this.renderScheduleChart();
+    //   this.project = this.cacheService.project;
+    //   this.showPage = true;
+    //   console.log('clicked project from the cache service');
+    //   console.log(this.project);
+    //   this.getRemainingData();
+    //   // this.renderScheduleChart();
 
-    } else {
+    // } else {
 
-      this.apiDataProjectService.getProject(this.projectID)
-      .subscribe(
-        async res => {
-          this.project = res[0];
-          this.showPage = true;
-          console.log('retrieved project from the api');
-          console.log(this.project);
-          console.log('before await this.getRemainingData()');
-          await this.getRemainingData();
-          console.log('after await this.getRemainingData()');
-          // this.renderScheduleChart();
-        },
-        err => {
-          // hide the spinner
-          this.showSpinner = false;
-        }
-      );
+    //   this.apiDataProjectService.getProject(this.projectID)
+    //   .subscribe(
+    //     async res => {
+    //       this.project = res[0];
+    //       this.showPage = true;
+    //       console.log('retrieved project from the api');
+    //       console.log(this.project);
+    //       console.log('waiting for get new project object');
+    //       // APPROACH 1:
+    //       // this.project = await this.getAsyncData();
+    //       // APPROACH 2:
+    //       // this.getAsyncData()
+    //       //   .then(project => {
+    //       //     this.project = project;
+    //       //   })
+    //       //   .catch(err => {
+    //       //     console.log('error occured getting project:');
+    //       //     console.log(err);
+    //       //     // display error message and stop execution
+    //       //   });
+    //       console.log('got the new project object:');
+    //       console.log(this.project);
+    //       console.log('before getting remaining data');
+    //       this.getRemainingData();
+    //       console.log('after getting remaining data');
+    //       // console.log('before get project sync');
+    //       // const project = this.getProject(this.projectID);
+    //       // console.log('after get project sync');
+    //       // // this.renderScheduleChart();
+    //       // console.log('project from get project sync:');
+    //       // console.log(project);
+    //     },
+    //     err => {
+    //       // hide the spinner
+    //       this.showSpinner = false;
+    //     }
+    //   );
+    //
+    // }
 
+  }
+
+
+  ngAfterViewInit() {
+
+
+  }
+
+
+  async getData() {
+
+    console.log('waiting for data');
+    this.allData = await this.getDisplayData();
+    console.log('received data:');
+    console.log(this.allData);
+
+  }
+
+
+  storeData() {
+
+    // store the project
+    this.project = this.allData[0][0];
+
+    // store the schedule if there is one
+    if (this.allData[1].length) {
+      this.schedule = this.allData[1];
     }
+
+    // store the roster if there is one
+    if (this.allData[2][0].hasOwnProperty('teamMembers')) {
+      this.roster = this.allData[2][0].teamMembers;
+    }
+
+    console.log('project:');
+    console.log(this.project);
+    console.log('schedule:');
+    console.log(this.schedule);
+    console.log('roster:');
+    console.log(this.roster);
+
+
+  }
+
+
+  displayChart() {
+
+    this.chartCategories = this.buildChartCategories();
+    this.chartData = this.buildChartData();
+    this.chartLabels = this.buildChartLabels();
+
+    // this.renderScheduleChart();
+    // this.animateChart = false;
+
+    setTimeout(() => {
+      console.log('rendering chart after delay');
+      this.renderScheduleChart();
+      this.animateChart = false;
+    }, 0);
+
+  }
+
+
+  async getDisplayData(): Promise<any> {
+    // console.log('waiting on async project data');
+    return await this.apiDataProjectService.getProjectDisplayData(this.projectID).toPromise();
+    // console.log('No issues, I will wait until promise is resolved..');
+    // console.log(asyncResult);
+    // return asyncResult[0];
+  }
+
+
+  getProject(projectID: number) {
+
+    this.apiDataProjectService.getProjectSync(projectID)
+      .then(res => {
+        console.log(res);
+        return res;
+      })
+      .catch(err => {
+        console.log('error:');
+        console.log(err);
+        return undefined;
+      });
 
   }
 
@@ -112,11 +243,11 @@ export class DisplayProjectComponent implements OnInit {
           console.log(`get remaining data took ${t1 - t0} milliseconds`);
           console.log('schedule and roster data');
           console.log(res);
-          if (res[0].length) {
-            this.schedule = res[0];
+          if (res[1].length) {
+            this.schedule = res[1];
           }
-          if (res[1][0].hasOwnProperty('teamMembers')) {
-            this.roster = res[1][0].teamMembers;
+          if (res[2][0].hasOwnProperty('teamMembers')) {
+            this.roster = res[2][0].teamMembers;
           }
           console.log('schedule:');
           console.log(this.schedule);
@@ -280,8 +411,8 @@ export class DisplayProjectComponent implements OnInit {
 
     this.chartData.forEach(bar => {
 
-      console.log('bar object:');
-      console.log(bar);
+      // console.log('bar object:');
+      // console.log(bar);
 
       const labelObj = {
         point: {
@@ -304,7 +435,7 @@ export class DisplayProjectComponent implements OnInit {
 
   renderScheduleChart() {
 
-    console.log('start of chart rendering');
+    // console.log('start of chart rendering');
 
     Highcharts.setOptions({
       global: {
@@ -504,7 +635,6 @@ export class DisplayProjectComponent implements OnInit {
 
 
     Highcharts.chart('scheduleChart', this.chartOptions);
-
 
   }
 

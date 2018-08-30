@@ -25,7 +25,7 @@ export class ApiDataAuthService {
   }
 
   // attempt to authenticate the user credentials using windows login and ldap
-  async authenticateSync(user: any) {
+  async authenticateSync(user: any): Promise<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return await this.http.post('/api/auth/authenticate', JSON.stringify(user), options)
