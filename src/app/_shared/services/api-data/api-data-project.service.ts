@@ -32,15 +32,6 @@ export class ApiDataProjectService {
       .map((response: Response) => response.json());
   }
 
-  // TEMP CODE: testing async await
-  async getProjectSync(projectID: number): Promise<any> {
-    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
-    const options = new RequestOptions({headers: headers});
-    return await this.http.get(`api/project/displayProject/show/getProject/${projectID}`, options)
-      .timeout(this.cacheService.apiDataTimeout)
-      .map((response: Response) => response.json()).toPromise();
-  }
-
   getProjectsFilterProjectType(): Observable<any> {
     return this.http.get('api/indexProjectsFilterProjectType')
     .timeout(this.cacheService.apiDataTimeout)
