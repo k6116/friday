@@ -31,6 +31,9 @@ router.get('/fte/indexPlanList/:userID', controllers.fte.indexPlanList);
 router.get('/fte/indexPlan/:userID/:planName', controllers.fte.indexPlan);
 router.post('/fte/destroyPlan/', controllers.fte.destroyPlan);
 
+// TEMP JOB TITLE API FOR MANAGER EDIT
+router.get('/indexEmployeesJobTitles/:emailAddress', controllers.jobTitle.indexEmployeesJobTitles);
+router.post('/updateEmployeesJobTitlesBulk/:userID/', controllers.jobTitle.updateEmployeesJobTitlesBulk);
 
 // PROJECT CONTROLLER
 router.get('/indexProjects', controllers.project.indexProjects)

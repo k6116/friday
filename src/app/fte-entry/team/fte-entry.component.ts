@@ -590,24 +590,24 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
 
   onTestFormClick() {
-    // console.log('form object (this.form):');
-    // console.log(this.FTEFormGroup);
-    // console.log('form data (this.form.value.FTEFormArray):');
-    // console.log(this.FTEFormGroup.value.FTEFormArray);
+    console.log('form object (this.form):');
+    console.log(this.FTEFormGroup);
+    console.log('form data (this.form.value.FTEFormArray):');
+    console.log(this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
     // console.log(this.fteProjectVisible);
     // console.log('teamFTE', this.teamFTEs);
     // console.log('allTeamFTE', this.allTeamFTEs);
     // console.log('teamFTEFlat', this.teamFTEsFlat);
     // console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
-    // console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
+    console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
     // console.log('this.allProjects', this.allProjects)
-    // console.log('this.projects', this.projects)
+    console.log('this.projects', this.projects)
     // console.log('this.allEmployees', this.allEmployees);
-    // console.log('this.employees', this.employees)
+    console.log('this.employees', this.employees)
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
-    console.log('team org', this.teamOrgStructure)
+    // console.log('team org', this.teamOrgStructure)
 
   }
 
@@ -1007,6 +1007,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       .subscribe(
         res => {
           this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
+          this.cacheService.teamEmployeeList = this.teamOrgStructure;
           this.updateEmployeeFilters();
           this.buildMonthsArray();
           this.buildTeamEditableMembers();

@@ -38,6 +38,7 @@ import { UserResolverService } from './_shared/services/user-resolver.service';
 import { Error403Component } from './error-pages/error-403/error-403.component';
 import { PartSetupComponent } from './setups/parts/parts.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { TeamRolesComponent } from './fte-entry/team-roles/team-roles.component';
 
 // BOM module stuff
 import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
@@ -59,6 +60,7 @@ const routes: Routes = [
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
         canActivate: [FteEntryGuard], canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
+      { path: 'fte-entry/team-roles', component: TeamRolesComponent },
       { path: 'projects/my-projects', component: MyProjectsComponent },
       { path: 'projects/requests', component: ProjectRequestsComponent },
       { path: 'projects/search', component: SearchProjectsComponent },

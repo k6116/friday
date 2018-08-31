@@ -103,5 +103,21 @@ export class ApiDataJobTitleService {
       .map((response: Response) => response.json());
   }
 
+  // get employees and their jobtitles data from db
+  indexEmployeesJobTitles(emailAddress: string) {
+    return this.http.get(`/api/indexEmployeesJobTitles/${emailAddress}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  // update existing Team FTE records
+  updateEmployeesJobTitlesBulk(jobTitleData: any, userID: number) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+    return this.http.post(`/api/updateEmployeesJobTitlesBulk/${userID}/`, JSON.stringify(jobTitleData), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 
 }
