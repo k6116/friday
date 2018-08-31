@@ -248,7 +248,7 @@ router.post('/jobTitle/admin/destroy/deleteJobTitleMap', controllers.jobTitle.de
 
 // BOM CONTROLLER
 router.get('/bom/bom/index', controllers.bom.index);
-router.get('/bom/bom/show/showSingleBom/:parentID', controllers.bom.showSingleBom);
+router.get('/bom/bom/show/showSingleBom/:parentID/:parentEntity', controllers.bom.showSingleBom);
 router.get('/bom/bom/show/showPartInfo/:partID', controllers.bom.showPartInfo);
 router.get('/bom/bom/show/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
 

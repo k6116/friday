@@ -41,15 +41,17 @@ export class BomViewerComponent implements OnInit {
   }
 
   onBomSelect(selection: any) {
-    const selected = selection.ParentPartID;
+
     const selectedName = selection.PartOrProjectName;
+    const selectedEntity = selection.EntityType;
+    const selectedID = selectedEntity === 'Project' ? selection.ParentProjectID : selection.ParentPartID;
 
     // reset the filterbox
     this.searchBills = selectedName;
     this.searching = false;
 
     // get the selected BOM as flat array
-    const bomSubscription = this.apiDataBomService.showSingleBom(selected).subscribe( res => {
+    const bomSubscription = this.apiDataBomService.showSingleBom(selectedID, selectedEntity).subscribe( res => {
 
       this.bill = res;
       bomSubscription.unsubscribe();
