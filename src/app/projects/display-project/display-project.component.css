@@ -1,3 +1,179 @@
+
+/* project header row */
+
+div.project-header-row {
+  height: 125px;
+  width: 100%;
+  background-color: white;
+  white-space: nowrap;
+  margin-bottom: 25px;
+  border: 1px solid lightgrey;
+}
+
+
+/* project type container with colored name and icon */
+
+div.project-type-cont {
+  display: inline-block;
+  position: relative;
+  width: 150px;
+  height: 100%;
+  vertical-align: top;  /* this is key, otherwise will push down the inline block to the right if it has top padding */
+  padding-top: 20px;
+  /* border-right: 1px solid lightgrey; */
+  margin-right: -4px; /* remove the inherent space between inline-block elements */
+}
+
+div.project-type-name {
+  margin: 0 auto;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+div.project-type-icon {
+  width: 50px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  font-size: 25px;
+  text-align: center;
+}
+
+
+/* project name and description */
+
+div.project-details-cont {
+  display: inline-block;
+  padding: 20px 50px 20px 25px;
+  width: calc(100% - (150px + 150px));
+  vertical-align: top;
+  margin-right: -4px; /* remove the inherent space between inline-block elements */
+}
+
+div.project-name {
+  position: relative;
+  font-size: 18px;
+  font-weight: 500;
+  color: rgb(50, 50, 50);
+  height: 1.4em;
+  line-height: 1.4em;
+  overflow: hidden;
+}
+
+div.project-description {
+  position: relative;
+  margin-top: 10px;
+  height: 2.8em;
+  line-height: 1.4em;
+  overflow: hidden;
+  text-align: left;
+  white-space: normal;
+}
+
+div.project-description:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 1.4em;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(50%, rgba(255, 255, 255, 1)));
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+/* back to search button */
+
+div.back-button-cont {
+  display: inline-block;
+  position: relative;
+  width: 150px;
+  height: 100%;
+  margin-right: -4px; /* remove the inherent space between inline-block elements */
+}
+
+div.back-button-inner-cont {
+  height: 36px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+button.btn-standard {
+  display: inline-block;
+  min-width: 90px;
+  font-size: 15px;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: .375rem .75rem;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+button.btn-standard {
+  min-width: 90px;
+  font-size: 15px;
+  color: rgb(50, 50, 50);
+  background-color: rgb(232, 234, 237);
+  border: 1px solid rgb(212, 214, 217);
+}
+
+button.btn-standard:focus, button.btn-standard:active, button.btn-standard:visited {
+  outline: none;
+}
+
+button.btn-standard:hover {
+  background-color: rgb(221, 223, 226);
+  border: 1px solid rgb(201, 203, 206);
+  cursor: pointer;
+}
+
+button.btn-standard.hover-green:hover {
+  background-color: rgb(219, 255, 219);
+  border: 1px solid rgb(199, 235, 199);
+}
+
+button.btn-standard.hover-blue:hover {
+  background-color: rgb(219, 240, 255);
+  border: 1px solid rgb(199, 220, 235);
+}
+
+button.btn-standard.hover-red:hover {
+  background-color: rgb(255, 219, 219);
+  border: 1px solid rgb(235, 199, 199);
+}
+
+i.button-icon {
+  margin-right: 5px;
+}
+
+
+/* project details container */
+
+div.project-details-row {
+  width: 100%;
+  height: 500px;
+  background-color: white;
+  padding: 25px;
+  border: 1px solid lightgrey;
+}
+
+
+/* chart optinos checkboxes */
+
 div.chart-options-cont {
   position: relative;
   top: 40px;

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
+import { ToolsService } from '../../_shared/services/tools.service';
 
 declare var require: any;
 import * as Highcharts from 'highcharts';
@@ -30,19 +31,21 @@ export class DisplayProjectComponent implements OnInit {
   showPlannedChecked: boolean;
   showActualsChecked: boolean;
   showLabels: boolean;
-
+  timer: any;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cacheService: CacheService,
-    private apiDataProjectService: ApiDataProjectService
+    private apiDataProjectService: ApiDataProjectService,
+    private toolsService: ToolsService
   ) {
 
     // get the project id from the route params
     this.projectID = activatedRoute.snapshot.params['id'];
 
     // initialize properties
+    this.showSpinner = true;
     this.showPlannedChecked = true;
     this.showActualsChecked = true;
     this.showLabels = false;
@@ -53,8 +56,19 @@ export class DisplayProjectComponent implements OnInit {
 
   async ngOnInit() {
 
+    // hide the footer until the page is ready to be rendered
+    this.toolsService.hideFooter();
+
     // get all data for the page using forkjoin: project, schedule, and roster
-    const res = await this.getData();
+    const res = await this.getData()
+      .catch(err => {
+        this.displayError(err);
+      });
+
+    // break here if there is no response (some error occured)
+    if (!res) {
+      return;
+    }
 
     // store the data in component properties
     this.storeData(res);
@@ -68,12 +82,50 @@ export class DisplayProjectComponent implements OnInit {
     // display the schedule gantt chart
     this.displayChart();
 
+    // show the footer
+    this.toolsService.showFooter();
+
   }
 
 
   async getData(): Promise<any> {
 
     return await this.apiDataProjectService.getProjectDisplayData(this.projectID).toPromise();
+
+  }
+
+
+  displayError(err) {
+
+    // hide the spinner
+    this.showSpinner = false;
+
+    // build the error message
+    // TO-DO BILL: make this adapt to other types of errors, not just sequelize
+    const errorMessage = `<b>Message:</b>  ${err.json().title}; ${err.json().error.message.name};
+      ${err.json().error.message.original.message}; Status Code: ${err.status}`;
+
+    // display a bootstrap modal with the error message
+    this.cacheService.confirmModalData.emit(
+      {
+        title: 'Error',
+        message: `Oops, an error occured.  Please contact
+          <a href="https://confluence.it.keysight.com/display/JARVIS/About+Jarvis">support</a>.<br><br>
+          ${errorMessage}`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: this.cacheService.alertIconColor,
+        closeButton: true,
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Ok',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
+      }
+    );
 
   }
 
@@ -280,7 +332,9 @@ export class DisplayProjectComponent implements OnInit {
         marginBottom: 65,
         spacingLeft: 25,
         spacingRight: 25,
-        spacingTop: 25
+        spacingTop: 25,
+        borderColor: 'rgb(211, 211, 211)',
+        borderWidth: 1
       },
       title: {
         text: `PLC Schedule`
@@ -357,6 +411,13 @@ export class DisplayProjectComponent implements OnInit {
   }
 
 
+  onBackButtonClick() {
+
+    this.router.navigate(['main/projects/search']);
+
+  }
+
+
   getBarColor(checkPoint: string, commit: boolean): string {
 
     switch (checkPoint) {
@@ -379,6 +440,7 @@ export class DisplayProjectComponent implements OnInit {
     }
 
   }
+
 
 
 

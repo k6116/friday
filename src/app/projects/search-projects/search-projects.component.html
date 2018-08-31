@@ -59,7 +59,7 @@ considering topnav, sidenav, and footer -->
           <div class="project-card" (click)="onProjectClick(project)">
   
             <!-- container for project type (left side element) -->
-            <div class="project-type-cont" [ngStyle]="{ 'color': setProjctTypeColor(project.ProjectTypeName) }">
+            <div class="project-type-cont" [ngStyle]="{ 'color': toolsService.setProjctTypeColor(project.ProjectTypeName) }">
   
               <!-- project type name text -->
               <div class="project-type-name"> 
@@ -68,7 +68,7 @@ considering topnav, sidenav, and footer -->
   
               <!-- project type icon -->
               <div class="project-type-icon"> 
-                <i [ngClass]="setProjctTypeIconClass(project.ProjectTypeName)"></i>
+                <i [ngClass]="toolsService.setProjctTypeIconClass(project.ProjectTypeName)"></i>
               </div>
               
             </div>

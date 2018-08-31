@@ -148,7 +148,7 @@ function indexProjectRoster(req, res) {
   const month = moment().utc().startOf('month').format('YYYY-MM-DD')
 
   const sql = `
-    SELECT 
+    SELECT
       T1.ProjectID as 'projectID',
       T1.ProjectName as 'projectName',
       T3.EmployeeID as 'teamMembers:employeeID',
