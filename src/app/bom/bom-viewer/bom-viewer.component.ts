@@ -20,7 +20,7 @@ export class BomViewerComponent implements OnInit {
   bill: any;  // for storing the selected bill as flat array
 
   billHierarchy: any;
-  partDepartmentSummary = { Project: 0, Part: 0};
+  partDepartmentSummary: any = {};
 
   // for search box
   searchBills: string;
@@ -54,8 +54,11 @@ export class BomViewerComponent implements OnInit {
     const bomSubscription = this.apiDataBomService.showSingleBom(selectedID, selectedEntity).subscribe( res => {
 
       this.bill = res;
-      console.log(this.bill);
+
+      // initialize part department sums
+      this.partDepartmentSummary = {Project: 0, Part: 0};
       this.sumPartDepartments(this.bill);
+
       bomSubscription.unsubscribe();
 
       // initialize bomtree
@@ -213,12 +216,14 @@ export class BomViewerComponent implements OnInit {
     .style('font-size', '14px')
     .text('Legend:');
 
-    // build HTML text for legend
-    const legendValues = Object.keys(deptColors).map( (key, j) => [key, deptColors[key]]);
-    legendValues.push(
+    // build text array for legend
+    const legendValues = [
       ['Project', '#FFF'],
       ['Part', '#FFF']
-    );
+    ];
+    Object.keys(deptColors).map( (key) => {
+      legendValues.push([key, deptColors[key]]);
+    });
 
     const deptLegend = legend.selectAll('.container')
       .data(legendValues)
