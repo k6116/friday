@@ -49,7 +49,7 @@ export class DisplayProjectComponent implements OnInit {
     this.projectID = activatedRoute.snapshot.params['id'];
 
     // initialize properties
-    this.showSpinner = true;
+    // this.showSpinner = true;
     this.showPlannedChecked = true;
     this.showActualsChecked = true;
     this.showLabels = false;
@@ -480,7 +480,8 @@ export class DisplayProjectComponent implements OnInit {
     popover.on('show.bs.popover', function(e) {
       setTimeout(() => {
         $('.popover').css('max-width', '100%');
-        $('.popover-body').css({'width': '350px', 'padding': '0'});
+        $('.popover-header').css('font-size', '15px');
+        $('.popover-body').css({'width': '325px', 'padding': '0'});
         $el.popover('update');
       }, 0);
     });

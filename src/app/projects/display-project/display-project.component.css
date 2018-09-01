@@ -367,8 +367,7 @@ input.chart-options-checkbox {
 div.project-record-history-cont {
   display: none;
   vertical-align: top;
-  width: 350px;
-  font-size: 13px;
+  width: 325px;
   background-color: white;
   white-space: normal;  /* to prevent inheriting nowrap from the row */
 }
@@ -381,7 +380,7 @@ ul.project-record-history-list {
 }
 
 li.project-record-history-list-item {
-  font-size: 14px;
+  font-size: 13px;
   margin: 0 18px;
   padding: 4px 0;
 }
