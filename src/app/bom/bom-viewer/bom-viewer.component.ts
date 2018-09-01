@@ -20,6 +20,7 @@ export class BomViewerComponent implements OnInit {
   bill: any;  // for storing the selected bill as flat array
 
   billHierarchy: any;
+  partDepartmentSummary = { Project: 0, Part: 0};
 
   // for search box
   searchBills: string;
@@ -53,6 +54,8 @@ export class BomViewerComponent implements OnInit {
     const bomSubscription = this.apiDataBomService.showSingleBom(selectedID, selectedEntity).subscribe( res => {
 
       this.bill = res;
+      console.log(this.bill);
+      this.sumPartDepartments(this.bill);
       bomSubscription.unsubscribe();
 
       // initialize bomtree
@@ -127,6 +130,27 @@ export class BomViewerComponent implements OnInit {
     };
   } // end bomTraverse
 
+  sumPartDepartments(bill: any) {
+    // loop through the flat bill of materials, and sum up the departments of each of the parts
+    bill.forEach( item => {
+      if (item.ChildEntity === 'Part') {
+
+        // increment number of parts
+        this.partDepartmentSummary.Part = this.partDepartmentSummary.Part + 1;
+
+        const deptName = item.ChildDepartment;
+        if (this.partDepartmentSummary.hasOwnProperty(deptName)) {
+          // if the department exists in our object, increment its value
+          this.partDepartmentSummary[deptName] = this.partDepartmentSummary[deptName] + 1;
+        } else {
+          this.partDepartmentSummary[deptName] = 1;
+        }
+      } else {
+        // must be a project
+        this.partDepartmentSummary.Project = this.partDepartmentSummary.Project + 1;
+      }
+    });
+  }
 
 
   drawD3Plot() {
@@ -201,7 +225,7 @@ export class BomViewerComponent implements OnInit {
       .enter()
       .append('g');
     deptLegend.append('rect')
-      .attr('width', 60)
+      .attr('width', 90)
       .attr('height', 20)
       .attr('x', 3)
       .attr('y', (d, index) => index * 21 + 20)
@@ -214,7 +238,10 @@ export class BomViewerComponent implements OnInit {
       .attr('dy', '.35em')
       .attr('y', (d, index) => index * 21 + 29)
       .attr('x', 6)
-      .text( (d) => d[0]);
+      .text( (d) => {
+        const total = this.partDepartmentSummary[d[0]] ? this.partDepartmentSummary[d[0]] : 0;
+        return `${total} | ${d[0]}`;
+      });
 
 
     let i = 0;
