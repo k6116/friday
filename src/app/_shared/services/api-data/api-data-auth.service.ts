@@ -40,6 +40,13 @@ export class ApiDataAuthService {
       .map((response: Response) => response.json());
   }
 
+  // get a list of the background image file names and captions
+  getLoginBackgroundImage(fileName: string): Observable<any> {
+    return this.http.get(`api/auth/getLoginImage/${fileName}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response);
+  }
+
   // decode the jwt token to get the user info, issued and expiration dates
   getInfoFromToken(token: string): Observable<any> {
     const headers = new Headers({'X-Token': token});

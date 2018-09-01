@@ -10,6 +10,7 @@ import { WebsocketService } from '../../_shared/services/websocket.service';
 import { CookiesService } from '../../_shared/services/cookies.service';
 import { ApiDataAuthService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 
+declare var $: any;
 import * as moment from 'moment';
 
 
@@ -52,6 +53,7 @@ export class LoginComponent implements OnInit {
   // array of background images and randomly selected background image
   backgroundImages: any[] = [];
   backgroundImage: any;
+  testImagePath: string;
 
   constructor(
     private router: Router,
@@ -84,6 +86,21 @@ export class LoginComponent implements OnInit {
     // get background images from the server to display
     this.getBackgroundImages();
 
+    const image = document.images[0];
+    console.log('image element');
+    console.log(image);
+
+    const downloadingImage = new Image();
+
+    downloadingImage.onload = function() {
+      image.src = '/assets/login_images/wuyuan_jiangxi_province.jpg';
+      // this.testImagePath = '/assets/login_images/wuyuan_jiangxi_province.jpg';
+      console.log('download onload triggered');
+    };
+
+    downloadingImage.src = '/assets/login_images/wuyuan_jiangxi_province.jpg';
+    console.log('set download image source:');
+
   }
 
 
@@ -96,6 +113,7 @@ export class LoginComponent implements OnInit {
           res.images.forEach(image => {
             if (res.files.indexOf(image.fileName) !== -1) {
               this.backgroundImages.push({
+                fileName: image.fileName,
                 path: `/assets/login_images/${image.fileName}`,
                 title: image.caption,
                 subTitle: `Key Sightings, ${image.winnerDate}`
@@ -119,10 +137,29 @@ export class LoginComponent implements OnInit {
   // set random background image
   setBackgroundImage() {
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
+    // this.backgroundImage = this.backgroundImages[imageIndex];
     this.backgroundImage = this.backgroundImages[imageIndex];
     this.showLoginPage = true;
     // save the last shown image in the cache service
     this.cacheService.backgroundImage = this.backgroundImage;
+
+    console.log('background image');
+    console.log(this.backgroundImage);
+
+    this.apiDataAuthService.getLoginBackgroundImage(this.backgroundImage.fileName)
+      .subscribe(
+        res => {
+          console.log('get background image response:');
+          console.log(res);
+          console.log(res.result);
+          $('img.login-image').attr('src', res.src);
+        },
+        err => {
+          console.log('get background image error:');
+          console.log(err);
+        }
+      );
+
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)

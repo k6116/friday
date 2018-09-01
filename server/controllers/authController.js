@@ -16,7 +16,7 @@ const tokenSecret = process.env.JWT_SECRET;  // get the secret code word for enc
 const expirationTime = 60 * 30  // set the token expiration time to 30 minutes - units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
 
 // TEMP CODE: testing websockets
- var loggedInUsers = [];
+var loggedInUsers = [];
 
 
 function authenticate(req, res) {
@@ -340,6 +340,42 @@ function getLoginBackgroundImages(req, res) {
 }
 
 
+function getLoginImage(req, res) {
+
+  var fileName = req.params.fileName;
+
+  const imagePath = path.join(__dirname, '/../..', 'dist/assets/login_images/bay_bridge.jpg');
+  console.log('image path:');
+  console.log(imagePath);
+
+  console.log('file name:');
+  console.log(fileName);
+
+  var options = {
+    root: path.join(__dirname, '/../..', 'dist/assets/login_images'),
+    dotfiles: 'deny',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
+  };
+
+  console.log('options');
+  console.log(options);
+
+  // res.sendFile(imagePath);
+
+  res.sendFile(fileName, options, function (err) {
+    if (err) {
+      next(err);
+    } else {
+      console.log('Sent:', fileName);
+    }
+  });
+
+}
+
+
 // TEMP CODE: testing websockets
 function getLoggedInUsers(req, res) {
 
@@ -370,5 +406,6 @@ module.exports = {
   verifyRoutePermissions: verifyRoutePermissions,
   getLoggedInUsers: getLoggedInUsers,
   logout: logout,
-  getLoginBackgroundImages: getLoginBackgroundImages
+  getLoginBackgroundImages: getLoginBackgroundImages,
+  getLoginImage: getLoginImage
 }

@@ -14,6 +14,7 @@ var controllers = require('../controllers/_index.js');
 // AUTH CONTROLLER 
 router.post('/auth/authenticate', controllers.auth.authenticate);
 router.get('/auth/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
+router.get('/auth/getLoginImage/:fileName', controllers.auth.getLoginImage);
 router.get('/auth/logout/:userName', controllers.auth.logout);  // TEMP CODE: for websockets
 
 // CLICK TRACKING CONTROLLER
