@@ -5,10 +5,13 @@ import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { ToolsService } from '../../_shared/services/tools.service';
 
 declare var require: any;
+declare var $: any;
 import * as Highcharts from 'highcharts';
 require('highcharts/modules/xrange.js')(Highcharts);
 require('highcharts/modules/annotations.js')(Highcharts);
 import * as moment from 'moment';
+
+
 
 @Component({
   selector: 'app-display-project',
@@ -31,7 +34,8 @@ export class DisplayProjectComponent implements OnInit {
   showPlannedChecked: boolean;
   showActualsChecked: boolean;
   showLabels: boolean;
-  timer: any;
+  projectTypesToDisplaySchedule: string[];
+  displayScheduleChart: boolean;
 
   constructor(
     private router: Router,
@@ -50,6 +54,9 @@ export class DisplayProjectComponent implements OnInit {
     this.showActualsChecked = true;
     this.showLabels = false;
     this.animateChart = true;
+
+    // set project types that will show the PLC schedule chart
+    this.projectTypesToDisplaySchedule = ['NPI', 'NCI', 'NPPI'];
 
   }
 
@@ -79,7 +86,7 @@ export class DisplayProjectComponent implements OnInit {
     // show the page
     this.showPage = true;
 
-    // display the schedule gantt chart
+    // display the schedule gantt chart for certain project types
     this.displayChart();
 
     // show the footer
@@ -145,12 +152,14 @@ export class DisplayProjectComponent implements OnInit {
       this.roster = res[2][0].teamMembers;
     }
 
-    // console.log('project:');
-    // console.log(this.project);
-    // console.log('schedule:');
-    // console.log(this.schedule);
-    // console.log('roster:');
-    // console.log(this.roster);
+    console.log('full response');
+    console.log(res);
+    console.log('project:');
+    console.log(this.project);
+    console.log('schedule:');
+    console.log(this.schedule);
+    console.log('roster:');
+    console.log(this.roster);
 
 
   }
@@ -158,14 +167,21 @@ export class DisplayProjectComponent implements OnInit {
 
   displayChart() {
 
-    this.chartCategories = this.buildChartCategories();
-    this.chartData = this.buildChartData();
-    this.chartLabels = this.buildChartLabels();
+    // only display the chart for certain project types like NPI
+    if (this.projectTypesToDisplaySchedule.includes(this.project.ProjectTypeName)) {
 
-    setTimeout(() => {
-      this.renderScheduleChart();
-      this.animateChart = false;
-    }, 0);
+      this.chartCategories = this.buildChartCategories();
+      this.chartData = this.buildChartData();
+      this.chartLabels = this.buildChartLabels();
+      this.displayScheduleChart = true;
+
+      // using set timeout with zero to avoid Highcharts Error #13 Rendering div not found
+      setTimeout(() => {
+        this.renderScheduleChart();
+        this.animateChart = false;
+      }, 0);
+
+    }
 
   }
 
@@ -441,7 +457,48 @@ export class DisplayProjectComponent implements OnInit {
 
   }
 
+  onRecordHistoryMouseEnter() {
+
+    // set the jquery element
+    const $el = $(`div.record-history-text`);
+
+    // set the popover options
+    const options = {
+      animation: true,
+      placement: 'top',
+      html: true,
+      trigger: 'focus',
+      title: `Record History`,
+      content: $(`div.project-record-history-cont`).html()
+    };
+
+    // initialize the popover
+    const popover = $el.popover(options);
+
+    // callback function to update the width (by default max width is 275px)
+    // then call update to reorient the popover position
+    popover.on('show.bs.popover', function(e) {
+      setTimeout(() => {
+        $('.popover').css('max-width', '100%');
+        $('.popover-body').css({'width': '350px', 'padding': '0'});
+        $el.popover('update');
+      }, 0);
+    });
+
+    // show the popover
+    $el.popover('show');
+
+  }
 
 
+  onRecordHistorMouseLeave() {
+
+    // set the jquery element
+    const $el = $(`div.record-history-text`);
+
+    // dispose of the popover
+    $el.popover('dispose');
+
+  }
 
 }

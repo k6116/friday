@@ -97,7 +97,7 @@ considering topnav, sidenav, and footer -->
                     <i class="nc-icon nc-light-traffic"></i>
                   </div>
                   <div class="project-attributes-cell attributes label-cell">
-                    Status:
+                    Status
                   </div>
                   <div class="project-attributes-cell attributes value-cell">
                     {{ project.ProjectStatusName ? project.ProjectStatusName : '--' }}
@@ -108,7 +108,7 @@ considering topnav, sidenav, and footer -->
                     <i class="nc-icon nc-priority-high-2"></i>
                   </div>
                   <div class="project-attributes-cell attributes label-cell">
-                    Priority:
+                    Priority
                   </div>
                   <div class="project-attributes-cell attributes value-cell">
                     {{ project.PriorityName ? project.PriorityName : '--' }}
@@ -119,7 +119,7 @@ considering topnav, sidenav, and footer -->
                     <i class="nc-icon nc-hierarchy-53"></i>
                   </div>
                   <div class="project-attributes-cell attributes label-cell">
-                    Department:
+                    Department
                   </div>
                   <div class="project-attributes-cell attributes value-cell">
                     {{ (project.GroupName && project.EntityName && project.EntityOwnerName) ? project.GroupName + ' > ' + project.EntityName + ' > ' + project.EntityOwnerName : '--' }}
@@ -139,7 +139,7 @@ considering topnav, sidenav, and footer -->
                     <i class="nc-icon nc-a-edit"></i>
                   </div>
                   <div class="project-attributes-cell creation label-cell">
-                    Created By:
+                    Created By
                   </div>
                   <div class="project-attributes-cell creation value-cell">
                       {{ project.FullName ? project.FullName : '--' }}
@@ -150,7 +150,7 @@ considering topnav, sidenav, and footer -->
                     <i class="nc-icon nc-time-clock"></i>
                   </div>
                   <div class="project-attributes-cell creation label-cell">
-                    Creation Date:
+                    Creation Date
                   </div>
                   <div class="project-attributes-cell creation value-cell">
                     {{ project.CreationDate ? (project.CreationDate | date:'mediumDate') : '--' }}

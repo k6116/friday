@@ -10,9 +10,6 @@ considering topnav, sidenav, and footer -->
   
     <!-- outer page container; don't show until data is ready -->
     <div class="page-cont" *ngIf="showPage">
-      
-      <!-- <div>Project ID: {{ project.ProjectID }}</div>
-      <div>Project Name: {{ project.ProjectName }}</div> -->
 
       <!-- project header row with project type, name, description, back button -->
       <div class="project-header-row">
@@ -65,35 +62,229 @@ considering topnav, sidenav, and footer -->
 
       <!-- project details container -->
       <div class="project-details-row">
-        Project Details Contents
+
+        <!-- left container -->
+        <div class="project-details-left-cont">
+
+          <!-- container for long text project attributes - notes, etc. -->
+          <div class="project-details-cont-1">
+            
+            <div class="record-history-cont">
+              <i class="nc-icon nc-time-clock"></i>
+              <div class="record-history-text" (mouseenter)="onRecordHistoryMouseEnter()" (mouseleave)="onRecordHistorMouseLeave()">Record History</div>
+            </div>
+
+            <div data-field="notes" class="project-attribute-cont">
+              <div class="project-attribute-label">Notes</div>
+              <div class="project-attribute-value">{{ project.Notes ? project.Notes : '--' }}</div>
+            </div>
+  
+            <!-- <div data-field="mu" class="project-attribute-cont">
+              <div class="project-attribute-label">MU</div>
+              <div class="project-attribute-value">{{ project.MU ? project.MU : '--' }}</div>
+            </div>
+  
+            <div data-field="mu" class="project-attribute-cont">
+              <div class="project-attribute-label">IBO</div>
+              <div class="project-attribute-value">{{ project.IBO ? project.IBO : '--' }}</div>
+            </div> -->
+
+            <div data-field="roster" class="project-attribute-cont">
+              <div class="project-attribute-label">Project Roster</div>
+              <div *ngIf="!roster" class="project-roster-no-data">
+                There are no team members assigned to the project at this time.
+              </div>
+              <div *ngIf="roster" class="project-roster-team-members-cont">
+                <div *ngFor="let teamMember of roster" class="project-roster-team-member-cont">
+                  
+                  <div class="project-roster-team-member-name">
+                    <i class="nc-icon nc-circle-10"></i>{{ teamMember.name }}
+                  </div>
+
+                  <div class="project-roster-team-member-role">
+                    {{ teamMember.jobTitle }}
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+            
+          </div>
+
+  
+          <!-- container for project roster -->
+          <!-- <div class="project-roster-cont">
+            
+            
+  
+          </div> -->
+
+
+        </div>
+        
+
+        <!-- container for short textproject attributes - priority, status, etc. -->
+        <div class="project-details-cont-2">
+
+          <ul class="project-attributes-list">
+
+            <li data-field="status" class="project-attributes-list-item">
+              <span class="project-attributes-label">
+                <span class="nc-icon nc-light-traffic"></span>
+                Status
+              </span>
+              <span class="project-attributes-value">
+                {{ project.ProjectStatusName ? project.ProjectStatusName : '--' }}
+              </span>
+            </li>
+
+            <li data-field="priority" class="project-attributes-list-item">
+              <span class="project-attributes-label">
+                <span class="nc-icon nc-priority-high-2"></span>
+                Priority
+              </span>
+              <span class="project-attributes-value">
+                {{ project.PriorityName ? project.PriorityName : '--' }}
+              </span>
+            </li>
+
+            <li data-field="department" class="project-attributes-list-item">
+              <span class="project-attributes-label">
+                <span class="nc-icon nc-hierarchy-53"></span>
+                Department
+              </span>
+              <span class="project-attributes-value">
+                {{ (project.GroupName && project.EntityName && project.EntityOwnerName) ? project.GroupName + ' > ' + project.EntityName + ' > ' + project.EntityOwnerName : '--' }}
+              </span>
+            </li>
+
+            <li data-field="oracle-item-number" class="project-attributes-list-item">
+              <span class="project-attributes-label">
+                <span class="nc-icon nc-hierarchy-53"></span>
+                Oracle Item Number
+              </span>
+              <span class="project-attributes-value">
+                  {{ project.OracleItemNumber ? project.OracleItemNumber : '--' }}
+              </span>
+            </li>
+
+            <li data-field="project-manager" class="project-attributes-list-item">
+              <span class="project-attributes-label">
+                <span class="nc-icon nc-a-edit"></span>
+                Project Manager
+              </span>
+              <span class="project-attributes-value">
+                {{ project.NPIHWProjectManager ? project.NPIHWProjectManager : '--' }}
+              </span>
+            </li>
+
+            <li data-field="ibo" class="project-attributes-list-item">
+              <span class="project-attributes-label">
+                <span class="nc-icon nc-a-edit"></span>
+                IBO
+              </span>
+              <span class="project-attributes-value">
+                {{ project.IBO ? project.IBO : '--' }}
+              </span>
+            </li>
+
+            <li data-field="mu" class="project-attributes-list-item">
+              <span class="project-attributes-label">
+                <span class="nc-icon nc-a-edit"></span>
+                MU
+              </span>
+              <span class="project-attributes-value">
+                {{ project.MU ? project.MU : '--' }}
+              </span>
+            </li>
+
+          </ul>
+
+        </div>
+        
       </div>
 
-      <!-- chart options checkboxes -->
-      <div class="chart-options-cont">
-
-        <div class="chart-option">
-          <label class="chart-options-label">Show Commit</label>
-          <input class="chart-options-checkbox" type="checkbox" [(ngModel)]="showPlannedChecked" (change)="onShowPlannedClick()">
-        </div>
-
-        <div class="chart-option">
-          <label class="chart-options-label">Show Actual</label>
-          <input class="chart-options-checkbox" type="checkbox" [(ngModel)]="showActualsChecked" (change)="onShowActualsClick()">
-        </div>
-
-        <div class="chart-option">
-          <label class="chart-options-label">Show Dates</label>
-          <input class="chart-options-checkbox" type="checkbox" [(ngModel)]="showLabels" (change)="onShowLabelsClick()">
-        </div>
-
-      </div>
+      
 
 
       <!-- schedule x-range series chart -->
-      <div class="col-lg-12 col-custom schedule-chart-cont">
+      <div *ngIf="displayScheduleChart" class="schedule-chart-cont">
+
+        <!-- chart options checkboxes -->
+        <div class="chart-options-cont">
+
+          <div class="chart-option">
+            <label class="chart-options-label">Show Commit</label>
+            <input class="chart-options-checkbox" type="checkbox" [(ngModel)]="showPlannedChecked" (change)="onShowPlannedClick()">
+          </div>
+  
+          <div class="chart-option">
+            <label class="chart-options-label">Show Actual</label>
+            <input class="chart-options-checkbox" type="checkbox" [(ngModel)]="showActualsChecked" (change)="onShowActualsClick()">
+          </div>
+  
+          <div class="chart-option">
+            <label class="chart-options-label">Show Dates</label>
+            <input class="chart-options-checkbox" type="checkbox" [(ngModel)]="showLabels" (change)="onShowLabelsClick()">
+          </div>
+  
+        </div>
+
         <div class="highchart schedule-chart" id="scheduleChart">
         </div>
       </div>
+
+
+      <!-- hidden container for record history html -->
+      <div class="project-record-history-cont">
+
+        <ul class="project-record-history-list">
+
+          <li data-field="created-by" class="project-record-history-list-item">
+            <span class="project-record-history-label">
+              <span class="nc-icon nc-a-edit"></span>
+              Created By
+            </span>
+            <span class="project-record-history-value">
+              {{ project.CreatedBy }}
+            </span>
+          </li>
+
+          <li data-field="creation-date" class="project-record-history-list-item">
+            <span class="project-record-history-label">
+              <span class="nc-icon nc-time-clock"></span>
+              Creation Date
+            </span>
+            <span class="project-record-history-value">
+              {{ project.CreationDate | date:'mediumDate' }}
+            </span>
+          </li>
+
+          <li data-field="last-updated-by" class="project-record-history-list-item">
+            <span class="project-record-history-label">
+              <span class="nc-icon nc-a-edit"></span>
+              Last Updated By
+            </span>
+            <span class="project-record-history-value">
+              {{ project.LastUpdatedBy }}
+            </span>
+          </li>
+
+          <li data-field="last-update-date" class="project-record-history-list-item">
+            <span class="project-record-history-label">
+              <span class="nc-icon nc-time-clock"></span>
+              Last Update Date
+            </span>
+            <span class="project-record-history-value">
+              {{ project.LastUpdateDate | date:'mediumDate' }}
+            </span>
+          </li>
+
+        </ul>
+
+      </div>
+
+
       
     </div>  
   

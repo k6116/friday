@@ -66,41 +66,33 @@ function getProject(req, res) {
       p.ProjectID, 
       p.ProjectName, 
       p.Description, 
-      e.FullName, 
-      p.MU,
-      p.IBO,
-      p.DepartmentID,
-      p.GroupID,
-      p.PriorityID,
-      p.ProjectNumber,
-      p.PlanOfRecordFlag,        
-      p.ProjectTypeID,    
-      p.CreationDate,      
       p.Notes,
       p.Active,
-      py.PriorityName,
+      p.MU,
+      p.IBO,
+      p.ProjectNumber,
+      p.OracleItemNumber,
+      t.ProjectTypeName,
       ps.ProjectStatusName,
-      p.NPIHWProjectManager,
+      py.PriorityName,
       g.GroupName,
       ey.EntityName,
       eo.EntityOwnerName,
-      e.FirstName,
-      e.LastName,
-      e.FullName,
-      e2.EmailAddress, 
-      p.CreationDate, 
-      t.ProjectTypeName, 
-      p.CreatedBy,
-      p.ProjectOrgManager
+      p.NPIHWProjectManager,
+      p.ProjectOrgManager,
+      e.FullName as 'CreatedBy',
+      p.CreationDate,
+      e2.FullName as 'LastUpdatedBy',
+      p.LastUpdateDate
     FROM  
       projects.Projects p 
+      INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
+      INNER JOIN accesscontrol.Employees e2 ON P.CreatedBy = e2.EmployeeID
       LEFT JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
       LEFT JOIN projects.Priority py ON p.PriorityID = py.PriorityID
-      INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
       LEFT JOIN projects."Group" g ON p.GroupID = g.GroupID
       LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
       LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
-      LEFT JOIN accesscontrol.Employees e2 ON P.CreatedBy = e2.EmployeeID
       LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
     WHERE 
       p.ProjectID = ${projectID}`
@@ -109,6 +101,12 @@ function getProject(req, res) {
   .then(project => {    
     res.json(project);
   })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
 
 }
 
@@ -170,6 +168,8 @@ function indexProjectRoster(req, res) {
       T3.EmployeeID, 
       T3.FullName,
       (T4.JobTitleName + ' - ' + T5.JobSubTitleName)
+    ORDER BY
+      T3.FullName
   `
 
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
