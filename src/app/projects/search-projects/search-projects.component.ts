@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
@@ -16,7 +16,7 @@ declare var $: any;
   styleUrls: ['./search-projects.component.css', '../../_shared/styles/common.css'],
   providers: [FilterPipe]
 })
-export class SearchProjectsComponent implements OnInit {
+export class SearchProjectsComponent implements OnInit, OnDestroy {
 
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
   @ViewChild('filterDropDownVC') filterDropDownVC: ElementRef;
@@ -36,7 +36,8 @@ export class SearchProjectsComponent implements OnInit {
   dropDownData: any;
   subscription1: Subscription;
   popoverProjectID: number;
-
+  fuzzySearchThreshold: number;
+  timer: any;
 
   constructor(
     private router: Router,
@@ -45,8 +46,19 @@ export class SearchProjectsComponent implements OnInit {
     private toolsService: ToolsService,
     private websocketService: WebsocketService,
     private clickTrackingService: ClickTrackingService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
+
+    // detach the change detector and manually fire it x times per second
+    // for better user experience for search (typing response/feedback)
+    this.changeDetectorRef.detach();
+    this.timer = setInterval(() => {
+      this.changeDetectorRef.detectChanges();
+    }, 500);
+
+    // set the fuzzy search threshold value
+    this.fuzzySearchThreshold = 0.4;
 
     // set the number of projects to display initially, and to add for infinite scroll
     this.numProjectsToDisplayAtOnce = 100;
@@ -157,6 +169,12 @@ export class SearchProjectsComponent implements OnInit {
       this.refreshProjectCards();
     });
 
+  }
+
+
+  ngOnDestroy() {
+    clearInterval(this.timer);
+    this.changeDetectorRef.detach();
   }
 
 
@@ -303,7 +321,7 @@ export class SearchProjectsComponent implements OnInit {
   onFilterStringChange() {
     // get the array of projects objects that are displayed
     const projects = this.filterPipe.transform(this.projects, this.filterString, this.selectedFilter.columnName,
-      {limitTo: this.numProjectsToDisplay, matchFuzzy: {on: this.selectedFilter.matchFuzzy, threshold: 0.3},
+      {limitTo: this.numProjectsToDisplay, matchFuzzy: {on: this.selectedFilter.matchFuzzy, threshold: this.fuzzySearchThreshold},
       matchOptimistic: this.selectedFilter.matchOptimistic, matchExact: this.selectedFilter.matchExact});
     // get the number of displayed/filtered projects
     this.filteredProjectsCount = projects.length;
