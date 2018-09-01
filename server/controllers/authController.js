@@ -340,16 +340,10 @@ function getLoginBackgroundImages(req, res) {
 }
 
 
+// get image file for login background
 function getLoginImage(req, res) {
 
   var fileName = req.params.fileName;
-
-  const imagePath = path.join(__dirname, '/../..', 'dist/assets/login_images/bay_bridge.jpg');
-  console.log('image path:');
-  console.log(imagePath);
-
-  console.log('file name:');
-  console.log(fileName);
 
   var options = {
     root: path.join(__dirname, '/../..', 'dist/assets/login_images'),
@@ -359,11 +353,6 @@ function getLoginImage(req, res) {
       'x-sent': true
     }
   };
-
-  console.log('options');
-  console.log(options);
-
-  // res.sendFile(imagePath);
 
   res.sendFile(fileName, options, function (err) {
     if (err) {

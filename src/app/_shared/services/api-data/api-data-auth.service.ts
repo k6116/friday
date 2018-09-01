@@ -40,7 +40,7 @@ export class ApiDataAuthService {
       .map((response: Response) => response.json());
   }
 
-  // get a list of the background image file names and captions
+  // get an image file
   getLoginBackgroundImage(fileName: string): Observable<any> {
     return this.http.get(`api/auth/getLoginImage/${fileName}`)
       .timeout(this.cacheService.apiDataTimeout)
