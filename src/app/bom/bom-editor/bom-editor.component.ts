@@ -63,24 +63,24 @@ export class BomEditorComponent implements OnInit {
     this.showDetails = false;
 
     // get the selected BOM as flat array
-    const bomSubscription = this.apiDataBomService.showSingleBom(selected).subscribe( res => {
-      this.bill = res;
-      bomSubscription.unsubscribe();
-      // console.log(this.bill);
+    // const bomSubscription = this.apiDataBomService.showSingleBom(selected).subscribe( res => {
+    //   this.bill = res;
+    //   bomSubscription.unsubscribe();
+    //   // console.log(this.bill);
 
-      // initialize bomtree
-      this.bomTree = {
-        value: this.bill[0].ParentName,
-        id: this.bill[0].ParentID,
-        type: this.bill[0].ParentEntity
-      };
+    //   // initialize bomtree
+    //   this.bomTree = {
+    //     value: this.bill[0].ParentName,
+    //     id: this.bill[0].ParentID,
+    //     type: this.bill[0].ParentEntity
+    //   };
 
-      // recursively parse the BOM structure
-      const blaa = this.bomTraverse(0, 1);
-      this.bomTree.children = blaa[0];
-      this.showBom = true;
-      // console.log(this.bomTree);
-    });
+    //   // recursively parse the BOM structure
+    //   const blaa = this.bomTraverse(0, 1);
+    //   this.bomTree.children = blaa[0];
+    //   this.showBom = true;
+    //   // console.log(this.bomTree);
+    // });
   }
 
   bomTraverse(i: number, lv: number) {

@@ -173,7 +173,7 @@ export class BomViewerComponent implements OnInit {
 
     // set custom zoom settings
     const zoom = d3.zoom()
-      .scaleExtent([0.25, 4])  // restrict zoom to this scale range
+      .scaleExtent([0.2, 4])  // restrict zoom to this scale range
       // .translateExtent([[20, 20], [width, height]])  // restict panning to this [x0, y0] [x1, y1] range
       .wheelDelta(() => {
         // custom wheel delta function to reduce zoom speed
@@ -282,7 +282,7 @@ export class BomViewerComponent implements OnInit {
       const links = treeData.descendants().slice(1);
 
       // Normalize for fixed-depth.
-      nodes.forEach(function(d) { d.y = d.depth * 180; });
+      nodes.forEach(function(d) { d.y = d.depth * 280; });
 
       // ****************** Nodes section ***************************
 
@@ -355,7 +355,10 @@ export class BomViewerComponent implements OnInit {
       // Update the node attributes and style
       nodeUpdate.select('rect.node')
         .attr('class', 'node')
-        .attr('width', (d) => Math.max(85, 60 + 5 * d.data.name.length))
+        .attr('width', (d) => {
+          d.width = Math.max(85, 60 + 5 * d.data.name.length);
+          return d.width;
+        })
         .attr('height', 20)
         .attr('x', -8)
         .attr('y', -11)
@@ -399,10 +402,10 @@ export class BomViewerComponent implements OnInit {
       // Enter any new links at the parent's previous position.
       const linkEnter = link.enter().insert('path', 'g')
         .attr('class', 'link')
-        .attr('d', function(d) {
-          const o = {x: source.x0, y: source.y0};
-          return diagonal(o, o);
-        });
+        .attr('d', d3.linkHorizontal()
+          .source( () => [source.y0, source.x0])
+          .target( () => [source.y0, source.x0])
+        );
 
       // UPDATE
       const linkUpdate = linkEnter.merge(link);
@@ -410,15 +413,23 @@ export class BomViewerComponent implements OnInit {
       // Transition back to the parent element position
       linkUpdate.transition()
         .duration(duration)
-        .attr('d', function(d) { return diagonal(d, d.parent); });
+        .attr('d',
+          d3.linkHorizontal()
+          .source( (d) => {
+            console.log(d);
+            return [d.parent.y + d.parent.width - 10, d.parent.x];
+          })
+          .target( (d) => [d.y, d.x])
+        );
 
       // Remove any exiting links
       const linkExit = link.exit().transition()
         .duration(duration)
-        .attr('d', function(d) {
-          const o = {x: source.x, y: source.y};
-          return diagonal(o, o);
-        })
+        .attr('d',
+          d3.linkHorizontal()
+          .source( () => [source.y, source.x])
+          .target( () => [source.y, source.x])
+        )
         .remove();
 
       // Store the old positions for transition.
@@ -426,15 +437,6 @@ export class BomViewerComponent implements OnInit {
         d.x0 = d.x;
         d.y0 = d.y;
       });
-
-      // Creates a curved (diagonal) path from parent to the child nodes
-      function diagonal(s, d) {
-        const path = `M ${s.y} ${s.x}
-              C ${(s.y + d.y) / 2} ${s.x},
-                ${(s.y + d.y) / 2} ${d.x},
-                ${d.y} ${d.x}`;
-        return path;
-      }
 
       // Toggle children on click
       function click(d) {
