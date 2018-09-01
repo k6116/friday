@@ -26,3 +26,12 @@ div.part-details {
   background: lightsteelblue;
   border: 1px solid black;
 }
+
+div.d3-legend {
+  position: fixed;
+  top: 150px;
+  left: 220px;
+  width: 120px;
+  height: 200px;
+  /* border: 1px solid black; */
+}

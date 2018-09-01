@@ -32,7 +32,6 @@ export class BomViewerComponent implements OnInit {
     // get list of bills in drop-down
     this.billListSub = this.apiDataBomService.index().subscribe( res => {
       this.billList = res;
-      console.log(this.billList);
     });
   }
 
@@ -63,13 +62,15 @@ export class BomViewerComponent implements OnInit {
         id: this.bill[0].ParentID,
         qty: 1,
         dept: this.bill[0].ParentDepartment,
-        type: this.bill[0].ParentType
+        type: this.bill[0].ParentType,
+        entity: this.bill[0].ParentEntity
       };
 
       // using async/await to wait for BOM parser to finish
       const bomSetup = async () => {
         // recursively parse the BOM structure
         const jsonBom = await this.bomTraverse(0, 1);
+        console.log(jsonBom);
 
         // add the recursive output as 'children' property of the tree nodeStructure
         this.billHierarchy.children = jsonBom.nextLvData;
@@ -99,7 +100,8 @@ export class BomViewerComponent implements OnInit {
           qty: this.bill[i].QtyPer,
           id: this.bill[i].ChildID,
           dept: this.bill[i].ChildDepartment,
-          type: this.bill[i].ChildType
+          type: this.bill[i].ChildType,
+          entity: this.bill[i].ChildEntity
         };
         children.push(newNode);
         i++;
@@ -133,6 +135,14 @@ export class BomViewerComponent implements OnInit {
     const initialTransform = d3.zoomIdentity.translate(400, 400).scale(1);
     const nodeSize = {height: 28, width: 20};
     const zoomSpeed = 1700; // some number between 400 and 2000
+    const deptColors: any = {
+      HFTC: '#c2b1ff',
+      PMTC: '#67c44b',
+      PICO: '#fc8c60',
+      ThinFilm: '#ffaae6',
+      EXT: '#24CBE5',
+      NPSS: '#ffe881'
+    };
 
     // set custom zoom settings
     const zoom = d3.zoom()
@@ -164,6 +174,47 @@ export class BomViewerComponent implements OnInit {
     const tooltip = d3.select('#d3-container').append('div')
     .attr('class', 'part-details')
     .style('opacity', 0);
+
+
+    // setup legend
+    const legend = d3.select('#d3-container').append('div')
+      .attr('class', 'd3-legend')
+      .append('svg')
+      .attr('width', 120)
+      .attr('height', 200);
+
+    const legendHeader = legend.append('text')
+    .attr('x', 3)
+    .attr('y', 13)
+    .style('font-size', '14px')
+    .text('Legend:');
+
+    // build HTML text for legend
+    const legendValues = Object.keys(deptColors).map( (key, j) => [key, deptColors[key]]);
+    legendValues.push(
+      ['Project', '#FFF'],
+      ['Part', '#FFF']
+    );
+
+    const deptLegend = legend.selectAll('.container')
+      .data(legendValues)
+      .enter()
+      .append('g');
+    deptLegend.append('rect')
+      .attr('width', 60)
+      .attr('height', 20)
+      .attr('x', 3)
+      .attr('y', (d, index) => index * 21 + 20)
+      .attr('rx', 4)
+      .attr('ry', 4)
+      .style('stroke', '#000')
+      .style('stroke-width', (d) => d[0] === 'Project' ? 2 : 0)
+      .style('fill', (d) => d[1] );
+    deptLegend.append('text')
+      .attr('dy', '.35em')
+      .attr('y', (d, index) => index * 21 + 29)
+      .attr('x', 6)
+      .text( (d) => d[0]);
 
 
     let i = 0;
@@ -217,17 +268,26 @@ export class BomViewerComponent implements OnInit {
 
       // draw rectangle for each node
       nodeEnter.append('rect')
-        .attr('class', 'node')
-        .attr('width', (d) => Math.max(80, 52 + 6 * d.data.name.length))
-        .attr('height', 20)
-        .attr('x', -8)
-        .attr('y', -11)
-        .attr('rx', 4)
-        .attr('ry', 4)
-        .attr('cursor', 'pointer')
-        .style('stroke-width', 1)
-        .style('stroke', '#aaf')
-        .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
+      .attr('class', 'node')
+      .attr('width', (d) => Math.max(85, 60 + 5 * d.data.name.length))
+      .attr('height', 20)
+      .attr('x', -8)
+      .attr('y', -11)
+      .attr('rx', 4)
+      .attr('ry', 4)
+      .attr('cursor', 'pointer')
+      .style('stroke-width', (d) => d.data.entity === 'Project' ? 2 : 0)
+      .style('stroke', '#000')
+      .style('fill', (d) => {
+        if (d._children) {
+          // special case for collapsed
+          return 'lightsteelblue';
+        } else if (d.data.entity === 'Project') {
+          return '#fff';
+        } else {
+          return deptColors[d.data.dept] ? deptColors[d.data.dept] : '#FFF';
+        }
+      });
 
       // Add labels for the nodes
       nodeEnter.append('text')
@@ -262,14 +322,26 @@ export class BomViewerComponent implements OnInit {
 
       // Update the node attributes and style
       nodeUpdate.select('rect.node')
-      .attr('width', (d) => Math.max(75, 48 + 5 * d.data.name.length))
-      .attr('height', 20)
-      .attr('x', -8)
-      .attr('y', -11)
-      .attr('rx', 4)
-      .attr('ry', 4)
-      .attr('cursor', 'pointer')
-      .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
+        .attr('class', 'node')
+        .attr('width', (d) => Math.max(85, 60 + 5 * d.data.name.length))
+        .attr('height', 20)
+        .attr('x', -8)
+        .attr('y', -11)
+        .attr('rx', 4)
+        .attr('ry', 4)
+        .attr('cursor', 'pointer')
+        .style('stroke-width', (d) => d.data.entity === 'Project' ? 2 : 0)
+        .style('stroke', '#000')
+        .style('fill', (d) => {
+          if (d._children) {
+            // special case for collapsed
+            return 'lightsteelblue';
+          } else if (d.data.entity === 'Project') {
+            return '#fff';
+          } else {
+            return deptColors[d.data.dept] ? deptColors[d.data.dept] : '#FFF';
+          }
+        });
 
       // Remove any exiting nodes
       const nodeExit = node.exit().transition()
