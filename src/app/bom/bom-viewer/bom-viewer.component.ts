@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
 declare var $: any;
+declare const Bloodhound;
 
 @Component({
   selector: 'app-bom-viewer',
@@ -13,31 +14,42 @@ declare var $: any;
 })
 export class BomViewerComponent implements OnInit {
 
-  @ViewChild('treeComponent') treeComponent;
-
-  billList: any;  // for getting the list of bills in drop-down
   billListSub: Subscription;
   bill: any;  // for storing the selected bill as flat array
-
-  billHierarchy: any;
-  partDepartmentSummary: any = {};
-
-  // for search box
-  searchBills: string;
-  searching = false;
-
+  billHierarchy: any; // for storing the selected bill as nested JSON
+  partDepartmentSummary: any = {};  // for storing d3 legend data
 
   constructor(private apiDataBomService: ApiDataBomService) { }
 
   ngOnInit() {
-    // get list of bills in drop-down
+    // get list of bills for typeahead.js
     this.billListSub = this.apiDataBomService.index().subscribe( res => {
-      this.billList = res;
-    });
-  }
 
-  onSearchFocus() {
-    this.searching = true;
+      // initialize bloodhound suggestion engine with data
+      const bh = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('PartOrProjectName'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        local: res  // flat array of bills from api data service
+      });
+
+      // initialize typeahead using jquery
+      $('.typeahead').typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+      },
+      {
+        name: 'bill-names',
+        displayKey: 'PartOrProjectName',  // use this to select the field name in the query you want to display
+        source: bh
+      })
+      .bind('typeahead:selected', (event, selection) => {
+        // once something in the typeahead isi selected, trigger this function
+        this.onBomSelect(selection);
+      })
+      .focus(); // to autofocus the typeahead bar
+
+    });
   }
 
   onBomSelect(selection: any) {
@@ -46,20 +58,15 @@ export class BomViewerComponent implements OnInit {
     const selectedEntity = selection.EntityType;
     const selectedID = selectedEntity === 'Project' ? selection.ParentProjectID : selection.ParentPartID;
 
-    // reset the filterbox
-    this.searchBills = selectedName;
-    this.searching = false;
-
     // get the selected BOM as flat array
     const bomSubscription = this.apiDataBomService.showSingleBom(selectedID, selectedEntity).subscribe( res => {
 
       this.bill = res;
+      bomSubscription.unsubscribe();
 
       // initialize part department sums
       this.partDepartmentSummary = {Project: 0, Part: 0};
       this.sumPartDepartments(this.bill);
-
-      bomSubscription.unsubscribe();
 
       // initialize bomtree
       this.billHierarchy = {
@@ -76,7 +83,6 @@ export class BomViewerComponent implements OnInit {
       const bomSetup = async () => {
         // recursively parse the BOM structure
         const jsonBom = await this.bomTraverse(0, 1);
-        console.log(jsonBom);
 
         // add the recursive output as 'children' property of the tree nodeStructure
         this.billHierarchy.children = jsonBom.nextLvData;
@@ -155,7 +161,6 @@ export class BomViewerComponent implements OnInit {
     });
   }
 
-
   drawD3Plot() {
 
     // set start position/scale of drawing, and size of nodes (to set default node spacing)
@@ -174,16 +179,13 @@ export class BomViewerComponent implements OnInit {
     // set custom zoom settings
     const zoom = d3.zoom()
       .scaleExtent([0.2, 4])  // restrict zoom to this scale range
-      // .translateExtent([[20, 20], [width, height]])  // restict panning to this [x0, y0] [x1, y1] range
-      .wheelDelta(() => {
-        // custom wheel delta function to reduce zoom speed
+      .wheelDelta(() => { // custom wheel delta function to reduce zoom speed
         return -d3.event.deltaY * (d3.event.deltaMode ? 120 : 1) / zoomSpeed;
       })
       .on('zoom', () => {
         // when zoomed, actually perform the transform on the 'svg' object using d3.event.transform
         svg.attr('transform', d3.event.transform);
       });
-
 
     // append the svg object to the body of the page and appends a 'group' container element to 'svg'
     const svg = d3.select('#d3-container').append('svg')
@@ -197,24 +199,24 @@ export class BomViewerComponent implements OnInit {
       .call(zoom) // adds zoom functionality
       .call(zoom.transform, initialTransform);  // applies initial transform
 
-    // create tooltip object
+    // create tooltip overlay object
     const tooltip = d3.select('#d3-container').append('div')
-    .attr('class', 'part-details')
-    .style('opacity', 0);
+      .attr('class', 'part-details')
+      .style('opacity', 0);
 
-
-    // setup legend
+    // setup legend container
     const legend = d3.select('#d3-container').append('div')
       .attr('class', 'd3-legend')
       .append('svg')
       .attr('width', 120)
       .attr('height', 200);
 
+    // setup legend header text
     const legendHeader = legend.append('text')
-    .attr('x', 3)
-    .attr('y', 13)
-    .style('font-size', '14px')
-    .text('Legend:');
+      .attr('x', 3)
+      .attr('y', 13)
+      .style('font-size', '14px')
+      .text('Legend:');
 
     // build text array for legend
     const legendValues = [
@@ -225,6 +227,7 @@ export class BomViewerComponent implements OnInit {
       legendValues.push([key, deptColors[key]]);
     });
 
+    // draw legend
     const deptLegend = legend.selectAll('.container')
       .data(legendValues)
       .enter()
@@ -281,8 +284,8 @@ export class BomViewerComponent implements OnInit {
       const nodes = treeData.descendants();
       const links = treeData.descendants().slice(1);
 
-      // Normalize for fixed-depth.
-      nodes.forEach(function(d) { d.y = d.depth * 280; });
+      // set fixed-distance between tree "levels"
+      nodes.forEach( (d) => d.y = d.depth * 280 );
 
       // ****************** Nodes section ***************************
 
@@ -290,43 +293,42 @@ export class BomViewerComponent implements OnInit {
       const node = svg.selectAll('g.node')
         .data(nodes, function(d) {return d.id || (d.id = ++i); });
 
+      // --------- NODE ENTRY ANIMATIONS
       // Enter any new modes at the parent's previous position.
       const nodeEnter = node.enter().append('g')
         .attr('class', 'node')
-        .attr('transform', function(d) {
-          return 'translate(' + source.y0 + ',' + source.x0 + ')';
-      })
-      .on('click', click);
+        .attr('transform', (d) => `translate(${source.y0},${source.x0})`)
+        .on('click', click);
 
       // draw rectangle for each node
       nodeEnter.append('rect')
-      .attr('class', 'node')
-      .attr('width', (d) => Math.max(85, 60 + 5 * d.data.name.length))
-      .attr('height', 20)
-      .attr('x', -8)
-      .attr('y', -11)
-      .attr('rx', 4)
-      .attr('ry', 4)
-      .attr('cursor', 'pointer')
-      .style('stroke-width', (d) => d.data.entity === 'Project' ? 2 : 0)
-      .style('stroke', '#000')
-      .style('fill', (d) => {
-        if (d._children) {
-          // special case for collapsed
-          return 'lightsteelblue';
-        } else if (d.data.entity === 'Project') {
-          return '#fff';
-        } else {
-          return deptColors[d.data.dept] ? deptColors[d.data.dept] : '#FFF';
-        }
-      });
+        .attr('class', 'node')
+        .attr('width', (d) => Math.max(85, 60 + 5 * d.data.name.length))
+        .attr('height', 20)
+        .attr('x', -8)
+        .attr('y', -11)
+        .attr('rx', 4)
+        .attr('ry', 4)
+        .attr('cursor', 'pointer')
+        .style('stroke-width', (d) => d.data.entity === 'Project' ? 2 : 0)
+        .style('stroke', '#000')
+        .style('fill', (d) => {
+          if (d._children) {
+            // special case for collapsed
+            return 'lightsteelblue';
+          } else if (d.data.entity === 'Project') {
+            return '#fff';
+          } else {
+            return deptColors[d.data.dept] ? deptColors[d.data.dept] : '#FFF';
+          }
+        });
 
       // Add labels for the nodes
       nodeEnter.append('text')
         .attr('dy', '.35em')
         .attr('cursor', 'pointer')
         .attr('text-anchor', 'start')
-        .text(function(d) { return `${d.data.qty}  |  ${d.data.name}`; })
+        .text( (d) => `${d.data.qty}  |  ${d.data.name}` )
         .on('mouseover', (d) => {
           tooltip.transition()
           .duration(100)
@@ -342,15 +344,13 @@ export class BomViewerComponent implements OnInit {
             .style('opacity', 0);
         });
 
-      // UPDATE
+      // --------- NODE UPDATE CONTENTS
       const nodeUpdate = nodeEnter.merge(node);
 
       // Transition to the proper position for the node
       nodeUpdate.transition()
-      .duration(duration)
-      .attr('transform', function(d) {
-          return 'translate(' + d.y + ',' + d.x + ')';
-      });
+        .duration(duration)
+        .attr('transform', (d) => `translate(${d.y},${d.x})`);
 
       // Update the node attributes and style
       nodeUpdate.select('rect.node')
@@ -415,10 +415,7 @@ export class BomViewerComponent implements OnInit {
         .duration(duration)
         .attr('d',
           d3.linkHorizontal()
-          .source( (d) => {
-            console.log(d);
-            return [d.parent.y + d.parent.width - 10, d.parent.x];
-          })
+          .source( (d) => [d.parent.y + d.parent.width - 10, d.parent.x] )
           .target( (d) => [d.y, d.x])
         );
 

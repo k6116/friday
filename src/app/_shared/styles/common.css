@@ -54,6 +54,10 @@ input.form-control.form-control-custom, select.form-control.form-control-custom 
   width: 100%;
 }
 
+/* puts the 'x' to clear at the end of all "search"-type input HTML elements */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button;
+}
 
 /* custom disabled controls (lighter background color) */
 input.form-control.form-control-custom[disabled], select.form-control.form-control-custom[disabled], textarea.form-control.form-control-custom[disabled] {

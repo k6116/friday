@@ -1,18 +1,6 @@
 <div class="container-fluid">
   <div class="bom-selector">
-
-    <input class="form-control bill-searchbox" type="text" [(ngModel)]="searchBills" (focus)="onSearchFocus()" placeholder="Search for a BOM (ie, G-Max)">
-
-    <ng-container *ngIf="searching">
-      <ng-container *ngIf="(billList | filter : searchBills : 'PartOrProjectName':{limitTo: -1, matchOptimistic: true}) as filteredBillList">
-        <ul class="list-group list-group-flush" *ngFor="let bill of filteredBillList | slice:0:6; let i=index">
-          <button class="list-group-item list-group-item-action" (click)="onBomSelect(bill)">
-            {{ bill.PartOrProjectName }}
-          </button>
-        </ul>
-      </ng-container>
-    </ng-container>
-
+    <input class="form-control bill-searchbox typeahead" type="search" placeholder="Search for a BOM (ie, G-Max)">
   </div>
   <div id="d3-container"></div>
 </div>
