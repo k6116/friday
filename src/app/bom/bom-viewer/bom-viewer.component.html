@@ -1,6 +1,4 @@
 <div class="container-fluid">
-  <div class="bom-selector">
-    <input class="form-control bill-searchbox typeahead" type="search" placeholder="Search for a BOM (ie, G-Max)">
-  </div>
+  <app-bom-selector (selectedBom)="onBomSelect($event)"></app-bom-selector>
   <div id="d3-container"></div>
 </div>

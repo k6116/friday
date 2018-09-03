@@ -1,11 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiDataBomService } from '../../_shared/services/api-data/_index';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
-
-declare var $: any;
-declare const Bloodhound;
 
 @Component({
   selector: 'app-bom-viewer',
@@ -14,7 +11,6 @@ declare const Bloodhound;
 })
 export class BomViewerComponent implements OnInit {
 
-  billListSub: Subscription;
   bill: any;  // for storing the selected bill as flat array
   billHierarchy: any; // for storing the selected bill as nested JSON
   partDepartmentSummary: any = {};  // for storing d3 legend data
@@ -22,38 +18,11 @@ export class BomViewerComponent implements OnInit {
   constructor(private apiDataBomService: ApiDataBomService) { }
 
   ngOnInit() {
-    // get list of bills for typeahead.js
-    this.billListSub = this.apiDataBomService.index().subscribe( res => {
-
-      // initialize bloodhound suggestion engine with data
-      const bh = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('PartOrProjectName'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        local: res  // flat array of bills from api data service
-      });
-
-      // initialize typeahead using jquery
-      $('.typeahead').typeahead({
-        hint: true,
-        highlight: true,
-        minLength: 1
-      },
-      {
-        name: 'bill-names',
-        displayKey: 'PartOrProjectName',  // use this to select the field name in the query you want to display
-        source: bh
-      })
-      .bind('typeahead:selected', (event, selection) => {
-        // once something in the typeahead isi selected, trigger this function
-        this.onBomSelect(selection);
-      })
-      .focus(); // to autofocus the typeahead bar
-
-    });
   }
 
   onBomSelect(selection: any) {
 
+    // parse selected BOM info from bom-selector child component
     const selectedName = selection.PartOrProjectName;
     const selectedEntity = selection.EntityType;
     const selectedID = selectedEntity === 'Project' ? selection.ParentProjectID : selection.ParentPartID;
