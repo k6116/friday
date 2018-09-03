@@ -47,12 +47,31 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           title: 'FTE Entry',
           iconClass: 'nc-calendar-add',
           alias: 'fteEntry',
-          path: 'main/fte-entry/employee',
           expanded: false,
           active: false,
           highlighted: false,
           permissionProtected: false,
-          hidden: false
+          hidden: false,
+          subItems: [
+            {
+              title: 'My FTEs',
+              alias: 'my-ftes',
+              path: 'main/fte-entry/employee',
+              parentAlias: 'fte-entry',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            },
+            {
+              title: 'Team FTEs',
+              alias: 'team-ftes',
+              path: 'main/fte-entry/team',
+              parentAlias: 'fte-entry',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            }
+          ]
         },
         {
           title: 'Projects',
@@ -188,6 +207,15 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               parentAlias: 'setups',
               active: false,
               permissionProtected: true,
+              hidden: false
+            },
+            {
+              title: 'Team-Roles',
+              alias: 'setups-team-roles',
+              path: 'main/setups/team-roles',
+              parentAlias: 'setups',
+              active: false,
+              permissionProtected: false,
               hidden: false
             }
           ]

@@ -38,7 +38,7 @@ import { UserResolverService } from './_shared/services/user-resolver.service';
 import { Error403Component } from './error-pages/error-403/error-403.component';
 import { PartSetupComponent } from './setups/parts/parts.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
-import { TeamRolesComponent } from './fte-entry/team-roles/team-roles.component';
+import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 
 // BOM module stuff
 import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
@@ -60,12 +60,12 @@ const routes: Routes = [
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
         canActivate: [FteEntryGuard], canDeactivate: [UnsavedChangesGuard] },
       { path: 'fte-entry/team', component: FteEntryTeamComponent },
-      { path: 'fte-entry/team-roles', component: TeamRolesComponent },
       { path: 'projects/my-projects', component: MyProjectsComponent },
       { path: 'projects/requests', component: ProjectRequestsComponent },
       { path: 'projects/search', component: SearchProjectsComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      { path: 'setups/team-roles', component: TeamRolesComponent },
       { path: 'bom/bom-editor', component: BomEditorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'bom/bom-viewer', component: BomViewerComponent, canActivate: [AuthGuardService] },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },

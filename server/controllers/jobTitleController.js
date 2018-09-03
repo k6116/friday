@@ -444,27 +444,17 @@ function updateEmployeesJobTitlesBulk(req, res) {
   // - Add a new user to the employees table with their designated jobTitleID and jobSubTitleID
   // - Update an employee's jobTitleID and jobSubTitleID
   // The formData object array should be in this format:
-  // [
-  //  [{emailAddress: 'some@email.com', firstName: 'Bob', lastName: 'Robert', isJobTitle: false, jobTitleID: 5, jobSubTitleID: 8.....},{},{}],
-  //  [{},{},{}], [{},{},{}], ... 
-  // ]
 
   const formData = req.body;
   const userID = req.params.userID;
-
-  // combine all project arrays into a single array
-  const allFormData = [];
-  formData.forEach(projectArr => {
-    allFormData.push(...projectArr);
-  });
 
   // build arrays of objects for insert and update
   const insertData = [];
   const updateData = [];
   
-  allFormData.forEach(data => {
+  formData.forEach(data => {
     // insert array
-    if (data.isJobTitle && data.newUser) {
+    if (data.newUser && data.jobTitleID !== null) {
       insertData.push({
         firstName: data.firstName,
         lastName: data.lastName,
@@ -480,7 +470,7 @@ function updateEmployeesJobTitlesBulk(req, res) {
       })
     }
     // update array
-    if (data.isJobTitle && data.updated) {
+    if (!data.newUser) {
       updateData.push({
         email: data.emailAddress,
         jobTitleID: data.jobTitleID,
