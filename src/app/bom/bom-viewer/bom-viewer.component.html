@@ -1,4 +1,4 @@
 <div class="container-fluid">
   <app-bom-selector (selectedBom)="onBomSelect($event)"></app-bom-selector>
-  <div id="d3-container"></div>
+  <app-bom-draw-d3 [selectedBom]="selectedBom"></app-bom-draw-d3>
 </div>

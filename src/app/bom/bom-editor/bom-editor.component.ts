@@ -12,8 +12,7 @@ export class BomEditorComponent implements OnInit {
 
   @ViewChild('treeComponent') treeComponent;
 
-  billList: any;  // for getting the list of bills in drop-down
-  billListSub: Subscription;
+  selectedBom: any;
   bill: any;  // for storing the selected bill as flat array
   bomTree: any; // for storing the selected bill as tree JSON
   showBom = false;
@@ -25,62 +24,37 @@ export class BomEditorComponent implements OnInit {
   constructor(private apiDataBomService: ApiDataBomService) { }
 
   ngOnInit() {
-    // get list of bills in drop-down
-    this.billListSub = this.apiDataBomService.index().subscribe( res => {
-      this.billList = res;
-    });
   }
 
-  onNodeSelect(clickedItem: any) {
-    this.showDetails = false;
-    // when a tree node is selected, toggle node collapse
-    const oopNodeController = this.treeComponent.getControllerByNodeId(clickedItem.node.id);
-    oopNodeController.unselect();
-    if (oopNodeController.isCollapsed()) {
-      oopNodeController.expand();
-    }
-
-    // fetch the data
-    if (clickedItem.node.type === 'Project') {
-      const detailsSub = this.apiDataBomService.showProjectInfo(clickedItem.node.id).subscribe( res => {
-        this.details = res[0];
-        this.details.entity = 'Project';
-        detailsSub.unsubscribe();
-        this.showDetails = true;
-      });
-    } else {
-      const detailsSub = this.apiDataBomService.showPartInfo(clickedItem.node.id).subscribe( res => {
-        this.details = res[0];
-        this.details.entity = 'Part';
-        detailsSub.unsubscribe();
-        this.showDetails = true;
-      });
-    }
-  }
-
-  onBomSelect(selected: number) {
+  onBomSelect(selection: any) {
     this.showBom = false;
     this.showDetails = false;
 
+    // parse selected BOM info from bom-selector child component
+    this.selectedBom = selection;
+    const selectedName = selection.PartOrProjectName;
+    const selectedEntity = selection.EntityType;
+    const selectedID = selectedEntity === 'Project' ? selection.ParentProjectID : selection.ParentPartID;
+
     // get the selected BOM as flat array
-    // const bomSubscription = this.apiDataBomService.showSingleBom(selected).subscribe( res => {
-    //   this.bill = res;
-    //   bomSubscription.unsubscribe();
-    //   // console.log(this.bill);
+    const bomSubscription = this.apiDataBomService.showSingleBom(selectedID, selectedEntity).subscribe( res => {
+      this.bill = res;
+      bomSubscription.unsubscribe();
+      // console.log(this.bill);
 
-    //   // initialize bomtree
-    //   this.bomTree = {
-    //     value: this.bill[0].ParentName,
-    //     id: this.bill[0].ParentID,
-    //     type: this.bill[0].ParentEntity
-    //   };
+      // initialize bomtree
+      this.bomTree = {
+        value: this.bill[0].ParentName,
+        id: this.bill[0].ParentID,
+        type: this.bill[0].ParentEntity
+      };
 
-    //   // recursively parse the BOM structure
-    //   const blaa = this.bomTraverse(0, 1);
-    //   this.bomTree.children = blaa[0];
-    //   this.showBom = true;
-    //   // console.log(this.bomTree);
-    // });
+      // recursively parse the BOM structure
+      const blaa = this.bomTraverse(0, 1);
+      this.bomTree.children = blaa[0];
+      this.showBom = true;
+      // console.log(this.bomTree);
+    });
   }
 
   bomTraverse(i: number, lv: number) {
@@ -110,5 +84,32 @@ export class BomEditorComponent implements OnInit {
     } // end while
     return [children, i];
   } // end bomTraverse
+
+  onNodeSelect(clickedItem: any) {
+    this.showDetails = false;
+    // when a tree node is selected, toggle node collapse
+    const oopNodeController = this.treeComponent.getControllerByNodeId(clickedItem.node.id);
+    oopNodeController.unselect();
+    if (oopNodeController.isCollapsed()) {
+      oopNodeController.expand();
+    }
+
+    // fetch the data
+    if (clickedItem.node.type === 'Project') {
+      const detailsSub = this.apiDataBomService.showProjectInfo(clickedItem.node.id).subscribe( res => {
+        this.details = res[0];
+        this.details.entity = 'Project';
+        detailsSub.unsubscribe();
+        this.showDetails = true;
+      });
+    } else {
+      const detailsSub = this.apiDataBomService.showPartInfo(clickedItem.node.id).subscribe( res => {
+        this.details = res[0];
+        this.details.entity = 'Part';
+        detailsSub.unsubscribe();
+        this.showDetails = true;
+      });
+    }
+  }
 
 }

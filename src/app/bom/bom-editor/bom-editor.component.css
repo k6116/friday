@@ -9,3 +9,12 @@
   border-radius: 10px;
   background-color: white;
 }
+
+.tree-container {
+  margin-top: 20px;
+}
+
+.bom-editor-col {
+  border-right: 1px solid black;
+  margin-left: -15px;
+}
