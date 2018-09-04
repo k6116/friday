@@ -2,7 +2,9 @@ const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize');
 const models = require('../models/_index')
 const Treeize = require('treeize');
+const token = require('../token/token');
 const moment = require('moment');
+var dateFormat = require('dateformat');
 
 
 function indexProjectSchedule(req, res) {
@@ -14,7 +16,7 @@ function indexProjectSchedule(req, res) {
 			f.ProjectID,				
 			f.CurrentRevision,
 			f.notes as 'RevisionNotes', 
-			convert(varchar(10), d.PLCDate, 120) as 'PLCDate', 	
+			convert(char(10), d.PLCDate, 126) as 'PLCDate', 	
 			d.PLCStatusID,
 			d.Notes,
 			DeleteRow = 0
@@ -25,18 +27,18 @@ function indexProjectSchedule(req, res) {
 		WHERE
 			f.ProjectID = '${projectID}'
 		ORDER BY 
-			NeedByDate`
+			PLCDate`
 
 	sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
 		.then(schedule => {		
+			// the date conversion for PLCDate as YYYY-MM-DD is lost with this sequelize function. Formatting is done in the .ts file
 			res.json(schedule);
 		})
 }
 
   function updateProjectScheduleXML(req,res) {
 
-	// const decodedToken = token.decode(req.header('X-Token'), res);	//TO-DO fix decode
-	const userID = req.params.userID;
+ 	const decodedToken = token.decode(req.header('X-Token'), res);
 	const revisionNotes = req.params.revisionNotes;
 	
 	const schedule = req.body;
@@ -72,7 +74,7 @@ function indexProjectSchedule(req, res) {
 			projectID: schedule[0].ProjectID,
 			partID: null,
 			notes: revisionNotes,
-			employeeID: userID, // decodedToken.userData.id,
+			employeeID: decodedToken.userData.id,
 			schedule: scheduleXML,
 			rowCount: null,
 			errorNumber: null,
@@ -107,7 +109,7 @@ function indexProjectSchedule(req, res) {
 				projectID: schedule[0].ProjectID,
 				partID: null,
 				notes: revisionNotes,
-				employeeID: userID, // decodedToken.userData.id,
+				employeeID: decodedToken.userData.id,
 				schedule: scheduleXML,
 				rowCount: null,
 				errorNumber: null,
@@ -135,7 +137,7 @@ function indexPartSchedule(req, res) {
 			f.PartID,		
 			f.CurrentRevision,
 			f.notes as 'RevisionNotes', 
-			convert(varchar(10), d.needbydate, 120) as 'NeedByDate', 
+			convert(char(10), d.needbydate, 126) as 'NeedByDate', 
 			d.NeededQuantity, 
 			d.BuildStatusID,
 			d.Notes,
@@ -158,9 +160,9 @@ function indexPartSchedule(req, res) {
 
 function updatePartScheduleXML(req,res) {
 
-//	const decodedToken = token.decode(req.header('X-Token'), res); //ERRORS!
+	const decodedToken = token.decode(req.header('X-Token'), res); //ERRORS!
 	const schedule = req.body;
-	const userID = req.params.userID;
+//	const userID = req.params.userID;
 	const revisionNotes = req.params.revisionNotes;
 
 	var scheduleXML = `<Schedules>`;
@@ -195,7 +197,7 @@ function updatePartScheduleXML(req,res) {
 			projectID: null,
 			partID: schedule[0].PartID,
 			notes: revisionNotes,
-			employeeID: userID, // decodedToken.userData.id,
+			employeeID: decodedToken.userData.id,
 			schedule: scheduleXML,
 			rowCount: null,
 			errorNumber: null,
@@ -230,7 +232,7 @@ function updatePartScheduleXML(req,res) {
 				projectID: null,
 				partID: schedule[0].PartID,
 				notes: revisionNotes,
-				employeeID: userID, // decodedToken.userData.id,
+				employeeID: decodedToken.userData.id,
 				schedule: scheduleXML,
 				rowCount: null,
 				errorNumber: null,

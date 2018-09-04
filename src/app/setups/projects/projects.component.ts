@@ -3,6 +3,7 @@ import { ApiDataSchedulesService, ApiDataProjectService,
   ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
+import { ToolsService } from '../../_shared/services/tools.service';
 import * as moment from 'moment';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 
@@ -17,6 +18,7 @@ export class ProjectsSetupsComponent implements OnInit {
   searchProjects: string;
   projectList: any;
   project: any;
+  projectNameRegex: any;
   schedule: any;
   showProjectCard: boolean;
   showScheduleCard: boolean;
@@ -27,6 +29,8 @@ export class ProjectsSetupsComponent implements OnInit {
   plcStatusChoices: any;
   revisionNotes: string;
   scheduleId: number;
+  typeSortCoefficient = -1;
+  nameSortCoefficient = -1;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -34,26 +38,42 @@ export class ProjectsSetupsComponent implements OnInit {
     private apiDataProjectService: ApiDataProjectService,
     private apiDataEmployeeService: ApiDataEmployeeService,
     private authService: AuthService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private toolsService: ToolsService
   ) { }
 
   ngOnInit() {
 
+    this.revisionNotes = null;
     this.initFormValues();
     this.getProjects();
     this.getSelectionChoices();
-    this.searchProjects = ' '; // this will avoid shoing a blank list of projects.
-
   }
 
-  onSearchInputChange(event: any) {
-    if (this.searchProjects.length === 0) {
+  orderByType(type: boolean) {
+
+    if (type) {
+      this.typeSortCoefficient = -this.typeSortCoefficient;
+            this.projectList.sort((a, b) =>
+            a.ProjectTypeName < b.ProjectTypeName ? -this.typeSortCoefficient
+            : a.ProjectTypeName > b.ProjectTypeName ? this.typeSortCoefficient : 0);
+      } else {
+        this.nameSortCoefficient = -this.nameSortCoefficient;
+            this.projectList.sort((a, b) =>
+            a.ProjectName < b.ProjectName ? -this.nameSortCoefficient
+            : a.ProjectName > b.ProjectName ? this.nameSortCoefficient : 0);
+      }
+      this.searchProjects =  this.searchProjects + ' '; // Refresh Project Search
+  }
+
+  onSearchChanged(event: any) {
+      this.project = null;
       this.showProjectCard = false;
       this.showScheduleCard = false;
-    }
   }
 
   initFormValues() {
+
     this.form = this.formBuilder.group({
     projectID: [null, [Validators.required]],
     projectName: [null, [Validators.required]],
@@ -80,10 +100,10 @@ export class ProjectsSetupsComponent implements OnInit {
     .subscribe(
       res => {
         this.projectList = res;
-        // console.log('Projects List:', this.projectList);
+        this.searchProjects = ' '; // this will avoid shoing a blank list of projects.
       },
       err => {
-        // console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project: ${err}`);
       }
     );
   }
@@ -93,11 +113,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectTypesList()
     .subscribe(
       res => {
-        // console.log('Project Types:', res);
         this.projectTypeChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Types: ${err}`);
       }
     );
@@ -105,11 +123,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectDepartments()
     .subscribe(
       res => {
-        // console.log('Project Departments:', res);
         this.departmentChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Departments: ${err}`);
       }
     );
@@ -117,11 +133,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectGroups()
     .subscribe(
       res => {
-        // console.log('Project Groups:', res);
         this.groupChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Groups: ${err}`);
       }
     );
@@ -129,11 +143,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectPriorities()
     .subscribe(
       res => {
-        // console.log('Project Priorities:', res);
         this.priorityChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Project Priorities: ${err}`);
       }
     );
@@ -141,11 +153,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.apiDataProjectService.getProjectPLCStatus()
     .subscribe(
       res => {
-        // console.log('Project PLC Status:', res);
         this.plcStatusChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain PLC Status: ${err}`);
       }
     );
@@ -164,9 +174,9 @@ export class ProjectsSetupsComponent implements OnInit {
     this.form.reset();
     this.form.patchValue(
       {
-        projectName: this.searchProjects
+        projectName: this.searchProjects ? this.searchProjects.trim().replace(/[^a-zA-Z0-9\\s\\-]/gm, '') : null
       });
-      this.cacheService.raiseToast('success', 'New Project Entry Form Created.');
+      this.cacheService.raiseToast('info', 'New Project Entry Form Created.');
   }
 
   onProjectClick(project: any) {
@@ -178,7 +188,7 @@ export class ProjectsSetupsComponent implements OnInit {
     this.form.patchValue(
       {
         projectID: this.project.ProjectID,
-        projectName: this.project.ProjectName,
+        projectName:  this.project.ProjectName,
         projectTypeID: this.project.ProjectTypeID,
         active: this.project.Active,
         planOfRecord: this.project.PlanOfRecordFlag,
@@ -210,7 +220,6 @@ export class ProjectsSetupsComponent implements OnInit {
           this.getProjects();
         },
         err => {
-          // console.log(err);
           this.cacheService.raiseToast('error', `Project Schedule Failed to Update: ${err}`);
         }
       );
@@ -231,7 +240,6 @@ export class ProjectsSetupsComponent implements OnInit {
             this.getProjects();
         },
         err => {
-          // console.log(err);
           this.cacheService.raiseToast('error', `Create Project Failed: ${err}`);
         }
       );
@@ -269,7 +277,6 @@ export class ProjectsSetupsComponent implements OnInit {
           this.apiDataProjectService.deleteProjectSetup(this.project.ProjectID, this.scheduleId, this.authService.loggedInUser.id)
           .subscribe(
             del => {
-              // console.log('project deleted');
               this.cacheService.raiseToast('success', 'Project Removed Successfully');
               this.project = null;
               this.schedule = null;
@@ -279,7 +286,6 @@ export class ProjectsSetupsComponent implements OnInit {
               deleteModalSubscription.unsubscribe();
             },
             err => {
-              // console.log(err);
               this.cacheService.raiseToast('error', `Delete Propject Failed: ${err}`);
             }
           );
@@ -312,15 +318,14 @@ export class ProjectsSetupsComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updateProjectScheduleXML(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
+    this.apiDataSchedulesService.updateProjectScheduleXML(this.schedule, this.revisionNotes)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
-          // console.log('Saved Project Schedule');
           this.cacheService.raiseToast('success', 'Project Schedule Saved');
         },
         err => {
-          // console.log(err);
+          this.cacheService.raiseToast('error', `Unable to Update Project Schedule: ${err}`);
         }
       );
     } else {
@@ -328,11 +333,10 @@ export class ProjectsSetupsComponent implements OnInit {
       this.apiDataSchedulesService.destroyScheduleSP(this.scheduleId)
       .subscribe(
         res => {
-          // console.log('Deleted Schedule');
           this.cacheService.raiseToast('success', 'Project Schedule Removed');
         },
         err => {
-          // console.log(err);
+          this.cacheService.raiseToast('error', `Unable to Remove Project Schedule: ${err}`);
         }
       );
     }
@@ -344,19 +348,30 @@ export class ProjectsSetupsComponent implements OnInit {
     .subscribe(
       res => {
         if (res.length > 0) {
+          res.forEach(element => {
+            element.PLCDate = moment(element.PLCDate).format('YYYY-MM-DD');
+          });
         this.schedule = res;
         this.revisionNotes = res[0].RevisionNotes;
         this.scheduleId = res[0].ScheduleID;
-        // console.log('Project Schedule:', this.schedule);
-      } else {
+        } else {
+        this.revisionNotes = null;
         this.schedule = [];
         this.scheduleId = 0;
         this.createDefaultScheduleRow();
-      }
+        }
       },
       err => {
-        // console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Obtain Project Schedule: ${err}`);
       }
     );
+  }
+
+  setProjctTypeIconClass(projectTypeName) {
+   return this.toolsService.setProjctTypeIconClass(projectTypeName);
+  }
+
+  setProjctTypeColor(projectTypeName) {
+   return this.toolsService.setProjctTypeColor(projectTypeName);
   }
 }

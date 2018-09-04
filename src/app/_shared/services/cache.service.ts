@@ -67,7 +67,7 @@ export class CacheService {
   constructor() { }
 
   // TO-DO BRYAN: create a toast service and move
-  raiseToast( toastType: 'success' | 'warning' | 'error', toastText: string) {
+  raiseToast( toastType: 'success' | 'warning' | 'error' | 'info', toastText: string) {
     this.toast.emit({
       type: toastType,
       text: toastText

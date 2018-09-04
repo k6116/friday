@@ -1,27 +1,4 @@
 <div class="container-fluid">
-  <div class="row row-custom">
-    <div class="col-sm-3">
-      <select class="form-control form-inline" (change)="onBomSelect($event.target.value)">
-        <option *ngFor="let bill of billList" [value]="bill.ParentPartID">{{bill.PartOrProjectName}}</option>
-      </select>
-    </div>
-    <div class="col-sm-3">
-      <table>
-        <tr>
-          <td colspan="6">Part Department Legend:</td>
-        </tr>
-        <tr>
-          <td class="legend node HFTC">HFTC</td>
-          <td class="legend node PICO">PICO</td>
-          <td class="legend node PMTC">PMTC</td>
-          <td class="legend node ThinFilm">Thin Film</td>
-          <td class="legend node EXT">External</td>
-          <td class="legend node NPSS">NPSS</td>
-        </tr>
-      </table>
-    </div>
-  </div>
-  <div class="row row-custom row-custom-treant">
-    <div id="tree-simple" class="tree-container"></div>
-  </div>
+  <app-bom-selector (selectedBom)="onBomSelect($event)"></app-bom-selector>
+  <app-bom-draw-d3 [selectedBom]="selectedBom"></app-bom-draw-d3>
 </div>

@@ -19,10 +19,10 @@ export class ApiDataBomService {
       .map((response: Response) => response.json());
   }
 
-  showSingleBom(parentID: number) {
+  showSingleBom(parentID: number, parentEntity: string) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/bom/bom/show/showSingleBom/${parentID}`, options)
+    return this.http.get(`/api/bom/bom/show/showSingleBom/${parentID}/${parentEntity}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
