@@ -1,12 +1,13 @@
 .btn-primary {
   color: #fff;
-  background-color: rgb(108, 117, 125);
-  border-color: rgb(108, 117, 125);
+  background-color: rgb(108, 117, 125);;
+  border-color: rgb(108, 117, 125);;
 }
 
 .btn-fte-toolbar {
   width: 90px;
   height: 35px;
+  margin-left: 5px;
 }
 
 .searchInput {
@@ -20,50 +21,7 @@ h6 {
 
 select {
   max-height: 35px;
-}
-
-h2.view-encap-test {
-  font-size: 24px;
-  color: darkred;
-  font-weight: 500;
-}
-
-.card-header {
-  padding-bottom: 3px;
-  padding-top: 8px;
-  padding-left: 12px;
-  padding-right: 12px;
-}
-
-.card-header-custom {
-  cursor: pointer;
-  font-weight: normal;
-  display: flex;
-  line-height: 2.3rem;
-  border-bottom-style: solid !important;
-  border-bottom: #e6e6e6;
-  border-bottom-width: 1px;
-}
-
-.card-header-custom:hover {
-  background-color: #485b65;
-  color: #f7f7f7;
-}
-
-.active div {
-  background-color:#485b65;
-  color: white;
-}
-
-.btn-primary {
-  color: #fff;
-  background-color: rgb(108, 117, 125);;
-  border-color: rgb(108, 117, 125);;
-}
-
-.btn-fte-toolbar {
-  width: 90px;
-  height: 35px;
+  
 }
 
 .revision {
@@ -72,11 +30,15 @@ h2.view-encap-test {
   font-size: 14px;
 }
 
-.form-group-custom {
-  margin-bottom: 0%;
+.table-wrapper-scroll-y {
+  display: block;
+  max-height: 800px;
+  overflow-y: auto;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  background-color: white
+}
+.projecttype {   
+  background-color: lightgray;
+  vertical-align: middle;
 }
 
-.custom-row-top {
-  margin-right: 0 !important; 
-  margin-left: 0;
-}

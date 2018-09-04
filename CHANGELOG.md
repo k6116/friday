@@ -1,3 +1,45 @@
+<a name="1.10.0"></a>
+# [1.10.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.9.0...v1.10.0) (2018-09-04)
+
+
+### Bug Fixes
+
+* **BOM Viewer:** fixed line pathing and box color legend ([09efd87](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/09efd87))
+
+
+### Features
+
+* **BOM Viewer:** added typeahead search suggestions ([bcfd8a9](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/bcfd8a9))
+
+
+
+<a name="1.9.0"></a>
+# [1.9.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.4...v1.9.0) (2018-08-29)
+
+
+### Bug Fixes
+
+* **Project and Parts setups:** fixed sorting, per Mike's request ([5f80b0d](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/5f80b0d))
+* **Project Create modal:** allows dots in new project names ([2039e15](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/2039e15))
+
+
+### Features
+
+* **BOM Viewer:** Rewrote BOM viewer to use D3 ([93b4f21](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/93b4f21))
+
+
+
+<a name="1.8.4"></a>
+## [1.8.4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.3...v1.8.4) (2018-08-27)
+
+
+### Bug Fixes
+
+* **Fixed Schedule Date Save:** Fixed Schedule Date Save ([db21f8f](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/db21f8f))
+* **Get Schedule Fix:** Get Schedule Fix ([bc24e1b](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/bc24e1b))
+
+
+
 <a name="1.8.3"></a>
 ## [1.8.3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.8.2...v1.8.3) (2018-08-25)
 

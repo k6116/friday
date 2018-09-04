@@ -3,6 +3,7 @@ import { ApiDataSchedulesService, ApiDataPartService, ApiDataProjectService,
   ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
+import { ToolsService } from '../../_shared/services/tools.service';
 import * as moment from 'moment';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
 
@@ -27,6 +28,8 @@ export class PartSetupComponent implements OnInit {
   buildStatusChoices: any;
   revisionNotes: string;
   scheduleId: number;
+  typeSortCoefficient = -1;
+  nameSortCoefficient = -1;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,22 +38,43 @@ export class PartSetupComponent implements OnInit {
     private apiDataProjectService: ApiDataProjectService,
     private apiDataEmployeeService: ApiDataEmployeeService,
     private authService: AuthService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private toolsService: ToolsService
   ) { }
 
   ngOnInit() {
 
+    this.revisionNotes = null;
     this.initFormValues();
     this.getParts();
     this.getSelectionChoices();
-    this.searchParts = ' '; // this will avoid shoing a blank list of parts.
   }
 
-  onSearchInputChange(event: any) {
-    if (this.searchParts.length === 0) {
-      this.showPartCard = false;
-      this.showScheduleCard = false;
-    }
+  orderByType(type: boolean) {
+
+    if (type) {
+      this.typeSortCoefficient = -this.typeSortCoefficient;
+            this.partList.sort((a, b) =>
+            a.PartTypeName < b.PartTypeName ? -this.typeSortCoefficient
+            : a.PartTypeName > b.PartTypeName ? this.typeSortCoefficient : 0);
+      } else {
+        this.nameSortCoefficient = -this.nameSortCoefficient;
+            this.partList.sort((a, b) =>
+            a.PartName < b.PartName ? -this.nameSortCoefficient
+            : a.PartName > b.PartName ? this.nameSortCoefficient : 0);
+      }
+      this.searchParts = this.searchParts + ' '; // Refresh Parts List
+  }
+
+  onSearchChanged(event: any) {
+    this.part = null;
+    this.showPartCard = false;
+    this.showScheduleCard = false;
+
+    // if (this.searchParts.length === 0) {
+    //   this.showPartCard = false;
+    //   this.showScheduleCard = false;
+    // }
   }
 
   initFormValues() {
@@ -85,11 +109,10 @@ export class PartSetupComponent implements OnInit {
     this.apiDataPartService.getParts()
     .subscribe(
       res => {
-        // console.log('Parts List:', this.partList);
         this.partList = res;
+        this.searchParts = ' '; // this will avoid shoing a blank list of parts.
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Parts: ${err}`);
       }
     );
@@ -100,11 +123,9 @@ export class PartSetupComponent implements OnInit {
     this.apiDataPartService.getPartTypes()
     .subscribe(
       res => {
-        // console.log('Part Types:', res);
         this.partTypeChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Part Types: ${err}`);
       }
     );
@@ -112,11 +133,9 @@ export class PartSetupComponent implements OnInit {
     this.apiDataEmployeeService.getDesigners()
     .subscribe(
       res => {
-        // console.log('Designers:', res);
         this.designerChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Designers: ${err}`);
       }
     );
@@ -124,22 +143,18 @@ export class PartSetupComponent implements OnInit {
     this.apiDataEmployeeService.getPlanners()
     .subscribe(
       res => {
-        // console.log('Planners:', res);
         this.plannerChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Planners: ${err}`);
       }
     );
 
     this.apiDataProjectService.getBuildStatus().subscribe(
       res => {
-        // console.log('Build Status:', res);
         this.buildStatusChoices = res;
       },
       err => {
-        // console.log(err);
         this.cacheService.raiseToast('error', `Unable to Obtain Build Status: ${err}`);
       });
   }
@@ -149,7 +164,6 @@ export class PartSetupComponent implements OnInit {
     this.part = part;
     this.showPartCard = true;
     this.showScheduleCard = true;
-    // console.log(part);
 
     this.form.patchValue(
       {
@@ -194,9 +208,9 @@ export class PartSetupComponent implements OnInit {
     this.form.reset();
     this.form.patchValue(
       {
-        partName: this.searchParts
+        partName: this.searchParts ? this.searchParts.trim().replace(/[^a-zA-Z0-9\\s\\-]/gm, '') : null
       });
-      this.cacheService.raiseToast('success', 'New Part Entry Form Created.');
+      this.cacheService.raiseToast('info', 'New Part Entry Form Created.');
   }
 
   onSavePartClick() {
@@ -211,8 +225,7 @@ export class PartSetupComponent implements OnInit {
           this.getParts();
         },
         err => {
-          // console.log(err);
-          this.cacheService.raiseToast('error', `Part Update Failed: ${err}`);
+          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
         }
       );
     } else {
@@ -232,7 +245,6 @@ export class PartSetupComponent implements OnInit {
             this.getParts();
         },
         err => {
-          // console.log(err);
           this.cacheService.raiseToast('error', `Create Part Failed: ${err}`);
         }
       );
@@ -270,7 +282,6 @@ export class PartSetupComponent implements OnInit {
           this.apiDataPartService.deletePart(this.part.PartID, this.scheduleId)
           .subscribe(
             del => {
-              // console.log('part deleted');
               this.cacheService.raiseToast('success', 'Part Deleted Successfully');
               this.part = null;
               this.schedule = null;
@@ -280,7 +291,6 @@ export class PartSetupComponent implements OnInit {
               deleteModalSubscription.unsubscribe();
             },
             err => {
-              // console.log(err);
               this.cacheService.raiseToast('error', `Delete Part Failed: ${err}`);
             }
           );
@@ -313,15 +323,14 @@ export class PartSetupComponent implements OnInit {
 
     // If detail records exist, update the schedule
     if (this.schedule.filter(function(x) { return x.DeleteRow === false || x.DeleteRow === 0; }).length > 0) {
-    this.apiDataSchedulesService.updatePartScheduleXML(this.schedule, this.revisionNotes, this.authService.loggedInUser.id)
+    this.apiDataSchedulesService.updatePartScheduleXML(this.schedule, this.revisionNotes)
       .subscribe(
         res => {
           if (this.schedule[0].CurrentRevision === 0) { this.schedule[0].CurrentRevision = 1; } // must have been a new schedule
-          // console.log('Saved Part Schedule');
           this.cacheService.raiseToast('success', 'Part Schedule Saved');
         },
         err => {
-          // console.log(err);
+          this.cacheService.raiseToast('error', `Unable to Save Part Schedule: ${err}`);
         }
       );
     } else {
@@ -329,11 +338,10 @@ export class PartSetupComponent implements OnInit {
       this.apiDataSchedulesService.destroyScheduleSP(this.scheduleId)
       .subscribe(
         res => {
-          // console.log('Deleted Schedule');
           this.cacheService.raiseToast('success', 'Part Schedule Removed');
         },
         err => {
-          // console.log(err);
+          this.cacheService.raiseToast('error', `Unable to Remove Part Schedule: ${err}`);
         }
       );
     }
@@ -341,24 +349,35 @@ export class PartSetupComponent implements OnInit {
   }
 
   getSchedule() {
-    // console.log(`get part with id: ${this.part ? this.part.PartID : this.form.value.partID}`);
     this.apiDataSchedulesService.getPartSchedule(this.part ? this.part.PartID : this.form.value.partID)
     .subscribe(
       res => {
         if (res.length > 0) {
+          res.forEach(element => {
+            element.NeedByDate = moment(element.NeedByDate).format('YYYY-MM-DD');
+          });
         this.schedule = res;
         this.revisionNotes = res[0].RevisionNotes;
         this.scheduleId = res[0].ScheduleID;
-        // console.log('Part Schedule:', this.schedule);
+
       } else {
+        this.revisionNotes = null;
         this.schedule = [];
         this.scheduleId = 0;
         this.createDefaultScheduleRow();
       }
       },
       err => {
-        // console.log(err);
+        this.cacheService.raiseToast('error', `Unable to Get Part Schedule: ${err}`);
       }
     );
   }
+
+  setPartTypeIconClass(partTypeName) {
+    return this.toolsService.setPartTypeIconClass(partTypeName);
+   }
+
+   setPartTypeColor(partTypeName) {
+    return this.toolsService.setPartTypeColor(partTypeName);
+   }
 }

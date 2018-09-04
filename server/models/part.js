@@ -23,13 +23,12 @@ const Part = sequelize.define('part',
     oracleDWSFDeptWSF: { type: Sequelize.STRING, field: 'OracleDWSFDeptWSF' },
     oracleICATItemCategories: { type: Sequelize.STRING, field: 'OracleICATItemCategories' },
     notes: { type: Sequelize.STRING, field: 'Notes' },
-    tags: { type: Sequelize.STRING, field: 'Tags' },
-    itemStatus: { type: Sequelize.STRING, field: 'ItemStatus' },
-
+    tags: { type: Sequelize.STRING, field: 'Tags' },   
     createdBy: { type: Sequelize.INTEGER, field: 'CreatedBy' },
     createdAt: { type: Sequelize.DATE, field: 'CreationDate' },
     updatedBy: { type: Sequelize.INTEGER, field: 'LastUpdatedBy' },
     updatedAt: { type: Sequelize.DATE, field: 'LastUpdateDate' },
+    itemStatus: { type: Sequelize.STRING, field: 'ItemStatus' },
    
   },
   {

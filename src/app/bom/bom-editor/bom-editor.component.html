@@ -1,23 +1,23 @@
 <div class="container-fluid">
+  <app-bom-selector (selectedBom)="onBomSelect($event)"></app-bom-selector>
+
   <div class="row row-custom">
-    <!-- first col is drop-down -->
-    <div class="col-sm-3">
-      <select class="form-control" (change)="onBomSelect($event.target.value)">
-        <option *ngFor="let bill of billList" [value]="bill.ParentPartID">{{bill.PartOrProjectName}}</option>
-      </select>
+    <div class="col-sm-4 bom-editor-col">
+      <!-- first col is BOM tree -->
+      <div class="tree-container" *ngIf="showBom">
+        <tree [tree]="bomTree" (nodeSelected)="onNodeSelect($event.node)" #treeComponent></tree>
+      </div>
     </div>
-    <!-- second col is BOM tree -->
-    <div class="col-sm-4" *ngIf="showBom">
-      <tree [tree]="bomTree" (nodeSelected)="onNodeSelect($event.node)" #treeComponent></tree>
-    </div>
-    <div class="col-sm-4" *ngIf="!showBom">
-      <p>please select a BOM</p>
-    </div>
-    <div class="details-box" *ngIf="showDetails">
-      <b>{{details.entity}} Details:</b><br /><br />
-      <b>Name:</b> {{details.name}} (id: {{details.id}})<br />
-      <b>{{details.entity}} Type:</b> {{details.type}}<br />
-      <b>Description:</b> {{details.description}}
+    <div class="col-sm-8">
+      <!-- second col is BOM viewer -->
+      <app-bom-draw-d3 [selectedBom]="selectedBom"></app-bom-draw-d3>
     </div>
   </div>
+  
+  <!-- <div class="details-box" *ngIf="showDetails">
+    <b>{{details.entity}} Details:</b><br /><br />
+    <b>Name:</b> {{details.name}} (id: {{details.id}})<br />
+    <b>{{details.entity}} Type:</b> {{details.type}}<br />
+    <b>Description:</b> {{details.description}}
+  </div> -->
 </div>

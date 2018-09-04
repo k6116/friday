@@ -43,6 +43,16 @@ div.toast.toast-error:hover {
   cursor: pointer;
 }
 
+div.toast.toast-info {
+  background-color: rgb(35, 79, 200); 
+  color: #fff;
+}
+
+div.toast.toast-info:hover {
+  box-shadow: 0px 0px 14px rgb(121, 148, 197);
+  cursor: pointer;
+}
+
 div.toast-show {
   transform: translateY(-30px);
   opacity: 1;

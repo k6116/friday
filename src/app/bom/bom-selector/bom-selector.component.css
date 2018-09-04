@@ -1,0 +1,11 @@
+
+.bom-selector {
+  position: absolute;
+  top: 90px;
+  left: 220px;
+  z-index: 1;
+}
+
+.bill-searchbox {
+  width: 360px;
+}

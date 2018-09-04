@@ -3,9 +3,9 @@
   <div class="jumbotron">
     <!-- Jobtitle Fuzzy Search Bar -->
     <div class="input-group">
-      <input class="searchInput" type="text" [(ngModel)]="searchParts" (change)="onSearchInputChange($event)" placeholder="Search Parts">
+      <input class="searchInput" type="text" [(ngModel)]="searchParts" (input)="onSearchChanged($event.target.value)" placeholder="Search Parts">
       <div class="input-group-append">
-        <button [disabled]="!searchParts" class="btn btn-primary btn-fte-toolbar" (click)="onCreatePartClick()" style="display: block">
+        <button [disabled]="searchParts && !searchParts.trim()" class="btn btn-primary btn-fte-toolbar" (click)="onCreatePartClick()" style="display: block">
           <i class="fa fa-plus"></i>&nbsp;&nbsp;New
         </button>       
       </div>
@@ -15,37 +15,47 @@
 
 
   <div class="row">
-  
-    <div class="col-2">
-      <ng-container *ngIf="(partList | filter : searchParts : 'PartName':{limitTo: -1, matchOptimistic: true}) as filteredPartList">
-        <ul class="list-group list-group-flush" *ngFor="let part of filteredPartList | slice:0:10; let i=index">
-          <button class="list-group-item list-group-item-action" (click)="onPartClick(part)">
-            {{ part.PartName }}<span *ngIf="part.partTypeName"> - {{part.PartTypeName}}</span>
-          </button>
-        </ul>
-      </ng-container>
-    </div>
-
-  
-    <div class="col-5">
+    <div class="col-2.1">
+      <table class="table table-wrapper-scroll-y table-hover" *ngIf="(partList | filter : searchParts : 'PartName':{limitTo: -1, matchOptimistic: true}) as filteredPartList">
+          <thead>
+              <tr>
+                <th class="th-sm" (click)="orderByType(true)">Type
+                    <i class="fa fa-sort" aria-hidden="true"></i>
+                  </th>
+                  <th class="th-sm" (click)="orderByType(false)">Name
+                    <i class="fa fa-sort" aria-hidden="true"></i>
+                  </th>                   
+                </tr>
+            </thead>
+        <tbody>
+          <tr  *ngFor="let part of filteredPartList" (click)="$event.stopPropagation();onPartClick(part)">
+              <td>    
+                  <div [ngStyle]="{ 'color': setPartTypeColor(part.PartTypeName) }">
+                      <i [ngClass]="setPartTypeIconClass(part.PartTypeName)"></i>
+                      {{ part.PartTypeName }} 
+                  </div>   
+              </td>
+              <td>           
+                {{ part.PartName  }}         
+              </td>       
+          </tr>
+      </tbody>
+      </table>
+    </div>  
+    <div class="col-sm">
       <div class="card" *ngIf="showPartCard">
         <div class="card-header">
           <div class="row">
-            <div class="col-8">
+            <div class="col-6">
                 <form [formGroup] = 'form'>
                   <input type=text readonly=true formControlName="partName" maxlength="50" class="form-control">
-                </form>
-              <!-- <h6>{{ part.PartName }}         
-              </h6> -->
+                </form>             
             </div>
-            <div class="col-4 text-right">
-              <!-- <button class="btn btn-primary btn-fte-toolbar">
-                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#partEditModal"></i>&nbsp;&nbsp;Edit
-              </button> -->
+            <div class="col-6 text-right">             
               <button *ngIf=part class="btn btn-primary btn-fte-toolbar" (click)="onDeletePartClick(part)">
                 <i class="fa fa-trash-o fa-lg" ></i>&nbsp;&nbsp;Delete
               </button>
-              <button class="btn btn-primary btn-fte-toolbar" (click)="onSavePartClick()">
+              <button class="btn btn-primary btn-fte-toolbar" (click)="onSavePartClick()" [disabled]="form.value.partTypeID < 1">
                   <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
                 </button>
             </div>
@@ -53,7 +63,7 @@
         </div>
         <form [formGroup] = 'form'>
           <div class="card-body">
-           <table class="table table-bordered table-light">
+           <table class="table table-bordered">
              <tr>
                <td>Description</td>
                <td colspan="3"><input type=text class="form-control" formControlName="description"></td>            
@@ -65,7 +75,7 @@
               <tr>
                   <td>Oracle Item #</td>
                   <td><input type=text class="form-control" maxlength="100" formControlName="oracleItemNumber"></td>
-                  <td>Part Type</td>
+                  <td>* Part Type</td>
                   <td><select class="form-control" formControlName="partTypeID"><option class="dropdown-item" *ngFor="let item of partTypeChoices" [value]= "item.PartTypeID">
                     {{item.PartTypeName}}
                   </option></select></td>
@@ -80,7 +90,7 @@
                   </tr>
                   <tr>
                     <td>Item Status</td>
-                    <td><input type=text class="form-control" maxlength="100" formControlName="itemStatus"></td>
+                    <td><input type=text class="form-control" maxlength="100" formControlName="itemStatus"></td>                                  
                     <td>Planner</td>
                     <td><select class="form-control" formControlName="plannerEmployeeID"><option class="dropdown-item" *ngFor="let item of plannerChoices" [value]= "item.EmployeeID">
                       {{item.FullName}}
@@ -98,25 +108,25 @@
       </div>
     </div>
 
-    <div class="col-5">
+    <div class="col-sm">
       <div class="card" *ngIf="showScheduleCard">
         <div class="card-header">
           <div class="row">
-            <div class="col-3">
+            <div class="col">
                 <table>
                    <tr><td> <h6>Schedule Revision</h6></td></tr>
                   <tr><td><span class=revision *ngIf='schedule'>[ {{ schedule[0].CurrentRevision }} ]</span></td></tr>
                 </table>    
                       
             </div>
-            <div class="col-5">
+            
               <table>
                 <td> <h6>* Revision Notes </h6></td>
                 <td><input type=text class=form-control maxlength="500" [(ngModel)]="revisionNotes"></td>
               </table>                      
-            </div>
+       
            
-            <div class="col-4 text-right">
+            <div class="col text-right">
               <button [disabled]="!revisionNotes" class="btn btn-primary btn-fte-toolbar" (click)="onSaveSchedule()">
                 <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
               </button>              
@@ -124,7 +134,7 @@
           </div>
         </div>
         <div class="card-body">
-          <table class="table table-bordered table-hover table-light">
+          <table class="table table-bordered table-hover">
             <thead>
               <th>Need By</th>
               <th>Quantity</th>
