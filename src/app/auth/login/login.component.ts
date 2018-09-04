@@ -55,6 +55,9 @@ export class LoginComponent implements OnInit {
   backgroundImage: any;
   testImagePath: string;
 
+  // set to true if this is the test instance (port 440)
+  isTestInstance: boolean;
+
   constructor(
     private router: Router,
     // private apiDataService: ApiDataService,
@@ -72,6 +75,12 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    // check the port to see if this is the test instance (dev will return '3000', prod will return '')
+    // if this is test, use the 'blue' icon version (_test) and text instead of yellow
+    if (location.port === '440') {
+      this.isTestInstance = true;
+    }
 
     // check the cookies for the jrt_username cookie, if it is there set the username
     // this means that the user had previously logged in with 'Remember Me' selected

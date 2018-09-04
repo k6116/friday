@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs/subject';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ToolsService } from '../../_shared/services/tools.service';
@@ -21,6 +23,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
   @ViewChild('filterDropDownVC') filterDropDownVC: ElementRef;
 
+  ngUnsubscribe = new Subject();
   projects: any;
   showSpinner: boolean;
   showPage: boolean;
@@ -49,13 +52,6 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     private cacheService: CacheService,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-
-    // detach the change detector and manually fire it x times per second
-    // for better user experience for search (typing response/feedback)
-    this.changeDetectorRef.detach();
-    this.timer = setInterval(() => {
-      this.changeDetectorRef.detectChanges();
-    }, 500);
 
     // set the fuzzy search threshold value
     this.fuzzySearchThreshold = 0.4;
@@ -128,6 +124,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
     // get all the data for the page using forkjoin - projects, and dropdowns
     this.apiDataProjectService.getProjectsBrowseData()
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         res => {
           // console.log('projects browse response:');
@@ -154,6 +151,8 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
           this.showPage = true;
           // show the footer
           this.toolsService.showFooter();
+          // remove change detection
+          this.detachChangeDetection();
         },
         err => {
           // hide the spinner
@@ -173,8 +172,21 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+    this.subscription1.unsubscribe();
     clearInterval(this.timer);
     this.changeDetectorRef.detach();
+  }
+
+
+  detachChangeDetection() {
+    // detach the change detector and manually fire it x times per second
+    // for better user experience for search (typing response/feedback)
+    this.changeDetectorRef.detach();
+    this.timer = setInterval(() => {
+      this.changeDetectorRef.detectChanges();
+    }, 500);
   }
 
 

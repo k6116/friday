@@ -56,7 +56,7 @@ export class DisplayProjectComponent implements OnInit {
     this.animateChart = true;
 
     // set project types that will show the PLC schedule chart
-    this.projectTypesToDisplaySchedule = ['NPI', 'NCI', 'NPPI'];
+    this.projectTypesToDisplaySchedule = ['NPI', 'NCI', 'NPPI', 'NTI', 'Program'];
 
   }
 

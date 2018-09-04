@@ -23,9 +23,9 @@
 
         <div class="login-logo-cont">
           <div class="login-logo">
-            <img class="login-logo-img" src="../assets/jarvis_logos/jarvis_logo.svg" alt="">
+            <img class="login-logo-img" [attr.src]="'../assets/jarvis_logos/jarvis_logo' + (isTestInstance ? '_test' : '') + '.svg'" alt="">
           </div>
-          <div class="login-subtitle">
+          <div class="login-subtitle" [style.color]="isTestInstance ? 'rgb(128, 210, 228)' : 'rgb(253, 231, 114)'">
             Resources
           </div>
         </div>

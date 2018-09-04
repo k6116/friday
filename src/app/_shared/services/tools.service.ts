@@ -378,7 +378,9 @@ export class ToolsService {
   }
 
   showFooter() {
-    $('div.footer-container').css('display', 'block');
+    setTimeout(() => {
+      $('div.footer-container').css('display', 'block');
+    }, 500);
   }
 
 

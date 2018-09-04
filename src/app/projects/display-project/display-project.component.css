@@ -199,6 +199,10 @@ div.project-attribute-label {
   margin-bottom: 7px;
 }
 
+div.project-attribute-value.notes {
+  margin-right: 150px;
+}
+
 div.record-history-cont {
   position: absolute;
   right: 30px;
