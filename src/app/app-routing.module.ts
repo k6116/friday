@@ -10,6 +10,7 @@ import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 import { BrowserGuard } from './_shared/guards/browser.guard';
 import { PermissionsGuard } from './_shared/guards/permissions.guard';
 import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
+import { FteTeamEntryGuard } from './fte-entry/team/fte-entry.guard';
 
 // COMPONENTS
 // ----------
@@ -59,7 +60,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
         canActivate: [FteEntryGuard], canDeactivate: [UnsavedChangesGuard] },
-      { path: 'fte-entry/team', component: FteEntryTeamComponent },
+      { path: 'fte-entry/team', component: FteEntryTeamComponent, canActivate: [FteTeamEntryGuard] },
       { path: 'projects/my-projects', component: MyProjectsComponent },
       { path: 'projects/requests', component: ProjectRequestsComponent },
       { path: 'projects/search', component: SearchProjectsComponent },

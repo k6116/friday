@@ -6,6 +6,8 @@ const Treeize = require('treeize');
 const moment = require('moment');
 const token = require('../token/token');
 
+const Op = sequelize.Op;
+
 
 function indexUserData(req, res) {
 
@@ -537,6 +539,37 @@ function destroyPlan(req, res) {
 
 }
 
+
+function checkTeamJobTitle(req, res) {
+
+  // emailAddress param should be in the format 'email1@email.com','email2@email.com'
+  const emailAddress = req.params.emailAddress;
+
+  console.log(emailAddress)
+
+  const sql = `
+    SELECT
+      COUNT(FullName) as numOfEmployees
+    FROM
+      accesscontrol.Employees
+    WHERE
+      EmailAddress IN (${emailAddress})
+      AND JobTitleID IS NOT NULL
+  `
+
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(numOfEmployees => {
+      res.json(numOfEmployees);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+}
+
 module.exports = {
   indexUserData: indexUserData,
   destroyUserProject: destroyUserProject,
@@ -547,5 +580,6 @@ module.exports = {
   indexNewPlan: indexNewPlan,
   indexPlan: indexPlan,
   indexPlanList: indexPlanList,
-  destroyPlan: destroyPlan
+  destroyPlan: destroyPlan,
+  checkTeamJobTitle: checkTeamJobTitle
 }

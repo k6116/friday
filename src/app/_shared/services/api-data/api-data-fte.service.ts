@@ -105,5 +105,11 @@ export class ApiDataFteService {
       .map((response: Response) => response.json()).toPromise();
   }
 
+  // check it job title and subtitle has been set (synchronous version)
+  checkTeamJobTitleUpdatedSync(emailAddress: string) {
+    return this.http.get(`/api/fte/checkTeamJobTitle/${emailAddress}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
 
 }

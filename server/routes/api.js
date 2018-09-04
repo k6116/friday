@@ -30,6 +30,7 @@ router.get('/fte/indexNewPlan/:emailAddress/:userID/:planName', controllers.fte.
 router.get('/fte/indexPlanList/:userID', controllers.fte.indexPlanList);
 router.get('/fte/indexPlan/:userID/:planName', controllers.fte.indexPlan);
 router.post('/fte/destroyPlan/', controllers.fte.destroyPlan);
+router.get('/fte/checkTeamJobTitle/:emailAddress', controllers.fte.checkTeamJobTitle);
 
 // TEMP JOB TITLE API FOR MANAGER EDIT
 router.get('/indexEmployeesJobTitles/:emailAddress', controllers.jobTitle.indexEmployeesJobTitles);
@@ -177,8 +178,6 @@ router.post('/updateProjectScheduleXML/:userID/:revisionNotes', controllers.sche
 router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
 router.post('/updatePartScheduleXML/:userID/:revisionNotes', controllers.schedules.updatePartScheduleXML); //TO-DO user Token for userID and put revisionNotes in header
 router.get('/destroyScheduleSP/:scheduleID', controllers.schedules.destroyScheduleSP);
-
-
 
 // middleware to protect permissions protected routes
 // if it is verified, it will continue (next) and allow the routes

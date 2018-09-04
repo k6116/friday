@@ -68,7 +68,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               path: 'main/fte-entry/team',
               parentAlias: 'fte-entry',
               active: false,
-              permissionProtected: false,
+              permissionProtected: true,
               hidden: false
             }
           ]
@@ -210,12 +210,12 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               hidden: false
             },
             {
-              title: 'Team-Roles',
+              title: 'Team Roles',
               alias: 'setups-team-roles',
               path: 'main/setups/team-roles',
               parentAlias: 'setups',
               active: false,
-              permissionProtected: false,
+              permissionProtected: true,
               hidden: false
             }
           ]
