@@ -29,8 +29,11 @@
             </thead>
         <tbody>
           <tr  *ngFor="let part of filteredPartList" (click)="$event.stopPropagation();onPartClick(part)">
-              <td class="parttype">               
-                  {{ part.PartTypeName }}           
+              <td>    
+                  <div [ngStyle]="{ 'color': setPartTypeColor(part.PartTypeName) }">
+                      <i [ngClass]="setPartTypeIconClass(part.PartTypeName)"></i>
+                      {{ part.PartTypeName }} 
+                  </div>   
               </td>
               <td>           
                 {{ part.PartName  }}         
