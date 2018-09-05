@@ -11,6 +11,17 @@ considering topnav, sidenav, and footer -->
     <!-- outer page container; don't show until data is ready -->
     <div class="page-cont" *ngIf="showPage">
 
+      <!-- back to search button -->
+      <div class="buttons-row">
+
+        <button class="btn-standard" (click)="onBackButtonClick()">
+          <i class="fa fa-backward button-icon"></i>
+          Search
+        </button>
+
+      </div>
+
+      
       <!-- project header row with project type, name, description, back button -->
       <div class="project-header-row">
 
@@ -43,7 +54,7 @@ considering topnav, sidenav, and footer -->
         </div>
 
         <!-- back to search button -->
-        <div class="back-button-cont">
+        <!-- <div class="back-button-cont">
 
           <div class="back-button-inner-cont">
 
@@ -54,7 +65,7 @@ considering topnav, sidenav, and footer -->
 
           </div>
 
-        </div>
+        </div> -->
 
 
       </div>

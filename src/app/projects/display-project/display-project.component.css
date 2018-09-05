@@ -1,4 +1,12 @@
 
+
+/* buttons row */
+
+div.buttons-row {
+  margin-bottom: 25px;
+}
+
+
 /* project header row */
 
 div.project-header-row {
@@ -50,7 +58,7 @@ div.project-type-icon {
 div.project-details-cont {
   display: inline-block;
   padding: 20px 50px 20px 25px;
-  width: calc(100% - (150px + 150px));
+  width: calc(100% - (150px));
   vertical-align: top;
   margin-right: -4px; /* remove the inherent space between inline-block elements */
 }
@@ -103,61 +111,6 @@ div.back-button-inner-cont {
   top: 0;
   bottom: 0;
   margin: auto;
-}
-
-button.btn-standard {
-  display: inline-block;
-  min-width: 90px;
-  font-size: 15px;
-  font-weight: 400;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  border: 1px solid transparent;
-  padding: .375rem .75rem;
-  border-radius: .25rem;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-}
-
-button.btn-standard {
-  min-width: 90px;
-  font-size: 15px;
-  color: rgb(50, 50, 50);
-  background-color: rgb(232, 234, 237);
-  border: 1px solid rgb(212, 214, 217);
-}
-
-button.btn-standard:focus, button.btn-standard:active, button.btn-standard:visited {
-  outline: none;
-}
-
-button.btn-standard:hover {
-  background-color: rgb(221, 223, 226);
-  border: 1px solid rgb(201, 203, 206);
-  cursor: pointer;
-}
-
-button.btn-standard.hover-green:hover {
-  background-color: rgb(219, 255, 219);
-  border: 1px solid rgb(199, 235, 199);
-}
-
-button.btn-standard.hover-blue:hover {
-  background-color: rgb(219, 240, 255);
-  border: 1px solid rgb(199, 220, 235);
-}
-
-button.btn-standard.hover-red:hover {
-  background-color: rgb(255, 219, 219);
-  border: 1px solid rgb(235, 199, 199);
-}
-
-i.button-icon {
-  margin-right: 5px;
 }
 
 
