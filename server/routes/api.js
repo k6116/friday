@@ -14,6 +14,7 @@ var controllers = require('../controllers/_index.js');
 // AUTH CONTROLLER 
 router.post('/auth/authenticate', controllers.auth.authenticate);
 router.get('/auth/getLoginBackgroundImages', controllers.auth.getLoginBackgroundImages);
+router.get('/auth/getLoginImage/:fileName', controllers.auth.getLoginImage);
 router.get('/auth/logout/:userName', controllers.auth.logout);  // TEMP CODE: for websockets
 
 // CLICK TRACKING CONTROLLER
@@ -147,6 +148,9 @@ router.put('/fte/fte/update/updateUserData', controllers.fte.updateUserData);
 // TEMP JOB TITLE CONTROLLER
 router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
+// PROJECT CONTROLER
+router.get('/project/displayProject/show/getProject/:projectID', controllers.project.getProject);
+
 // SETUP PARTS
 router.get('/getParts', controllers.parts.indexParts);
 router.get('/getPart/:partID', controllers.parts.getPart);
@@ -157,6 +161,7 @@ router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 
 // SCHEDULES CONTROLLER
 router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
+router.get('/getProjectSchedule2/:projectID', controllers.schedules.getProjectSchedule);
 router.post('/updateProjectScheduleXML/:revisionNotes', controllers.schedules.updateProjectScheduleXML);
 router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
 router.post('/updatePartScheduleXML/:revisionNotes', controllers.schedules.updatePartScheduleXML);

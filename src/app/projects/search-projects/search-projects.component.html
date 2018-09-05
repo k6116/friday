@@ -3,117 +3,112 @@
 considering topnav, sidenav, and footer -->
 <div class="container-fluid">
 
+    <!-- spinner -->
+    <div class="row row-custom" *ngIf="showSpinner">
+      <div class="col-lg-12 col-custom">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_bars-rotate-32" transform="rotate(270 16 16)"> <rect x="14" fill="#111111" width="4" height="7"></rect> <rect x="22.83883" y="3.66117" transform="matrix(0.70711 0.70711 -0.70711 0.70711 12.33883 -15.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="25" y="14" fill="#111111" width="7" height="4" style="opacity: 0.4;"></rect> <rect x="22.83883" y="21.33883" transform="matrix(-0.70711 0.70711 -0.70711 -0.70711 59.96625 24.83883)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="14" y="25" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="5.16117" y="21.33883" transform="matrix(-0.70711 -0.70711 0.70711 -0.70711 -5.33883 47.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="0" y="14" fill="#111111" width="7" height="4" style="opacity: 0.6;"></rect> <rect x="5.16117" y="3.66117" transform="matrix(0.70711 -0.70711 0.70711 0.70711 -2.96625 7.16117)" fill="#111111" width="4" height="7" style="opacity: 0.8;"></rect> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_bars-rotate-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg>
+        <!-- <svg viewBox="0 0 32 32" width="32" height="32"><title>dots 06</title><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_dots-06-32" transform="rotate(0 16 16)"> <circle fill="#111111" cx="16" cy="3" r="3"></circle> <circle fill="#111111" cx="25.19239" cy="6.80761" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="29" cy="16" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="25.19239" cy="25.19239" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="16" cy="29" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="6.80761" cy="25.19239" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="3" cy="16" r="3" style="opacity: 0.6;"></circle> <circle fill="#111111" cx="6.80761" cy="6.80761" r="3" style="opacity: 0.8;"></circle> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_dots-06-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg> -->
+      </div>
+    </div>
   
-
-  <!-- spinner -->
-  <div class="row row-custom" *ngIf="showSpinner">
-    <div class="col-lg-12 col-custom">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_bars-rotate-32" transform="rotate(270 16 16)"> <rect x="14" fill="#111111" width="4" height="7"></rect> <rect x="22.83883" y="3.66117" transform="matrix(0.70711 0.70711 -0.70711 0.70711 12.33883 -15.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="25" y="14" fill="#111111" width="7" height="4" style="opacity: 0.4;"></rect> <rect x="22.83883" y="21.33883" transform="matrix(-0.70711 0.70711 -0.70711 -0.70711 59.96625 24.83883)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="14" y="25" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="5.16117" y="21.33883" transform="matrix(-0.70711 -0.70711 0.70711 -0.70711 -5.33883 47.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="0" y="14" fill="#111111" width="7" height="4" style="opacity: 0.6;"></rect> <rect x="5.16117" y="3.66117" transform="matrix(0.70711 -0.70711 0.70711 0.70711 -2.96625 7.16117)" fill="#111111" width="4" height="7" style="opacity: 0.8;"></rect> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_bars-rotate-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg>
-      <!-- <svg viewBox="0 0 32 32" width="32" height="32"><title>dots 06</title><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_dots-06-32" transform="rotate(0 16 16)"> <circle fill="#111111" cx="16" cy="3" r="3"></circle> <circle fill="#111111" cx="25.19239" cy="6.80761" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="29" cy="16" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="25.19239" cy="25.19239" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="16" cy="29" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="6.80761" cy="25.19239" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="3" cy="16" r="3" style="opacity: 0.6;"></circle> <circle fill="#111111" cx="6.80761" cy="6.80761" r="3" style="opacity: 0.8;"></circle> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_dots-06-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg> -->
-    </div>
-  </div>
-
-  <!-- outer page container; don't show until data is ready -->
-  <div class="page-cont" *ngIf="showPage">
-
-    <!-- hidden element for measuring text width, to detect overflows -->
-    <span class="project-name-ruler"></span>
-    <span class="project-description-ruler"></span>
-
-    <div class="projects-filters-cont">
-
-      <div class="projects-filter-label">
-        Search By
+    <!-- outer page container; don't show until data is ready -->
+    <div class="page-cont" *ngIf="showPage">
+  
+  
+      <!-- hidden elements ('rulers') for measuring text width, to detect overflows -->
+      <span class="project-name-ruler"></span>
+      <span class="project-description-ruler"></span>
+  
+  
+      <div class="projects-filters-cont">
+  
+        <div class="projects-filter-label">
+          Search By
+        </div>
+  
+        <div class="projects-filter-dropdown">
+          <select class="form-control projects-filter-select" (change)="onFilterByChange($event.target.value)">
+            <option *ngFor="let filter of filters" [selected]="filter.displayName === selectedFilter.displayName">{{ filter.displayName }}</option>
+          </select>
+        </div>
+  
+        <div [hidden]="selectedFilter.isDropdown" class="projects-filter-string">
+          <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (ngModelChange)="onFilterStringChange()" (keydown)="onFilterStringKeydown($event)" (focusout)="onFilterLostFocus()" appAutofocus>
+          <i class="projects-filter-icon-search fa fa-search"></i>
+          <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
+        </div>
+  
+        <div [hidden]="!selectedFilter.isDropdown" class="projects-filter-select">
+          <select #filterDropDownVC class="form-control projects-filter-select" (change)="onFilterSelectChange($event.target.value)">
+            <option *ngFor="let data of dropDownData[selectedFilter.dropDownArrayIndex]" [selected]="data[selectedFilter.dropDownProperty] === filterSelection">{{ data[selectedFilter.dropDownProperty] }}</option>
+          </select>
+        </div>
+  
+        <div class="projects-display-count">
+          {{ numProjectsDisplayString }}
+        </div>
+  
       </div>
-
-      <div class="projects-filter-dropdown">
-        <select class="form-control projects-filter-select" (change)="onFilterByChange($event.target.value)">
-          <option *ngFor="let filter of filters" [selected]="filter.displayName === 'Project Name'">{{ filter.displayName }}</option>
-        </select>
-      </div>
-
-      <div *ngIf="!selectedFilter.isDropdown" class="projects-filter-string">
-        <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (ngModelChange)="onFilterStringChange()" (keydown)="onFilterStringKeydown($event)" (focusout)="onFilterLostFocus()" appAutofocus>
-        <i class="projects-filter-icon-search fa fa-search"></i>
-        <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
-      </div>
-
-      <div *ngIf="selectedFilter.isDropdown" class="projects-filter-select">
-        <select #filterDropDownVC class="form-control projects-filter-select" (change)="onFilterSelectChange($event.target.value)">
-          <option *ngFor="let data of dropDownData[selectedFilter.dropDownArrayIndex]">{{ data[selectedFilter.dropDownProperty] }}</option>
-        </select>
-      </div>
-
-      <div class="projects-display-count">
-        <!-- Showing {{ filteredProjectsCount === 0 ? 'All' : filteredProjectsCount + ' of' }} {{ totalProjectsCount }} Projects -->
-        {{ numProjectsDisplayString }}
-      </div>
-
-    </div>
-
-    <div class="projects-cards-cont" (scroll)="onScroll()">
-
-      <!-- each row is a project card, with bottom margin separating it from the next one -->
-      <div *ngFor="let project of projects | filter : filterString : selectedFilter.columnName : {limitTo: numProjectsToDisplay, matchFuzzy: {on: selectedFilter.matchFuzzy, threshold: 0.3}, matchOptimistic: selectedFilter.matchOptimistic, matchExact: selectedFilter.matchExact}" class="row row-custom row-project-card">
-
-        <!-- 12 columns width project card container-->
-        <div class="project-card">
-
-          <!-- container for project type (left side element) -->
-          <div class="project-type-cont" [ngStyle]="{ 'color': setProjctTypeColor(project.ProjectTypeName) }">
-
-            <!-- project type name text -->
-            <div class="project-type-name"> 
-              {{ project.ProjectTypeName }}
+  
+      <div class="projects-cards-cont" (scroll)="onScroll()">
+  
+        <!-- each row is a project card, with bottom margin separating it from the next one -->
+        <div *ngFor="let project of projects | filter : filterString : selectedFilter.columnName : {limitTo: numProjectsToDisplay, matchFuzzy: {on: selectedFilter.matchFuzzy, threshold: fuzzySearchThreshold}, matchOptimistic: selectedFilter.matchOptimistic, matchExact: selectedFilter.matchExact}" class="row row-custom row-project-card">
+  
+          <!-- single project card container-->
+          <div class="project-card" (click)="onProjectClick(project)">
+  
+            <!-- container for project type (left side element) -->
+            <div class="project-type-cont" [ngStyle]="{ 'color': toolsService.setProjctTypeColor(project.ProjectTypeName) }">
+  
+              <!-- project type name text -->
+              <div class="project-type-name"> 
+                {{ project.ProjectTypeName }}
+              </div>
+  
+              <!-- project type icon -->
+              <div class="project-type-icon"> 
+                <i [ngClass]="toolsService.setProjctTypeIconClass(project.ProjectTypeName)"></i>
+              </div>
+              
             </div>
-
-            <!-- project type icon -->
-            <div class="project-type-icon"> 
-              <i [ngClass]="setProjctTypeIconClass(project.ProjectTypeName)"></i>
+  
+  
+            <!-- container for project name and description -->
+            <div class="project-details-cont">
+  
+              <div class="project-name" [attr.data-id]="project.ProjectID" (mouseenter)="onNameMouseEnter(project)" (mouseleave)="onNameMouseLeave(project.ProjectID)">
+                {{ project.ProjectName }}
+              </div>
+  
+              <div class="project-description" [attr.data-id]="project.ProjectID" (mouseenter)="onDescriptionMouseEnter(project)" (mouseleave)="onDescriptionMouseLeave(project.ProjectID)">
+                {{ project.Description }}
+              </div>
+              
             </div>
-            
-          </div>
-
-
-          <!-- container for project name, description, etc. (middle element) -->
-          <div class="project-details-cont">
-
-            <div class="project-name" [attr.data-id]="project.ProjectID" (mouseenter)="onNameMouseEnter(project)" (mouseleave)="onNameMouseLeave(project.ProjectID)">
-              {{ project.ProjectName }}
-            </div>
-
-            <div class="project-description" [attr.data-id]="project.ProjectID" (mouseenter)="onDescriptionMouseEnter(project)" (mouseleave)="onDescriptionMouseLeave(project.ProjectID)">
-              {{ project.Description }}
-            </div>
-            
-          </div>
-
-
-          <!-- container for all other details (right element) -->
-          <div class="project-card-right-cont">
-
-
-            <!-- project attributes section - status, priority, and department -->
-            <div class="project-attributes-cont">
-
+  
+  
+            <!-- container for attributes - status, priority, and department -->
+            <div class="project-attributes-cont" [attr.data-id]="project.ProjectID">
+  
               <div class="project-attributes-table">
                 <div class="project-attributes-row">
                   <div class="project-attributes-cell attributes icon-cell">
                     <i class="nc-icon nc-light-traffic"></i>
                   </div>
                   <div class="project-attributes-cell attributes label-cell">
-                    Status:
+                    Status
                   </div>
                   <div class="project-attributes-cell attributes value-cell">
                     {{ project.ProjectStatusName ? project.ProjectStatusName : '--' }}
                   </div>
                 </div>
-                <div class="project-attributes-row">
+                <div class="project-attributes-row test-hover">
                   <div class="project-attributes-cell attributes icon-cell">
                     <i class="nc-icon nc-priority-high-2"></i>
                   </div>
                   <div class="project-attributes-cell attributes label-cell">
-                    Priority:
+                    Priority
                   </div>
                   <div class="project-attributes-cell attributes value-cell">
                     {{ project.PriorityName ? project.PriorityName : '--' }}
@@ -124,27 +119,27 @@ considering topnav, sidenav, and footer -->
                     <i class="nc-icon nc-hierarchy-53"></i>
                   </div>
                   <div class="project-attributes-cell attributes label-cell">
-                    Department:
+                    Department
                   </div>
                   <div class="project-attributes-cell attributes value-cell">
                     {{ (project.GroupName && project.EntityName && project.EntityOwnerName) ? project.GroupName + ' > ' + project.EntityName + ' > ' + project.EntityOwnerName : '--' }}
                   </div>
                 </div>
               </div>
-
+  
             </div>
-
-
-            <!-- project record into section - created by and creation date-->
-            <div class="project-creation-cont">
-
+  
+  
+            <!-- container for record history/info - created by and creation date-->
+            <div class="project-creation-cont" [attr.data-id]="project.ProjectID">
+  
               <div class="project-attributes-table">
                 <div class="project-attributes-row">
                   <div class="project-attributes-cell creation icon-cell">
                     <i class="nc-icon nc-a-edit"></i>
                   </div>
                   <div class="project-attributes-cell creation label-cell">
-                    Created By:
+                    Created By
                   </div>
                   <div class="project-attributes-cell creation value-cell">
                       {{ project.FullName ? project.FullName : '--' }}
@@ -155,28 +150,48 @@ considering topnav, sidenav, and footer -->
                     <i class="nc-icon nc-time-clock"></i>
                   </div>
                   <div class="project-attributes-cell creation label-cell">
-                    Creation Date:
+                    Creation Date
                   </div>
                   <div class="project-attributes-cell creation value-cell">
                     {{ project.CreationDate ? (project.CreationDate | date:'mediumDate') : '--' }}
                   </div>
                 </div>
               </div>
-
-              
+  
             </div>
-
-
+  
+  
+            <!-- container for hoverable text - attributes and record history (will be displayed on narrower width using media query) -->
+            <div class="project-hidden-hover-cont" [attr.data-id]="project.ProjectID">
+  
+              <div class="project-attributes-table">
+                <div class="project-attributes-row">
+                  <div class="project-attributes-cell attributes-hover icon-cell">
+                    <i class="nc-icon nc-a-edit"></i>
+                  </div>
+                  <div class="project-attributes-cell attributes-hover label-cell" [attr.data-id]="project.ProjectID" (mouseenter)="onAttributesMouseEnter(project)" (mouseleave)="onAttributesMouseLeave(project.ProjectID)">
+                    Attributes
+                  </div>
+                </div>
+                <div class="project-attributes-row">
+                  <div class="project-attributes-cell record-history icon-cell">
+                    <i class="nc-icon nc-time-clock"></i>
+                  </div>
+                  <div class="project-attributes-cell record-history label-cell" [attr.data-id]="project.ProjectID" (mouseenter)="onRecordHistoryMouseEnter(project)" (mouseleave)="onRecordHistoryMouseLeave(project.ProjectID)">
+                    Record History
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+  
+  
           </div>
-          <!-- end of right container -->
-
-
+  
         </div>
-
+  
       </div>
-
-    </div>
-
-  </div>  
-
-</div>
+  
+    </div>  
+  
+  </div>

@@ -1,12 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs/subject';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { WebsocketService } from '../../_shared/services/websocket.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
+import { CacheService } from '../../_shared/services/cache.service';
+import { RoutingHistoryService } from '../../_shared/services/routing-history.service';
 
 declare var $: any;
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-search-projects',
@@ -14,11 +20,13 @@ declare var $: any;
   styleUrls: ['./search-projects.component.css', '../../_shared/styles/common.css'],
   providers: [FilterPipe]
 })
-export class SearchProjectsComponent implements OnInit {
+export class SearchProjectsComponent implements OnInit, OnDestroy {
 
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
   @ViewChild('filterDropDownVC') filterDropDownVC: ElementRef;
 
+  ngUnsubscribe = new Subject();
+  projectsBrowseData: any;
   projects: any;
   showSpinner: boolean;
   showPage: boolean;
@@ -30,18 +38,30 @@ export class SearchProjectsComponent implements OnInit {
   numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
   filters: any[];
   filterString: string;
+  filterSelection: string;
   selectedFilter: any;  // selected filter object from the dropdown (from this.filters)
   dropDownData: any;
   subscription1: Subscription;
+  subscription2: Subscription;
+  popoverProjectID: number;
+  fuzzySearchThreshold: number;
+  timer: any;
 
 
   constructor(
+    private router: Router,
     private apiDataProjectService: ApiDataProjectService,
     private filterPipe: FilterPipe,
     private toolsService: ToolsService,
     private websocketService: WebsocketService,
-    private clickTrackingService: ClickTrackingService
+    private clickTrackingService: ClickTrackingService,
+    private cacheService: CacheService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private routingHistoryService: RoutingHistoryService
   ) {
+
+    // set the fuzzy search threshold value
+    this.fuzzySearchThreshold = 0.4;
 
     // set the number of projects to display initially, and to add for infinite scroll
     this.numProjectsToDisplayAtOnce = 100;
@@ -97,58 +117,138 @@ export class SearchProjectsComponent implements OnInit {
       }
     ];
 
-
-  }
-
-
-  ngOnInit() {
-
-    // hide the footer until the page is ready to be rendered
-    this.toolsService.hideFooter();
-
-    // show the waiting to render spinner
-    this.showSpinner = true;
-
-    // get all the data for the page using forkjoin - projects, and dropdowns
-    this.apiDataProjectService.getProjectsBrowseData()
-      .subscribe(
-        res => {
-          // console.log('projects browse response:');
-          // console.log(res);
-          // store the projects
-          this.projects = res[0];
-          // console.log('projects list:');
-          // console.log(this.projects);
-          // store the dropdown data
-          this.dropDownData = res.slice(1);
-          // add an empty object to each drop down list, for the default first selection
-          this.addEmptyObjectsToDropDowns();
-          // store the number of projects, to display in the page 'showing x of y projects'
-          this.totalProjectsCount = this.projects.length;
-          // set the selected filter to the first one ('Project Name')
-          this.selectedFilter = this.filters[0];
-          // fire the filter string change to run it through the pipe
-          this.onFilterStringChange();
-          // hide the spinner
-          this.showSpinner = false;
-          // display the page
-          this.showPage = true;
-          // show the footer
-          this.toolsService.showFooter();
-        },
-        err => {
-          // hide the spinner
-          this.showSpinner = false;
-          // console.log('get project data error:');
-          // console.log(err);
-        }
-    );
-
     // listen for websocket message for newly created projects
     this.subscription1 = this.websocketService.getNewProject().subscribe(project => {
       // make an api call to get new projects data
       this.refreshProjectCards();
     });
+
+  }
+
+
+  async ngOnInit() {
+
+    // hide the footer until the page is ready to be rendered
+    this.toolsService.hideFooter();
+
+    if (!this.cacheService.projectsBrowseData) {
+
+      // show the spinner
+      this.showSpinner = true;
+
+      // get all data for the page using forkjoin: project, schedule, and roster
+      this.projectsBrowseData = await this.getProjectsBrowseData()
+      .catch(err => {
+        this.displayError(err);
+      });
+
+      // hide the spinner
+      this.showSpinner = false;
+
+      // break here if there is no response (some error occured)
+      if (!this.projectsBrowseData) {
+        return;
+      // otherwise, cache the data for quick load on revisit
+      } else {
+        this.cacheService.projectsBrowseData = this.projectsBrowseData;
+      }
+
+    } else {
+
+      // get data from the cache
+      this.projectsBrowseData = this.cacheService.projectsBrowseData;
+
+    }
+
+    // console.log('projects browse data:');
+    // console.log(this.projectsBrowseData);
+
+    // store the projects in the component
+    this.projects = this.projectsBrowseData[0];
+
+    // store the dropdown data
+    this.dropDownData = this.projectsBrowseData.slice(1);
+
+    // add an empty object to each drop down list, for the default first selection
+    this.addEmptyObjectsToDropDowns();
+
+    // store the number of projects, to display in the page 'showing x of y projects'
+    this.totalProjectsCount = this.projects.length;
+
+    // set the selected filter to the first one ('Project Name')
+    this.selectedFilter = this.filters[0];
+
+    // fire the filter string change to run it through the pipe
+    this.onFilterStringChange();
+
+    // display the page
+    this.showPage = true;
+
+    // populate the search input with the previous search
+    // only if coming back from the display page
+    this.repopulateSearchTerm();
+
+    // show the footer
+    this.toolsService.showFooter();
+
+    // remove change detection
+    this.detachChangeDetection();
+
+  }
+
+
+  ngOnDestroy() {
+
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+
+    this.subscription1.unsubscribe();
+
+    clearInterval(this.timer);
+
+    this.changeDetectorRef.detach();
+
+  }
+
+
+  async getProjectsBrowseData(): Promise<any> {
+
+    return await this.apiDataProjectService.getProjectsBrowseData().toPromise();
+
+  }
+
+
+  detachChangeDetection() {
+    // detach the change detector and manually fire it x times per second
+    // for better user experience for search (typing response/feedback)
+    this.changeDetectorRef.detach();
+    this.timer = setInterval(() => {
+      this.changeDetectorRef.detectChanges();
+    }, 500);
+  }
+
+
+  repopulateSearchTerm() {
+
+    // get the full routing history, as an array of strings with the navigation paths
+    const routingHistory = this.routingHistoryService.history;
+    // only consider if there are more than two in the history
+    if (routingHistory.length >= 2) {
+      const previousRoute = routingHistory[routingHistory.length - 2];
+      // if the previous route matches the path 'main/projects/display/*'
+      // and there is a stored search term
+      const pathRegex = new RegExp('main\/projects\/display\/.+', 'g');
+      if (pathRegex.test(previousRoute)) {
+
+        // set the filter string (will populate the input via two-way binding)
+        this.filterString = this.cacheService.projectSearchTerm;
+        this.selectedFilter = this.cacheService.projectSelectedFilter;
+        this.filterSelection = this.cacheService.projectSelectedValue;
+
+        // call the filter string change method to display the correct record count
+        this.onFilterStringChange();
+      }
+    }
 
   }
 
@@ -161,6 +261,8 @@ export class SearchProjectsComponent implements OnInit {
         res => {
           // update the projects array of objects
           this.projects = res;
+          // update the cached data
+          this.cacheService.projectsBrowseData[0] = res;
           // update the number of projects, to display in the page 'showing x of y projects'
           this.totalProjectsCount = this.projects.length;
           // // call filter string change to update the record count string
@@ -191,8 +293,12 @@ export class SearchProjectsComponent implements OnInit {
           }
         }
       }
+
       // add it to the first position (zero index)
-      dropDown.splice(0, 0, firstObject);
+      if (!_.find(dropDown, firstObject)) {
+        dropDown.splice(0, 0, firstObject);
+      }
+
     });
 
   }
@@ -248,12 +354,13 @@ export class SearchProjectsComponent implements OnInit {
     if (!foundFilter.isDropdown) {
       setTimeout(() => {
         this.filterStringVC.nativeElement.focus();
-      }, 100);
+      }, 250);
     // otherwise, set the focus on the dropdown
     } else {
+      this.filterSelection = '(Select Option)';
       setTimeout(() => {
         this.filterDropDownVC.nativeElement.focus();
-      }, 100);
+      }, 250);
     }
   }
 
@@ -262,6 +369,7 @@ export class SearchProjectsComponent implements OnInit {
     if (dropDownValue && dropDownValue !== '(Select Option)') {
       // set the filter string to the selected dropdown value
       this.filterString = dropDownValue;
+      this.filterSelection = dropDownValue;
       // call filter string change to update the record count string
       this.onFilterStringChange();
       // log a record in the click tracking table
@@ -296,7 +404,7 @@ export class SearchProjectsComponent implements OnInit {
   onFilterStringChange() {
     // get the array of projects objects that are displayed
     const projects = this.filterPipe.transform(this.projects, this.filterString, this.selectedFilter.columnName,
-      {limitTo: this.numProjectsToDisplay, matchFuzzy: {on: this.selectedFilter.matchFuzzy, threshold: 0.3},
+      {limitTo: this.numProjectsToDisplay, matchFuzzy: {on: this.selectedFilter.matchFuzzy, threshold: this.fuzzySearchThreshold},
       matchOptimistic: this.selectedFilter.matchOptimistic, matchExact: this.selectedFilter.matchExact});
     // get the number of displayed/filtered projects
     this.filteredProjectsCount = projects.length;
@@ -355,6 +463,9 @@ export class SearchProjectsComponent implements OnInit {
         $el.popover(options);
         $el.popover('show');
 
+        // store the project id
+        this.popoverProjectID = project.ProjectID;
+
       }
 
     }
@@ -370,6 +481,9 @@ export class SearchProjectsComponent implements OnInit {
 
     // dispose of the popover
     $el.popover('dispose');
+
+    // clear the project id
+    this.popoverProjectID = undefined;
 
   }
 
@@ -409,6 +523,9 @@ export class SearchProjectsComponent implements OnInit {
         $el.popover(options);
         $el.popover('show');
 
+        // store the project id
+        this.popoverProjectID = project.ProjectID;
+
       }
 
     }
@@ -425,53 +542,93 @@ export class SearchProjectsComponent implements OnInit {
     // dispose of the popover
     $el.popover('dispose');
 
+    // clear the project id
+    this.popoverProjectID = undefined;
+
   }
 
 
-  // class binding using the ngClass directive in the html
-  // to set project type icon (icon font class)
-  setProjctTypeIconClass(projectTypeName) {
-    const classes = {
-      'nc-icon': true,
-      'nc-ram': projectTypeName === 'NCI',
-      'nc-keyboard': projectTypeName === 'NMI',
-      'nc-keyboard-wireless': projectTypeName === 'NPI',
-      'nc-microcircuit': projectTypeName === 'NPPI',
-      'nc-lab': projectTypeName === 'NTI',
-      'nc-microscope': projectTypeName === 'Research',
-      'nc-settings-91': projectTypeName === 'MFG',
-      'nc-code-editor': projectTypeName === 'Program',
-      'nc-book-open-2': projectTypeName === 'Solution',
-      'nc-board-28': projectTypeName === 'Initiative',
-      'nc-bulb-63': projectTypeName === 'TOF Engaged',
-      'nc-sign-closed': projectTypeName === 'Completed',
-      'nc-gantt': projectTypeName === 'General'
+  // display a popover with the status, priority, and department
+  onAttributesMouseEnter(project: any) {
+
+    // set the jquery element
+    const $el = $(`div.attributes-hover[data-id="${project.ProjectID}"]`);
+
+    // set the popover options
+    // NOTE: getting the content from the hidden div (display: none)
+    const options = {
+      animation: true,
+      placement: 'top',
+      html: true,
+      trigger: 'focus',
+      title: `Project Attributes`,
+      content: $(`div.project-attributes-cont[data-id="${project.ProjectID}"]`).html()
     };
-    return classes;
+
+    // show the popover
+    $el.popover(options);
+    $el.popover('show');
+
+    // store the project id
+    this.popoverProjectID = project.ProjectID;
+
   }
 
 
-  // style binding using the ngStyle directive in the html
-  // to set the color for the project type name and icon
-  setProjctTypeColor(projectTypeName) {
-    switch (projectTypeName) {
-      case 'NCI':
-        return 'rgb(139, 0, 0)';  // red
-      case 'NPI':
-        return 'rgb(0, 0, 139)';  // dark blue
-      case 'NPPI':
-        return 'rgb(16, 140, 160)';  // turquiose
-      case 'NTI':
-        return 'rgb(215, 123, 10)';  // orange
-      case 'Research':
-        return 'rgb(0, 100, 0)';  // green
-      case 'Initiative':
-        return 'rgb(184, 134, 11)';  // dark yellow-gold
-      case 'General':
-        return 'rgb(0, 101, 209)';  // blue
-      default:
-        return 'rgb(139, 0, 139)';  // magenta
-    }
+  // hide/destroy the popover
+  onAttributesMouseLeave(projectID: number) {
+
+    // set the jquery element
+    const $el = $(`div.attributes-hover[data-id="${projectID}"]`);
+
+    // dispose of the popover
+    $el.popover('dispose');
+
+    // clear the project id
+    this.popoverProjectID = undefined;
+
+  }
+
+
+  // display a popover with the record history/info - created by and creation date
+  onRecordHistoryMouseEnter(project: any) {
+
+    // set the jquery element
+    const $el = $(`div.record-history[data-id="${project.ProjectID}"]`);
+
+    // set the popover options
+    // NOTE: getting the content from the hidden div (display: none)
+    const options = {
+      animation: true,
+      placement: 'top',
+      html: true,
+      trigger: 'focus',
+      title: `Record History`,
+      content: $(`div.project-creation-cont[data-id="${project.ProjectID}"]`).html()
+    };
+
+    // show the popover
+    $el.popover(options);
+    $el.popover('show');
+
+    // store the project id
+    this.popoverProjectID = project.ProjectID;
+
+  }
+
+
+  // hide/destroy the popover
+  onRecordHistoryMouseLeave(projectID: number) {
+
+    // set the jquery element
+    const $el = $(`div.record-history[data-id="${projectID}"]`);
+
+    // dispose of the popover
+    $el.popover('dispose');
+
+    // clear the project id
+    this.popoverProjectID = undefined;
+
   }
 
 
@@ -522,6 +679,61 @@ export class SearchProjectsComponent implements OnInit {
       this.onFilterStringChange();
       this.addedProjectsCount += numProjectsToAdd;
     }
+
+  }
+
+
+  onProjectClick(project) {
+
+    // destroy any popovers that may still be displayed
+    if (this.popoverProjectID) {
+      $(`div.project-name[data-id="${this.popoverProjectID}"]`).popover('dispose');
+      $(`div.project-description[data-id="${this.popoverProjectID}"]`).popover('dispose');
+      $(`div.attributes-hover[data-id="${this.popoverProjectID}"]`).popover('dispose');
+      $(`div.record-history[data-id="${this.popoverProjectID}"]`).popover('dispose');
+    }
+
+    // store the current filter string and object in the cache service, to re-populate the input box when navigating back
+    this.cacheService.projectSearchTerm = this.filterString ? this.filterString : undefined;
+    this.cacheService.projectSelectedFilter = this.selectedFilter;
+    this.cacheService.projectSelectedValue = this.filterSelection;
+
+    // navigate to the display page
+    this.router.navigate([`/main/projects/display/${project.ProjectID}`]);
+  }
+
+
+  displayError(err) {
+
+    // hide the spinner
+    this.showSpinner = false;
+
+    // build the error message
+    // TO-DO BILL: make this adapt to other types of errors, not just sequelize
+    const errorMessage = `<b>Message:</b>  ${err.json().title}; ${err.json().error.message.name};
+      ${err.json().error.message.original.message}; Status Code: ${err.status}`;
+
+    // display a bootstrap modal with the error message
+    this.cacheService.confirmModalData.emit(
+      {
+        title: 'Error',
+        message: `Oops, an error occured.  Please contact
+          <a href="https://confluence.it.keysight.com/display/JARVIS/About+Jarvis">support</a>.<br><br>
+          ${errorMessage}`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: this.cacheService.alertIconColor,
+        closeButton: true,
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Ok',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
+      }
+    );
 
   }
 

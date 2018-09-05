@@ -10,6 +10,7 @@ import { WebsocketService } from '../../_shared/services/websocket.service';
 import { CookiesService } from '../../_shared/services/cookies.service';
 import { ApiDataAuthService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 
+declare var $: any;
 import * as moment from 'moment';
 
 
@@ -52,6 +53,10 @@ export class LoginComponent implements OnInit {
   // array of background images and randomly selected background image
   backgroundImages: any[] = [];
   backgroundImage: any;
+  testImagePath: string;
+
+  // set to true if this is the test instance (port 440)
+  isTestInstance: boolean;
 
   constructor(
     private router: Router,
@@ -70,6 +75,12 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    // check the port to see if this is the test instance (dev will return '3000', prod will return '')
+    // if this is test, use the 'blue' icon version (_test) and text instead of yellow
+    if (location.port === '440') {
+      this.isTestInstance = true;
+    }
 
     // check the cookies for the jrt_username cookie, if it is there set the username
     // this means that the user had previously logged in with 'Remember Me' selected
@@ -96,6 +107,7 @@ export class LoginComponent implements OnInit {
           res.images.forEach(image => {
             if (res.files.indexOf(image.fileName) !== -1) {
               this.backgroundImages.push({
+                fileName: image.fileName,
                 path: `/assets/login_images/${image.fileName}`,
                 title: image.caption,
                 subTitle: `Key Sightings, ${image.winnerDate}`
@@ -119,6 +131,7 @@ export class LoginComponent implements OnInit {
   // set random background image
   setBackgroundImage() {
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
+    // this.backgroundImage = this.backgroundImages[imageIndex];
     this.backgroundImage = this.backgroundImages[imageIndex];
     this.showLoginPage = true;
     // save the last shown image in the cache service
