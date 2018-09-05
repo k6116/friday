@@ -239,7 +239,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
       // and there is a stored search term
       const pathRegex = new RegExp('main\/projects\/display\/.+', 'g');
       if (pathRegex.test(previousRoute)) {
-        
+
         // set the filter string (will populate the input via two-way binding)
         this.filterString = this.cacheService.projectSearchTerm;
         this.selectedFilter = this.cacheService.projectSelectedFilter;
