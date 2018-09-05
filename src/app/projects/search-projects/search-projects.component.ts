@@ -620,8 +620,8 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
       $(`div.attributes-hover[data-id="${this.popoverProjectID}"]`).popover('dispose');
       $(`div.record-history[data-id="${this.popoverProjectID}"]`).popover('dispose');
     }
-    console.log('project card clicked:');
-    console.log(project);
+    // console.log('project card clicked:');
+    // console.log(project);
     this.cacheService.project = project;
     this.router.navigate([`/main/projects/display/${project.ProjectID}`]);
   }

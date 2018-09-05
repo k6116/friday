@@ -223,7 +223,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
-    console.log('side nav component has been initialized');
+    // console.log('side nav component has been initialized');
 
     // check the port to see if this is the test instance (dev will return '3000', prod will return '')
     // if this is test, use the 'blue' icon version (_test) and text instead of yellow
@@ -234,8 +234,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
     const path = this.router.url.slice(1, this.router.url.length);
 
-    console.log('current path:');
-    console.log(path);
+    // console.log('current path:');
+    // console.log(path);
 
     // highlight the selected/active menu item with color, background color, etc.
     // needed here if the user goes directly to the route using the url or on refresh

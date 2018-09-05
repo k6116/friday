@@ -152,16 +152,6 @@ export class DisplayProjectComponent implements OnInit {
       this.roster = res[2][0].teamMembers;
     }
 
-    console.log('full response');
-    console.log(res);
-    console.log('project:');
-    console.log(this.project);
-    console.log('schedule:');
-    console.log(this.schedule);
-    console.log('roster:');
-    console.log(this.roster);
-
-
   }
 
 
@@ -340,6 +330,9 @@ export class DisplayProjectComponent implements OnInit {
       }
     });
 
+    // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
+    const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
+
     // set the chart options
     this.chartOptions = {
       chart: {
@@ -357,6 +350,17 @@ export class DisplayProjectComponent implements OnInit {
       },
       legend: {
         enabled: false
+      },
+      credits: {
+        text: 'jarvis.is.keysight.com',
+        href: 'https://jarvis.is.keysight.com'
+      },
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: highchartsButtons
+          }
+        }
       },
       plotOptions: {
         series: {
