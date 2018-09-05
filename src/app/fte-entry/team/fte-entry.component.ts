@@ -353,6 +353,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         projectName: 'Arges50',
         ['allocations:recordID']: null,
         ['allocations:fullName']: this.allEmployees[0].fullName,
+        ['allocations:employeeID']: this.allEmployees[0].employeeID,
         ['allocations:emailAddress']: this.allEmployees[0].emailAddress,
         ['allocations:fiscalDate']: this.currentMonth,
         ['allocations:fte']: null
@@ -377,65 +378,31 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   onFTEChange(i, j, value) {
     console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
 
-    let fteReplace: boolean;
-    let fteReplaceValue: any;
-
-    // check for match on the standard three digit format 0.5, 1.0
-    const match = /^[0][.][1-9]{1}$/.test(value) || /^[1][.][0]{1}$/.test(value);
-    // if not a match, will want to update/patch it to use the standard format
-    if (!match) {
-      fteReplace = true;
-
-      // first, strip out all dots except the first
-      const dotPosition = value.indexOf( '.' );
-      if ( dotPosition > -1 ) {
-        fteReplaceValue = value.substr( 0, dotPosition + 1 ) + value.slice( dotPosition ).replace( /\./g, '' );
-      } else {
-        fteReplaceValue = value;
-      }
-
-      // if string has a trailing dot, append a zero so it will look like a number
-      if (dotPosition === fteReplaceValue.length - 1) {
-        fteReplaceValue = fteReplaceValue + '0';
-      }
-
-      // if the value is 0, replace with null, else decimalPipe it into the proper format
-      if (Number(fteReplaceValue) === 0) {
-        fteReplaceValue = null;
-      } else {
-        fteReplaceValue = this.decimalPipe.transform(Number(fteReplaceValue), '1.1-1');
-      }
-
-    }
-    // console.log(`match is ${match}, replacement value: ${fteReplaceValue}, at ${i}, ${j}`);
+    value = Number(value);
 
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
     const FTEFormGroup = FTEFormProjectArray.at(j);
 
-    if ( (fteReplaceValue === null) && (FTEFormGroup.value.recordID !== null) ) {
-      // if the replacement value is a null and the recordID is accessible, delete that record
+    // if user typed a 0, replace with null
+    if (value === 0) {
+      FTEFormGroup.patchValue({
+        fte: null
+      });
+    }
+
+    if ( (FTEFormGroup.value.fte === null) && (FTEFormGroup.value.recordID !== null) ) {
+      // if user typed a null and the recordID is accessible, delete that record
       // TODO: get the newly created recordID after a save transaction is completed
       FTEFormGroup.patchValue({
         toBeDeleted: true,
         updated: false
       });
     } else {
+      // user changed the value, so set the update flag for us to update it in the DB
       FTEFormGroup.patchValue({
         updated: true
       });
-    }
-
-    if (fteReplace) {
-      FTEFormGroup.patchValue({
-        fte: fteReplaceValue
-      });
-      // {
-      //   onlySelf: true,
-      //   emitEvent: true,
-      //   emitModelToViewChange: true,
-      //   emitViewToModelChange: true
-      // });
     }
 
     // update the monthly total
@@ -450,14 +417,14 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     //  So in order to keep this array up to date, anytime a user edits the fte input box, it will look for the index in the array
     //  If the index is found, the fte will be updated, otherwise a new object will be pushed
     const foundIndex = this.teamFTEsFlatLive.findIndex(o =>
-      o['allocations:emailAddress'] === FTEFormGroup.value.emailAddress &&
+      o['allocations:employeeID'] === FTEFormGroup.value.employeeID &&
       o.projectID === FTEFormGroup.value.projectID &&
       moment(o['allocations:fiscalDate']).utc().format('YYYY-MM-DD') ===
       moment(FTEFormGroup.value.month, 'MM-DD-YYYY').format('YYYY-MM-DD')
     );
 
     if (foundIndex !== -1) {
-      this.teamFTEsFlatLive[foundIndex]['allocations:fte'] = FTEFormGroup.value.fte;
+      this.teamFTEsFlatLive[foundIndex]['allocations:fte'] = FTEFormGroup.value.fte / 100;
     } else {
       this.teamFTEsFlatLive.push({
         planName: this.currentPlan,
@@ -465,9 +432,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         projectName: FTEFormGroup.value.projectName,
         ['allocations:recordID']: FTEFormGroup.value.recordID,
         ['allocations:fullName']: FTEFormGroup.value.fullName,
+        ['allocations:employeeID']: FTEFormGroup.value.employeeID,
         ['allocations:emailAddress']: FTEFormGroup.value.emailAddress,
         ['allocations:fiscalDate']: moment(FTEFormGroup.value.month, 'MM-DD-YYYY').format('YYYY-MM-DD HH:mm:ss'),
-        ['allocations:fte']: FTEFormGroup.value.fte
+        ['allocations:fte']: FTEFormGroup.value.fte / 100
       });
     }
 
@@ -529,8 +497,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       });
     });
 
-    // set to null if zero (to show blank) and round to one significant digit
-    total = total === 0 ? null : Math.round(total * 10) / 10;
+    // set to null if zero (to show blank) and convert to an actual decimal percentage. frontend will use percentpipe to display it properly
+    total = total === 0 ? null : total / 100;
 
     // set the monthly totals property at the index
     this.monthlyTotals[index] = total;
@@ -558,9 +526,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       return total === 0 ? null : total;
     });
 
-    // round the totals to one significant digit
+    // convert the total to a decimal, using percentpipe in the frontend to display
     totals = totals.map(total => {
-      return total ? Math.round(total * 10) / 10 : null;
+      return total ? total / 100 : null;
     });
 
     // set the monthly totals property
@@ -590,8 +558,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
 
   onTestFormClick() {
-    console.log('form object (this.form):');
-    console.log(this.FTEFormGroup);
+    // console.log('form object (this.form):');
+    // console.log(this.FTEFormGroup);
     console.log('form data (this.form.value.FTEFormArray):');
     console.log(this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
@@ -599,15 +567,15 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('teamFTE', this.teamFTEs);
     // console.log('allTeamFTE', this.allTeamFTEs);
     // console.log('teamFTEFlat', this.teamFTEsFlat);
-    // console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
+    console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
     console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
     // console.log('this.allProjects', this.allProjects)
-    console.log('this.projects', this.projects)
+    // console.log('this.projects', this.projects)
     // console.log('this.allEmployees', this.allEmployees);
     console.log('this.employees', this.employees)
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
-    // console.log('team org', this.teamOrgStructure)
+    console.log('team org', this.teamOrgStructure)
 
   }
 
@@ -625,8 +593,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         const t1 = performance.now();
         console.log(`save fte values took ${t1 - t0} milliseconds`);
         this.cacheService.raiseToast('success', res.message);
-        // this.resetProjectFlags();
-        // this.fteComponentInit();  // re-fetch the data to get newly inserted recordIDs
 
         // rebuild the FTE entry page to show selected month
         this.buildFteEntryForm();
@@ -639,30 +605,82 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       }
     );
 
-    // // Create an array of only newly added projects to add to the project-employee-role table
-    // const newlyAddedProjects: any = [];
-    // for (let i = 0; i < fteData.length; i++) {
-    //   if (fteData[i][0].newlyAdded === true) {
-    //     newlyAddedProjects.push({
-    //       projectID: fteData[i][0].projectID,
-    //       jobTitleID: this.authService.loggedInUser.jobTitleID,
-    //       jobSubTitleID: this.authService.loggedInUser.jobSubTitleID
-    //     });
-    //   }
-    // }
-    // // If array is empty, new roles don't have to be updated
-    // if (newlyAddedProjects !== undefined || newlyAddedProjects.length !== 0) {
-    //   this.apiDataProjectService.insertBulkProjectEmployeeRole(newlyAddedProjects, this.authService.loggedInUser.id)
-    //   .subscribe(
-    //     res => {
-    //       console.log('Successfully inserted bulk data into project employee role table');
-    //     },
-    //     err => {
-    //       console.log(err);
-    //     }
-    //   );
-    // }
+  }
 
+  onLaunchClick() {
+
+    if (!this.FTEFormGroup.untouched) {
+      // emit confirmation modal to remind user to Save an edited form first
+      this.cacheService.confirmModalData.emit(
+        {
+          title: 'Unsaved Changes',
+          message: `There are unsaved changes to this form.<br><br>
+                    Please click 'Save' before launching`,
+          iconClass: 'fa-exclamation-triangle',
+          iconColor: 'rgb(193, 193, 27)',
+          closeButton: true,
+          allowOutsideClickDismiss: true,
+          allowEscKeyDismiss: true,
+          buttons: [
+            {
+              text: 'Dismiss',
+              bsClass: 'btn-secondary',
+              emit: false
+            }
+          ]
+        }
+      );
+    } else {
+
+      // emit confirmation modal after they click request button
+      this.cacheService.confirmModalData.emit(
+        {
+          title: 'Confirm Plan Launch',
+          message: `Are you sure you want to launch plan "` + this.currentPlan + `"?<br><br>
+                    This will overwrite all existing employee FTE data to sync with the "` + this.currentPlan + `" data
+                    starting from ` + this.setMonthName + `-` + this.setYear + `.`,
+          iconClass: 'fa-exclamation-triangle',
+          iconColor: 'rgb(193, 193, 27)',
+          closeButton: true,
+          allowOutsideClickDismiss: false,
+          allowEscKeyDismiss: false,
+          buttons: [
+            {
+              text: 'Launch',
+              bsClass: 'btn-success',
+              emit: true
+            },
+            {
+              text: 'Cancel',
+              bsClass: 'btn-secondary',
+              emit: false
+            }
+          ]
+        }
+      );
+
+      const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( modalRes => {
+        if (modalRes) {
+          // call the api data service to send the put request
+          this.apiDataFteService.launchPlan(this.authService.loggedInUser.id, this.currentPlan)
+          .subscribe(
+            res => {
+              this.cacheService.raiseToast('success', res.message);
+
+              // rebuild the FTE entry page to show selected month
+              this.buildFteEntryForm();
+              this.displayFTETable = true;
+              this.FTEFormGroup.markAsUntouched();
+            },
+            err => {
+              console.log(err);
+              this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
+            }
+          );
+        }
+        updateModalSubscription.unsubscribe();
+      });
+    }
   }
 
   buildMonthsArray() {
@@ -676,11 +694,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       this.months.push(moment(startDate).add(i, 'months'));
     }
 
-    for (let i = 0; i < this.teamOrgStructure.employees.length; i++) {
+    for (let i = 0; i < this.teamOrgStructure.length; i++) {
       this.allEmployees.push({
-        employeeID: this.teamOrgStructure.employees[i].employeeID,
-        fullName: this.teamOrgStructure.employees[i].fullName,
-        emailAddress: this.teamOrgStructure.employees[i].emailAddress
+        employeeID: this.teamOrgStructure[i].employeeID,
+        fullName: this.teamOrgStructure[i].fullName,
+        emailAddress: this.teamOrgStructure[i].emailAddress
       });
       this.employees = this.allEmployees;
     }
@@ -732,7 +750,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         } else {
           return proj.projectID === teamFTE.projectID &&
             moment(this.setMonth).format('MM-DD-YYYY') === moment(teamFTE['allocations:fiscalDate']).utc().format('MM-DD-YYYY') &&
-            employee.emailAddress === teamFTE['allocations:emailAddress'];
+            employee.employeeID === teamFTE['allocations:employeeID'];
         }
       });
 
@@ -745,7 +763,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           emailAddress: [employee.emailAddress],
           fullName: [employee.fullName],
           month: [moment(this.setMonth).format('MM-DD-YYYY')],
-          fte: [foundEntry ? this.decimalPipe.transform(foundEntry['allocations:fte'], '1.1') : null],
+          fte: [foundEntry ? foundEntry['allocations:fte'] * 100 : null], // convert db values to a percent without the percent sign
           newRecord: [foundEntry ? false : true],
           updated: [false],
           toBeDeleted: [false]
@@ -769,7 +787,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.cacheService.confirmModalData.emit(
       {
         title: 'Confirm Deletion',
-        message: `Are you sure you want to permanently delete all FTE values for project ${deletedProject.projectName}?`,
+        message: `Are you sure you want to permanently delete project "${deletedProject.projectName}" from this plan?<br><br>
+                  If launched, this project will be completely removed from your team
+                  and no employee will be associated with this project.<br><br>
+                  **If you meant to remove the project from the screen, please use the project filter instead**`,
         iconClass: 'fa-exclamation-triangle',
         iconColor: 'rgb(193, 193, 27)',
         closeButton: true,
@@ -989,6 +1010,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         projectName: 'Arges50',
         ['allocations:recordID']: null,
         ['allocations:fullName']: this.allEmployees[0].fullName,
+        ['allocations:employeeID']: this.allEmployees[0].employeeID,
         ['allocations:emailAddress']: this.allEmployees[0].emailAddress,
         ['allocations:fiscalDate']: this.currentMonth,
         ['allocations:fte']: null
@@ -1003,10 +1025,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   getTeam(email: string) {
     return new Promise((p_res, p_err) => {
       // get list of subordinates
-      this.apiDataOrgService.getOrgData(email)
+      this.apiDataOrgService.getEmployeeList(email)
       .subscribe(
         res => {
-          this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
+          // this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
+          this.teamOrgStructure = res;
           this.cacheService.teamEmployeeList = this.teamOrgStructure;
           this.updateEmployeeFilters();
           this.buildMonthsArray();
@@ -1108,10 +1131,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
   updateEmployeeFilters() {
     // Update list for employee dropdown filter
-    for (let i = 0; i < this.teamOrgStructure.employees.length; i++ ) {
+    for (let i = 0; i < this.teamOrgStructure.length; i++ ) {
       this.filterEmployeesOptions.push({
         id: i + 1,
-        name: this.teamOrgStructure.employees[i].fullName
+        name: this.teamOrgStructure[i].fullName
       });
       this.filterEmployeesModel.push(i + 1);
     }

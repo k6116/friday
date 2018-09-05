@@ -31,6 +31,7 @@ router.get('/fte/indexPlanList/:userID', controllers.fte.indexPlanList);
 router.get('/fte/indexPlan/:userID/:planName', controllers.fte.indexPlan);
 router.post('/fte/destroyPlan/', controllers.fte.destroyPlan);
 router.get('/fte/checkTeamJobTitle/:emailAddress', controllers.fte.checkTeamJobTitle);
+router.get('/fte/launchPlan/:userID/:planName', controllers.fte.launchPlan);
 
 // TEMP JOB TITLE API FOR MANAGER EDIT
 router.get('/indexEmployeesJobTitles/:emailAddress', controllers.jobTitle.indexEmployeesJobTitles);
@@ -74,6 +75,8 @@ router.get('/getPlanners', controllers.employee.getPlanners);
 // ORG CONTROLLER
 router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
 router.get('/org/:emailAddress', controllers.org.show);
+router.get('/org/getTeamList/:emailAddress', controllers.org.getTeamList);
+router.get('/org/getEmployeeList/:emailAddress', controllers.org.getEmployeeList);
 
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);

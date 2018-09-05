@@ -57,7 +57,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               title: 'My FTEs',
               alias: 'my-ftes',
               path: 'main/fte-entry/employee',
-              parentAlias: 'fte-entry',
+              parentAlias: 'fteEntry',
               active: false,
               permissionProtected: false,
               hidden: false
@@ -66,7 +66,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               title: 'Team FTEs',
               alias: 'team-ftes',
               path: 'main/fte-entry/team',
-              parentAlias: 'fte-entry',
+              parentAlias: 'fteEntry',
               active: false,
               permissionProtected: true,
               hidden: false

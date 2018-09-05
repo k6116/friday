@@ -265,9 +265,9 @@ function updateTeamData(req, res) {
         insertData.push({
             planName: planName,
             projectID: data.projectID,
-            employeeEmail: data.emailAddress,
-            fiscalDate: data.month,
-            fte: +data.fte,
+            employeeID: data.employeeID,
+            fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
+            fte: +data.fte / 100, // convert the FTE value to a decimal
             createdBy: userID,
             createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
             updatedBy: userID,
@@ -279,9 +279,9 @@ function updateTeamData(req, res) {
       if (!data.newRecord && data.updated) {
         updateData.push({
           projectID: data.projectID,
-          employeeEmail: data.emailAddress,
-          fiscalDate: data.month,
-          fte: +data.fte,
+          employeeID: data.employeeID,
+          fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
+          fte: +data.fte / 100, // convert the FTE value to a decimal
           createdBy: userID,
           createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
           updatedBy: userID,
@@ -334,8 +334,8 @@ function updateTeamData(req, res) {
               {
                 planName: planName,
                 projectID: updateData[i].projectID,
-                employeeEmail: updateData[i].emailAddress,
-                fiscalDate: updateData[i].fiscalDate,
+                employeeID: updateData[i].employeeID,
+                fiscalDate: moment.utc(updateData[i].fiscalDate).format(),
                 fte: updateData[i].fte,
                 updatedBy: userID,
                 updatedAt: updateData[i].updatedAt
@@ -449,12 +449,12 @@ function indexPlan(req, res) {
       P.ProjectName as projectName,
       PEP.ProjectEmployeesPlanningID as [allocations:recordID], -- Alias for Treeize
       E.FullName as [allocations:fullName], 
-      PEP.EmployeeEmail as [allocations:emailAddress],
+      PEP.EmployeeID as [allocations:employeeID],
       PEP.FiscalDate as [allocations:fiscalDate],
       PEP.FTE as [allocations:fte]
     FROM
       resources.ProjectEmployeesPlanning PEP
-      LEFT JOIN accesscontrol.Employees E ON PEP.EmployeeEmail = E.EmailAddress
+      LEFT JOIN accesscontrol.Employees E ON PEP.EmployeeID = E.EmployeeID
       LEFT JOIN projects.Projects P ON PEP.ProjectID = P.ProjectID
     WHERE
       PEP.PlanName = '${planName}' AND PEP.CreatedBy = ${userID}
@@ -539,6 +539,29 @@ function destroyPlan(req, res) {
 
 }
 
+function launchPlan(req, res) {
+
+  // this function executes an SP that will copy all subordinates fte data into the 
+  // ProjectEmployeesPlanning table for use as a "staging" table for managers
+
+  const userID = req.params.userID;
+  const planName = req.params.planName;
+
+  sequelize.query('EXECUTE resources.ProjectEmployeesLaunchPlan :userID, :planName', {replacements: {userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
+  .then(results => {
+    res.json({
+      message: `Successfully launched plan "${planName}"`
+    });
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+
+}
+
 
 function checkTeamJobTitle(req, res) {
 
@@ -581,5 +604,6 @@ module.exports = {
   indexPlan: indexPlan,
   indexPlanList: indexPlanList,
   destroyPlan: destroyPlan,
+  launchPlan: launchPlan,
   checkTeamJobTitle: checkTeamJobTitle
 }

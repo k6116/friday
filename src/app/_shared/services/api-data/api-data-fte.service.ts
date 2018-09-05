@@ -96,6 +96,13 @@ export class ApiDataFteService {
       .map((response: Response) => response.json());
   }
 
+  // create a new FTE Plan and return it
+  launchPlan(userID: number, planName: string) {
+    return this.http.get(`/api/fte/launchPlan/${userID}/${planName}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   // check it job title and subtitle has been set (synchronous version)
   async checkJobTitleUpdatedSync(token: string) {
     const headers = new Headers({'X-Token': token});
