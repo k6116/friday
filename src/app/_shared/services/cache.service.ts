@@ -62,11 +62,12 @@ export class CacheService {
 
   // used for caching projects list (index) and selected project (show)
   // for data transfer between search projects and display project
-  projects: any;
-  project: any;
+  projectsBrowseData: any;
 
   // used to re-populate the project search input with previous search term
   projectSearchTerm: string;
+  projectSelectedFilter: any;
+  projectSelectedValue: string;
 
   constructor() { }
 

@@ -28,19 +28,19 @@ considering topnav, sidenav, and footer -->
   
         <div class="projects-filter-dropdown">
           <select class="form-control projects-filter-select" (change)="onFilterByChange($event.target.value)">
-            <option *ngFor="let filter of filters" [selected]="filter.displayName === 'Project Name'">{{ filter.displayName }}</option>
+            <option *ngFor="let filter of filters" [selected]="filter.displayName === selectedFilter.displayName">{{ filter.displayName }}</option>
           </select>
         </div>
   
-        <div *ngIf="!selectedFilter.isDropdown" class="projects-filter-string">
+        <div [hidden]="selectedFilter.isDropdown" class="projects-filter-string">
           <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (ngModelChange)="onFilterStringChange()" (keydown)="onFilterStringKeydown($event)" (focusout)="onFilterLostFocus()" appAutofocus>
           <i class="projects-filter-icon-search fa fa-search"></i>
           <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
         </div>
   
-        <div *ngIf="selectedFilter.isDropdown" class="projects-filter-select">
+        <div [hidden]="!selectedFilter.isDropdown" class="projects-filter-select">
           <select #filterDropDownVC class="form-control projects-filter-select" (change)="onFilterSelectChange($event.target.value)">
-            <option *ngFor="let data of dropDownData[selectedFilter.dropDownArrayIndex]">{{ data[selectedFilter.dropDownProperty] }}</option>
+            <option *ngFor="let data of dropDownData[selectedFilter.dropDownArrayIndex]" [selected]="data[selectedFilter.dropDownProperty] === filterSelection">{{ data[selectedFilter.dropDownProperty] }}</option>
           </select>
         </div>
   
