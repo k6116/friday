@@ -232,7 +232,7 @@ div.project-roster-team-member-role {
 
 /* project details right container with priority, status, etc. */
 
-div.project-details-cont-2 {
+div.project-details-right-cont {
   display: inline-block;
   vertical-align: top;
   width: 315px;

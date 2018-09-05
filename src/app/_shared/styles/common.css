@@ -161,8 +161,8 @@ button.btn-standard:focus, button.btn-standard:active, button.btn-standard:visit
 }
 
 button.btn-standard:hover {
-  background-color: rgb(201, 203, 206);
-  border: 1px solid rgb(181, 183, 186);
+  background-color: rgb(211, 213, 216);
+  border: 1px solid rgb(191, 193, 196);
   cursor: pointer;
 }
 

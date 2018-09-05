@@ -53,20 +53,6 @@ considering topnav, sidenav, and footer -->
           
         </div>
 
-        <!-- back to search button -->
-        <!-- <div class="back-button-cont">
-
-          <div class="back-button-inner-cont">
-
-            <button class="btn-standard" (click)="onBackButtonClick()">
-              <i class="fa fa-backward button-icon"></i>
-              Search
-            </button>
-
-          </div>
-
-        </div> -->
-
 
       </div>
       
@@ -89,16 +75,6 @@ considering topnav, sidenav, and footer -->
               <div class="project-attribute-label">Notes</div>
               <div class="project-attribute-value notes">{{ project.Notes ? project.Notes : '--' }}</div>
             </div>
-  
-            <!-- <div data-field="mu" class="project-attribute-cont">
-              <div class="project-attribute-label">MU</div>
-              <div class="project-attribute-value">{{ project.MU ? project.MU : '--' }}</div>
-            </div>
-  
-            <div data-field="mu" class="project-attribute-cont">
-              <div class="project-attribute-label">IBO</div>
-              <div class="project-attribute-value">{{ project.IBO ? project.IBO : '--' }}</div>
-            </div> -->
 
             <div data-field="roster" class="project-attribute-cont">
               <div class="project-attribute-label">Project Roster</div>
@@ -122,20 +98,12 @@ considering topnav, sidenav, and footer -->
             
           </div>
 
-  
-          <!-- container for project roster -->
-          <!-- <div class="project-roster-cont">
-            
-            
-  
-          </div> -->
-
 
         </div>
         
 
         <!-- container for short textproject attributes - priority, status, etc. -->
-        <div class="project-details-cont-2">
+        <div class="project-details-right-cont">
 
           <ul class="project-attributes-list">
 
@@ -240,10 +208,12 @@ considering topnav, sidenav, and footer -->
           </div>
   
         </div>
+        <!-- - -->
 
         <div class="highchart schedule-chart" id="scheduleChart">
         </div>
       </div>
+      <!-- - -->
 
 
       <!-- hidden container for record history html -->
