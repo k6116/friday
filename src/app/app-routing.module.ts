@@ -36,11 +36,13 @@ import { ChatComponent } from './chat/chat.component';
 import { PerformanceComponent } from './performance/performance.component';
 import { UserResolverService } from './_shared/services/user-resolver.service';
 import { Error403Component } from './error-pages/error-403/error-403.component';
-import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
-import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
 import { PartSetupComponent } from './setups/parts/parts.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
+
+// BOM module stuff
+import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
+import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 
 
 const routes: Routes = [
@@ -64,8 +66,8 @@ const routes: Routes = [
       { path: 'projects/display/:id', component: DisplayProjectComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
-      { path: 'reports/bom-editor', component: BomEditorComponent },
-      { path: 'reports/bom-viewer', component: BomViewerComponent },
+      { path: 'bom/bom-editor', component: BomEditorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      { path: 'bom/bom-viewer', component: BomViewerComponent, canActivate: [AuthGuardService] },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },

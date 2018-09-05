@@ -84,8 +84,10 @@ import { CarouselModalComponent } from './modals/carousel-modal/carousel-modal.c
 import { PartSetupComponent } from './setups/parts/parts.component';
 import { SupplyDemandComponent } from './reports/supply-demand/supply-demand.component';
 import { Error403Component } from './error-pages/error-403/error-403.component';
-import { BomEditorComponent } from './reports/bom-editor/bom-editor.component';
-import { BomViewerComponent } from './reports/bom-viewer/bom-viewer.component';
+import { BomDrawD3Component } from './bom/bom-draw-d3/bom-draw-d3.component';
+import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
+import { BomSelectorComponent } from './bom/bom-selector/bom-selector.component';
+import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 import { SearchProjectsComponent } from './projects/search-projects/search-projects.component';
 import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
@@ -140,7 +142,9 @@ import { DisplayProjectComponent } from './projects/display-project/display-proj
     SupplyDemandComponent,
     Error403Component,
     PartSetupComponent,
+    BomDrawD3Component,
     BomEditorComponent,
+    BomSelectorComponent,
     BomViewerComponent,
     ProjectRequestsComponent,
     SearchProjectsComponent,

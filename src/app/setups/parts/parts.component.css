@@ -7,6 +7,7 @@
   .btn-fte-toolbar {
     width: 90px;
     height: 35px;
+    margin-left: 5px;
   }
 
   .searchInput {
@@ -28,3 +29,18 @@
     font-weight: bold;
     font-size: 14px;
   }
+
+  .table-wrapper-scroll-y {
+    display: block;
+    max-height: 800px;
+    overflow-y: auto;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    background-color: white
+  }
+  
+  .parttype {      
+    background-color: lightgray;
+    vertical-align: middle;
+  }
+
+

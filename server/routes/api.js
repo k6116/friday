@@ -162,9 +162,9 @@ router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 // SCHEDULES CONTROLLER
 router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
 router.get('/getProjectSchedule2/:projectID', controllers.schedules.getProjectSchedule);
-router.post('/updateProjectScheduleXML/:userID/:revisionNotes', controllers.schedules.updateProjectScheduleXML);
+router.post('/updateProjectScheduleXML/:revisionNotes', controllers.schedules.updateProjectScheduleXML);
 router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
-router.post('/updatePartScheduleXML/:userID/:revisionNotes', controllers.schedules.updatePartScheduleXML); //TO-DO user Token for userID and put revisionNotes in header
+router.post('/updatePartScheduleXML/:revisionNotes', controllers.schedules.updatePartScheduleXML);
 router.get('/destroyScheduleSP/:scheduleID', controllers.schedules.destroyScheduleSP);
 
 
@@ -253,7 +253,7 @@ router.post('/jobTitle/admin/destroy/deleteJobTitleMap', controllers.jobTitle.de
 
 // BOM CONTROLLER
 router.get('/bom/bom/index', controllers.bom.index);
-router.get('/bom/bom/show/showSingleBom/:parentID', controllers.bom.showSingleBom);
+router.get('/bom/bom/show/showSingleBom/:parentID/:parentEntity', controllers.bom.showSingleBom);
 router.get('/bom/bom/show/showPartInfo/:partID', controllers.bom.showPartInfo);
 router.get('/bom/bom/show/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
 

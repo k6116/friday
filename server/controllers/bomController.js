@@ -4,7 +4,7 @@ const sequelize = require('../db/sequelize').sequelize;
 
 
 function index(req, res) {
-  sequelize.query('SELECT COALESCE(ParentPartID, ParentProjectID) AS ParentPartID, PartOrProjectName FROM vBillsList ORDER BY PartOrProjectName', {type: sequelize.QueryTypes.SELECT})
+  sequelize.query('SELECT ParentPartID, ParentProjectID, EntityType, PartOrProjectName FROM vBillsList ORDER BY PartOrProjectName', {type: sequelize.QueryTypes.SELECT})
     .then(bomsList => {
       res.json(bomsList);
     })
@@ -18,7 +18,8 @@ function index(req, res) {
 
 function showSingleBom(req, res) {
   const parentID = req.params.parentID;
-  sequelize.query('EXECUTE dbo.BillsDrillDownNew :parentID', {replacements: {parentID: parentID}, type: sequelize.QueryTypes.SELECT})
+  const parentEntity = req.params.parentEntity;
+  sequelize.query('EXECUTE dbo.BillsDrillDownNew :parentID, :parentEntity', {replacements: {parentID: parentID, parentEntity: parentEntity}, type: sequelize.QueryTypes.SELECT})
     .then(bom => {
       res.json(bom);
     })
