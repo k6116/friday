@@ -65,6 +65,9 @@ export class CacheService {
   projects: any;
   project: any;
 
+  // used to re-populate the project search input with previous search term
+  projectSearchTerm: string;
+
   constructor() { }
 
   // TO-DO BRYAN: create a toast service and move

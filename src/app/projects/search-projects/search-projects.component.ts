@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/subject';
@@ -9,6 +9,7 @@ import { ToolsService } from '../../_shared/services/tools.service';
 import { WebsocketService } from '../../_shared/services/websocket.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { CacheService } from '../../_shared/services/cache.service';
+import { RoutingHistoryService } from '../../_shared/services/routing-history.service';
 
 declare var $: any;
 
@@ -38,9 +39,11 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
   selectedFilter: any;  // selected filter object from the dropdown (from this.filters)
   dropDownData: any;
   subscription1: Subscription;
+  subscription2: Subscription;
   popoverProjectID: number;
   fuzzySearchThreshold: number;
   timer: any;
+
 
   constructor(
     private router: Router,
@@ -50,7 +53,8 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     private websocketService: WebsocketService,
     private clickTrackingService: ClickTrackingService,
     private cacheService: CacheService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private routingHistoryService: RoutingHistoryService
   ) {
 
     // set the fuzzy search threshold value
@@ -133,8 +137,6 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
           this.projects = res[0];
           // store the projects in the app cache
           this.cacheService.projects = this.projects;
-          // console.log('projects list:');
-          // console.log(this.projects);
           // store the dropdown data
           this.dropDownData = res.slice(1);
           // add an empty object to each drop down list, for the default first selection
@@ -149,6 +151,9 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
           this.showSpinner = false;
           // display the page
           this.showPage = true;
+          // populate the search input with the previous search
+          // only if coming back from the display page
+          this.repopulateSearchTerm();
           // show the footer
           this.toolsService.showFooter();
           // remove change detection
@@ -172,11 +177,16 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
+
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+
     this.subscription1.unsubscribe();
+
     clearInterval(this.timer);
+
     this.changeDetectorRef.detach();
+
   }
 
 
@@ -187,6 +197,27 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     this.timer = setInterval(() => {
       this.changeDetectorRef.detectChanges();
     }, 500);
+  }
+
+
+  repopulateSearchTerm() {
+
+    // get the full routing history, as an array of strings with the navigation paths
+    const routingHistory = this.routingHistoryService.history;
+    // only consider if there are more than two in the history
+    if (routingHistory.length >= 2) {
+      const previousRoute = routingHistory[routingHistory.length - 2];
+      // if the previous route matches the path 'main/projects/display/*'
+      // and there is a stored search term
+      const pathRegex = new RegExp('main\/projects\/display\/.+', 'g');
+      if (pathRegex.test(previousRoute) && this.cacheService.projectSearchTerm) {
+        // set the filter string (will populate the input via two-way binding)
+        this.filterString = this.cacheService.projectSearchTerm;
+        // call the filter string change method to display the correct record count
+        this.onFilterStringChange();
+      }
+    }
+
   }
 
 
@@ -620,9 +651,11 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
       $(`div.attributes-hover[data-id="${this.popoverProjectID}"]`).popover('dispose');
       $(`div.record-history[data-id="${this.popoverProjectID}"]`).popover('dispose');
     }
-    // console.log('project card clicked:');
-    // console.log(project);
+    // store the current filter string in the cache service, to re-populate the input box when navigating back
+    this.cacheService.projectSearchTerm = this.filterString ? this.filterString : undefined;
+    // store the clicked project in the cache service
     this.cacheService.project = project;
+    // navigate to the display page
     this.router.navigate([`/main/projects/display/${project.ProjectID}`]);
   }
 
