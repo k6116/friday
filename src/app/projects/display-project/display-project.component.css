@@ -95,24 +95,6 @@ div.project-description:after {
   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
-/* back to search button */
-
-div.back-button-cont {
-  display: inline-block;
-  position: relative;
-  width: 150px;
-  height: 100%;
-  margin-right: -4px; /* remove the inherent space between inline-block elements */
-}
-
-div.back-button-inner-cont {
-  height: 36px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-}
-
 
 /* project details outer container */
 
