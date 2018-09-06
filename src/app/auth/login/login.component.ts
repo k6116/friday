@@ -82,6 +82,10 @@ export class LoginComponent implements OnInit {
 
     this.t0 = performance.now();
 
+    // check the cookies for the jrt_username cookie, if it is there set the username
+    // this means that the user had previously logged in with 'Remember Me' selected
+    this.checkRememberMeCookie();
+
     // check the port to see if this is the test instance (dev will return '3000', prod will return '')
     // if this is test, use the 'blue' icon version (_test) and text instead of yellow
     if (location.port === '440') {
@@ -105,6 +109,8 @@ export class LoginComponent implements OnInit {
     this.apiDataAuthService.getLoginBackgroundImages()
       .subscribe(
         res => {
+
+          console.log('fetched background images');
 
           res.images.forEach(image => {
             if (res.files.indexOf(image.fileName) !== -1) {
@@ -132,9 +138,16 @@ export class LoginComponent implements OnInit {
 
   // set random background image
   setBackgroundImage() {
+    console.log('background images');
+    console.log(this.backgroundImages);
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
     // this.backgroundImage = this.backgroundImages[imageIndex];
-    this.backgroundImage = this.backgroundImages[imageIndex];
+    this.backgroundImage = {
+      fileName: 'wuyuan_jiangxi_province.jpg',
+      path: '/assets/login_images/wuyuan_jiangxi_province.jpg',
+      title: 'Wuyuan, Jiangxi Province, China',
+      subTitle: 'Key Sightings, June, 2016'
+    };
     // this.showLoginPage = true;
     // save the last shown image in the cache service
     this.cacheService.backgroundImage = this.backgroundImage;
@@ -145,13 +158,10 @@ export class LoginComponent implements OnInit {
     console.log('image has finished loading');
     this.t1 = performance.now();
     console.log(`image took ${this.t1 - this.t0} milliseconds`);
-    this.showLoginPage = true;
-    this.isImageLoaded = true;
-
-    // check the cookies for the jrt_username cookie, if it is there set the username
-    // this means that the user had previously logged in with 'Remember Me' selected
-    this.checkRememberMeCookie();
-
+    // this.showLoginPage = true;
+    // setTimeout(() => {
+      this.isImageLoaded = true;
+    // }, 2000);
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)
@@ -162,9 +172,7 @@ export class LoginComponent implements OnInit {
       this.rememberMe = true;
     } else {
     }
-    setTimeout(() => {
-      this.setInputFocus(userName ? true : false);
-    }, 0);
+    this.setInputFocus(userName ? true : false);
   }
 
   // set focus on either the username or password input depending on whether username is populated from the cookie

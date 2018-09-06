@@ -7,20 +7,63 @@ div.login-background-image {
   left: 0;
   height: 100%;
   width: 100%;
-  visibility: hidden;
+  /* visibility: hidden;
   opacity: 0;
   -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
+  backface-visibility: hidden; */
+  /* background-image: filter(url(/assets/login_images/wuyuan_jiangxi_province_thumbnail.jpg), blur(20px)); */
+  /* background-image: url(/assets/login_images/wuyuan_jiangxi_province_thumbnail.jpg); */
 }
 
-div.login-background-image.is-loaded {
+div.login-background-image.small {
+  filter: blur(20px);
+}
+
+div.login-background-image.large {
+  /* background-image: url(/assets/login_images/wuyuan_jiangxi_province.jpg); */
+  animation: sharpen 0.5s both;
+}
+
+/* div.login-background-image.is-loaded {
   visibility: visible;
   opacity: 1;
   -webkit-transition: visibility 0s linear 0s,opacity .4s 0s;
   transition: visibility 0s linear 0s,opacity .4s 0s;
+} */
+
+
+
+@keyframes sharpen {
+  from {
+    /* background-image: url(/assets/login_images/wuyuan_jiangxi_province.jpg); */
+    filter: blur(20px);
+  }
+  to {
+    /* background-image: url(/assets/login_images/wuyuan_jiangxi_province.jpg); */
+    filter: blur(0px);
+  }
 }
 
-div.login-page-cont {
+/* @supports (background-image: filter(url('i.jpg'), blur(1px))) {
+  div.login-background-image {
+    transform: translateZ(0);
+  }
+  div.login-background-image.large {
+    animation: sharpen 2s both;
+  }
+  @keyframes sharpen {
+    from {
+      background-image: filter(url(/assets/login_images/wuyuan_jiangxi_province.jpg), blur(20px));
+    }
+    to {
+      background-image: filter(url(/assets/login_images/wuyuan_jiangxi_province.jpg), blur(0px));
+    }
+  }
+} */
+
+
+
+/* div.login-page-cont {
   visibility: hidden;
   opacity: 0;
   -webkit-backface-visibility: hidden;
@@ -32,7 +75,7 @@ div.login-page-cont.is-loaded {
   opacity: 1;
   -webkit-transition: visibility 0s linear 0s,opacity .4s 0s;
   transition: visibility 0s linear 0s,opacity .4s 0s;
-}
+} */
 
 div.login-background-image-details {
   position: absolute;
@@ -151,22 +194,4 @@ td.login-notice-message {
 svg.login-animated-svg {
   position: relative;
   top: -14px;
-}
-
-
-@supports (background-image: filter(url('i.jpg'), blur(1px))) {
-  .post-header {
-    transform: translateZ(0);
-  }
-  .post-header-enhanced {
-    animation: sharpen .5s both;
-  }
-  @keyframes sharpen {
-    from {
-      background-image: filter(url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/401949/largeimg.jpg), blur(20px));
-    }
-    to {
-      background-image: filter(url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/401949/largeimg.jpg), blur(0px));
-    }
-  }
 }

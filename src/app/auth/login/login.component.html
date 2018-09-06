@@ -6,7 +6,9 @@
 <app-confirm-modal></app-confirm-modal>
 
 
-<div [class]="'login-background-image' + (isImageLoaded ? ' is-loaded' : '')" [style.background-image]="'url(' + backgroundImage?.path + ')'"></div>
+<div [class]="'login-background-image' + (isImageLoaded ? ' large' : ' small')" [style.background-image]="isImageLoaded ? 'url(/assets/login_images/wuyuan_jiangxi_province.jpg)' : 'url(/assets/login_images/wuyuan_jiangxi_province_thumbnail.jpg)'"></div>
+
+ 
 
 <img [src]="backgroundImage?.path" (load)="onImageLoaded()" hidden>
 
