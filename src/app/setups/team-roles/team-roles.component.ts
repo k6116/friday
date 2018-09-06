@@ -30,6 +30,8 @@ export class TeamRolesComponent implements OnInit {
   jobSubTitles: any;
   selectedJobTitle: any;
   selectedJobSubTitle: any;
+  newRoleInit: boolean;
+  duplicateRole: boolean;
 
   constructor(
     private authService: AuthService,
@@ -116,6 +118,7 @@ console.log('WTF')
   }
 
   getJobTitleList() {
+    this.duplicateRole = false;
     this.apiDataJobTitleService.getJobTitleList()
       .subscribe(
         res => { this.jobTitles = res; },
@@ -136,27 +139,61 @@ console.log('WTF')
     // null means 'Select a job title' is selected
     } else {
       this.jobSubTitles = null;
-      this.initNewRole();
+      this.newRole.JobTitleID = null;
+      this.newRole.JobTitleName = null;
+      this.newRole.JobSubTitleID = null;
+      this.newRole.JobSubTitleName = null;
 
     }
     console.log(this.newRole);
+    this.newRoleInit = false;
   }
 
   onJobSubTitleChange(event: any) {
     // if not null means a jobSubTitle is selected
     if (event.target.value !== 'null') {
-    this.selectedJobSubTitle = this.selectedJobTitle.jobSubTitles.filter(item => item.jobSubTitleName === event.target.value)[0];
-    this.newRole.JobSubTitleID = this.selectedJobSubTitle.id;
-    this.newRole.JobSubTitleName = this.selectedJobSubTitle.jobSubTitleName;
+      this.selectedJobSubTitle = this.selectedJobTitle.jobSubTitles.filter(item => item.jobSubTitleName === event.target.value)[0];
+      this.newRole.JobSubTitleID = this.selectedJobSubTitle.id;
+      this.newRole.JobSubTitleName = this.selectedJobSubTitle.jobSubTitleName;
 
-    console.log(this.selectedJobSubTitle);
-
-    // null means 'Select a job sub-title' is selected
-  } else if (event.target.value === null) {
+    // null means initial 'Select a job sub-title' is selected
+    } else if (event.target.value === null) {
       this.newRole.JobSubTitleID = null;
       this.newRole.JobSubTitleName = null;
     }
     console.log(this.newRole);
+
+    // Check if selected role already exists in list
+    const rolesFilter = this.employeesJobTitlesNested.filter(item =>
+      item.JobTitleID === this.newRole.JobTitleID && item.JobSubTitleID === this.newRole.JobSubTitleID)[0];
+
+    if (rolesFilter === undefined) {
+      this.duplicateRole = false;
+      console.log('role does not exist');
+
+    } else {
+      this.duplicateRole = true;
+      this.newRole.JobSubTitleID = null;
+      this.newRole.JobSubTitleName = null;
+      console.log('role does exist');
+    }
+    // set flag for initial option
+    this.newRoleInit = false;
+  }
+
+  onAddNewRoleClick() {
+  // this.employeesJobTitlesNested.push(this.newRole);
+  // const num = this.employeesJobTitlesNested.length;
+  // this.employeesJobTitlesNested[num].JobTitleID = this.newRole.JobTitleID;
+  // WHY CAN'T I JUST PUSH newRole???
+    this.employeesJobTitlesNested.push({
+      JobTitleID: this.newRole.JobTitleID,
+      JobTitleName: this.newRole.JobTitleName,
+      JobSubTitleID: this.newRole.JobSubTitleID,
+      JobSubTitleName: this.newRole.JobSubTitleName,
+    });
+    console.log('new role:', this.newRole);
+    this.initNewRole();
   }
 
   initNewRole() {
@@ -164,31 +201,18 @@ console.log('WTF')
     this.newRole.JobTitleName = null;
     this.newRole.JobSubTitleID = null;
     this.newRole.JobSubTitleName = null;
-  }
-
-  onAddClick() {
-    // this.employeesJobTitlesNested.push(this.newRole);
-    const num = this.employeesJobTitlesNested.length;
-    // this.employeesJobTitlesNested[num].JobTitleID = this.newRole.JobTitleID;
-    this.employeesJobTitlesNested.push({
-      JobTitleID: this.newRole.JobTitleID,
-      JobTitleName: this.newRole.JobTitleName,
-      JobSubTitleID: this.newRole.JobSubTitleID,
-      JobSubTitleName: this.newRole.JobSubTitleName,
-    });
-    // console.log('this.employeesJobTitlesNested:', this.employeesJobTitlesNested[num - 1]);
-    console.log('new role:', this.newRole);
-    this.initNewRole();
+    this.newRoleInit = true;
+    this.duplicateRole = false;
   }
 
   onSaveClick() {
-
      // call the api data service to send the put request
      this.apiDataJobTitleService.updateEmployeesJobTitlesBulk(this.allEmployees, this.authService.loggedInUser.id)
      .subscribe(
        res => {
          this.cacheService.raiseToast('success', res.message);
          this.initializeEmployeeData();
+         this.initNewRole();
        },
        err => {
          console.log(err);

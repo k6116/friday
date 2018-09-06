@@ -235,6 +235,10 @@ i.fa-plus {
   line-height: 1.42857; */
 }
 
+.duplicate-role {
+  border: 1px solid red;
+}
+
   /* .custom-control-label::after {
     width: 0px;
     height: 0px;

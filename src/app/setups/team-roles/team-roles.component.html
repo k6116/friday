@@ -44,23 +44,25 @@
                 <i class="fa fa-plus"></i>
               </td>
               <td *ngIf="newRole.JobTitleID !== null && newRole.JobSubTitleID !== null" style="padding: 4px">
-                <button type="button" class="btn btn-success btn-circle" (click)="onAddClick()"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-success btn-circle" (click)="onAddNewRoleClick()"><i class="fa fa-plus"></i></button>
               </td>
               <td style="white-space: nowrap; vertical-align: center;">
-                <select class="custom-select" id="formGroupJobTitle" (change)="onJobTitleChange($event)">
-                  <option value="null">Select Job Title...</option>
+                <select class="custom-select" [class.duplicate-role]="duplicateRole" id="formGroupJobTitle" (change)="onJobTitleChange($event)">
+                  <option [selected]="newRoleInit" value="null">Select Job Title...</option>
                   <option *ngFor="let list of jobTitles; let l = index">{{list.jobTitleName}}</option>                
                   <!-- <option *ngFor="let list of jobTitles" [selected]="list.jobTitleName == jobTitleName">{{list.jobTitleName}}</option> -->
                 </select>
+                <small *ngIf="duplicateRole" style="color: red; display: block">This role already exists.</small>
               </td>
               <td style="white-space: nowrap; vertical-align: center; border-right: 1px solid #dee2e6;">
-                <select class="custom-select" id="formGroupJobTitle" [disabled]="!jobSubTitles" (change)="onJobSubTitleChange($event)">
+                <select class="custom-select" [class.duplicate-role]="duplicateRole" id="formGroupJobTitle" [disabled]="!jobSubTitles" (change)="onJobSubTitleChange($event)">
                   <!-- <option>Select a Job Title...</option> -->
                   <ng-container *ngIf="jobSubTitles">
-                    <option value="null">Select Sub-Title...</option>                  
+                    <option [selected]="newRoleInit" value="null">Select Sub-Title...</option>                  
                     <option *ngFor="let list of jobSubTitles">{{list.jobSubTitleName}}</option>                                
                   </ng-container>
                 </select>
+                <small *ngIf="duplicateRole" style="color: red; display: block">&nbsp;&nbsp;</small>
               </td>
             </tr>
       </tbody>
