@@ -10,51 +10,67 @@
     
       </div>  
     </div>
-    
-    <!-- begin row for FTE entry table -->
-    <div class="row row-custom">
-    
-      <!-- block for FTE entry div table -->
-      <div class="col-sm col-custom fte-table-container">
-          <div class="fte-table">
-    
-            <div class="fte-table-header">
-              <div class="fte-table-row">
-                <div class="fte-table-cell icon icon-month-header">&nbsp;</div> <!-- for trash icon -->
-                <div class="fte-table-cell row-month-header col-projects-totals">Job Title</div>
-                <!-- loop through each employee -->
-                <ng-container *ngFor="let employee of allEmployees; let k = index">
-                  <div class="fte-table-cell row-month-header">{{ employee.fullName }}</div>
-                </ng-container>
-              </div>
-            </div>
-    
-            <div class="fte-table-body">
-              <!-- loop through each project, one row per project -->
-              <ng-container *ngFor="let jobTitle of employeesJobTitlesNested; let i = index">
-                <div class="fte-table-row">
-                    <div class="fte-table-cell icon"> <!-- for trash icon -->
-                    <i class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
-                  </div>
-                  <div class="fte-table-cell col-project-name" data-toggle="tooltip" data-placement="top">{{ jobTitle.JobTitleName }} - {{ jobTitle.JobSubTitleName }}</div>
-                  <!-- loop through each month's FTE allocation, "monthly" cells per project -->
-                  <ng-container *ngFor="let employee of allEmployees; let j = index">
-                    <div class="fte-table-cell">                    
-                      <input type="radio" class="form-control" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID" (click)="onSelectChange(i, j, jobTitle)">
-                    </div>
-                  </ng-container>
+            
+    <table class="table">
+      <thead style="line-height: 3rem">
+        <tr>
+          <th>&nbsp;</th> <!-- for trash icon -->
+          <th>&nbsp;</th> <!-- for trash icon -->
+          <th style="border-right: 1px solid #dee2e6;"></th>
+          <!-- loop through each employee -->
+          <ng-container *ngFor="let employee of allEmployees; let k = index">
+            <th class="rotate">{{ employee.fullName }}</th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- loop through each project, one row per project -->
+          <tr *ngFor="let jobTitle of employeesJobTitlesNested; let i = index">
+            <td> <!-- for trash icon -->
+              <i class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
+            </td>
+            <td style="white-space: nowrap;" data-toggle="tooltip" data-placement="top">{{ jobTitle.JobTitleName }}</td>
+            <td style="white-space: nowrap; vertical-align: center; border-right: 1px solid #dee2e6;" data-toggle="tooltip" data-placement="top">{{ jobTitle.JobSubTitleName }}</td>
+            <!-- loop through each month's FTE allocation, "monthly" cells per project -->
+              <td *ngFor="let employee of allEmployees; let j = index">
+                <div class="custom-control custom-radio">                    
+                  <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (click)="onSelectChange(i, j, jobTitle)">
+                  <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
                 </div>
-              </ng-container>
-            </div>
+              </td>
+          </tr>
+            <tr> <!-- for adding new role -->
+              <td *ngIf="newRole.JobTitleID === null || newRole.JobSubTitleID === null">
+                <i class="fa fa-plus"></i>
+              </td>
+              <td *ngIf="newRole.JobTitleID !== null && newRole.JobSubTitleID !== null" style="padding: 4px">
+                <button type="button" class="btn btn-success btn-circle" (click)="onAddClick()"><i class="fa fa-plus"></i></button>
+              </td>
+              <td style="white-space: nowrap; vertical-align: center;">
+                <select class="custom-select" id="formGroupJobTitle" (change)="onJobTitleChange($event)">
+                  <option value="null">Select Job Title...</option>
+                  <option *ngFor="let list of jobTitles; let l = index">{{list.jobTitleName}}</option>                
+                  <!-- <option *ngFor="let list of jobTitles" [selected]="list.jobTitleName == jobTitleName">{{list.jobTitleName}}</option> -->
+                </select>
+              </td>
+              <td style="white-space: nowrap; vertical-align: center; border-right: 1px solid #dee2e6;">
+                <select class="custom-select" id="formGroupJobTitle" [disabled]="!jobSubTitles" (change)="onJobSubTitleChange($event)">
+                  <!-- <option>Select a Job Title...</option> -->
+                  <ng-container *ngIf="jobSubTitles">
+                    <option value="null">Select Sub-Title...</option>                  
+                    <option *ngFor="let list of jobSubTitles">{{list.jobSubTitleName}}</option>                                
+                  </ng-container>
+                </select>
+              </td>
+            </tr>
+      </tbody>
+    </table>
     
-            <div class="fte-table-footer">
-              <div class="fte-table-row">
-              </div>
-            </div>
+    <!-- <button type="button" class="btn btn-primary btn-circle">
+      <i class="fa fa-plus"></i>
+    </button> -->
     
-          </div> <!-- end div table -->
+     
 
-      </div> <!-- end div that controls entire FTE entry table visibility -->
-    </div> <!-- end row for FTE entry table -->
     
     </div> <!-- end FTE component container div -->

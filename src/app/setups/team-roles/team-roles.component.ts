@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-
 import { AuthService } from '../../_shared/services/auth.service';
 import { ApiDataJobTitleService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ToolsService } from '../../_shared/services/tools.service';
+import { NewRole } from './team-roles.interface';
 
 @Component({
   selector: 'app-team-roles',
@@ -12,12 +12,24 @@ import { ToolsService } from '../../_shared/services/tools.service';
 })
 export class TeamRolesComponent implements OnInit {
 
+  // interface
+  newRole: NewRole = {
+    JobTitleID: null,
+    JobTitleName: '',
+    JobSubTitleID: null,
+    JobSubTitleName: ''
+  };
+
   employeesJobTitlesNested: any;
   employeesJobTitlesFlat: any;
   teamOrgStructure: any;
   teamEditableMembers: any;
   allEmployees: any;
   totalArray: any;
+  jobTitles: any;
+  jobSubTitles: any;
+  selectedJobTitle: any;
+  selectedJobSubTitle: any;
 
   constructor(
     private authService: AuthService,
@@ -30,6 +42,7 @@ export class TeamRolesComponent implements OnInit {
 
   ngOnInit() {
     this.initializeEmployeeData();
+    this.getJobTitleList();
   }
 
   async initializeEmployeeData() {
@@ -100,6 +113,72 @@ console.log('WTF')
     this.allEmployees[indexEmp].jobTitleID = jobTitle.JobTitleID;
     this.allEmployees[indexEmp].jobSubTitleID = jobTitle.JobSubTitleID;
 
+  }
+
+  getJobTitleList() {
+    this.apiDataJobTitleService.getJobTitleList()
+      .subscribe(
+        res => { this.jobTitles = res; },
+        err => { console.log(err); }
+      );
+  }
+
+  onJobTitleChange(event: any) {
+    // if not null means a jobTitle is selected
+    const eventTarget = event.target.value;
+    if (eventTarget !== 'null') {
+      this.selectedJobTitle = this.jobTitles.filter(item => item.jobTitleName === eventTarget)[0];
+      this.jobSubTitles = this.selectedJobTitle.jobSubTitles;
+      this.newRole.JobTitleID = this.selectedJobTitle.id;
+      this.newRole.JobTitleName = this.selectedJobTitle.jobTitleName;
+      console.log(this.selectedJobTitle);
+
+    // null means 'Select a job title' is selected
+    } else {
+      this.jobSubTitles = null;
+      this.initNewRole();
+
+    }
+    console.log(this.newRole);
+  }
+
+  onJobSubTitleChange(event: any) {
+    // if not null means a jobSubTitle is selected
+    if (event.target.value !== 'null') {
+    this.selectedJobSubTitle = this.selectedJobTitle.jobSubTitles.filter(item => item.jobSubTitleName === event.target.value)[0];
+    this.newRole.JobSubTitleID = this.selectedJobSubTitle.id;
+    this.newRole.JobSubTitleName = this.selectedJobSubTitle.jobSubTitleName;
+
+    console.log(this.selectedJobSubTitle);
+
+    // null means 'Select a job sub-title' is selected
+  } else if (event.target.value === null) {
+      this.newRole.JobSubTitleID = null;
+      this.newRole.JobSubTitleName = null;
+    }
+    console.log(this.newRole);
+  }
+
+  initNewRole() {
+    this.newRole.JobTitleID = null;
+    this.newRole.JobTitleName = null;
+    this.newRole.JobSubTitleID = null;
+    this.newRole.JobSubTitleName = null;
+  }
+
+  onAddClick() {
+    // this.employeesJobTitlesNested.push(this.newRole);
+    const num = this.employeesJobTitlesNested.length;
+    // this.employeesJobTitlesNested[num].JobTitleID = this.newRole.JobTitleID;
+    this.employeesJobTitlesNested.push({
+      JobTitleID: this.newRole.JobTitleID,
+      JobTitleName: this.newRole.JobTitleName,
+      JobSubTitleID: this.newRole.JobSubTitleID,
+      JobSubTitleName: this.newRole.JobSubTitleName,
+    });
+    // console.log('this.employeesJobTitlesNested:', this.employeesJobTitlesNested[num - 1]);
+    console.log('new role:', this.newRole);
+    this.initNewRole();
   }
 
   onSaveClick() {
