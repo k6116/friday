@@ -4,6 +4,7 @@ import { DecimalPipe } from '@angular/common';
 import { HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { AuthService } from '../../_shared/services/auth.service';
 import { ApiDataProjectService, ApiDataFteService, ApiDataJobTitleService,
@@ -12,13 +13,8 @@ import { CacheService } from '../../_shared/services/cache.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ComponentCanDeactivate } from '../../_shared/guards/unsaved-changes.guard';
 import { TeamFTEs, AllocationsArray} from './fte-model';
-import { utils, write, WorkBook } from 'xlsx';
-import { saveAs } from 'file-saver';
-import { JAN } from '@angular/material';
 
 import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
-import { format } from 'util';
-import { yearsPerPage } from '../../../../node_modules/@angular/material/datepicker/typings/multi-year-view';
 
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts, MultiselectDropdownComponent } from 'angular-2-dropdown-multiselect';
 
@@ -56,8 +52,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   projects: any;  // for aliasing formarray
   allProjects: any;
   months: string[] = [];
-  monthlyTotals: number[];
-  monthlyTotalsValid: boolean[];
+  employeeTotals: number[];
+  employeeTotalsValid: boolean[];
   showProjectsModal: boolean;
   projectList: any;
   timer: any;
@@ -130,14 +126,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     showCheckAll: true,
     showUncheckAll: true,
     enableSearch: true,
-    // checkedStyle: 'fontawesome',
     buttonClasses: 'btn btn-primary btn-block',
     dynamicTitleMaxItems: 0,
     displayAllSelectedText: true,
     maxHeight: '500px',
 };
-
-  fteTutorialState = 0; // for keeping track of which part of the tutorial we're in, and passing to child component
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   // Accessing the model to update the rendering manually because the author of this package never fixed a bug
@@ -149,7 +142,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     private authService: AuthService,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataFteService: ApiDataFteService,
-    private apiDataJobTitleService: ApiDataJobTitleService,
     private apiDataOrgService: ApiDataOrgService,
     private cacheService: CacheService,
     private toolsService: ToolsService,
@@ -161,8 +153,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       FTEFormArray: this.fb.array([])
     });
 
-    this.monthlyTotals = new Array(36).fill(null);
-    this.monthlyTotalsValid = new Array(36).fill(true);
+    this.employeeTotals = new Array(36).fill(null);
+    this.employeeTotalsValid = new Array(36).fill(true);
 
     this.changeDetectorRef.detach();
     this.timer = setInterval(() => {
@@ -185,56 +177,20 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     }
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.filterEmployeesModel = [];
     this.filterEmployeesOptions = [];
     this.filterProjectsModel = [];
     this.filterProjectsOptions = [];
 
-    this.apiDataProjectService.getProjects()
-      .subscribe(
-        res => {
-          console.log('get project data successfull:');
-          console.log(res);
-          this.projectList = res;
-          // this.trimProjects(500);
-        },
-        err => {
-          console.log('get project data error:');
-          console.log(err);
-        }
-    );
+    this.getProjects();
 
-    // Using promises to avoid async
-    // First, get the list of Plans for current user
-    // Second, get all subordinates for current user
-    // Third, retrieve data for that plan
-    // If plan does not exist, create one
-    this.getPlanList(this.authService.loggedInUser.id).then(
-      res1 => {
-      if (this.defaultPlan === undefined) {
-        this.getTeam('ethan_hunt@keysight.com').then(
-          res2 => this.createNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1'));
-      } else {
-        this.getTeam('ethan_hunt@keysight.com').then(res => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan).then(
-          res2 => {
-            this.createFtePlanningChartXAxis();
-            this.createFtePlanningChartData(this.allProjects);
-          }
-        ));
-      }}
-    );
-
-    this.fteFormChangeListener();
+    this.planLoadSequence();
 
     $('[data-toggle="tooltip"]').tooltip();
 
     // Initialize to current month/year
-    this.currentMonth = moment(1, 'DD');
-    this.currentMonthName = moment(this.currentMonth).format('MMMM');
-    this.setMonth = this.currentMonth;
-    this.setMonthName = moment(this.setMonth).format('MMMM');
-    this.setYear = moment().year();
+    this.setCurrentMonthYear();
 
     // disable the previous button to prevent user from going into past months
     if (moment(this.setMonth) <= moment(this.currentMonth)) {
@@ -250,14 +206,48 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.changeDetectorRef.detach();
   }
 
+  getProjects() {
+    this.apiDataProjectService.getProjects()
+    .subscribe(
+      res => {
+        this.projectList = res;
+      },
+      err => {
+        console.log('get project data error:');
+        console.log(err);
+      }
+    );
+  }
+
+  async planLoadSequence() {
+    // First, get the list of Plans for current user and get all subordinates for current user
+    // Second, retrieve data for that plan
+    // If plan does not exist, create one
+    // Promise.all allows us to run two functions asynchronously
+    Promise.all([
+      this.getPlanList(this.authService.loggedInUser.id),
+      this.getTeam('ethan_hunt@keysight.com')])
+    .then(async res => {
+        if (this.defaultPlan === undefined) {
+          this.createNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1');
+        } else {
+          await this.getPlan(this.authService.loggedInUser.id, this.defaultPlan);
+          this.createFtePlanningChartXAxis();
+          this.createFtePlanningChartData(this.allProjects);
+        }
+      }
+    );
+  }
+
+  setCurrentMonthYear() {
+    this.currentMonth = moment(1, 'DD');
+    this.currentMonthName = moment(this.currentMonth).format('MMMM');
+    this.setMonth = this.currentMonth;
+    this.setMonthName = moment(this.setMonth).format('MMMM');
+    this.setYear = moment().year();
+  }
+
   onAddProjectClick() {
-    // if user selects add project while in the tutorial, kill part1 and hide the FTE entry elements due to
-    // introjs z-index css problems
-    if (this.fteTutorialState === 1) {
-      this.fteTutorialState++;
-      introJs().exit();
-      this.display = false;
-    }
     this.showProjectsModal = true;
   }
 
@@ -299,13 +289,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
       // loop through the already-built months array and initialize null FTEs for each month in this new project
       newProject.allocations = new Array<AllocationsArray>();
-      // this.months.forEach( month => {
-      //   const newMonth = new AllocationsArray;
-      //   // newMonth.fullName = moment(month).utc().format();
-      //   newMonth.fte = null;
-      //   newMonth.recordID = null;
-      //   newProject.allocations.push(newMonth);
-      // });
 
       const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
       this.addProjectToFteForm(FTEFormArray, newProject, true);
@@ -406,10 +389,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     }
 
     // update the monthly total
-    this.updateMonthlyTotal(j);
+    this.updateEmployeeTotal(j);
 
     // set the border color for the monthly totals inputs
-    this.setMonthlyTotalsBorder();
+    this.setEmployeeTotalsBorder();
 
     // In order to browse month by month without having to click "Save" everytime,
     // we need to cache all the modified data and either update it as it changes or add a new object if its a new instance
@@ -480,7 +463,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
 
-  updateMonthlyTotal(index) {
+  updateEmployeeTotal(index) {
 
     // initialize a temporary variable, set to zero
     let total = 0;
@@ -490,9 +473,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
     // loop through each project
     FTEFormArray.controls.forEach( project => {
-      project['controls'].forEach( (month, i) => {
+      project['controls'].forEach( (emp, i) => {
         if (i === index) {
-          total += +month.value.fte;
+          total += +emp.value.fte;
         }
       });
     });
@@ -501,12 +484,12 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     total = total === 0 ? null : total / 100;
 
     // set the monthly totals property at the index
-    this.monthlyTotals[index] = total;
+    this.employeeTotals[index] = total;
 
   }
 
 
-  updateMonthlyTotals() {
+  updateEmployeeTotals() {
 
     // initialize a temporary array with zeros to hold the totals
     let totals = new Array(36).fill(0);
@@ -532,26 +515,26 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     });
 
     // set the monthly totals property
-    this.monthlyTotals = totals;
+    this.employeeTotals = totals;
   }
 
-  // set red border around totals that don't total to 1
-  setMonthlyTotalsBorder() {
+  // set red border around totals that don't total to 100
+  setEmployeeTotalsBorder() {
 
-    this.monthlyTotals.forEach((total, index) => {
+    this.employeeTotals.forEach((total, index) => {
 
       // get a reference to the input element using jquery
       const $totalEl = $(`input.fte-totals-column[month-index="${index}"]`);
 
       if (!total) {
         // console.log(`month ${index} total is null(${total})`);
-        this.monthlyTotalsValid[index] = true;
+        this.employeeTotalsValid[index] = true;
       } else if (total !== 1) {
         // console.log(`month ${index} does NOT total to 1.0 (${total})`);
-        this.monthlyTotalsValid[index] = false;
+        this.employeeTotalsValid[index] = false;
       } else {
         // console.log(`month ${index} DOES total to 1.0 (${total})`);
-        this.monthlyTotalsValid[index] = true;
+        this.employeeTotalsValid[index] = true;
       }
     });
   }
@@ -560,8 +543,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   onTestFormClick() {
     // console.log('form object (this.form):');
     // console.log(this.FTEFormGroup);
-    console.log('form data (this.form.value.FTEFormArray):');
-    console.log(this.FTEFormGroup.value.FTEFormArray);
+    // console.log('form data (this.form.value.FTEFormArray):');
+    // console.log(this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
     // console.log(this.fteProjectVisible);
     // console.log('teamFTE', this.teamFTEs);
@@ -572,11 +555,12 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('this.allProjects', this.allProjects)
     // console.log('this.projects', this.projects)
     // console.log('this.allEmployees', this.allEmployees);
-    console.log('this.employees', this.employees)
+    // console.log('this.employees', this.employees)
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
-    console.log('team org', this.teamOrgStructure)
-
+    // console.log('team org', this.teamOrgStructure)
+    console.log('this.currentPlan', this.currentPlan)
+    console.log('this.planList', this.planList)
   }
 
   onSaveClick() {
@@ -595,6 +579,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         this.cacheService.raiseToast('success', res.message);
 
         // rebuild the FTE entry page to show selected month
+        this.getPlan(this.authService.loggedInUser.id, this.currentPlan);
         this.buildFteEntryForm();
         this.displayFTETable = true;
         this.FTEFormGroup.markAsUntouched();
@@ -723,12 +708,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     });
 
     // update the totals row
-    this.updateMonthlyTotals();
+    this.updateEmployeeTotals();
 
     // set red border around total inputs that don't sum up to 1
-    this.setMonthlyTotalsBorder();
-
-    this.checkIfNoProjectsVisible();
+    this.setEmployeeTotalsBorder();
 
   }
 
@@ -763,7 +746,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           emailAddress: [employee.emailAddress],
           fullName: [employee.fullName],
           month: [moment(this.setMonth).format('MM-DD-YYYY')],
-          fte: [foundEntry ? foundEntry['allocations:fte'] * 100 : null], // convert db values to a percent without the percent sign
+          // convert db values to a percent without the percent sign. Ensure no decimals XX.000.
+          fte: [foundEntry ? (foundEntry['allocations:fte'] * 100).toFixed(0) : null],
           newRecord: [foundEntry ? false : true],
           updated: [false],
           toBeDeleted: [false]
@@ -825,8 +809,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
             // only delete from the projectemployeerole table if user is deleting a non-newlyAdded project
             this.fteProjectVisible.splice(index, 1);
             FTEFormArray.controls.splice(index, 1);
-            this.updateMonthlyTotals();
-            this.setMonthlyTotalsBorder();
+            this.updateEmployeeTotals();
+            this.setEmployeeTotalsBorder();
             this.cacheService.raiseToast('success', deleteResponse.message);
             deleteActionSubscription.unsubscribe();
 
@@ -864,74 +848,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       });
 
     });
-  }
-
-  updateProjectVisibility(posStart: number, posDelta: number) {
-    // reset project visibility
-    this.fteProjectVisible.length = 0;
-
-    // set new project visibility
-    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
-
-    FTEFormArray.controls.forEach( project => {
-      let nullCounter = posStart;
-
-      for (let i = posStart; i < (posStart + posDelta); i++) {  // only look at the cells that are visible based on the slider
-        const currProjControls = project['controls'][i].controls;
-        if (currProjControls.fte.value) {
-          // if any of the controls have an FTE value, break out of the loop and make the whole project visible
-          i = posStart + posDelta;
-          nullCounter = posStart; // reset nullCounter
-          this.fteProjectVisible.push(true);
-        } else { nullCounter++; }
-      }
-      if (nullCounter === (posStart + posDelta)) {
-        // all nulls, so project shouldn't be displayed
-        this.fteProjectVisible.push(false);
-      }
-    });
-  }
-
-  checkIfEmptyProjects(): string {
-    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;  // get the formarray and loop through each project
-    let emptyCounter = 0;
-    let emptyProjectName: string = null;
-
-    FTEFormArray.controls.forEach( project => {
-      // check if ALL months for a given project have an empty FTE value
-      const projectEmpty = project['controls'].every( month => {
-        const currProjControls = month.controls;
-        return !currProjControls.fte.value;
-      });
-      // if so, disable the slider
-      if (projectEmpty) {
-        emptyCounter++;
-        emptyProjectName = project.value[0].projectName;
-      }
-    });
-
-
-    return emptyProjectName;
-  }
-
-  checkIfNoProjectsVisible() {
-    // if all projects in the slider-defined view are false, then hide the FTE form div and display a different one
-    if (this.fteProjectVisible.every( value => {
-      return value === false;
-    })) {
-      this.displayFTETable = false;
-    } else { this.displayFTETable = true; }
-  }
-
-  fteFormChangeListener() {
-    // listen for any changes to the FTE form
-    this.FTEFormGroup.valueChanges.subscribe( () => {
-      this.checkIfEmptyProjects();
-    });
-  }
-
-  trimProjects(numProjects: number) {
-    this.projectList = this.projectList.slice(0, numProjects);
   }
 
   createProject() {
@@ -1006,8 +922,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       // Also a placeholder employee is needed to match the emailAddress condition in the buildFTEEntryForm function
       this.teamFTEsFlatLive.push({
         planName: this.currentPlan,
-        projectID: 12,
-        projectName: 'Arges50',
+        projectID: newProject.projectID,
+        projectName: newProject.projectName,
         ['allocations:recordID']: null,
         ['allocations:fullName']: this.allEmployees[0].fullName,
         ['allocations:employeeID']: this.allEmployees[0].employeeID,
@@ -1022,26 +938,12 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     }
   }
 
-  getTeam(email: string) {
-    return new Promise((p_res, p_err) => {
-      // get list of subordinates
-      this.apiDataOrgService.getEmployeeList(email)
-      .subscribe(
-        res => {
-          // this.teamOrgStructure = JSON.parse('[' + res[0].json + ']')[0];
-          this.teamOrgStructure = res;
-          this.cacheService.teamEmployeeList = this.teamOrgStructure;
-          this.updateEmployeeFilters();
-          this.buildMonthsArray();
-          this.buildTeamEditableMembers();
-          p_res();
-        },
-        err => {
-          console.error('error getting nested org data');
-          p_err();
-        }
-      );
-    });
+  async getTeam(email: string): Promise<any> {
+    this.teamOrgStructure = await this.apiDataOrgService.getEmployeeList(email).toPromise();
+    this.cacheService.teamEmployeeList = this.teamOrgStructure;
+    this.updateEmployeeFilters();
+    this.buildMonthsArray();
+    this.buildTeamEditableMembers();
   }
 
   buildTeamEditableMembers() {
@@ -1053,7 +955,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.teamEditableMembers = '\'\'' + this.teamEditableMembers + '\'';
   }
 
-  createNewPlan(emailAddress: any, userID: any, planName: string) {
+  async createNewPlan(emailAddress: any, userID: any, planName: string) {
 
     if (emailAddress === null) {
       emailAddress = this.teamEditableMembers;
@@ -1063,70 +965,55 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     }
 
     // create new plan and get FTE data
-    this.apiDataFteService.indexNewPlan(emailAddress, userID, planName)
-    .subscribe(
-      res => {
-        this.allTeamFTEs = res.nested;
-        this.teamFTEs = this.allTeamFTEs;
-        this.teamFTEsFlat = res.flat;
-        this.teamFTEsFlatLive = this.teamFTEsFlat;
+    const res = await this.apiDataFteService.indexNewPlan(emailAddress, userID, planName).toPromise();
 
-        // Set month back to current/default
-        this.currentMonth = moment(1, 'DD');
-        this.currentMonthName = moment(this.currentMonth).format('MMMM');
-        this.setMonth = this.currentMonth;
-        this.setMonthName = moment(this.setMonth).format('MMMM');
-        this.setYear = moment().year();
+    this.allTeamFTEs = res.nested;
+    this.teamFTEs = this.allTeamFTEs;
+    this.teamFTEsFlat = res.flat;
+    this.teamFTEsFlatLive = this.teamFTEsFlat;
 
-        this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
-        this.display = true;  // ghetto way to force rendering after FTE data is fetched
-        const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-        this.allProjects = FTEFormArray.controls;
-        this.projects = this.allProjects;
+    // Set month back to current/default
+    this.currentMonth = moment(1, 'DD');
+    this.currentMonthName = moment(this.currentMonth).format('MMMM');
+    this.setMonth = this.currentMonth;
+    this.setMonthName = moment(this.setMonth).format('MMMM');
+    this.setYear = moment().year();
 
-        // Initialize the cache array for the FTEFormGroup, then add an extra element to add all edits in months other than the current
-        this.FTEFormGroupLive = this.FTEFormGroup.value.FTEFormArray;
-        this.FTEFormGroupLive.push([]);
+    this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+    this.display = true;  // ghetto way to force rendering after FTE data is fetched
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+    this.allProjects = FTEFormArray.controls;
+    this.projects = this.allProjects;
 
-        this.updateProjectFilters();
+    // Initialize the cache array for the FTEFormGroup, then add an extra element to add all edits in months other than the current
+    this.FTEFormGroupLive = this.FTEFormGroup.value.FTEFormArray;
+    this.FTEFormGroupLive.push([]);
 
-        this.getPlanList(this.authService.loggedInUser.id); // update the plan list with the new plan
-      },
-      err => {
-        console.error(err);
-      }
-    );
+    this.updateProjectFilters();
+
+    this.planList.splice(0, 0, {planName: planName});
+    this.defaultPlan = this.planList[0].planName;
+    this.currentPlan = this.defaultPlan;
+
   }
 
-  getPlan(userID: any, planName: string) {
-    return new Promise((p_res, p_err) => {
-      // get FTE data for specific plan
-      this.apiDataFteService.indexPlan(userID, planName)
-      .subscribe(
-        res => {
-          this.allTeamFTEs = res.nested;
-          this.teamFTEs = this.allTeamFTEs;
-          this.teamFTEsFlat = res.flat;
-          this.teamFTEsFlatLive = this.teamFTEsFlat;
-          this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
-          this.display = true;  // ghetto way to force rendering after FTE data is fetched
-          const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-          this.allProjects = FTEFormArray.controls;
-          this.projects = this.allProjects;
+  async getPlan(userID: any, planName: string): Promise<any> {
+    const res = await this.apiDataFteService.indexPlan(userID, planName).toPromise();
+    this.allTeamFTEs = res.nested;
+    this.teamFTEs = this.allTeamFTEs;
+    this.teamFTEsFlat = res.flat;
+    this.teamFTEsFlatLive = this.teamFTEsFlat;
+    this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+    this.display = true;  // ghetto way to force rendering after FTE data is fetched
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+    this.allProjects = FTEFormArray.controls;
+    this.projects = this.allProjects;
 
-          // Initialize the cache array for the FTEFormGroup, then add an extra element to add all edits in months other than the current
-          this.FTEFormGroupLive = this.FTEFormGroup.value.FTEFormArray;
-          this.FTEFormGroupLive.push([]);
+    // Initialize the cache array for the FTEFormGroup, then add an extra element to add all edits in months other than the current
+    this.FTEFormGroupLive = this.FTEFormGroup.value.FTEFormArray;
+    this.FTEFormGroupLive.push([]);
 
-          this.updateProjectFilters();
-          p_res();
-        },
-        err => {
-          console.error(err);
-          p_err();
-        }
-      );
-    });
+    this.updateProjectFilters();
   }
 
   updateEmployeeFilters() {
@@ -1165,29 +1052,16 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.filterProjectsDropdown.model = this.filterProjectsModel;
   }
 
-  getPlanList(userID: any) {
-    // get the list of plans to load the Selection dropdown
-    return new Promise((p_res, p_err) => {
-      this.apiDataFteService.indexPlanList(userID)
-      .subscribe(
-        res => {
-          this.planList = res;
-          // If user doesn't have any plans, then set the default to undefined
-          if (this.planList.length === 0) {
-            this.defaultPlan = undefined;
-          } else {
-            // set the default plan to the latest plan
-            this.defaultPlan = this.planList[0].planName;
-            this.currentPlan = this.defaultPlan;
-          }
-          p_res();
-        },
-        err => {
-          console.error(err);
-          p_err();
-        }
-      );
-    });
+  async getPlanList(userID: any): Promise<any> {
+    this.planList = await this.apiDataFteService.indexPlanList(userID).toPromise();
+    // If user doesn't have any plans, then set the default to undefined
+    if (this.planList.length === 0) {
+      this.defaultPlan = undefined;
+    } else {
+      // set the default plan to the latest plan
+      this.defaultPlan = this.planList[0].planName;
+      this.currentPlan = this.defaultPlan;
+    }
   }
 
   selectPlan(planName: string) {
@@ -1205,41 +1079,51 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // hide the fte form while delete and reload functions are running
     this.displayFTETable = false;
 
-    // create object with delete data
-    const planData = {
-      planName: this.currentPlan,
-      userID: this.authService.loggedInUser.id
-    };
+    // if empty plan, just delete from planList
+    if (this.teamFTEsFlatLive.length === 0) {
+      this.planList = this.planList.filter( obj => {
+        return obj.planName !== this.currentPlan;
+      });
+      this.defaultPlan = this.planList[0].planName;
+      this.currentPlan = this.defaultPlan;
+    } else {
 
-    this.apiDataFteService.deletePlan(planData)
-      .subscribe(
-        res => {
-          console.log('plan deleted', res);
+      // create object with delete data
+      const planData = {
+        planName: this.currentPlan,
+        userID: this.authService.loggedInUser.id
+      };
 
-          // empty arrays so it won't have objects appended when the buildMonthsArray() function runs
-          this.employees = [];
-          this.teamEditableMembers = '';
+      this.apiDataFteService.deletePlan(planData)
+        .subscribe(
+          res => {
+            console.log('plan deleted', res);
 
-          // if user deletes the last plan, need to handle it the same as ngoninit
-          this.getPlanList(this.authService.loggedInUser.id).then(
-            res1 => {
-            if (this.defaultPlan === undefined) {
-              this.getTeam('ethan_hunt@keysight.com').then(
-                res2 => this.createNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1'));
-            } else {
-              this.getTeam('ethan_hunt@keysight.com').then(res3 => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan));
-            }
-          });
-          this.currentMonth = moment(1, 'DD');
-          this.currentMonthName = moment(this.currentMonth).format('MMMM');
-          this.setMonth = this.currentMonth;
-          this.setMonthName = moment(this.setMonth).format('MMMM');
-          this.setYear = moment().year();
-        },
-        err => {
-          console.error(err);
-        }
-      );
+            // empty arrays so it won't have objects appended when the buildMonthsArray() function runs
+            this.employees = [];
+            this.teamEditableMembers = '';
+
+            // if user deletes the last plan, need to handle it the same as ngoninit
+            this.getPlanList(this.authService.loggedInUser.id).then(
+              res1 => {
+              if (this.defaultPlan === undefined) {
+                this.getTeam('ethan_hunt@keysight.com').then(
+                  res2 => this.createNewPlan(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1'));
+              } else {
+                this.getTeam('ethan_hunt@keysight.com').then(res3 => this.getPlan(this.authService.loggedInUser.id, this.defaultPlan));
+              }
+            });
+            this.currentMonth = moment(1, 'DD');
+            this.currentMonthName = moment(this.currentMonth).format('MMMM');
+            this.setMonth = this.currentMonth;
+            this.setMonthName = moment(this.setMonth).format('MMMM');
+            this.setYear = moment().year();
+          },
+          err => {
+            console.error(err);
+          }
+        );
+      }
   }
 
   onPreviousMonthClick() {

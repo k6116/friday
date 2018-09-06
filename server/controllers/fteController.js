@@ -266,12 +266,12 @@ function updateTeamData(req, res) {
             planName: planName,
             projectID: data.projectID,
             employeeID: data.employeeID,
-            fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
+            fiscalDate: moment(data.month).format('YYYY-MM-DD') + 'T00:00:00.000Z',
             fte: +data.fte / 100, // convert the FTE value to a decimal
             createdBy: userID,
-            createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+            createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
             updatedBy: userID,
-            updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+            updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
           }
         )
       }
@@ -280,7 +280,7 @@ function updateTeamData(req, res) {
         updateData.push({
           projectID: data.projectID,
           employeeID: data.employeeID,
-          fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
+          fiscalDate: moment(data.month).format('YYYY-MM-DD') + 'T00:00:00.000Z',
           fte: +data.fte / 100, // convert the FTE value to a decimal
           createdBy: userID,
           createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),

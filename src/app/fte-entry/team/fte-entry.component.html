@@ -72,7 +72,7 @@
       </button>
       <span style="width: 5px"></span>
       <select class="form-control" style="width: 200px" (change)="selectPlan($event.target.value)">
-        <option *ngFor="let plan of planList; let i = index" [value]="plan.planName">{{ plan.planName }}</option>
+        <option *ngFor="let plan of planList; let i = index" selected="currentPlan" [value]="plan.planName">{{ plan.planName }}</option>
       </select>
       <span style="width: 5px"></span>
       <button class="btn btn-secondary" (click)="deletePlan()">
@@ -103,7 +103,7 @@
           </div>
         </div>
 
-        <div *ngIf="displayFTETable" class="fte-table-body">
+        <div class="fte-table-body">
           <!-- loop through each project, one row per project -->
           <ng-container *ngFor="let project of projects; let i = index">
             <div class="fte-table-row" [formGroupName]="i" [style.display]="(fteProjectVisible[i]) ? 'table-row' : 'none'">
@@ -127,7 +127,7 @@
             <div class="fte-table-cell col-projects-totals">TOTAL</div>
             <ng-container *ngFor="let employee of employees; let z = index">
               <div class="fte-table-cell">
-                <input disabled [value]="monthlyTotals[z] | percent" type="text" [class]="'form-control' + (!monthlyTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
+                <input disabled [value]="employeeTotals[z] | percent" type="text" [class]="'form-control' + (!employeeTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
               </div>
             </ng-container>
           </div>
@@ -148,7 +148,7 @@
 </div> <!-- end FTE component container div -->
 
 
-<!-- Edit Project Role Modal -->
+<!-- Edit New Plan Modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="newPlanModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content" style="width:150%">
