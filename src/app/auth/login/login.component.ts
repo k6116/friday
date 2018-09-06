@@ -54,6 +54,10 @@ export class LoginComponent implements OnInit {
   backgroundImages: any[] = [];
   backgroundImage: any;
   testImagePath: string;
+  isImageLoaded: boolean;
+
+  t0: number;
+  t1: number;
 
   // set to true if this is the test instance (port 440)
   isTestInstance: boolean;
@@ -76,15 +80,13 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
+    this.t0 = performance.now();
+
     // check the port to see if this is the test instance (dev will return '3000', prod will return '')
     // if this is test, use the 'blue' icon version (_test) and text instead of yellow
     if (location.port === '440') {
       this.isTestInstance = true;
     }
-
-    // check the cookies for the jrt_username cookie, if it is there set the username
-    // this means that the user had previously logged in with 'Remember Me' selected
-    this.checkRememberMeCookie();
 
     // check for the autoLogout object; if it exists display the message
     if (this.cacheService.autoLogout$) {
@@ -133,9 +135,23 @@ export class LoginComponent implements OnInit {
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
     // this.backgroundImage = this.backgroundImages[imageIndex];
     this.backgroundImage = this.backgroundImages[imageIndex];
-    this.showLoginPage = true;
+    // this.showLoginPage = true;
     // save the last shown image in the cache service
     this.cacheService.backgroundImage = this.backgroundImage;
+  }
+
+
+  onImageLoaded() {
+    console.log('image has finished loading');
+    this.t1 = performance.now();
+    console.log(`image took ${this.t1 - this.t0} milliseconds`);
+    this.showLoginPage = true;
+    this.isImageLoaded = true;
+
+    // check the cookies for the jrt_username cookie, if it is there set the username
+    // this means that the user had previously logged in with 'Remember Me' selected
+    this.checkRememberMeCookie();
+
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)
@@ -146,7 +162,9 @@ export class LoginComponent implements OnInit {
       this.rememberMe = true;
     } else {
     }
-    this.setInputFocus(userName ? true : false);
+    setTimeout(() => {
+      this.setInputFocus(userName ? true : false);
+    }, 0);
   }
 
   // set focus on either the username or password input depending on whether username is populated from the cookie

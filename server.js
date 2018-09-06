@@ -54,24 +54,16 @@ app.use(express.static('public'));
 // middleware for datadog express integration (for metrics)
 app.use(connect_datadog);
 
-// var logger = new (winston.Logger) ({
-//   transports: [
-//     new (winston.transports.File) ({
-//       name: 'your_logger_name',
-//       filename: path.join(__dirname, 'datadog.log'),
-//       json: true,
-//       level: 'info'
-//     })
-//   ]
-// });
 
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
   transports: [
-    new winston.transports.File({ filename: path.join(__dirname, 'datadog.log'), level: 'info' })
+    new winston.transports.File({ filename: path.join(__dirname, '../datadog.log'), level: 'info' })
   ]
 });
+
+console.log(path.join(__dirname, '../datadog.log'));
 
 // logger.log('info', 'Hello simple log!');
 // logger.info('Hello log with metas',{color: 'blue' });
@@ -142,7 +134,7 @@ email.setSchedules();
 process.on('SIGINT', () => {
   console.log('SIGINT message received');
   console.log(process.pid);
-  process.kill(process.pid);
+  // process.kill(process.pid);
   server.close(() => {
     console.log('node process stopping...');
     process.exit(0);

@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs/subject';
 import { ApiDataDashboardService } from '../_shared/services/api-data/_index';
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
@@ -10,6 +12,7 @@ import { DashboardMessagesService } from './dashboard-messages.service';
 import { DashboardParetoService } from './dashboard-pareto.service';
 import { DashboardPieService } from './dashboard-pie.service';
 import { DashboardStackedColumnService } from './dashboard-stacked-column.service';
+
 
 
 declare var require: any;
@@ -29,7 +32,7 @@ import * as moment from 'moment';
   providers: [DashboardDonutService, DashboardGaugeService, DashboardMessagesService, DashboardParetoService,
     DashboardPieService, DashboardStackedColumnService]
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   messages: any[] = [];
   dashboardData: any;
@@ -41,6 +44,7 @@ export class DashboardComponent implements OnInit {
   notCompletedPrefix: string;
   displayProgressGauge: boolean;
   subscription1: Subscription;
+  ngUnsubscribe = new Subject();
 
 
   constructor(
@@ -69,6 +73,15 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  ngOnDestroy() {
+
+    this.subscription1.unsubscribe();
+
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+
+  }
+
   getDashboardData() {
 
     // hide the footer until the page is ready to be rendered
@@ -84,6 +97,7 @@ export class DashboardComponent implements OnInit {
     // returns as a single response array using forkjoin:
     // [fteData, firstLogin, projectRequests]
     this.apiDataDashboardService.getDashboardData(fiscalQuarterRange[0], fiscalQuarterRange[1])
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         res => {
           // console.log('dashboard data:');
