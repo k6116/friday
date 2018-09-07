@@ -56,9 +56,6 @@ export class LoginComponent implements OnInit {
   testImagePath: string;
   isImageLoaded: boolean;
 
-  t0: number;
-  t1: number;
-
   // set to true if this is the test instance (port 440)
   isTestInstance: boolean;
 
@@ -80,7 +77,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
-    this.t0 = performance.now();
 
     // check the cookies for the jrt_username cookie, if it is there set the username
     // this means that the user had previously logged in with 'Remember Me' selected
@@ -116,14 +112,17 @@ export class LoginComponent implements OnInit {
             if (res.files.indexOf(image.fileName) !== -1) {
               this.backgroundImages.push({
                 fileName: image.fileName,
-                path: `/assets/login_images/${image.fileName}`,
+                fileNameNoExt: image.fileName.replace('.jpg', ''),
+                path: `/assets/login_images/`,
                 title: image.caption,
                 subTitle: `Key Sightings, ${image.winnerDate}`
               });
             }
           });
 
-          // console.log(`number of background images: ${this.backgroundImages.length}`);
+          console.log(`number of background images: ${this.backgroundImages.length}`);
+          console.log('background images');
+          console.log(this.backgroundImages);
 
           // set random background image
           this.setBackgroundImage();
@@ -138,30 +137,23 @@ export class LoginComponent implements OnInit {
 
   // set random background image
   setBackgroundImage() {
-    console.log('background images');
-    console.log(this.backgroundImages);
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
     // this.backgroundImage = this.backgroundImages[imageIndex];
     this.backgroundImage = {
       fileName: 'wuyuan_jiangxi_province.jpg',
-      path: '/assets/login_images/wuyuan_jiangxi_province.jpg',
+      fileNameNoExt: 'wuyuan_jiangxi_province',
+      path: '/assets/login_images/',
       title: 'Wuyuan, Jiangxi Province, China',
       subTitle: 'Key Sightings, June, 2016'
     };
-    // this.showLoginPage = true;
     // save the last shown image in the cache service
     this.cacheService.backgroundImage = this.backgroundImage;
   }
 
 
+  // set image is loaded to true to switch the background image from thumbnail to full size
   onImageLoaded() {
-    console.log('image has finished loading');
-    this.t1 = performance.now();
-    console.log(`image took ${this.t1 - this.t0} milliseconds`);
-    // this.showLoginPage = true;
-    // setTimeout(() => {
-      this.isImageLoaded = true;
-    // }, 2000);
+    this.isImageLoaded = true;
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)
