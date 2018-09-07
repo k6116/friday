@@ -1,78 +1,58 @@
 <div class="container-fluid">
-
-    <div class="row row-custom">
-      <div class="col-sm col-custom">
-    
-        <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
-        <button class="btn btn-secondary btn-fte-toolbar" (click)="onSaveClick()">
-          <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
-        </button>
-    
-      </div>  
-    </div>
-            
-    <table class="table">
-      <thead style="line-height: 3rem">
-        <tr>
-          <th>&nbsp;</th> <!-- for trash icon -->
-          <th>&nbsp;</th> <!-- for trash icon -->
-          <th style="border-right: 1px solid #dee2e6;"></th>
-          <!-- loop through each employee -->
-          <ng-container *ngFor="let employee of allEmployees; let k = index">
-            <th class="rotate">{{ employee.fullName }}</th>
-          </ng-container>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- loop through each project, one row per project -->
-          <tr *ngFor="let jobTitle of employeesJobTitlesNested; let i = index">
-            <td> <!-- for trash icon -->
-              <i class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
-            </td>
-            <td style="white-space: nowrap;" data-toggle="tooltip" data-placement="top">{{ jobTitle.JobTitleName }}</td>
-            <td style="white-space: nowrap; vertical-align: center; border-right: 1px solid #dee2e6;" data-toggle="tooltip" data-placement="top">{{ jobTitle.JobSubTitleName }}</td>
-            <!-- loop through each month's FTE allocation, "monthly" cells per project -->
-              <td *ngFor="let employee of allEmployees; let j = index">
-                <div class="custom-control custom-radio">                    
-                  <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (click)="onSelectChange(i, j, jobTitle)">
-                  <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
-                </div>
-              </td>
-          </tr>
-            <tr> <!-- for adding new role -->
-              <td *ngIf="newRole.JobTitleID === null || newRole.JobSubTitleID === null">
-                <i class="fa fa-plus"></i>
-              </td>
-              <td *ngIf="newRole.JobTitleID !== null && newRole.JobSubTitleID !== null" style="padding: 4px">
-                <button type="button" class="btn btn-success btn-circle" (click)="onAddNewRoleClick()"><i class="fa fa-plus"></i></button>
-              </td>
-              <td style="white-space: nowrap; vertical-align: center;">
-                <select class="custom-select" [class.duplicate-role]="duplicateRole" id="formGroupJobTitle" (change)="onJobTitleChange($event)">
-                  <option [selected]="newRoleInit" value="null">Select Job Title...</option>
-                  <option *ngFor="let list of jobTitles; let l = index">{{list.jobTitleName}}</option>                
-                  <!-- <option *ngFor="let list of jobTitles" [selected]="list.jobTitleName == jobTitleName">{{list.jobTitleName}}</option> -->
-                </select>
-                <small *ngIf="duplicateRole" style="color: red; display: block">This role already exists.</small>
-              </td>
-              <td style="white-space: nowrap; vertical-align: center; border-right: 1px solid #dee2e6;">
-                <select class="custom-select" [class.duplicate-role]="duplicateRole" id="formGroupJobTitle" [disabled]="!jobSubTitles" (change)="onJobSubTitleChange($event)">
-                  <!-- <option>Select a Job Title...</option> -->
-                  <ng-container *ngIf="jobSubTitles">
-                    <option [selected]="newRoleInit" value="null">Select Sub-Title...</option>                  
-                    <option *ngFor="let list of jobSubTitles">{{list.jobSubTitleName}}</option>                                
-                  </ng-container>
-                </select>
-                <small *ngIf="duplicateRole" style="color: red; display: block">&nbsp;&nbsp;</small>
-              </td>
-            </tr>
-      </tbody>
-    </table>
-    
-    <!-- <button type="button" class="btn btn-primary btn-circle">
-      <i class="fa fa-plus"></i>
-    </button> -->
-    
-     
-
-    
-    </div> <!-- end FTE component container div -->
+  <div class="row row-custom">
+    <div class="col-sm col-custom">
+      <!-- USEFUL TEST BUTTON -->
+      <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
+      <button class="btn btn-secondary btn-fte-toolbar" (click)="onSaveClick()">
+        <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+      </button>
+    </div>  
+  </div>
+          
+  <table class="table">
+    <thead style="line-height: 3rem">
+      <tr>
+        <th colspan="3" style="border-right: 1px solid #dee2e6;"></th>
+        <th *ngFor="let employee of allEmployees; let k = index" class="rotate">{{ employee.fullName }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let jobTitle of employeesJobTitlesNested; let i = index">
+        <td>&nbsp;</td>
+        <td scope="row" data-toggle="tooltip" data-placement="top">{{ jobTitle.JobTitleName }}</td>
+        <td scope="row" style="vertical-align: center; border-right: 1px solid #dee2e6;" data-toggle="tooltip" data-placement="top">{{ jobTitle.JobSubTitleName }}</td>
+        <td *ngFor="let employee of allEmployees; let j = index">
+          <div class="custom-control custom-radio">                    
+            <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (click)="onSelectChange(i, j, jobTitle)">
+            <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
+          </div>
+        </td>
+      </tr>
+      <!-- for adding new role -->
+      <tr> 
+        <td scope="row" *ngIf="newRole.JobTitleID === null || newRole.JobSubTitleID === null">
+          <i class="fa fa-plus"></i>
+        </td>
+        <td scope="row" *ngIf="newRole.JobTitleID !== null && newRole.JobSubTitleID !== null" style="padding: 4px">
+          <button type="button" class="btn btn-success btn-circle" (click)="onAddNewRoleClick()"><i class="fa fa-plus"></i></button>
+        </td>
+        <td scope="row">
+          <select class="custom-select" [class.duplicate-role]="duplicateRole" id="formGroupJobTitle" (change)="onJobTitleChange($event)">
+            <option [selected]="newRoleInit" value="null">Jobtitle...</option>
+            <option [attr.value]="m" *ngFor="let list of jobTitles; let m = index">{{list.jobTitleName}}</option>                
+          </select>
+          <small *ngIf="duplicateRole" class="duplicate-role-small">This role already exists.</small>
+        </td>
+        <td scope="row" style="border-right: 1px solid #dee2e6;">
+          <select class="custom-select" [class.duplicate-role]="duplicateRole" id="formGroupJobTitle" [disabled]="!jobSubTitles" (change)="onJobSubTitleChange($event)">
+            <ng-container *ngIf="jobSubTitles">
+              <option [selected]="newRoleInit" value="null">Subtitle...</option>                  
+              <option [attr.value]="n" *ngFor="let list of jobSubTitles; let n = index">{{list.jobSubTitleName}}</option>                                
+            </ng-container>
+          </select>
+          <small *ngIf="duplicateRole" class="duplicate-role-small">&nbsp;&nbsp;</small>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div> 

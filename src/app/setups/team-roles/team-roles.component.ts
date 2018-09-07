@@ -12,26 +12,25 @@ import { NewRole } from './team-roles.interface';
 })
 export class TeamRolesComponent implements OnInit {
 
-  // interface
-  newRole: NewRole = {
-    JobTitleID: null,
-    JobTitleName: '',
-    JobSubTitleID: null,
-    JobSubTitleName: ''
-  };
-
   employeesJobTitlesNested: any;
   employeesJobTitlesFlat: any;
   teamOrgStructure: any;
   teamEditableMembers: any;
   allEmployees: any;
   totalArray: any;
-  jobTitles: any;
-  jobSubTitles: any;
-  selectedJobTitle: any;
-  selectedJobSubTitle: any;
-  newRoleInit: boolean;
-  duplicateRole: boolean;
+
+  // for jobtitle and subtiitle combobox
+  jobTitles: any;           // List of jobtitles
+  jobSubTitles: any;        // List of subtitles
+  selectedJobTitle: any;    // Array with info of the jobtitle option
+  newRoleInit: boolean;     // flag to reset combobox
+  duplicateRole: boolean;   // validator when role is already in the list
+  newRole: NewRole = {      // interface for adding new roles
+    JobTitleID: null,
+    JobTitleName: '',
+    JobSubTitleID: null,
+    JobSubTitleName: ''
+  };
 
   constructor(
     private authService: AuthService,
@@ -109,16 +108,12 @@ console.log('WTF')
   }
 
   onSelectChange(indexJT: number, indexEmp: number, jobTitle: any) {
-    console.log('jobTitle', jobTitle);
-    console.log('indexJT: ' + indexJT + ', indexEmp: ' + indexEmp);
-
     this.allEmployees[indexEmp].jobTitleID = jobTitle.JobTitleID;
     this.allEmployees[indexEmp].jobSubTitleID = jobTitle.JobSubTitleID;
-
   }
 
   getJobTitleList() {
-    this.duplicateRole = false;
+    this.duplicateRole = false; // set flag to initiale value
     this.apiDataJobTitleService.getJobTitleList()
       .subscribe(
         res => { this.jobTitles = res; },
@@ -127,72 +122,71 @@ console.log('WTF')
   }
 
   onJobTitleChange(event: any) {
-    // if not null means a jobTitle is selected
+    // value is the index of the option list; null means no jobtitle is selected
     const eventTarget = event.target.value;
     if (eventTarget !== 'null') {
-      this.selectedJobTitle = this.jobTitles.filter(item => item.jobTitleName === eventTarget)[0];
+      this.selectedJobTitle = this.jobTitles[eventTarget];
       this.jobSubTitles = this.selectedJobTitle.jobSubTitles;
+      // assign ID and name to newRole
       this.newRole.JobTitleID = this.selectedJobTitle.id;
       this.newRole.JobTitleName = this.selectedJobTitle.jobTitleName;
-      console.log(this.selectedJobTitle);
-
-    // null means 'Select a job title' is selected
+      // reset subtitles in newRole
+      this.newRole.JobSubTitleID = null;
+      this.newRole.JobSubTitleName = null;
     } else {
+      // clear subtitle list
       this.jobSubTitles = null;
+      // reset all values in newRole
       this.newRole.JobTitleID = null;
       this.newRole.JobTitleName = null;
       this.newRole.JobSubTitleID = null;
       this.newRole.JobSubTitleName = null;
 
     }
-    console.log(this.newRole);
+    // set flag to false so option doesn't jump to default
     this.newRoleInit = false;
   }
 
   onJobSubTitleChange(event: any) {
-    // if not null means a jobSubTitle is selected
-    if (event.target.value !== 'null') {
-      this.selectedJobSubTitle = this.selectedJobTitle.jobSubTitles.filter(item => item.jobSubTitleName === event.target.value)[0];
-      this.newRole.JobSubTitleID = this.selectedJobSubTitle.id;
-      this.newRole.JobSubTitleName = this.selectedJobSubTitle.jobSubTitleName;
-
-    // null means initial 'Select a job sub-title' is selected
-    } else if (event.target.value === null) {
+    // value is the index of the option list; null means no subtitle is selected
+    const eventTarget = event.target.value;
+    if (eventTarget !== 'null') {
+      // find the subtitle from list
+      const selectedJobSubTitle = this.selectedJobTitle.jobSubTitles[eventTarget];
+      // assign id and name to newRole
+      this.newRole.JobSubTitleID = selectedJobSubTitle.id;
+      this.newRole.JobSubTitleName = selectedJobSubTitle.jobSubTitleName;
+    } else {
+      // clear subtitle in newRole
       this.newRole.JobSubTitleID = null;
       this.newRole.JobSubTitleName = null;
     }
-    console.log(this.newRole);
 
-    // Check if selected role already exists in list
+    // VALIDATION: Check if selected role already exists in list (nested employeesJobTitles)
     const rolesFilter = this.employeesJobTitlesNested.filter(item =>
       item.JobTitleID === this.newRole.JobTitleID && item.JobSubTitleID === this.newRole.JobSubTitleID)[0];
 
+    // If role doesn't exist the roles filter will be undefined => Good to add new role to list
     if (rolesFilter === undefined) {
       this.duplicateRole = false;
-      console.log('role does not exist');
-
     } else {
+      // set duplicateRole flag so the red boxes appear and the green add button doesn't show up
       this.duplicateRole = true;
+      // remove subtitle values from newRole so it can't be added
       this.newRole.JobSubTitleID = null;
       this.newRole.JobSubTitleName = null;
-      console.log('role does exist');
     }
-    // set flag for initial option
-    this.newRoleInit = false;
   }
 
   onAddNewRoleClick() {
-  // this.employeesJobTitlesNested.push(this.newRole);
-  // const num = this.employeesJobTitlesNested.length;
-  // this.employeesJobTitlesNested[num].JobTitleID = this.newRole.JobTitleID;
-  // WHY CAN'T I JUST PUSH newRole???
+    // add newRole values to main list
     this.employeesJobTitlesNested.push({
       JobTitleID: this.newRole.JobTitleID,
       JobTitleName: this.newRole.JobTitleName,
       JobSubTitleID: this.newRole.JobSubTitleID,
       JobSubTitleName: this.newRole.JobSubTitleName,
     });
-    console.log('new role:', this.newRole);
+    // reset newRole and flags
     this.initNewRole();
   }
 
@@ -201,7 +195,9 @@ console.log('WTF')
     this.newRole.JobTitleName = null;
     this.newRole.JobSubTitleID = null;
     this.newRole.JobSubTitleName = null;
+    // option box shows initial value null
     this.newRoleInit = true;
+    // reset validation flag
     this.duplicateRole = false;
   }
 
@@ -219,7 +215,6 @@ console.log('WTF')
          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
        }
      );
-
   }
 
   onTestFormClick() {
