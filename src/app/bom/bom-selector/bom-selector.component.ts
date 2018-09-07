@@ -43,7 +43,7 @@ export class BomSelectorComponent implements OnInit {
         source: bh
       })
       .bind('typeahead:selected', (event, selection) => {
-        // once something in the typeahead isi selected, trigger this function
+        // once something in the typeahead is selected, trigger this function
         this.selectedBom.emit(selection);
       });
 
