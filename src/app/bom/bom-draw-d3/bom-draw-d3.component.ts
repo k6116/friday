@@ -230,7 +230,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
       // draw rectangle for each node
       nodeEnter.append('rect')
         .attr('class', 'node')
-        .attr('width', (d) => Math.max(85, 60 + 5 * d.data.name.length))
+        .attr('width', (d) => Math.max(85, 60 + 5 * d.data.value.length))
         .attr('height', 20)
         .attr('x', -8)
         .attr('y', -11)
@@ -255,7 +255,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
         .attr('dy', '.35em')
         .attr('cursor', 'pointer')
         .attr('text-anchor', 'start')
-        .text( (d) => `${d.data.qty}  |  ${d.data.name}` )
+        .text( (d) => `${d.data.qty}  |  ${d.data.value}` )
         .on('mouseover', (d) => {
           tooltip.transition()
           .duration(100)
@@ -284,7 +284,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
       nodeUpdate.select('rect.node')
         .attr('class', 'node')
         .attr('width', (d) => {
-          d.width = Math.max(85, 60 + 5 * d.data.name.length);
+          d.width = Math.max(85, 60 + 5 * d.data.value.length);
           return d.width;
         })
         .attr('height', 20)

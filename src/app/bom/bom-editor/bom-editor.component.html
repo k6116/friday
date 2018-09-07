@@ -5,12 +5,12 @@
     <div class="col-sm-4 bom-editor-col">
       <!-- first col is BOM tree -->
       <div class="tree-container" *ngIf="showBom">
-        <tree [tree]="bomTree" (nodeSelected)="onNodeSelect($event.node)" #treeComponent></tree>
+        <tree [tree]="bomJson" (nodeSelected)="onNodeSelect($event.node)" #treeComponent></tree>
       </div>
     </div>
     <div class="col-sm-8">
       <!-- second col is BOM viewer -->
-      <!-- <app-bom-draw-d3 [selectedBom]="selectedBom"></app-bom-draw-d3> -->
+      <app-bom-draw-d3 [bomJson]="bomJson"></app-bom-draw-d3>
     </div>
   </div>
   
