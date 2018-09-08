@@ -6,7 +6,7 @@
 <app-confirm-modal></app-confirm-modal>
 
 
-<div [class]="'login-background-image' + (isImageLoaded ? ' large' : ' small')" [style.background-image]="isImageLoaded ? 'url(' + backgroundImage?.path + backgroundImage?.fileName + ')' : 'url(' + backgroundImage?.path + backgroundImage?.fileNameNoExt + '_thumbnail.jpg)'"></div>
+<div [class]="'login-background-image' + (cacheService.backgroundImage ? '' : (isImageLoaded ? ' large' : ' small'))" [style.background-image]="isImageLoaded || cacheService.backgroundImage ? 'url(' + backgroundImage?.path + backgroundImage?.fileName + ')' : 'url(' + backgroundImage?.path + backgroundImage?.fileNameNoExt + '_thumbnail.jpg)'"></div>
 
 <img [src]="backgroundImage?.path + backgroundImage?.fileName" (load)="onImageLoaded()" hidden>
 

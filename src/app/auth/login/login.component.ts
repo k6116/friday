@@ -77,7 +77,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
-
     // check the cookies for the jrt_username cookie, if it is there set the username
     // this means that the user had previously logged in with 'Remember Me' selected
     this.checkRememberMeCookie();
@@ -94,8 +93,17 @@ export class LoginComponent implements OnInit {
       this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
     }
 
+    // if ...
+    if (this.cacheService.backgroundImage) {
+      console.log('image has been cached');
+      this.backgroundImage = this.cacheService.backgroundImage;
+      this.isImageLoaded = true;
     // get background images from the server to display
-    this.getBackgroundImages();
+    } else {
+      console.log('getting new background image');
+      this.getBackgroundImages();
+    }
+
 
   }
 
@@ -139,6 +147,7 @@ export class LoginComponent implements OnInit {
   setBackgroundImage() {
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
     // this.backgroundImage = this.backgroundImages[imageIndex];
+
     this.backgroundImage = {
       fileName: 'wuyuan_jiangxi_province.jpg',
       fileNameNoExt: 'wuyuan_jiangxi_province',
@@ -146,8 +155,20 @@ export class LoginComponent implements OnInit {
       title: 'Wuyuan, Jiangxi Province, China',
       subTitle: 'Key Sightings, June, 2016'
     };
+
+    // this.backgroundImage = {
+    //   fileName: 'asher_cliff_switzerland.jpg',
+    //   fileNameNoExt: 'asher_cliff_switzerland',
+    //   path: '/assets/login_images/',
+    //   title: 'Asher Cliff, Switzerland',
+    //   subTitle: 'Key Sightings, June, 2016'
+    // };
+
     // save the last shown image in the cache service
-    this.cacheService.backgroundImage = this.backgroundImage;
+    setTimeout(() => {
+      this.cacheService.backgroundImage = this.backgroundImage;
+    }, 500);
+
   }
 
 
