@@ -61,7 +61,6 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private router: Router,
-    // private apiDataService: ApiDataService,
     private cacheService: CacheService,
     private apiDataOrgService: ApiDataOrgService,
     private apiDataAuthService: ApiDataAuthService,
@@ -93,14 +92,12 @@ export class LoginComponent implements OnInit {
       this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
     }
 
-    // if ...
+    // if the full size background image is cached (e.g. on logout), use that url
     if (this.cacheService.backgroundImage) {
-      console.log('image has been cached');
       this.backgroundImage = this.cacheService.backgroundImage;
       this.isImageLoaded = true;
-    // get background images from the server to display
+    // otherwise use the blur up approach and get a new background image
     } else {
-      console.log('getting new background image');
       this.getBackgroundImages();
     }
 
@@ -110,11 +107,10 @@ export class LoginComponent implements OnInit {
 
   getBackgroundImages() {
 
+    // fetch the list of background images (metadata) from the index.json file
     this.apiDataAuthService.getLoginBackgroundImages()
       .subscribe(
         res => {
-
-          console.log('fetched background images');
 
           res.images.forEach(image => {
             if (res.files.indexOf(image.fileName) !== -1) {
@@ -128,11 +124,7 @@ export class LoginComponent implements OnInit {
             }
           });
 
-          console.log(`number of background images: ${this.backgroundImages.length}`);
-          console.log('background images');
-          console.log(this.backgroundImages);
-
-          // set random background image
+          // set a random background image from the list
           this.setBackgroundImage();
         },
         err => {
@@ -146,23 +138,7 @@ export class LoginComponent implements OnInit {
   // set random background image
   setBackgroundImage() {
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
-    // this.backgroundImage = this.backgroundImages[imageIndex];
-
-    this.backgroundImage = {
-      fileName: 'wuyuan_jiangxi_province.jpg',
-      fileNameNoExt: 'wuyuan_jiangxi_province',
-      path: '/assets/login_images/',
-      title: 'Wuyuan, Jiangxi Province, China',
-      subTitle: 'Key Sightings, June, 2016'
-    };
-
-    // this.backgroundImage = {
-    //   fileName: 'asher_cliff_switzerland.jpg',
-    //   fileNameNoExt: 'asher_cliff_switzerland',
-    //   path: '/assets/login_images/',
-    //   title: 'Asher Cliff, Switzerland',
-    //   subTitle: 'Key Sightings, June, 2016'
-    // };
+    this.backgroundImage = this.backgroundImages[imageIndex];
 
     // save the last shown image in the cache service
     setTimeout(() => {

@@ -14,7 +14,7 @@ div.login-background-image.small {
 }
 
 div.login-background-image.large {
-  animation: sharpen 1s both;
+  animation: sharpen 0.5s both;
 }
 
 @keyframes sharpen {

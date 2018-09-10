@@ -103,7 +103,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
           // console.log('dashboard data:');
           // console.log(res);
           this.dashboardData = res;
-          this.renderDashboard();
+          // this.renderDashboard();
+          this['renderDashboard']();
           this.showDashboard = true;
           this.showSpinner = false;
           // show the footer

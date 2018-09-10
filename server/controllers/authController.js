@@ -11,6 +11,7 @@ const fs = require('fs');
 const path = require('path');
 const Treeize = require('treeize');
 const token = require('../token/token');
+const logger = require('../logs/logs');
 
 const tokenSecret = process.env.JWT_SECRET;  // get the secret code word for enconding and decoding the token with jwt
 const expirationTime = 60 * 30  // set the token expiration time to 30 minutes - units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
@@ -63,8 +64,8 @@ function authenticate(req, res) {
     // if a user object is returned, this indicates authentication success
     if (ldapUser) {
 
-      console.log('ldap user:');
-      console.log(ldapUser);
+      // console.log('ldap user:');
+      // console.log(ldapUser);
 
       // double check by making sure the user name matches
       if (ldapUser.cn.toLowerCase() === user.userName) {
@@ -114,6 +115,8 @@ function authenticate(req, res) {
 
             // decode the token to get the issued at and expiring at timestamps
             const decodedToken = token.decode(newToken, res);
+
+            logger.writeLog('info', `user ${fullName} has logged in`, {color: 'blue'});
 
             // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
             res.json({
@@ -382,6 +385,8 @@ function logout(req, res) {
   _.remove(loggedInUsers, user => {
     return user.userName === userName;
   });
+
+  logger.writeLog('info', `user ${userName} has logged out`, {color: 'blue'});
 
   res.json(`user ${userName} has been removed from the array of logged in users`);
 

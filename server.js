@@ -12,6 +12,7 @@ const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
 const email = require('./server/email/email');
 const websockets = require('./server/websockets/websockets');
+const logger = require('./server/logs/logs');
 
 // datadog (node)
 const StatsD = require('node-dogstatsd').StatsD;
@@ -55,15 +56,17 @@ app.use(express.static('public'));
 app.use(connect_datadog);
 
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: path.join(__dirname, '../datadog.log'), level: 'info' })
-  ]
-});
+logger.createLogger();
 
-console.log(path.join(__dirname, '../datadog.log'));
+// const logger = winston.createLogger({
+//   level: 'info',
+//   format: winston.format.json(),
+//   transports: [
+//     new winston.transports.File({ filename: path.join(__dirname, '../datadog.log'), level: 'info' })
+//   ]
+// });
+
+// console.log(path.join(__dirname, '../datadog.log'));
 
 // logger.log('info', 'Hello simple log!');
 // logger.info('Hello log with metas',{color: 'blue' });
