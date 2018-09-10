@@ -124,6 +124,7 @@ console.log('WTF')
   onJobTitleChange(event: any) {
     // value is the index of the option list; null means no jobtitle is selected
     const eventTarget = event.target.value;
+    console.log(eventTarget);
     if (eventTarget !== 'null') {
       this.selectedJobTitle = this.jobTitles[eventTarget];
       this.jobSubTitles = this.selectedJobTitle.jobSubTitles;

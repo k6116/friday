@@ -23,7 +23,7 @@
         <td scope="row" style="vertical-align: center; border-right: 1px solid #dee2e6;" data-toggle="tooltip" data-placement="top">{{ jobTitle.JobSubTitleName }}</td>
         <td *ngFor="let employee of allEmployees; let j = index">
           <div class="custom-control custom-radio">                    
-            <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (click)="onSelectChange(i, j, jobTitle)">
+            <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (change)="onSelectChange(i, j, jobTitle)">
             <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
           </div>
         </td>
@@ -31,10 +31,15 @@
       <!-- for adding new role -->
       <tr> 
         <td scope="row" *ngIf="newRole.JobTitleID === null || newRole.JobSubTitleID === null">
-          <i class="fa fa-plus"></i>
+          <button type="button" class="btn" style="background: none">
+            <i class="fa fa-plus"></i>
+          </button>
+          <small *ngIf="duplicateRole" class="duplicate-role-small">&nbsp;&nbsp;</small>
         </td>
-        <td scope="row" *ngIf="newRole.JobTitleID !== null && newRole.JobSubTitleID !== null" style="padding: 4px">
-          <button type="button" class="btn btn-success btn-circle" (click)="onAddNewRoleClick()"><i class="fa fa-plus"></i></button>
+        <td scope="row" *ngIf="newRole.JobTitleID !== null && newRole.JobSubTitleID !== null">
+          <button type="button" class="btn" style="background: none" (click)="onAddNewRoleClick()">
+            <i class="fa fa-plus" style="color: green !important"></i>
+          </button>
         </td>
         <td scope="row">
           <select class="custom-select" [class.duplicate-role]="duplicateRole" id="formGroupJobTitle" (change)="onJobTitleChange($event)">
