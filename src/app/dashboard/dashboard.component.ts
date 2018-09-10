@@ -1,8 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/subject';
 import { ApiDataDashboardService } from '../_shared/services/api-data/_index';
+import { ApiDataFteService } from '../_shared/services/api-data/api-data-fte.service';
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
 import { CacheService } from '../_shared/services/cache.service';
@@ -15,6 +17,7 @@ import { DashboardStackedColumnService } from './dashboard-stacked-column.servic
 
 
 
+declare var $: any;
 declare var require: any;
 import * as Highcharts from 'highcharts';
 require('highcharts/modules/data.js')(Highcharts);
@@ -46,9 +49,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   ngUnsubscribe = new Subject();
 
+  // set up a document click hostlistener for the clickable message links
+  @HostListener('document:click', ['$event.target'])
+  onClick(targetElement) {
+    // set the clicked element to a jQuery object
+    const $targetElement = $(targetElement);
+    // if the element has the message-link class, take some action
+    if ($targetElement.hasClass('message-link')) {
+      // get the action/method to call from the data-action attribute
+      const action = $targetElement.data('action');
+      // call the method
+      this[action]();
+    }
+  }
+
 
   constructor(
     private apiDataDashboardService: ApiDataDashboardService,
+    private apiDataFteService: ApiDataFteService,
     private authService: AuthService,
     private toolsService: ToolsService,
     private cacheService: CacheService,
@@ -57,7 +75,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private dashboardMessagesService: DashboardMessagesService,
     private dashboardParetoService: DashboardParetoService,
     private dashboardPieService: DashboardPieService,
-    private dashboardStackedColumnService: DashboardStackedColumnService
+    private dashboardStackedColumnService: DashboardStackedColumnService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -184,6 +203,56 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (index !== -1) {
       this.messages.splice(index, 1);
     }
+  }
+
+  async onFTEEntriesClick() {
+
+    // make an api call to get the JobTitleID and JobSubTitleID
+    const res = await this.checkProfileIsUpdated()
+      .catch(err => {
+        console.log('error getting data from check profile updated');
+        console.log(err);
+      });
+
+    // set the job title
+    const jobTitle = res.jobTitle[0].JobTitleID;
+
+    // set the path to navigate to
+    const path = '/main/fte-entry/employee';
+
+    // navigate to the fte entry route
+    this.router.navigate([path]);
+
+    // if the user has a job title, emit the path for the side-nav to pick up via subscription
+    // in order to highlight the active menu item
+    if (jobTitle) {
+      this.cacheService.navigatedPath.emit(path);
+    }
+
+  }
+
+  async checkProfileIsUpdated(): Promise<any> {
+    return await this.apiDataFteService.checkJobTitleUpdated().toPromise();
+  }
+
+  onProfileLinkClick() {
+    // emit a value for the top nav component to pick up via subscription
+    // and show the profile modal
+    this.cacheService.showProfileModal.emit(true);
+  }
+
+  onProjectPageLinkClick() {
+
+    // set the path to navigate to
+    const path = '/main/projects/my-projects';
+
+    // navigate to the fte entry route
+    this.router.navigate([path]);
+
+    //  emit the path for the side-nav to pick up via subscription
+    // in order to highlight the active menu item
+    this.cacheService.navigatedPath.emit(path);
+
   }
 
 
