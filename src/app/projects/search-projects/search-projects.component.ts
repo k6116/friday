@@ -354,13 +354,13 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     if (!foundFilter.isDropdown) {
       setTimeout(() => {
         this.filterStringVC.nativeElement.focus();
-      }, 250);
+      }, 500);
     // otherwise, set the focus on the dropdown
     } else {
       this.filterSelection = '(Select Option)';
       setTimeout(() => {
         this.filterDropDownVC.nativeElement.focus();
-      }, 250);
+      }, 500);
     }
   }
 

@@ -69,7 +69,7 @@ export class DashboardMessagesService {
         iconFontClass: 'nc-privacy-policy-2',
         iconType: 'info',
         messageText: `Welcome to Jarvis Resources! You will be given a short
-          guided tutorial when you go to the FTE Entry Page.`
+          guided tutorial when you go to the FTE Entry page.`
       };
     } else {
       return undefined;
@@ -89,7 +89,7 @@ export class DashboardMessagesService {
         messageText: `Please update your
         <span class="message-link" data-action="onProfileLinkClick" style="text-decoration: underline;
         color: rgb(72, 72, 196); cursor: pointer;">
-        profile</span> with your job title and subtitle.  You won't be able to enter your fte values until this has been updated.`
+        Profile</span> with your job title and subtitle.  You won't be able to enter your fte values until this has been updated.`
       };
     } else {
       return undefined;
@@ -210,7 +210,7 @@ export class DashboardMessagesService {
         messageText: `The deadline to enter your
           <span class="message-link" data-action="onFTEEntriesClick" style="text-decoration: underline;
           color: rgb(72, 72, 196); cursor: pointer;">
-          FTE entries</span>
+          FTE Entries</span>
           for this quarter ${passedDeadline ? ' was' : ' is'} ${deadlineString} (${timeSinceDeadline}).`
       };
 
