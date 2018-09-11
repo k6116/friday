@@ -6,11 +6,11 @@
     <div [attr.data-clicktrack]="'page: Main, clickedOn: Jaris Logo'" class="app-ident" (click)="onAppClick()">
 
       <div class="app-logo-cont">
-        <img class="app-logo-img" src="../assets/jarvis_logos/jarvis_logo_inverted.svg">
+        <img class="app-logo-img" [attr.src]="'../assets/jarvis_logos/jarvis_logo_inverted' + (isTestInstance ? '_test' : '') + '.svg'">
       </div>
 
       <div class="app-title-cont">
-        <h3 class="app-sub-title">Resources</h3>
+        <h3 class="app-sub-title" [style.color]="isTestInstance ? 'rgb(145, 235, 255)' : 'rgb(253, 231, 114)'">Resources</h3>
       </div>
 
     </div>

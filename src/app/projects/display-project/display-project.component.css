@@ -1,0 +1,348 @@
+
+
+/* buttons row */
+
+div.buttons-row {
+  margin-bottom: 25px;
+}
+
+
+/* project header row */
+
+div.project-header-row {
+  height: 125px;
+  width: 100%;
+  min-width: 750px;
+  white-space: nowrap;
+  background-color: white;
+  margin-bottom: 25px;
+  border: 1px solid lightgrey;
+}
+
+
+/* project type container with colored name and icon */
+
+div.project-type-cont {
+  display: inline-block;
+  position: relative;
+  width: 150px;
+  height: 100%;
+  vertical-align: top;  /* this is key, otherwise will push down the inline block to the right if it has top padding */
+  padding-top: 20px;
+  margin-right: -4px; /* remove the inherent space between inline-block elements */
+}
+
+div.project-type-name {
+  margin: 0 auto;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+div.project-type-icon {
+  width: 50px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  font-size: 30px;
+  text-align: center;
+}
+
+
+/* project name and description */
+
+div.project-details-cont {
+  display: inline-block;
+  padding: 20px 50px 20px 25px;
+  width: calc(100% - (150px));
+  vertical-align: top;
+  margin-right: -4px; /* remove the inherent space between inline-block elements */
+}
+
+div.project-name {
+  position: relative;
+  font-size: 22px;
+  font-weight: 500;
+  color: rgb(50, 50, 50);
+  height: 1.4em;
+  line-height: 1.4em;
+  overflow: hidden;
+}
+
+div.project-description {
+  position: relative;
+  margin-top: 10px;
+  height: 2.8em;
+  line-height: 1.4em;
+  overflow: hidden;
+  text-align: left;
+  white-space: normal;
+}
+
+div.project-description:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 1.4em;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(50%, rgba(255, 255, 255, 1)));
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+
+/* project details outer container */
+
+div.project-details-row {
+  width: 100%;
+  min-width: 750px;
+  white-space: nowrap;
+}
+
+div.project-details-left-cont {
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+  width: calc(100% - (315px + 20px + 4px));
+  margin-right: 20px;
+}
+
+
+/* project details left container with notes, record history etc. */
+
+div.project-details-cont-1 {
+  position: relative;
+  min-height: 375px;
+  padding: 20px 30px 50px 30px;
+  background-color: white;
+  border: 1px solid lightgrey;
+  white-space: normal;
+}
+
+div.project-attribute-cont:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+div.project-attribute-label {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 7px;
+}
+
+div.project-attribute-value.notes {
+  margin-right: 150px;
+}
+
+div.record-history-cont {
+  position: absolute;
+  right: 30px;
+  top: 20px;
+}
+
+div.record-history-cont .nc-icon {
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  margin-right: 5px;
+}
+
+div.record-history-text {
+  display: inline-block;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  color: #4848c4;
+  cursor: pointer;
+}
+
+
+/* project roster container */
+
+div.project-roster-cont {
+  position: relative;
+  padding: 20px 30px 50px 30px;
+  background-color: white;
+  border: 1px solid lightgrey;
+  white-space: normal;
+}
+
+div.project-roster-label {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 7px;
+}
+
+div.project-roster-team-member-cont {
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+  top: -5px;
+  width: 22%;
+  text-align: center;
+  margin-top: 15px;
+  border-radius: 3px;
+  padding: 10px;
+}
+
+div.project-roster-team-member-cont:not(:nth-child(4n)) {
+  margin-right: 25px;
+}
+
+div.project-roster-team-member-name .nc-icon {
+  margin-right: 8px;
+  position: relative;
+  top: 2px;
+}
+
+div.project-roster-icon-cont {
+  font-size: 20px;
+  color: #989898;
+}
+
+div.project-roster-team-member-name {
+  font-weight: 500;
+}
+
+div.project-roster-team-member-role {
+  font-size: 13px;
+}
+
+
+/* project details right container with priority, status, etc. */
+
+div.project-details-right-cont {
+  display: inline-block;
+  vertical-align: top;
+  width: 315px;
+  background-color: white;
+  border: 1px solid lightgrey;
+  white-space: normal;  /* to prevent inheriting nowrap from the row */
+}
+
+ul.project-attributes-list {
+  list-style: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 5px 0;
+}
+
+li.project-attributes-list-item {
+  font-size: 14px;
+  margin: 0 18px;
+  padding: 12px 2px;
+}
+
+li.project-attributes-list-item:not(:last-child) {
+  border-bottom: 1px solid lightgrey;
+}
+
+span.project-attributes-label {
+  color: #555;
+  display: inline-block;
+  vertical-align: top;
+  width: 46%;
+  position: relative;
+  padding-left: 30px;
+}
+
+span.project-attributes-label .nc-icon {
+  position: absolute;
+  left: 0;
+  top: 5px;
+}
+
+span.project-attributes-value {
+  color: #0a0a0a;
+  display: inline-block;
+  vertical-align: top;
+  width: 52%;
+  font-weight: 500;
+}
+
+
+/* chart container */
+
+.schedule-chart-cont.ng-star-inserted {
+  width: 100%;
+  min-width: 750px;
+  white-space: nowrap;
+}
+
+
+/* chart optinos checkboxes */
+
+div.chart-options-cont {
+  position: relative;
+  top: 40px;
+  left: 20px;
+  z-index: 1;
+}
+
+div.chart-option {
+  display: inline-block;
+}
+
+div.chart-option {
+  margin-right: 10px;
+}
+
+label.chart-options-label {
+  margin-right: 5px;
+}
+
+input.chart-options-checkbox {
+  position: relative;
+  top: 2px;
+}
+
+
+
+/* hidden container for record history */
+
+div.project-record-history-cont {
+  display: none;
+  vertical-align: top;
+  width: 325px;
+  background-color: white;
+  white-space: normal;  /* to prevent inheriting nowrap from the row */
+}
+
+ul.project-record-history-list {
+  list-style: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 5px 0;
+}
+
+li.project-record-history-list-item {
+  font-size: 13px;
+  margin: 0 18px;
+  padding: 4px 0;
+}
+
+span.project-record-history-label {
+  color: #555;
+  display: inline-block;
+  vertical-align: top;
+  width: 50%;
+  position: relative;
+  padding-left: 30px;
+}
+
+span.project-record-history-label .nc-icon {
+  position: absolute;
+  left: 0;
+  top: 5px;
+}
+
+span.project-record-history-value {
+  color: #0a0a0a;
+  display: inline-block;
+  vertical-align: top;
+  width: 48%;
+  font-weight: 500;
+}

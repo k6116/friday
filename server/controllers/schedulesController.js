@@ -599,7 +599,40 @@ function destroyScheduleSP(req, res) {
 
 		})
     
-  }
+	}
+
+
+// TEMP CODE: project schedule data for x-range chart (gantt)
+// TO-DO BILL: combine with index function at the top if possible
+function getProjectSchedule(req, res) {
+
+	const projectID = req.params.projectID;
+
+	const sql =
+		`SELECT
+			T1.CreationDate,
+			T3.PLCDateEstimate,
+			T3.PLCDateCommit,
+			T3.PLCDate,
+			T4.PLCStatusName,
+			T4.[Description],
+			T4.PLCSequence
+		FROM
+			projects.Projects T1
+			INNER JOIN demand.Schedules T2 ON T1.ProjectID = T2.ProjectID
+			INNER JOIN demand.SchedulesDetail T3 ON T2.ScheduleID = T3.ScheduleID
+			INNER JOIN projects.PLCStatus T4 ON T3.PLCStatusID = T4.PLCStatusID
+		WHERE
+			T1.ProjectID = ${projectID}
+		ORDER BY
+			PLCSequence`
+
+	sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+		.then(schedule => {		
+			res.json(schedule);
+		})
+}
+
   
 module.exports = {
 	indexProjectSchedule: indexProjectSchedule,
@@ -611,5 +644,6 @@ module.exports = {
   updateSchedule: updateSchedule,
   destroySchedule: destroySchedule,
 	insertScheduleDetailBulk: insertScheduleDetailBulk,
-	updateScheduleDetailBulk: updateScheduleDetailBulk
+	updateScheduleDetailBulk: updateScheduleDetailBulk,
+	getProjectSchedule: getProjectSchedule
 }

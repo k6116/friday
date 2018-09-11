@@ -25,7 +25,7 @@ export class ApiDataAuthService {
   }
 
   // attempt to authenticate the user credentials using windows login and ldap
-  async authenticateSync(user: any) {
+  async authenticateSync(user: any): Promise<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers});
     return await this.http.post('/api/auth/authenticate', JSON.stringify(user), options)
@@ -38,6 +38,13 @@ export class ApiDataAuthService {
     return this.http.get(`/api/auth/getLoginBackgroundImages`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
+  }
+
+  // get an image file
+  getLoginBackgroundImage(fileName: string): Observable<any> {
+    return this.http.get(`api/auth/getLoginImage/${fileName}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response);
   }
 
   // decode the jwt token to get the user info, issued and expiration dates

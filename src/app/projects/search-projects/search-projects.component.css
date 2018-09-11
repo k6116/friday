@@ -6,15 +6,13 @@ div.page-cont {
   overflow-x: hidden;
 }
 span.project-name-ruler { 
-  /* visibility: hidden; */
   display: none;
   white-space: nowrap;
   font-size: 18px;
   font-weight: 500;
 }
 
-span.project-description-ruler { 
-  /* visibility: hidden; */
+span.project-description-ruler {
   display: none;
   white-space: nowrap;
 }
@@ -23,6 +21,9 @@ span.project-description-ruler {
 
 div.projects-filters-cont {
   margin-bottom: 40px;
+  min-width: 750px;
+  width: 100%;
+  white-space: nowrap;
 }
 
 div.projects-filter-label {
@@ -76,19 +77,19 @@ div.projects-filter-select {
 }
 
 div.projects-display-count {
-  /* display: inline-block; */
   float: right;
   font-weight: 500;
   position: relative;
   top: 5px;
 }
 
-/* search bar (end) */
 
+/* project cards */
 
 div.projects-cards-cont {
   height: 70vh;  /* TO-DO: replace with javascipt */
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 div.row.row-custom.row-project-card {
@@ -106,7 +107,7 @@ div.project-card {
   border: 1px solid lightgrey;
   background-color: white;
   transition: box-shadow 0.2s;
-  overflow: hidden;
+  white-space: nowrap;
 }
 
 div.project-card:hover {
@@ -148,22 +149,18 @@ div.project-type-icon {
 div.project-details-cont {
   display: inline-block;
   padding: 20px 25px;
-  min-width: 500px;
-  width: calc(100% - 800px);
-  max-width: 1000px;
+  width: calc(100% - (150px + 315px + 300px));  /* 150 + 315 + 300 */
+  vertical-align: top;
 }
 
 div.project-name {
   position: relative;
   font-size: 18px;
   font-weight: 500;
-  /* width: 500px; */
   color: rgb(50, 50, 50);
   height: 1.4em;
   line-height: 1.4em;
   overflow: hidden;
-  /* white-space: nowrap;
-  text-overflow: ellipsis; */
 }
 
 div.project-name:after {
@@ -181,32 +178,12 @@ div.project-name:after {
 div.project-description {
   position: relative;
   margin-top: 10px;
-  /* width: 500px; */
   height: 2.8em;
   line-height: 1.4em;
   overflow: hidden;
   text-align: left;
-  /* margin-right: -1em;
-  padding-right: 1em; */
+  white-space: normal;
 }
-
-/* div.project-description:before {
-  content: "...";
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
-
-div.project-description:after {
-  content: "";
-  text-align: right;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 1em;
-  height: 1.4em;
-  background: white;
-} */
 
 div.project-description:after {
   content: "";
@@ -220,16 +197,10 @@ div.project-description:after {
   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
-div.project-card-right-cont {
-  /* display: inline-block; */
-  float: right;
-  height: 100%;
-}
 
 
 
-
-/* general css for project attributes sections (two right bordered sections) */
+/* general for all css table sections */
 
 div.project-attributes-table {
   display: table;
@@ -250,13 +221,14 @@ div.icon-cell {
 }
 
 
-/* project attributes section - status, priority, and department */
+/* css table for attributes - status, priority, and department */
 
 div.project-attributes-cont {
   display: inline-block;
   padding: 20px;
   border-left: 1px solid lightgrey;
   height: 100%;
+  width: 315px;
 }
 
 div.project-attributes-cell.attributes.icon-cell {
@@ -264,7 +236,6 @@ div.project-attributes-cell.attributes.icon-cell {
 }
 
 div.project-attributes-cell.attributes.label-cell {
-  /* width: 100px; */
   padding-right: 15px;
 }
 
@@ -273,20 +244,15 @@ div.project-attributes-cell.attributes.value-cell {
   font-weight: 500;
 }
 
-@media (max-width: 1700px) {
-  div.project-attributes-cont {
-    display: none;
-  }
-}
 
-
-/* project record into section - created by and creation date */
+/* css table for record history/info - created by and creation date */
 
 div.project-creation-cont {
+  display: inline-block;
   padding: 20px;
   border-left: 1px solid lightgrey;
   height: 100%;
-  float: right;
+  width: 300px;
 }
 
 div.project-attributes-cell.creation.icon-cell {
@@ -294,10 +260,10 @@ div.project-attributes-cell.creation.icon-cell {
 }
 
 div.project-attributes-cell.creation.label-cell {
-  /* width: 120px; */
-  padding-right: 15px;  
+  padding-right: 15px;
+  width: 105px;
   /* use padding instaed of fixed width for consistency; note this won't work for value cell 
-  because you will end up with different overall container sizes for each card*/
+  because you will end up with different overall container sizes for each card */
 }
 
 div.project-attributes-cell.creation.value-cell {
@@ -308,3 +274,47 @@ div.project-attributes-cell.creation.value-cell {
   font-weight: 500;
   overflow: hidden;
 }
+
+
+/* css table for hoverable text - attributes and record history */
+
+div.project-hidden-hover-cont{
+  display: none;
+  padding: 20px;
+  border-left: 1px solid lightgrey;
+  height: 100%;
+  width: 200px;
+}
+
+div.project-attributes-cell.attributes-hover.icon-cell, div.project-attributes-cell.record-history.icon-cell {
+  width: 30px;
+}
+
+div.project-attributes-cell.attributes-hover.label-cell, div.project-attributes-cell.record-history.label-cell {
+  padding-right: 15px;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  color: #4848c4;
+  /* use padding instaed of fixed width for consistency; note this won't work for value cell 
+  because you will end up with different overall container sizes for each card*/
+}
+
+
+
+/* when width is less than 1600 pixels, hide the two containers and show the hoverable container */
+@media (max-width: 1600px) {
+  div.project-attributes-cont {
+    display: none;
+  }
+  div.project-creation-cont {
+    display: none;
+  }
+  div.project-hidden-hover-cont {
+    display: inline-block;
+  }
+  div.project-details-cont {
+    width: calc(100% - (150px + 200px));
+  }
+}
+
+
