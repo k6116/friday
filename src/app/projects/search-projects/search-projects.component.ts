@@ -230,25 +230,29 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
   repopulateSearchTerm() {
 
-    // get the full routing history, as an array of strings with the navigation paths
-    const routingHistory = this.routingHistoryService.history;
-    // only consider if there are more than two in the history
-    if (routingHistory.length >= 2) {
-      const previousRoute = routingHistory[routingHistory.length - 2];
-      // if the previous route matches the path 'main/projects/display/*'
-      // and there is a stored search term
-      const pathRegex = new RegExp('main\/projects\/display\/.+', 'g');
-      if (pathRegex.test(previousRoute)) {
+    // only if there is data in the cache (could have refreshed display page then hit return to search button)
+    if (this.cacheService.projectSelectedFilter) {
+      // get the full routing history, as an array of strings with the navigation paths
+      const routingHistory = this.routingHistoryService.history;
+      // only consider if there are more than two in the history
+      if (routingHistory.length >= 2) {
+        const previousRoute = routingHistory[routingHistory.length - 2];
+        // if the previous route matches the path 'main/projects/display/*'
+        // and there is a stored search term
+        const pathRegex = new RegExp('main\/projects\/display\/.+', 'g');
+        if (pathRegex.test(previousRoute)) {
 
-        // set the filter string (will populate the input via two-way binding)
-        this.filterString = this.cacheService.projectSearchTerm;
-        this.selectedFilter = this.cacheService.projectSelectedFilter;
-        this.filterSelection = this.cacheService.projectSelectedValue;
+          // set the filter string (will populate the input via two-way binding)
+          this.filterString = this.cacheService.projectSearchTerm;
+          this.selectedFilter = this.cacheService.projectSelectedFilter;
+          this.filterSelection = this.cacheService.projectSelectedValue;
 
-        // call the filter string change method to display the correct record count
-        this.onFilterStringChange();
+          // call the filter string change method to display the correct record count
+          this.onFilterStringChange();
+        }
       }
     }
+
 
   }
 
