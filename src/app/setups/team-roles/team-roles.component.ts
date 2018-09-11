@@ -46,7 +46,7 @@ export class TeamRolesComponent implements OnInit {
     const employeesJobTitles = await this.getEmployeesJobTitles(this.teamEditableMembers);
     this.employeesJobTitlesNested = employeesJobTitles.nested;
     this.employeesJobTitlesFlat = employeesJobTitles.flat;
-
+console.log('WTF')
     // add jobTitle to allEmployees
     for (let i = 0; i < this.allEmployees.length; i++) {
       for (let j = 0; j < this.employeesJobTitlesFlat.length; j++) {
@@ -57,11 +57,18 @@ export class TeamRolesComponent implements OnInit {
           this.allEmployees[i].jobTitleID = this.employeesJobTitlesFlat[j].JobTitleID;
           this.allEmployees[i].jobSubTitleID = this.employeesJobTitlesFlat[j].JobSubTitleID;
           this.allEmployees[i].newUser = false;
+          console.log('email', this.employeesJobTitlesFlat[j]['Employees: EmailAddress'])
           break;
         } else if (j === this.employeesJobTitlesFlat.length - 1) {
           this.allEmployees[i].jobTitleID = null;
           this.allEmployees[i].jobSubTitleID = null;
+          console.log('email', this.employeesJobTitlesFlat[j]['Employees: EmailAddress'])
           this.allEmployees[i].newUser = true;
+        } else {
+          this.allEmployees[i].jobTitleID = null;
+          this.allEmployees[i].jobSubTitleID = null;
+          this.allEmployees[i].newUser = false;
+          console.log('email', this.employeesJobTitlesFlat[j]['Employees: EmailAddress'])
         }
       }
     }
@@ -116,6 +123,7 @@ export class TeamRolesComponent implements OnInit {
     console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
     console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
     console.log('this.allEmployees', this.allEmployees);
+    console.log('teamOrgStructure', this.teamOrgStructure)
   }
 
 }

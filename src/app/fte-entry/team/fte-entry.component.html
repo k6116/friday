@@ -19,9 +19,6 @@
       <i class="fa fa-table"></i>&nbsp;&nbsp;Export
     </button> -->
     <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
-    <button class="btn btn-secondary btn-fte-toolbar" (click)="onSetupClick()">
-      <i class="fa fa-cog"></i>&nbsp;&nbsp;Setup
-    </button>
     <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
       <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
     </button>
@@ -67,15 +64,15 @@
 
   <div class="col-sm-3 col-custom">
     <div class="col-newplan" style="display: inline-flex">
-      <button class="btn btn-secondary" data-toggle="modal" data-target="#newPlanModal">
+      <button class="btn btn-secondary" data-toggle="modal" data-target="#newPlanModal" (click)="onNewPlanClick()">
         <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
       </button>
       <span style="width: 5px"></span>
       <select class="form-control" style="width: 200px" (change)="selectPlan($event.target.value)">
-        <option *ngFor="let plan of planList; let i = index" [value]="plan.planName">{{ plan.planName }}</option>
+        <option *ngFor="let plan of planList; let i = index" [selected]="plan.planName == currentPlan" [value]="plan.planName">{{ plan.planName }}</option>
       </select>
       <span style="width: 5px"></span>
-      <button class="btn btn-secondary" (click)="deletePlan()">
+      <button class="btn btn-secondary" [disabled]="disableDeletePlan" (click)="onDeletePlanClick()">
         <i class="fa fa-times"></i>&nbsp;&nbsp;Del Plan
       </button>
     </div>
@@ -156,13 +153,17 @@
           <h5 class="title">Create a New Plan</h5>
         </div>
         <div class="modal-body">
-        <div class="input-group">
-          <input [(ngModel)]="newPlanName" type="text" class="form-control" placeholder="New Plan Name">
-          <div class="input-group-append">
-            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"  (click)="createNewPlan(null, null, newPlanName)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
-            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
-          </div>
-        </div>
+          <form [formGroup]="newPlanForm">
+            <div class="form-group">
+              <div class="input-group">
+                <input [(ngModel)]="newPlanName" formControlName="newPlanName" type="text" class="form-control" placeholder="New plan name">
+                <div class="input-group-append">
+                  <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"  (click)="onCreateNewPlanClick(null, null, newPlanName)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
+                  <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

@@ -97,8 +97,8 @@ export class ApiDataFteService {
   }
 
   // create a new FTE Plan and return it
-  launchPlan(userID: number, planName: string) {
-    return this.http.get(`/api/fte/launchPlan/${userID}/${planName}`)
+  launchPlan(emailAddress: string, userID: number, planName: string) {
+    return this.http.get(`/api/fte/launchPlan/${emailAddress}/${userID}/${planName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

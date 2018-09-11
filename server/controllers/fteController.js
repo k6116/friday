@@ -544,10 +544,11 @@ function launchPlan(req, res) {
   // this function executes an SP that will copy all subordinates fte data into the 
   // ProjectEmployeesPlanning table for use as a "staging" table for managers
 
+  const emailAddress = req.params.emailAddress;
   const userID = req.params.userID;
   const planName = req.params.planName;
 
-  sequelize.query('EXECUTE resources.ProjectEmployeesLaunchPlan :userID, :planName', {replacements: {userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query('EXECUTE resources.ProjectEmployeesLaunchPlan :emailAddress, :userID, :planName', {replacements: {emailAddress: emailAddress, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
   .then(results => {
     res.json({
       message: `Successfully launched plan "${planName}"`
