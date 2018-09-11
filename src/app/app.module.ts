@@ -27,7 +27,7 @@ import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
 import { CacheService, ClickTrackingService, CookiesService,
-  ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
+  ToolsService, UserResolverService, WebsocketService, RoutingHistoryService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
@@ -93,6 +93,7 @@ import { SearchProjectsComponent } from './projects/search-projects/search-proje
 import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
 import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
+import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 
 
 @NgModule({
@@ -149,7 +150,8 @@ import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
     BomViewerComponent,
     ProjectRequestsComponent,
     SearchProjectsComponent,
-    TeamRolesComponent
+    TeamRolesComponent,
+    DisplayProjectComponent
   ],
   imports: [
     AppRoutingModule,
@@ -199,7 +201,8 @@ import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
     PermissionsGuard,
     FteEntryGuard,
     FteTeamEntryGuard,
-    TitleCasePipe
+    TitleCasePipe,
+    RoutingHistoryService
   ],
   bootstrap: [AppComponent]
 })

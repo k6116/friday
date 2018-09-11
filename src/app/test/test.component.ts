@@ -46,6 +46,6 @@ constructor (
   }
 
   testClick() {
-    console.log('manageremail', this.authService.loggedInUser.managerEmailAddress)
+    // console.log('manageremail', this.authService.loggedInUser.managerEmailAddress);
   }
 }

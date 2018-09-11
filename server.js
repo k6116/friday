@@ -141,6 +141,8 @@ email.setSchedules();
 // TEMP CODE: attempting to fix issue with blue/green deployment - Error: listen EADDRINUSE :::443
 process.on('SIGINT', () => {
   console.log('SIGINT message received');
+  console.log(process.pid);
+  process.kill(process.pid);
   server.close(() => {
     console.log('node process stopping...');
     process.exit(0);

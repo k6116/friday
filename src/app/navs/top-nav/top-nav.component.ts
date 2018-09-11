@@ -42,6 +42,7 @@ export class TopNavComponent implements OnInit {
   state: string;
   projectList: any; // array to hold list of all projects queried from DB
   showProfileModal: boolean;
+  isTestInstance: boolean;
 
   @ViewChild(ProfileModalComponent) profileModal: ProfileModalComponent;
 
@@ -60,6 +61,12 @@ export class TopNavComponent implements OnInit {
   ngOnInit() {
 
     // console.log(`top nav component has been initialized`);
+
+    // check the port to see if this is the test instance (dev will return '3000', prod will return '')
+    // if this is test, use the 'blue' icon version (_test) and text instead of yellow
+    if (location.port === '440') {
+      this.isTestInstance = true;
+    }
 
     this.loggedInUser = this.authService.loggedInUser;
 
