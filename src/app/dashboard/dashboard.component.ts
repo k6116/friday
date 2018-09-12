@@ -48,6 +48,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   displayProgressGauge: boolean;
   subscription1: Subscription;
   ngUnsubscribe = new Subject();
+  chartPie: any;
+  chartDonut: any;
+  chartStackedColumn: any;
+  chartGauge: any;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.resizeChart();
+  }
 
   // set up a document click hostlistener for the clickable message links
   @HostListener('document:click', ['$event.target'])
@@ -122,8 +131,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           // console.log('dashboard data:');
           // console.log(res);
           this.dashboardData = res;
-          // this.renderDashboard();
-          this['renderDashboard']();
+          this.renderDashboard();
           this.showDashboard = true;
           this.showSpinner = false;
           // show the footer
@@ -168,12 +176,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   renderPieChart() {
     const chartOptions = this.dashboardPieService.buildChartOptions(this.dashboardData[0]);
-    Highcharts.chart('pieChart', chartOptions);
+    this.chartPie = Highcharts.chart('pieChart', chartOptions);
+    setTimeout(() => {
+      this.chartPie.reflow();
+    }, 0);
   }
 
-  renderParetoChart() {
-    const chartOptions = this.dashboardParetoService.buildChartOptions(this.dashboardData[0]);
-    Highcharts.chart('paretoChart', chartOptions);
+  renderDonutChart() {
+    const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardData[0]);
+    this.chartDonut = Highcharts.chart('donutChart', chartOptions);
+    setTimeout(() => {
+      this.chartDonut.reflow();
+    }, 0);
+  }
+
+  renderStackedColumnChart() {
+    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
+    this.chartStackedColumn = Highcharts.chart('stackedColumnChart', chartOptions);
+    setTimeout(() => {
+      this.chartStackedColumn.reflow();
+    }, 0);
   }
 
   renderProgressGauge() {
@@ -182,19 +204,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.completedPrefix = 'Completed:';
     this.notCompletedFTEs = chart.notCompletedFTEs;
     this.notCompletedPrefix = 'Not Completed:';
-    Highcharts.chart('progressGauge', chart.chartOptions);
+    this.chartGauge = Highcharts.chart('progressGauge', chart.chartOptions);
+    setTimeout(() => {
+      this.chartGauge.reflow();
+    }, 0);
   }
 
-  renderDonutChart() {
-    const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardData[0]);
-    Highcharts.chart('donutChart', chartOptions);
-  }
-
-  renderStackedColumnChart() {
-    // console.log('stacked column data');
-    // console.log(this.dashboardData[0]);
-    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
-    Highcharts.chart('stackedColumnChart', chartOptions);
+  renderParetoChart() {
+    const chartOptions = this.dashboardParetoService.buildChartOptions(this.dashboardData[0]);
+    Highcharts.chart('paretoChart', chartOptions);
   }
 
   removeProfileUpdateMessage() {
@@ -252,6 +270,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //  emit the path for the side-nav to pick up via subscription
     // in order to highlight the active menu item
     this.cacheService.navigatedPath.emit(path);
+
+  }
+
+  resizeChart() {
+
+    // reflow the charts to its container during window resize
+    this.chartPie.reflow();
+    this.chartDonut.reflow();
+    this.chartStackedColumn.reflow();
+    this.chartGauge.reflow();
 
   }
 
