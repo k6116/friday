@@ -44,9 +44,11 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
   dropDownData: any;
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
   popoverProjectID: number;
   fuzzySearchThreshold: number;
   timer: any;
+  showDownloadingIcon: boolean;
 
 
   constructor(
@@ -125,6 +127,12 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
       this.refreshProjectCards();
     });
 
+    // listen for websocket message for newly created projects
+    this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
+      this.showDownloadingIcon = show;
+    });
+
+
   }
 
 
@@ -168,8 +176,8 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     // store the projects in the component
     this.projects = this.projectsBrowseData[0];
 
-    console.log('projects data:');
-    console.log(this.projects);
+    // console.log('projects data:');
+    // console.log(this.projects);
 
     // store the dropdown data
     this.dropDownData = this.projectsBrowseData.slice(1);
@@ -208,6 +216,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
 
     this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
 
     clearInterval(this.timer);
 
@@ -749,11 +758,95 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
   onExportClick() {
 
-    this.excelExportService.export('Jarvis Projects Export', 'Projects', this.projects,
-      ['ProjectID', 'ProjectName', 'Description', 'Notes', 'EntityName', 'GroupName', 'CreationDate']);
+    this.showDownloadingIcon = true;
+
+    const colsToExport = [
+      {
+        name: 'ProjectName',
+      },
+      {
+        name: 'ProjectTypeName',
+        alias: 'ProjectType'
+      },
+      {
+        name: 'Description',
+      },
+      {
+        name: 'Notes',
+      },
+      {
+        name: 'ProjectStatusName',
+        alias: 'Status'
+      },
+      {
+        name: 'PriorityName',
+        alias: 'Priority'
+      },
+      {
+        name: 'GroupName',
+        alias: 'Group'
+      },
+      {
+        name: 'EntityName',
+        alias: 'Entity'
+      },
+      {
+        name: 'EntityOwnerName',
+        alias: 'EntityOwner'
+      },
+      {
+        name: 'MU'
+      },
+      {
+        name: 'IBO'
+      },
+      {
+        name: 'OracleItemNumber'
+      },
+      {
+        name: 'FullName',
+        alias: 'CreatedBy'
+      },
+      {
+        name: 'CreationDate'
+      },
+      {
+        name: 'LastUpdatedBy'
+      },
+      {
+        name: 'LastUpdateDate'
+      }
+    ];
+
+    // get the array of projects objects that are displayed
+    const projects = this.filterPipe.transform(this.projects, this.filterString, this.selectedFilter.columnName,
+      {matchFuzzy: {on: this.selectedFilter.matchFuzzy, threshold: this.fuzzySearchThreshold},
+      matchOptimistic: this.selectedFilter.matchOptimistic, matchExact: this.selectedFilter.matchExact});
+
+    setTimeout(() => {
+      this.excelExportService.export('Jarvis Projects Export', 'Projects', projects, colsToExport);
+    }, 1500);
+
 
   }
 
+
+  onExportButtonMouseEnter() {
+
+    const options = {
+      title: 'Download Excel File',
+      placement: 'left'
+    };
+
+    $('button.export-button').tooltip(options);
+    $('button.export-button').tooltip('show');
+
+  }
+
+
+  onExportButtonMouseLeave() {
+    $('button.export-button').tooltip('dispose');
+  }
 
 
 }

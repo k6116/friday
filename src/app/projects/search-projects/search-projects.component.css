@@ -21,7 +21,7 @@ span.project-description-ruler {
 
 div.projects-filters-cont {
   margin-bottom: 40px;
-  min-width: 750px;
+  min-width: 850px;
   width: 100%;
   white-space: nowrap;
 }
@@ -76,11 +76,27 @@ div.projects-filter-select {
   width: 225px;
 }
 
-div.projects-display-count {
+div.float-right-cont {
   float: right;
+}
+
+button.btn-standard.export-button {
+  margin-right: 30px;
+  position: relative;
+  top: 1px;
+}
+
+span.downloading-animated-icon {
+  position: relative;
+  top: 2px;
+  padding-left: 5px;
+}
+
+div.projects-display-count {
+  display: inline-block;
   font-weight: 500;
   position: relative;
-  top: 5px;
+  top: 3px;
 }
 
 
