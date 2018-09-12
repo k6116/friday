@@ -10,6 +10,7 @@ import { WebsocketService } from '../../_shared/services/websocket.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { CacheService } from '../../_shared/services/cache.service';
 import { RoutingHistoryService } from '../../_shared/services/routing-history.service';
+import { ExcelExportService } from '../../_shared/services/excel-export.service';
 
 declare var $: any;
 import * as _ from 'lodash';
@@ -57,7 +58,8 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     private clickTrackingService: ClickTrackingService,
     private cacheService: CacheService,
     private changeDetectorRef: ChangeDetectorRef,
-    private routingHistoryService: RoutingHistoryService
+    private routingHistoryService: RoutingHistoryService,
+    private excelExportService: ExcelExportService
   ) {
 
     // set the fuzzy search threshold value
@@ -165,6 +167,9 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
     // store the projects in the component
     this.projects = this.projectsBrowseData[0];
+
+    console.log('projects data:');
+    console.log(this.projects);
 
     // store the dropdown data
     this.dropDownData = this.projectsBrowseData.slice(1);
@@ -738,6 +743,14 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
         ]
       }
     );
+
+  }
+
+
+  onExportClick() {
+
+    this.excelExportService.export('Jarvis Projects Export', 'Projects', this.projects,
+      ['ProjectID', 'ProjectName', 'Description', 'Notes', 'EntityName', 'GroupName', 'CreationDate']);
 
   }
 

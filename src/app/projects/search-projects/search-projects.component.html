@@ -43,6 +43,10 @@ considering topnav, sidenav, and footer -->
             <option *ngFor="let data of dropDownData[selectedFilter?.dropDownArrayIndex]" [selected]="data[selectedFilter?.dropDownProperty] === filterSelection">{{ data[selectedFilter?.dropDownProperty] }}</option>
           </select>
         </div>
+
+        <div class="export-button-cont">
+          <button (click)="onExportClick()">Export</button>
+        </div>
   
         <div class="projects-display-count">
           {{ numProjectsDisplayString }}
