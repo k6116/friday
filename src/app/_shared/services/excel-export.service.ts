@@ -100,7 +100,8 @@ export class ExcelExportService {
         Object.keys(firstObj).forEach((col, index) => {
           // use the first row to test data types; assume they are not mixed
           // get the value in the column
-          const value = data[0][index];
+          const value = data[0][col];
+          console.log(value);
           // check the datatype and push it into the array
           if (typeof(value) === 'number') {
             colDataTypes.push('number');
@@ -132,7 +133,13 @@ export class ExcelExportService {
         } else {
           // Object.values(data[ri]) will return an array of the row values
           // then using ci to get value at the index
-          return Object.values(data[ri])[ci];
+          if (colDataTypes[ci] === 'date') {
+            cell.style('numberFormat', 'm/d/yyyy h:mm am/pm');
+            const dateString = moment(Object.values(data[ri])[ci]).format('MM/D/YYYY H:mm');
+            return new Date(dateString);
+          } else {
+            return Object.values(data[ri])[ci];
+          }
         }
       });
 

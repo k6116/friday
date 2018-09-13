@@ -833,12 +833,12 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
     // export / download an Excel file with the projects data (client version)
     // setTimeout(() => {
-    //   this.excelExportService.exportClient('Jarvis Projects Export', 'Projects', projects, colsToExport);
+    //   this.excelExportService.exportClient('Jarvis Projects Export', 'Projects', projects);
     // }, 2000);
 
     // export / download an Excel file with the projects data (server version)
     setTimeout(() => {
-      this.excelExportService.exportServer('Jarvis Projects Export', 'Projects', projects);
+      this.excelExportService.exportServer('Jarvis Projects Export', 'Projects', projects, colsToExport);
     }, 1000);
 
   }
