@@ -69,6 +69,9 @@ export class CacheService {
   projectSelectedFilter: any;
   projectSelectedValue: string;
 
+  // new browser location detected after clicking browser back or forward button
+  browserLocation = new EventEmitter<any>();
+
   constructor() { }
 
   // TO-DO BRYAN: create a toast service and move

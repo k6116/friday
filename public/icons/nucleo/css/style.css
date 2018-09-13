@@ -154,199 +154,203 @@ Generated using nucleoapp.com
 	icons
 -------------------------*/
 
+.nc-badge-1::before {
+  content: "\ea02";
+}
+
+.nc-archive-check::before {
+  content: "\ea03";
+}
+
 .nc-small-remove::before {
   content: "\ea04";
 }
 
-.nc-a-check::before {
+.nc-badge-2::before {
   content: "\ea05";
 }
 
-.nc-archive-check::before {
-  content: "\ea07";
-}
-
-.nc-badge::before {
-  content: "\ea0a";
-}
-
 .nc-board-29::before {
-  content: "\ea0b";
+  content: "\ea06";
 }
 
 .nc-calendar-add::before {
-  content: "\ea0c";
+  content: "\ea07";
+}
+
+.nc-a-check::before {
+  content: "\ea08";
 }
 
 .nc-chart-bar-33::before {
-  content: "\ea10";
-}
-
-.nc-chat-round-content::before {
-  content: "\ea12";
+  content: "\ea09";
 }
 
 .nc-dashboard-half::before {
-  content: "\ea19";
+  content: "\ea0a";
 }
 
 .nc-lock::before {
-  content: "\ea1c";
+  content: "\ea0b";
+}
+
+.nc-chat-round-content::before {
+  content: "\ea0c";
 }
 
 .nc-single-05::before {
-  content: "\ea24";
-}
-
-.nc-socket::before {
-  content: "\ea26";
+  content: "\ea0d";
 }
 
 .nc-time-countdown::before {
-  content: "\ea27";
+  content: "\ea0e";
+}
+
+.nc-socket::before {
+  content: "\ea0f";
 }
 
 .nc-gantt::before {
-  content: "\ea29";
+  content: "\ea10";
 }
 
 .nc-bars-rotate::before {
-  content: "\ea2b";
-}
-
-.nc-dots-07::before {
-  content: "\ea2e";
+  content: "\ea11";
 }
 
 .nc-opening-times::before {
-  content: "\ea2f";
+  content: "\ea12";
+}
+
+.nc-dots-07::before {
+  content: "\ea13";
 }
 
 .nc-light-traffic::before {
-  content: "\ea35";
+  content: "\ea14";
 }
 
 .nc-priority-high::before {
-  content: "\ea36";
+  content: "\ea15";
 }
 
 .nc-microscope::before {
-  content: "\ea37";
+  content: "\ea16";
 }
 
 .nc-hierarchy-53::before {
-  content: "\ea39";
+  content: "\ea17";
 }
 
 .nc-book-open-2::before {
-  content: "\ea3a";
+  content: "\ea18";
 }
 
 .nc-ram::before {
-  content: "\ea3b";
+  content: "\ea19";
 }
 
 .nc-l-security::before {
-  content: "\ea3c";
+  content: "\ea1a";
 }
 
 .nc-keyboard-wireless::before {
-  content: "\ea3d";
+  content: "\ea1b";
 }
 
 .nc-code-editor::before {
-  content: "\ea3e";
+  content: "\ea1c";
 }
 
 .nc-lab::before {
-  content: "\ea3f";
+  content: "\ea1d";
 }
 
 .nc-settings-91::before {
-  content: "\ea40";
+  content: "\ea1e";
 }
 
 .nc-bulb-63::before {
-  content: "\ea41";
+  content: "\ea1f";
 }
 
 .nc-sign-closed::before {
-  content: "\ea42";
+  content: "\ea20";
 }
 
 .nc-lock-2::before {
-  content: "\ea43";
+  content: "\ea21";
 }
 
 .nc-board-28::before {
-  content: "\ea44";
+  content: "\ea22";
 }
 
 .nc-privacy-policy-2::before {
-  content: "\ea45";
+  content: "\ea23";
 }
 
 .nc-priority-high-2::before {
-  content: "\ea46";
+  content: "\ea24";
 }
 
 .nc-socket-europe-1::before {
-  content: "\ea47";
+  content: "\ea25";
 }
 
 .nc-circle-10::before {
-  content: "\ea48";
+  content: "\ea26";
 }
 
 .nc-time-clock::before {
-  content: "\ea49";
+  content: "\ea27";
 }
 
 .nc-a-edit::before {
-  content: "\ea4a";
+  content: "\ea28";
 }
 
 .nc-dots-06::before {
-  content: "\ea4b";
+  content: "\ea29";
 }
 
 .nc-pulse-phone::before {
-  content: "\ea4c";
+  content: "\ea2a";
 }
 
 .nc-keyboard::before {
-  content: "\ea4d";
+  content: "\ea2b";
 }
 
 .nc-microcircuit::before {
-  content: "\ea4e";
+  content: "\ea2c";
 }
 
 .nc-settings::before {
-  content: "\ea4f";
+  content: "\ea2d";
 }
 
 .nc-money-coins::before {
-  content: "\ea50";
+  content: "\ea2e";
 }
 
 .nc-money-11::before {
-  content: "\ea51";
+  content: "\ea2f";
 }
 
 .nc-tag-content::before {
-  content: "\ea52";
+  content: "\ea30";
 }
 
 .nc-hotel::before {
-  content: "\ea53";
+  content: "\ea31";
 }
 
 .nc-b-security::before {
-  content: "\ea54";
+  content: "\ea32";
 }
 
 .nc-filter-organization::before {
-  content: "\ea55";
+  content: "\ea33";
 }
 

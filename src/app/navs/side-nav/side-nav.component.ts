@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { CacheService } from '../../_shared/services/cache.service';
@@ -12,7 +12,7 @@ declare var $: any;
   templateUrl: './side-nav.component.html',
   styleUrls: ['./side-nav.component.css']
 })
-export class SideNavComponent implements OnInit, AfterViewInit {
+export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectedMenu: string;
   toggleMode: string;
@@ -22,6 +22,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
   expandedMenus: any;
   parentMenuToExpand: any;
   subscription1: Subscription;
+  subscription2: Subscription;
   isTestInstance: boolean;
 
   constructor(
@@ -223,8 +224,6 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
-    // console.log('side nav component has been initialized');
-
     // check the port to see if this is the test instance (dev will return '3000', prod will return '')
     // if this is test, use the 'blue' icon version (_test) and text instead of yellow
     if (location.port === '440') {
@@ -234,21 +233,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
     const path = this.router.url.slice(1, this.router.url.length);
 
-    // console.log('current path:');
-    // console.log(path);
-
     // highlight the selected/active menu item with color, background color, etc.
     // needed here if the user goes directly to the route using the url or on refresh
     this.highlightActiveMenu(path);
-
-    // attempt to find the parent menu item, if a sub-menu item is the active one
-    // if one is found, expand it so that the active sub-menu can be seen
-    this.getParentOfCurrentRoute(path);
-    if (this.parentMenuToExpand) {
-      const expandedMenu = [];
-      expandedMenu.push(this.parentMenuToExpand);
-      this.setExpandedProperties(expandedMenu);
-    }
 
     // hide menu items that the user does not have permissions to access
     this.hideUnauthorizedMenuItems();
@@ -260,23 +247,44 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       this.highlightActiveMenu(navigatedPath.slice(1));
     });
 
+    // set up subscription to receive path from the app component, detecting browser back or foward button clicks
+    this.subscription2 = this.cacheService.browserLocation.subscribe(location => {
+      // get the path (need to trim off the leading /)
+      const currentPath = location.url.slice(1);
+      // unhighlight all the main menu items
+      this.clearAllParentMenuHighlights();
+      // highlight the active menu and unhighlight all the non-active menus
+      this.highlightActiveMenu(currentPath);
+      // expand and higlight the parent menu if this path is associated with a sub menu item
+      this.highlightAndExpandParentMenu(currentPath);
+
+    });
+
 
   }
+
 
   ngAfterViewInit() {
 
     // NOTE: the actual expanding of main menu items must be done in this lifecycle hook,
     // because the html won't be rendered yet in the init hook
-    // what is done on init is just setting the properties
-    // separating these two is also used to avoid this error for the class binding for the caret icon:
-    // Error: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked
-    if (this.parentMenuToExpand) {
-      const expandedMenu = [];
-      // push it into an array so that the expandMenus method can be reused
-      expandedMenu.push(this.parentMenuToExpand);
-      this.expandMenus(expandedMenu);
-    }
 
+    // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
+    const path = this.router.url.slice(1, this.router.url.length);
+
+    // expand and higlight the parent menu if this path is associated with a sub menu item
+    // NOTE: use setTimeout with zero to avoid the Expression has changed after it was checked error
+    setTimeout(() => {
+      this.highlightAndExpandParentMenu(path);
+    }, 0);
+
+
+  }
+
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
 
@@ -335,101 +343,96 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
   }
 
-  onMenuItemClick(menuItem: string) {
-    // get the element object using jQuery
-    const $el = $(`div.sidenav-menu-item.${menuItem}`);
-    // get the menu item object in the menu structure (this.menuStructure)
-    const foundMenuItem = this.getMenuObject(menuItem);
-    if (foundMenuItem) {
-      // if the menu item has a sub-menu, expand or collapse the menu (toggle it by passing !foundMenuItem.expanded)
-      if (foundMenuItem.subItems) {
-        this.expandOrCollapseMenu(!foundMenuItem.expanded, menuItem, true);
+
+  onMenuItemClick(menuItem: any, isSubMenuItem: boolean) {
+
+      // if the menu item has a sub-menu (meaning, it is a parent menu item that has no route)
+      if (menuItem.subItems) {
+
+        // expand or collapse the menu (toggle it by passing !menuItem.expanded)
+        this.expandOrCollapseMenu(!menuItem.expanded, menuItem, true);
+
+      // otherwise, it is a parent menu or sub menu item that has a route
       } else {
-        // clear any main menu items highlights
-        this.clearHighlightMainOfSubMenuItem();
+
+        // unhighlight all the main menu items
+        this.clearAllParentMenuHighlights();
+
         // navigate to the selected/clicked route
-        this.router.navigate([`/${foundMenuItem.path}`]);
-        setTimeout(() => {
-          this.highlightActiveMenu(this.router.url.slice(1));
-        }, 0);
-      }
-    }
-  }
+        this.router.navigate([`/${menuItem.path}`]);
 
-  onSubMenuItemClick(element, menuItem: string, subMenuItem: string) {
-    // get the menu item object in the menu structure (this.menuStructure)
-    // TO-DO BILL: attempt to combine getMenuObject and getSubMenuObject into a single method
-    const foundMenuItem = this.getSubMenuObject(menuItem, subMenuItem);
-    // navigate to the selected/clicked route
-    this.router.navigate([`/${foundMenuItem.path}`]);
-    setTimeout(() => {
-      const path = this.router.url.slice(1);
-      this.highlightActiveMenu(path);
-      // find the parent main menu item, to show it as highlighted (white text)
-      this.highlightMainOfSubMenuItem2(path);
-    }, 0);
-  }
+        // highlight the active menu and unhighlight all the non-active menus
+        this.highlightActiveMenu(menuItem.path);
 
-  // TO-DO BILL: combine highlightMainOfSubMenuItem and highlightMainOfSubMenuItem2 into single method
-  highlightMainOfSubMenuItem(alias) {
-    // highlight the main menu item of a sub menu item in white (no yellow left border)
-    // find the menu item object matching the alias
-    const foundMainMenuItem = this.menuStructure.find(mainMenuItem => {
-      return mainMenuItem.alias === alias;
-    });
-    // if a menu item was found, set highlighted to true
-    if (foundMainMenuItem) {
-      foundMainMenuItem.highlighted = true;
-    }
-  }
-
-  highlightMainOfSubMenuItem2(path) {
-    // highlight the main menu item of a sub menu item in white (with no yellow left border)
-    // go through each main menu object in the menu structure
-    // console.log(path);
-    this.menuStructure.forEach(menuItem => {
-      // if the menu item has sub menu items
-      if (menuItem.hasOwnProperty('subItems')) {
-        // try to find a match on the path in the sub menu items
-        const foundSubMenuItem = menuItem.subItems.find(subItem => {
-          return subItem.path === path;
-        });
-        // if the submenu is found, set the highlighted property of the main menu item to true,
-        // to set the highlighted class, which will change the color to white
-        if (foundSubMenuItem) {
-          menuItem.highlighted = true;
+        // if it is a sub menu item, highlight the parent menu item (set color to white)
+        if (isSubMenuItem) {
+          this.highlightAndExpandParentMenu(menuItem.path);
         }
+
       }
-    });
+
   }
 
-  clearHighlightMainOfSubMenuItem() {
-    // go through each main menu item and set the highlighted property to false
+
+  clearAllParentMenuHighlights() {
+
+    // go through all main menu items and set the highlighted property to false
     this.menuStructure.forEach(mainMenuItem => {
       mainMenuItem.highlighted = false;
     });
+
   }
 
-  // hightlight the active/selected menu by going through the entire menu structure (main menu and sub menu items)
-  // and set the active property to true if the path matches (and set all others to false along the way)
+
+  // set the active property to true if the path matches (and set all others to false along the way)
+  // active will set the 5px left border to yellow or blue and text color to white
   highlightActiveMenu(path: string) {
+    // loop through each menu item
     this.menuStructure.forEach(menuItem => {
+      // if the menu item has a path (route), set the active property to either true or false (left border color)
       if (menuItem.hasOwnProperty('path')) {
         menuItem.active = menuItem.path === path ? true : false;
       }
+      // if the menu item has sub items (it is a parent menu item)
       if (menuItem.hasOwnProperty('subItems')) {
+        // loop through each sub menu item
         menuItem.subItems.forEach(subMenuItem => {
+          // set the active property to either true or false (left border color)
+          // don't need to check for path property since all sub menu items should have a route
           subMenuItem.active = subMenuItem.path === path ? true : false;
-          // check alternative paths
+          // check alternative paths that may also match
           if (!subMenuItem.active && subMenuItem.hasOwnProperty('subPaths')) {
             subMenuItem.active = this.checkAlternativePaths(subMenuItem.subPaths, path);
-            // console.log('sub menu item active?');
-            // console.log(subMenuItem.active);
           }
         });
       }
     });
   }
+
+
+  highlightAndExpandParentMenu(path: string) {
+    // initialize a variable to hold the index of the parent menu object
+    let parentMenuIndex: number;
+    // loop through the menu structure
+    this.menuStructure.forEach((menuItem, index) => {
+      // set the index
+      parentMenuIndex = index;
+      // if the menu item has sub menu items, loop through those
+      if (menuItem.hasOwnProperty('subItems')) {
+        menuItem.subItems.forEach(subMenuItem => {
+          // if the path matches, highlight and expand the main/parent menu item
+          if (subMenuItem.path === path) {
+            const parentMenuItem = this.menuStructure[parentMenuIndex];
+            parentMenuItem.highlighted = true;
+            parentMenuItem.expanded = true;
+            this.expandOrCollapseMenu(true, parentMenuItem, false, true);
+          }
+        });
+      }
+    });
+
+  }
+
 
   checkAlternativePaths(subPaths: any[], path: string): boolean {
     let returnVal = false;
@@ -439,13 +442,8 @@ export class SideNavComponent implements OnInit, AfterViewInit {
         // replace the '/' with '\/' (escape char for regex)
         regexString = subPath.replace(/\//g, '\\/');
         regexString = regexString.replace(/(:.+(?=\/))|(:.+$)/g, '.+');
-        // console.log(`regex string to look for path match on ${path}:`);
-        // console.log(regexString);
         const regexTest = new RegExp(regexString, 'g');
-        // console.log('regex test expression');
-        // console.log(regexTest);
         if (regexTest.test(path)) {
-          // console.log('test returned true');
           returnVal = true;
         }
       });
@@ -455,82 +453,15 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // get the parent of the selected/active menu item based on the path
-  // used to expand that parent on init
-  getParentOfCurrentRoute(path: string) {
-    // loop through each main menu item in the menu structure
-    this.menuStructure.forEach(menuItem => {
-      // if the main menu item has a subItems property, attempt to find it within that array
-      if (menuItem.hasOwnProperty('subItems')) {
-        const foundSubMenuItem = menuItem.subItems.find(subItem => {
-          return subItem.active;
-        });
-        // once the sub menu item is found, find it's parent main menu item (matching using the parentAlias)
-        if (foundSubMenuItem) {
-          const foundMainMenuItem = this.menuStructure.find(mainItem => {
-            return mainItem.alias === foundSubMenuItem.parentAlias;
-          });
-          // set the property
-          // TO-DO: make this method return the object instead of setting a class property, would be more proper
-          this.parentMenuToExpand = foundMainMenuItem;
-          // highlight the main menu item of the sub menu item in white (no yellow left border)
-          this.highlightMainOfSubMenuItem(foundMainMenuItem.alias);
-        }
-      }
-    });
-  }
-
-  // find and return a main menu item/object using the alias
-  getMenuObject(alias: string): any {
-    return this.menuStructure.find(menu => {
-      return menu.alias === alias;
-    });
-  }
-
-  // find and return a sub menu item/object using the alias
-  getSubMenuObject(mainMenuAlias: string, subMenuAlias: string): any {
-    const foundMenuItem = this.menuStructure.find(menu => {
-      return menu.alias === mainMenuAlias;
-    });
-    if (foundMenuItem) {
-      return foundMenuItem.subItems.find(subMenu => {
-        return subMenu.alias === subMenuAlias;
-      });
-    }
-  }
-
-  // go through the cached expanded menu items and set the expanded property to true
-  setExpandedProperties(expandedMenus: any) {
-    expandedMenus.forEach(expandedMenu => {
-      const foundMenuItem = this.menuStructure.find(menuItem => {
-        return expandedMenu.alias === menuItem.alias;
-      });
-      if (foundMenuItem) {
-        foundMenuItem.expanded = true;
-      }
-    });
-  }
-
-  // go through the cached expanded menu items and expand them, without any animation/transition
-  expandMenus(expandedMenus: any) {
-    expandedMenus.forEach(expandedMenu => {
-      const foundMenuItem = this.menuStructure.find(menuItem => {
-        return expandedMenu.alias === menuItem.alias;
-      });
-      if (foundMenuItem) {
-        this.expandOrCollapseMenu(true, foundMenuItem.alias, false, true);
-      }
-    });
-  }
 
   // method to perform the expanding or collapsing of a main menu item
-  expandOrCollapseMenu(expand: boolean, alias: string, animate: boolean, skipPropertyUpdate?: boolean) {
+  expandOrCollapseMenu(expand: boolean, menuItem: any, animate: boolean, skipPropertyUpdate?: boolean) {
     // ge the element using jQuery and the alias which will be included in the element classes
-    const $el = $(`div.sidenav-menu-item.${alias}`);
+    const $el = $(`div.sidenav-menu-item.${menuItem.alias}`);
     // find the menu item using the alias
-    const foundMenuItem = this.getMenuObject(alias);
+    // const foundMenuItem = this.getMenuObject(alias);
     // find the number of visible (non-hidden) sub-menu items
-    const visibleSubMenuItems = foundMenuItem.subItems.filter(subItem => {
+    const visibleSubMenuItems = menuItem.subItems.filter(subItem => {
       return !subItem.hidden;
     });
     // set/calculate the height
@@ -547,10 +478,9 @@ export class SideNavComponent implements OnInit, AfterViewInit {
     // NOTE: skipPropertyUpdate is used to avoid error due to init vs. afterview init lifecycle conflict
     // Error: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked
     if (!skipPropertyUpdate) {
-      foundMenuItem.expanded = expand;
+      menuItem.expanded = expand;
     }
   }
-
 
 
 

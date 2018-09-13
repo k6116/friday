@@ -1,4 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { CacheService } from './_shared/services/cache.service';
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit {
   timer: any;
   timerInterval: number;  // interval in minutes
   subscription1: Subscription;
+  subscription2: Subscription;
 
   // NOTE: this is the 'new' way to do it but not working
   // @HostListener('click') onDocumentClicked() {
@@ -33,6 +35,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private location: Location,
     private cacheService: CacheService,
     private authService: AuthService,
     private clickTrackingService: ClickTrackingService,
@@ -73,6 +76,13 @@ export class AppComponent implements OnInit {
       (resetTimer: boolean) => {
         // console.log('subscription to resetTimer receivevd in the app component');
         this.resetTimer();
+    });
+
+    this.location.subscribe(
+      location => {
+        console.log('broswer navigation button pressed');
+        console.log(location);
+        this.cacheService.browserLocation.emit(location);
     });
 
   }
