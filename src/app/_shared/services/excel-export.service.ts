@@ -238,7 +238,8 @@ export class ExcelExportService {
         this.cacheService.showDownloadingIcon.emit(false);
       },
       err => {
-        // console.log(err);
+        this.cacheService.showDownloadingIcon.emit(false);
+        // TO-DO BILL: throw and display error message
       }
     );
 

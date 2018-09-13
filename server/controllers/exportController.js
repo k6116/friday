@@ -10,8 +10,6 @@ function generateExcelFile(req, res) {
   const sheetName = req.body.sheetName;
   const colsToExport = req.body.colsToExport;
 
-  console.log(`sheet name: ${sheetName}`);
-
   // create a new blank workbook
   XlsxPopulate.fromBlankAsync()
   .then(workbook => {
