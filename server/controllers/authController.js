@@ -116,6 +116,7 @@ function authenticate(req, res) {
             // decode the token to get the issued at and expiring at timestamps
             const decodedToken = token.decode(newToken, res);
 
+            // write entry to log file: user has signed in successfully
             logger.writeLog('info', `user ${fullName} has logged in`, {color: 'blue'});
 
             // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
@@ -386,6 +387,7 @@ function logout(req, res) {
     return user.userName === userName;
   });
 
+  // write entry to log file: user has logged out manually
   logger.writeLog('info', `user ${userName} has logged out`, {color: 'blue'});
 
   res.json(`user ${userName} has been removed from the array of logged in users`);
