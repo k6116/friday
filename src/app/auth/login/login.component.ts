@@ -55,6 +55,11 @@ export class LoginComponent implements OnInit {
   backgroundImage: any;
   testImagePath: string;
   isImageLoaded: boolean;
+  useCachedImage: boolean;
+
+  // selected image paths
+  imagePath: string;
+  imagePathThumbnail: string;
 
   // set to true if this is the test instance (port 440)
   isTestInstance: boolean;
@@ -95,12 +100,15 @@ export class LoginComponent implements OnInit {
     // if the full size background image is cached (e.g. on logout), use that url
     if (this.cacheService.backgroundImage) {
       this.backgroundImage = this.cacheService.backgroundImage;
-      this.isImageLoaded = true;
+      this.imagePath = this.backgroundImage.path + this.backgroundImage.fileName;
+      setTimeout(() => {
+        $('div.login-background-image').css('background-image', `url(${this.imagePath})`);
+      }, 0);
+      this.useCachedImage = true;
     // otherwise use the blur up approach and get a new background image
     } else {
       this.getBackgroundImages();
     }
-
 
   }
 
@@ -129,7 +137,6 @@ export class LoginComponent implements OnInit {
         },
         err => {
           // console.log(err);
-          this.backgroundImage = this.cacheService.backgroundImage;
         }
       );
 
@@ -137,20 +144,39 @@ export class LoginComponent implements OnInit {
 
   // set random background image
   setBackgroundImage() {
+
+    // get a random number between zero and the number of background images
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
+
+    // get the background image object at that random index
     this.backgroundImage = this.backgroundImages[imageIndex];
 
-    // save the last shown image in the cache service
-    setTimeout(() => {
-      this.cacheService.backgroundImage = this.backgroundImage;
-    }, 500);
+    // set the image paths for both the full size image and thumbnail image
+    this.imagePath = this.backgroundImage.path + this.backgroundImage.fileName;
+    this.imagePathThumbnail = this.backgroundImage.path + this.backgroundImage.fileNameNoExt + '_thumbnail.jpg';
+
+    // initially, set the background image to the thumbnail version, while we wait for the full size image to load
+    $('div.login-background-image').css('background-image', `url(${this.imagePathThumbnail})`);
+
+    // set the full-size image path in the hidden img element, to start the download
+    $('img.hidden-background-image').attr('src', this.imagePath);
+
+    // save the last shown image in the cache, to be used on logout so that the same image will be used and loaded immediately
+    // should be in the browser cache as 304 not modified
+    this.cacheService.backgroundImage = this.backgroundImage;
 
   }
 
 
-  // set image is loaded to true to switch the background image from thumbnail to full size
+  // triggered when the full size image has finished downloading using (load) event handler
   onImageLoaded() {
+
+    // swith the background image from the thumbnail to the full-size version
+    $('div.login-background-image').css('background-image', `url(${this.imagePath})`);
+
+    // set image is loade to true, to toggle the class from small to large and start the sharpen transition effect
     this.isImageLoaded = true;
+
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)

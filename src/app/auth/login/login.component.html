@@ -5,14 +5,16 @@
 <!-- confirm modal component -->
 <app-confirm-modal></app-confirm-modal>
 
+<!-- background image -->
+<div [class]="'login-background-image' + (useCachedImage ? '' : (isImageLoaded ? ' large' : ' small'))"></div>
 
-<div [class]="'login-background-image' + (cacheService.backgroundImage ? '' : (isImageLoaded ? ' large' : ' small'))" [style.background-image]="isImageLoaded || cacheService.backgroundImage ? 'url(' + backgroundImage?.path + backgroundImage?.fileName + ')' : 'url(' + backgroundImage?.path + backgroundImage?.fileNameNoExt + '_thumbnail.jpg)'"></div>
+<!-- hidden image to trigger onload when finished downloading -->
+<img class="hidden-background-image" src="" alt="" (load)="onImageLoaded()" hidden>
 
-<img [src]="backgroundImage?.path + backgroundImage?.fileName" (load)="onImageLoaded()" hidden>
-
-
+<!-- page container -->
 <div class="login-page-cont">
 
+  <!-- key sightings info -->
   <div class="login-background-image-details">
     <div class="login-background-image-details-title">{{ backgroundImage?.title }}</div>
     <div class="login-background-image-details-subtitle">{{ backgroundImage?.subTitle }}</div>

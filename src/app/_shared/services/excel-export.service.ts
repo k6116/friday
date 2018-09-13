@@ -101,7 +101,6 @@ export class ExcelExportService {
           // use the first row to test data types; assume they are not mixed
           // get the value in the column
           const value = data[0][col];
-          console.log(value);
           // check the datatype and push it into the array
           if (typeof(value) === 'number') {
             colDataTypes.push('number');
