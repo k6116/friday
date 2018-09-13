@@ -167,6 +167,9 @@ router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
 router.post('/updatePartScheduleXML/:revisionNotes', controllers.schedules.updatePartScheduleXML);
 router.get('/destroyScheduleSP/:scheduleID', controllers.schedules.destroyScheduleSP);
 
+// EXPORT CONTROLLER
+router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
+
 
 
 // middleware to protect permissions protected routes

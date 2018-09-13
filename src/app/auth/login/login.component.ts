@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private cacheService: CacheService,
+    public cacheService: CacheService,
     private apiDataOrgService: ApiDataOrgService,
     private apiDataAuthService: ApiDataAuthService,
     private authService: AuthService,

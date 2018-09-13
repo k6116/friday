@@ -33,11 +33,11 @@ export class AppComponent implements OnInit {
   //   // console.log('document was clicked');
   // }
 
-  @HostListener('window:popstate', ['$event'])
-  onPopState(event) {
-    console.log('browser button pressed');
-    console.log(event);
-  }
+  // @HostListener('window:popstate', ['$event'])
+  // onPopState(event) {
+  //   console.log('browser button pressed');
+  //   console.log(event);
+  // }
 
   constructor(
     private router: Router,
@@ -84,9 +84,9 @@ export class AppComponent implements OnInit {
         this.resetTimer();
     });
 
-    this.location.subscribe(x => {
-      console.log(x);
-    });
+    // this.location.subscribe(x => {
+    //   console.log(x);
+    // });
 
   }
 

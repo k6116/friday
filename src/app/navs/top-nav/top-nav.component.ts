@@ -80,7 +80,6 @@ export class TopNavComponent implements OnInit, OnDestroy {
     // set up subscription to receive trigger to show the profile modal
     this.subscription1 = this.cacheService.showProfileModal.subscribe(showProfileModal => {
       // display the modal
-      console.log('received the show profile modal subscription');
       this.onProfileButtonClick();
     });
 

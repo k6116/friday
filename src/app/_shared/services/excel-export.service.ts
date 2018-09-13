@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToolsService } from './tools.service';
 import { CacheService } from './cache.service';
+import { ApiDataProjectService } from './api-data/api-data-project.service';
 
 import * as XlsxPopulate from 'xlsx-populate';
 import * as FileSaver from 'file-saver';
@@ -13,12 +14,11 @@ export class ExcelExportService {
 
   constructor(
     private toolsService: ToolsService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private apiDataProjectService: ApiDataProjectService
   ) { }
 
-  export(fileName: string, sheetName: string, data: any, colsToExport?: any[]) {
-
-    const t0 = performance.now();
+  exportClient(fileName: string, sheetName: string, data: any, colsToExport?: any[]) {
 
     // create a new blank workbook
     XlsxPopulate.fromBlankAsync()
@@ -205,26 +205,44 @@ export class ExcelExportService {
         });
       }
 
-      const t1 = performance.now();
-      // console.log(`time to prepare excel file: ${t1 - t0} milliseconds`);
-
-      const t2 = performance.now();
-
       // export the workbook into the downloads folder using the FileSaver library
       workbook.outputAsync()
       .then(blob => {
+        // save the file in the downloads folder
         FileSaver.saveAs(blob, `${fileName}.xlsx`);
       });
 
-      const t3 = performance.now();
-      // console.log(`time to download excel file: ${t3 - t2} milliseconds`);
-
+      // emit a value for the exporting component to pick up, to hide the downloading icon
       this.cacheService.showDownloadingIcon.emit(false);
 
     });
 
   }
 
+  exportServer(fileName: string, sheetName: string, data: any, colsToExport?: any[]) {
+
+    // build the payload to send in the request body
+    const payload = {
+      sheetName: sheetName,
+      data: data,
+      colsToExport: colsToExport
+    };
+
+    // send a request to the server; will return a blob
+    this.apiDataProjectService.getExcelExport(payload)
+    .subscribe(
+      res => {
+        // save the file in the downloads folder
+        FileSaver.saveAs(res, `${fileName}.xlsx`);
+        // emit a value for the exporting component to pick up, to hide the downloading icon
+        this.cacheService.showDownloadingIcon.emit(false);
+      },
+      err => {
+        // console.log(err);
+      }
+    );
+
+  }
 
 
 }

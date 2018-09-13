@@ -141,6 +141,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     // hide the footer until the page is ready to be rendered
     this.toolsService.hideFooter();
 
+    // if there is no cached projects data, get projects from the database
     if (!this.cacheService.projectsBrowseData) {
 
       // show the spinner
@@ -163,6 +164,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
         this.cacheService.projectsBrowseData = this.projectsBrowseData;
       }
 
+    // otherwise, just use the cached projects data for better performance
     } else {
 
       // get data from the cache
@@ -758,8 +760,14 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
   onExportClick() {
 
+    // show the animated downloading icon
     this.showDownloadingIcon = true;
 
+    // hide the tooltip
+    $('button.export-button').tooltip('dispose');
+
+    // set an array of objects representing the selected columns to export
+    // NOTE: if this is null or undefined it will export all columns
     const colsToExport = [
       {
         name: 'ProjectName',
@@ -823,10 +831,15 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
       {matchFuzzy: {on: this.selectedFilter.matchFuzzy, threshold: this.fuzzySearchThreshold},
       matchOptimistic: this.selectedFilter.matchOptimistic, matchExact: this.selectedFilter.matchExact});
 
-    setTimeout(() => {
-      this.excelExportService.export('Jarvis Projects Export', 'Projects', projects, colsToExport);
-    }, 1500);
+    // export / download an Excel file with the projects data (client version)
+    // setTimeout(() => {
+    //   this.excelExportService.exportClient('Jarvis Projects Export', 'Projects', projects, colsToExport);
+    // }, 2000);
 
+    // export / download an Excel file with the projects data (server version)
+    setTimeout(() => {
+      this.excelExportService.exportServer('Jarvis Projects Export', 'Projects', projects, colsToExport);
+    }, 1000);
 
   }
 

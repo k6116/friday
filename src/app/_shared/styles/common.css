@@ -181,6 +181,23 @@ button.btn-standard.hover-red:hover {
   border: 1px solid rgb(235, 199, 199);
 }
 
+button.btn-standard.icon-text-only {
+  background-color: transparent;
+  border: none;
+  color: rgb(100, 100, 100);
+}
+
+button.btn-standard.icon-text-only:hover {
+  cursor: pointer;
+  color: rgb(50, 50, 50);
+}
+
+button.btn-standard.icon-text-only.hover-green:hover {
+  background-color: transparent;
+  border: none;
+  color: rgb(33, 115, 70);
+}
+
 i.button-icon {
   margin-right: 5px;
 }

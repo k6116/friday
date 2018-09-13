@@ -48,6 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   displayProgressGauge: boolean;
   subscription1: Subscription;
   ngUnsubscribe = new Subject();
+  chartsRendered: boolean;
   chartPie: any;
   chartDonut: any;
   chartStackedColumn: any;
@@ -168,6 +169,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     } else {
       this.displayProgressGauge = false;
     }
+    this.chartsRendered = true;
   }
 
   displayMessages() {
@@ -228,8 +230,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // make an api call to get the JobTitleID and JobSubTitleID
     const res = await this.checkProfileIsUpdated()
       .catch(err => {
-        console.log('error getting data from check profile updated');
-        console.log(err);
+        // console.log('error getting data from check profile updated');
+        // console.log(err);
       });
 
     // set the job title
@@ -276,10 +278,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   resizeChart() {
 
     // reflow the charts to its container during window resize
-    this.chartPie.reflow();
-    this.chartDonut.reflow();
-    this.chartStackedColumn.reflow();
-    this.chartGauge.reflow();
+    if (this.chartPie) {
+      this.chartPie.reflow();
+    }
+    if (this.chartDonut) {
+      this.chartDonut.reflow();
+    }
+    if (this.chartStackedColumn) {
+      this.chartStackedColumn.reflow();
+    }
+    if (this.chartGauge) {
+      this.chartGauge.reflow();
+    }
 
   }
 

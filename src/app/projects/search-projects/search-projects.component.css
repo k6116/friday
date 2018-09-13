@@ -84,6 +84,8 @@ button.btn-standard.export-button {
   margin-right: 30px;
   position: relative;
   top: 1px;
+  width: 125px;
+  text-align: left;
 }
 
 span.downloading-animated-icon {
@@ -96,7 +98,9 @@ div.projects-display-count {
   display: inline-block;
   font-weight: 500;
   position: relative;
-  top: 3px;
+  top: 4px;
+  width: 200px;
+  text-align: right;
 }
 
 
