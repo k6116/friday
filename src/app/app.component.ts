@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -21,7 +21,7 @@ declare var $: any;
     '(document:keydown)': 'onDocumentKeyDown()'
   }
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   timer: any;
   timerInterval: number;  // interval in minutes
@@ -47,6 +47,9 @@ export class AppComponent implements OnInit {
     // to reset the token expiration
     this.timerInterval = 1;
 
+    // start subscription to listen for routing events and push history in an array
+    // accessible by: this.routingHistoryService.history
+    // can be used when conditional logic depends on previous route
     this.routingHistoryService.loadRouting();
 
   }
@@ -78,13 +81,17 @@ export class AppComponent implements OnInit {
         this.resetTimer();
     });
 
-    this.location.subscribe(
+    // subscribe to browser location changes (back or forward button clicks)
+    this.subscription2 = <Subscription>this.location.subscribe(
       location => {
-        console.log('broswer navigation button pressed');
-        console.log(location);
         this.cacheService.browserLocation.emit(location);
     });
 
+  }
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   onDocumentEvent() {

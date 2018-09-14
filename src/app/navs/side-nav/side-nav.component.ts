@@ -240,24 +240,20 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
     // hide menu items that the user does not have permissions to access
     this.hideUnauthorizedMenuItems();
 
-    // set up subscription to receive path from the permissions guard, to highlight the menu item after passing the guard
+    // set up subscription to receive path from the fte entry guard (or other guards), to highlight the menu item after passing the guard
     this.subscription1 = this.cacheService.navigatedPath.subscribe(navigatedPath => {
-      // highlight the menu item in this.menuStructure that matches the path
+      console.log('received subscription in the sidenav component for navigated path:');
+      console.log(navigatedPath);
+      // show the correct menu item based on the location/path (colored border, white text, expanded parent if any)
       // NOTE: need to trim off the leading /
-      this.highlightActiveMenu(navigatedPath.slice(1));
+      this.redirectToMenu(navigatedPath.slice(1));
     });
 
     // set up subscription to receive path from the app component, detecting browser back or foward button clicks
     this.subscription2 = this.cacheService.browserLocation.subscribe(location => {
-      // get the path (need to trim off the leading /)
-      const currentPath = location.url.slice(1);
-      // unhighlight all the main menu items
-      this.clearAllParentMenuHighlights();
-      // highlight the active menu and unhighlight all the non-active menus
-      this.highlightActiveMenu(currentPath);
-      // expand and higlight the parent menu if this path is associated with a sub menu item
-      this.highlightAndExpandParentMenu(currentPath);
-
+      // show the correct menu item based on the location/path (colored border, white text, expanded parent if any)
+      // NOTE: need to trim off the leading /
+      this.redirectToMenu(location.url.slice(1));
     });
 
 
@@ -287,6 +283,16 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
+
+  // active, highlight, expand the correct menu item on browser navigation, guard re-directs, etc.
+  redirectToMenu(path) {
+    // unhighlight all the main menu items
+    this.clearAllParentMenuHighlights();
+    // highlight the active menu and unhighlight all the non-active menus
+    this.highlightActiveMenu(path);
+    // expand and higlight the parent menu if this path is associated with a sub menu item
+    this.highlightAndExpandParentMenu(path);
+  }
 
   hideUnauthorizedMenuItems() {
 
@@ -355,19 +361,31 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
       // otherwise, it is a parent menu or sub menu item that has a route
       } else {
 
-        // unhighlight all the main menu items
-        this.clearAllParentMenuHighlights();
-
         // navigate to the selected/clicked route
         this.router.navigate([`/${menuItem.path}`]);
 
-        // highlight the active menu and unhighlight all the non-active menus
-        this.highlightActiveMenu(menuItem.path);
+        // only highlight the menu item if the navigation was successfull (path matches)
+        // deals with cases where guard prevents navigation to the route
+        setTimeout(() => {
+          // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
+          const path = this.router.url.slice(1, this.router.url.length);
+          console.log('navigated to new path:');
+          console.log(path);
+          if (path === menuItem.path) {
+            this.redirectToMenu(path);
+          }
+        }, 0);
 
-        // if it is a sub menu item, highlight the parent menu item (set color to white)
-        if (isSubMenuItem) {
-          this.highlightAndExpandParentMenu(menuItem.path);
-        }
+        // // unhighlight all the main menu items
+        // this.clearAllParentMenuHighlights();
+
+        // // highlight the active menu and unhighlight all the non-active menus
+        // this.highlightActiveMenu(menuItem.path);
+
+        // // if it is a sub menu item, highlight the parent menu item (set color to white)
+        // if (isSubMenuItem) {
+        //   this.highlightAndExpandParentMenu(menuItem.path);
+        // }
 
       }
 

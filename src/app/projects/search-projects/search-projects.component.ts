@@ -232,6 +232,8 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
     // get the full routing history, as an array of strings with the navigation paths
     const routingHistory = this.routingHistoryService.history;
+    // console.log('routing history:');
+    // console.log(routingHistory);
     // only consider if there are more than two in the history
     if (routingHistory.length >= 2) {
       const previousRoute = routingHistory[routingHistory.length - 2];

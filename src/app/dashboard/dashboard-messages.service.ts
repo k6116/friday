@@ -85,7 +85,7 @@ export class DashboardMessagesService {
       const initial = this.authService.loggedInUser.fullName[0].toUpperCase();
       return {
         id: 'updateProfileMessage',
-        iconFontClass: 'nc-badge',
+        iconFontClass: 'nc-badge-1',
         iconType: 'warning',
         messageText: `Please update your profile with your job title and subtitle -
         click the ${initial} icon in the upper right hand corner then the profile button.
