@@ -7,44 +7,45 @@ function indexProjects(req, res) {
 
     const sql = `
      SELECT 
-        p.ProjectID, 
-        p.ProjectName, 
-        p.Description, 
-        e.FullName, 
-        p.MU,
-        p.IBO,
-        p.DepartmentID,
-        p.GroupID,
-        p.PriorityID,
-        p.ProjectNumber,
-        p.PlanOfRecordFlag,        
-        p.ProjectTypeID,    
-        p.CreationDate,      
+        p.ProjectID,
+        p.ProjectName,
+        p.ProjectTypeID,
+        t.ProjectTypeName,
+        p.Description,
         p.Notes,
         p.Active,
+        p.PriorityID,
         py.PriorityName,
         ps.ProjectStatusName,
-        p.NPIHWProjectManager,
+        p.GroupID,
         g.GroupName,
         ey.EntityName,
         eo.EntityOwnerName,
+        p.DepartmentID,
+        p.MU,
+        p.IBO,
+        p.ProjectOrgManager,
+        p.ProjectNumber,
+        p.PlanOfRecordFlag,
+        p.OracleItemNumber,
+        p.NPIHWProjectManager,
         e.FirstName,
         e.LastName,
-        e.FullName,
-        e2.EmailAddress, 
-        p.CreationDate, 
-        t.ProjectTypeName, 
+        e2.EmailAddress,
         p.CreatedBy,
-        p.ProjectOrgManager
+        e.FullName,
+        p.CreationDate,
+        e2.FullName as 'LastUpdatedBy',
+        p.LastUpdateDate
     FROM  
-        projects.Projects p 
+        projects.Projects p
+        INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
+        INNER JOIN accesscontrol.Employees e2 ON p.LastUpdatedBy = e2.EmployeeID
         LEFT JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
         LEFT JOIN projects.Priority py ON p.PriorityID = py.PriorityID
-        INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
         LEFT JOIN projects."Group" g ON p.GroupID = g.GroupID
         LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
         LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
-        LEFT JOIN accesscontrol.Employees e2 ON P.CreatedBy = e2.EmployeeID
         LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
     ORDER BY 
         p.ProjectName`
@@ -87,7 +88,7 @@ function getProject(req, res) {
     FROM  
       projects.Projects p 
       INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
-      INNER JOIN accesscontrol.Employees e2 ON P.CreatedBy = e2.EmployeeID
+      INNER JOIN accesscontrol.Employees e2 ON p.LastUpdatedBy = e2.EmployeeID
       LEFT JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
       LEFT JOIN projects.Priority py ON p.PriorityID = py.PriorityID
       LEFT JOIN projects."Group" g ON p.GroupID = g.GroupID

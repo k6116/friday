@@ -9,6 +9,23 @@ div.login-background-image {
   width: 100%;
 }
 
+div.login-background-image.small {
+  filter: blur(20px);
+}
+
+div.login-background-image.large {
+  animation: sharpen 0.5s both;
+}
+
+@keyframes sharpen {
+  from {
+    filter: blur(20px);
+  }
+  to {
+    filter: blur(0px);
+  }
+}
+
 div.login-background-image-details {
   position: absolute;
   right: 50px;

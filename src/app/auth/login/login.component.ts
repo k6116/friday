@@ -50,13 +50,20 @@ export class LoginComponent implements OnInit {
   backgroundImages: any[] = [];
   backgroundImage: any;
 
+
+  isImageLoaded: boolean;
+  useCachedImage: boolean;
+
+  // selected image paths
+  imagePath: string;
+  imagePathThumbnail: string;
+
   // set to true if this is the test instance (port 440)
   isTestInstance: boolean;
 
   constructor(
     private router: Router,
-    // private apiDataService: ApiDataService,
-    private cacheService: CacheService,
+    public cacheService: CacheService,
     private apiDataOrgService: ApiDataOrgService,
     private apiDataAuthService: ApiDataAuthService,
     private authService: AuthService,
@@ -71,15 +78,15 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
+    // check the cookies for the jrt_username cookie, if it is there set the username
+    // this means that the user had previously logged in with 'Remember Me' selected
+    this.checkRememberMeCookie();
+
     // check the port to see if this is the test instance (dev will return '3000', prod will return '')
     // if this is test, use the 'blue' icon version (_test) and text instead of yellow
     if (location.port === '440') {
       this.isTestInstance = true;
     }
-
-    // check the cookies for the jrt_username cookie, if it is there set the username
-    // this means that the user had previously logged in with 'Remember Me' selected
-    this.checkRememberMeCookie();
 
     // check for the autoLogout object; if it exists display the message
     if (this.cacheService.autoLogout$) {
@@ -87,14 +94,25 @@ export class LoginComponent implements OnInit {
       this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
     }
 
-    // get background images from the server to display
-    this.getBackgroundImages();
+    // if the full size background image is cached (e.g. on logout), use that url
+    if (this.cacheService.backgroundImage) {
+      this.backgroundImage = this.cacheService.backgroundImage;
+      this.imagePath = this.backgroundImage.path + this.backgroundImage.fileName;
+      setTimeout(() => {
+        $('div.login-background-image').css('background-image', `url(${this.imagePath})`);
+      }, 0);
+      this.useCachedImage = true;
+    // otherwise use the blur up approach and get a new background image
+    } else {
+      this.getBackgroundImages();
+    }
 
   }
 
 
   getBackgroundImages() {
 
+    // fetch the list of background images (metadata) from the index.json file
     this.apiDataAuthService.getLoginBackgroundImages()
       .subscribe(
         res => {
@@ -103,21 +121,19 @@ export class LoginComponent implements OnInit {
             if (res.files.indexOf(image.fileName) !== -1) {
               this.backgroundImages.push({
                 fileName: image.fileName,
-                path: `/assets/login_images/${image.fileName}`,
+                fileNameNoExt: image.fileName.replace('.jpg', ''),
+                path: `/assets/login_images/`,
                 title: image.caption,
                 subTitle: `Key Sightings, ${image.winnerDate}`
               });
             }
           });
 
-          // console.log(`number of background images: ${this.backgroundImages.length}`);
-
-          // set random background image
+          // set a random background image from the list
           this.setBackgroundImage();
         },
         err => {
           // console.log(err);
-          this.backgroundImage = this.cacheService.backgroundImage;
         }
       );
 
@@ -125,12 +141,39 @@ export class LoginComponent implements OnInit {
 
   // set random background image
   setBackgroundImage() {
+
+    // get a random number between zero and the number of background images
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
-    // this.backgroundImage = this.backgroundImages[imageIndex];
+
+    // get the background image object at that random index
     this.backgroundImage = this.backgroundImages[imageIndex];
-    this.showLoginPage = true;
-    // save the last shown image in the cache service
+
+    // set the image paths for both the full size image and thumbnail image
+    this.imagePath = this.backgroundImage.path + this.backgroundImage.fileName;
+    this.imagePathThumbnail = this.backgroundImage.path + this.backgroundImage.fileNameNoExt + '_thumbnail.jpg';
+
+    // initially, set the background image to the thumbnail version, while we wait for the full size image to load
+    $('div.login-background-image').css('background-image', `url(${this.imagePathThumbnail})`);
+
+    // set the full-size image path in the hidden img element, to start the download
+    $('img.hidden-background-image').attr('src', this.imagePath);
+
+    // save the last shown image in the cache, to be used on logout so that the same image will be used and loaded immediately
+    // should be in the browser cache as 304 not modified
     this.cacheService.backgroundImage = this.backgroundImage;
+
+  }
+
+
+  // triggered when the full size image has finished downloading using (load) event handler
+  onImageLoaded() {
+
+    // swith the background image from the thumbnail to the full-size version
+    $('div.login-background-image').css('background-image', `url(${this.imagePath})`);
+
+    // set image is loade to true, to toggle the class from small to large and start the sharpen transition effect
+    this.isImageLoaded = true;
+
   }
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)

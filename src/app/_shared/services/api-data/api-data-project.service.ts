@@ -178,6 +178,14 @@ export class ApiDataProjectService {
       .map((response: Response) => response.json());
   }
 
+  getExcelExport(payload: any) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({ headers: headers, responseType: ResponseContentType.Blob });
+    return this.http.post('/api/export/generateExcelFile', JSON.stringify(payload), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.blob());
+  }
+
   getProjectsBrowseData(): Observable<any> {
 
     const headers = new Headers({'X-Token': this.cacheService.token.signedToken});

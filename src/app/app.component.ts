@@ -8,7 +8,7 @@ import { ClickTrackingService } from './_shared/services/click-tracking.service'
 import { WebsocketService } from './_shared/services/websocket.service';
 import { RoutingHistoryService } from './_shared/services/routing-history.service';
 
-// import * as bowser from 'bowser';
+
 declare var $: any;
 
 @Component({
@@ -28,19 +28,14 @@ export class AppComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  // NOTE: this is the 'new' way to do it but not working
-  // @HostListener('click') onDocumentClicked() {
-  //   // console.log('document was clicked');
-  // }
-
   constructor(
     private router: Router,
-    private location: Location,
     private cacheService: CacheService,
     private authService: AuthService,
     private clickTrackingService: ClickTrackingService,
     private websocketService: WebsocketService,
-    private routingHistoryService: RoutingHistoryService
+    private routingHistoryService: RoutingHistoryService,
+    private location: Location
   ) {
 
     // set the timer interval in minutes, used to check for user activity like a click and keypress

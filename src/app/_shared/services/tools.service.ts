@@ -54,10 +54,11 @@ export class ToolsService {
     if (camelCaseString.length <= 3) {
       return camelCaseString;
     } else {
-      // add a space in front of the uppercase characters
-      const result = camelCaseString.replace(/([A-Z])/g, ' $1');
-      // capitalize the first character
-      return result.charAt(0).toUpperCase() + result.slice(1);
+      return camelCaseString.replace(/([A-Z]+)/g, ' $1').replace(/([A-Z][a-z])/g, ' $1').trim();
+      // // add a space in front of the uppercase characters
+      // const result = camelCaseString.replace(/([A-Z])/g, ' $1');
+      // // capitalize the first character
+      // return result.charAt(0).toUpperCase() + result.slice(1);
     }
 
   }
