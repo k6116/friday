@@ -11,6 +11,7 @@ const fs = require('fs');
 const path = require('path');
 const Treeize = require('treeize');
 const token = require('../token/token');
+const logger = require('../logs/logs');
 
 const tokenSecret = process.env.JWT_SECRET;  // get the secret code word for enconding and decoding the token with jwt
 const expirationTime = 60 * 30  // set the token expiration time to 30 minutes - units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
@@ -63,8 +64,8 @@ function authenticate(req, res) {
     // if a user object is returned, this indicates authentication success
     if (ldapUser) {
 
-      console.log('ldap user:');
-      console.log(ldapUser);
+      // console.log('ldap user:');
+      // console.log(ldapUser);
 
       // double check by making sure the user name matches
       if (ldapUser.cn.toLowerCase() === user.userName) {
@@ -86,11 +87,11 @@ function authenticate(req, res) {
         let fullName = firstName + ' ' + lastName;
 
         // TEMP CODE: impersonate manager for testing
-        // userName = 'ethanh';
-        // emailAddress = 'ethan_hunt@keysight.com';
-        // fullName = 'Ethan Hunt';
-        // firstName = 'Ethan';
-        // lastName = 'Hunt'
+        // userName = 'robinf';
+        // emailAddress = 'robin_findlay@keysight.com';
+        // fullName = 'Robin Findlay';
+        // firstName = 'Robin';
+        // lastName = 'Findlay'
 
         // execute the stored procedure to get the user data, role, and permissions
         // it will also insert a new record into the employees table if this is a new user
@@ -114,6 +115,9 @@ function authenticate(req, res) {
 
             // decode the token to get the issued at and expiring at timestamps
             const decodedToken = token.decode(newToken, res);
+
+            // write entry to log file: user has signed in successfully
+            logger.writeLog('info', `user ${fullName} has logged in`, {color: 'blue'});
 
             // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
             res.json({
@@ -382,6 +386,9 @@ function logout(req, res) {
   _.remove(loggedInUsers, user => {
     return user.userName === userName;
   });
+
+  // write entry to log file: user has logged out manually
+  logger.writeLog('info', `user ${userName} has logged out`, {color: 'blue'});
 
   res.json(`user ${userName} has been removed from the array of logged in users`);
 

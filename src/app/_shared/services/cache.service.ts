@@ -69,6 +69,12 @@ export class CacheService {
   projectSelectedFilter: any;
   projectSelectedValue: string;
 
+  // used to trigger the display of the profile modal (subscription in top nav)
+  showProfileModal = new EventEmitter<boolean>();
+
+  // used to trigger the downloading icon (animated svg)
+  showDownloadingIcon = new EventEmitter<boolean>();
+
   constructor() { }
 
   // TO-DO BRYAN: create a toast service and move

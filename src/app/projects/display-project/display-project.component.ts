@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
@@ -36,6 +36,12 @@ export class DisplayProjectComponent implements OnInit {
   showLabels: boolean;
   projectTypesToDisplaySchedule: string[];
   displayScheduleChart: boolean;
+  chart: any;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.resizeChart();
+  }
 
   constructor(
     private router: Router,
@@ -426,7 +432,19 @@ export class DisplayProjectComponent implements OnInit {
     };
 
     // render the chart
-    Highcharts.chart('scheduleChart', this.chartOptions);
+    this.chart = Highcharts.chart('scheduleChart', this.chartOptions);
+
+    // reflow the chart to its container
+    // without this, it won't line up
+    this.chart.reflow();
+
+  }
+
+  resizeChart() {
+
+    // reflow the chart to its container during window resize
+    // without this, it will not have smooth resizing like the other elements
+    this.chart.reflow();
 
   }
 

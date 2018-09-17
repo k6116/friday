@@ -2,7 +2,7 @@
 
 function listen(server) {
 
-  var io = require('socket.io')(server);
+  const io = require('socket.io')(server);
 
   io.on('connection', socket => {
     console.log('a user connected');
@@ -24,6 +24,8 @@ function listen(server) {
   });
 
 }
+
+
 
 module.exports = {
   listen: listen

@@ -16,5 +16,6 @@ module.exports = {
   dashboard: require('./dashboardController'),
   schedules: require('./schedulesController'),
   parts: require('./partController'),
-  analytics: require('./analyticsController')
+  analytics: require('./analyticsController'),
+  export: require('./exportController')
 }

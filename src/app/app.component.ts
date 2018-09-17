@@ -1,4 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { Location, PlatformLocation } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { CacheService } from './_shared/services/cache.service';
@@ -25,10 +26,17 @@ export class AppComponent implements OnInit {
   timer: any;
   timerInterval: number;  // interval in minutes
   subscription1: Subscription;
+  subscription2: Subscription;
 
   // NOTE: this is the 'new' way to do it but not working
   // @HostListener('click') onDocumentClicked() {
   //   // console.log('document was clicked');
+  // }
+
+  // @HostListener('window:popstate', ['$event'])
+  // onPopState(event) {
+  //   console.log('browser button pressed');
+  //   console.log(event);
   // }
 
   constructor(
@@ -37,7 +45,8 @@ export class AppComponent implements OnInit {
     private authService: AuthService,
     private clickTrackingService: ClickTrackingService,
     private websocketService: WebsocketService,
-    private routingHistoryService: RoutingHistoryService
+    private routingHistoryService: RoutingHistoryService,
+    private location: Location
   ) {
 
     // set the timer interval in minutes, used to check for user activity like a click and keypress
@@ -74,6 +83,10 @@ export class AppComponent implements OnInit {
         // console.log('subscription to resetTimer receivevd in the app component');
         this.resetTimer();
     });
+
+    // this.location.subscribe(x => {
+    //   console.log(x);
+    // });
 
   }
 
