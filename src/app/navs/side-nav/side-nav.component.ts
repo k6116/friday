@@ -224,6 +224,24 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
 
+
+    // PSEUDO-CODE
+    //
+    // * highlighted menu item: 5px colored left border and white text
+    // * highlighted parent menu item: white text
+    //
+    // 1. on page refresh get the current path from the router
+    //    highlight the menu item that matches, expand and highlight the parent menu item if it is a submenu item
+    //    note the expanding must be done after view init and with settimeout of 0 to work without errors
+    //
+    // 2. on menu item click get the menu item object from the click event
+    //    if there is no path/route, xpand or contract the submenu items container
+    //    if there is a route, highlight the menu item, expand and highlight the parent menu item if it is a submenu item
+    //
+    // 3. on subscription to navigatedPath (from guards) or browserLocation (from app component checking for back or forward button presses)
+    //    highlight the menu item that matches, expand and highlight the parent menu item if it is a submenu item
+    //    even if a guarded menu item (route) is clicked and passes the guard, it will not highlight it, so need the subscription
+
     // check the port to see if this is the test instance (dev will return '3000', prod will return '')
     // if this is test, use the 'blue' icon version (_test) and text instead of yellow
     if (location.port === '440') {
@@ -246,14 +264,14 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log(navigatedPath);
       // show the correct menu item based on the location/path (colored border, white text, expanded parent if any)
       // NOTE: need to trim off the leading /
-      this.redirectToMenu(navigatedPath.slice(1));
+      this.activateMenuItem(navigatedPath.slice(1));
     });
 
     // set up subscription to receive path from the app component, detecting browser back or foward button clicks
     this.subscription2 = this.cacheService.browserLocation.subscribe(location => {
       // show the correct menu item based on the location/path (colored border, white text, expanded parent if any)
       // NOTE: need to trim off the leading /
-      this.redirectToMenu(location.url.slice(1));
+      this.activateMenuItem(location.url.slice(1));
     });
 
 
@@ -284,15 +302,17 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  // active, highlight, expand the correct menu item on browser navigation, guard re-directs, etc.
-  redirectToMenu(path) {
-    // unhighlight all the main menu items
+  // activate clicked or re-directed menu item
+  // set 5px colored left border, text color to white, expand the parent menu item if applicable
+  activateMenuItem(path) {
+    // unhighlight all the main menu items - set color to dark grey
     this.clearAllParentMenuHighlights();
-    // highlight the active menu and unhighlight all the non-active menus
+    // highlight the active menu and unhighlight all the non-active menus (5px colored border, white text)
     this.highlightActiveMenu(path);
-    // expand and higlight the parent menu if this path is associated with a sub menu item
+    // expand and higlight the parent menu if this path is associated with a sub menu item (white text)
     this.highlightAndExpandParentMenu(path);
   }
+
 
   hideUnauthorizedMenuItems() {
 
@@ -371,21 +391,12 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
           const path = this.router.url.slice(1, this.router.url.length);
           console.log('navigated to new path:');
           console.log(path);
+          // if the new path matches where we attempted to navigate to
           if (path === menuItem.path) {
-            this.redirectToMenu(path);
+            // proceed to activate the menu item (highlight etc.)
+            this.activateMenuItem(path);
           }
         }, 0);
-
-        // // unhighlight all the main menu items
-        // this.clearAllParentMenuHighlights();
-
-        // // highlight the active menu and unhighlight all the non-active menus
-        // this.highlightActiveMenu(menuItem.path);
-
-        // // if it is a sub menu item, highlight the parent menu item (set color to white)
-        // if (isSubMenuItem) {
-        //   this.highlightAndExpandParentMenu(menuItem.path);
-        // }
 
       }
 
@@ -418,7 +429,8 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
           // set the active property to either true or false (left border color)
           // don't need to check for path property since all sub menu items should have a route
           subMenuItem.active = subMenuItem.path === path ? true : false;
-          // check alternative paths that may also match
+          // check any alternative paths that may also match, as defined in this.menuStructure
+          // for instance: subPaths: ['main/projects/display/:id'],
           if (!subMenuItem.active && subMenuItem.hasOwnProperty('subPaths')) {
             subMenuItem.active = this.checkAlternativePaths(subMenuItem.subPaths, path);
           }
@@ -439,7 +451,13 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
       if (menuItem.hasOwnProperty('subItems')) {
         menuItem.subItems.forEach(subMenuItem => {
           // if the path matches, highlight and expand the main/parent menu item
+          let highlightAndExpand: boolean;
           if (subMenuItem.path === path) {
+            highlightAndExpand = true;
+          } else if (subMenuItem.hasOwnProperty('subPaths')) {
+            highlightAndExpand = this.checkAlternativePaths(subMenuItem.subPaths, path);
+          }
+          if (highlightAndExpand) {
             const parentMenuItem = this.menuStructure[parentMenuIndex];
             parentMenuItem.highlighted = true;
             parentMenuItem.expanded = true;

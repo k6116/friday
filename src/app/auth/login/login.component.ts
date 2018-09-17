@@ -40,20 +40,15 @@ export class LoginComponent implements OnInit {
   iconClass: string;
   iconColor: string;
 
-  // toggle slider state
+  // toggle checkbox state
   rememberMe: boolean;
 
-  // spinner display
-  showProgressSpinner: boolean;
+  // toggle animated icon on login click
   showPendingLoginAnimation: boolean;
-
-  // subscriptions
-  subscription1: Subscription;
 
   // array of background images and randomly selected background image
   backgroundImages: any[] = [];
   backgroundImage: any;
-  testImagePath: string;
 
   // set to true if this is the test instance (port 440)
   isTestInstance: boolean;
@@ -146,7 +141,7 @@ export class LoginComponent implements OnInit {
       this.rememberMe = true;
     } else {
     }
-    this.setInputFocus(userName ? true : false);
+    this.setInputFocus(!!userName);
   }
 
   // set focus on either the username or password input depending on whether username is populated from the cookie
@@ -173,6 +168,7 @@ export class LoginComponent implements OnInit {
     // check for form entry errors (missing user name or password)
     if (this.hasFormEntryErrors()) {
       this.displayFormEntryErrors();
+      // stop here
       return;
     }
 
@@ -189,33 +185,21 @@ export class LoginComponent implements OnInit {
     this.showPendingLoginAnimation = true;
 
     // call the api data service to authenticate the user credentials
-    // console.log('before async authenticate');
     this.apiDataAuthService.authenticate(user)
       .subscribe(
         res => {
 
-          // console.log('within authenticate (response');
-
           // log the time it took to authenticate
           this.logAuthPerformance(t0);
-
-          // TEMP CODE: to log the response
-          // console.log('authentication was successfull:');
-          // console.log(res);
 
           // set or clear the username cookie depending on whether remember me is selected
           this.setCookie();
 
           // store the logged in user in the auth service
           this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
-          // this.authService.loggedInUser = res.jarvisUser;
-          // console.log('logged in user:');
-          // console.log(this.authService.loggedInUser);
 
           // store the jwt token in the cache service
           this.cacheService.token = res.token;
-          // console.log('token saved in cache service (this.token):');
-          // console.log(this.cacheService.token);
 
           // store the jwt token in local storage
           localStorage.setItem('jarvisToken', res.token.signedToken);
@@ -243,7 +227,6 @@ export class LoginComponent implements OnInit {
           } else {
             this.router.navigateByUrl('/main/dashboard');
           }
-
 
           // send the logged in user object to all other clients via websocket
           this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
@@ -276,7 +259,6 @@ export class LoginComponent implements OnInit {
       this.cookiesService.deleteCookie('jrt_username');
     }
   }
-
 
   // reset and hide the error message
   resetErrorMessage() {
@@ -356,10 +338,8 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  // when the slide toggle is changed, update the rememberMe property (boolean)
+  // when the checkbox is changed, update the rememberMe property (boolean)
   onRememberMeChange(event) {
-    // console.log('on remember me change event triggered');
-    // console.log(event.target.checked);
     this.rememberMe = event.target.checked;
   }
 

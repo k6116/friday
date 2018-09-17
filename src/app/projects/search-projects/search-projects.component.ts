@@ -160,8 +160,8 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
     }
 
-    // console.log('projects browse data:');
-    // console.log(this.projectsBrowseData);
+    console.log('projects browse data:');
+    console.log(this.projectsBrowseData);
 
     // store the projects in the component
     this.projects = this.projectsBrowseData[0];
@@ -232,15 +232,17 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
     // get the full routing history, as an array of strings with the navigation paths
     const routingHistory = this.routingHistoryService.history;
-    // console.log('routing history:');
-    // console.log(routingHistory);
+    console.log('routing history:');
+    console.log(routingHistory);
     // only consider if there are more than two in the history
     if (routingHistory.length >= 2) {
       const previousRoute = routingHistory[routingHistory.length - 2];
       // if the previous route matches the path 'main/projects/display/*'
       // and there is a stored search term
       const pathRegex = new RegExp('main\/projects\/display\/.+', 'g');
-      if (pathRegex.test(previousRoute)) {
+      if (pathRegex.test(previousRoute) && this.cacheService.projectSelectedFilter) {
+
+        console.log('re-populating search parameters');
 
         // set the filter string (will populate the input via two-way binding)
         this.filterString = this.cacheService.projectSearchTerm;
