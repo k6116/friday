@@ -5,7 +5,7 @@ import { UnitTestComponent } from './unit-test.component';
 
 declare var $: any;
 
-fdescribe('UnitTestComponent', () => {
+describe('UnitTestComponent', () => {
   let component: UnitTestComponent;
   let fixture: ComponentFixture<UnitTestComponent>;
   let debugElement: DebugElement;
@@ -43,7 +43,6 @@ fdescribe('UnitTestComponent', () => {
   it('should increment/decrement value', () => {
     component.increment();
     expect(component.value).toEqual(1);
-
     component.decrement();
     expect(component.value).toEqual(0);
   });
@@ -52,7 +51,6 @@ fdescribe('UnitTestComponent', () => {
     debugElement
       .query(By.css('button.increment'))
       .triggerEventHandler('click', null);
-
     fixture.detectChanges();
     const value = debugElement.query(By.css('p.value')).nativeElement.innerText;
     expect(value).toEqual('1');
@@ -62,10 +60,8 @@ fdescribe('UnitTestComponent', () => {
     debugElement
       .query(By.css('button.decrement'))
       .triggerEventHandler('click', null);
-
     fixture.detectChanges();
     const message = debugElement.query(By.css('p.message')).nativeElement.innerText;
-
     expect(component.value).toEqual(0);
     expect(message).toContain('Minimum');
   });
@@ -75,10 +71,8 @@ fdescribe('UnitTestComponent', () => {
     debugElement
       .query(By.css('button.increment'))
       .triggerEventHandler('click', null);
-
     fixture.detectChanges();
     const message = debugElement.query(By.css('p.message')).nativeElement.innerText;
-
     expect(component.value).toEqual(15);
     expect(message).toContain('Maximum');
   });

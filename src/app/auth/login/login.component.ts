@@ -232,6 +232,8 @@ export class LoginComponent implements OnInit {
       .subscribe(
         res => {
 
+          console.log(res);
+
           // log the time it took to authenticate
           this.logAuthPerformance(t0);
 
@@ -258,7 +260,7 @@ export class LoginComponent implements OnInit {
           this.cacheService.autoLogout$ = undefined;
 
           // get and store nested org data for this user, in anticipation of use and for performance
-           this.getNestedOrgData(res.jarvisUser.email);
+          this.getNestedOrgData(res.jarvisUser.email);
           // this.getNestedOrgData('ethan_hunt@keysight.com');
 
           // hide the animated svg
@@ -268,11 +270,11 @@ export class LoginComponent implements OnInit {
           if (this.cacheService.appLoadPath) {
             this.router.navigateByUrl(this.cacheService.appLoadPath);
           } else {
-            this.router.navigateByUrl('/main/dashboard');
+            // this.router.navigateByUrl('/main/dashboard');
           }
 
           // send the logged in user object to all other clients via websocket
-          this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
+          // this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
 
         },
         err => {
@@ -385,6 +387,7 @@ export class LoginComponent implements OnInit {
   onRememberMeChange(event) {
     this.rememberMe = event.target.checked;
   }
+
 
 
 }
