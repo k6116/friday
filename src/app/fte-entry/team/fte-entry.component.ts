@@ -244,7 +244,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // Promise.all allows us to run two functions asynchronously
     Promise.all([
       this.getPlanList(this.authService.loggedInUser.id),
-      this.getTeam('ethan_hunt@keysight.com')])
+      this.getTeam('barry_demartini@keysight.com')])
     .then(async res => {
         if (this.defaultPlan === undefined) {
           this.onCreateNewPlanClick(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1');
@@ -449,7 +449,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.FTEFormGroupLive.forEach( project => {
       project.forEach( (emp, i) => {
         if (i === index) {
-          total += +emp.value.fte;
+          total += +emp.fte;
         }
       });
     });
@@ -484,7 +484,6 @@ console.log('awef', this.FTEFormGroupLive)
         totals[i] += +month.fte;
       });
     });
-
 
     // replace the zeros with nulls to show blanks
     totals = totals.map(total => {
@@ -636,7 +635,6 @@ console.log('awef', this.FTEFormGroupLive)
 
     // loop through each project to get into the FTE entry elements
     this.teamFTEs.forEach( (proj: TeamFTEs) => {
-
       this.addProjectToFormArray(FTEFormArray, proj, false);
     });
 

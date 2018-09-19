@@ -103,6 +103,15 @@ export class ApiDataFteService {
       .map((response: Response) => response.json());
   }
 
+  // check it job title and subtitle has been set
+  checkJobTitleUpdated() {
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get('api/dashboard/checkJobTitle', options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   // check it job title and subtitle has been set (synchronous version)
   async checkJobTitleUpdatedSync(token: string) {
     const headers = new Headers({'X-Token': token});

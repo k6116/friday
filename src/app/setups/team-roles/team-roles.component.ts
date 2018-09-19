@@ -60,29 +60,29 @@ export class TeamRolesComponent implements OnInit {
     const employeesJobTitles = await this.getEmployeesJobTitles(this.teamEditableMembers);
     this.employeesJobTitlesNested = employeesJobTitles.nested;
     this.employeesJobTitlesFlat = employeesJobTitles.flat;
-console.log('WTF')
-    // add jobTitles to the allEmployees object 
+
+    // add jobTitles to the allEmployees object
     for (let i = 0; i < this.allEmployees.length; i++) {
       for (let j = 0; j < this.employeesJobTitlesFlat.length; j++) {
         const fullName = this.allEmployees[i].fullName.split(' ');
         this.allEmployees[i].firstName = fullName[0];
         this.allEmployees[i].lastName = fullName[1];
+        // First if employee has job title, then add jobtitle data to allEmployees
+        // Else if employee has no job title, but exists in employees table, then just update job titles
+        // Else employee does not exists in employees table, then insert employee
         if (this.allEmployees[i].emailAddress === this.employeesJobTitlesFlat[j]['Employees: EmailAddress']) {
           this.allEmployees[i].jobTitleID = this.employeesJobTitlesFlat[j].JobTitleID;
           this.allEmployees[i].jobSubTitleID = this.employeesJobTitlesFlat[j].JobSubTitleID;
           this.allEmployees[i].newUser = false;
-          console.log('email', this.employeesJobTitlesFlat[j]['Employees: EmailAddress'])
           break;
-        } else if (j === this.employeesJobTitlesFlat.length - 1) {
+        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.allEmployees[i].employeeID === 0) {
           this.allEmployees[i].jobTitleID = null;
           this.allEmployees[i].jobSubTitleID = null;
-          console.log('email', this.employeesJobTitlesFlat[j]['Employees: EmailAddress'])
           this.allEmployees[i].newUser = true;
-        } else {
+        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.allEmployees[i].employeeID !== 0) {
           this.allEmployees[i].jobTitleID = null;
           this.allEmployees[i].jobSubTitleID = null;
           this.allEmployees[i].newUser = false;
-          console.log('email', this.employeesJobTitlesFlat[j]['Employees: EmailAddress'])
         }
       }
     }
@@ -124,7 +124,7 @@ console.log('WTF')
   onJobTitleChange(event: any) {
     // value is the index of the option list; null means no jobtitle is selected
     const eventTarget = event.target.value;
-    console.log(eventTarget);
+
     if (eventTarget !== 'null') {
       this.selectedJobTitle = this.jobTitles[eventTarget];
       this.jobSubTitles = this.selectedJobTitle.jobSubTitles;
