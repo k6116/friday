@@ -10,6 +10,7 @@ import { WebsocketService } from '../../_shared/services/websocket.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { CacheService } from '../../_shared/services/cache.service';
 import { RoutingHistoryService } from '../../_shared/services/routing-history.service';
+import { ExcelExportService } from '../../_shared/services/excel-export.service';
 
 declare var $: any;
 import * as _ from 'lodash';
@@ -43,9 +44,11 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
   dropDownData: any;
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
   popoverProjectID: number;
   fuzzySearchThreshold: number;
   timer: any;
+  showDownloadingIcon: boolean;
 
 
   constructor(
@@ -57,7 +60,8 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     private clickTrackingService: ClickTrackingService,
     private cacheService: CacheService,
     private changeDetectorRef: ChangeDetectorRef,
-    private routingHistoryService: RoutingHistoryService
+    private routingHistoryService: RoutingHistoryService,
+    private excelExportService: ExcelExportService
   ) {
 
     // set the fuzzy search threshold value
@@ -123,6 +127,12 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
       this.refreshProjectCards();
     });
 
+    // listen for websocket message for newly created projects
+    this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
+      this.showDownloadingIcon = show;
+    });
+
+
   }
 
 
@@ -131,6 +141,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     // hide the footer until the page is ready to be rendered
     this.toolsService.hideFooter();
 
+    // if there is no cached projects data, get projects from the database
     if (!this.cacheService.projectsBrowseData) {
 
       // show the spinner
@@ -153,6 +164,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
         this.cacheService.projectsBrowseData = this.projectsBrowseData;
       }
 
+    // otherwise, just use the cached projects data for better performance
     } else {
 
       // get data from the cache
@@ -165,6 +177,9 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
     // store the projects in the component
     this.projects = this.projectsBrowseData[0];
+
+    // console.log('projects data:');
+    // console.log(this.projects);
 
     // store the dropdown data
     this.dropDownData = this.projectsBrowseData.slice(1);
@@ -203,6 +218,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
 
     this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
 
     clearInterval(this.timer);
 
@@ -230,25 +246,29 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
   repopulateSearchTerm() {
 
-    // get the full routing history, as an array of strings with the navigation paths
-    const routingHistory = this.routingHistoryService.history;
-    // only consider if there are more than two in the history
-    if (routingHistory.length >= 2) {
-      const previousRoute = routingHistory[routingHistory.length - 2];
-      // if the previous route matches the path 'main/projects/display/*'
-      // and there is a stored search term
-      const pathRegex = new RegExp('main\/projects\/display\/.+', 'g');
-      if (pathRegex.test(previousRoute)) {
+    // only if there is data in the cache (could have refreshed display page then hit return to search button)
+    if (this.cacheService.projectSelectedFilter) {
+      // get the full routing history, as an array of strings with the navigation paths
+      const routingHistory = this.routingHistoryService.history;
+      // only consider if there are more than two in the history
+      if (routingHistory.length >= 2) {
+        const previousRoute = routingHistory[routingHistory.length - 2];
+        // if the previous route matches the path 'main/projects/display/*'
+        // and there is a stored search term
+        const pathRegex = new RegExp('main\/projects\/display\/.+', 'g');
+        if (pathRegex.test(previousRoute)) {
 
-        // set the filter string (will populate the input via two-way binding)
-        this.filterString = this.cacheService.projectSearchTerm;
-        this.selectedFilter = this.cacheService.projectSelectedFilter;
-        this.filterSelection = this.cacheService.projectSelectedValue;
+          // set the filter string (will populate the input via two-way binding)
+          this.filterString = this.cacheService.projectSearchTerm;
+          this.selectedFilter = this.cacheService.projectSelectedFilter;
+          this.filterSelection = this.cacheService.projectSelectedValue;
 
-        // call the filter string change method to display the correct record count
-        this.onFilterStringChange();
+          // call the filter string change method to display the correct record count
+          this.onFilterStringChange();
+        }
       }
     }
+
 
   }
 
@@ -354,13 +374,13 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     if (!foundFilter.isDropdown) {
       setTimeout(() => {
         this.filterStringVC.nativeElement.focus();
-      }, 250);
+      }, 500);
     // otherwise, set the focus on the dropdown
     } else {
       this.filterSelection = '(Select Option)';
       setTimeout(() => {
         this.filterDropDownVC.nativeElement.focus();
-      }, 250);
+      }, 500);
     }
   }
 
@@ -737,6 +757,109 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
   }
 
+
+  onExportClick() {
+
+    // show the animated downloading icon
+    this.showDownloadingIcon = true;
+
+    // hide the tooltip
+    $('button.export-button').tooltip('dispose');
+
+    // set an array of objects representing the selected columns to export
+    // NOTE: if this is null or undefined it will export all columns
+    const colsToExport = [
+      {
+        name: 'ProjectName',
+      },
+      {
+        name: 'ProjectTypeName',
+        alias: 'ProjectType'
+      },
+      {
+        name: 'Description',
+      },
+      {
+        name: 'Notes',
+      },
+      {
+        name: 'ProjectStatusName',
+        alias: 'Status'
+      },
+      {
+        name: 'PriorityName',
+        alias: 'Priority'
+      },
+      {
+        name: 'GroupName',
+        alias: 'Group'
+      },
+      {
+        name: 'EntityName',
+        alias: 'Entity'
+      },
+      {
+        name: 'EntityOwnerName',
+        alias: 'EntityOwner'
+      },
+      {
+        name: 'MU'
+      },
+      {
+        name: 'IBO'
+      },
+      {
+        name: 'OracleItemNumber'
+      },
+      {
+        name: 'FullName',
+        alias: 'CreatedBy'
+      },
+      {
+        name: 'CreationDate'
+      },
+      {
+        name: 'LastUpdatedBy'
+      },
+      {
+        name: 'LastUpdateDate'
+      }
+    ];
+
+    // get the array of projects objects that are displayed
+    const projects = this.filterPipe.transform(this.projects, this.filterString, this.selectedFilter.columnName,
+      {matchFuzzy: {on: this.selectedFilter.matchFuzzy, threshold: this.fuzzySearchThreshold},
+      matchOptimistic: this.selectedFilter.matchOptimistic, matchExact: this.selectedFilter.matchExact});
+
+    // export / download an Excel file with the projects data (client version)
+    // setTimeout(() => {
+    //   this.excelExportService.exportClient('Jarvis Projects Export', 'Projects', projects);
+    // }, 2000);
+
+    // export / download an Excel file with the projects data (server version)
+    setTimeout(() => {
+      this.excelExportService.exportServer('Jarvis Projects Export', 'Projects', projects, colsToExport);
+    }, 1000);
+
+  }
+
+
+  onExportButtonMouseEnter() {
+
+    const options = {
+      title: 'Download Excel File',
+      placement: 'left'
+    };
+
+    $('button.export-button').tooltip(options);
+    $('button.export-button').tooltip('show');
+
+  }
+
+
+  onExportButtonMouseLeave() {
+    $('button.export-button').tooltip('dispose');
+  }
 
 
 }

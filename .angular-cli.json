@@ -41,7 +41,8 @@
         "../node_modules/intro.js/minified/intro.min.js",
         "../node_modules/typeahead.js/dist/typeahead.bundle.min.js",
         "../node_modules/typeahead.js/dist/bloodhound.min.js",
-        "../node_modules/simplebar/dist/simplebar.min.js"
+        "../node_modules/simplebar/dist/simplebar.min.js",
+        "../node_modules/xlsx-populate/browser/xlsx-populate.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

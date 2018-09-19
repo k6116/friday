@@ -286,6 +286,15 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       // highlight the menu item in this.menuStructure that matches the path
       // NOTE: need to trim off the leading /
       this.highlightActiveMenu(navigatedPath.slice(1));
+      // attempt to find the parent menu item, if a sub-menu item is the active one
+      // if one is found, expand it so that the active sub-menu can be seen
+      this.getParentOfCurrentRoute(navigatedPath);
+      if (this.parentMenuToExpand) {
+        const expandedMenu = [];
+        expandedMenu.push(this.parentMenuToExpand);
+        this.setExpandedProperties(expandedMenu);
+        this.expandMenus(expandedMenu);
+      }
     });
 
 

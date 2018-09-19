@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { ToolsService } from '../_shared/services/tools.service';
 import { AuthService } from '../_shared/services/auth.service';
 import { DashboardMessage } from './dashboard-message-model';
@@ -70,7 +69,7 @@ export class DashboardMessagesService {
         iconFontClass: 'nc-privacy-policy-2',
         iconType: 'info',
         messageText: `Welcome to Jarvis Resources! You will be given a short
-          guided tutorial when you go to the FTE Entry Page.`
+          guided tutorial when you go to the FTE Entry page.`
       };
     } else {
       return undefined;
@@ -87,9 +86,10 @@ export class DashboardMessagesService {
         id: 'updateProfileMessage',
         iconFontClass: 'nc-badge',
         iconType: 'warning',
-        messageText: `Please update your profile with your job title and subtitle -
-        click the ${initial} icon in the upper right hand corner then the profile button.
-        You won't be able to enter your fte values until this has been updated.`
+        messageText: `Please update your
+        <span class="message-link" data-action="onProfileLinkClick" style="text-decoration: underline;
+        color: rgb(72, 72, 196); cursor: pointer;">
+        Profile</span> with your job title and subtitle.  You won't be able to enter your fte values until this has been updated.`
       };
     } else {
       return undefined;
@@ -134,8 +134,10 @@ export class DashboardMessagesService {
         iconFontClass: 'nc-a-check',
         iconType: 'alert',
         messageText: `You have ${requestCount} new request${check.requests.length > 1 ? 's' : ''} to join your
-          project${projects.length > 1 ? 's' : ''} ${projectsList}.
-          Go to the Projects page to accept or deny the requests.`
+          project${projects.length > 1 ? 's' : ''} ${projectsList}.  Go to the Projects >
+          <span class="message-link" data-action="onProjectPageLinkClick" style="text-decoration: underline;
+          color: rgb(72, 72, 196); cursor: pointer;">
+          My Projects</span> page to accept or deny the requests.`
       };
 
     // if there are no requests, return undefined
@@ -205,8 +207,11 @@ export class DashboardMessagesService {
         id: 'fteDeadlineMessage',
         iconFontClass: 'nc-time-countdown',
         iconType: passedDeadline ? 'warning' : 'concern',
-        messageText: `The deadline to enter your FTE entries for this quarter
-          ${passedDeadline ? ' was' : ' is'} ${deadlineString} (${timeSinceDeadline}).`
+        messageText: `The deadline to enter your
+          <span class="message-link" data-action="onFTEEntriesClick" style="text-decoration: underline;
+          color: rgb(72, 72, 196); cursor: pointer;">
+          FTE Entries</span>
+          for this quarter ${passedDeadline ? ' was' : ' is'} ${deadlineString} (${timeSinceDeadline}).`
       };
 
 

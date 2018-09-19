@@ -187,6 +187,11 @@ router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
 router.post('/updatePartScheduleXML/:revisionNotes', controllers.schedules.updatePartScheduleXML);
 router.get('/destroyScheduleSP/:scheduleID', controllers.schedules.destroyScheduleSP);
 
+// EXPORT CONTROLLER
+router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
+
+
+
 // middleware to protect permissions protected routes
 // if it is verified, it will continue (next) and allow the routes
 router.use('/', function(req, res, next) {
