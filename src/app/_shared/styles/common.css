@@ -134,7 +134,7 @@ button.btn-standard {
   display: inline-block;
   min-width: 90px;
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 500;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
@@ -143,7 +143,7 @@ button.btn-standard {
   -ms-user-select: none;
   user-select: none;
   border: 1px solid transparent;
-  padding: .375rem .75rem;
+  padding: 5px 12px;
   border-radius: .25rem;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
@@ -179,6 +179,23 @@ button.btn-standard.hover-blue:hover {
 button.btn-standard.hover-red:hover {
   background-color: rgb(255, 219, 219);
   border: 1px solid rgb(235, 199, 199);
+}
+
+button.btn-standard.icon-text-only {
+  background-color: transparent;
+  border: none;
+  color: rgb(100, 100, 100);
+}
+
+button.btn-standard.icon-text-only:hover {
+  cursor: pointer;
+  color: rgb(50, 50, 50);
+}
+
+button.btn-standard.icon-text-only.hover-green:hover {
+  background-color: transparent;
+  border: none;
+  color: rgb(33, 115, 70);
 }
 
 i.button-icon {

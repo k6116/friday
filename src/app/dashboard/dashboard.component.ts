@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs/subject';
 import { ApiDataDashboardService } from '../_shared/services/api-data/_index';
+import { ApiDataFteService } from '../_shared/services/api-data/api-data-fte.service';
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
 import { CacheService } from '../_shared/services/cache.service';
@@ -12,6 +16,8 @@ import { DashboardPieService } from './dashboard-pie.service';
 import { DashboardStackedColumnService } from './dashboard-stacked-column.service';
 
 
+
+declare var $: any;
 declare var require: any;
 import * as Highcharts from 'highcharts';
 require('highcharts/modules/data.js')(Highcharts);
@@ -29,7 +35,7 @@ import * as moment from 'moment';
   providers: [DashboardDonutService, DashboardGaugeService, DashboardMessagesService, DashboardParetoService,
     DashboardPieService, DashboardStackedColumnService]
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   messages: any[] = [];
   dashboardData: any;
@@ -41,10 +47,36 @@ export class DashboardComponent implements OnInit {
   notCompletedPrefix: string;
   displayProgressGauge: boolean;
   subscription1: Subscription;
+  ngUnsubscribe = new Subject();
+  chartsRendered: boolean;
+  chartPie: any;
+  chartDonut: any;
+  chartStackedColumn: any;
+  chartGauge: any;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.resizeChart();
+  }
+
+  // set up a document click hostlistener for the clickable message links
+  @HostListener('document:click', ['$event.target'])
+  onClick(targetElement) {
+    // set the clicked element to a jQuery object
+    const $targetElement = $(targetElement);
+    // if the element has the message-link class, take some action
+    if ($targetElement.hasClass('message-link')) {
+      // get the action/method to call from the data-action attribute
+      const action = $targetElement.data('action');
+      // call the method
+      this[action]();
+    }
+  }
 
 
   constructor(
     private apiDataDashboardService: ApiDataDashboardService,
+    private apiDataFteService: ApiDataFteService,
     private authService: AuthService,
     private toolsService: ToolsService,
     private cacheService: CacheService,
@@ -53,7 +85,8 @@ export class DashboardComponent implements OnInit {
     private dashboardMessagesService: DashboardMessagesService,
     private dashboardParetoService: DashboardParetoService,
     private dashboardPieService: DashboardPieService,
-    private dashboardStackedColumnService: DashboardStackedColumnService
+    private dashboardStackedColumnService: DashboardStackedColumnService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -66,6 +99,15 @@ export class DashboardComponent implements OnInit {
       (profileHasBeenUpdated: boolean) => {
         this.removeProfileUpdateMessage();
     });
+
+  }
+
+  ngOnDestroy() {
+
+    this.subscription1.unsubscribe();
+
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
 
   }
 
@@ -84,6 +126,7 @@ export class DashboardComponent implements OnInit {
     // returns as a single response array using forkjoin:
     // [fteData, firstLogin, projectRequests]
     this.apiDataDashboardService.getDashboardData(fiscalQuarterRange[0], fiscalQuarterRange[1])
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         res => {
           // console.log('dashboard data:');
@@ -126,6 +169,7 @@ export class DashboardComponent implements OnInit {
     } else {
       this.displayProgressGauge = false;
     }
+    this.chartsRendered = true;
   }
 
   displayMessages() {
@@ -134,12 +178,26 @@ export class DashboardComponent implements OnInit {
 
   renderPieChart() {
     const chartOptions = this.dashboardPieService.buildChartOptions(this.dashboardData[0]);
-    Highcharts.chart('pieChart', chartOptions);
+    this.chartPie = Highcharts.chart('pieChart', chartOptions);
+    setTimeout(() => {
+      this.chartPie.reflow();
+    }, 0);
   }
 
-  renderParetoChart() {
-    const chartOptions = this.dashboardParetoService.buildChartOptions(this.dashboardData[0]);
-    Highcharts.chart('paretoChart', chartOptions);
+  renderDonutChart() {
+    const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardData[0]);
+    this.chartDonut = Highcharts.chart('donutChart', chartOptions);
+    setTimeout(() => {
+      this.chartDonut.reflow();
+    }, 0);
+  }
+
+  renderStackedColumnChart() {
+    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
+    this.chartStackedColumn = Highcharts.chart('stackedColumnChart', chartOptions);
+    setTimeout(() => {
+      this.chartStackedColumn.reflow();
+    }, 0);
   }
 
   renderProgressGauge() {
@@ -148,19 +206,15 @@ export class DashboardComponent implements OnInit {
     this.completedPrefix = 'Completed:';
     this.notCompletedFTEs = chart.notCompletedFTEs;
     this.notCompletedPrefix = 'Not Completed:';
-    Highcharts.chart('progressGauge', chart.chartOptions);
+    this.chartGauge = Highcharts.chart('progressGauge', chart.chartOptions);
+    setTimeout(() => {
+      this.chartGauge.reflow();
+    }, 0);
   }
 
-  renderDonutChart() {
-    const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardData[0]);
-    Highcharts.chart('donutChart', chartOptions);
-  }
-
-  renderStackedColumnChart() {
-    // console.log('stacked column data');
-    // console.log(this.dashboardData[0]);
-    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
-    Highcharts.chart('stackedColumnChart', chartOptions);
+  renderParetoChart() {
+    const chartOptions = this.dashboardParetoService.buildChartOptions(this.dashboardData[0]);
+    Highcharts.chart('paretoChart', chartOptions);
   }
 
   removeProfileUpdateMessage() {
@@ -169,6 +223,74 @@ export class DashboardComponent implements OnInit {
     if (index !== -1) {
       this.messages.splice(index, 1);
     }
+  }
+
+  async onFTEEntriesClick() {
+
+    // make an api call to get the JobTitleID and JobSubTitleID
+    const res = await this.checkProfileIsUpdated()
+      .catch(err => {
+        // console.log('error getting data from check profile updated');
+        // console.log(err);
+      });
+
+    // set the job title
+    const jobTitle = res.jobTitle[0].JobTitleID;
+
+    // set the path to navigate to
+    const path = '/main/fte-entry/employee';
+
+    // navigate to the fte entry route
+    this.router.navigate([path]);
+
+    // if the user has a job title, emit the path for the side-nav to pick up via subscription
+    // in order to highlight the active menu item
+    if (jobTitle) {
+      this.cacheService.navigatedPath.emit(path);
+    }
+
+  }
+
+  async checkProfileIsUpdated(): Promise<any> {
+    return await this.apiDataFteService.checkJobTitleUpdated().toPromise();
+  }
+
+  onProfileLinkClick() {
+    // emit a value for the top nav component to pick up via subscription
+    // and show the profile modal
+    this.cacheService.showProfileModal.emit(true);
+  }
+
+  onProjectPageLinkClick() {
+
+    // set the path to navigate to
+    const path = '/main/projects/my-projects';
+
+    // navigate to the fte entry route
+    this.router.navigate([path]);
+
+    //  emit the path for the side-nav to pick up via subscription
+    // in order to highlight the active menu item
+    this.cacheService.navigatedPath.emit(path);
+
+  }
+
+  resizeChart() {
+
+    // reflow the charts to its container during window resize
+    if (this.chartPie) {
+      this.chartPie.reflow();
+    }
+    if (this.chartDonut) {
+      this.chartDonut.reflow();
+    }
+    if (this.chartStackedColumn) {
+      this.chartStackedColumn.reflow();
+    }
+    if (this.chartGauge) {
+      this.chartGauge.reflow();
+    }
+
   }
 
 

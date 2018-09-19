@@ -27,7 +27,7 @@ import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
 import { CacheService, ClickTrackingService, CookiesService,
-  ToolsService, UserResolverService, WebsocketService, RoutingHistoryService } from './_shared/services/_index';
+  ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
@@ -198,7 +198,8 @@ import { DisplayProjectComponent } from './projects/display-project/display-proj
     PermissionsGuard,
     FteEntryGuard,
     TitleCasePipe,
-    RoutingHistoryService
+    RoutingHistoryService,
+    ExcelExportService
   ],
   bootstrap: [AppComponent]
 })
