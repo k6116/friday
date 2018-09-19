@@ -1,10 +1,12 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { Location, PlatformLocation } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { CacheService } from './_shared/services/cache.service';
 import { AuthService } from './_shared/services/auth.service';
 import { ClickTrackingService } from './_shared/services/click-tracking.service';
 import { WebsocketService } from './_shared/services/websocket.service';
+import { RoutingHistoryService } from './_shared/services/routing-history.service';
 
 // import * as bowser from 'bowser';
 declare var $: any;
@@ -24,10 +26,17 @@ export class AppComponent implements OnInit {
   timer: any;
   timerInterval: number;  // interval in minutes
   subscription1: Subscription;
+  subscription2: Subscription;
 
   // NOTE: this is the 'new' way to do it but not working
   // @HostListener('click') onDocumentClicked() {
   //   // console.log('document was clicked');
+  // }
+
+  // @HostListener('window:popstate', ['$event'])
+  // onPopState(event) {
+  //   console.log('browser button pressed');
+  //   console.log(event);
   // }
 
   constructor(
@@ -35,12 +44,16 @@ export class AppComponent implements OnInit {
     private cacheService: CacheService,
     private authService: AuthService,
     private clickTrackingService: ClickTrackingService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private routingHistoryService: RoutingHistoryService,
+    private location: Location
   ) {
 
     // set the timer interval in minutes, used to check for user activity like a click and keypress
     // to reset the token expiration
     this.timerInterval = 1;
+
+    this.routingHistoryService.loadRouting();
 
   }
 
@@ -70,6 +83,10 @@ export class AppComponent implements OnInit {
         // console.log('subscription to resetTimer receivevd in the app component');
         this.resetTimer();
     });
+
+    // this.location.subscribe(x => {
+    //   console.log(x);
+    // });
 
   }
 

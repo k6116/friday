@@ -24,6 +24,14 @@ export class ApiDataProjectService {
     .map((response: Response) => response.json());
   }
 
+  getProject(projectID: number): Observable<any> {
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`api/project/displayProject/show/getProject/${projectID}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   getProjectsFilterProjectType(): Observable<any> {
     return this.http.get('api/indexProjectsFilterProjectType')
     .timeout(this.cacheService.apiDataTimeout)
@@ -170,6 +178,14 @@ export class ApiDataProjectService {
       .map((response: Response) => response.json());
   }
 
+  getExcelExport(payload: any) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({ headers: headers, responseType: ResponseContentType.Blob });
+    return this.http.post('/api/export/generateExcelFile', JSON.stringify(payload), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.blob());
+  }
+
   getProjectsBrowseData(): Observable<any> {
 
     const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
@@ -194,6 +210,30 @@ export class ApiDataProjectService {
     return forkJoin([projects, projectTypes, projectStatuses, projectPriorities]);
 
   }
+
+
+  // using forkjoin to get data for the display project component for better performance
+  getProjectDisplayData(projectID: number): Observable<any> {
+
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+
+    const projectData = this.http.get(`api/project/displayProject/show/getProject/${projectID}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    const scheduleData = this.http.get(`api/getProjectSchedule2/${projectID}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    const rosterData = this.http.get(`/api/indexProjectRoster/${projectID}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+
+    return forkJoin([projectData, scheduleData, rosterData]);
+
+  }
+
 
 
 }

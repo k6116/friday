@@ -60,6 +60,20 @@ export class CacheService {
   // (user is offline), the cached version will be used
   backgroundImage: any;
 
+  // used for caching projects list (index) and selected project (show)
+  // for data transfer between search projects and display project
+  projectsBrowseData: any;
+
+  // used to re-populate the project search input with previous search term
+  projectSearchTerm: string;
+  projectSelectedFilter: any;
+  projectSelectedValue: string;
+
+  // used to trigger the display of the profile modal (subscription in top nav)
+  showProfileModal = new EventEmitter<boolean>();
+
+  // used to trigger the downloading icon (animated svg)
+  showDownloadingIcon = new EventEmitter<boolean>();
 
   constructor() { }
 

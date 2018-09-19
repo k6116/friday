@@ -138,3 +138,10 @@ i.fa.notification-dismiss-icon:hover {
   color: darkred;
   cursor: pointer;
 }
+
+
+div.dashboard-stacked-column-cont {
+  width: 100%;
+  min-width: 750px;
+  white-space: nowrap;
+}

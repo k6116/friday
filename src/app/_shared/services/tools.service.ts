@@ -54,10 +54,11 @@ export class ToolsService {
     if (camelCaseString.length <= 3) {
       return camelCaseString;
     } else {
-      // add a space in front of the uppercase characters
-      const result = camelCaseString.replace(/([A-Z])/g, ' $1');
-      // capitalize the first character
-      return result.charAt(0).toUpperCase() + result.slice(1);
+      return camelCaseString.replace(/([A-Z]+)/g, ' $1').replace(/([A-Z][a-z])/g, ' $1').trim();
+      // // add a space in front of the uppercase characters
+      // const result = camelCaseString.replace(/([A-Z])/g, ' $1');
+      // // capitalize the first character
+      // return result.charAt(0).toUpperCase() + result.slice(1);
     }
 
   }
@@ -378,10 +379,13 @@ export class ToolsService {
   }
 
   showFooter() {
-    $('div.footer-container').css('display', 'block');
+    setTimeout(() => {
+      $('div.footer-container').css('display', 'block');
+    }, 500);
   }
 
-    // class binding using the ngClass directive in the html
+
+  // class binding using the ngClass directive in the html
   // to set project type icon (icon font class)
   setProjctTypeIconClass(projectTypeName) {
     const classes = {
@@ -389,7 +393,7 @@ export class ToolsService {
       'nc-ram': projectTypeName === 'NCI',
       'nc-keyboard': projectTypeName === 'NMI',
       'nc-keyboard-wireless': projectTypeName === 'NPI',
-      'nc-socket-europe-1': projectTypeName === 'NPPI',
+      'nc-microcircuit': projectTypeName === 'NPPI',
       'nc-lab': projectTypeName === 'NTI',
       'nc-microscope': projectTypeName === 'Research',
       'nc-settings-91': projectTypeName === 'MFG',
@@ -426,6 +430,7 @@ export class ToolsService {
         return 'rgb(139, 0, 139)';  // magenta
     }
   }
+
 
   // TO-DO Create Icons for Part Types and replace icons below which came from Project Types
   setPartTypeIconClass(partTypeName) {
@@ -470,4 +475,7 @@ export class ToolsService {
         return 'rgb(139, 0, 139)';  // magenta
     }
   }
+
+
+
 }

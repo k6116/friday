@@ -358,3 +358,27 @@ Generated using nucleoapp.com
   content: "\ea33";
 }
 
+.nc-money-coins::before {
+  content: "\ea50";
+}
+
+.nc-money-11::before {
+  content: "\ea51";
+}
+
+.nc-tag-content::before {
+  content: "\ea52";
+}
+
+.nc-hotel::before {
+  content: "\ea53";
+}
+
+.nc-b-security::before {
+  content: "\ea54";
+}
+
+.nc-filter-organization::before {
+  content: "\ea55";
+}
+

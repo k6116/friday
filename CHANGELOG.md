@@ -1,3 +1,23 @@
+<a name="1.12.0"></a>
+# [1.12.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.11.0...v1.12.0) (2018-09-17)
+
+
+### Features
+
+* blur up for login background images, dashboard message links, excel export capability ([f95afe9](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f95afe9))
+
+
+
+<a name="1.11.0"></a>
+# [1.11.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.10.0...v1.11.0) (2018-09-05)
+
+
+### Features
+
+* add project display page ([1b33df9](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/1b33df9))
+
+
+
 <a name="1.10.0"></a>
 # [1.10.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.9.0...v1.10.0) (2018-09-04)
 

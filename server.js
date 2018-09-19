@@ -12,6 +12,7 @@ const api = require('./server/routes/api');
 const sequelize = require('./server/db/sequelize');
 const email = require('./server/email/email');
 const websockets = require('./server/websockets/websockets');
+const logger = require('./server/logs/logs');
 
 // datadog (node)
 const StatsD = require('node-dogstatsd').StatsD;
@@ -54,24 +55,18 @@ app.use(express.static('public'));
 // middleware for datadog express integration (for metrics)
 app.use(connect_datadog);
 
-// var logger = new (winston.Logger) ({
+
+logger.createLogger();
+
+// const logger = winston.createLogger({
+//   level: 'info',
+//   format: winston.format.json(),
 //   transports: [
-//     new (winston.transports.File) ({
-//       name: 'your_logger_name',
-//       filename: path.join(__dirname, 'datadog.log'),
-//       json: true,
-//       level: 'info'
-//     })
+//     new winston.transports.File({ filename: path.join(__dirname, '../datadog.log'), level: 'info' })
 //   ]
 // });
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: path.join(__dirname, 'datadog.log'), level: 'info' })
-  ]
-});
+// console.log(path.join(__dirname, '../datadog.log'));
 
 // logger.log('info', 'Hello simple log!');
 // logger.info('Hello log with metas',{color: 'blue' });
@@ -141,6 +136,8 @@ email.setSchedules();
 // TEMP CODE: attempting to fix issue with blue/green deployment - Error: listen EADDRINUSE :::443
 process.on('SIGINT', () => {
   console.log('SIGINT message received');
+  console.log(process.pid);
+  // process.kill(process.pid);
   server.close(() => {
     console.log('node process stopping...');
     process.exit(0);

@@ -6,7 +6,6 @@ const dotevnv = require('dotenv').config(
 // get environment/instance (dev, test, or prod)
 const env = process.env.ENVIRONMENT;
 
-// TO-DO BILL: move passwords to .env file
 
 const configPLM = {
   dbname: "OracleWorkSpace",

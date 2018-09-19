@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
 import { Subscription } from 'rxjs/Subscription';
@@ -32,7 +32,7 @@ declare var $: any;
     ])
   ]
 })
-export class TopNavComponent implements OnInit {
+export class TopNavComponent implements OnInit, OnDestroy {
 
   loggedInUser: User;
   firstInitial: string;
@@ -42,6 +42,7 @@ export class TopNavComponent implements OnInit {
   state: string;
   projectList: any; // array to hold list of all projects queried from DB
   showProfileModal: boolean;
+  isTestInstance: boolean;
 
   @ViewChild(ProfileModalComponent) profileModal: ProfileModalComponent;
 
@@ -61,27 +62,31 @@ export class TopNavComponent implements OnInit {
 
     // console.log(`top nav component has been initialized`);
 
+    // check the port to see if this is the test instance (dev will return '3000', prod will return '')
+    // if this is test, use the 'blue' icon version (_test) and text instead of yellow
+    if (location.port === '440') {
+      this.isTestInstance = true;
+    }
+
+    // get the logged in user from the auth service
     this.loggedInUser = this.authService.loggedInUser;
 
+    // get the user's first name initial to display in the circle
     this.firstInitial = this.loggedInUser.fullName.substring(0, 1).toUpperCase();
-
-    // get the logged in user object from the auth service
-    // most of the time, this will be stored in the cache when navigating around the app
-    // this.authService.getLoggedInUser((user, err) => {
-    //   if (err) {
-    //     console.error(`error getting logged in user: ${err}`);
-    //     return;
-    //   }
-    //   this.loggedInUser = user;
-    //   // console.log('logged in user object received in top nav component on init:');
-    //   // console.log(this.loggedInUser);
-    //   // get the user's first name initial to create the google style 'avatar'
-    //   this.firstInitial = this.loggedInUser.fullName.substring(0, 1).toUpperCase();
-    // });
 
     // set state to in to enable the angular animations
     this.state = 'in';
 
+    // set up subscription to receive trigger to show the profile modal
+    this.subscription1 = this.cacheService.showProfileModal.subscribe(showProfileModal => {
+      // display the modal
+      this.onProfileButtonClick();
+    });
+
+  }
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
   }
 
   // when the identity area is clicked (logo and text), refresh the page directed to the main route
@@ -101,6 +106,7 @@ export class TopNavComponent implements OnInit {
   onProfileButtonClick() {
     this.showDropDown = false;
     this.showProfileModal = true;
+    $('#profileModal').modal('show');
     this.profileModal.getJobTitleList();
   }
 

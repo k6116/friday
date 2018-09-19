@@ -22,6 +22,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
   expandedMenus: any;
   parentMenuToExpand: any;
   subscription1: Subscription;
+  isTestInstance: boolean;
 
   constructor(
     private router: Router,
@@ -78,6 +79,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
               title: 'Search',
               alias: 'search',
               path: 'main/projects/search',
+              subPaths: ['main/projects/display/:id'],
               parentAlias: 'projects',
               active: false,
               permissionProtected: false,
@@ -223,8 +225,17 @@ export class SideNavComponent implements OnInit, AfterViewInit {
 
     // console.log('side nav component has been initialized');
 
+    // check the port to see if this is the test instance (dev will return '3000', prod will return '')
+    // if this is test, use the 'blue' icon version (_test) and text instead of yellow
+    if (location.port === '440') {
+      this.isTestInstance = true;
+    }
+
     // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
     const path = this.router.url.slice(1, this.router.url.length);
+
+    // console.log('current path:');
+    // console.log(path);
 
     // highlight the selected/active menu item with color, background color, etc.
     // needed here if the user goes directly to the route using the url or on refresh
@@ -247,6 +258,15 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       // highlight the menu item in this.menuStructure that matches the path
       // NOTE: need to trim off the leading /
       this.highlightActiveMenu(navigatedPath.slice(1));
+      // attempt to find the parent menu item, if a sub-menu item is the active one
+      // if one is found, expand it so that the active sub-menu can be seen
+      this.getParentOfCurrentRoute(navigatedPath);
+      if (this.parentMenuToExpand) {
+        const expandedMenu = [];
+        expandedMenu.push(this.parentMenuToExpand);
+        this.setExpandedProperties(expandedMenu);
+        this.expandMenus(expandedMenu);
+      }
     });
 
 
@@ -409,9 +429,39 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       if (menuItem.hasOwnProperty('subItems')) {
         menuItem.subItems.forEach(subMenuItem => {
           subMenuItem.active = subMenuItem.path === path ? true : false;
+          // check alternative paths
+          if (!subMenuItem.active && subMenuItem.hasOwnProperty('subPaths')) {
+            subMenuItem.active = this.checkAlternativePaths(subMenuItem.subPaths, path);
+            // console.log('sub menu item active?');
+            // console.log(subMenuItem.active);
+          }
         });
       }
     });
+  }
+
+  checkAlternativePaths(subPaths: any[], path: string): boolean {
+    let returnVal = false;
+    if (subPaths.length) {
+      subPaths.forEach(subPath => {
+        let regexString;
+        // replace the '/' with '\/' (escape char for regex)
+        regexString = subPath.replace(/\//g, '\\/');
+        regexString = regexString.replace(/(:.+(?=\/))|(:.+$)/g, '.+');
+        // console.log(`regex string to look for path match on ${path}:`);
+        // console.log(regexString);
+        const regexTest = new RegExp(regexString, 'g');
+        // console.log('regex test expression');
+        // console.log(regexTest);
+        if (regexTest.test(path)) {
+          // console.log('test returned true');
+          returnVal = true;
+        }
+      });
+      return returnVal;
+    } else {
+      return returnVal;
+    }
   }
 
   // get the parent of the selected/active menu item based on the path
@@ -422,7 +472,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
       // if the main menu item has a subItems property, attempt to find it within that array
       if (menuItem.hasOwnProperty('subItems')) {
         const foundSubMenuItem = menuItem.subItems.find(subItem => {
-          return subItem.path === path;
+          return subItem.active;
         });
         // once the sub menu item is found, find it's parent main menu item (matching using the parentAlias)
         if (foundSubMenuItem) {

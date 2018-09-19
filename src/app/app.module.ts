@@ -29,7 +29,7 @@ import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
 import { CacheService, ClickTrackingService, CookiesService,
-  ToolsService, UserResolverService, WebsocketService } from './_shared/services/_index';
+  ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
@@ -92,6 +92,7 @@ import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 import { SearchProjectsComponent } from './projects/search-projects/search-projects.component';
 import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
+import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 
 
 @NgModule({
@@ -147,7 +148,8 @@ import { ProjectRequestsComponent } from './projects/project-requests/project-re
     BomSelectorComponent,
     BomViewerComponent,
     ProjectRequestsComponent,
-    SearchProjectsComponent
+    SearchProjectsComponent,
+    DisplayProjectComponent
   ],
   imports: [
     AppRoutingModule,
@@ -196,7 +198,9 @@ import { ProjectRequestsComponent } from './projects/project-requests/project-re
     BrowserGuard,
     PermissionsGuard,
     FteEntryGuard,
-    TitleCasePipe
+    TitleCasePipe,
+    RoutingHistoryService,
+    ExcelExportService
   ],
   bootstrap: [AppComponent]
 })
