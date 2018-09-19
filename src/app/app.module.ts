@@ -9,6 +9,8 @@ import { HttpModule } from '@angular/http';
 import { NouisliderModule } from 'ng2-nouislider';
 import { ClickOutsideModule } from 'ng4-click-outside';
 import { Ng2CompleterModule } from 'ng2-completer';
+import { TreeModule } from 'angular-tree-component';
+// import { TreeModule } from 'ng2-tree';
 
 // ANGULAR MATERIAL MODULES
 import { MatSlideToggleModule, MatButtonModule, MatCheckboxModule, MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
@@ -44,7 +46,6 @@ import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
-import { TreeModule } from 'ng2-tree';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -164,7 +165,7 @@ import { ProjectRequestsComponent } from './projects/project-requests/project-re
     ClickOutsideModule,
     ChartsModule,
     Ng2CompleterModule,
-    TreeModule
+    TreeModule.forRoot()
   ],
   providers: [
     ApiDataAuthService,

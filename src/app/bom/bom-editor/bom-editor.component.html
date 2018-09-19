@@ -1,16 +1,16 @@
 <div class="container-fluid">
   <app-bom-selector (selectedBom)="onBomSelect($event)"></app-bom-selector>
-
+  <button (click)="showBomJson()">showBomJson</button>
   <div class="row row-custom">
     <div class="col-sm-4 bom-editor-col">
       <!-- first col is BOM tree -->
       <div class="tree-container" *ngIf="showBom">
-        <tree [tree]="bomJson" (nodeSelected)="onNodeSelect($event.node)" #treeComponent></tree>
+        <tree-root [nodes]="bomJson" [options]="treeOptions"></tree-root>
       </div>
     </div>
     <div class="col-sm-8">
       <!-- second col is BOM viewer -->
-      <app-bom-draw-d3 [bomJson]="bomJson"></app-bom-draw-d3>
+      <app-bom-draw-d3 *ngIf="bomJson" [bomJson]="bomJson"></app-bom-draw-d3>
     </div>
   </div>
   

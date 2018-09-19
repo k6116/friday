@@ -65,13 +65,14 @@ export class BomSelectorComponent implements OnInit {
 
       // initialize bomtree
       this.billHierarchy = {
-        value: this.bill[0].ParentName.length > 19 ? `${this.bill[0].ParentName.slice(0, 20)}...` : this.bill[0].ParentName,
+        name: this.bill[0].ParentName.length > 19 ? `${this.bill[0].ParentName.slice(0, 20)}...` : this.bill[0].ParentName,
         longName: this.bill[0].ParentName,
         id: this.bill[0].ParentID,
         qty: 1,
         dept: this.bill[0].ParentDepartment,
         type: this.bill[0].ParentType,
-        entity: this.bill[0].ParentEntity
+        entity: this.bill[0].ParentEntity,
+        isExpanded: true
       };
 
       // using async/await to wait for BOM parser to finish
@@ -99,7 +100,7 @@ export class BomSelectorComponent implements OnInit {
         // traverse down and collect all the siblings in this level
         let newNode: any;
         newNode = {
-          value: this.bill[i].ChildName.length > 19 ? `${this.bill[i].ChildName.slice(0, 20)}...` : this.bill[i].ChildName,
+          name: this.bill[i].ChildName.length > 19 ? `${this.bill[i].ChildName.slice(0, 20)}...` : this.bill[i].ChildName,
           longName: this.bill[i].ChildName,
           qty: this.bill[i].QtyPer,
           id: this.bill[i].ChildID,

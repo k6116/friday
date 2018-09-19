@@ -20,17 +20,24 @@ export class BomDrawD3Component implements OnInit, OnChanges {
 
   ngOnChanges() {
 
+    console.log('it changed');
     // when bomJson input binding changes value, parse data for the legend and draw the chart
     if (this.bomJson) {
 
-      console.log('in sub');
-      console.log(this.bomJson);
+      if (this.bomJson.constructor === Object) {
+        // this is the expected data type, so we're good
+      } else if (this.bomJson.constructor === Array && this.bomJson.length === 1) {
+        // d3 drawing expects a single object, not an array of objects, so let
+        this.bomJson = this.bomJson[0];
+      } else {
+        console.log('ERROR: d3 BOM drawing received an unexpected data type');
+        return;
+      }
+
       // parse out legend data from nested JSON
       this.partDeptLegend = this.calcDepartmentLegend(this.bomJson);
-      console.log('the whole sum');
-      console.log(this.partDeptLegend);
 
-      // kill any existing plots within the container
+      // kill any existing plots within the container and draw
       d3.select('#d3-container').selectAll('*').remove();
       this.drawD3Plot(this.bomJson);
     }
@@ -91,7 +98,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
   drawD3Plot(bomJson: any) {
 
     // set start position/scale of drawing, and size of nodes (to set default node spacing)
-    const initialTransform = d3.zoomIdentity.translate(400, 400).scale(1);
+    const initialTransform = d3.zoomIdentity.translate(200, 200).scale(1);
     const nodeSize = {height: 28, width: 20};
     const zoomSpeed = 1700; // some number between 400 and 2000
     const deptColors: any = {
@@ -116,8 +123,9 @@ export class BomDrawD3Component implements OnInit, OnChanges {
 
     // append the svg object to the body of the page and appends a 'group' container element to 'svg'
     const svg = d3.select('#d3-container').append('svg')
-      .attr('width', '100%')
-      .attr('height', '100%')
+      // .attr('width', '100%')
+      // .attr('height', '100%')
+      .attr('viewBox', [0, 0, 1800, 1800])
       .append('g');
 
     // define a zoom function for the SVG, and an initial transform for the zoom
@@ -230,7 +238,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
       // draw rectangle for each node
       nodeEnter.append('rect')
         .attr('class', 'node')
-        .attr('width', (d) => Math.max(85, 60 + 5 * d.data.value.length))
+        .attr('width', (d) => Math.max(85, 60 + 5 * d.data.name.length))
         .attr('height', 20)
         .attr('x', -8)
         .attr('y', -11)
@@ -255,7 +263,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
         .attr('dy', '.35em')
         .attr('cursor', 'pointer')
         .attr('text-anchor', 'start')
-        .text( (d) => `${d.data.qty}  |  ${d.data.value}` )
+        .text( (d) => `${d.data.qty}  |  ${d.data.name}` )
         .on('mouseover', (d) => {
           tooltip.transition()
           .duration(100)
@@ -284,7 +292,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
       nodeUpdate.select('rect.node')
         .attr('class', 'node')
         .attr('width', (d) => {
-          d.width = Math.max(85, 60 + 5 * d.data.value.length);
+          d.width = Math.max(85, 60 + 5 * d.data.name.length);
           return d.width;
         })
         .attr('height', 20)

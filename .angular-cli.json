@@ -31,7 +31,8 @@
         "../src/app/_shared/styles/d3bomviewer-custom.css",
         "../src/app/_shared/styles/typeahead-custom.css",
         "../node_modules/simplebar/dist/simplebar.css",
-        "../src/app/_shared/styles/simplebar-custom.css"
+        "../src/app/_shared/styles/simplebar-custom.css",
+        "../node_modules/angular-tree-component/dist/angular-tree-component.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { TreeModel } from 'ng2-tree';
 import { ApiDataBomService } from '../../_shared/services/api-data/_index';
+import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -10,10 +10,9 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class BomEditorComponent implements OnInit {
 
-  @ViewChild('treeComponent') treeComponent;
-
   bomJson: any;
-  showBom = false;  // show ng2-tree BOM component
+  showBom = true;  // show ng2-tree BOM component
+  treeOptions: ITreeOptions;  // options for angular2-tree component
 
   // for showing details when clicking a node
   showDetails = false;
@@ -22,39 +21,38 @@ export class BomEditorComponent implements OnInit {
   constructor(private apiDataBomService: ApiDataBomService) { }
 
   ngOnInit() {
+    this.treeOptions = {
+      actionMapping: {
+        mouse: {
+          dblClick: (tree, node, $event) => {
+            if (node.hasChildren) {
+              TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+            }
+          },
+          contextMenu: (tree, node, $event) => {
+            console.log(node);
+            node.data.qty = 0;
+            this.bomJson = this.bomJson.slice();
+          }
+        },
+        keys: {
+          [KEYS.ENTER]: (tree, node, $event) => {
+            node.expandAll();
+          }
+        }
+      }
+    };
+  }
+
+  showBomJson() {
+    console.log(this.bomJson);
   }
 
   onBomSelect(selectedBom: any) {
     this.showBom = true;
     this.showDetails = false;
-    this.bomJson = selectedBom;
-  }
-
-  onNodeSelect(clickedItem: any) {
-    this.showDetails = false;
-    // when a tree node is selected, toggle node collapse
-    const oopNodeController = this.treeComponent.getControllerByNodeId(clickedItem.node.id);
-    oopNodeController.unselect();
-    if (oopNodeController.isCollapsed()) {
-      oopNodeController.expand();
-    }
-
-    // fetch the data
-    if (clickedItem.node.type === 'Project') {
-      const detailsSub = this.apiDataBomService.showProjectInfo(clickedItem.node.id).subscribe( res => {
-        this.details = res[0];
-        this.details.entity = 'Project';
-        detailsSub.unsubscribe();
-        this.showDetails = true;
-      });
-    } else {
-      const detailsSub = this.apiDataBomService.showPartInfo(clickedItem.node.id).subscribe( res => {
-        this.details = res[0];
-        this.details.entity = 'Part';
-        detailsSub.unsubscribe();
-        this.showDetails = true;
-      });
-    }
+    this.bomJson = [selectedBom];
+    console.log('bom has been selected');
   }
 
 }
