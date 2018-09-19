@@ -61,7 +61,7 @@ export class TeamRolesComponent implements OnInit {
     this.employeesJobTitlesNested = employeesJobTitles.nested;
     this.employeesJobTitlesFlat = employeesJobTitles.flat;
 console.log('WTF')
-    // add jobTitle to allEmployees
+    // add jobTitles to the allEmployees object 
     for (let i = 0; i < this.allEmployees.length; i++) {
       for (let j = 0; j < this.employeesJobTitlesFlat.length; j++) {
         const fullName = this.allEmployees[i].fullName.split(' ');
