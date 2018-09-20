@@ -18,7 +18,7 @@
     <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
       <i class="fa fa-table"></i>&nbsp;&nbsp;Export
     </button> -->
-    <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
+    <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
     <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
       <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
     </button>
@@ -26,7 +26,7 @@
       <i class="fa fa-play"></i>&nbsp;&nbsp;Launch
     </button>
 
-    <div class="dropdown btn-help ">
+    <!-- <div class="dropdown btn-help ">
       <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-question"></i>&nbsp;&nbsp;Help
       </button>
@@ -35,7 +35,7 @@
         <a class="dropdown-item" (click)="onInstructionsClick()">Instructions</a>
         <a class="dropdown-item" >Confluence Documentation</a>
       </div>
-    </div>
+    </div> -->
   </div>  
 </div>
 
@@ -56,9 +56,9 @@
   </div>
   <div class="col-sm-5 col-custom col-multiselect">
       <ss-multiselect-dropdown #filterEmployeesDropdown [options]="filterEmployeesOptions" [texts]="filterEmployeesTexts" 
-            [settings]="filterEmployeesSettings" [(ngModel)]="filterEmployeesModel" (ngModelChange)="onFilterEmployeesChange($event)"></ss-multiselect-dropdown>
+            [settings]="filterEmployeesSettings" [(ngModel)]="filterEmployeesModel" (ngModelChange)="onFilterEmployeesChange()"></ss-multiselect-dropdown>
       <ss-multiselect-dropdown #filterProjectsDropdown [options]="filterProjectsOptions" [texts]="filterProjectsTexts" 
-            [settings]="filterProjectsSettings" [(ngModel)]="filterProjectsModel" (ngModelChange)="onFilterProjectsChange($event)"></ss-multiselect-dropdown>
+            [settings]="filterProjectsSettings" [(ngModel)]="filterProjectsModel" (ngModelChange)="onFilterProjectsChange()"></ss-multiselect-dropdown>
   </div>
   
 

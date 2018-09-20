@@ -68,6 +68,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   disablePreviousMonth: boolean;
   disableDeletePlan: boolean;
   FTEFormGroupLive: any;
+  newPlanName: string;
 
   // Highchart Declarations
   ftePlanningChart: any;
@@ -219,7 +220,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('this.fteChartData', this.fteChartData)
     console.log('team org', this.teamOrgStructure)
     // console.log('this.currentPlan', this.currentPlan)
-this.updateEmployeeTotals()
     console.log('this.employeeTotals', this.employeeTotals)
   }
 
