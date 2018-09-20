@@ -270,11 +270,11 @@ export class LoginComponent implements OnInit {
           if (this.cacheService.appLoadPath) {
             this.router.navigateByUrl(this.cacheService.appLoadPath);
           } else {
-            // this.router.navigateByUrl('/main/dashboard');
+            this.router.navigateByUrl('/main/dashboard');
           }
 
           // send the logged in user object to all other clients via websocket
-          // this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
+          this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
 
         },
         err => {
