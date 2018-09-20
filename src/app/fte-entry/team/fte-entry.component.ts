@@ -217,10 +217,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('this.filteredEmployees', this.filteredEmployees)
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
-    // console.log('team org', this.teamOrgStructure)
+    console.log('team org', this.teamOrgStructure)
     // console.log('this.currentPlan', this.currentPlan)
-    // console.log('this.planList', this.planList)
-    this.updateEmployeeTotals();
+this.updateEmployeeTotals()
     console.log('this.employeeTotals', this.employeeTotals)
   }
 
@@ -244,7 +243,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // Promise.all allows us to run two functions asynchronously
     Promise.all([
       this.getPlanList(this.authService.loggedInUser.id),
-      this.getTeam('barry_demartini@keysight.com')])
+      this.getTeam('ethan_hunt@keysight.com'),
+      this.setCurrentMonthYear()])
     .then(async res => {
         if (this.defaultPlan === undefined) {
           this.onCreateNewPlanClick(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1');
@@ -252,11 +252,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           await this.getPlan(this.authService.loggedInUser.id, this.defaultPlan);
           this.createFtePlanningChartData(this.allProjects);
           this.checkDisableDeletePlan();
+          this.updateEmployeeTotals();
+          this.setEmployeeTotalsBorder();
           this.displayFTETable = true;
         }
-        this.setCurrentMonthYear();
         this.createFtePlanningChartXAxis();
-        this.updateEmployeeTotals();
       }
     );
   }
@@ -365,12 +365,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       });
     }
 
-    // update the monthly total
-    this.updateEmployeeTotal(j);
-
-    // set the border color for the monthly totals inputs
-    this.setEmployeeTotalsBorder();
-
     // In order to browse month by month without having to click "Save" everytime,
     // we need to cache all the modified data and either update it as it changes or add a new object if its a new instance
     // The teamFTEsFlatLive is a realtime array that will track the updates and be referenced everytime the buildFTEEntryForm is called
@@ -435,13 +429,17 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       });
     }
 
+    // update the monthly total
+    this.updateEmployeeTotal(j);
+    this.updateEmployeeTotals();
+    // set the border color for the monthly totals inputs
+    this.setEmployeeTotalsBorder();
     this.createFtePlanningChartData(this.projects);
 
   }
 
 
   updateEmployeeTotal(index) {
-
     // initialize a temporary variable, set to zero
     let total = 0;
 
@@ -464,24 +462,17 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
 
   updateEmployeeTotals() {
-console.log('awef', this.FTEFormGroupLive)
+    const employeeCount = this.teamOrgStructure.length;
+
     // initialize a temporary array with zeros to hold the totals
-    let totals = new Array(36).fill(0);
-
-    // // set the outer form array of projects and months
-    // const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-
-    // // loop through each project
-    // FTEFormArray.controls.forEach( project => {
-    //   project['controls'].forEach( (month, i) => {
-    //     totals[i] += +month.value.fte;
-    //   });
-    // });
+    let totals = new Array(employeeCount).fill(0);
 
     // loop through each project
     this.FTEFormGroupLive.forEach( project => {
-      project.forEach( (month, i) => {
-        totals[i] += +month.fte;
+      project.forEach( (projemp, i) => {
+        if (projemp.month === moment(this.setMonth).format('MM-DD-YYYY')) {
+          totals[i] += +projemp.fte;
+        }
       });
     });
 
@@ -624,7 +615,7 @@ console.log('awef', this.FTEFormGroupLive)
     }
   }
 
-  buildFteEntryForm() {
+  async buildFteEntryForm() {
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
     });
@@ -634,10 +625,9 @@ console.log('awef', this.FTEFormGroupLive)
     this.toolsService.clearFormArray(FTEFormArray); // remove any existing form groups in the array
 
     // loop through each project to get into the FTE entry elements
-    this.teamFTEs.forEach( (proj: TeamFTEs) => {
+    await this.teamFTEs.forEach( (proj: TeamFTEs) => {
       this.addProjectToFormArray(FTEFormArray, proj, false);
     });
-
     // update the totals row
     // this.updateEmployeeTotals();
 
@@ -926,6 +916,10 @@ console.log('awef', this.FTEFormGroupLive)
     // Initialize the cache array for the FTEFormGroup, then add an extra element to add all edits in months other than the current
     this.FTEFormGroupLive = this.FTEFormGroup.value.FTEFormArray;
     this.FTEFormGroupLive.push([]);
+
+    this.updateEmployeeTotals();
+    this.setEmployeeTotalsBorder();
+
     this.updateProjectFilters();
 
     this.planList.splice(0, 0, {planName: planName});
@@ -949,6 +943,9 @@ console.log('awef', this.FTEFormGroupLive)
     // Initialize the cache array for the FTEFormGroup, then add an extra element to add all edits in months other than the current
     this.FTEFormGroupLive = this.FTEFormGroup.value.FTEFormArray;
     this.FTEFormGroupLive.push([]);
+
+    this.updateEmployeeTotals();
+    this.setEmployeeTotalsBorder();
 
     this.updateProjectFilters();
   }
@@ -1058,6 +1055,8 @@ console.log('awef', this.FTEFormGroupLive)
 
     // rebuild the FTE entry page to show selected month
     this.buildFteEntryForm();
+    this.updateEmployeeTotals();
+    this.setEmployeeTotalsBorder();
     this.displayFTETable = true;
 
     // disable the previous button to prevent user from going into past months
@@ -1068,14 +1067,16 @@ console.log('awef', this.FTEFormGroupLive)
     }
   }
 
-  onNextMonthClick() {
+  async onNextMonthClick() {
     // Set month to next month and format
     this.setMonth = moment(this.setMonth).add(1, 'months');
     this.setMonthName = moment(this.setMonth).format('MMMM');
     this.setYear = moment(this.setMonth).format('YYYY');
 
     // rebuild the FTE entry page to show selected month
-    this.buildFteEntryForm();
+    await this.buildFteEntryForm();
+    this.updateEmployeeTotals();
+    this.setEmployeeTotalsBorder();
     this.displayFTETable = true;
 
     // disable the previous button to prevent user from going into past months
