@@ -3,7 +3,10 @@
 <app-confirm-modal></app-confirm-modal>
 
 <!-- background image -->
-<div [class]="'login-background-image' + (useCachedImage ? '' : (isImageLoaded ? ' large' : ' small'))"></div>
+<div [class]="'login-background-image' + (useCachedImage ? '' : (isImageLoaded ? ' large' : ' small'))" [style.display]="isImageLoaded ? 'none' : 'block'"></div>
+
+<!-- background image 2 -->
+<div [class]="'login-background-image2' + (useCachedImage ? '' : (isImageLoaded ? ' large' : ' small'))"></div>
 
 <!-- hidden image to trigger onload when finished downloading -->
 <img class="hidden-background-image" src="" alt="" (load)="onImageLoaded()" hidden>

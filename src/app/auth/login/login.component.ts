@@ -144,16 +144,20 @@ export class LoginComponent implements OnInit {
 
     // get a random number between zero and the number of background images
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
+    const imageIndex2 = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
 
     // get the background image object at that random index
     this.backgroundImage = this.backgroundImages[imageIndex];
+    const backgroundImage2 = this.backgroundImages[imageIndex2];
 
     // set the image paths for both the full size image and thumbnail image
     this.imagePath = this.backgroundImage.path + this.backgroundImage.fileName;
     this.imagePathThumbnail = this.backgroundImage.path + this.backgroundImage.fileNameNoExt + '_thumbnail.jpg';
+    const imagePathThumbnail2 = backgroundImage2.path + backgroundImage2.fileNameNoExt + '_thumbnail.jpg';
 
     // initially, set the background image to the thumbnail version, while we wait for the full size image to load
     $('div.login-background-image').css('background-image', `url(${this.imagePathThumbnail})`);
+    // $('div.login-background-image2').css('background-image', `url(${imagePathThumbnail2})`);
 
     // set the full-size image path in the hidden img element, to start the download
     $('img.hidden-background-image').attr('src', this.imagePath);
@@ -169,10 +173,12 @@ export class LoginComponent implements OnInit {
   onImageLoaded() {
 
     // swith the background image from the thumbnail to the full-size version
-    $('div.login-background-image').css('background-image', `url(${this.imagePath})`);
+    $('div.login-background-image2').css('background-image', `url(${this.imagePath})`);
 
     // set image is loade to true, to toggle the class from small to large and start the sharpen transition effect
-    this.isImageLoaded = true;
+    setTimeout(() => {
+      this.isImageLoaded = true;
+    }, 500);
 
   }
 
