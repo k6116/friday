@@ -3,16 +3,19 @@
 <app-confirm-modal></app-confirm-modal>
 
 <!-- background image -->
-<div [class]="'login-background-image' + (useCachedImage ? '' : (isImageLoaded ? ' large' : ' small'))" [style.display]="isImageLoaded ? 'none' : 'block'"></div>
+<div class="login-background-image1" [style.visibility]="isImageLoaded ? 'hidden' : 'visible'"></div>
 
 <!-- background image 2 -->
-<div [class]="'login-background-image2' + (useCachedImage ? '' : (isImageLoaded ? ' large' : ' small'))"></div>
+<div [class]="'login-background-image2' + ' ' + imageClass"></div>
 
-<!-- hidden image to trigger onload when finished downloading -->
-<img class="hidden-background-image" src="" alt="" (load)="onImageLoaded()" hidden>
+<!-- hidden image to trigger onload when finished downloading for thumbnail image -->
+<img class="hidden-background-image1" src="" alt="" (load)="onImageLoaded1()" hidden>
+
+<!-- hidden image to trigger onload when finished downloading for full-size image -->
+<img class="hidden-background-image2" src="" alt="" (load)="onImageLoaded2()" hidden>
 
 <!-- page container -->
-<div class="login-page-cont">
+<div class="login-page-cont" [style.visibility]="showLoginPage ? 'visible' : 'hidden'">
 
   <!-- key sightings info -->
   <div class="login-background-image-details">

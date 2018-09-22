@@ -50,9 +50,10 @@ export class LoginComponent implements OnInit {
   backgroundImages: any[] = [];
   backgroundImage: any;
 
-
+  // control behavior of cached image, small vs. large
   isImageLoaded: boolean;
   useCachedImage: boolean;
+  imageClass: string;
 
   // selected image paths
   imagePath: string;
@@ -73,6 +74,8 @@ export class LoginComponent implements OnInit {
     private cookiesService: CookiesService,
     private route: ActivatedRoute
   ) {
+
+    this.imageClass = '';
 
   }
 
@@ -99,15 +102,25 @@ export class LoginComponent implements OnInit {
       this.backgroundImage = this.cacheService.backgroundImage;
       this.imagePath = this.backgroundImage.path + this.backgroundImage.fileName;
       setTimeout(() => {
-        $('div.login-background-image').css('background-image', `url(${this.imagePath})`);
+        $('div.login-background-image2').css('background-image', `url(${this.imagePath})`);
       }, 0);
+      this.imageClass = '';
       this.useCachedImage = true;
     // otherwise use the blur up approach and get a new background image
     } else {
+      this.imageClass = 'small';
       this.getBackgroundImages();
     }
 
   }
+
+  // psedo-code for background image (blur up technique):
+  // use two divs with background image urls laid on top of each other, one for the thumbnail (top) and one for the full-size
+  // use two hidden img elements pointing to the same images to detect when they have completed loading using (load) event handler
+  // when the thumbnail image has finished loading, display the login page and set the input focus
+  // when the full-size image has finished loading, set the thumbnail div visibility to hidden, and..
+  //  swap the class from small to large to trigger the transition/animation from 20px blur to 0px blur
+  // then cache the image url, so on logout it will use that url and image load will be instant (no blur up)
 
 
   getBackgroundImages() {
@@ -144,23 +157,23 @@ export class LoginComponent implements OnInit {
 
     // get a random number between zero and the number of background images
     const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
-    const imageIndex2 = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
 
     // get the background image object at that random index
     this.backgroundImage = this.backgroundImages[imageIndex];
-    const backgroundImage2 = this.backgroundImages[imageIndex2];
 
-    // set the image paths for both the full size image and thumbnail image
-    this.imagePath = this.backgroundImage.path + this.backgroundImage.fileName;
+    // set the image paths for both the thumbnail and full size images
     this.imagePathThumbnail = this.backgroundImage.path + this.backgroundImage.fileNameNoExt + '_thumbnail.jpg';
-    const imagePathThumbnail2 = backgroundImage2.path + backgroundImage2.fileNameNoExt + '_thumbnail.jpg';
+    this.imagePath = this.backgroundImage.path + this.backgroundImage.fileName;
 
-    // initially, set the background image to the thumbnail version, while we wait for the full size image to load
-    $('div.login-background-image').css('background-image', `url(${this.imagePathThumbnail})`);
+    // set the background image urls for both the thumbnail and full size images
+    $('div.login-background-image1').css('background-image', `url(${this.imagePathThumbnail})`);
+    $('div.login-background-image2').css('background-image', `url(${this.imagePath})`);
     // $('div.login-background-image2').css('background-image', `url(${imagePathThumbnail2})`);
 
-    // set the full-size image path in the hidden img element, to start the download
-    $('img.hidden-background-image').attr('src', this.imagePath);
+    // set the src property to trigger the download of the hidden images
+    // so we can listen for the load event
+    $('img.hidden-background-image1').attr('src', this.imagePathThumbnail);
+    $('img.hidden-background-image2').attr('src', this.imagePath);
 
     // save the last shown image in the cache, to be used on logout so that the same image will be used and loaded immediately
     // should be in the browser cache as 304 not modified
@@ -168,15 +181,28 @@ export class LoginComponent implements OnInit {
 
   }
 
+  onImageLoaded1() {
+
+    // add a quarter second buffer to wait and ensure that the small image is fully loaded and rendered
+    setTimeout(() => {
+      // trigger the visibility of the login page when the thumbnail image is fully loaded
+      this.showLoginPage = true;
+      setTimeout(() => {
+        // set the focus on either the user name or password input
+        this.setInputFocus(!!this.userName);
+      }, 0);
+    }, 250);
+
+  }
 
   // triggered when the full size image has finished downloading using (load) event handler
-  onImageLoaded() {
+  onImageLoaded2() {
 
-    // swith the background image from the thumbnail to the full-size version
-    $('div.login-background-image2').css('background-image', `url(${this.imagePath})`);
-
-    // set image is loade to true, to toggle the class from small to large and start the sharpen transition effect
+    // add a half second buffer to wait and ensure that the large image is fully loaded and rendered
     setTimeout(() => {
+      // set the addt'l background image 2 class to large (from small) to start the sharpen transition effect
+      this.imageClass = 'large';
+      // set image is loaded (large image) to set background image 1 visibility to hidden
       this.isImageLoaded = true;
     }, 500);
 

@@ -1,13 +1,15 @@
 
-div.login-background-image {
+
+div.login-background-image1 {
   background-size: cover;
   background-position: center;
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
-  width: 100%;
+  /* height: 100%;
+  width: 100%; */
   z-index: 0;
+  filter: blur(20px);
 }
 
 div.login-background-image2 {
@@ -19,15 +21,6 @@ div.login-background-image2 {
   height: 100%;
   width: 100%;
   z-index: -1;
-  filter: blur(20px);
-}
-
-div.login-background-image.small {
-  filter: blur(20px);
-}
-
-div.login-background-image.large {
-  animation: sharpen 0.5s both;
 }
 
 div.login-background-image2.small {
@@ -132,19 +125,6 @@ i.login-form-icon {
 div.login-remember-me-cont {
   margin: 0 75px;
 }
-
-/* div.custom-control.custom-checkbox {
-  padding-left: 0;
-} */
-
-/* input.custom-control-input#remember-me {
-  position: static;
-  z-index: 0;
-}
-
-label.remember-me-label {
-  margin-left: 10px;
-} */
 
 div.form-group-login.form-group-login-button {
   margin-top: 35px;
