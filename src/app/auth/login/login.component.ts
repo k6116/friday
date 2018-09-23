@@ -106,6 +106,11 @@ export class LoginComponent implements OnInit {
       }, 0);
       this.imageClass = '';
       this.useCachedImage = true;
+      this.showLoginPage = true;
+      setTimeout(() => {
+        // set the focus on either the user name or password input
+        this.setInputFocus(!!this.userName);
+      }, 0);
     // otherwise use the blur up approach and get a new background image
     } else {
       this.imageClass = 'small';
@@ -216,7 +221,6 @@ export class LoginComponent implements OnInit {
       this.rememberMe = true;
     } else {
     }
-    this.setInputFocus(!!userName);
   }
 
   // set focus on either the username or password input depending on whether username is populated from the cookie
@@ -264,7 +268,7 @@ export class LoginComponent implements OnInit {
       .subscribe(
         res => {
 
-          console.log(res);
+          // console.log(res);
 
           // log the time it took to authenticate
           this.logAuthPerformance(t0);
