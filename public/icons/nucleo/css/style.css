@@ -154,208 +154,176 @@ Generated using nucleoapp.com
 	icons
 -------------------------*/
 
-.nc-bowling-pins::before {
-  content: "\ea02";
-}
-
-.nc-a-check::before {
-  content: "\ea03";
-}
-
-.nc-a-edit::before {
-  content: "\ea01";
-}
-
-.nc-archery-target::before {
+.nc-small-remove::before {
   content: "\ea04";
 }
 
-.nc-archive-check::before {
+.nc-a-check::before {
   content: "\ea05";
 }
 
-.nc-b-security::before {
-  content: "\ea06";
-}
-
-.nc-badge::before {
+.nc-archive-check::before {
   content: "\ea07";
 }
 
-.nc-bars-rotate::before {
-  content: "\ea08";
-}
-
-.nc-board-28::before {
-  content: "\ea09";
-}
-
-.nc-board-29::before {
+.nc-badge::before {
   content: "\ea0a";
 }
 
-.nc-book-open-2::before {
+.nc-board-29::before {
   content: "\ea0b";
 }
 
-.nc-bulb-63::before {
+.nc-calendar-add::before {
   content: "\ea0c";
 }
 
-.nc-calendar-add::before {
-  content: "\ea0d";
-}
-
 .nc-chart-bar-33::before {
-  content: "\ea0e";
-}
-
-.nc-chat-round-content::before {
-  content: "\ea0f";
-}
-
-.nc-circle-10::before {
   content: "\ea10";
 }
 
-.nc-code-editor::before {
-  content: "\ea11";
-}
-
-.nc-dashboard-half::before {
+.nc-chat-round-content::before {
   content: "\ea12";
 }
 
-.nc-dots-06::before {
-  content: "\ea13";
-}
-
-.nc-dots-07::before {
-  content: "\ea14";
-}
-
-.nc-filter-organization::before {
-  content: "\ea15";
-}
-
-.nc-gantt::before {
-  content: "\ea16";
-}
-
-.nc-hierarchy-53::before {
-  content: "\ea17";
-}
-
-.nc-hotel::before {
-  content: "\ea18";
-}
-
-.nc-keyboard-wireless::before {
+.nc-dashboard-half::before {
   content: "\ea19";
 }
 
-.nc-keyboard::before {
-  content: "\ea1a";
-}
-
-.nc-l-security::before {
-  content: "\ea1b";
-}
-
-.nc-lab::before {
+.nc-lock::before {
   content: "\ea1c";
 }
 
-.nc-light-traffic::before {
-  content: "\ea1d";
-}
-
-.nc-lock-2::before {
-  content: "\ea1e";
-}
-
-.nc-lock::before {
-  content: "\ea1f";
-}
-
-.nc-microcircuit::before {
-  content: "\ea20";
-}
-
-.nc-microscope::before {
-  content: "\ea21";
-}
-
-.nc-money-11::before {
-  content: "\ea22";
-}
-
-.nc-money-coins::before {
-  content: "\ea23";
-}
-
-.nc-opening-times::before {
+.nc-single-05::before {
   content: "\ea24";
 }
 
-.nc-priority-high-2::before {
-  content: "\ea25";
-}
-
-.nc-priority-high::before {
+.nc-socket::before {
   content: "\ea26";
 }
 
-.nc-privacy-policy-2::before {
+.nc-time-countdown::before {
   content: "\ea27";
 }
 
-.nc-pulse-phone::before {
-  content: "\ea28";
-}
-
-.nc-ram::before {
+.nc-gantt::before {
   content: "\ea29";
 }
 
-.nc-settings-91::before {
-  content: "\ea2a";
-}
-
-.nc-settings::before {
+.nc-bars-rotate::before {
   content: "\ea2b";
 }
 
-.nc-sign-closed::before {
-  content: "\ea2c";
-}
-
-.nc-single-05::before {
-  content: "\ea2d";
-}
-
-.nc-small-remove::before {
+.nc-dots-07::before {
   content: "\ea2e";
 }
 
-.nc-socket-europe-1::before {
+.nc-opening-times::before {
   content: "\ea2f";
 }
 
-.nc-socket::before {
-  content: "\ea30";
+.nc-light-traffic::before {
+  content: "\ea35";
 }
 
-.nc-tag-content::before {
-  content: "\ea31";
+.nc-priority-high::before {
+  content: "\ea36";
+}
+
+.nc-microscope::before {
+  content: "\ea37";
+}
+
+.nc-hierarchy-53::before {
+  content: "\ea39";
+}
+
+.nc-book-open-2::before {
+  content: "\ea3a";
+}
+
+.nc-ram::before {
+  content: "\ea3b";
+}
+
+.nc-l-security::before {
+  content: "\ea3c";
+}
+
+.nc-keyboard-wireless::before {
+  content: "\ea3d";
+}
+
+.nc-code-editor::before {
+  content: "\ea3e";
+}
+
+.nc-lab::before {
+  content: "\ea3f";
+}
+
+.nc-settings-91::before {
+  content: "\ea40";
+}
+
+.nc-bulb-63::before {
+  content: "\ea41";
+}
+
+.nc-sign-closed::before {
+  content: "\ea42";
+}
+
+.nc-lock-2::before {
+  content: "\ea43";
+}
+
+.nc-board-28::before {
+  content: "\ea44";
+}
+
+.nc-privacy-policy-2::before {
+  content: "\ea45";
+}
+
+.nc-priority-high-2::before {
+  content: "\ea46";
+}
+
+.nc-socket-europe-1::before {
+  content: "\ea47";
+}
+
+.nc-circle-10::before {
+  content: "\ea48";
 }
 
 .nc-time-clock::before {
-  content: "\ea32";
+  content: "\ea49";
 }
 
-.nc-time-countdown::before {
-  content: "\ea33";
+.nc-a-edit::before {
+  content: "\ea4a";
+}
+
+.nc-dots-06::before {
+  content: "\ea4b";
+}
+
+.nc-pulse-phone::before {
+  content: "\ea4c";
+}
+
+.nc-keyboard::before {
+  content: "\ea4d";
+}
+
+.nc-microcircuit::before {
+  content: "\ea4e";
+}
+
+.nc-settings::before {
+  content: "\ea4f";
 }
 
 .nc-money-coins::before {
