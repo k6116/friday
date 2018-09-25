@@ -15,7 +15,6 @@ import { WebsocketService } from '../../_shared/services/websocket.service';
 import { CookiesService } from '../../_shared/services/cookies.service';
 import { ApiDataAuthService, ApiDataOrgService, ApiDataClickTrackingService } from '../../_shared/services/api-data/_index';
 import { HttpModule } from '@angular/http';
-import { DataStub } from './data.stub';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 

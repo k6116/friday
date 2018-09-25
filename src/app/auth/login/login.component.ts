@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { ToolsService } from '../../_shared/services/tools.service';
@@ -9,15 +8,20 @@ import { User } from '../../_shared/models/user.model';
 import { WebsocketService } from '../../_shared/services/websocket.service';
 import { CookiesService } from '../../_shared/services/cookies.service';
 import { ApiDataAuthService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import { LoginImageService } from './login-image.service';
+import { LoginAuthService } from './login-auth.service';
+import { LoginErrorsService } from './login-errors.service';
+import { LoginCookiesService } from './login-cookies.service';
+import { IBackgroundImage } from './login-image.service';
 
 declare var $: any;
-import * as moment from 'moment';
 
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css', '../../_shared/styles/common.css']
+  styleUrls: ['./login.component.css', '../../_shared/styles/common.css'],
+  providers: [LoginImageService, LoginAuthService, LoginErrorsService, LoginCookiesService]
 })
 export class LoginComponent implements OnInit {
 
@@ -46,21 +50,18 @@ export class LoginComponent implements OnInit {
   // toggle animated icon on login click
   showPendingLoginAnimation: boolean;
 
-  // array of background images and randomly selected background image
-  backgroundImages: any[] = [];
-  backgroundImage: any;
+  // page's background image
+  backgroundImage: IBackgroundImage;
 
-  // control behavior of cached image, small vs. large
-  isImageLoaded: boolean;
-  useCachedImage: boolean;
+  // control behavior of full size image (small vs. large)
   imageClass: string;
 
-  // selected image paths
-  imagePath: string;
-  imagePathThumbnail: string;
+  // used to hide the thumbnail image when the full-size has finished loading
+  isImageLoaded: boolean;
 
   // set to true if this is the test instance (port 440)
   isTestInstance: boolean;
+
 
   constructor(
     private router: Router,
@@ -72,6 +73,10 @@ export class LoginComponent implements OnInit {
     private clickTrackingService: ClickTrackingService,
     private websocketService: WebsocketService,
     private cookiesService: CookiesService,
+    private loginImageService: LoginImageService,
+    private loginAuthService: LoginAuthService,
+    private loginCookiesService: LoginCookiesService,
+    private loginErrorsService: LoginErrorsService,
     private route: ActivatedRoute
   ) {
 
@@ -81,111 +86,78 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
+    // set the page's background image
+    this.setBackgroundImage();
+
     // check the cookies for the jrt_username cookie, if it is there set the username
     // this means that the user had previously logged in with 'Remember Me' selected
     this.checkRememberMeCookie();
 
-    // check the port to see if this is the test instance (dev will return '3000', prod will return '')
+    // check which instance this is by checking the port (dev: '3000', test: '440', prod: '')
     // if this is test, use the 'blue' icon version (_test) and text instead of yellow
-    if (location.port === '440') {
-      this.isTestInstance = true;
-    }
+    this.checkInstance();
 
-    // check for the autoLogout object; if it exists display the message
-    if (this.cacheService.autoLogout$) {
-      const autoLogout = this.cacheService.autoLogout$;
-      this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
-    }
-
-    // if the full size background image is cached (e.g. on logout), use that url
-    if (this.cacheService.backgroundImage) {
-      this.backgroundImage = this.cacheService.backgroundImage;
-      this.imagePath = this.backgroundImage.path + this.backgroundImage.fileName;
-      setTimeout(() => {
-        $('div.login-background-image2').css('background-image', `url(${this.imagePath})`);
-      }, 0);
-      this.imageClass = '';
-      this.useCachedImage = true;
-      this.showLoginPage = true;
-      setTimeout(() => {
-        // set the focus on either the user name or password input
-        this.setInputFocus(!!this.userName);
-      }, 0);
-    // otherwise use the blur up approach and get a new background image
-    } else {
-      this.imageClass = 'small';
-      this.getBackgroundImages();
-    }
+    // check for the an autoLogout object passed via the cache service; if it exists display the message below the Login button
+    this.checkForAutoLogout();
 
   }
 
-  // psedo-code for background image (blur up technique):
-  // use two divs with background image urls laid on top of each other, one for the thumbnail (top) and one for the full-size
-  // use two hidden img elements pointing to the same images to detect when they have completed loading using (load) event handler
-  // when the thumbnail image has finished loading, display the login page and set the input focus
-  // when the full-size image has finished loading, set the thumbnail div visibility to hidden, and..
-  //  swap the class from small to large to trigger the transition/animation from 20px blur to 0px blur
-  // then cache the image url, so on logout it will use that url and image load will be instant (no blur up)
-
-
-  getBackgroundImages() {
-
-    // fetch the list of background images (metadata) from the index.json file
-    this.apiDataAuthService.getLoginBackgroundImages()
-      .subscribe(
-        res => {
-
-          res.images.forEach(image => {
-            if (res.files.indexOf(image.fileName) !== -1) {
-              this.backgroundImages.push({
-                fileName: image.fileName,
-                fileNameNoExt: image.fileName.replace('.jpg', ''),
-                path: `/assets/login_images/`,
-                title: image.caption,
-                subTitle: `Key Sightings, ${image.winnerDate}`
-              });
-            }
-          });
-
-          // set a random background image from the list
-          this.setBackgroundImage();
-        },
-        err => {
-          // console.log(err);
-        }
-      );
-
-  }
-
-  // set random background image
   setBackgroundImage() {
 
-    // get a random number between zero and the number of background images
-    const imageIndex = this.toolsService.randomBetween(0, this.backgroundImages.length - 1);
+    // if the image is stored in the cache, use that image (use same image on logout that was used for login)
+    if (this.cacheService.backgroundImage) {
+      this.setCachedBackgroundImage();
+    // otherwise, get a new random image for the page and use the 'blur up' technique to load
+    } else {
+      this.setBlurUpBackgroundImage();
+    }
 
-    // get the background image object at that random index
-    this.backgroundImage = this.backgroundImages[imageIndex];
+  }
 
-    // set the image paths for both the thumbnail and full size images
-    this.imagePathThumbnail = this.backgroundImage.path + this.backgroundImage.fileNameNoExt + '_thumbnail.jpg';
-    this.imagePath = this.backgroundImage.path + this.backgroundImage.fileName;
+  async setBlurUpBackgroundImage() {
+
+    // get a random background image object (with metadata) from the service
+    this.backgroundImage = await this.loginImageService.getBackgroundImage();
 
     // set the background image urls for both the thumbnail and full size images
-    $('div.login-background-image1').css('background-image', `url(${this.imagePathThumbnail})`);
-    $('div.login-background-image2').css('background-image', `url(${this.imagePath})`);
-    // $('div.login-background-image2').css('background-image', `url(${imagePathThumbnail2})`);
+    $('div.login-background-image1').css('background-image', `url(${this.backgroundImage.thumbnail.path})`);
+    $('div.login-background-image2').css('background-image', `url(${this.backgroundImage.fullSize.path})`);
 
     // set the src property to trigger the download of the hidden images
     // so we can listen for the load event
-    $('img.hidden-background-image1').attr('src', this.imagePathThumbnail);
-    $('img.hidden-background-image2').attr('src', this.imagePath);
+    $('img.hidden-background-image1').attr('src', this.backgroundImage.thumbnail.path);
+    $('img.hidden-background-image2').attr('src', this.backgroundImage.fullSize.path);
 
-    // save the last shown image in the cache, to be used on logout so that the same image will be used and loaded immediately
-    // should be in the browser cache as 304 not modified
-    this.cacheService.backgroundImage = this.backgroundImage;
+    // add the 'small' image class to the full-size image to apply a 20px blur initially
+    // NOTE: will set it to 'large' when it completes loading to transition out to no blur ('blur up')
+    this.imageClass = 'small';
 
   }
 
+  setCachedBackgroundImage() {
+
+    // get the background image from the cache (same as image displayed on login)
+    this.backgroundImage = this.cacheService.backgroundImage;
+
+    // set the background image url; it will be in the browser cache so should be displayed/loaded immediately
+    setTimeout(() => {
+      $('div.login-background-image2').css('background-image', `url(${this.backgroundImage.fullSize.path})`);
+    }, 0);
+
+    // remove the 'small' or 'large' image class so that it will not be blurred or initiate a transition
+    this.imageClass = '';
+
+    // used with style binding to set the visibility css property to 'visible'
+    this.showLoginPage = true;
+
+    // set the focus on either the user name or password input
+    setTimeout(() => {
+      this.setInputFocus(!!this.userName);
+    }, 0);
+
+  }
+
+  // triggered when the thumbnail image has finished downloading using (load) event handler
   onImageLoaded1() {
 
     // add a quarter second buffer to wait and ensure that the small image is fully loaded and rendered
@@ -223,6 +195,22 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  // check the port to see if this is the test instance (dev will return '3000', test will return '440' prod will return '')
+  // if this is test, use the 'blue' icon version (_test) and text instead of yellow
+  checkInstance() {
+    if (location.port === '440') {
+      this.isTestInstance = true;
+    }
+  }
+
+  // check for the an autoLogout object passed via the cache service; if it exists display the message below the Login button
+  checkForAutoLogout() {
+    if (this.cacheService.autoLogout$) {
+      const autoLogout = this.cacheService.autoLogout$;
+      this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
+    }
+  }
+
   // set focus on either the username or password input depending on whether username is populated from the cookie
   setInputFocus(hasUserName: boolean) {
     if (hasUserName) {
@@ -239,7 +227,7 @@ export class LoginComponent implements OnInit {
 
 
 
-  onLoginClick() {
+  async onLoginClick() {
 
     // reset and hide the error message if any is already displayed
     this.resetErrorMessage();
@@ -251,85 +239,89 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // construct a user/login object that will be passed in the request body
-    const user = {
-      userName: this.userName,
-      password: this.password
-    };
-
-    // start timer for authentication time
-    const t0 = performance.now();
-
     // show the animated svg
     this.showPendingLoginAnimation = true;
 
-    // call the api data service to authenticate the user credentials
-    this.apiDataAuthService.authenticate(user)
-      .subscribe(
-        res => {
+    // construct a user/login object that will be passed in the request body
+    const user = {
+      userName: this.userName,
+      password: this.password,
+      rememberMe: this.rememberMe
+    };
 
-          // console.log(res);
+    const authResponse = await this.loginAuthService.authenticate(user);
 
-          // log the time it took to authenticate
-          this.logAuthPerformance(t0);
+    console.log('auth response in component:');
+    console.log(authResponse);
 
-          // set or clear the username cookie depending on whether remember me is selected
-          this.setCookie();
+    // // call the api data service to authenticate the user credentials
+    // this.apiDataAuthService.authenticate(user)
+    //   .subscribe(
+    //     res => {
 
-          // store the logged in user in the auth service
-          this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
+    //       // console.log(res);
 
-          // store the jwt token in the cache service
-          this.cacheService.token = res.token;
+    //       // log the time it took to authenticate
+    //       // this.logAuthPerformance(t0);
 
-          // store the jwt token in local storage
-          localStorage.setItem('jarvisToken', res.token.signedToken);
-          // sessionStorage.setItem('jarvisToken', res.token.signedToken);
+    //       // set or clear the username cookie depending on whether remember me is selected
+    //       this.setCookie();
 
-          // set logged in to true in the auth service (loggedIn property)
-          this.authService.setLoggedIn(true);
+    //       // store the logged in user in the auth service
+    //       this.authService.loggedInUser = new User().deserialize(res.jarvisUser);
 
-          // reset the timer so that it will be synched with the token expiration, at least within a second or two
-          this.cacheService.resetTimer.emit(true);
+    //       // store the jwt token in the cache service
+    //       this.cacheService.token = res.token;
 
-          // clear the autologout object
-          this.cacheService.autoLogout$ = undefined;
+    //       // store the jwt token in local storage
+    //       localStorage.setItem('jarvisToken', res.token.signedToken);
+    //       // sessionStorage.setItem('jarvisToken', res.token.signedToken);
 
-          // get and store nested org data for this user, in anticipation of use and for performance
-          this.getNestedOrgData(res.jarvisUser.email);
-          // this.getNestedOrgData('ethan_hunt@keysight.com');
+    //       // set logged in to true in the auth service (loggedIn property)
+    //       this.authService.setLoggedIn(true);
 
-          // hide the animated svg
-          this.showPendingLoginAnimation = false;
+    //       // reset the timer so that it will be synched with the token expiration, at least within a second or two
+    //       this.cacheService.resetTimer.emit(true);
 
-          // route to the main page or the page that the user was attempting to go to before getting booted back to the login page
-          if (this.cacheService.appLoadPath) {
-            this.router.navigateByUrl(this.cacheService.appLoadPath);
-          } else {
-            this.router.navigateByUrl('/main/dashboard');
-          }
+    //       // clear the autologout object
+    //       this.cacheService.autoLogout$ = undefined;
 
-          // send the logged in user object to all other clients via websocket
-          this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
+    //       // get and store nested org data for this user, in anticipation of use and for performance
+    //       this.getNestedOrgData(res.jarvisUser.email);
+    //       // this.getNestedOrgData('ethan_hunt@keysight.com');
 
-        },
-        err => {
+    //       // hide the animated svg
+    //       this.showPendingLoginAnimation = false;
 
-          // log the time it took to authenticate
-          this.logAuthPerformance(t0);
+    //       // route to the main page or the page that the user was attempting to go to before getting booted back to the login page
+    //       if (this.cacheService.appLoadPath) {
+    //         this.router.navigateByUrl(this.cacheService.appLoadPath);
+    //       } else {
+    //         this.router.navigateByUrl('/main/dashboard');
+    //       }
 
-          // TEMP CODE to log the response (error)
-          console.error('authentication failed:');
-          console.error(err);
+    //       // send the logged in user object to all other clients via websocket
+    //       this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
 
-          // hide the animated svg
-          this.showPendingLoginAnimation = false;
+    //     },
+    //     err => {
 
-          // display the appropriate message depending on the type of error (timeout, invalid credentials, etc.)
-          this.handleErrorMessage(err);
+    //       // log the time it took to authenticate
+    //       // this.logAuthPerformance(t0);
 
-        }
-      );
+    //       // TEMP CODE to log the response (error)
+    //       console.error('authentication failed:');
+    //       console.error(err);
+
+    //       // hide the animated svg
+    //       this.showPendingLoginAnimation = false;
+
+    //       // display the appropriate message depending on the type of error (timeout, invalid credentials, etc.)
+    //       this.handleErrorMessage(err);
+
+    //     }
+    //   );
+
   }
 
   // set or delete the jrt_username cookie when the user logs in
