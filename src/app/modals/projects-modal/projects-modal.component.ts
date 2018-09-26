@@ -110,6 +110,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     // get the user id and email
     this.userID = this.authService.loggedInUser.id;
     this.userEmail = this.authService.loggedInUser.email;
+    this.managerEmailAddress = this.authService.loggedInUser.managerEmailAddress;
 
     // set the number of projects to display initially, and to add for infinite scroll
     this.numProjectsToDisplayAtOnce = 50;
@@ -161,7 +162,6 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     // for checkbox filter
     this.filterProjects = this.projects;
-    this.managerEmailAddress = this.authService.loggedInUser.managerEmailAddress;
 
     // initialize project filters
     this.setFilterItems();
