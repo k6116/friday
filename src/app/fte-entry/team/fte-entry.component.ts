@@ -70,6 +70,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   disableDeletePlan: boolean;
   FTEFormGroupLive: any;
   newPlanName: string;
+  planNameRegex: any;
   employeeVisible = new Array;
 
   // Highchart Declarations
@@ -150,8 +151,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       FTEFormArray: this.fb.array([])
     });
 
+    this.planNameRegex = /^[-a-zA-Z0-9.]+(\s+[-a-zA-Z0-9.]+)*$/;
     this.newPlanForm = this.fb.group({
-      newPlanName: [null]
+      newPlanName: [null, [Validators.required, Validators.minLength(2), Validators.pattern(this.planNameRegex)]]
     });
 
     this.employeeTotals = new Array(36).fill(null);
@@ -280,7 +282,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
   onNewPlanClick() {
     this.newPlanForm = this.fb.group({
-      newPlanName: [null]
+      newPlanName: [null, [Validators.required, Validators.minLength(2), Validators.pattern(this.planNameRegex)]]
     });
   }
 
@@ -539,24 +541,33 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
     const t0 = performance.now();
 
-    // call the api data service to send the put request
-    this.apiDataFteService.updateTeamData(fteData, this.authService.loggedInUser.id, this.currentPlan)
-    .subscribe(
-      res => {
-        this.cacheService.raiseToast('success', res.message);
+    // validate totals boxes for current quarter (must < 1)
+    const employeeTotalsValid = this.employeeTotals.every( value => {
+      return value <= 1;
+    });
 
-        // rebuild the FTE entry page
-        this.getPlan(this.authService.loggedInUser.id, this.currentPlan);
-        this.buildFteEntryForm();
-        this.displayFTETable = true;
-        this.FTEFormGroup.markAsUntouched();
-        this.checkDisableDeletePlan();
-      },
-      err => {
-        console.log(err);
-        this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
-      }
-    );
+    if (employeeTotalsValid) {
+      // call the api data service to send the put request
+      this.apiDataFteService.updateTeamData(fteData, this.authService.loggedInUser.id, this.currentPlan)
+      .subscribe(
+        res => {
+          this.cacheService.raiseToast('success', res.message);
+
+          // rebuild the FTE entry page
+          this.getPlan(this.authService.loggedInUser.id, this.currentPlan);
+          this.buildFteEntryForm();
+          this.displayFTETable = true;
+          this.FTEFormGroup.markAsUntouched();
+          this.checkDisableDeletePlan();
+        },
+        err => {
+          console.log(err);
+          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
+        }
+      );
+    } else {
+      this.cacheService.raiseToast('error', `FTE totals in each month cannot exceed 100%.`);
+    }
 
   }
 
@@ -590,8 +601,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         {
           title: 'Confirm Plan Launch',
           message: `Are you sure you want to launch plan "` + this.currentPlan + `"?<br><br>
-                    This will overwrite all existing employee FTE data to sync with the "` + this.currentPlan + `" data
-                    starting from ` + this.setMonthName + `-` + this.setYear + `.`,
+                    This will overwrite all existing employee FTE data to sync with the "` + this.currentPlan + `" data`,
           iconClass: 'fa-exclamation-triangle',
           iconColor: 'rgb(193, 193, 27)',
           closeButton: true,
@@ -1016,52 +1026,108 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   selectPlan(planName: string) {
-    // set plan after selection
-    this.currentPlan = planName;
 
-    // get data for selected plan
-    this.getPlan(this.authService.loggedInUser.id, this.currentPlan);
-    this.setMonth = this.currentMonth;
-    this.setMonthName = moment(this.setMonth).format('MMMM');
-    this.setYear = moment().year();
+    if (!this.FTEFormGroup.untouched) {
+      // emit confirmation modal to remind user to Save an edited form first
+      this.cacheService.confirmModalData.emit(
+        {
+          title: 'Unsaved Changes',
+          message: `There are unsaved changes to this form.<br><br>
+                    Please click 'Save' before selecting a different plan`,
+          iconClass: 'fa-exclamation-triangle',
+          iconColor: 'rgb(193, 193, 27)',
+          closeButton: true,
+          allowOutsideClickDismiss: true,
+          allowEscKeyDismiss: true,
+          buttons: [
+            {
+              text: 'Dismiss',
+              bsClass: 'btn-secondary',
+              emit: false
+            }
+          ]
+        }
+      );
+    } else {
+      // set plan after selection
+      this.currentPlan = planName;
+
+      // get data for selected plan
+      this.getPlan(this.authService.loggedInUser.id, this.currentPlan);
+      this.setMonth = this.currentMonth;
+      this.setMonthName = moment(this.setMonth).format('MMMM');
+      this.setYear = moment().year();
+    }
   }
 
   onDeletePlanClick() {
-    // hide the fte form while delete and reload functions are running
-    this.displayFTETable = false;
 
-    // if empty plan, just delete from planList
-    if (this.teamFTEsFlatLive.length === 0) {
-      this.planList = this.planList.filter( obj => {
-        return obj.planName !== this.currentPlan;
-      });
-      this.defaultPlan = this.planList[0].planName;
-      this.currentPlan = this.defaultPlan;
-      this.checkDisableDeletePlan();
-    } else {
-
-      // create object with delete data
-      const planData = {
-        planName: this.currentPlan,
-        userID: this.authService.loggedInUser.id
-      };
-
-      this.apiDataFteService.deletePlan(planData)
-        .subscribe(
-          res => {
-            console.log('plan deleted', res);
-
-            // empty arrays so it won't have objects appended
-            this.filteredEmployees = [];
-            this.teamEditableMembers = '';
-
-            this.planLoadSequence();
+    // emit confirmation modal after they click request button
+    this.cacheService.confirmModalData.emit(
+      {
+        title: 'Confirm Plan Delete',
+        message: `Are you sure you want to delete plan "` + this.currentPlan + `"?`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
+        allowOutsideClickDismiss: false,
+        allowEscKeyDismiss: false,
+        buttons: [
+          {
+            text: 'Delete',
+            bsClass: 'btn-success',
+            emit: true
           },
-          err => {
-            console.error(err);
+          {
+            text: 'Cancel',
+            bsClass: 'btn-secondary',
+            emit: false
           }
-        );
+        ]
       }
+    );
+
+    const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( modalRes => {
+      if (modalRes) {
+        // hide the fte form while delete and reload functions are running
+        this.displayFTETable = false;
+
+        // if empty plan, just delete from planList
+        if (this.teamFTEsFlatLive.length === 0) {
+          this.planList = this.planList.filter( obj => {
+            return obj.planName !== this.currentPlan;
+          });
+          this.defaultPlan = this.planList[0].planName;
+          this.currentPlan = this.defaultPlan;
+          this.checkDisableDeletePlan();
+        } else {
+
+          // create object with delete data
+          const planData = {
+            planName: this.currentPlan,
+            userID: this.authService.loggedInUser.id
+          };
+
+          this.apiDataFteService.deletePlan(planData)
+            .subscribe(
+              res => {
+                console.log('plan deleted', res);
+
+                // empty arrays so it won't have objects appended
+                this.filteredEmployees = [];
+                this.teamEditableMembers = '';
+
+                this.planLoadSequence();
+              },
+              err => {
+                console.error(err);
+              }
+            );
+          }
+      }
+      updateModalSubscription.unsubscribe();
+    });
+
   }
 
   onPreviousMonthClick() {
@@ -1258,5 +1324,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     };
 
     this.ftePlanningChart = Highcharts.chart('FTEPlanningChart', this.ftePlanningSeriesOptions);
+  }
+
+  abc() {
+    console.log(this.newPlanForm)
   }
 }

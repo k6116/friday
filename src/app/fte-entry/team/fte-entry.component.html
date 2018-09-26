@@ -18,7 +18,7 @@
     <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
       <i class="fa fa-table"></i>&nbsp;&nbsp;Export
     </button> -->
-    <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
+    <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
     <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
       <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
     </button>
@@ -154,11 +154,12 @@
         </div>
         <div class="modal-body">
           <form [formGroup]="newPlanForm">
+            <p><i>**Project names cannot start with a space or contain any special characters. Hyphens (-) are allowed. Must be at least two characters.</i></p>
             <div class="form-group">
               <div class="input-group">
-                <input [(ngModel)]="newPlanName" formControlName="newPlanName" type="text" class="form-control" placeholder="New plan name">
+                <input [(ngModel)]="newPlanName" formControlName="newPlanName" type="text" class="form-control" placeholder="New plan name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'New plan name'">
                 <div class="input-group-append">
-                  <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"  (click)="onCreateNewPlanClick(null, null, newPlanName)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
+                  <button [disabled]="!newPlanForm.valid" type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onCreateNewPlanClick(null, null, newPlanName)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
                   <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
                 </div>
               </div>
