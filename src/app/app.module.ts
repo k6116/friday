@@ -62,7 +62,7 @@ import { EmployeesReportsComponent } from './reports/employees/employees.compone
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
-import { OrgDropdownComponent } from './reports/team-fte-summary/org-dropdown/org-dropdown.component';
+import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
 import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
 import { ChartsModule } from 'ng2-charts';

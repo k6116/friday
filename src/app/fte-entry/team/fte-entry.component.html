@@ -64,7 +64,10 @@
 
   <div class="col-sm-3 col-custom">
     <div class="col-newplan" style="display: inline-flex">
-      <button class="btn btn-secondary" data-toggle="modal" data-target="#newPlanModal" (click)="onNewPlanClick()">
+      <button *ngIf="!displayNewPlanModal" class="btn btn-secondary" (click)="onNewPlanClick()">
+        <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
+      </button>
+      <button *ngIf="displayNewPlanModal" class="btn btn-secondary" data-toggle="modal" data-target="#newPlanModal" (click)="onNewPlanClick()">
         <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
       </button>
       <span style="width: 5px"></span>
@@ -146,7 +149,7 @@
 
 
 <!-- Edit New Plan Modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="newPlanModal">
+<div [hidden]="!displayNewPlanModal" class="modal fade" tabindex="-1" role="dialog" id="newPlanModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content" style="width:150%">
         <div class="modal-header" style="border-bottom: none; height: 2rem;">

@@ -72,6 +72,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   newPlanName: string;
   planNameRegex: any;
   employeeVisible = new Array;
+  displayNewPlanModal: boolean;
 
   // Highchart Declarations
   ftePlanningChart: any;
@@ -163,6 +164,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.timer = setInterval(() => {
       this.changeDetectorRef.detectChanges();
     }, 200);
+
+    this.displayNewPlanModal = true;
   }
 
   // canDeactivate checks if the user has unsaved changes in the form and informs the router whether the user can leave
@@ -261,11 +264,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           this.updateEmployeeTotals();
           this.setEmployeeTotalsBorder();
           this.displayFTETable = true;
-
-          this.teamOrgStructure.forEach(emp => {
-            this.employeeVisible.push(true);
-          });
         }
+        this.teamOrgStructure.forEach(emp => {
+          this.employeeVisible.push(true);
+        });
         this.createFtePlanningChartXAxis();
       }
     );
@@ -281,9 +283,34 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onNewPlanClick() {
-    this.newPlanForm = this.fb.group({
-      newPlanName: [null, [Validators.required, Validators.minLength(2), Validators.pattern(this.planNameRegex)]]
-    });
+    // using the display flag because the "untouched" feature triggers the moment a user clicks inside a box
+    // haven't found a good way to implement "dirty"
+    if (!this.displayNewPlanModal) {
+      // emit confirmation modal to remind user to Save an edited form first
+      this.cacheService.confirmModalData.emit(
+        {
+          title: 'Unsaved Changes',
+          message: `There are unsaved changes to this form.<br><br>
+                    Please click 'Save' before creating a new plan`,
+          iconClass: 'fa-exclamation-triangle',
+          iconColor: 'rgb(193, 193, 27)',
+          closeButton: true,
+          allowOutsideClickDismiss: true,
+          allowEscKeyDismiss: true,
+          buttons: [
+            {
+              text: 'Dismiss',
+              bsClass: 'btn-secondary',
+              emit: false
+            }
+          ]
+        }
+      );
+    } else {
+      this.newPlanForm = this.fb.group({
+        newPlanName: [null, [Validators.required, Validators.minLength(2), Validators.pattern(this.planNameRegex)]]
+      });
+    }
   }
 
   onAddProjectClick() {
@@ -346,7 +373,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
 
   onFTEChange(i, j, value) {
-    console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
+    // console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
+    this.displayNewPlanModal = false;
 
     value = Number(value);
 
@@ -455,7 +483,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // set the border color for the monthly totals inputs
     this.setEmployeeTotalsBorder();
     this.createFtePlanningChartData(this.projects);
-
   }
 
 
@@ -559,6 +586,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           this.displayFTETable = true;
           this.FTEFormGroup.markAsUntouched();
           this.checkDisableDeletePlan();
+          this.displayNewPlanModal = true;
         },
         err => {
           console.log(err);
@@ -866,8 +894,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
   onCreateSuccess(selectedProject: any) {
 
-    console.log('Create project success. My Project List Refreshed');
-    console.log('selectedProject', selectedProject);
+    // console.log('Create project success. My Project List Refreshed');
+    // console.log('selectedProject', selectedProject);
     this.display = true;  // make sure FTE entry form is visible
 
     // verify selectedProject has not already been added
@@ -953,6 +981,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.defaultPlan = this.planList[0].planName;
     this.currentPlan = this.defaultPlan;
     this.checkDisableDeletePlan();
+
   }
 
   async getPlan(userID: any, planName: string): Promise<any> {
@@ -1326,7 +1355,4 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.ftePlanningChart = Highcharts.chart('FTEPlanningChart', this.ftePlanningSeriesOptions);
   }
 
-  abc() {
-    console.log(this.newPlanForm)
-  }
 }

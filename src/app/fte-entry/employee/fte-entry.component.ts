@@ -436,7 +436,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     console.log(this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
     // console.log(this.fteProjectVisible);
-    console.log('this.fteMonthVisible', this.fteMonthVisible)
   }
 
   onSaveClick() {
