@@ -252,7 +252,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // Promise.all allows us to run two functions asynchronously
     Promise.all([
       this.getPlanList(this.authService.loggedInUser.id),
-      this.getTeam('ethan_hunt@keysight.com'),
+      this.getTeam(this.authService.loggedInUser.email),
       this.setCurrentMonthYear()])
     .then(async res => {
         if (this.defaultPlan === undefined) {
