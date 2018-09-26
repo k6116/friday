@@ -12,7 +12,7 @@ export class CacheService {
   // userData object will be encoded in the signedToken string
   token: any;
 
-  apiDataTimeout = 100 * 60 * 15; // set the api data service timeout to 15 seconds
+  apiDataTimeout = 15000; // set the api data service timeout to 15 seconds
   loggedInUser = new EventEmitter<any>();
   loggedInUser$: any;
 

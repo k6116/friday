@@ -14,7 +14,7 @@ export class LoginCookiesService {
   ) { }
 
 
-  setCookie(rememberMe: boolean, userName: string) {
+  setRememberMeCookie(rememberMe: boolean, userName: string) {
     if (rememberMe) {
       this.cookiesService.setCookie('jrt_username', userName, 365);
     } else {

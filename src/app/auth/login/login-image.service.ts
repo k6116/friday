@@ -3,15 +3,17 @@ import { ApiDataAuthService } from '../../_shared/services/api-data/_index';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { CacheService } from '../../_shared/services/cache.service';
 
-interface IPath {
-  path: string;
-}
+
 
 export interface IBackgroundImage {
   thumbnail: IPath;
   fullSize: IPath;
   title: string;
   subTitle: string;
+}
+
+interface IPath {
+  path: string;
 }
 
 interface IBackgroundImageFromIndex {
@@ -22,8 +24,6 @@ interface IBackgroundImageFromIndex {
 
 @Injectable()
 export class LoginImageService {
-
-  selectedImage: any;
 
   constructor(
     private apiDataAuthService: ApiDataAuthService,

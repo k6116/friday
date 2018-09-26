@@ -70,8 +70,6 @@ export class LoginMessagesService {
 
   getLoginErrorMessage(error: any): IMessage {
 
-    console.log(error);
-
     const message: IMessage = {
       text: undefined,
       iconClass: 'fa-exclamation-triangle',
@@ -79,14 +77,17 @@ export class LoginMessagesService {
       display: true
     };
 
-    if (error.hasOwnProperty('title')) {
-      if (error.title === 'invalid user credentials') {
+    if (error.status === 401) {
+      if (JSON.parse(error.text()).title === 'invalid user credentials') {
         message.text = 'Invalid user name or password.  Note: Use your Windows credentials to login.';
       }
-    } else if (1 === 1) {
-      message.text = 'Some other error';
-      this.toolsService.displayTimeoutError();
+    } else if (error.hasOwnProperty('name')) {
+      if (error.name === 'TimeoutError') {
+        message.text = 'The server is not responding. Please check your connection to the Keysight network.';
+        this.toolsService.displayTimeoutError();
+      }
     }
+    // add handling for sequelize errors here
 
     return message;
 

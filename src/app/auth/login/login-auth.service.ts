@@ -29,13 +29,15 @@ export class LoginAuthService {
   ) { }
 
 
+  // make the api call and get the response
+  // either 200 status with jarvis user data and jwt token, or 401 unauthorized status with error
   async getAuthResponse(user: IUser): Promise<any> {
 
     return await this.apiDataAuthService.authenticate(user).toPromise();
 
   }
 
-
+  // method to be called from the component, to either return an error object or proceed to login
   async authenticate(user: IUser): Promise<any> {
 
     let authResponse: any;
@@ -48,27 +50,20 @@ export class LoginAuthService {
       authResponse = err;
     });
 
-    // console.log(authResponse.text());
-
-    if (authResponse.status === 500) {
+    if (authResponse.status !== 200) {
+      console.log(authResponse);
       return {
         response: undefined,
-        error: authResponse.text(),
+        error: authResponse,
         status: authResponse.status
       };
     }
 
-    console.log('auth response:');
-    console.log(authResponse);
-
     // set or clear the username cookie depending on whether remember me is selected
-    this.loginCookiesService.setCookie(user.rememberMe, user.userName);
+    this.loginCookiesService.setRememberMeCookie(user.rememberMe, user.userName);
 
     // store the logged in user in the auth service
     this.authService.loggedInUser = new User().deserialize(authResponse.jarvisUser);
-
-    // store the jwt token in the cache service
-    this.cacheService.token = authResponse.token;
 
     // store the jwt token in local storage
     localStorage.setItem('jarvisToken', authResponse.token.signedToken);
@@ -77,50 +72,53 @@ export class LoginAuthService {
     // set logged in to true in the auth service (loggedIn property)
     this.authService.setLoggedIn(true);
 
-    // reset the timer so that it will be synched with the token expiration, at least within a second or two
-    this.cacheService.resetTimer.emit(true);
-
-    // clear the autologout object
-    this.cacheService.autoLogout$ = undefined;
+    // update data in the cache service
+    this.updateCache(authResponse);
 
     // get and store nested org data for this user, in anticipation of use and for performance
     this.getNestedOrgData(authResponse.jarvisUser.email);
     // this.getNestedOrgData('ethan_hunt@keysight.com');
 
-    // hide the animated svg
-    // this.showPendingLoginAnimation = false;
-
-    // route to the main page or the page that the user was attempting to go to before getting booted back to the login page
-    if (this.cacheService.appLoadPath) {
-      this.router.navigateByUrl(this.cacheService.appLoadPath);
-    } else {
-      this.router.navigateByUrl('/main/dashboard');
-    }
-
     // send the logged in user object to all other clients via websocket
     this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
 
-    console.log({
-      response: authResponse,
-      error: undefined,
-      status: authResponse.status
-    });
+    // route to the dashboard page,
+    // or the page that the user was attempting to go to before getting booted back to the login page (deep linking)
+    this.routeToPage();
 
+    // return the auth response with no error and 200 ok status
     return {
       response: authResponse,
       error: undefined,
       status: authResponse.status
     };
 
+  }
 
-    // hide the animated svg
-    // this.showPendingLoginAnimation = false;
+  updateCache(authResponse) {
 
-    // display the appropriate message depending on the type of error (timeout, invalid credentials, etc.)
-    // this.handleErrorMessage(err);
+    // store the jwt token in the cache service
+    this.cacheService.token = authResponse.token;
+
+    // reset the timer so that it will be synched with the token expiration, at least within a second or two
+    this.cacheService.resetTimer.emit(true);
+
+    // clear the autologout object
+    this.cacheService.autoLogout$ = undefined;
 
   }
 
+  // route to the dashboard page,
+  // or the page that the user was attempting to go to before getting booted back to the login page (deep linking)
+  routeToPage() {
+
+    if (this.cacheService.appLoadPath) {
+      this.router.navigateByUrl(this.cacheService.appLoadPath);
+    } else {
+      this.router.navigateByUrl('/main/dashboard');
+    }
+
+  }
 
   // get and store the nested org data upon successfull login
   getNestedOrgData(email: string) {
