@@ -17,6 +17,7 @@ interface IUser {
 @Injectable()
 export class LoginAuthService {
 
+
   constructor(
     private router: Router,
     private apiDataAuthService: ApiDataAuthService,
@@ -37,36 +38,31 @@ export class LoginAuthService {
 
   async authenticate(user: IUser): Promise<any> {
 
-    const authResponse = await this.getAuthResponse(user)
+    let authResponse: any;
+
+    await this.getAuthResponse(user)
+    .then(res => {
+      authResponse = res;
+    })
     .catch(err => {
-      console.error('invalid login credentials');
-      console.log(err);
-      console.log(err.text());
-      const errObject = err.text();
-      // return undefined;
-      // return {
-      //   response: undefined,
-      //   error: errObject,
-      //   status: err.status
-      // };
-      return;
+      authResponse = err;
     });
 
     // console.log(authResponse.text());
 
-    // if (authResponse.status === 500) {
-    //   return {
-    //     response: undefined,
-    //     error: authResponse,
-    //     status: authResponse.status
-    //   };
-    // }
+    if (authResponse.status === 500) {
+      return {
+        response: undefined,
+        error: authResponse.text(),
+        status: authResponse.status
+      };
+    }
 
     console.log('auth response:');
     console.log(authResponse);
 
     // set or clear the username cookie depending on whether remember me is selected
-    // this.setCookie();
+    this.loginCookiesService.setCookie(user.rememberMe, user.userName);
 
     // store the logged in user in the auth service
     this.authService.loggedInUser = new User().deserialize(authResponse.jarvisUser);

@@ -57,7 +57,7 @@
 
         <div class="login-remember-me-cont">
           <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="customCheck1" [checked]="rememberMe" (change)="onRememberMeChange($event)">
+            <input type="checkbox" [(ngModel)]="rememberMe" class="custom-control-input" id="customCheck1" [checked]="rememberMe" (keyup.enter)="onLoginKeyEnter()">
             <label class="custom-control-label" for="customCheck1">Remember Me</label>
             <!-- <mat-slide-toggle color="Primary" [checked]="rememberMe" (change)="onRememberMeChange($event)">Remember Me</mat-slide-toggle> -->
           </div>
@@ -81,10 +81,10 @@
         <table>
           <tr>
             <td>
-              <i *ngIf="showMessage" [class]="'fa fa-lg login-message-icon ' + iconClass" [style.color]="iconColor" aria-hidden="true"></i>
+              <i *ngIf="message?.display" [class]="'fa fa-lg login-message-icon ' + message?.iconClass" [style.color]="message?.iconColor" aria-hidden="true"></i>
             </td>
             <td class="login-notice-message">
-              {{ loginMessage }}
+              {{ message?.text }}
             </td>
           </tr>
         </table>

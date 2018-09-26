@@ -1,18 +1,20 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+// import { Router, ActivatedRoute } from '@angular/router';
 import { CacheService } from '../../_shared/services/cache.service';
-import { AuthService } from '../../_shared/services/auth.service';
-import { ToolsService } from '../../_shared/services/tools.service';
+// import { AuthService } from '../../_shared/services/auth.service';
+// import { ToolsService } from '../../_shared/services/tools.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
-import { User } from '../../_shared/models/user.model';
-import { WebsocketService } from '../../_shared/services/websocket.service';
-import { CookiesService } from '../../_shared/services/cookies.service';
-import { ApiDataAuthService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
+// import { User } from '../../_shared/models/user.model';
+// import { WebsocketService } from '../../_shared/services/websocket.service';
+// import { CookiesService } from '../../_shared/services/cookies.service';
+// import { ApiDataAuthService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 import { LoginImageService } from './login-image.service';
 import { LoginAuthService } from './login-auth.service';
-import { LoginErrorsService } from './login-errors.service';
+import { LoginMessagesService } from './login-messages.service';
 import { LoginCookiesService } from './login-cookies.service';
 import { IBackgroundImage } from './login-image.service';
+import { IMessage } from './login-messages.service';
+import { ICookie } from './login-cookies.service';
 
 declare var $: any;
 
@@ -21,7 +23,7 @@ declare var $: any;
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css', '../../_shared/styles/common.css'],
-  providers: [LoginImageService, LoginAuthService, LoginErrorsService, LoginCookiesService]
+  providers: [LoginImageService, LoginAuthService, LoginMessagesService, LoginCookiesService]
 })
 export class LoginComponent implements OnInit {
 
@@ -38,11 +40,13 @@ export class LoginComponent implements OnInit {
   showLoginPage: boolean;
 
   // properties used for the error message display (invalid login etc.)
-  loginMessage: string;
-  loginSuccess: boolean;
-  showMessage: boolean;
-  iconClass: string;
-  iconColor: string;
+  // loginMessage: string;
+  // loginSuccess: boolean;
+  // showMessage: boolean;
+  // iconClass: string;
+  // iconColor: string;
+
+  message: IMessage;
 
   // toggle checkbox state
   rememberMe: boolean;
@@ -64,20 +68,21 @@ export class LoginComponent implements OnInit {
 
 
   constructor(
-    private router: Router,
+    // private router: Router,
     public cacheService: CacheService,
-    private apiDataOrgService: ApiDataOrgService,
-    private apiDataAuthService: ApiDataAuthService,
-    private authService: AuthService,
-    private toolsService: ToolsService,
+    // private apiDataOrgService: ApiDataOrgService,
+    // private apiDataAuthService: ApiDataAuthService,
+    // private authService: AuthService,
+    // private toolsService: ToolsService,
     private clickTrackingService: ClickTrackingService,
-    private websocketService: WebsocketService,
-    private cookiesService: CookiesService,
+    // private websocketService: WebsocketService,
+    // private cookiesService: CookiesService,
     private loginImageService: LoginImageService,
     private loginAuthService: LoginAuthService,
-    private loginCookiesService: LoginCookiesService,
-    private loginErrorsService: LoginErrorsService,
-    private route: ActivatedRoute
+    // private loginCookiesService: LoginCookiesService,
+    private loginMessagesService: LoginMessagesService,
+    private loginCookiesService: LoginCookiesService
+    // private route: ActivatedRoute
   ) {
 
     this.imageClass = '';
@@ -152,7 +157,7 @@ export class LoginComponent implements OnInit {
 
     // set the focus on either the user name or password input
     setTimeout(() => {
-      this.setInputFocus(!!this.userName);
+      this.setInputFocus();
     }, 0);
 
   }
@@ -166,7 +171,7 @@ export class LoginComponent implements OnInit {
       this.showLoginPage = true;
       setTimeout(() => {
         // set the focus on either the user name or password input
-        this.setInputFocus(!!this.userName);
+        this.setInputFocus();
       }, 0);
     }, 250);
 
@@ -187,12 +192,9 @@ export class LoginComponent implements OnInit {
 
   // check for the jrt_username cookie; if it exists set the username in the input (uses two-way binding)
   checkRememberMeCookie() {
-    const userName = this.cookiesService.getCookie('jrt_username');
-    if (userName) {
-      this.userName = userName;
-      this.rememberMe = true;
-    } else {
-    }
+    const cookieContents: ICookie = this.loginCookiesService.getRememberMeCookie();
+    this.userName = cookieContents.userName;
+    this.rememberMe = cookieContents.rememberMe;
   }
 
   // check the port to see if this is the test instance (dev will return '3000', test will return '440' prod will return '')
@@ -206,40 +208,43 @@ export class LoginComponent implements OnInit {
   // check for the an autoLogout object passed via the cache service; if it exists display the message below the Login button
   checkForAutoLogout() {
     if (this.cacheService.autoLogout$) {
-      const autoLogout = this.cacheService.autoLogout$;
-      this.displayMessage(autoLogout.message, autoLogout.iconClass, autoLogout.iconColor);
+      this.message = this.loginMessagesService.getAutoLogoutMessage();
     }
   }
 
-  // set focus on either the username or password input depending on whether username is populated from the cookie
-  setInputFocus(hasUserName: boolean) {
-    if (hasUserName) {
-      this.passwordVC.nativeElement.focus();
-    } else {
-      this.userNameVC.nativeElement.focus();
-    }
-  }
-
+  // handle enter key events when focused on the user name or password inputs
   onLoginKeyEnter() {
+    // log a record in the click tracking table
     this.clickTrackingService.logClickWithEvent(`page: Login, clickedOn: Login Button, text: ${this.userName}`);
+    // call login click
     this.onLoginClick();
   }
 
 
-
+  // handle login button clicked (with mouse)
   async onLoginClick() {
 
-    // reset and hide the error message if any is already displayed
-    this.resetErrorMessage();
+    // check for and display form entry errors if any (user name and/or password missing)
+    this.message = this.loginMessagesService.getFormEntryMessage(this.userName, this.password);
 
-    // check for form entry errors (missing user name or password)
-    if (this.hasFormEntryErrors()) {
-      this.displayFormEntryErrors();
-      // stop here
+    // return/exit here is there is an error message
+    // and set the focus on either the user name or password input depending on which is missing (set focus on user name if both missing)
+    if (this.message.display) {
+      this.setInputFocus();
       return;
     }
 
-    // show the animated svg
+    // reset and hide the error message if any is already displayed
+    // this.resetErrorMessage();
+
+    // // check for form entry errors (missing user name or password)
+    // if (this.hasFormEntryErrors()) {
+    //   this.displayFormEntryErrors();
+    //   // stop here
+    //   return;
+    // }
+
+    // show the animated svg in the login button
     this.showPendingLoginAnimation = true;
 
     // construct a user/login object that will be passed in the request body
@@ -253,6 +258,13 @@ export class LoginComponent implements OnInit {
 
     console.log('auth response in component:');
     console.log(authResponse);
+
+    // if there was an error, display it below the login button
+    if (authResponse.error) {
+      this.message = this.loginMessagesService.getLoginErrorMessage(JSON.parse(authResponse.error));
+    }
+
+    this.showPendingLoginAnimation = false;
 
     // // call the api data service to authenticate the user credentials
     // this.apiDataAuthService.authenticate(user)
@@ -325,95 +337,105 @@ export class LoginComponent implements OnInit {
   }
 
   // set or delete the jrt_username cookie when the user logs in
-  setCookie() {
-    if (this.rememberMe) {
-      this.cookiesService.setCookie('jrt_username', this.userName, 365);
-    } else {
-      this.cookiesService.deleteCookie('jrt_username');
-    }
-  }
+  // setCookie() {
+  //   if (this.rememberMe) {
+  //     this.cookiesService.setCookie('jrt_username', this.userName, 365);
+  //   } else {
+  //     this.cookiesService.deleteCookie('jrt_username');
+  //   }
+  // }
 
   // reset and hide the error message
-  resetErrorMessage() {
-    this.loginMessage = undefined;
-    this.showMessage = false;
-  }
+  // resetErrorMessage() {
+  //   this.loginMessage = undefined;
+  //   this.showMessage = false;
+  // }
 
   // simple check for form entry error (missing either user name or password or both)
-  hasFormEntryErrors(): boolean {
-    if (!this.userName || !this.password) {
-      return true;
-    }
-  }
+  // hasFormEntryErrors(): boolean {
+  //   if (!this.userName || !this.password) {
+  //     return true;
+  //   }
+  // }
 
   // display error message and icon for missing username or password, also set focus for the user for convenience
-  displayFormEntryErrors() {
-    if (!this.userName && !this.password) {
-      this.displayMessage('Please enter your user name and password', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
-      this.userNameVC.nativeElement.focus();
-    } else if (!this.userName) {
-      this.displayMessage('Please enter your user name', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
-      this.userNameVC.nativeElement.focus();
-    } else if (!this.password) {
-      this.displayMessage('Please enter your password', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
-      this.passwordVC.nativeElement.focus();
-    }
-  }
+  // displayFormEntryErrors() {
+  //   if (!this.userName && !this.password) {
+  //     this.displayMessage('Please enter your user name and password', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
+  //     this.userNameVC.nativeElement.focus();
+  //   } else if (!this.userName) {
+  //     this.displayMessage('Please enter your user name', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
+  //     this.userNameVC.nativeElement.focus();
+  //   } else if (!this.password) {
+  //     this.displayMessage('Please enter your password', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
+  //     this.passwordVC.nativeElement.focus();
+  //   }
+  // }
 
   // TEMP CODE to log the total time it took to authenticate
-  logAuthPerformance(t0: number) {
-    const t1 = performance.now();
-    // console.log(`authentication took ${t1 - t0} milliseconds`);
-  }
+  // logAuthPerformance(t0: number) {
+  //   const t1 = performance.now();
+  //   // console.log(`authentication took ${t1 - t0} milliseconds`);
+  // }
 
   // display authentication error or success message
-  displayMessage(message: string, iconClass: string, iconColor: string) {
-    this.loginMessage = message;
-    this.iconClass = iconClass;
-    this.iconColor = iconColor;
-    this.showMessage = true;
-  }
+  // displayMessage(message: string, iconClass: string, iconColor: string) {
+  //   this.loginMessage = message;
+  //   this.iconClass = iconClass;
+  //   this.iconColor = iconColor;
+  //   this.showMessage = true;
+  // }
 
-  // for an error response, check for various types or errors and display the appropriate message
-  handleErrorMessage(err: any) {
-    // check for no response (net::ERR_CONNECTION_REFUSED etc.)
-    if (err.status === 0) {
-      this.toolsService.displayTimeoutError();
-      this.displayMessage('The server is not responding', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
-    // check for timeout error
-    } else if (err.hasOwnProperty('name')) {
-      if (err.name === 'TimeoutError') {
-        this.toolsService.displayTimeoutError();
-        this.displayMessage('The server is not responding', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
-      }
-    // otherwise, this should be a failed login (invalid credentials)
-    } else {
-      this.displayMessage('Invalid user name or password.  Note: Use your Windows credentials to login.',
-        'fa-exclamation-triangle', this.cacheService.alertIconColor);
-    }
-  }
+  // // for an error response, check for various types or errors and display the appropriate message
+  // handleErrorMessage(err: any) {
+  //   // check for no response (net::ERR_CONNECTION_REFUSED etc.)
+  //   if (err.status === 0) {
+  //     this.toolsService.displayTimeoutError();
+  //     this.displayMessage('The server is not responding', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
+  //   // check for timeout error
+  //   } else if (err.hasOwnProperty('name')) {
+  //     if (err.name === 'TimeoutError') {
+  //       this.toolsService.displayTimeoutError();
+  //       this.displayMessage('The server is not responding', 'fa-exclamation-triangle', this.cacheService.alertIconColor);
+  //     }
+  //   // otherwise, this should be a failed login (invalid credentials)
+  //   } else {
+  //     this.displayMessage('Invalid user name or password.  Note: Use your Windows credentials to login.',
+  //       'fa-exclamation-triangle', this.cacheService.alertIconColor);
+  //   }
+  // }
 
   // get and store the nested org data upon successfull login
-  getNestedOrgData(email: string) {
-    this.cacheService.nestedOrgDataRequested = true;
-    this.apiDataOrgService.getOrgData(email)
-    .subscribe(
-      res => {
-        const nestedOrgData = JSON.parse('[' + res[0].json + ']');
-        // console.log('nested org object');
-        // console.log(nestedOrgData);
-        this.cacheService.$nestedOrgData = nestedOrgData;
-        this.cacheService.nestedOrgData.emit(nestedOrgData);
-      },
-      err => {
-        console.error('error getting nested org data');
-      }
-    );
-  }
+  // getNestedOrgData(email: string) {
+  //   this.cacheService.nestedOrgDataRequested = true;
+  //   this.apiDataOrgService.getOrgData(email)
+  //   .subscribe(
+  //     res => {
+  //       const nestedOrgData = JSON.parse('[' + res[0].json + ']');
+  //       // console.log('nested org object');
+  //       // console.log(nestedOrgData);
+  //       this.cacheService.$nestedOrgData = nestedOrgData;
+  //       this.cacheService.nestedOrgData.emit(nestedOrgData);
+  //     },
+  //     err => {
+  //       console.error('error getting nested org data');
+  //     }
+  //   );
+  // }
 
   // when the checkbox is changed, update the rememberMe property (boolean)
-  onRememberMeChange(event) {
-    this.rememberMe = event.target.checked;
+  // onRememberMeChange(event) {
+  //   this.rememberMe = event.target.checked;
+  // }
+
+
+  // set focus on either the username or password input depending on whether username is populated from the cookie
+  setInputFocus() {
+    if (this.userName) {
+      this.passwordVC.nativeElement.focus();
+    } else {
+      this.userNameVC.nativeElement.focus();
+    }
   }
 
 
