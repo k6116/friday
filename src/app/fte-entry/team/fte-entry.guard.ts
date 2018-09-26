@@ -12,6 +12,7 @@ export class FteTeamEntryGuard implements CanActivate {
   teamOrgStructure: any;
   teamEditableMembers: any;
   allEmployees: any;
+  loginAsEmail: string;
 
   constructor(
     private router: Router,
@@ -24,8 +25,25 @@ export class FteTeamEntryGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
 
+    // Check permissions to see if user has Team FTE Admin View
+    // This allows user to login to Team FTEs as their manager for troubleshooting
+    const tokenPayload = this.authService.decodedToken();
+
+    // get the permissions out of the token payload
+    const permissions = tokenPayload.userData.permissions;
+
+    const foundPermission = permissions.find(permission => {
+      return permission.permissionName === `Resources > FTE Entry > Team FTEs > Admin View`;
+    });
+
+    if (foundPermission) {
+      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+    } else {
+      this.loginAsEmail = this.authService.loggedInUser.email;
+    }
+
     // Get Team Data - Manager and Employees
-    const teamOrgStructure = await this.getTeam(this.authService.loggedInUser.email);
+    const teamOrgStructure = await this.getTeam(this.loginAsEmail);
     this.teamOrgStructure = JSON.parse('[' + teamOrgStructure[0].json + ']')[0];
 
     if (!('employees' in this.teamOrgStructure)) {

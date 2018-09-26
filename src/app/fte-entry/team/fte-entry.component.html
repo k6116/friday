@@ -26,6 +26,9 @@
       <i class="fa fa-play"></i>&nbsp;&nbsp;Launch
     </button>
 
+    <div *ngIf="displayAdminViewMessage"  style="color: red; display: inline-block; margin-left: 100px">
+      <h3>ADMIN: Viewing this page under email {{ loginAsEmail }}</h3>
+    </div>
     <!-- <div class="dropdown btn-help ">
       <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-question"></i>&nbsp;&nbsp;Help

@@ -31,6 +31,8 @@ export class TeamRolesComponent implements OnInit {
     JobSubTitleID: null,
     JobSubTitleName: ''
   };
+  loginAsEmail: string;
+  displayAdminViewMessage: boolean;
 
   constructor(
     private authService: AuthService,
@@ -39,6 +41,23 @@ export class TeamRolesComponent implements OnInit {
     private cacheService: CacheService,
     private toolsService: ToolsService
   ) {
+    // Check permissions to see if user has Team FTE Admin View
+    // This allows user to login to Team FTEs as their manager for troubleshooting
+    const tokenPayload = this.authService.decodedToken();
+
+    // get the permissions out of the token payload
+    const permissions = tokenPayload.userData.permissions;
+
+    const foundPermission = permissions.find(permission => {
+      return permission.permissionName === `Resources > FTE Entry > Team FTEs > Admin View`;
+    });
+
+    if (foundPermission) {
+      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      this.displayAdminViewMessage = true;
+    } else {
+      this.loginAsEmail = this.authService.loggedInUser.email;
+    }
   }
 
   ngOnInit() {
@@ -48,7 +67,7 @@ export class TeamRolesComponent implements OnInit {
 
   async initializeEmployeeData() {
     // Get Team Data - Manager and Employees
-    const teamOrgStructure = await this.getTeam('ethan_hunt@keysight.com');
+    const teamOrgStructure = await this.getTeam(this.loginAsEmail);
     this.teamOrgStructure = JSON.parse('[' + teamOrgStructure[0].json + ']')[0];
 
     this.allEmployees = this.teamOrgStructure.employees;

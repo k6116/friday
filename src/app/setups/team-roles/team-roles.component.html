@@ -6,6 +6,11 @@
       <button class="btn btn-secondary btn-fte-toolbar" (click)="onSaveClick()">
         <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
       </button>
+
+      <div *ngIf="displayAdminViewMessage"  style="color: red; display: inline-block; margin-left: 100px">
+        <h3>ADMIN: Viewing this page under email {{ loginAsEmail }}</h3>
+      </div>
+      
     </div>  
   </div>
           

@@ -51,7 +51,7 @@ export class SideNavComponent implements OnInit, AfterViewInit {
           expanded: false,
           active: false,
           highlighted: false,
-          permissionProtected: false,
+          permissionProtected: true,
           hidden: false,
           subItems: [
             {

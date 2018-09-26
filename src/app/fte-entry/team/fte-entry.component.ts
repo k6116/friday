@@ -73,6 +73,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   planNameRegex: any;
   employeeVisible = new Array;
   displayNewPlanModal: boolean;
+  loginAsEmail: string;
+  displayAdminViewMessage: boolean;
 
   // Highchart Declarations
   ftePlanningChart: any;
@@ -147,6 +149,25 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     private decimalPipe: DecimalPipe,
     private changeDetectorRef: ChangeDetectorRef
   ) {
+
+    // Check permissions to see if user has Team FTE Admin View
+    // This allows user to login to Team FTEs as their manager for troubleshooting
+    const tokenPayload = this.authService.decodedToken();
+
+    // get the permissions out of the token payload
+    const permissions = tokenPayload.userData.permissions;
+
+    const foundPermission = permissions.find(permission => {
+      return permission.permissionName === `Resources > FTE Entry > Team FTEs > Admin View`;
+    });
+
+    if (foundPermission) {
+      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      this.displayAdminViewMessage = true;
+    } else {
+      this.loginAsEmail = this.authService.loggedInUser.email;
+    }
+
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
@@ -252,7 +273,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // Promise.all allows us to run two functions asynchronously
     Promise.all([
       this.getPlanList(this.authService.loggedInUser.id),
-      this.getTeam(this.authService.loggedInUser.email),
+      this.getTeam(this.loginAsEmail),
       this.setCurrentMonthYear()])
     .then(async res => {
         if (this.defaultPlan === undefined) {
