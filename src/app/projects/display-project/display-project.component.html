@@ -215,6 +215,11 @@ considering topnav, sidenav, and footer -->
       </div>
       <!-- - -->
 
+      <!-- second col is BOM viewer -->
+      <div class="bom-chart-cont">
+        <app-bom-draw-d3 *ngIf="bomJson" [bomJson]="bomJson"></app-bom-draw-d3>
+      </div>
+
 
       <!-- hidden container for record history html -->
       <div class="project-record-history-cont">

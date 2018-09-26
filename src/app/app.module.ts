@@ -28,7 +28,7 @@ import { TitleCasePipe } from '@angular/common';
 import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
-import { CacheService, ClickTrackingService, CookiesService,
+import { BomService, CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
@@ -186,6 +186,7 @@ import { DisplayProjectComponent } from './projects/display-project/display-proj
     ApiDataPartService,
     ApiDataAnalyticsService,
     ApiDataBomService,
+    BomService,
     CacheService,
     AuthService,
     AuthGuardService,

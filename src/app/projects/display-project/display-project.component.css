@@ -273,7 +273,7 @@ span.project-attributes-value {
 }
 
 
-/* chart optinos checkboxes */
+/* chart options checkboxes */
 
 div.chart-options-cont {
   position: relative;
@@ -297,6 +297,14 @@ label.chart-options-label {
 input.chart-options-checkbox {
   position: relative;
   top: 2px;
+}
+
+/* BOM container */
+
+.bom-chart-cont {
+  width: 100%;
+  min-width: 750px;
+  white-space: nowrap;
 }
 
 

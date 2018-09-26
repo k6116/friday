@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiDataBomService } from '../../_shared/services/api-data/_index';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-bom-viewer',

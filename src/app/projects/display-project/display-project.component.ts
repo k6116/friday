@@ -37,6 +37,7 @@ export class DisplayProjectComponent implements OnInit {
   projectTypesToDisplaySchedule: string[];
   displayScheduleChart: boolean;
   chart: any;
+  bomJson: any; // nested JSON containing BOM data
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
