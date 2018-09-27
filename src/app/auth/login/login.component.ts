@@ -161,9 +161,7 @@ export class LoginComponent implements OnInit {
   // check the port to see if this is the test instance (dev will return '3000', test will return '440' prod will return '')
   // if this is test, use the 'blue' icon version (_test) and text instead of yellow
   checkInstance() {
-    if (location.port === '440') {
-      this.isTestInstance = true;
-    }
+    this.isTestInstance = location.port === '440' ? true : false;
   }
 
   // check for the an autoLogout object passed via the cache service; if it exists display the message below the Login button
@@ -175,13 +173,16 @@ export class LoginComponent implements OnInit {
 
   // handle enter key events when focused on the user name or password inputs
   onLoginKeyEnter() {
+
     // log a record in the click tracking table
     this.clickTrackingService.logClickWithEvent(`page: Login, clickedOn: Login Button, text: ${this.userName}`);
+
     // call login click
     this.onLoginClick();
+
   }
 
-  // handle login button clicked (with mouse)
+  // handle login button clicked (with mouse click)
   async onLoginClick() {
 
     // check for and display form entry errors if any (user name and/or password missing)
@@ -204,16 +205,15 @@ export class LoginComponent implements OnInit {
       rememberMe: this.rememberMe
     };
 
+    // pass the user object and get the auth response from the service
     const authResponse = await this.loginAuthService.authenticate(user);
-
-    // console.log('auth response in component:');
-    // console.log(authResponse.error);
 
     // if there was an error, display it below the login button
     if (authResponse.error) {
       this.message = this.loginMessagesService.getLoginErrorMessage(authResponse.error);
     }
 
+    // stop showing the animated svg in the login button
     this.showPendingLoginAnimation = false;
 
   }

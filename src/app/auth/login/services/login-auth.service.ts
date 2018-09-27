@@ -29,8 +29,8 @@ export class LoginAuthService {
   ) { }
 
 
-  // make the api call and get the response
-  // either 200 status with jarvis user data and jwt token, or 401 unauthorized status with error
+  // make the api call and get the authentication response
+  // either 200 status with jarvis user data, ldap data, and jwt token, or 401 unauthorized status with error
   getAuthResponse(user: IUser): Promise<any> {
 
     return this.apiDataAuthService.authenticate(user).toPromise();
@@ -42,6 +42,7 @@ export class LoginAuthService {
 
     let authResponse: any;
 
+    // get the auth response synchronously
     await this.getAuthResponse(user)
     .then(res => {
       authResponse = res;
@@ -50,8 +51,8 @@ export class LoginAuthService {
       authResponse = err;
     });
 
+    // if the status is anything other than 200 / ok, return an object with the error property populated with the response
     if (authResponse.status !== 200) {
-      console.log(authResponse);
       return {
         response: undefined,
         error: authResponse,
@@ -72,10 +73,10 @@ export class LoginAuthService {
     // set logged in to true in the auth service (loggedIn property)
     this.authService.setLoggedIn(true);
 
-    // update data in the cache service
+    // store the auth response in the cache
     this.updateCache(authResponse);
 
-    // get and store nested org data for this user, in anticipation of use and for performance
+    // get and store nested org data for this user, in anticipation of use in other components (performance reasons)
     this.getNestedOrgData(authResponse.jarvisUser.email);
     // this.getNestedOrgData('ethan_hunt@keysight.com');
 
@@ -83,7 +84,7 @@ export class LoginAuthService {
     this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
 
     // route to the dashboard page,
-    // or the page that the user was attempting to go to before getting booted back to the login page (deep linking)
+    // or the page that the user was attempting to go to before getting sent back to the login page (deep linking)
     this.routeToPage();
 
     // return the auth response with no error and 200 ok status

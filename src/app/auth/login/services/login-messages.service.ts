@@ -21,6 +21,7 @@ export class LoginMessagesService {
   // get error message object for missing user name and/or password
   getFormEntryError(userName: string, password: string): IMessage {
 
+    // create the message object; leave the text property undefined for now
     const message: IMessage = {
       text: undefined,
       iconClass: 'fa-exclamation-triangle',
@@ -28,6 +29,7 @@ export class LoginMessagesService {
       display: true
     };
 
+    // set the text property (message to display) based on whether username and/or password are populated
     if (!userName && !password) {
       message.text = 'Please enter your user name and password.';
     } else if (!userName) {
@@ -36,10 +38,12 @@ export class LoginMessagesService {
       message.text = 'Please enter your password.';
     }
 
+    // return the message object
     return message;
 
   }
 
+  // clear the error message by returning an object with display set to false
   clearFormEntryError(): IMessage {
     return {
       text: undefined,
@@ -49,6 +53,7 @@ export class LoginMessagesService {
     };
   }
 
+  // called by the component get an error message object (with display true) or object to clear the error (with display false)
   getFormEntryMessage(userName: string, password: string): IMessage {
     if (!userName || !password) {
       return this.getFormEntryError(userName, password);
@@ -57,7 +62,7 @@ export class LoginMessagesService {
     }
   }
 
-
+  // called by the component to get a message to display that the user has been automatically logged out for security
   getAutoLogoutMessage(): IMessage {
     const autoLogout = this.cacheService.autoLogout$;
     return {
@@ -68,6 +73,8 @@ export class LoginMessagesService {
     };
   }
 
+  // callled by the component if the server returns an error on login button click
+  // to display a proper error message below the login button and show modal if needed
   getLoginErrorMessage(error: any): IMessage {
 
     const message: IMessage = {
