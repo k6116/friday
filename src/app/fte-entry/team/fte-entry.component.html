@@ -18,7 +18,7 @@
     <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
       <i class="fa fa-table"></i>&nbsp;&nbsp;Export
     </button> -->
-    <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
+    <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
     <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
       <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
     </button>
@@ -28,6 +28,11 @@
 
     <div *ngIf="displayAdminViewMessage"  style="color: red; display: inline-block; margin-left: 100px">
       <h3>ADMIN: Viewing this page under email {{ loginAsEmail }}</h3>
+    </div>
+
+    <div style="float: right;">
+      <h5 *ngIf="launchDate">Last Launched: {{ launchDate }}</h5>
+      <h5 *ngIf="!launchDate">Last Launched: never</h5>
     </div>
     <!-- <div class="dropdown btn-help ">
       <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

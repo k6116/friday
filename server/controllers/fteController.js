@@ -448,6 +448,7 @@ function indexPlan(req, res) {
       P.ProjectID as projectID,
       P.ProjectName as projectName,
       PEP.ProjectEmployeesPlanningID as [allocations:recordID], -- Alias for Treeize
+      PEP.LaunchDate as [allocations:launchDate],
       E.FullName as [allocations:fullName], 
       PEP.EmployeeID as [allocations:employeeID],
       PEP.FiscalDate as [allocations:fiscalDate],

@@ -76,6 +76,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   loginAsEmail: string;
   loginAsID: any;
   displayAdminViewMessage: boolean;
+  launchDate: string;
 
   // Highchart Declarations
   ftePlanningChart: any;
@@ -239,7 +240,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     console.log('this.FTEFormGroup.value.FTEFormArray', this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
     // console.log('teamFTE', this.teamFTEs);
-    // console.log('allTeamFTE', this.allTeamFTEs);
+    console.log('allTeamFTE', this.allTeamFTEs);
     // console.log('teamFTEFlat', this.teamFTEsFlat);
     // console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
     console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
@@ -1007,6 +1008,12 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.teamFTEs = this.allTeamFTEs;
     this.teamFTEsFlat = res.flat;
     this.teamFTEsFlatLive = this.teamFTEsFlat;
+
+    // Get launch date from first element
+    if (this.allTeamFTEs[0].allocations[0].launchDate) {
+      this.launchDate = moment(this.allTeamFTEs[0].allocations[0].launchDate).format('YYYY-MM-DD');
+    }
+
     this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
     this.display = true;  // ghetto way to force rendering after FTE data is fetched
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
