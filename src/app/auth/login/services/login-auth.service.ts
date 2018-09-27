@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiDataAuthService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
-import { AuthService } from '../../_shared/services/auth.service';
-import { User } from '../../_shared/models/user.model';
-import { CacheService } from '../../_shared/services/cache.service';
-import { WebsocketService } from '../../_shared/services/websocket.service';
+import { ApiDataAuthService, ApiDataOrgService } from '../../../_shared/services/api-data/_index';
+import { AuthService } from '../../../_shared/services/auth.service';
+import { User } from '../../../_shared/models/user.model';
+import { CacheService } from '../../../_shared/services/cache.service';
+import { WebsocketService } from '../../../_shared/services/websocket.service';
 import { LoginCookiesService } from './login-cookies.service';
 
 
@@ -31,9 +31,9 @@ export class LoginAuthService {
 
   // make the api call and get the response
   // either 200 status with jarvis user data and jwt token, or 401 unauthorized status with error
-  async getAuthResponse(user: IUser): Promise<any> {
+  getAuthResponse(user: IUser): Promise<any> {
 
-    return await this.apiDataAuthService.authenticate(user).toPromise();
+    return this.apiDataAuthService.authenticate(user).toPromise();
 
   }
 

@@ -7,7 +7,7 @@ import { HttpModule } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 
-xdescribe('ApiDataAuthService', () => {
+describe('API Data Auth Service', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

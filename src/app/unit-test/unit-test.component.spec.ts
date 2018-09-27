@@ -5,7 +5,7 @@ import { UnitTestComponent } from './unit-test.component';
 
 declare var $: any;
 
-describe('UnitTestComponent', () => {
+xdescribe('Unit Test Component', () => {
   let component: UnitTestComponent;
   let fixture: ComponentFixture<UnitTestComponent>;
   let debugElement: DebugElement;
@@ -36,7 +36,6 @@ describe('UnitTestComponent', () => {
   it('should have `unit-test works!` in the view', () => {
     const title = debugElement.query(By.css('p')).nativeElement.innerText;
     const title2 = $('p').eq(0).text();
-    console.log(`title using jQuery is: ${title2}`);
     expect(title).toEqual('unit-test works!');
   });
 

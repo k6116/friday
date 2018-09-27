@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
-import { LoginImageService } from './login-image.service';
-import { LoginAuthService } from './login-auth.service';
-import { LoginMessagesService } from './login-messages.service';
-import { LoginCookiesService } from './login-cookies.service';
-import { IBackgroundImage } from './login-image.service';
-import { IMessage } from './login-messages.service';
-import { ICookie } from './login-cookies.service';
+import { LoginImageService } from './services/login-image.service';
+import { LoginAuthService } from './services/login-auth.service';
+import { LoginMessagesService } from './services/login-messages.service';
+import { LoginCookiesService } from './services/login-cookies.service';
+import { IBackgroundImage } from './services/login-image.service';
+import { IMessage } from './services/login-messages.service';
+import { ICookie } from './services/login-cookies.service';
 
 declare var $: any;
 

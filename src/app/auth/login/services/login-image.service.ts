@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ApiDataAuthService } from '../../_shared/services/api-data/_index';
-import { ToolsService } from '../../_shared/services/tools.service';
-import { CacheService } from '../../_shared/services/cache.service';
+import { ApiDataAuthService } from '../../../_shared/services/api-data/_index';
+import { ToolsService } from '../../../_shared/services/tools.service';
+import { CacheService } from '../../../_shared/services/cache.service';
 
 
 

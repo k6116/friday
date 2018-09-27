@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CacheService } from '../../_shared/services/cache.service';
-import { ToolsService } from '../../_shared/services/tools.service';
+import { CacheService } from '../../../_shared/services/cache.service';
+import { ToolsService } from '../../../_shared/services/tools.service';
 
 export interface IMessage {
   text: string;
