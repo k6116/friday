@@ -22,6 +22,7 @@ considering topnav, sidenav, and footer -->
       </div>
 
       
+      
       <!-- project header row with project type, name, description, back button -->
       <div class="project-header-row">
 
@@ -215,11 +216,8 @@ considering topnav, sidenav, and footer -->
       </div>
       <!-- - -->
 
-      <!-- second col is BOM viewer -->
-      <div class="bom-chart-cont">
-        <app-bom-draw-d3 *ngIf="bomJson" [bomJson]="bomJson"></app-bom-draw-d3>
-      </div>
 
+      
 
       <!-- hidden container for record history html -->
       <div class="project-record-history-cont">
@@ -268,6 +266,14 @@ considering topnav, sidenav, and footer -->
 
         </ul>
 
+      </div>
+
+
+      <!-- second col is BOM viewer -->
+      <div class="bom-chart-cont">
+        <div class="bom-chart-header">Bill of Materials</div>
+        <div *ngIf="!bomJson" class="bom-chart-body">No BOM in database</div>
+        <app-bom-draw-d3 *ngIf="bomJson" [bomJson]="bomJson"></app-bom-draw-d3>
       </div>
 
 

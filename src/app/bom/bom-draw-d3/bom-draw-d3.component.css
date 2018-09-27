@@ -1,10 +1,21 @@
 
 #d3-container {
-  /* position: relative;
-  height: 90vh;
-  width: 103%; */
-  margin-top: -40px;
+  position: relative;
+  height: 0;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 100%;
+  background-color: white;
+  /* margin-top: -40px;
   margin-bottom: -150px;
   margin-left: -15px;
-  margin-right: -60px;
+  margin-right: -60px; */
+}
+
+#d3-container > svg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
 }

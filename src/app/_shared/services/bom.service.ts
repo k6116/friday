@@ -13,6 +13,10 @@ export class BomService {
     // get the selected BOM as flat array, synchronously
     this.bill = await this.fetchApiData(selectedID, selectedEntity);
 
+    if (!this.bill.length) {
+      return {};
+    }
+
     // initialize top level of nested JSON BOM
     const billHierarchy = {
       name: this.bill[0].ParentName.length > 19 ? `${this.bill[0].ParentName.slice(0, 20)}...` : this.bill[0].ParentName,

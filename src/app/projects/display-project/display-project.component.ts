@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CacheService } from '../../_shared/services/cache.service';
+import { BomService, CacheService } from '../../_shared/services/_index';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { ToolsService } from '../../_shared/services/tools.service';
 
@@ -38,6 +38,7 @@ export class DisplayProjectComponent implements OnInit {
   displayScheduleChart: boolean;
   chart: any;
   bomJson: any; // nested JSON containing BOM data
+  bla: any;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -47,9 +48,10 @@ export class DisplayProjectComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private bomService: BomService,
     private cacheService: CacheService,
     private apiDataProjectService: ApiDataProjectService,
-    private toolsService: ToolsService
+    private toolsService: ToolsService,
   ) {
 
     // get the project id from the route params
@@ -72,6 +74,14 @@ export class DisplayProjectComponent implements OnInit {
 
     // hide the footer until the page is ready to be rendered
     this.toolsService.hideFooter();
+
+    // get the BOM data
+    this.bomService.getBom(this.projectID, 'Project').then( res2 => {
+      // only set bomJson with the nested response if it is not empty
+      if (Object.keys(res2).length) {
+        this.bomJson = res2;
+      }
+    });
 
     // get all data for the page using forkjoin: project, schedule, and roster
     const res = await this.getData()

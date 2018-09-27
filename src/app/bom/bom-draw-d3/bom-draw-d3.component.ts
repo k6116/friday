@@ -121,16 +121,22 @@ export class BomDrawD3Component implements OnInit, OnChanges {
         svg.attr('transform', d3.event.transform);
       });
 
+    const height = 600;
+    const width = 1500;
+    const wrapper = d3.select('#d3-container')
+      .attr('style', `padding-bottom:${Math.ceil(height * 100 / width)}%`);
+
     // append the svg object to the body of the page and appends a 'group' container element to 'svg'
     const svg = d3.select('#d3-container').append('svg')
-      // .attr('width', '100%')
-      // .attr('height', '100%')
-      .attr('viewBox', [0, 0, 1800, 1800])
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      // .attr('width', '1400')
+      // .attr('height', '500')
+      // .attr('viewBox', [0, 0, 1800, 1800])
       .append('g');
 
     // define a zoom function for the SVG, and an initial transform for the zoom
     // if you don't set the initial transform using the defined zoom function, it will 'snap' back to the origin on first move
-    d3.select('svg')
+    d3.select('#d3-container').select('svg')
       .call(zoom) // adds zoom functionality
       .call(zoom.transform, initialTransform);  // applies initial transform
 
