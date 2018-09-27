@@ -25,18 +25,16 @@ export class FteTeamEntryGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
 
-    // Check permissions to see if user has Team FTE Admin View
-    // This allows user to login to Team FTEs as their manager for troubleshooting
-    const tokenPayload = this.authService.decodedToken();
+    // get the token from local storage
+    // NOTE: we can count on the token being there; if it is not, the user would have been logged out already
+    // with the AuthGuardService on the main route
+    const token = localStorage.getItem('jarvisToken');
 
-    // get the permissions out of the token payload
-    const permissions = tokenPayload.userData.permissions;
+    // check if user has special admin permissions for team FTEs
+    // NOTE: this must be done synchronously using async / await
+    const permRes = await this.apiDataFteService.checkTeamFTEAdminPermission(token);
 
-    const foundPermission = permissions.find(permission => {
-      return permission.permissionName === `Resources > FTE Entry > Team FTEs > Admin View`;
-    });
-
-    if (foundPermission) {
+    if (permRes.length > 0) {
       this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
     } else {
       this.loginAsEmail = this.authService.loggedInUser.email;
@@ -87,6 +85,7 @@ export class FteTeamEntryGuard implements CanActivate {
       if (res[0].numOfEmployees === numOfEmployees) {
         // emit the path through the cache service for the sidenav component to pick up to highlight the menu item
         this.cacheService.navigatedPath.emit(state.url);
+
         // return true to let down the guard
         return true;
       // if the job title is null

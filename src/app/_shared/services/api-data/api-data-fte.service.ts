@@ -74,15 +74,15 @@ export class ApiDataFteService {
   }
 
   // return a specific Plan
-  indexPlan(userID: number, planName: string) {
-    return this.http.get(`/api/fte/indexPlan/${userID}/${planName}`)
+  indexPlan(emailAddress: number, planName: string) {
+    return this.http.get(`/api/fte/indexPlan/${emailAddress}/${planName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   // create a new FTE Plan and return it
-  indexPlanList(userID: number) {
-    return this.http.get(`/api/fte/indexPlanList/${userID}`)
+  indexPlanList(emailAddress: number) {
+    return this.http.get(`/api/fte/indexPlanList/${emailAddress}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -126,6 +126,15 @@ export class ApiDataFteService {
     return this.http.get(`/api/fte/checkTeamJobTitle/${emailAddress}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
+  }
+
+  // check if user has admin permissions to team FTE page
+  async checkTeamFTEAdminPermission(token: string) {
+    const headers = new Headers({'X-Token': token});
+    const options = new RequestOptions({headers: headers});
+    return await this.http.get('api/fte/checkTeamFTEAdminPermission', options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json()).toPromise();
   }
 
 }

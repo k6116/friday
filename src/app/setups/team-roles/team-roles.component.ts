@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../_shared/services/auth.service';
-import { ApiDataJobTitleService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import { ApiDataJobTitleService, ApiDataOrgService, ApiDataFteService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { NewRole } from './team-roles.interface';
@@ -37,30 +37,29 @@ export class TeamRolesComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private apiDataOrgService: ApiDataOrgService,
+    private apiDataFteService: ApiDataFteService,
     private apiDataJobTitleService: ApiDataJobTitleService,
     private cacheService: CacheService,
     private toolsService: ToolsService
-  ) {
-    // Check permissions to see if user has Team FTE Admin View
-    // This allows user to login to Team FTEs as their manager for troubleshooting
-    const tokenPayload = this.authService.decodedToken();
+  ) {}
 
-    // get the permissions out of the token payload
-    const permissions = tokenPayload.userData.permissions;
+  async ngOnInit() {
+    // get the token from local storage
+    // NOTE: we can count on the token being there; if it is not, the user would have been logged out already
+    // with the AuthGuardService on the main route
+    const token = localStorage.getItem('jarvisToken');
 
-    const foundPermission = permissions.find(permission => {
-      return permission.permissionName === `Resources > FTE Entry > Team FTEs > Admin View`;
-    });
+    // check if user has special admin permissions for team FTEs
+    // NOTE: this must be done synchronously using async / await
+    const permRes = await this.apiDataFteService.checkTeamFTEAdminPermission(token);
 
-    if (foundPermission) {
+    if (permRes.length > 0) {
       this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
-      this.displayAdminViewMessage = true;
+            this.displayAdminViewMessage = true;
     } else {
       this.loginAsEmail = this.authService.loggedInUser.email;
     }
-  }
 
-  ngOnInit() {
     this.initializeEmployeeData();
     this.getJobTitleList();
   }

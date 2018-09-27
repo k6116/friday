@@ -8,7 +8,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { AuthService } from '../../_shared/services/auth.service';
 import { ApiDataProjectService, ApiDataFteService, ApiDataJobTitleService,
-        ApiDataOrgService } from '../../_shared/services/api-data/_index';
+        ApiDataOrgService, ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ComponentCanDeactivate } from '../../_shared/guards/unsaved-changes.guard';
@@ -74,6 +74,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   employeeVisible = new Array;
   displayNewPlanModal: boolean;
   loginAsEmail: string;
+  loginAsID: any;
   displayAdminViewMessage: boolean;
 
   // Highchart Declarations
@@ -102,7 +103,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   filterEmployeesSettings: IMultiSelectSettings = {
     showCheckAll: true,
     showUncheckAll: true,
-    enableSearch: true,
+    enableSearch: false,
     // checkedStyle: 'fontawesome',
     buttonClasses: 'btn btn-primary btn-block',
     dynamicTitleMaxItems: 0,
@@ -126,7 +127,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   filterProjectsSettings: IMultiSelectSettings = {
     showCheckAll: true,
     showUncheckAll: true,
-    enableSearch: true,
+    enableSearch: false,
     buttonClasses: 'btn btn-primary btn-block',
     dynamicTitleMaxItems: 0,
     displayAllSelectedText: true,
@@ -144,29 +145,13 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     private apiDataProjectService: ApiDataProjectService,
     private apiDataFteService: ApiDataFteService,
     private apiDataOrgService: ApiDataOrgService,
+    private apiDataEmployeeService: ApiDataEmployeeService,
     private cacheService: CacheService,
     private toolsService: ToolsService,
     private decimalPipe: DecimalPipe,
     private changeDetectorRef: ChangeDetectorRef
   ) {
 
-    // Check permissions to see if user has Team FTE Admin View
-    // This allows user to login to Team FTEs as their manager for troubleshooting
-    const tokenPayload = this.authService.decodedToken();
-
-    // get the permissions out of the token payload
-    const permissions = tokenPayload.userData.permissions;
-
-    const foundPermission = permissions.find(permission => {
-      return permission.permissionName === `Resources > FTE Entry > Team FTEs > Admin View`;
-    });
-
-    if (foundPermission) {
-      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
-      this.displayAdminViewMessage = true;
-    } else {
-      this.loginAsEmail = this.authService.loggedInUser.email;
-    }
 
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
@@ -210,6 +195,25 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.filterProjectsModel = [];
     this.filterProjectsOptions = [];
 
+    // get the token from local storage
+    // NOTE: we can count on the token being there; if it is not, the user would have been logged out already
+    // with the AuthGuardService on the main route
+    const token = localStorage.getItem('jarvisToken');
+
+    // check if user has special admin permissions for team FTEs
+    // NOTE: this must be done synchronously using async / await
+    const permRes = await this.apiDataFteService.checkTeamFTEAdminPermission(token);
+
+    if (permRes.length > 0) {
+      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      const res2 = await this.apiDataEmployeeService.getEmployeeData(this.loginAsEmail).toPromise();
+      this.loginAsID = res2[0].EmployeeID;
+      this.displayAdminViewMessage = true;
+    } else {
+      this.loginAsEmail = this.authService.loggedInUser.email;
+      this.loginAsID = this.authService.loggedInUser.id;
+    }
+
     this.getProjects();
 
     this.planLoadSequence();
@@ -246,7 +250,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('this.employeeVisible', this.employeeVisible)
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
-    // console.log('team org', this.teamOrgStructure)
     // console.log('this.currentPlan', this.currentPlan)
     // console.log('this.employeeTotals', this.employeeTotals)
     // this.updateEmployeeTotals();
@@ -272,14 +275,14 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // If plan does not exist, create one
     // Promise.all allows us to run two functions asynchronously
     Promise.all([
-      this.getPlanList(this.authService.loggedInUser.id),
+      this.getPlanList(this.loginAsEmail),
       this.getTeam(this.loginAsEmail),
       this.setCurrentMonthYear()])
     .then(async res => {
         if (this.defaultPlan === undefined) {
-          this.onCreateNewPlanClick(this.teamEditableMembers, this.authService.loggedInUser.id, 'New Plan 1');
+          this.onCreateNewPlanClick(this.teamEditableMembers, this.loginAsEmail, 'New Plan 1');
         } else {
-          await this.getPlan(this.authService.loggedInUser.id, this.defaultPlan);
+          await this.getPlan(this.loginAsEmail, this.defaultPlan);
           this.createFtePlanningChartData(this.allProjects);
           this.checkDisableDeletePlan();
           this.updateEmployeeTotals();
@@ -354,7 +357,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onModalClosed(selectedProject: any) {
-    console.log('on modal closed fired', selectedProject);
     this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
@@ -385,7 +387,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onModalCancelClick() {
-    console.log('on modal cancel fired');
     this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
@@ -506,7 +507,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.createFtePlanningChartData(this.projects);
   }
 
-
   updateEmployeeTotal(index: number) {
 
     const FTEFormArray = this.FTEFormGroup.value.FTEFormArray;
@@ -530,7 +530,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.employeeTotals[index] = total;
 
   }
-
 
   updateEmployeeTotals() {
     const employeeCount = this.teamOrgStructure.length;
@@ -583,26 +582,25 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onSaveClick() {
-
     // const fteData = this.FTEFormGroup.value.FTEFormArray;
     const fteData = this.FTEFormGroupLive;
 
     const t0 = performance.now();
 
-    // validate totals boxes for current quarter (must < 1)
+    // validate totals boxes per employee (must < 1)
     const employeeTotalsValid = this.employeeTotals.every( value => {
       return value <= 1;
     });
 
     if (employeeTotalsValid) {
       // call the api data service to send the put request
-      this.apiDataFteService.updateTeamData(fteData, this.authService.loggedInUser.id, this.currentPlan)
+      this.apiDataFteService.updateTeamData(fteData, this.loginAsID, this.currentPlan)
       .subscribe(
         res => {
           this.cacheService.raiseToast('success', res.message);
 
           // rebuild the FTE entry page
-          this.getPlan(this.authService.loggedInUser.id, this.currentPlan);
+          this.getPlan(this.loginAsEmail, this.currentPlan);
           this.buildFteEntryForm();
           this.displayFTETable = true;
           this.FTEFormGroup.markAsUntouched();
@@ -649,8 +647,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       this.cacheService.confirmModalData.emit(
         {
           title: 'Confirm Plan Launch',
-          message: `Are you sure you want to launch plan "` + this.currentPlan + `"?<br><br>
-                    This will overwrite all existing employee FTE data to sync with the "` + this.currentPlan + `" data`,
+          message: `Are you sure you want to launch this plan?<br><br>
+                    This will overwrite all existing employee FTE data. `,
           iconClass: 'fa-exclamation-triangle',
           iconColor: 'rgb(193, 193, 27)',
           closeButton: true,
@@ -674,7 +672,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( modalRes => {
         if (modalRes) {
           // call the api data service to send the put request
-          this.apiDataFteService.launchPlan(this.teamEditableMembers, this.authService.loggedInUser.id, this.currentPlan)
+          this.apiDataFteService.launchPlan(this.teamEditableMembers, this.loginAsID, this.currentPlan)
           .subscribe(
             res => {
               this.cacheService.raiseToast('success', res.message);
@@ -871,7 +869,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
             this.cacheService.raiseToast('success', deleteResponse.message);
             deleteActionSubscription.unsubscribe();
 
-            this.getPlan(this.authService.loggedInUser.id, this.currentPlan);
+            this.getPlan(this.loginAsEmail, this.currentPlan);
             this.checkDisableDeletePlan();
           },
           deleteErr => {
@@ -960,16 +958,14 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.teamEditableMembers = '\'\'' + this.teamEditableMembers + '\'';
   }
 
-  async onCreateNewPlanClick(emailAddress: any, userID: any, planName: string) {
+  async onCreateNewPlanClick(emailAddress: any, creatorEmailAddress: any, planName: string) {
 
     if (emailAddress === null) {
       emailAddress = this.teamEditableMembers;
     }
-    if (userID === null) {
-      userID = this.authService.loggedInUser.id;
-    }
+
     // create new plan and get FTE data
-    const res = await this.apiDataFteService.indexNewPlan(emailAddress, userID, planName).toPromise();
+    const res = await this.apiDataFteService.indexNewPlan(emailAddress, creatorEmailAddress, planName).toPromise();
 
     this.allTeamFTEs = res.nested;
     this.teamFTEs = this.allTeamFTEs;
@@ -1103,7 +1099,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       this.currentPlan = planName;
 
       // get data for selected plan
-      this.getPlan(this.authService.loggedInUser.id, this.currentPlan);
+      this.getPlan(this.loginAsEmail, this.currentPlan);
       this.setMonth = this.currentMonth;
       this.setMonthName = moment(this.setMonth).format('MMMM');
       this.setYear = moment().year();
@@ -1181,42 +1177,61 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onPreviousMonthClick() {
-    // Set month to next month and format
-    this.setMonth = moment(this.setMonth).subtract(1, 'months');
-    this.setMonthName = moment(this.setMonth).format('MMMM');
-    this.setYear = moment(this.setMonth).format('YYYY');
+    // validate totals boxes per employee (must < 1)
+    const employeeTotalsValid = this.employeeTotals.every( value => {
+      return value <= 1;
+    });
 
-    // rebuild the FTE entry page to show selected month
-    this.buildFteEntryForm();
-    this.updateEmployeeTotals();
-    this.setEmployeeTotalsBorder();
-    this.displayFTETable = true;
+    if (employeeTotalsValid) {
+      // Set month to next month and format
+      this.setMonth = moment(this.setMonth).subtract(1, 'months');
+      this.setMonthName = moment(this.setMonth).format('MMMM');
+      this.setYear = moment(this.setMonth).format('YYYY');
 
-    // disable the previous button to prevent user from going into past months
-    if (moment(this.setMonth) <= moment(this.currentMonth)) {
-      this.disablePreviousMonth = true;
+      // rebuild the FTE entry page to show selected month
+      this.buildFteEntryForm();
+      this.updateEmployeeTotals();
+      this.setEmployeeTotalsBorder();
+      this.displayFTETable = true;
+
+      // disable the previous button to prevent user from going into past months
+      if (moment(this.setMonth) <= moment(this.currentMonth)) {
+        this.disablePreviousMonth = true;
+      } else {
+        this.disablePreviousMonth = false;
+      }
     } else {
-      this.disablePreviousMonth = false;
+      this.cacheService.raiseToast('error', `FTE totals in each month cannot exceed 100%.`);
     }
   }
 
   onNextMonthClick() {
-    // Set month to next month and format
-    this.setMonth = moment(this.setMonth).add(1, 'months');
-    this.setMonthName = moment(this.setMonth).format('MMMM');
-    this.setYear = moment(this.setMonth).format('YYYY');
 
-    // rebuild the FTE entry page to show selected month
-    this.buildFteEntryForm();
-    this.updateEmployeeTotals();
-    this.setEmployeeTotalsBorder();
-    this.displayFTETable = true;
+    // validate totals boxes per employee (must < 1)
+    const employeeTotalsValid = this.employeeTotals.every( value => {
+      return value <= 1;
+    });
 
-    // disable the previous button to prevent user from going into past months
-    if (moment(this.setMonth) <= moment(this.currentMonth)) {
-      this.disablePreviousMonth = true;
+    if (employeeTotalsValid) {
+      // Set month to next month and format
+      this.setMonth = moment(this.setMonth).add(1, 'months');
+      this.setMonthName = moment(this.setMonth).format('MMMM');
+      this.setYear = moment(this.setMonth).format('YYYY');
+
+      // rebuild the FTE entry page to show selected month
+      this.buildFteEntryForm();
+      this.updateEmployeeTotals();
+      this.setEmployeeTotalsBorder();
+      this.displayFTETable = true;
+
+      // disable the previous button to prevent user from going into past months
+      if (moment(this.setMonth) <= moment(this.currentMonth)) {
+        this.disablePreviousMonth = true;
+      } else {
+        this.disablePreviousMonth = false;
+      }
     } else {
-      this.disablePreviousMonth = false;
+      this.cacheService.raiseToast('error', `FTE totals in each month cannot exceed 100%.`);
     }
   }
 
@@ -1337,13 +1352,13 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   plotFtePlanningChart() {
-    // if chart already exists, destroy it before re-drawing
+    const nextYear = Number(this.setYear) + Number(1);
     this.ftePlanningSeriesOptions = {
         chart: {
           type: 'column'
         },
         title: {
-          text: 'Team FTE Planning for FY' + this.setYear
+          text: 'Team FTE Planning for FY' + this.setYear + '-' + nextYear
         },
         xAxis: {
           categories: this.fteMonthsChart,

@@ -439,7 +439,7 @@ function indexPlan(req, res) {
 
   // this function retrieves a specific plan for a user
 
-  const userID = req.params.userID;
+  const emailAddress = req.params.emailAddress;
   const planName = req.params.planName;
 
   const sql = `
@@ -456,8 +456,9 @@ function indexPlan(req, res) {
       resources.ProjectEmployeesPlanning PEP
       LEFT JOIN accesscontrol.Employees E ON PEP.EmployeeID = E.EmployeeID
       LEFT JOIN projects.Projects P ON PEP.ProjectID = P.ProjectID
+      LEFT JOIN accesscontrol.Employees E2 ON PEP.CreatedBy = E2.EmployeeID
     WHERE
-      PEP.PlanName = '${planName}' AND PEP.CreatedBy = ${userID}
+      PEP.PlanName = '${planName}' AND E2.EmailAddress = '${emailAddress}'
     ORDER BY
       P.ProjectName
   `
@@ -485,15 +486,16 @@ function indexPlanList(req, res) {
 
   // This function retrieves all plans created by the user
 
-  const userID = req.params.userID;
+  const emailAddress = req.params.emailAddress;
 
   const sql = `
     SELECT DISTINCT
       T1.PlanName as planName, MAX(T1.LastUpdateDate) as lastUpdateDate
     FROM
       resources.ProjectEmployeesPlanning T1
+      LEFT JOIN accesscontrol.Employees E ON T1.CreatedBy = E.EmployeeID
     WHERE
-      T1.CreatedBy = ${userID}
+      E.EmailAddress = '${emailAddress}'
     GROUP BY
       T1.PlanName
     ORDER BY
@@ -563,7 +565,6 @@ function launchPlan(req, res) {
 
 }
 
-
 function checkTeamJobTitle(req, res) {
 
   // emailAddress param should be in the format 'email1@email.com','email2@email.com'
@@ -594,6 +595,39 @@ function checkTeamJobTitle(req, res) {
 
 }
 
+function checkTeamFTEAdminPermission(req, res) {
+
+  const decodedToken = token.decode(req.header('X-Token'), res);
+
+  const sql = `
+    SELECT
+      E.FullName
+    FROM
+      accesscontrol.Employees E
+      LEFT JOIN accesscontrol.RolePermissions RP ON E.RoleID = RP.RoleID
+      LEFT JOIN accesscontrol.Permissions P1 ON RP.PermissionID = P1.PermissionID
+      LEFT JOIN accesscontrol.EmployeePermissions EP ON E.EmployeeID = EP.EmployeeID
+      LEFT JOIN accesscontrol.Permissions P2 ON EP.PermissionID = P2.PermissionID
+    WHERE
+      E.EmployeeID = ${decodedToken.userData.id}
+      AND (P1.PermissionName = 'Resources > FTE Entry > Team FTEs > Admin View'
+      OR P2.PermissionName = 'Resources > FTE Entry > Team FTEs > Admin View')
+  `
+
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })   
+    .then(permExists => {
+      res.json(permExists);
+
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+}
+
 module.exports = {
   indexUserData: indexUserData,
   destroyUserProject: destroyUserProject,
@@ -606,5 +640,6 @@ module.exports = {
   indexPlanList: indexPlanList,
   destroyPlan: destroyPlan,
   launchPlan: launchPlan,
-  checkTeamJobTitle: checkTeamJobTitle
+  checkTeamJobTitle: checkTeamJobTitle,
+  checkTeamFTEAdminPermission: checkTeamFTEAdminPermission
 }

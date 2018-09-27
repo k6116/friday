@@ -18,7 +18,7 @@
     <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
       <i class="fa fa-table"></i>&nbsp;&nbsp;Export
     </button> -->
-    <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
+    <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
     <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
       <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
     </button>
@@ -63,9 +63,8 @@
       <ss-multiselect-dropdown #filterProjectsDropdown [options]="filterProjectsOptions" [texts]="filterProjectsTexts" 
             [settings]="filterProjectsSettings" [(ngModel)]="filterProjectsModel" (ngModelChange)="onFilterProjectsChange()"></ss-multiselect-dropdown>
   </div>
-  
 
-  <div class="col-sm-3 col-custom">
+  <!-- <div class="col-sm-3 col-custom">
     <div class="col-newplan" style="display: inline-flex">
       <button *ngIf="!displayNewPlanModal" class="btn btn-secondary" (click)="onNewPlanClick()">
         <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
@@ -82,7 +81,7 @@
         <i class="fa fa-times"></i>&nbsp;&nbsp;Del Plan
       </button>
     </div>
-  </div>
+  </div> -->
 
 </div>
 <!-- begin row for FTE entry table -->
