@@ -98,7 +98,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
   drawD3Plot(bomJson: any) {
 
     // set start position/scale of drawing, and size of nodes (to set default node spacing)
-    const initialTransform = d3.zoomIdentity.translate(200, 200).scale(1);
+    const initialTransform = d3.zoomIdentity.translate(400, 300).scale(1);
     const nodeSize = {height: 28, width: 20};
     const zoomSpeed = 1700; // some number between 400 and 2000
     const deptColors: any = {
@@ -129,9 +129,6 @@ export class BomDrawD3Component implements OnInit, OnChanges {
     // append the svg object to the body of the page and appends a 'group' container element to 'svg'
     const svg = d3.select('#d3-container').append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
-      // .attr('width', '1400')
-      // .attr('height', '500')
-      // .attr('viewBox', [0, 0, 1800, 1800])
       .append('g');
 
     // define a zoom function for the SVG, and an initial transform for the zoom
