@@ -42,6 +42,9 @@ export class MyProjectsComponent implements OnInit {
   projectTypeDisplayFields: any;
   projectBasicInfo = [];
 
+  showSpinner: boolean;
+
+
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
   @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
   // @Output() deleteSuccess = new EventEmitter<boolean>();
@@ -59,17 +62,16 @@ export class MyProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getUserProjectList();
-    this.getProjectPermissionRequestsList();
-    this.getProjectTypeDisplayFields();
-  }
+    // show the spinner
+    this.showSpinner = true;
 
-  editProject(project: any) {
-    this.showProjectsEditModal = true;
-    this.projectData = project;
-    setTimeout(() => {
-      this.projectsEditModalComponent.populateForm();
-    }, 0);
+    //  get all projects the user created
+    this.getUserProjectList();
+
+    // get the list of requests that are waiting for the users permission
+    this.getProjectPermissionRequestsList();
+
+    this.getProjectTypeDisplayFields();
   }
 
   getUserProjectList() {
@@ -78,6 +80,9 @@ export class MyProjectsComponent implements OnInit {
       res => {
         // console.log('Project List: ', res);
         this.projectList = res;
+
+        // hide the spinner
+        this.showSpinner = false;
       },
       err => {
         // console.log(err);
@@ -98,6 +103,8 @@ export class MyProjectsComponent implements OnInit {
             this.requestResponseFlag = true;
           }
         }
+      // hide the spinner
+      this.showSpinner = false;
       },
       err => {
         // console.log(err);
@@ -125,6 +132,14 @@ export class MyProjectsComponent implements OnInit {
   onDeleteSuccess() {
     // console.log('Delete project success. My Project List Refreshed');
     this.getUserProjectList();
+  }
+
+  editProject(project: any) {
+    this.showProjectsEditModal = true;
+    this.projectData = project;
+    setTimeout(() => {
+      this.projectsEditModalComponent.populateForm();
+    }, 0);
   }
 
   onCollapseClick(project: any, k) {
