@@ -23,11 +23,11 @@ xdescribe('Login Image Service', () => {
   it('retrieves all the background images', async(inject( [LoginImageService], ( loginImageService ) => {
     loginImageService.getBackgroundImages()
     .then(result => {
-      console.log(result);
+      // console.log(result);
       // expect(result.length).toBeGreaterThan(0);
     })
     .catch(error => {
-      console.log(error);
+      // console.log(error);
       expect(1).toEqual(1);
     });
 

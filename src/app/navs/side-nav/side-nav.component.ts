@@ -260,8 +260,8 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // set up subscription to receive path from the fte entry guard (or other guards), to highlight the menu item after passing the guard
     this.subscription1 = this.cacheService.navigatedPath.subscribe(navigatedPath => {
-      console.log('received subscription in the sidenav component for navigated path:');
-      console.log(navigatedPath);
+      // console.log('received subscription in the sidenav component for navigated path:');
+      // console.log(navigatedPath);
       // show the correct menu item based on the location/path (colored border, white text, expanded parent if any)
       // NOTE: need to trim off the leading /
       this.activateMenuItem(navigatedPath.slice(1));
@@ -389,8 +389,8 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
         setTimeout(() => {
           // get the current route path from the url e.g. reports/projects, fte-entry/team, etc.
           const path = this.router.url.slice(1, this.router.url.length);
-          console.log('navigated to new path:');
-          console.log(path);
+          // console.log('navigated to new path:');
+          // console.log(path);
           // if the new path matches where we attempted to navigate to
           if (path === menuItem.path) {
             // proceed to activate the menu item (highlight etc.)

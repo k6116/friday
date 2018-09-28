@@ -97,8 +97,8 @@ xdescribe('Login Component', () => {
   it('should populate user name from cookie', () => {
     const cookiesService = fixture.debugElement.injector.get(CookiesService);
     const userName = cookiesService.getCookie('jrt_username');
-    console.log('username:');
-    console.log(userName);
+    // console.log('username:');
+    // console.log(userName);
     expect(1).toEqual(1);
   });
 
@@ -112,10 +112,10 @@ xdescribe('Login Component', () => {
     component.onLoginClick();
     fixture.detectChanges();
     fixture.whenStable().then(() => {
-      console.log('after stable');
+      // console.log('after stable');
       const user = authService.loggedInUser;
-      console.log('user');
-      console.log(user);
+      // console.log('user');
+      // console.log(user);
       expect(user).toBeTruthy();
       expect(user.fullName).toEqual('Bill Schuetzle');
     });

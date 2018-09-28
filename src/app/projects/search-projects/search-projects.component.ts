@@ -172,9 +172,6 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
     }
 
-    console.log('projects browse data:');
-    console.log(this.projectsBrowseData);
-
     // store the projects in the component
     this.projects = this.projectsBrowseData[0];
 
