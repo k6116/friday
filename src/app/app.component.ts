@@ -70,16 +70,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authService.getInfoFromToken();
 
     // subscibe to the resetTimer, can be used to synch up the clock
-    this.subscription1 = this.cacheService.resetTimer.subscribe(
-      (resetTimer: boolean) => {
-        // console.log('subscription to resetTimer receivevd in the app component');
-        this.resetTimer();
+    this.subscription1 = this.cacheService.resetTimer.subscribe((resetTimer: boolean) => {
+      // console.log('subscription to resetTimer receivevd in the app component');
+      this.resetTimer();
     });
 
     // subscribe to browser location changes (back or forward button clicks)
-    this.subscription2 = <Subscription>this.location.subscribe(
-      location => {
-        this.cacheService.browserLocation.emit(location);
+    this.subscription2 = <Subscription>this.location.subscribe(location => {
+      this.cacheService.browserLocation.emit(location);
     });
 
   }
