@@ -41,6 +41,7 @@ import { PartSetupComponent } from './setups/parts/parts.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
+import { UnitTestComponent } from './unit-test/unit-test.component';
 
 // BOM module stuff
 import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
@@ -54,6 +55,7 @@ const routes: Routes = [
   { path: 'perf', component: PerformanceComponent, canActivate: [BrowserGuard] },
   { path: 'login', component: LoginComponent, canActivate: [BrowserGuard] },
   { path: 'error403', component: Error403Component },
+  { path: 'unit-test', component: UnitTestComponent },
   {
     path: 'main', component: MainComponent, canActivate: [BrowserGuard, AuthGuardService], resolve: { loggedInUser: UserResolverService },
     children: [

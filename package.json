@@ -8,7 +8,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "int-test": "npx cypress open"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +24,7 @@
     "@angular/platform-browser": "^5.2.0",
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
+    "@types/es6-promise": "^3.3.0",
     "@types/highcharts": "^5.0.22",
     "angular-2-dropdown-multiselect": "^1.8.1",
     "axios": "^0.18.0",
@@ -86,6 +88,7 @@
     "@types/node": "~6.0.60",
     "codelyzer": "^4.0.1",
     "corp-semantic-release": "^6.4.0",
+    "cypress": "^3.1.0",
     "cz-conventional-changelog": "^2.1.0",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",

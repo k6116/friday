@@ -1,0 +1,1272 @@
+===============================================================================
+EXTENSION NAME : linecount
+EXTENSION VERSION : 0.1.7
+-------------------------------------------------------------------------------
+count time : 2018-09-26 21:27:54
+count workspace : c:\webdev\jarvis-rt
+total files : 624
+total code lines : 149402
+total comment lines : 60686
+total blank lines : 11389
+
+.angular-cli.json, code is 79, comment is 0, blank is 3.
+.editorconfig, code is 11, comment is 1, blank is 2.
+.env, code is 5, comment is 0, blank is 0.
+.gitignore, code is 22, comment is 24, blank is 6.
+CHANGELOG.md, code is 42, comment is 22, blank is 54.
+coverage\base.css, code is 192, comment is 6, blank is 14.
+coverage\index.html, code is 176, comment is 0, blank is 8.
+coverage\lcov.info, code is 2502, comment is 0, blank is 0.
+coverage\prettify.css, code is 1, comment is 0, blank is 0.
+coverage\prettify.js, code is 1, comment is 0, blank is 0.
+coverage\sort-arrow-sprite.png, it is a binary file.
+coverage\sorter.js, code is 131, comment is 15, blank is 12.
+coverage\src\app\_shared\models\index.html, code is 92, comment is 0, blank is 1.
+coverage\src\app\_shared\models\user.model.ts.html, code is 197, comment is 0, blank is 0.
+coverage\src\app\_shared\pipes\index.html, code is 92, comment is 0, blank is 1.
+coverage\src\app\_shared\pipes\safe-html.pipe.ts.html, code is 113, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\_index.ts.html, code is 113, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-analytics.service.ts.html, code is 314, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-auth.service.ts.html, code is 299, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-bom.service.ts.html, code is 203, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-click-tracking.service.ts.html, code is 143, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-dashboard.service.ts.html, code is 206, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-email.service.ts.html, code is 152, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-employee.service.ts.html, code is 167, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-fte.service.ts.html, code is 197, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-job-title.service.ts.html, code is 386, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-meta-data.service.ts.html, code is 137, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-org.service.ts.html, code is 143, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-part.service.ts.html, code is 248, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-permission.service.ts.html, code is 263, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-project.service.ts.html, code is 782, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-report.service.ts.html, code is 290, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-schedules.service.ts.html, code is 362, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\index.html, code is 284, comment is 0, blank is 17.
+coverage\src\app\_shared\services\auth.service.ts.html, code is 1146, comment is 0, blank is 0.
+coverage\src\app\_shared\services\cache.service.ts.html, code is 286, comment is 0, blank is 0.
+coverage\src\app\_shared\services\click-tracking.service.ts.html, code is 402, comment is 0, blank is 0.
+coverage\src\app\_shared\services\cookies.service.ts.html, code is 176, comment is 0, blank is 0.
+coverage\src\app\_shared\services\index.html, code is 152, comment is 0, blank is 6.
+coverage\src\app\_shared\services\tools.service.ts.html, code is 1425, comment is 0, blank is 0.
+coverage\src\app\_shared\services\websocket.service.ts.html, code is 204, comment is 0, blank is 0.
+coverage\src\app\auth\login\index.html, code is 92, comment is 0, blank is 1.
+coverage\src\app\auth\login\login.component.ts.html, code is 1238, comment is 0, blank is 0.
+coverage\src\app\modals\confirm-modal\confirm-modal.component.ts.html, code is 230, comment is 0, blank is 0.
+coverage\src\app\modals\confirm-modal\index.html, code is 92, comment is 0, blank is 1.
+coverage\src\app\unit-test\index.html, code is 92, comment is 0, blank is 1.
+coverage\src\app\unit-test\unit-test.component.ts.html, code is 191, comment is 0, blank is 0.
+coverage\src\index.html, code is 104, comment is 0, blank is 2.
+coverage\src\polyfills.ts.html, code is 305, comment is 0, blank is 0.
+coverage\src\test.ts.html, code is 125, comment is 0, blank is 0.
+cypress.json, code is 5, comment is 0, blank is 0.
+cypress\fixtures\example.json, code is 5, comment is 0, blank is 0.
+cypress\integration\login_spec.js, code is 114, comment is 40, blank is 78.
+cypress\plugins\index.js, code is 2, comment is 13, blank is 2.
+cypress\support\commands.js, code is 0, comment is 25, blank is 0.
+cypress\support\index.js, code is 1, comment is 17, blank is 2.
+debug.log, code is 2, comment is 0, blank is 0.
+dist\assets\carousel_slides\FTE\carousel_FTE_1.png, it is a binary file.
+dist\assets\carousel_slides\FTE\carousel_FTE_2.png, it is a binary file.
+dist\assets\carousel_slides\FTE\carousel_FTE_3.png, it is a binary file.
+dist\assets\carousel_slides\FTE\carousel_FTE_4.png, it is a binary file.
+dist\assets\carousel_slides\FTE\carousel_FTE_5.png, it is a binary file.
+dist\assets\EmailLogo.png, it is a binary file.
+dist\assets\jarvis_logos\archived\JarvisLogo.png, it is a binary file.
+dist\assets\jarvis_logos\archived\JarvisLogo.svg, code is 26, comment is 0, blank is 0.
+dist\assets\jarvis_logos\archived\JarvisLogo2.png, it is a binary file.
+dist\assets\jarvis_logos\archived\jarvislogo_login.png, it is a binary file.
+dist\assets\jarvis_logos\archived\JarvisLogoIconOnly.svg, code is 17, comment is 0, blank is 0.
+dist\assets\jarvis_logos\archived\JarvisLogoIconOnlyNonInverted.svg, code is 17, comment is 0, blank is 0.
+dist\assets\jarvis_logos\archived\JarvisLogoNonInverted.svg, code is 27, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo.svg, code is 25, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo_icononly.svg, code is 16, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo_inverted.svg, code is 29, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo_inverted_icononly.svg, code is 16, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo_inverted_test.svg, code is 26, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo_test.svg, code is 26, comment is 0, blank is 0.
+dist\assets\login_images\_index.json, code is 197, comment is 0, blank is 1.
+dist\assets\login_images\asher_cliff_switzerland.jpg, it is a binary file.
+dist\assets\login_images\asher_cliff_switzerland_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\autostadt_wolfsburg.jpg, it is a binary file.
+dist\assets\login_images\autostadt_wolfsburg_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\banff_national_park.jpg, it is a binary file.
+dist\assets\login_images\banff_national_park_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\bay_bridge.jpg, it is a binary file.
+dist\assets\login_images\bay_bridge_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\blue_mountains_sydney.jpg, it is a binary file.
+dist\assets\login_images\blue_mountains_sydney_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\bryce_canyon.jpg, it is a binary file.
+dist\assets\login_images\bryce_canyon_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\canal_du_midi.jpg, it is a binary file.
+dist\assets\login_images\canal_du_midi_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\central_valley_almond_orchards.jpg, it is a binary file.
+dist\assets\login_images\central_valley_almond_orchards_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\colorado_river.jpg, code is 5224, comment is 2602, blank is 38.
+dist\assets\login_images\colorado_river_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\county_donegal_ireland.jpg, it is a binary file.
+dist\assets\login_images\county_donegal_ireland_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\denali_national_park.jpg, it is a binary file.
+dist\assets\login_images\denali_national_park_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\eastern_lake_tahoe.jpg, it is a binary file.
+dist\assets\login_images\eastern_lake_tahoe_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\garden_of_the_gods.jpg, it is a binary file.
+dist\assets\login_images\garden_of_the_gods_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\garze.jpg, it is a binary file.
+dist\assets\login_images\garze_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\haleakala_national_park.jpg, it is a binary file.
+dist\assets\login_images\haleakala_national_park_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\hohenschwangau_castle.jpg, it is a binary file.
+dist\assets\login_images\hohenschwangau_castle_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\hooker_valley_glacier_new_zealand.jpg, it is a binary file.
+dist\assets\login_images\hooker_valley_glacier_new_zealand_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\jiangxi_province.jpg, it is a binary file.
+dist\assets\login_images\jiangxi_province_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\la_jolla_tidepools.jpg, it is a binary file.
+dist\assets\login_images\la_jolla_tidepools_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\lijiang_china.jpg, it is a binary file.
+dist\assets\login_images\lijiang_china_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\lombok_indonesia.jpg, it is a binary file.
+dist\assets\login_images\lombok_indonesia_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\luzern_to_matterhorn.jpg, it is a binary file.
+dist\assets\login_images\luzern_to_matterhorn_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\manhattan_beach.jpg, it is a binary file.
+dist\assets\login_images\manhattan_beach_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\moab_utah.jpg, it is a binary file.
+dist\assets\login_images\moab_utah_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\monument_valley.jpg, it is a binary file.
+dist\assets\login_images\monument_valley_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\mount_huangshan.jpg, it is a binary file.
+dist\assets\login_images\mount_huangshan_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\mount_pilchuck.jpg, it is a binary file.
+dist\assets\login_images\mount_pilchuck_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\mount_rinjani_indonesia.jpg, it is a binary file.
+dist\assets\login_images\mount_rinjani_indonesia_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\ocean_beach.jpg, it is a binary file.
+dist\assets\login_images\ocean_beach_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\palau_sibuan.jpg, it is a binary file.
+dist\assets\login_images\palau_sibuan_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\penang_tan_jetty.jpg, it is a binary file.
+dist\assets\login_images\penang_tan_jetty_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\point_bonita.jpg, it is a binary file.
+dist\assets\login_images\point_bonita_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\point_meares_lighthouse.jpg, it is a binary file.
+dist\assets\login_images\point_meares_lighthouse_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\ranwu_lake_tibet.jpg, it is a binary file.
+dist\assets\login_images\ranwu_lake_tibet_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\sand_dunes_national_park.jpg, it is a binary file.
+dist\assets\login_images\sand_dunes_national_park_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\shell_beach_bodega_bay.jpg, it is a binary file.
+dist\assets\login_images\shell_beach_bodega_bay_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\sierras_winter.jpg, it is a binary file.
+dist\assets\login_images\sierras_winter_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\singapore.jpg, it is a binary file.
+dist\assets\login_images\singapore_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\sri_lanka.jpg, it is a binary file.
+dist\assets\login_images\sri_lanka_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\summer_palace_beijing.jpg, it is a binary file.
+dist\assets\login_images\summer_palace_beijing_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\taipei_city.jpg, it is a binary file.
+dist\assets\login_images\taipei_city_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\vietnam.jpg, it is a binary file.
+dist\assets\login_images\vietnam_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\wheeler_geologic_area.jpg, it is a binary file.
+dist\assets\login_images\wheeler_geologic_area_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\wuyuan_jiangxi_province.jpg, it is a binary file.
+dist\assets\login_images\wuyuan_jiangxi_province_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\yangtze_river.jpg, it is a binary file.
+dist\assets\login_images\yangtze_river_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\yosemite.jpg, it is a binary file.
+dist\assets\login_images\yosemite_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\yosemite_waterfall.jpg, it is a binary file.
+dist\assets\login_images\yosemite_waterfall_thumbnail.jpg, it is a binary file.
+dist\assets\project_avatars\arges.png, it is a binary file.
+dist\assets\project_avatars\avocado.png, it is a binary file.
+dist\assets\project_avatars\bacon.png, it is a binary file.
+dist\assets\project_avatars\baymax.png, it is a binary file.
+dist\assets\project_avatars\beer.png, it is a binary file.
+dist\assets\project_avatars\cheese.png, it is a binary file.
+dist\assets\project_avatars\coffee.png, it is a binary file.
+dist\assets\project_avatars\deuce.png, it is a binary file.
+dist\assets\project_avatars\eggs.png, it is a binary file.
+dist\assets\project_avatars\fries.png, it is a binary file.
+dist\assets\project_avatars\grapes.png, it is a binary file.
+dist\assets\project_avatars\lemon-slice.png, it is a binary file.
+dist\assets\project_avatars\minions.png, it is a binary file.
+dist\assets\project_avatars\pizza-slice.png, it is a binary file.
+dist\assets\project_avatars\python.png, it is a binary file.
+dist\assets\project_avatars\tacos.png, it is a binary file.
+dist\assets\project_avatars\watermelon.png, it is a binary file.
+dist\favicon.ico, it is a binary file.
+dist\fontawesome-webfont.674f50d287a8c48dc19b.eot, it is a binary file.
+dist\fontawesome-webfont.912ec66d7572ff821749.svg, code is 1441, comment is 0, blank is 0.
+dist\fontawesome-webfont.af7ae505a9eed503f8b8.woff2, it is a binary file.
+dist\fontawesome-webfont.b06871f281fee6b241d6.ttf, it is a binary file.
+dist\fontawesome-webfont.fee66e712a8a08eef580.woff, it is a binary file.
+dist\index.html, code is 13, comment is 0, blank is 1.
+dist\inline.bundle.js, code is 28, comment is 38, blank is 7.
+dist\inline.bundle.js.map, code is 1, comment is 0, blank is 0.
+dist\main.bundle.js, code is 2487, comment is 552, blank is 128.
+dist\main.bundle.js.map, code is 1, comment is 0, blank is 0.
+dist\Nucleo.3970f93354833407e43f.svg, code is 162, comment is 0, blank is 0.
+dist\Nucleo.99434ec1ee8ee72fa2a3.ttf, it is a binary file.
+dist\Nucleo.a5b065b4b8f7139f21be.eot, it is a binary file.
+dist\polyfills.bundle.js, code is 33, comment is 9, blank is 10.
+dist\polyfills.bundle.js.map, code is 1, comment is 0, blank is 0.
+dist\scripts.bundle.js, code is 14138, comment is 2764, blank is 3005.
+dist\scripts.bundle.js.map, code is 1, comment is 0, blank is 0.
+dist\styles.bundle.js, code is 139, comment is 65, blank is 54.
+dist\styles.bundle.js.map, code is 1, comment is 0, blank is 0.
+dist\vendor.bundle.js, code is 67141, comment is 49014, blank is 3374.
+dist\vendor.bundle.js.map, code is 1, comment is 0, blank is 0.
+e2e\login\login.e2e-spec.ts, code is 23, comment is 28, blank is 10.
+e2e\login\login.po.ts, code is 23, comment is 1, blank is 7.
+e2e\tsconfig.e2e.json, code is 13, comment is 0, blank is 1.
+etc\ssl\jarvis.crt, code is 38, comment is 0, blank is 0.
+etc\ssl\jarvis.key, code is 28, comment is 0, blank is 0.
+etc\ssl\Keysight_Intermediate.crt, code is 37, comment is 0, blank is 0.
+etc\ssl\Keysight_Root.crt, code is 37, comment is 1, blank is 0.
+karma.conf.js, code is 30, comment is 3, blank is 1.
+package-lock.json, code is 16555, comment is 0, blank is 0.
+package.json, code is 109, comment is 0, blank is 0.
+protractor.conf.js, code is 23, comment is 2, blank is 3.
+public\icons\nucleo\css\style.css, code is 275, comment is 30, blank is 51.
+public\icons\nucleo\demo.html, code is 251, comment is 1, blank is 53.
+public\icons\nucleo\demo\css\style.css, code is 252, comment is 25, blank is 71.
+public\icons\nucleo\demo\favicon.ico, it is a binary file.
+public\icons\nucleo\fonts\Nucleo.eot, it is a binary file.
+public\icons\nucleo\fonts\Nucleo.svg, code is 162, comment is 0, blank is 0.
+public\icons\nucleo\fonts\Nucleo.ttf, it is a binary file.
+public\icons\nucleo\fonts\Nucleo.woff, it is a binary file.
+public\icons\nucleo\fonts\Nucleo.woff2, it is a binary file.
+public\icons\nucleo\less\icons.less, code is 200, comment is 3, blank is 51.
+public\icons\nucleo\less\mixins.less, code is 16, comment is 0, blank is 1.
+public\icons\nucleo\less\nucleo.less, code is 107, comment is 27, blank is 21.
+public\icons\nucleo\less\variables.less, code is 3, comment is 0, blank is 0.
+public\icons\nucleo\scss\_mixins.scss, code is 16, comment is 0, blank is 1.
+public\icons\nucleo\scss\_variables.scss, code is 3, comment is 0, blank is 0.
+public\icons\nucleo\scss\icons.scss, code is 203, comment is 3, blank is 52.
+public\icons\nucleo\scss\nucleo.scss, code is 107, comment is 27, blank is 21.
+public\icons\nucleo\unicodesMap.json, code is 1, comment is 0, blank is 0.
+README.md, code is 14, comment is 5, blank is 13.
+server.js, code is 82, comment is 33, blank is 30.
+server\controllers\_index.js, code is 20, comment is 0, blank is 1.
+server\controllers\analyticsController.js, code is 271, comment is 2, blank is 51.
+server\controllers\authController.js, code is 230, comment is 85, blank is 94.
+server\controllers\bomController.js, code is 79, comment is 0, blank is 8.
+server\controllers\clickTrackingController.js, code is 21, comment is 1, blank is 10.
+server\controllers\dashboardController.js, code is 107, comment is 2, blank is 30.
+server\controllers\emailController.js, code is 242, comment is 13, blank is 33.
+server\controllers\employeeController.js, code is 79, comment is 1, blank is 13.
+server\controllers\exportController.js, code is 156, comment is 50, blank is 29.
+server\controllers\fteController.js, code is 172, comment is 15, blank is 31.
+server\controllers\jobTitleController.js, code is 319, comment is 36, blank is 75.
+server\controllers\metaDataController.js, code is 23, comment is 0, blank is 7.
+server\controllers\orgController.js, code is 35, comment is 2, blank is 5.
+server\controllers\partController.js, code is 170, comment is 3, blank is 22.
+server\controllers\permissionController.js, code is 212, comment is 8, blank is 56.
+server\controllers\projectController.js, code is 108, comment is 0, blank is 14.
+server\controllers\reportController.js, code is 290, comment is 11, blank is 33.
+server\controllers\schedulesController.js, code is 476, comment is 72, blank is 106.
+server\db\config.js, code is 41, comment is 4, blank is 8.
+server\db\sequelize.js, code is 48, comment is 0, blank is 13.
+server\email\email.js, code is 26, comment is 13, blank is 8.
+server\email\templates\approve-project.html, code is 60, comment is 0, blank is 15.
+server\email\templates\deny-project.html, code is 60, comment is 0, blank is 15.
+server\email\templates\fte-reminder.html, code is 60, comment is 0, blank is 16.
+server\email\templates\request-project.html, code is 59, comment is 0, blank is 16.
+server\logs\logs.js, code is 23, comment is 4, blank is 12.
+server\models\_index.js, code is 20, comment is 0, blank is 1.
+server\models\analytics.js, code is 21, comment is 2, blank is 5.
+server\models\clickTracking.js, code is 24, comment is 0, blank is 5.
+server\models\jobTitle.js, code is 43, comment is 4, blank is 9.
+server\models\org.js, code is 15, comment is 0, blank is 5.
+server\models\part.js, code is 38, comment is 0, blank is 6.
+server\models\project.js, code is 116, comment is 4, blank is 15.
+server\models\projectEmployee.js, code is 54, comment is 2, blank is 11.
+server\models\schedules.js, code is 51, comment is 6, blank is 10.
+server\models\user.js, code is 32, comment is 0, blank is 5.
+server\routes\api.js, code is 174, comment is 57, blank is 44.
+server\token\token.js, code is 24, comment is 0, blank is 7.
+server\websockets\websockets.js, code is 24, comment is 0, blank is 8.
+src\app\_shared\components\progress-bar\progress-bar.component.css, code is 35, comment is 0, blank is 7.
+src\app\_shared\components\progress-bar\progress-bar.component.html, code is 5, comment is 0, blank is 1.
+src\app\_shared\components\progress-bar\progress-bar.component.ts, code is 11, comment is 1, blank is 4.
+src\app\_shared\components\progress-spinner\progress-spinner.component.css, code is 125, comment is 0, blank is 13.
+src\app\_shared\components\progress-spinner\progress-spinner.component.html, code is 8, comment is 0, blank is 2.
+src\app\_shared\components\progress-spinner\progress-spinner.component.ts, code is 11, comment is 1, blank is 4.
+src\app\_shared\directives\autofocus.directive.ts, code is 11, comment is 0, blank is 4.
+src\app\_shared\directives\click-outside.directive.ts, code is 25, comment is 10, blank is 12.
+src\app\_shared\directives\fte-input-restrict.directive.ts, code is 23, comment is 2, blank is 5.
+src\app\_shared\guards\auth.guard.ts, code is 20, comment is 8, blank is 11.
+src\app\_shared\guards\browser.guard.ts, code is 44, comment is 8, blank is 14.
+src\app\_shared\guards\permissions.guard.ts, code is 27, comment is 6, blank is 10.
+src\app\_shared\guards\unsaved-changes.guard.ts, code is 12, comment is 3, blank is 2.
+src\app\_shared\models\deserializable.model.ts, code is 3, comment is 1, blank is 1.
+src\app\_shared\models\user.model.ts, code is 32, comment is 1, blank is 11.
+src\app\_shared\pipes\filter.pipe.ts, code is 84, comment is 18, blank is 25.
+src\app\_shared\pipes\project-type.pipe.ts, code is 11, comment is 3, blank is 4.
+src\app\_shared\pipes\projects-filter.pipe.ts, code is 24, comment is 10, blank is 3.
+src\app\_shared\pipes\safe-html.pipe.ts, code is 11, comment is 1, blank is 4.
+src\app\_shared\services\_index.ts, code is 9, comment is 0, blank is 0.
+src\app\_shared\services\api-data\_index.ts, code is 16, comment is 0, blank is 0.
+src\app\_shared\services\api-data\api-data-analytics.service.ts, code is 66, comment is 2, blank is 15.
+src\app\_shared\services\api-data\api-data-auth.service.ts, code is 71, comment is 9, blank is 13.
+src\app\_shared\services\api-data\api-data-auth.spec.ts, code is 22, comment is 0, blank is 6.
+src\app\_shared\services\api-data\api-data-bom.service.ts, code is 38, comment is 1, blank is 7.
+src\app\_shared\services\api-data\api-data-click-tracking.service.ts, code is 20, comment is 1, blank is 5.
+src\app\_shared\services\api-data\api-data-dashboard.service.ts, code is 32, comment is 1, blank is 14.
+src\app\_shared\services\api-data\api-data-email.service.ts, code is 22, comment is 0, blank is 7.
+src\app\_shared\services\api-data\api-data-employee.service.ts, code is 27, comment is 0, blank is 7.
+src\app\_shared\services\api-data\api-data-fte.service.ts, code is 49, comment is 5, blank is 9.
+src\app\_shared\services\api-data\api-data-job-title.service.ts, code is 89, comment is 1, blank is 17.
+src\app\_shared\services\api-data\api-data-meta-data.service.ts, code is 18, comment is 0, blank is 6.
+src\app\_shared\services\api-data\api-data-org.service.ts, code is 20, comment is 1, blank is 5.
+src\app\_shared\services\api-data\api-data-part.service.ts, code is 53, comment is 0, blank is 8.
+src\app\_shared\services\api-data\api-data-permission.service.ts, code is 53, comment is 0, blank is 13.
+src\app\_shared\services\api-data\api-data-project.service.ts, code is 187, comment is 4, blank is 48.
+src\app\_shared\services\api-data\api-data-report.service.ts, code is 57, comment is 5, blank is 13.
+src\app\_shared\services\api-data\api-data-schedules.service.ts, code is 81, comment is 0, blank is 18.
+src\app\_shared\services\auth.service.ts, code is 229, comment is 108, blank is 68.
+src\app\_shared\services\cache.service.ts, code is 46, comment is 21, blank is 27.
+src\app\_shared\services\click-tracking.service.ts, code is 74, comment is 33, blank is 23.
+src\app\_shared\services\cookies.service.ts, code is 28, comment is 1, blank is 8.
+src\app\_shared\services\excel-export.service.ts, code is 172, comment is 52, blank is 31.
+src\app\_shared\services\routing-history.service.ts, code is 16, comment is 5, blank is 5.
+src\app\_shared\services\tools.service.ts, code is 98, comment is 9, blank is 29.
+src\app\_shared\services\user-resolver.service.ts, code is 29, comment is 8, blank is 8.
+src\app\_shared\services\websocket.service.ts, code is 58, comment is 5, blank is 13.
+src\app\_shared\styles\common.css, code is 142, comment is 21, blank is 40.
+src\app\_shared\styles\d3bomviewer-custom.css, code is 32, comment is 0, blank is 4.
+src\app\_shared\styles\nouislider-custom.css, code is 46, comment is 0, blank is 11.
+src\app\_shared\styles\simplebar-custom.css, code is 6, comment is 0, blank is 3.
+src\app\_shared\styles\treant-custom.css, code is 59, comment is 3, blank is 16.
+src\app\_shared\styles\typeahead-custom.css, code is 33, comment is 0, blank is 6.
+src\app\admin\admin.component.css, code is 9, comment is 0, blank is 1.
+src\app\admin\admin.component.html, code is 15, comment is 0, blank is 5.
+src\app\admin\admin.component.ts, code is 14, comment is 1, blank is 6.
+src\app\admin\job-titles\job-titles.component.css, code is 28, comment is 0, blank is 8.
+src\app\admin\job-titles\job-titles.component.html, code is 185, comment is 56, blank is 9.
+src\app\admin\job-titles\job-titles.component.ts, code is 237, comment is 52, blank is 27.
+src\app\admin\project-attributes\project-attributes.component.css, code is 9, comment is 0, blank is 1.
+src\app\admin\project-attributes\project-attributes.component.html, code is 4, comment is 0, blank is 1.
+src\app\admin\project-attributes\project-attributes.component.ts, code is 11, comment is 0, blank is 4.
+src\app\app-routing.module.ts, code is 82, comment is 5, blank is 10.
+src\app\app.component.css, code is 0, comment is 0, blank is 0.
+src\app\app.component.html, code is 1, comment is 0, blank is 1.
+src\app\app.component.ts, code is 77, comment is 26, blank is 26.
+src\app\app.module.ts, code is 190, comment is 8, blank is 10.
+src\app\auth\login\data.stub.ts, code is 7, comment is 0, blank is 2.
+src\app\auth\login\login.component.css, code is 130, comment is 5, blank is 26.
+src\app\auth\login\login.component.html, code is 61, comment is 8, blank is 31.
+src\app\auth\login\login.component.spec.ts, code is 103, comment is 0, blank is 16.
+src\app\auth\login\login.component.ts, code is 254, comment is 89, blank is 86.
+src\app\block-app-use\block-app-use.component.css, code is 0, comment is 0, blank is 0.
+src\app\block-app-use\block-app-use.component.html, code is 1, comment is 0, blank is 1.
+src\app\block-app-use\block-app-use.component.ts, code is 32, comment is 3, blank is 13.
+src\app\bom\bom-draw-d3\bom-draw-d3.component.css, code is 7, comment is 0, blank is 1.
+src\app\bom\bom-draw-d3\bom-draw-d3.component.html, code is 1, comment is 0, blank is 0.
+src\app\bom\bom-draw-d3\bom-draw-d3.component.ts, code is 306, comment is 71, blank is 59.
+src\app\bom\bom-editor\bom-editor.component.css, code is 18, comment is 0, blank is 2.
+src\app\bom\bom-editor\bom-editor.component.html, code is 13, comment is 8, blank is 2.
+src\app\bom\bom-editor\bom-editor.component.ts, code is 84, comment is 20, blank is 15.
+src\app\bom\bom-selector\bom-selector.component.css, code is 9, comment is 0, blank is 2.
+src\app\bom\bom-selector\bom-selector.component.html, code is 3, comment is 0, blank is 0.
+src\app\bom\bom-selector\bom-selector.component.ts, code is 39, comment is 7, blank is 10.
+src\app\bom\bom-viewer\bom-viewer.component.css, code is 0, comment is 0, blank is 0.
+src\app\bom\bom-viewer\bom-viewer.component.html, code is 4, comment is 0, blank is 0.
+src\app\bom\bom-viewer\bom-viewer.component.ts, code is 15, comment is 0, blank is 6.
+src\app\chat\chat.component.css, code is 67, comment is 4, blank is 16.
+src\app\chat\chat.component.html, code is 34, comment is 0, blank is 3.
+src\app\chat\chat.component.ts, code is 81, comment is 18, blank is 26.
+src\app\dashboard\dashboard-donut.service.ts, code is 153, comment is 36, blank is 28.
+src\app\dashboard\dashboard-gauge.service.ts, code is 44, comment is 7, blank is 12.
+src\app\dashboard\dashboard-message-model.ts, code is 6, comment is 0, blank is 1.
+src\app\dashboard\dashboard-messages.service.ts, code is 103, comment is 22, blank is 32.
+src\app\dashboard\dashboard-pareto.service.ts, code is 137, comment is 14, blank is 25.
+src\app\dashboard\dashboard-pie.service.ts, code is 138, comment is 23, blank is 29.
+src\app\dashboard\dashboard-stacked-column.service.ts, code is 150, comment is 36, blank is 29.
+src\app\dashboard\dashboard.component.css, code is 105, comment is 11, blank is 31.
+src\app\dashboard\dashboard.component.html, code is 64, comment is 17, blank is 27.
+src\app\dashboard\dashboard.component.ts, code is 208, comment is 38, blank is 51.
+src\app\error-pages\error-403\error-403.component.css, code is 46, comment is 0, blank is 8.
+src\app\error-pages\error-403\error-403.component.html, code is 18, comment is 1, blank is 1.
+src\app\error-pages\error-403\error-403.component.ts, code is 11, comment is 0, blank is 4.
+src\app\footer\footer.component.css, code is 20, comment is 1, blank is 3.
+src\app\footer\footer.component.html, code is 22, comment is 0, blank is 5.
+src\app\footer\footer.component.ts, code is 16, comment is 0, blank is 6.
+src\app\fte-entry\employee\fte-entry.component.css, code is 186, comment is 22, blank is 42.
+src\app\fte-entry\employee\fte-entry.component.html, code is 103, comment is 13, blank is 13.
+src\app\fte-entry\employee\fte-entry.component.ts, code is 858, comment is 189, blank is 146.
+src\app\fte-entry\employee\fte-entry.guard.ts, code is 39, comment is 11, blank is 6.
+src\app\fte-entry\employee\fte-model.ts, code is 16, comment is 56, blank is 3.
+src\app\fte-entry\team\fte-entry.component.css, code is 0, comment is 0, blank is 0.
+src\app\fte-entry\team\fte-entry.component.html, code is 9, comment is 1, blank is 1.
+src\app\fte-entry\team\fte-entry.component.ts, code is 11, comment is 0, blank is 4.
+src\app\main\main.component.css, code is 8, comment is 0, blank is 1.
+src\app\main\main.component.html, code is 11, comment is 6, blank is 6.
+src\app\main\main.component.ts, code is 18, comment is 4, blank is 7.
+src\app\modals\carousel-modal\carousel-modal.component.css, code is 51, comment is 0, blank is 12.
+src\app\modals\carousel-modal\carousel-modal.component.html, code is 56, comment is 0, blank is 6.
+src\app\modals\carousel-modal\carousel-modal.component.ts, code is 38, comment is 3, blank is 14.
+src\app\modals\carousel-modal\carousel-modal.model.ts, code is 22, comment is 1, blank is 3.
+src\app\modals\confirm-modal\confirm-modal.component.css, code is 13, comment is 0, blank is 3.
+src\app\modals\confirm-modal\confirm-modal.component.html, code is 21, comment is 0, blank is 1.
+src\app\modals\confirm-modal\confirm-modal.component.ts, code is 38, comment is 3, blank is 14.
+src\app\modals\confirm-modal\confirm-modal.model.ts, code is 15, comment is 1, blank is 2.
+src\app\modals\notice-modal\notice-modal.component.css, code is 13, comment is 0, blank is 4.
+src\app\modals\notice-modal\notice-modal.component.html, code is 19, comment is 0, blank is 1.
+src\app\modals\notice-modal\notice-modal.component.ts, code is 38, comment is 3, blank is 19.
+src\app\modals\profile-modal\profile-modal.component.css, code is 9, comment is 0, blank is 1.
+src\app\modals\profile-modal\profile-modal.component.html, code is 35, comment is 4, blank is 5.
+src\app\modals\profile-modal\profile-modal.component.ts, code is 103, comment is 27, blank is 18.
+src\app\modals\projects-create-modal\projects-create-modal.component.css, code is 9, comment is 8, blank is 2.
+src\app\modals\projects-create-modal\projects-create-modal.component.html, code is 40, comment is 0, blank is 0.
+src\app\modals\projects-create-modal\projects-create-modal.component.ts, code is 81, comment is 13, blank is 17.
+src\app\modals\projects-edit-modal\projects-edit-modal.component.css, code is 0, comment is 0, blank is 0.
+src\app\modals\projects-edit-modal\projects-edit-modal.component.html, code is 29, comment is 8, blank is 2.
+src\app\modals\projects-edit-modal\projects-edit-modal.component.ts, code is 126, comment is 16, blank is 21.
+src\app\modals\projects-modal\projects-modal.component.css, code is 212, comment is 15, blank is 50.
+src\app\modals\projects-modal\projects-modal.component.html, code is 55, comment is 6, blank is 12.
+src\app\modals\projects-modal\projects-modal.component.ts, code is 543, comment is 82, blank is 100.
+src\app\navs\side-nav\side-nav.component.css, code is 88, comment is 0, blank is 18.
+src\app\navs\side-nav\side-nav.component.html, code is 18, comment is 0, blank is 9.
+src\app\navs\side-nav\side-nav.component.ts, code is 350, comment is 113, blank is 62.
+src\app\navs\side-nav\side-nav.model.ts, code is 20, comment is 0, blank is 3.
+src\app\navs\top-nav\top-nav.component.css, code is 134, comment is 4, blank is 28.
+src\app\navs\top-nav\top-nav.component.html, code is 32, comment is 0, blank is 16.
+src\app\navs\top-nav\top-nav.component.ts, code is 87, comment is 14, blank is 25.
+src\app\performance\performance.component.css, code is 7, comment is 0, blank is 1.
+src\app\performance\performance.component.html, code is 40, comment is 0, blank is 9.
+src\app\performance\performance.component.ts, code is 108, comment is 16, blank is 40.
+src\app\projects\display-project\display-project.component.css, code is 269, comment is 11, blank is 68.
+src\app\projects\display-project\display-project.component.html, code is 186, comment is 19, blank is 67.
+src\app\projects\display-project\display-project.component.ts, code is 356, comment is 71, blank is 110.
+src\app\projects\my-projects\my-projects.component.css, code is 46, comment is 0, blank is 10.
+src\app\projects\my-projects\my-projects.component.html, code is 179, comment is 29, blank is 16.
+src\app\projects\my-projects\my-projects.component.ts, code is 308, comment is 42, blank is 41.
+src\app\projects\project-requests\project-requests.component.css, code is 0, comment is 0, blank is 0.
+src\app\projects\project-requests\project-requests.component.html, code is 3, comment is 0, blank is 0.
+src\app\projects\project-requests\project-requests.component.ts, code is 11, comment is 0, blank is 4.
+src\app\projects\search-projects\search-projects.component.css, code is 262, comment is 14, blank is 64.
+src\app\projects\search-projects\search-projects.component.html, code is 148, comment is 15, blank is 47.
+src\app\projects\search-projects\search-projects.component.ts, code is 517, comment is 174, blank is 180.
+src\app\reports\employees\employees.component.css, code is 72, comment is 3, blank is 16.
+src\app\reports\employees\employees.component.html, code is 78, comment is 8, blank is 38.
+src\app\reports\employees\employees.component.ts, code is 382, comment is 50, blank is 102.
+src\app\reports\my-fte-summary\my-fte-summary.component.css, code is 0, comment is 0, blank is 0.
+src\app\reports\my-fte-summary\my-fte-summary.component.html, code is 16, comment is 4, blank is 3.
+src\app\reports\my-fte-summary\my-fte-summary.component.ts, code is 80, comment is 8, blank is 16.
+src\app\reports\supply-demand\supply-demand.component.css, code is 5, comment is 0, blank is 0.
+src\app\reports\supply-demand\supply-demand.component.html, code is 62, comment is 0, blank is 8.
+src\app\reports\supply-demand\supply-demand.component.ts, code is 226, comment is 59, blank is 33.
+src\app\reports\team-fte-summary\org-dropdown\org-dropdown.component.css, code is 25, comment is 0, blank is 6.
+src\app\reports\team-fte-summary\org-dropdown\org-dropdown.component.html, code is 17, comment is 1, blank is 1.
+src\app\reports\team-fte-summary\org-dropdown\org-dropdown.component.ts, code is 47, comment is 1, blank is 16.
+src\app\reports\team-fte-summary\team-fte-summary.component.css, code is 75, comment is 3, blank is 16.
+src\app\reports\team-fte-summary\team-fte-summary.component.html, code is 56, comment is 9, blank is 6.
+src\app\reports\team-fte-summary\team-fte-summary.component.ts, code is 159, comment is 21, blank is 35.
+src\app\reports\top-projects-bubble\top-projects-bubble.component.css, code is 0, comment is 0, blank is 0.
+src\app\reports\top-projects-bubble\top-projects-bubble.component.html, code is 37, comment is 3, blank is 5.
+src\app\reports\top-projects-bubble\top-projects-bubble.component.ts, code is 160, comment is 7, blank is 15.
+src\app\reports\top-projects\top-projects.component.css, code is 0, comment is 15, blank is 2.
+src\app\reports\top-projects\top-projects.component.html, code is 55, comment is 3, blank is 6.
+src\app\reports\top-projects\top-projects.component.ts, code is 144, comment is 32, blank is 18.
+src\app\setups\parts\parts.component.css, code is 36, comment is 0, blank is 10.
+src\app\setups\parts\parts.component.html, code is 157, comment is 1, blank is 15.
+src\app\setups\parts\parts.component.ts, code is 336, comment is 11, blank is 39.
+src\app\setups\projects\projects.component.css, code is 36, comment is 0, blank is 8.
+src\app\setups\projects\projects.component.html, code is 165, comment is 1, blank is 9.
+src\app\setups\projects\projects.component.ts, code is 335, comment is 7, blank is 38.
+src\app\test\test.component.css, code is 0, comment is 0, blank is 0.
+src\app\test\test.component.html, code is 3, comment is 0, blank is 0.
+src\app\test\test.component.ts, code is 35, comment is 3, blank is 13.
+src\app\toast\toast.component.css, code is 54, comment is 0, blank is 10.
+src\app\toast\toast.component.html, code is 6, comment is 0, blank is 1.
+src\app\toast\toast.component.ts, code is 52, comment is 6, blank is 8.
+src\app\unit-test\unit-test.component.css, code is 0, comment is 0, blank is 0.
+src\app\unit-test\unit-test.component.html, code is 13, comment is 0, blank is 6.
+src\app\unit-test\unit-test.component.spec.ts, code is 68, comment is 0, blank is 12.
+src\app\unit-test\unit-test.component.ts, code is 33, comment is 0, blank is 9.
+src\assets\.gitkeep, code is 0, comment is 0, blank is 0.
+src\assets\carousel_slides\FTE\carousel_FTE_1.png, it is a binary file.
+src\assets\carousel_slides\FTE\carousel_FTE_2.png, it is a binary file.
+src\assets\carousel_slides\FTE\carousel_FTE_3.png, it is a binary file.
+src\assets\carousel_slides\FTE\carousel_FTE_4.png, it is a binary file.
+src\assets\carousel_slides\FTE\carousel_FTE_5.png, it is a binary file.
+src\assets\EmailLogo.png, it is a binary file.
+src\assets\jarvis_logos\archived\JarvisLogo.png, it is a binary file.
+src\assets\jarvis_logos\archived\JarvisLogo.svg, code is 26, comment is 0, blank is 0.
+src\assets\jarvis_logos\archived\JarvisLogo2.png, it is a binary file.
+src\assets\jarvis_logos\archived\jarvislogo_login.png, it is a binary file.
+src\assets\jarvis_logos\archived\JarvisLogoIconOnly.svg, code is 17, comment is 0, blank is 0.
+src\assets\jarvis_logos\archived\JarvisLogoIconOnlyNonInverted.svg, code is 17, comment is 0, blank is 0.
+src\assets\jarvis_logos\archived\JarvisLogoNonInverted.svg, code is 27, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo.svg, code is 25, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo_icononly.svg, code is 16, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo_inverted.svg, code is 29, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo_inverted_icononly.svg, code is 16, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo_inverted_test.svg, code is 26, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo_test.svg, code is 26, comment is 0, blank is 0.
+src\assets\login_images\_index.json, code is 197, comment is 0, blank is 1.
+src\assets\login_images\asher_cliff_switzerland.jpg, it is a binary file.
+src\assets\login_images\asher_cliff_switzerland_thumbnail.jpg, it is a binary file.
+src\assets\login_images\autostadt_wolfsburg.jpg, it is a binary file.
+src\assets\login_images\autostadt_wolfsburg_thumbnail.jpg, it is a binary file.
+src\assets\login_images\banff_national_park.jpg, it is a binary file.
+src\assets\login_images\banff_national_park_thumbnail.jpg, it is a binary file.
+src\assets\login_images\bay_bridge.jpg, it is a binary file.
+src\assets\login_images\bay_bridge_thumbnail.jpg, it is a binary file.
+src\assets\login_images\blue_mountains_sydney.jpg, it is a binary file.
+src\assets\login_images\blue_mountains_sydney_thumbnail.jpg, it is a binary file.
+src\assets\login_images\bryce_canyon.jpg, it is a binary file.
+src\assets\login_images\bryce_canyon_thumbnail.jpg, it is a binary file.
+src\assets\login_images\canal_du_midi.jpg, it is a binary file.
+src\assets\login_images\canal_du_midi_thumbnail.jpg, it is a binary file.
+src\assets\login_images\central_valley_almond_orchards.jpg, it is a binary file.
+src\assets\login_images\central_valley_almond_orchards_thumbnail.jpg, it is a binary file.
+src\assets\login_images\colorado_river.jpg, code is 5224, comment is 2602, blank is 38.
+src\assets\login_images\colorado_river_thumbnail.jpg, it is a binary file.
+src\assets\login_images\county_donegal_ireland.jpg, it is a binary file.
+src\assets\login_images\county_donegal_ireland_thumbnail.jpg, it is a binary file.
+src\assets\login_images\denali_national_park.jpg, it is a binary file.
+src\assets\login_images\denali_national_park_thumbnail.jpg, it is a binary file.
+src\assets\login_images\eastern_lake_tahoe.jpg, it is a binary file.
+src\assets\login_images\eastern_lake_tahoe_thumbnail.jpg, it is a binary file.
+src\assets\login_images\garden_of_the_gods.jpg, it is a binary file.
+src\assets\login_images\garden_of_the_gods_thumbnail.jpg, it is a binary file.
+src\assets\login_images\garze.jpg, it is a binary file.
+src\assets\login_images\garze_thumbnail.jpg, it is a binary file.
+src\assets\login_images\haleakala_national_park.jpg, it is a binary file.
+src\assets\login_images\haleakala_national_park_thumbnail.jpg, it is a binary file.
+src\assets\login_images\hohenschwangau_castle.jpg, it is a binary file.
+src\assets\login_images\hohenschwangau_castle_thumbnail.jpg, it is a binary file.
+src\assets\login_images\hooker_valley_glacier_new_zealand.jpg, it is a binary file.
+src\assets\login_images\hooker_valley_glacier_new_zealand_thumbnail.jpg, it is a binary file.
+src\assets\login_images\jiangxi_province.jpg, it is a binary file.
+src\assets\login_images\jiangxi_province_thumbnail.jpg, it is a binary file.
+src\assets\login_images\la_jolla_tidepools.jpg, it is a binary file.
+src\assets\login_images\la_jolla_tidepools_thumbnail.jpg, it is a binary file.
+src\assets\login_images\lijiang_china.jpg, it is a binary file.
+src\assets\login_images\lijiang_china_thumbnail.jpg, it is a binary file.
+src\assets\login_images\lombok_indonesia.jpg, it is a binary file.
+src\assets\login_images\lombok_indonesia_thumbnail.jpg, it is a binary file.
+src\assets\login_images\luzern_to_matterhorn.jpg, it is a binary file.
+src\assets\login_images\luzern_to_matterhorn_thumbnail.jpg, it is a binary file.
+src\assets\login_images\manhattan_beach.jpg, it is a binary file.
+src\assets\login_images\manhattan_beach_thumbnail.jpg, it is a binary file.
+src\assets\login_images\moab_utah.jpg, it is a binary file.
+src\assets\login_images\moab_utah_thumbnail.jpg, it is a binary file.
+src\assets\login_images\monument_valley.jpg, it is a binary file.
+src\assets\login_images\monument_valley_thumbnail.jpg, it is a binary file.
+src\assets\login_images\mount_huangshan.jpg, it is a binary file.
+src\assets\login_images\mount_huangshan_thumbnail.jpg, it is a binary file.
+src\assets\login_images\mount_pilchuck.jpg, it is a binary file.
+src\assets\login_images\mount_pilchuck_thumbnail.jpg, it is a binary file.
+src\assets\login_images\mount_rinjani_indonesia.jpg, it is a binary file.
+src\assets\login_images\mount_rinjani_indonesia_thumbnail.jpg, it is a binary file.
+src\assets\login_images\ocean_beach.jpg, it is a binary file.
+src\assets\login_images\ocean_beach_thumbnail.jpg, it is a binary file.
+src\assets\login_images\palau_sibuan.jpg, it is a binary file.
+src\assets\login_images\palau_sibuan_thumbnail.jpg, it is a binary file.
+src\assets\login_images\penang_tan_jetty.jpg, it is a binary file.
+src\assets\login_images\penang_tan_jetty_thumbnail.jpg, it is a binary file.
+src\assets\login_images\point_bonita.jpg, it is a binary file.
+src\assets\login_images\point_bonita_thumbnail.jpg, it is a binary file.
+src\assets\login_images\point_meares_lighthouse.jpg, it is a binary file.
+src\assets\login_images\point_meares_lighthouse_thumbnail.jpg, it is a binary file.
+src\assets\login_images\ranwu_lake_tibet.jpg, it is a binary file.
+src\assets\login_images\ranwu_lake_tibet_thumbnail.jpg, it is a binary file.
+src\assets\login_images\sand_dunes_national_park.jpg, it is a binary file.
+src\assets\login_images\sand_dunes_national_park_thumbnail.jpg, it is a binary file.
+src\assets\login_images\shell_beach_bodega_bay.jpg, it is a binary file.
+src\assets\login_images\shell_beach_bodega_bay_thumbnail.jpg, it is a binary file.
+src\assets\login_images\sierras_winter.jpg, it is a binary file.
+src\assets\login_images\sierras_winter_thumbnail.jpg, it is a binary file.
+src\assets\login_images\singapore.jpg, it is a binary file.
+src\assets\login_images\singapore_thumbnail.jpg, it is a binary file.
+src\assets\login_images\sri_lanka.jpg, it is a binary file.
+src\assets\login_images\sri_lanka_thumbnail.jpg, it is a binary file.
+src\assets\login_images\summer_palace_beijing.jpg, it is a binary file.
+src\assets\login_images\summer_palace_beijing_thumbnail.jpg, it is a binary file.
+src\assets\login_images\taipei_city.jpg, it is a binary file.
+src\assets\login_images\taipei_city_thumbnail.jpg, it is a binary file.
+src\assets\login_images\vietnam.jpg, it is a binary file.
+src\assets\login_images\vietnam_thumbnail.jpg, it is a binary file.
+src\assets\login_images\wheeler_geologic_area.jpg, it is a binary file.
+src\assets\login_images\wheeler_geologic_area_thumbnail.jpg, it is a binary file.
+src\assets\login_images\wuyuan_jiangxi_province.jpg, it is a binary file.
+src\assets\login_images\wuyuan_jiangxi_province_thumbnail.jpg, it is a binary file.
+src\assets\login_images\yangtze_river.jpg, it is a binary file.
+src\assets\login_images\yangtze_river_thumbnail.jpg, it is a binary file.
+src\assets\login_images\yosemite.jpg, it is a binary file.
+src\assets\login_images\yosemite_thumbnail.jpg, it is a binary file.
+src\assets\login_images\yosemite_waterfall.jpg, it is a binary file.
+src\assets\login_images\yosemite_waterfall_thumbnail.jpg, it is a binary file.
+src\assets\project_avatars\arges.png, it is a binary file.
+src\assets\project_avatars\avocado.png, it is a binary file.
+src\assets\project_avatars\bacon.png, it is a binary file.
+src\assets\project_avatars\baymax.png, it is a binary file.
+src\assets\project_avatars\beer.png, it is a binary file.
+src\assets\project_avatars\cheese.png, it is a binary file.
+src\assets\project_avatars\coffee.png, it is a binary file.
+src\assets\project_avatars\deuce.png, it is a binary file.
+src\assets\project_avatars\eggs.png, it is a binary file.
+src\assets\project_avatars\fries.png, it is a binary file.
+src\assets\project_avatars\grapes.png, it is a binary file.
+src\assets\project_avatars\lemon-slice.png, it is a binary file.
+src\assets\project_avatars\minions.png, it is a binary file.
+src\assets\project_avatars\pizza-slice.png, it is a binary file.
+src\assets\project_avatars\python.png, it is a binary file.
+src\assets\project_avatars\tacos.png, it is a binary file.
+src\assets\project_avatars\watermelon.png, it is a binary file.
+src\environments\environment.prod.ts, code is 3, comment is 0, blank is 0.
+src\environments\environment.ts, code is 3, comment is 4, blank is 1.
+src\favicon.ico, it is a binary file.
+src\index.html, code is 13, comment is 0, blank is 1.
+src\main.ts, code is 9, comment is 0, blank is 3.
+src\polyfills.ts, code is 17, comment is 49, blank is 15.
+src\styles.css, code is 10, comment is 7, blank is 7.
+src\test.ts, code is 13, comment is 4, blank is 3.
+src\tsconfig.app.json, code is 12, comment is 0, blank is 1.
+src\tsconfig.spec.json, code is 16, comment is 0, blank is 3.
+src\typings.d.ts, code is 5, comment is 1, blank is 0.
+tsconfig.json, code is 16, comment is 0, blank is 2.
+tslint.json, code is 129, comment is 0, blank is 14.
+===============================================================================
+===============================================================================
+EXTENSION NAME : linecount
+EXTENSION VERSION : 0.1.7
+-------------------------------------------------------------------------------
+count time : 2018-09-26 21:33:17
+count workspace : c:\webdev\jarvis-rt
+total files : 624
+total code lines : 149402
+total comment lines : 60686
+total blank lines : 11389
+
+.angular-cli.json, code is 79, comment is 0, blank is 3.
+.editorconfig, code is 11, comment is 1, blank is 2.
+.env, code is 5, comment is 0, blank is 0.
+.gitignore, code is 22, comment is 24, blank is 6.
+CHANGELOG.md, code is 42, comment is 22, blank is 54.
+coverage\base.css, code is 192, comment is 6, blank is 14.
+coverage\index.html, code is 176, comment is 0, blank is 8.
+coverage\lcov.info, code is 2502, comment is 0, blank is 0.
+coverage\prettify.css, code is 1, comment is 0, blank is 0.
+coverage\prettify.js, code is 1, comment is 0, blank is 0.
+coverage\sort-arrow-sprite.png, it is a binary file.
+coverage\sorter.js, code is 131, comment is 15, blank is 12.
+coverage\src\app\_shared\models\index.html, code is 92, comment is 0, blank is 1.
+coverage\src\app\_shared\models\user.model.ts.html, code is 197, comment is 0, blank is 0.
+coverage\src\app\_shared\pipes\index.html, code is 92, comment is 0, blank is 1.
+coverage\src\app\_shared\pipes\safe-html.pipe.ts.html, code is 113, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\_index.ts.html, code is 113, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-analytics.service.ts.html, code is 314, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-auth.service.ts.html, code is 299, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-bom.service.ts.html, code is 203, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-click-tracking.service.ts.html, code is 143, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-dashboard.service.ts.html, code is 206, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-email.service.ts.html, code is 152, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-employee.service.ts.html, code is 167, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-fte.service.ts.html, code is 197, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-job-title.service.ts.html, code is 386, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-meta-data.service.ts.html, code is 137, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-org.service.ts.html, code is 143, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-part.service.ts.html, code is 248, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-permission.service.ts.html, code is 263, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-project.service.ts.html, code is 782, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-report.service.ts.html, code is 290, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\api-data-schedules.service.ts.html, code is 362, comment is 0, blank is 0.
+coverage\src\app\_shared\services\api-data\index.html, code is 284, comment is 0, blank is 17.
+coverage\src\app\_shared\services\auth.service.ts.html, code is 1146, comment is 0, blank is 0.
+coverage\src\app\_shared\services\cache.service.ts.html, code is 286, comment is 0, blank is 0.
+coverage\src\app\_shared\services\click-tracking.service.ts.html, code is 402, comment is 0, blank is 0.
+coverage\src\app\_shared\services\cookies.service.ts.html, code is 176, comment is 0, blank is 0.
+coverage\src\app\_shared\services\index.html, code is 152, comment is 0, blank is 6.
+coverage\src\app\_shared\services\tools.service.ts.html, code is 1425, comment is 0, blank is 0.
+coverage\src\app\_shared\services\websocket.service.ts.html, code is 204, comment is 0, blank is 0.
+coverage\src\app\auth\login\index.html, code is 92, comment is 0, blank is 1.
+coverage\src\app\auth\login\login.component.ts.html, code is 1238, comment is 0, blank is 0.
+coverage\src\app\modals\confirm-modal\confirm-modal.component.ts.html, code is 230, comment is 0, blank is 0.
+coverage\src\app\modals\confirm-modal\index.html, code is 92, comment is 0, blank is 1.
+coverage\src\app\unit-test\index.html, code is 92, comment is 0, blank is 1.
+coverage\src\app\unit-test\unit-test.component.ts.html, code is 191, comment is 0, blank is 0.
+coverage\src\index.html, code is 104, comment is 0, blank is 2.
+coverage\src\polyfills.ts.html, code is 305, comment is 0, blank is 0.
+coverage\src\test.ts.html, code is 125, comment is 0, blank is 0.
+cypress.json, code is 5, comment is 0, blank is 0.
+cypress\fixtures\example.json, code is 5, comment is 0, blank is 0.
+cypress\integration\login_spec.js, code is 114, comment is 40, blank is 78.
+cypress\plugins\index.js, code is 2, comment is 13, blank is 2.
+cypress\support\commands.js, code is 0, comment is 25, blank is 0.
+cypress\support\index.js, code is 1, comment is 17, blank is 2.
+debug.log, code is 2, comment is 0, blank is 0.
+dist\assets\carousel_slides\FTE\carousel_FTE_1.png, it is a binary file.
+dist\assets\carousel_slides\FTE\carousel_FTE_2.png, it is a binary file.
+dist\assets\carousel_slides\FTE\carousel_FTE_3.png, it is a binary file.
+dist\assets\carousel_slides\FTE\carousel_FTE_4.png, it is a binary file.
+dist\assets\carousel_slides\FTE\carousel_FTE_5.png, it is a binary file.
+dist\assets\EmailLogo.png, it is a binary file.
+dist\assets\jarvis_logos\archived\JarvisLogo.png, it is a binary file.
+dist\assets\jarvis_logos\archived\JarvisLogo.svg, code is 26, comment is 0, blank is 0.
+dist\assets\jarvis_logos\archived\JarvisLogo2.png, it is a binary file.
+dist\assets\jarvis_logos\archived\jarvislogo_login.png, it is a binary file.
+dist\assets\jarvis_logos\archived\JarvisLogoIconOnly.svg, code is 17, comment is 0, blank is 0.
+dist\assets\jarvis_logos\archived\JarvisLogoIconOnlyNonInverted.svg, code is 17, comment is 0, blank is 0.
+dist\assets\jarvis_logos\archived\JarvisLogoNonInverted.svg, code is 27, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo.svg, code is 25, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo_icononly.svg, code is 16, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo_inverted.svg, code is 29, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo_inverted_icononly.svg, code is 16, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo_inverted_test.svg, code is 26, comment is 0, blank is 0.
+dist\assets\jarvis_logos\jarvis_logo_test.svg, code is 26, comment is 0, blank is 0.
+dist\assets\login_images\_index.json, code is 197, comment is 0, blank is 1.
+dist\assets\login_images\asher_cliff_switzerland.jpg, it is a binary file.
+dist\assets\login_images\asher_cliff_switzerland_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\autostadt_wolfsburg.jpg, it is a binary file.
+dist\assets\login_images\autostadt_wolfsburg_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\banff_national_park.jpg, it is a binary file.
+dist\assets\login_images\banff_national_park_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\bay_bridge.jpg, it is a binary file.
+dist\assets\login_images\bay_bridge_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\blue_mountains_sydney.jpg, it is a binary file.
+dist\assets\login_images\blue_mountains_sydney_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\bryce_canyon.jpg, it is a binary file.
+dist\assets\login_images\bryce_canyon_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\canal_du_midi.jpg, it is a binary file.
+dist\assets\login_images\canal_du_midi_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\central_valley_almond_orchards.jpg, it is a binary file.
+dist\assets\login_images\central_valley_almond_orchards_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\colorado_river.jpg, code is 5224, comment is 2602, blank is 38.
+dist\assets\login_images\colorado_river_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\county_donegal_ireland.jpg, it is a binary file.
+dist\assets\login_images\county_donegal_ireland_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\denali_national_park.jpg, it is a binary file.
+dist\assets\login_images\denali_national_park_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\eastern_lake_tahoe.jpg, it is a binary file.
+dist\assets\login_images\eastern_lake_tahoe_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\garden_of_the_gods.jpg, it is a binary file.
+dist\assets\login_images\garden_of_the_gods_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\garze.jpg, it is a binary file.
+dist\assets\login_images\garze_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\haleakala_national_park.jpg, it is a binary file.
+dist\assets\login_images\haleakala_national_park_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\hohenschwangau_castle.jpg, it is a binary file.
+dist\assets\login_images\hohenschwangau_castle_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\hooker_valley_glacier_new_zealand.jpg, it is a binary file.
+dist\assets\login_images\hooker_valley_glacier_new_zealand_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\jiangxi_province.jpg, it is a binary file.
+dist\assets\login_images\jiangxi_province_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\la_jolla_tidepools.jpg, it is a binary file.
+dist\assets\login_images\la_jolla_tidepools_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\lijiang_china.jpg, it is a binary file.
+dist\assets\login_images\lijiang_china_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\lombok_indonesia.jpg, it is a binary file.
+dist\assets\login_images\lombok_indonesia_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\luzern_to_matterhorn.jpg, it is a binary file.
+dist\assets\login_images\luzern_to_matterhorn_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\manhattan_beach.jpg, it is a binary file.
+dist\assets\login_images\manhattan_beach_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\moab_utah.jpg, it is a binary file.
+dist\assets\login_images\moab_utah_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\monument_valley.jpg, it is a binary file.
+dist\assets\login_images\monument_valley_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\mount_huangshan.jpg, it is a binary file.
+dist\assets\login_images\mount_huangshan_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\mount_pilchuck.jpg, it is a binary file.
+dist\assets\login_images\mount_pilchuck_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\mount_rinjani_indonesia.jpg, it is a binary file.
+dist\assets\login_images\mount_rinjani_indonesia_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\ocean_beach.jpg, it is a binary file.
+dist\assets\login_images\ocean_beach_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\palau_sibuan.jpg, it is a binary file.
+dist\assets\login_images\palau_sibuan_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\penang_tan_jetty.jpg, it is a binary file.
+dist\assets\login_images\penang_tan_jetty_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\point_bonita.jpg, it is a binary file.
+dist\assets\login_images\point_bonita_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\point_meares_lighthouse.jpg, it is a binary file.
+dist\assets\login_images\point_meares_lighthouse_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\ranwu_lake_tibet.jpg, it is a binary file.
+dist\assets\login_images\ranwu_lake_tibet_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\sand_dunes_national_park.jpg, it is a binary file.
+dist\assets\login_images\sand_dunes_national_park_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\shell_beach_bodega_bay.jpg, it is a binary file.
+dist\assets\login_images\shell_beach_bodega_bay_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\sierras_winter.jpg, it is a binary file.
+dist\assets\login_images\sierras_winter_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\singapore.jpg, it is a binary file.
+dist\assets\login_images\singapore_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\sri_lanka.jpg, it is a binary file.
+dist\assets\login_images\sri_lanka_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\summer_palace_beijing.jpg, it is a binary file.
+dist\assets\login_images\summer_palace_beijing_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\taipei_city.jpg, it is a binary file.
+dist\assets\login_images\taipei_city_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\vietnam.jpg, it is a binary file.
+dist\assets\login_images\vietnam_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\wheeler_geologic_area.jpg, it is a binary file.
+dist\assets\login_images\wheeler_geologic_area_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\wuyuan_jiangxi_province.jpg, it is a binary file.
+dist\assets\login_images\wuyuan_jiangxi_province_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\yangtze_river.jpg, it is a binary file.
+dist\assets\login_images\yangtze_river_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\yosemite.jpg, it is a binary file.
+dist\assets\login_images\yosemite_thumbnail.jpg, it is a binary file.
+dist\assets\login_images\yosemite_waterfall.jpg, it is a binary file.
+dist\assets\login_images\yosemite_waterfall_thumbnail.jpg, it is a binary file.
+dist\assets\project_avatars\arges.png, it is a binary file.
+dist\assets\project_avatars\avocado.png, it is a binary file.
+dist\assets\project_avatars\bacon.png, it is a binary file.
+dist\assets\project_avatars\baymax.png, it is a binary file.
+dist\assets\project_avatars\beer.png, it is a binary file.
+dist\assets\project_avatars\cheese.png, it is a binary file.
+dist\assets\project_avatars\coffee.png, it is a binary file.
+dist\assets\project_avatars\deuce.png, it is a binary file.
+dist\assets\project_avatars\eggs.png, it is a binary file.
+dist\assets\project_avatars\fries.png, it is a binary file.
+dist\assets\project_avatars\grapes.png, it is a binary file.
+dist\assets\project_avatars\lemon-slice.png, it is a binary file.
+dist\assets\project_avatars\minions.png, it is a binary file.
+dist\assets\project_avatars\pizza-slice.png, it is a binary file.
+dist\assets\project_avatars\python.png, it is a binary file.
+dist\assets\project_avatars\tacos.png, it is a binary file.
+dist\assets\project_avatars\watermelon.png, it is a binary file.
+dist\favicon.ico, it is a binary file.
+dist\fontawesome-webfont.674f50d287a8c48dc19b.eot, it is a binary file.
+dist\fontawesome-webfont.912ec66d7572ff821749.svg, code is 1441, comment is 0, blank is 0.
+dist\fontawesome-webfont.af7ae505a9eed503f8b8.woff2, it is a binary file.
+dist\fontawesome-webfont.b06871f281fee6b241d6.ttf, it is a binary file.
+dist\fontawesome-webfont.fee66e712a8a08eef580.woff, it is a binary file.
+dist\index.html, code is 13, comment is 0, blank is 1.
+dist\inline.bundle.js, code is 28, comment is 38, blank is 7.
+dist\inline.bundle.js.map, code is 1, comment is 0, blank is 0.
+dist\main.bundle.js, code is 2487, comment is 552, blank is 128.
+dist\main.bundle.js.map, code is 1, comment is 0, blank is 0.
+dist\Nucleo.3970f93354833407e43f.svg, code is 162, comment is 0, blank is 0.
+dist\Nucleo.99434ec1ee8ee72fa2a3.ttf, it is a binary file.
+dist\Nucleo.a5b065b4b8f7139f21be.eot, it is a binary file.
+dist\polyfills.bundle.js, code is 33, comment is 9, blank is 10.
+dist\polyfills.bundle.js.map, code is 1, comment is 0, blank is 0.
+dist\scripts.bundle.js, code is 14138, comment is 2764, blank is 3005.
+dist\scripts.bundle.js.map, code is 1, comment is 0, blank is 0.
+dist\styles.bundle.js, code is 139, comment is 65, blank is 54.
+dist\styles.bundle.js.map, code is 1, comment is 0, blank is 0.
+dist\vendor.bundle.js, code is 67141, comment is 49014, blank is 3374.
+dist\vendor.bundle.js.map, code is 1, comment is 0, blank is 0.
+e2e\login\login.e2e-spec.ts, code is 23, comment is 28, blank is 10.
+e2e\login\login.po.ts, code is 23, comment is 1, blank is 7.
+e2e\tsconfig.e2e.json, code is 13, comment is 0, blank is 1.
+etc\ssl\jarvis.crt, code is 38, comment is 0, blank is 0.
+etc\ssl\jarvis.key, code is 28, comment is 0, blank is 0.
+etc\ssl\Keysight_Intermediate.crt, code is 37, comment is 0, blank is 0.
+etc\ssl\Keysight_Root.crt, code is 37, comment is 1, blank is 0.
+karma.conf.js, code is 30, comment is 3, blank is 1.
+package-lock.json, code is 16555, comment is 0, blank is 0.
+package.json, code is 109, comment is 0, blank is 0.
+protractor.conf.js, code is 23, comment is 2, blank is 3.
+public\icons\nucleo\css\style.css, code is 275, comment is 30, blank is 51.
+public\icons\nucleo\demo.html, code is 251, comment is 1, blank is 53.
+public\icons\nucleo\demo\css\style.css, code is 252, comment is 25, blank is 71.
+public\icons\nucleo\demo\favicon.ico, it is a binary file.
+public\icons\nucleo\fonts\Nucleo.eot, it is a binary file.
+public\icons\nucleo\fonts\Nucleo.svg, code is 162, comment is 0, blank is 0.
+public\icons\nucleo\fonts\Nucleo.ttf, it is a binary file.
+public\icons\nucleo\fonts\Nucleo.woff, it is a binary file.
+public\icons\nucleo\fonts\Nucleo.woff2, it is a binary file.
+public\icons\nucleo\less\icons.less, code is 200, comment is 3, blank is 51.
+public\icons\nucleo\less\mixins.less, code is 16, comment is 0, blank is 1.
+public\icons\nucleo\less\nucleo.less, code is 107, comment is 27, blank is 21.
+public\icons\nucleo\less\variables.less, code is 3, comment is 0, blank is 0.
+public\icons\nucleo\scss\_mixins.scss, code is 16, comment is 0, blank is 1.
+public\icons\nucleo\scss\_variables.scss, code is 3, comment is 0, blank is 0.
+public\icons\nucleo\scss\icons.scss, code is 203, comment is 3, blank is 52.
+public\icons\nucleo\scss\nucleo.scss, code is 107, comment is 27, blank is 21.
+public\icons\nucleo\unicodesMap.json, code is 1, comment is 0, blank is 0.
+README.md, code is 14, comment is 5, blank is 13.
+server.js, code is 82, comment is 33, blank is 30.
+server\controllers\_index.js, code is 20, comment is 0, blank is 1.
+server\controllers\analyticsController.js, code is 271, comment is 2, blank is 51.
+server\controllers\authController.js, code is 230, comment is 85, blank is 94.
+server\controllers\bomController.js, code is 79, comment is 0, blank is 8.
+server\controllers\clickTrackingController.js, code is 21, comment is 1, blank is 10.
+server\controllers\dashboardController.js, code is 107, comment is 2, blank is 30.
+server\controllers\emailController.js, code is 242, comment is 13, blank is 33.
+server\controllers\employeeController.js, code is 79, comment is 1, blank is 13.
+server\controllers\exportController.js, code is 156, comment is 50, blank is 29.
+server\controllers\fteController.js, code is 172, comment is 15, blank is 31.
+server\controllers\jobTitleController.js, code is 319, comment is 36, blank is 75.
+server\controllers\metaDataController.js, code is 23, comment is 0, blank is 7.
+server\controllers\orgController.js, code is 35, comment is 2, blank is 5.
+server\controllers\partController.js, code is 170, comment is 3, blank is 22.
+server\controllers\permissionController.js, code is 212, comment is 8, blank is 56.
+server\controllers\projectController.js, code is 108, comment is 0, blank is 14.
+server\controllers\reportController.js, code is 290, comment is 11, blank is 33.
+server\controllers\schedulesController.js, code is 476, comment is 72, blank is 106.
+server\db\config.js, code is 41, comment is 4, blank is 8.
+server\db\sequelize.js, code is 48, comment is 0, blank is 13.
+server\email\email.js, code is 26, comment is 13, blank is 8.
+server\email\templates\approve-project.html, code is 60, comment is 0, blank is 15.
+server\email\templates\deny-project.html, code is 60, comment is 0, blank is 15.
+server\email\templates\fte-reminder.html, code is 60, comment is 0, blank is 16.
+server\email\templates\request-project.html, code is 59, comment is 0, blank is 16.
+server\logs\logs.js, code is 23, comment is 4, blank is 12.
+server\models\_index.js, code is 20, comment is 0, blank is 1.
+server\models\analytics.js, code is 21, comment is 2, blank is 5.
+server\models\clickTracking.js, code is 24, comment is 0, blank is 5.
+server\models\jobTitle.js, code is 43, comment is 4, blank is 9.
+server\models\org.js, code is 15, comment is 0, blank is 5.
+server\models\part.js, code is 38, comment is 0, blank is 6.
+server\models\project.js, code is 116, comment is 4, blank is 15.
+server\models\projectEmployee.js, code is 54, comment is 2, blank is 11.
+server\models\schedules.js, code is 51, comment is 6, blank is 10.
+server\models\user.js, code is 32, comment is 0, blank is 5.
+server\routes\api.js, code is 174, comment is 57, blank is 44.
+server\token\token.js, code is 24, comment is 0, blank is 7.
+server\websockets\websockets.js, code is 24, comment is 0, blank is 8.
+src\app\_shared\components\progress-bar\progress-bar.component.css, code is 35, comment is 0, blank is 7.
+src\app\_shared\components\progress-bar\progress-bar.component.html, code is 5, comment is 0, blank is 1.
+src\app\_shared\components\progress-bar\progress-bar.component.ts, code is 11, comment is 1, blank is 4.
+src\app\_shared\components\progress-spinner\progress-spinner.component.css, code is 125, comment is 0, blank is 13.
+src\app\_shared\components\progress-spinner\progress-spinner.component.html, code is 8, comment is 0, blank is 2.
+src\app\_shared\components\progress-spinner\progress-spinner.component.ts, code is 11, comment is 1, blank is 4.
+src\app\_shared\directives\autofocus.directive.ts, code is 11, comment is 0, blank is 4.
+src\app\_shared\directives\click-outside.directive.ts, code is 25, comment is 10, blank is 12.
+src\app\_shared\directives\fte-input-restrict.directive.ts, code is 23, comment is 2, blank is 5.
+src\app\_shared\guards\auth.guard.ts, code is 20, comment is 8, blank is 11.
+src\app\_shared\guards\browser.guard.ts, code is 44, comment is 8, blank is 14.
+src\app\_shared\guards\permissions.guard.ts, code is 27, comment is 6, blank is 10.
+src\app\_shared\guards\unsaved-changes.guard.ts, code is 12, comment is 3, blank is 2.
+src\app\_shared\models\deserializable.model.ts, code is 3, comment is 1, blank is 1.
+src\app\_shared\models\user.model.ts, code is 32, comment is 1, blank is 11.
+src\app\_shared\pipes\filter.pipe.ts, code is 84, comment is 18, blank is 25.
+src\app\_shared\pipes\project-type.pipe.ts, code is 11, comment is 3, blank is 4.
+src\app\_shared\pipes\projects-filter.pipe.ts, code is 24, comment is 10, blank is 3.
+src\app\_shared\pipes\safe-html.pipe.ts, code is 11, comment is 1, blank is 4.
+src\app\_shared\services\_index.ts, code is 9, comment is 0, blank is 0.
+src\app\_shared\services\api-data\_index.ts, code is 16, comment is 0, blank is 0.
+src\app\_shared\services\api-data\api-data-analytics.service.ts, code is 66, comment is 2, blank is 15.
+src\app\_shared\services\api-data\api-data-auth.service.ts, code is 71, comment is 9, blank is 13.
+src\app\_shared\services\api-data\api-data-auth.spec.ts, code is 22, comment is 0, blank is 6.
+src\app\_shared\services\api-data\api-data-bom.service.ts, code is 38, comment is 1, blank is 7.
+src\app\_shared\services\api-data\api-data-click-tracking.service.ts, code is 20, comment is 1, blank is 5.
+src\app\_shared\services\api-data\api-data-dashboard.service.ts, code is 32, comment is 1, blank is 14.
+src\app\_shared\services\api-data\api-data-email.service.ts, code is 22, comment is 0, blank is 7.
+src\app\_shared\services\api-data\api-data-employee.service.ts, code is 27, comment is 0, blank is 7.
+src\app\_shared\services\api-data\api-data-fte.service.ts, code is 49, comment is 5, blank is 9.
+src\app\_shared\services\api-data\api-data-job-title.service.ts, code is 89, comment is 1, blank is 17.
+src\app\_shared\services\api-data\api-data-meta-data.service.ts, code is 18, comment is 0, blank is 6.
+src\app\_shared\services\api-data\api-data-org.service.ts, code is 20, comment is 1, blank is 5.
+src\app\_shared\services\api-data\api-data-part.service.ts, code is 53, comment is 0, blank is 8.
+src\app\_shared\services\api-data\api-data-permission.service.ts, code is 53, comment is 0, blank is 13.
+src\app\_shared\services\api-data\api-data-project.service.ts, code is 187, comment is 4, blank is 48.
+src\app\_shared\services\api-data\api-data-report.service.ts, code is 57, comment is 5, blank is 13.
+src\app\_shared\services\api-data\api-data-schedules.service.ts, code is 81, comment is 0, blank is 18.
+src\app\_shared\services\auth.service.ts, code is 229, comment is 108, blank is 68.
+src\app\_shared\services\cache.service.ts, code is 46, comment is 21, blank is 27.
+src\app\_shared\services\click-tracking.service.ts, code is 74, comment is 33, blank is 23.
+src\app\_shared\services\cookies.service.ts, code is 28, comment is 1, blank is 8.
+src\app\_shared\services\excel-export.service.ts, code is 172, comment is 52, blank is 31.
+src\app\_shared\services\routing-history.service.ts, code is 16, comment is 5, blank is 5.
+src\app\_shared\services\tools.service.ts, code is 98, comment is 9, blank is 29.
+src\app\_shared\services\user-resolver.service.ts, code is 29, comment is 8, blank is 8.
+src\app\_shared\services\websocket.service.ts, code is 58, comment is 5, blank is 13.
+src\app\_shared\styles\common.css, code is 142, comment is 21, blank is 40.
+src\app\_shared\styles\d3bomviewer-custom.css, code is 32, comment is 0, blank is 4.
+src\app\_shared\styles\nouislider-custom.css, code is 46, comment is 0, blank is 11.
+src\app\_shared\styles\simplebar-custom.css, code is 6, comment is 0, blank is 3.
+src\app\_shared\styles\treant-custom.css, code is 59, comment is 3, blank is 16.
+src\app\_shared\styles\typeahead-custom.css, code is 33, comment is 0, blank is 6.
+src\app\admin\admin.component.css, code is 9, comment is 0, blank is 1.
+src\app\admin\admin.component.html, code is 15, comment is 0, blank is 5.
+src\app\admin\admin.component.ts, code is 14, comment is 1, blank is 6.
+src\app\admin\job-titles\job-titles.component.css, code is 28, comment is 0, blank is 8.
+src\app\admin\job-titles\job-titles.component.html, code is 185, comment is 56, blank is 9.
+src\app\admin\job-titles\job-titles.component.ts, code is 237, comment is 52, blank is 27.
+src\app\admin\project-attributes\project-attributes.component.css, code is 9, comment is 0, blank is 1.
+src\app\admin\project-attributes\project-attributes.component.html, code is 4, comment is 0, blank is 1.
+src\app\admin\project-attributes\project-attributes.component.ts, code is 11, comment is 0, blank is 4.
+src\app\app-routing.module.ts, code is 82, comment is 5, blank is 10.
+src\app\app.component.css, code is 0, comment is 0, blank is 0.
+src\app\app.component.html, code is 1, comment is 0, blank is 1.
+src\app\app.component.ts, code is 77, comment is 26, blank is 26.
+src\app\app.module.ts, code is 190, comment is 8, blank is 10.
+src\app\auth\login\data.stub.ts, code is 7, comment is 0, blank is 2.
+src\app\auth\login\login.component.css, code is 130, comment is 5, blank is 26.
+src\app\auth\login\login.component.html, code is 61, comment is 8, blank is 31.
+src\app\auth\login\login.component.spec.ts, code is 103, comment is 0, blank is 16.
+src\app\auth\login\login.component.ts, code is 254, comment is 89, blank is 86.
+src\app\block-app-use\block-app-use.component.css, code is 0, comment is 0, blank is 0.
+src\app\block-app-use\block-app-use.component.html, code is 1, comment is 0, blank is 1.
+src\app\block-app-use\block-app-use.component.ts, code is 32, comment is 3, blank is 13.
+src\app\bom\bom-draw-d3\bom-draw-d3.component.css, code is 7, comment is 0, blank is 1.
+src\app\bom\bom-draw-d3\bom-draw-d3.component.html, code is 1, comment is 0, blank is 0.
+src\app\bom\bom-draw-d3\bom-draw-d3.component.ts, code is 306, comment is 71, blank is 59.
+src\app\bom\bom-editor\bom-editor.component.css, code is 18, comment is 0, blank is 2.
+src\app\bom\bom-editor\bom-editor.component.html, code is 13, comment is 8, blank is 2.
+src\app\bom\bom-editor\bom-editor.component.ts, code is 84, comment is 20, blank is 15.
+src\app\bom\bom-selector\bom-selector.component.css, code is 9, comment is 0, blank is 2.
+src\app\bom\bom-selector\bom-selector.component.html, code is 3, comment is 0, blank is 0.
+src\app\bom\bom-selector\bom-selector.component.ts, code is 39, comment is 7, blank is 10.
+src\app\bom\bom-viewer\bom-viewer.component.css, code is 0, comment is 0, blank is 0.
+src\app\bom\bom-viewer\bom-viewer.component.html, code is 4, comment is 0, blank is 0.
+src\app\bom\bom-viewer\bom-viewer.component.ts, code is 15, comment is 0, blank is 6.
+src\app\chat\chat.component.css, code is 67, comment is 4, blank is 16.
+src\app\chat\chat.component.html, code is 34, comment is 0, blank is 3.
+src\app\chat\chat.component.ts, code is 81, comment is 18, blank is 26.
+src\app\dashboard\dashboard-donut.service.ts, code is 153, comment is 36, blank is 28.
+src\app\dashboard\dashboard-gauge.service.ts, code is 44, comment is 7, blank is 12.
+src\app\dashboard\dashboard-message-model.ts, code is 6, comment is 0, blank is 1.
+src\app\dashboard\dashboard-messages.service.ts, code is 103, comment is 22, blank is 32.
+src\app\dashboard\dashboard-pareto.service.ts, code is 137, comment is 14, blank is 25.
+src\app\dashboard\dashboard-pie.service.ts, code is 138, comment is 23, blank is 29.
+src\app\dashboard\dashboard-stacked-column.service.ts, code is 150, comment is 36, blank is 29.
+src\app\dashboard\dashboard.component.css, code is 105, comment is 11, blank is 31.
+src\app\dashboard\dashboard.component.html, code is 64, comment is 17, blank is 27.
+src\app\dashboard\dashboard.component.ts, code is 208, comment is 38, blank is 51.
+src\app\error-pages\error-403\error-403.component.css, code is 46, comment is 0, blank is 8.
+src\app\error-pages\error-403\error-403.component.html, code is 18, comment is 1, blank is 1.
+src\app\error-pages\error-403\error-403.component.ts, code is 11, comment is 0, blank is 4.
+src\app\footer\footer.component.css, code is 20, comment is 1, blank is 3.
+src\app\footer\footer.component.html, code is 22, comment is 0, blank is 5.
+src\app\footer\footer.component.ts, code is 16, comment is 0, blank is 6.
+src\app\fte-entry\employee\fte-entry.component.css, code is 186, comment is 22, blank is 42.
+src\app\fte-entry\employee\fte-entry.component.html, code is 103, comment is 13, blank is 13.
+src\app\fte-entry\employee\fte-entry.component.ts, code is 858, comment is 189, blank is 146.
+src\app\fte-entry\employee\fte-entry.guard.ts, code is 39, comment is 11, blank is 6.
+src\app\fte-entry\employee\fte-model.ts, code is 16, comment is 56, blank is 3.
+src\app\fte-entry\team\fte-entry.component.css, code is 0, comment is 0, blank is 0.
+src\app\fte-entry\team\fte-entry.component.html, code is 9, comment is 1, blank is 1.
+src\app\fte-entry\team\fte-entry.component.ts, code is 11, comment is 0, blank is 4.
+src\app\main\main.component.css, code is 8, comment is 0, blank is 1.
+src\app\main\main.component.html, code is 11, comment is 6, blank is 6.
+src\app\main\main.component.ts, code is 18, comment is 4, blank is 7.
+src\app\modals\carousel-modal\carousel-modal.component.css, code is 51, comment is 0, blank is 12.
+src\app\modals\carousel-modal\carousel-modal.component.html, code is 56, comment is 0, blank is 6.
+src\app\modals\carousel-modal\carousel-modal.component.ts, code is 38, comment is 3, blank is 14.
+src\app\modals\carousel-modal\carousel-modal.model.ts, code is 22, comment is 1, blank is 3.
+src\app\modals\confirm-modal\confirm-modal.component.css, code is 13, comment is 0, blank is 3.
+src\app\modals\confirm-modal\confirm-modal.component.html, code is 21, comment is 0, blank is 1.
+src\app\modals\confirm-modal\confirm-modal.component.ts, code is 38, comment is 3, blank is 14.
+src\app\modals\confirm-modal\confirm-modal.model.ts, code is 15, comment is 1, blank is 2.
+src\app\modals\notice-modal\notice-modal.component.css, code is 13, comment is 0, blank is 4.
+src\app\modals\notice-modal\notice-modal.component.html, code is 19, comment is 0, blank is 1.
+src\app\modals\notice-modal\notice-modal.component.ts, code is 38, comment is 3, blank is 19.
+src\app\modals\profile-modal\profile-modal.component.css, code is 9, comment is 0, blank is 1.
+src\app\modals\profile-modal\profile-modal.component.html, code is 35, comment is 4, blank is 5.
+src\app\modals\profile-modal\profile-modal.component.ts, code is 103, comment is 27, blank is 18.
+src\app\modals\projects-create-modal\projects-create-modal.component.css, code is 9, comment is 8, blank is 2.
+src\app\modals\projects-create-modal\projects-create-modal.component.html, code is 40, comment is 0, blank is 0.
+src\app\modals\projects-create-modal\projects-create-modal.component.ts, code is 81, comment is 13, blank is 17.
+src\app\modals\projects-edit-modal\projects-edit-modal.component.css, code is 0, comment is 0, blank is 0.
+src\app\modals\projects-edit-modal\projects-edit-modal.component.html, code is 29, comment is 8, blank is 2.
+src\app\modals\projects-edit-modal\projects-edit-modal.component.ts, code is 126, comment is 16, blank is 21.
+src\app\modals\projects-modal\projects-modal.component.css, code is 212, comment is 15, blank is 50.
+src\app\modals\projects-modal\projects-modal.component.html, code is 55, comment is 6, blank is 12.
+src\app\modals\projects-modal\projects-modal.component.ts, code is 543, comment is 82, blank is 100.
+src\app\navs\side-nav\side-nav.component.css, code is 88, comment is 0, blank is 18.
+src\app\navs\side-nav\side-nav.component.html, code is 18, comment is 0, blank is 9.
+src\app\navs\side-nav\side-nav.component.ts, code is 350, comment is 113, blank is 62.
+src\app\navs\side-nav\side-nav.model.ts, code is 20, comment is 0, blank is 3.
+src\app\navs\top-nav\top-nav.component.css, code is 134, comment is 4, blank is 28.
+src\app\navs\top-nav\top-nav.component.html, code is 32, comment is 0, blank is 16.
+src\app\navs\top-nav\top-nav.component.ts, code is 87, comment is 14, blank is 25.
+src\app\performance\performance.component.css, code is 7, comment is 0, blank is 1.
+src\app\performance\performance.component.html, code is 40, comment is 0, blank is 9.
+src\app\performance\performance.component.ts, code is 108, comment is 16, blank is 40.
+src\app\projects\display-project\display-project.component.css, code is 269, comment is 11, blank is 68.
+src\app\projects\display-project\display-project.component.html, code is 186, comment is 19, blank is 67.
+src\app\projects\display-project\display-project.component.ts, code is 356, comment is 71, blank is 110.
+src\app\projects\my-projects\my-projects.component.css, code is 46, comment is 0, blank is 10.
+src\app\projects\my-projects\my-projects.component.html, code is 179, comment is 29, blank is 16.
+src\app\projects\my-projects\my-projects.component.ts, code is 308, comment is 42, blank is 41.
+src\app\projects\project-requests\project-requests.component.css, code is 0, comment is 0, blank is 0.
+src\app\projects\project-requests\project-requests.component.html, code is 3, comment is 0, blank is 0.
+src\app\projects\project-requests\project-requests.component.ts, code is 11, comment is 0, blank is 4.
+src\app\projects\search-projects\search-projects.component.css, code is 262, comment is 14, blank is 64.
+src\app\projects\search-projects\search-projects.component.html, code is 148, comment is 15, blank is 47.
+src\app\projects\search-projects\search-projects.component.ts, code is 517, comment is 174, blank is 180.
+src\app\reports\employees\employees.component.css, code is 72, comment is 3, blank is 16.
+src\app\reports\employees\employees.component.html, code is 78, comment is 8, blank is 38.
+src\app\reports\employees\employees.component.ts, code is 382, comment is 50, blank is 102.
+src\app\reports\my-fte-summary\my-fte-summary.component.css, code is 0, comment is 0, blank is 0.
+src\app\reports\my-fte-summary\my-fte-summary.component.html, code is 16, comment is 4, blank is 3.
+src\app\reports\my-fte-summary\my-fte-summary.component.ts, code is 80, comment is 8, blank is 16.
+src\app\reports\supply-demand\supply-demand.component.css, code is 5, comment is 0, blank is 0.
+src\app\reports\supply-demand\supply-demand.component.html, code is 62, comment is 0, blank is 8.
+src\app\reports\supply-demand\supply-demand.component.ts, code is 226, comment is 59, blank is 33.
+src\app\reports\team-fte-summary\org-dropdown\org-dropdown.component.css, code is 25, comment is 0, blank is 6.
+src\app\reports\team-fte-summary\org-dropdown\org-dropdown.component.html, code is 17, comment is 1, blank is 1.
+src\app\reports\team-fte-summary\org-dropdown\org-dropdown.component.ts, code is 47, comment is 1, blank is 16.
+src\app\reports\team-fte-summary\team-fte-summary.component.css, code is 75, comment is 3, blank is 16.
+src\app\reports\team-fte-summary\team-fte-summary.component.html, code is 56, comment is 9, blank is 6.
+src\app\reports\team-fte-summary\team-fte-summary.component.ts, code is 159, comment is 21, blank is 35.
+src\app\reports\top-projects-bubble\top-projects-bubble.component.css, code is 0, comment is 0, blank is 0.
+src\app\reports\top-projects-bubble\top-projects-bubble.component.html, code is 37, comment is 3, blank is 5.
+src\app\reports\top-projects-bubble\top-projects-bubble.component.ts, code is 160, comment is 7, blank is 15.
+src\app\reports\top-projects\top-projects.component.css, code is 0, comment is 15, blank is 2.
+src\app\reports\top-projects\top-projects.component.html, code is 55, comment is 3, blank is 6.
+src\app\reports\top-projects\top-projects.component.ts, code is 144, comment is 32, blank is 18.
+src\app\setups\parts\parts.component.css, code is 36, comment is 0, blank is 10.
+src\app\setups\parts\parts.component.html, code is 157, comment is 1, blank is 15.
+src\app\setups\parts\parts.component.ts, code is 336, comment is 11, blank is 39.
+src\app\setups\projects\projects.component.css, code is 36, comment is 0, blank is 8.
+src\app\setups\projects\projects.component.html, code is 165, comment is 1, blank is 9.
+src\app\setups\projects\projects.component.ts, code is 335, comment is 7, blank is 38.
+src\app\test\test.component.css, code is 0, comment is 0, blank is 0.
+src\app\test\test.component.html, code is 3, comment is 0, blank is 0.
+src\app\test\test.component.ts, code is 35, comment is 3, blank is 13.
+src\app\toast\toast.component.css, code is 54, comment is 0, blank is 10.
+src\app\toast\toast.component.html, code is 6, comment is 0, blank is 1.
+src\app\toast\toast.component.ts, code is 52, comment is 6, blank is 8.
+src\app\unit-test\unit-test.component.css, code is 0, comment is 0, blank is 0.
+src\app\unit-test\unit-test.component.html, code is 13, comment is 0, blank is 6.
+src\app\unit-test\unit-test.component.spec.ts, code is 68, comment is 0, blank is 12.
+src\app\unit-test\unit-test.component.ts, code is 33, comment is 0, blank is 9.
+src\assets\.gitkeep, code is 0, comment is 0, blank is 0.
+src\assets\carousel_slides\FTE\carousel_FTE_1.png, it is a binary file.
+src\assets\carousel_slides\FTE\carousel_FTE_2.png, it is a binary file.
+src\assets\carousel_slides\FTE\carousel_FTE_3.png, it is a binary file.
+src\assets\carousel_slides\FTE\carousel_FTE_4.png, it is a binary file.
+src\assets\carousel_slides\FTE\carousel_FTE_5.png, it is a binary file.
+src\assets\EmailLogo.png, it is a binary file.
+src\assets\jarvis_logos\archived\JarvisLogo.png, it is a binary file.
+src\assets\jarvis_logos\archived\JarvisLogo.svg, code is 26, comment is 0, blank is 0.
+src\assets\jarvis_logos\archived\JarvisLogo2.png, it is a binary file.
+src\assets\jarvis_logos\archived\jarvislogo_login.png, it is a binary file.
+src\assets\jarvis_logos\archived\JarvisLogoIconOnly.svg, code is 17, comment is 0, blank is 0.
+src\assets\jarvis_logos\archived\JarvisLogoIconOnlyNonInverted.svg, code is 17, comment is 0, blank is 0.
+src\assets\jarvis_logos\archived\JarvisLogoNonInverted.svg, code is 27, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo.svg, code is 25, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo_icononly.svg, code is 16, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo_inverted.svg, code is 29, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo_inverted_icononly.svg, code is 16, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo_inverted_test.svg, code is 26, comment is 0, blank is 0.
+src\assets\jarvis_logos\jarvis_logo_test.svg, code is 26, comment is 0, blank is 0.
+src\assets\login_images\_index.json, code is 197, comment is 0, blank is 1.
+src\assets\login_images\asher_cliff_switzerland.jpg, it is a binary file.
+src\assets\login_images\asher_cliff_switzerland_thumbnail.jpg, it is a binary file.
+src\assets\login_images\autostadt_wolfsburg.jpg, it is a binary file.
+src\assets\login_images\autostadt_wolfsburg_thumbnail.jpg, it is a binary file.
+src\assets\login_images\banff_national_park.jpg, it is a binary file.
+src\assets\login_images\banff_national_park_thumbnail.jpg, it is a binary file.
+src\assets\login_images\bay_bridge.jpg, it is a binary file.
+src\assets\login_images\bay_bridge_thumbnail.jpg, it is a binary file.
+src\assets\login_images\blue_mountains_sydney.jpg, it is a binary file.
+src\assets\login_images\blue_mountains_sydney_thumbnail.jpg, it is a binary file.
+src\assets\login_images\bryce_canyon.jpg, it is a binary file.
+src\assets\login_images\bryce_canyon_thumbnail.jpg, it is a binary file.
+src\assets\login_images\canal_du_midi.jpg, it is a binary file.
+src\assets\login_images\canal_du_midi_thumbnail.jpg, it is a binary file.
+src\assets\login_images\central_valley_almond_orchards.jpg, it is a binary file.
+src\assets\login_images\central_valley_almond_orchards_thumbnail.jpg, it is a binary file.
+src\assets\login_images\colorado_river.jpg, code is 5224, comment is 2602, blank is 38.
+src\assets\login_images\colorado_river_thumbnail.jpg, it is a binary file.
+src\assets\login_images\county_donegal_ireland.jpg, it is a binary file.
+src\assets\login_images\county_donegal_ireland_thumbnail.jpg, it is a binary file.
+src\assets\login_images\denali_national_park.jpg, it is a binary file.
+src\assets\login_images\denali_national_park_thumbnail.jpg, it is a binary file.
+src\assets\login_images\eastern_lake_tahoe.jpg, it is a binary file.
+src\assets\login_images\eastern_lake_tahoe_thumbnail.jpg, it is a binary file.
+src\assets\login_images\garden_of_the_gods.jpg, it is a binary file.
+src\assets\login_images\garden_of_the_gods_thumbnail.jpg, it is a binary file.
+src\assets\login_images\garze.jpg, it is a binary file.
+src\assets\login_images\garze_thumbnail.jpg, it is a binary file.
+src\assets\login_images\haleakala_national_park.jpg, it is a binary file.
+src\assets\login_images\haleakala_national_park_thumbnail.jpg, it is a binary file.
+src\assets\login_images\hohenschwangau_castle.jpg, it is a binary file.
+src\assets\login_images\hohenschwangau_castle_thumbnail.jpg, it is a binary file.
+src\assets\login_images\hooker_valley_glacier_new_zealand.jpg, it is a binary file.
+src\assets\login_images\hooker_valley_glacier_new_zealand_thumbnail.jpg, it is a binary file.
+src\assets\login_images\jiangxi_province.jpg, it is a binary file.
+src\assets\login_images\jiangxi_province_thumbnail.jpg, it is a binary file.
+src\assets\login_images\la_jolla_tidepools.jpg, it is a binary file.
+src\assets\login_images\la_jolla_tidepools_thumbnail.jpg, it is a binary file.
+src\assets\login_images\lijiang_china.jpg, it is a binary file.
+src\assets\login_images\lijiang_china_thumbnail.jpg, it is a binary file.
+src\assets\login_images\lombok_indonesia.jpg, it is a binary file.
+src\assets\login_images\lombok_indonesia_thumbnail.jpg, it is a binary file.
+src\assets\login_images\luzern_to_matterhorn.jpg, it is a binary file.
+src\assets\login_images\luzern_to_matterhorn_thumbnail.jpg, it is a binary file.
+src\assets\login_images\manhattan_beach.jpg, it is a binary file.
+src\assets\login_images\manhattan_beach_thumbnail.jpg, it is a binary file.
+src\assets\login_images\moab_utah.jpg, it is a binary file.
+src\assets\login_images\moab_utah_thumbnail.jpg, it is a binary file.
+src\assets\login_images\monument_valley.jpg, it is a binary file.
+src\assets\login_images\monument_valley_thumbnail.jpg, it is a binary file.
+src\assets\login_images\mount_huangshan.jpg, it is a binary file.
+src\assets\login_images\mount_huangshan_thumbnail.jpg, it is a binary file.
+src\assets\login_images\mount_pilchuck.jpg, it is a binary file.
+src\assets\login_images\mount_pilchuck_thumbnail.jpg, it is a binary file.
+src\assets\login_images\mount_rinjani_indonesia.jpg, it is a binary file.
+src\assets\login_images\mount_rinjani_indonesia_thumbnail.jpg, it is a binary file.
+src\assets\login_images\ocean_beach.jpg, it is a binary file.
+src\assets\login_images\ocean_beach_thumbnail.jpg, it is a binary file.
+src\assets\login_images\palau_sibuan.jpg, it is a binary file.
+src\assets\login_images\palau_sibuan_thumbnail.jpg, it is a binary file.
+src\assets\login_images\penang_tan_jetty.jpg, it is a binary file.
+src\assets\login_images\penang_tan_jetty_thumbnail.jpg, it is a binary file.
+src\assets\login_images\point_bonita.jpg, it is a binary file.
+src\assets\login_images\point_bonita_thumbnail.jpg, it is a binary file.
+src\assets\login_images\point_meares_lighthouse.jpg, it is a binary file.
+src\assets\login_images\point_meares_lighthouse_thumbnail.jpg, it is a binary file.
+src\assets\login_images\ranwu_lake_tibet.jpg, it is a binary file.
+src\assets\login_images\ranwu_lake_tibet_thumbnail.jpg, it is a binary file.
+src\assets\login_images\sand_dunes_national_park.jpg, it is a binary file.
+src\assets\login_images\sand_dunes_national_park_thumbnail.jpg, it is a binary file.
+src\assets\login_images\shell_beach_bodega_bay.jpg, it is a binary file.
+src\assets\login_images\shell_beach_bodega_bay_thumbnail.jpg, it is a binary file.
+src\assets\login_images\sierras_winter.jpg, it is a binary file.
+src\assets\login_images\sierras_winter_thumbnail.jpg, it is a binary file.
+src\assets\login_images\singapore.jpg, it is a binary file.
+src\assets\login_images\singapore_thumbnail.jpg, it is a binary file.
+src\assets\login_images\sri_lanka.jpg, it is a binary file.
+src\assets\login_images\sri_lanka_thumbnail.jpg, it is a binary file.
+src\assets\login_images\summer_palace_beijing.jpg, it is a binary file.
+src\assets\login_images\summer_palace_beijing_thumbnail.jpg, it is a binary file.
+src\assets\login_images\taipei_city.jpg, it is a binary file.
+src\assets\login_images\taipei_city_thumbnail.jpg, it is a binary file.
+src\assets\login_images\vietnam.jpg, it is a binary file.
+src\assets\login_images\vietnam_thumbnail.jpg, it is a binary file.
+src\assets\login_images\wheeler_geologic_area.jpg, it is a binary file.
+src\assets\login_images\wheeler_geologic_area_thumbnail.jpg, it is a binary file.
+src\assets\login_images\wuyuan_jiangxi_province.jpg, it is a binary file.
+src\assets\login_images\wuyuan_jiangxi_province_thumbnail.jpg, it is a binary file.
+src\assets\login_images\yangtze_river.jpg, it is a binary file.
+src\assets\login_images\yangtze_river_thumbnail.jpg, it is a binary file.
+src\assets\login_images\yosemite.jpg, it is a binary file.
+src\assets\login_images\yosemite_thumbnail.jpg, it is a binary file.
+src\assets\login_images\yosemite_waterfall.jpg, it is a binary file.
+src\assets\login_images\yosemite_waterfall_thumbnail.jpg, it is a binary file.
+src\assets\project_avatars\arges.png, it is a binary file.
+src\assets\project_avatars\avocado.png, it is a binary file.
+src\assets\project_avatars\bacon.png, it is a binary file.
+src\assets\project_avatars\baymax.png, it is a binary file.
+src\assets\project_avatars\beer.png, it is a binary file.
+src\assets\project_avatars\cheese.png, it is a binary file.
+src\assets\project_avatars\coffee.png, it is a binary file.
+src\assets\project_avatars\deuce.png, it is a binary file.
+src\assets\project_avatars\eggs.png, it is a binary file.
+src\assets\project_avatars\fries.png, it is a binary file.
+src\assets\project_avatars\grapes.png, it is a binary file.
+src\assets\project_avatars\lemon-slice.png, it is a binary file.
+src\assets\project_avatars\minions.png, it is a binary file.
+src\assets\project_avatars\pizza-slice.png, it is a binary file.
+src\assets\project_avatars\python.png, it is a binary file.
+src\assets\project_avatars\tacos.png, it is a binary file.
+src\assets\project_avatars\watermelon.png, it is a binary file.
+src\environments\environment.prod.ts, code is 3, comment is 0, blank is 0.
+src\environments\environment.ts, code is 3, comment is 4, blank is 1.
+src\favicon.ico, it is a binary file.
+src\index.html, code is 13, comment is 0, blank is 1.
+src\main.ts, code is 9, comment is 0, blank is 3.
+src\polyfills.ts, code is 17, comment is 49, blank is 15.
+src\styles.css, code is 10, comment is 7, blank is 7.
+src\test.ts, code is 13, comment is 4, blank is 3.
+src\tsconfig.app.json, code is 12, comment is 0, blank is 1.
+src\tsconfig.spec.json, code is 16, comment is 0, blank is 3.
+src\typings.d.ts, code is 5, comment is 1, blank is 0.
+tsconfig.json, code is 16, comment is 0, blank is 2.
+tslint.json, code is 129, comment is 0, blank is 14.
+===============================================================================

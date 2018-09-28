@@ -94,6 +94,7 @@ import { MyProjectsComponent } from './projects/my-projects/my-projects.componen
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
 import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
+import { UnitTestComponent } from './unit-test/unit-test.component';
 
 
 @NgModule({
@@ -151,7 +152,8 @@ import { DisplayProjectComponent } from './projects/display-project/display-proj
     ProjectRequestsComponent,
     SearchProjectsComponent,
     TeamRolesComponent,
-    DisplayProjectComponent
+    DisplayProjectComponent,
+    UnitTestComponent
   ],
   imports: [
     AppRoutingModule,
