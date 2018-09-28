@@ -67,8 +67,8 @@ export class ApiDataFteService {
   }
 
   // create a new FTE Plan and return it
-  indexNewPlan(emailAddress: string, userID: number, planName: string) {
-    return this.http.get(`/api/fte/indexNewPlan/${emailAddress}/${userID}/${planName}`)
+  indexNewPlan(emailAddress: string, firstMonth: string, userID: number, planName: string) {
+    return this.http.get(`/api/fte/indexNewPlan/${emailAddress}/${firstMonth}/${userID}/${planName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -97,8 +97,8 @@ export class ApiDataFteService {
   }
 
   // create a new FTE Plan and return it
-  launchPlan(emailAddress: string, userID: number, planName: string) {
-    return this.http.get(`/api/fte/launchPlan/${emailAddress}/${userID}/${planName}`)
+  launchPlan(emailAddress: string, firstMonth: string, userID: number, planName: string) {
+    return this.http.get(`/api/fte/launchPlan/${emailAddress}/${firstMonth}/${userID}/${planName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -135,6 +135,13 @@ export class ApiDataFteService {
     return await this.http.get('api/fte/checkTeamFTEAdminPermission', options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json()).toPromise();
+  }
+
+  // compare a plan to the real time FTEs and return the diffs
+  compareFTEToPlan(emailAddress: string, firstMonth: string, userID: number, planName: string) {
+    return this.http.get(`/api/fte/compareFTEToPlan/${emailAddress}/${firstMonth}/${userID}/${planName}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
   }
 
 }

@@ -27,13 +27,14 @@ router.post('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProjec
 router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
 router.post('/fte/updateTeamData/:userID/:planName', controllers.fte.updateTeamData);
 router.post('/fte/destroyTeamProject/', controllers.fte.destroyTeamProject);   // PROTECT
-router.get('/fte/indexNewPlan/:emailAddress/:userID/:planName', controllers.fte.indexNewPlan);
+router.get('/fte/indexNewPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.indexNewPlan);
 router.get('/fte/indexPlanList/:emailAddress', controllers.fte.indexPlanList);
 router.get('/fte/indexPlan/:emailAddress/:planName', controllers.fte.indexPlan);
 router.post('/fte/destroyPlan/', controllers.fte.destroyPlan);
 router.get('/fte/checkTeamJobTitle/:emailAddress', controllers.fte.checkTeamJobTitle);
-router.get('/fte/launchPlan/:emailAddress/:userID/:planName', controllers.fte.launchPlan);
+router.get('/fte/launchPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.launchPlan);
 router.get('/fte/checkTeamFTEAdminPermission/:userID/', controllers.fte.checkTeamFTEAdminPermission);
+router.get('/fte/compareFTEToPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.compareFTEToPlan);
 
 // TEMP JOB TITLE API FOR MANAGER EDIT
 router.get('/indexEmployeesJobTitles/:emailAddress', controllers.jobTitle.indexEmployeesJobTitles);

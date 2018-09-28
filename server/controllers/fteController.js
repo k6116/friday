@@ -416,8 +416,9 @@ function indexNewPlan(req, res) {
   const emailAddress = req.params.emailAddress;
   const userID = req.params.userID;
   const planName = req.params.planName;
+  const firstMonth = req.params.firstMonth;
 
-  sequelize.query('EXECUTE resources.ProjectEmployeesNewPlan :emailAddress, :userID, :planName', {replacements: {emailAddress: emailAddress, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query('EXECUTE resources.ProjectEmployeesNewPlan :emailAddress, :firstMonth, :userID, :planName', {replacements: {emailAddress: emailAddress, firstMonth: firstMonth, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
   .then(results => {
       const fteTree = new Treeize();
       fteTree.grow(results);
@@ -550,11 +551,12 @@ function launchPlan(req, res) {
   const emailAddress = req.params.emailAddress;
   const userID = req.params.userID;
   const planName = req.params.planName;
+  const firstMonth = req.params.firstMonth;
 
-  sequelize.query('EXECUTE resources.ProjectEmployeesLaunchPlan :emailAddress, :userID, :planName', {replacements: {emailAddress: emailAddress, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query('EXECUTE resources.ProjectEmployeesLaunchPlan :emailAddress, :firstMonth, :userID, :planName', {replacements: {emailAddress: emailAddress, firstMonth: firstMonth, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
   .then(results => {
     res.json({
-      message: `Successfully launched plan "${planName}"`
+      message: `Successfully launched plan.`
     });
   })
   .catch(error => {
@@ -629,6 +631,29 @@ function checkTeamFTEAdminPermission(req, res) {
 
 }
 
+function compareFTEToPlan(req, res) {
+
+  //This query will return any updates the user made to their FTEs compared to a plan in the TeamFTEs
+  // This way a manager can tell if their plan is out of sync with the real time FTEs and can decide to sync or not
+  const emailAddress = req.params.emailAddress;
+  const userID = req.params.userID;
+  const planName = req.params.planName;
+  const firstMonth = req.params.firstMonth;
+
+  sequelize.query('EXECUTE resources.ProjectEmployeesPlanSync :emailAddress, :firstMonth, :userID, :planName', 
+    {replacements: {emailAddress: emailAddress, firstMonth: firstMonth, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
+    .then(planSync => {
+      res.json(planSync);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+}
+
 module.exports = {
   indexUserData: indexUserData,
   destroyUserProject: destroyUserProject,
@@ -642,5 +667,6 @@ module.exports = {
   destroyPlan: destroyPlan,
   launchPlan: launchPlan,
   checkTeamJobTitle: checkTeamJobTitle,
-  checkTeamFTEAdminPermission: checkTeamFTEAdminPermission
+  checkTeamFTEAdminPermission: checkTeamFTEAdminPermission,
+  compareFTEToPlan: compareFTEToPlan
 }

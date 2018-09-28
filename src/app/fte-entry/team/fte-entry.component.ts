@@ -77,6 +77,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   loginAsID: any;
   displayAdminViewMessage: boolean;
   launchDate: string;
+  displaySyncNoticeButton: boolean;
 
   // Highchart Declarations
   ftePlanningChart: any;
@@ -240,10 +241,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     console.log('this.FTEFormGroup.value.FTEFormArray', this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
     // console.log('teamFTE', this.teamFTEs);
-    console.log('allTeamFTE', this.allTeamFTEs);
+    // console.log('allTeamFTE', this.allTeamFTEs);
     // console.log('teamFTEFlat', this.teamFTEsFlat);
     // console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
-    console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
+    // console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
     // console.log('this.allProjects', this.allProjects)
     // console.log('this.projects', this.projects)
     // console.log('this.teamOrgStructure', this.teamOrgStructure);
@@ -251,7 +252,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('this.employeeVisible', this.employeeVisible)
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
-    // console.log('this.currentPlan', this.currentPlan)
     // console.log('this.employeeTotals', this.employeeTotals)
     // this.updateEmployeeTotals();
 
@@ -281,9 +281,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       this.setCurrentMonthYear()])
     .then(async res => {
         if (this.defaultPlan === undefined) {
-          this.onCreateNewPlanClick(this.teamEditableMembers, this.loginAsEmail, 'New Plan 1');
+          this.onCreateNewPlanClick(this.teamEditableMembers, this.loginAsEmail, 'Plan 1');
         } else {
           await this.getPlan(this.loginAsEmail, this.defaultPlan);
+          this.comparePlanToFTE();
           this.createFtePlanningChartData(this.allProjects);
           this.checkDisableDeletePlan();
           this.updateEmployeeTotals();
@@ -299,8 +300,19 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   setCurrentMonthYear() {
-    // Initialize to current month/year
-    this.currentMonth = moment(1, 'DD');
+    // Initialize to current quarter's month/year
+    // currentMonth is the "real" month
+    // setMonth is the month the user is viewing
+    const thisMonth = Number(moment().format('M')); // 1 === Jan, 2 === Feb
+    if (thisMonth === 11 || thisMonth === 12 || thisMonth === 1) {
+      this.currentMonth = moment(1, 'DD').month(10); // When setting the month number: 0 === Jan, 1 === Feb
+    } else if (thisMonth === 2 || thisMonth === 3 || thisMonth === 4) {
+      this.currentMonth = moment(1, 'DD').month(1);
+    } else if (thisMonth === 5 || thisMonth === 6 || thisMonth === 7) {
+      this.currentMonth = moment(1, 'DD').month(4);
+    } else if (thisMonth === 8 || thisMonth === 9 || thisMonth === 10) {
+      this.currentMonth = moment(1, 'DD').month(7);
+    }
     this.currentMonthName = moment(this.currentMonth).format('MMMM');
     this.setMonth = this.currentMonth;
     this.setMonthName = moment(this.setMonth).format('MMMM');
@@ -380,7 +392,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     if (!alreadyExists) {
 
       this.addNewProjectToForm(selectedProject.ProjectID, selectedProject.ProjectName);
-
+      this.cacheService.raiseToast('success', `Added Project ${selectedProject.ProjectName}.  Please check the bottom of the list`);
     } else {
       this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
     }
@@ -672,8 +684,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
       const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( modalRes => {
         if (modalRes) {
+          const firstMonth = moment(this.currentMonth).format('YYYY-MM-01');
           // call the api data service to send the put request
-          this.apiDataFteService.launchPlan(this.teamEditableMembers, this.loginAsID, this.currentPlan)
+          this.apiDataFteService.launchPlan(this.teamEditableMembers, firstMonth, this.loginAsID, this.currentPlan)
           .subscribe(
             res => {
               this.cacheService.raiseToast('success', res.message);
@@ -936,6 +949,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
       this.addNewProjectToForm(selectedProject.projectID, selectedProject.projectName);
 
+      this.cacheService.raiseToast('success', `Added Project ${selectedProject.ProjectName}.  Please check the bottom of the list`);
+
     } else {
       this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
     }
@@ -965,8 +980,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       emailAddress = this.teamEditableMembers;
     }
 
+    const firstMonth = moment(this.currentMonth).format('YYYY-MM-01');
+
     // create new plan and get FTE data
-    const res = await this.apiDataFteService.indexNewPlan(emailAddress, creatorEmailAddress, planName).toPromise();
+    const res = await this.apiDataFteService.indexNewPlan(emailAddress, firstMonth, creatorEmailAddress, planName).toPromise();
 
     this.allTeamFTEs = res.nested;
     this.teamFTEs = this.allTeamFTEs;
@@ -974,11 +991,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.teamFTEsFlatLive = this.teamFTEsFlat;
 
     // Set month back to current/default
-    this.currentMonth = moment(1, 'DD');
-    this.currentMonthName = moment(this.currentMonth).format('MMMM');
-    this.setMonth = this.currentMonth;
-    this.setMonthName = moment(this.setMonth).format('MMMM');
-    this.setYear = moment().year();
+    this.setCurrentMonthYear();
 
     this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
     this.display = true;  // ghetto way to force rendering after FTE data is fetched
@@ -1028,6 +1041,62 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.setEmployeeTotalsBorder();
 
     this.updateProjectFilters();
+  }
+
+  async comparePlanToFTE() {
+    // checks if any FTEs have been updated by users since the plan has been generated
+    const firstMonth = moment(this.currentMonth).format('YYYY-MM-01');
+    this.apiDataFteService.compareFTEToPlan(this.teamEditableMembers, firstMonth, this.loginAsID, this.currentPlan)
+      .subscribe(
+        res => {
+          if (res.length > 0) {
+            this.displaySyncNoticeButton = true;
+            let updatedFTEsList = `
+            <div class="row">
+              <div class="col-3" style="font-weight: bold">Employee</div>
+              <div class="col-5" style="font-weight: bold">Project</div>
+              <div class="col-1" style="font-weight: bold">FTE</div>
+              <div class="col-3" style="font-weight: bold">FiscalDate</div>
+            </div>`;
+            for (let i = 0; i < res.length; i++) {
+              updatedFTEsList = updatedFTEsList +
+                `
+                <div class="row">
+                  <div class="col-3">${res[i].FullName}</div>
+                  <div class="col-5">${res[i].ProjectName}</div>
+                  <div class="col-1">${res[i].FTE}</div>
+                  <div class="col-3">${moment(res[i].FiscalDate).utc().format('YYYY-MM-DD')}</div>
+                </div>`;
+            }
+            this.cacheService.confirmModalData.emit(
+              {
+                title: 'Plan Sync Notice',
+                message: `The FTEs below have been updated by the users.<br><br>
+                          ${updatedFTEsList}<br><br>
+                          Please manually update the form to reflect these changes,
+                          otherwise the changes will be overwritten when launched`,
+                iconClass: 'fa-exclamation-triangle',
+                iconColor: 'rgb(193, 193, 27)',
+                closeButton: true,
+                allowOutsideClickDismiss: true,
+                allowEscKeyDismiss: true,
+                buttons: [
+                  {
+                    text: 'Dismiss',
+                    bsClass: 'btn-secondary',
+                    emit: false
+                  }
+                ]
+              }
+            );
+          } else {
+            this.displaySyncNoticeButton = false;
+          }
+        },
+        err => {
+          console.log(err);
+        }
+      );
   }
 
   updateEmployeeFilters() {
