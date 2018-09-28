@@ -1,3 +1,13 @@
+<a name="1.12.1"></a>
+## [1.12.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.12.0...v1.12.1) (2018-09-28)
+
+
+### Bug Fixes
+
+* highlight correct sidenav item on browser back and forward button clicks ([469f388](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/469f388))
+
+
+
 <a name="1.12.0"></a>
 # [1.12.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.11.0...v1.12.0) (2018-09-17)
 
