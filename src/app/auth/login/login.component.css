@@ -1,5 +1,19 @@
 
-div.login-background-image {
+
+/* NOTE: don't set height or width for this div, the blur will not render the same as image2 if it is set */
+div.login-background-image1 {
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* height: 100%;
+  width: 100%; */
+  z-index: 0;
+  filter: blur(20px);
+}
+
+div.login-background-image2 {
   background-size: cover;
   background-position: center;
   position: absolute;
@@ -7,13 +21,14 @@ div.login-background-image {
   left: 0;
   height: 100%;
   width: 100%;
+  z-index: -1;
 }
 
-div.login-background-image.small {
+div.login-background-image2.small {
   filter: blur(20px);
 }
 
-div.login-background-image.large {
+div.login-background-image2.large {
   animation: sharpen 0.5s both;
 }
 

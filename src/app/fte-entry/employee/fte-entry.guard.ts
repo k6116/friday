@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { ApiDataFteService } from '../../_shared/services/api-data/api-data-fte.service';
+import { RoutingHistoryService } from '../../_shared/services/routing-history.service';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -14,7 +15,8 @@ export class FteEntryGuard implements CanActivate {
     private route: ActivatedRoute,
     private apiDataFteService: ApiDataFteService,
     private cacheService: CacheService,
-    private authService: AuthService
+    private authService: AuthService,
+    private routingHistoryService: RoutingHistoryService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
@@ -39,9 +41,10 @@ export class FteEntryGuard implements CanActivate {
       return true;
     // if the job title is null
     } else {
-      // route to the dashboard landing page, if the user tries to navigate directly to the fte entry page via the address bar
+      // re-route to the dashboard landing page, if the user tries to navigate directly to the fte entry page via the address bar
       if (this.router.url === '/') {
         this.router.navigate(['/main/dashboard']);
+        this.cacheService.navigatedPath.emit('/main/dashboard');
       } else {
         // show modal instructing the user they must update their profile with their job title and subtitle
         const initial = this.authService.loggedInUser.fullName[0].toUpperCase();
