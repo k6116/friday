@@ -43,6 +43,8 @@ export class MyProjectsComponent implements OnInit {
   projectBasicInfo = [];
 
   showSpinner: boolean;
+  filterString: string;
+
 
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
@@ -78,7 +80,7 @@ export class MyProjectsComponent implements OnInit {
     this.apiDataProjectService.getUserProjectList(this.authService.loggedInUser.id)
     .subscribe(
       res => {
-        // console.log('Project List: ', res);
+        console.log('Project List: ', res);
         this.projectList = res;
 
         // hide the spinner
@@ -122,6 +124,18 @@ export class MyProjectsComponent implements OnInit {
   onCreateSuccess() {
     // console.log('Create project success. My Project List Refreshed');
     this.getUserProjectList();
+  }
+
+  // on clicking the 'x' icon at the right of the search/filter input
+  onClearSearchClick() {
+    // clear the filter string
+    this.filterString = undefined;
+
+    // DO I NEED THIS???
+    // // reset the focus on the filter input
+    // this.filterStringVC.nativeElement.focus();
+    // // update the count display (showing x of y) by calling onFilterStringChange()
+    // this.onFilterStringChange();
   }
 
   onUpdateSuccess() {

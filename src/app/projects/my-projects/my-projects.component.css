@@ -54,3 +54,43 @@
   .form-group-custom {
     margin-bottom: 0%;
   }
+
+
+
+
+
+
+  div.projects-filters-cont {
+    margin-bottom: 40px;
+    min-width: 850px;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  div.projects-filter-string {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  input.projects-filter-input {
+    width: 225px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  i.projects-filter-icon-search, i.projects-filter-icon-close {
+    position: absolute;
+    top: 10px;
+    color: grey;
+  }
+  
+  i.projects-filter-icon-search {
+    left: 10px;
+  }
+
+  i.projects-filter-icon-close {
+    right: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
