@@ -1,0 +1,258 @@
+/*------------------------
+	icons
+-------------------------*/
+@function unicode($str) {
+  @return unquote("\"\\#{$str}\"");
+}
+
+$nc-badge-1: unicode(ea02);
+$nc-archive-check: unicode(ea03);
+$nc-small-remove: unicode(ea04);
+$nc-badge-2: unicode(ea05);
+$nc-board-29: unicode(ea06);
+$nc-calendar-add: unicode(ea07);
+$nc-a-check: unicode(ea08);
+$nc-chart-bar-33: unicode(ea09);
+$nc-dashboard-half: unicode(ea0a);
+$nc-lock: unicode(ea0b);
+$nc-chat-round-content: unicode(ea0c);
+$nc-single-05: unicode(ea0d);
+$nc-time-countdown: unicode(ea0e);
+$nc-socket: unicode(ea0f);
+$nc-gantt: unicode(ea10);
+$nc-bars-rotate: unicode(ea11);
+$nc-opening-times: unicode(ea12);
+$nc-dots-07: unicode(ea13);
+$nc-light-traffic: unicode(ea14);
+$nc-priority-high: unicode(ea15);
+$nc-microscope: unicode(ea16);
+$nc-hierarchy-53: unicode(ea17);
+$nc-book-open-2: unicode(ea18);
+$nc-ram: unicode(ea19);
+$nc-l-security: unicode(ea1a);
+$nc-keyboard-wireless: unicode(ea1b);
+$nc-code-editor: unicode(ea1c);
+$nc-lab: unicode(ea1d);
+$nc-settings-91: unicode(ea1e);
+$nc-bulb-63: unicode(ea1f);
+$nc-sign-closed: unicode(ea20);
+$nc-lock-2: unicode(ea21);
+$nc-board-28: unicode(ea22);
+$nc-privacy-policy-2: unicode(ea23);
+$nc-priority-high-2: unicode(ea24);
+$nc-socket-europe-1: unicode(ea25);
+$nc-circle-10: unicode(ea26);
+$nc-time-clock: unicode(ea27);
+$nc-a-edit: unicode(ea28);
+$nc-dots-06: unicode(ea29);
+$nc-pulse-phone: unicode(ea2a);
+$nc-keyboard: unicode(ea2b);
+$nc-microcircuit: unicode(ea2c);
+$nc-settings: unicode(ea2d);
+$nc-money-coins: unicode(ea2e);
+$nc-money-11: unicode(ea2f);
+$nc-tag-content: unicode(ea30);
+$nc-hotel: unicode(ea31);
+$nc-b-security: unicode(ea32);
+$nc-filter-organization: unicode(ea33);
+
+.nc-badge-1::before {
+  content: $nc-badge-1;
+}
+
+.nc-archive-check::before {
+  content: $nc-archive-check;
+}
+
+.nc-small-remove::before {
+  content: $nc-small-remove;
+}
+
+.nc-badge-2::before {
+  content: $nc-badge-2;
+}
+
+.nc-board-29::before {
+  content: $nc-board-29;
+}
+
+.nc-calendar-add::before {
+  content: $nc-calendar-add;
+}
+
+.nc-a-check::before {
+  content: $nc-a-check;
+}
+
+.nc-chart-bar-33::before {
+  content: $nc-chart-bar-33;
+}
+
+.nc-dashboard-half::before {
+  content: $nc-dashboard-half;
+}
+
+.nc-lock::before {
+  content: $nc-lock;
+}
+
+.nc-chat-round-content::before {
+  content: $nc-chat-round-content;
+}
+
+.nc-single-05::before {
+  content: $nc-single-05;
+}
+
+.nc-time-countdown::before {
+  content: $nc-time-countdown;
+}
+
+.nc-socket::before {
+  content: $nc-socket;
+}
+
+.nc-gantt::before {
+  content: $nc-gantt;
+}
+
+.nc-bars-rotate::before {
+  content: $nc-bars-rotate;
+}
+
+.nc-opening-times::before {
+  content: $nc-opening-times;
+}
+
+.nc-dots-07::before {
+  content: $nc-dots-07;
+}
+
+.nc-light-traffic::before {
+  content: $nc-light-traffic;
+}
+
+.nc-priority-high::before {
+  content: $nc-priority-high;
+}
+
+.nc-microscope::before {
+  content: $nc-microscope;
+}
+
+.nc-hierarchy-53::before {
+  content: $nc-hierarchy-53;
+}
+
+.nc-book-open-2::before {
+  content: $nc-book-open-2;
+}
+
+.nc-ram::before {
+  content: $nc-ram;
+}
+
+.nc-l-security::before {
+  content: $nc-l-security;
+}
+
+.nc-keyboard-wireless::before {
+  content: $nc-keyboard-wireless;
+}
+
+.nc-code-editor::before {
+  content: $nc-code-editor;
+}
+
+.nc-lab::before {
+  content: $nc-lab;
+}
+
+.nc-settings-91::before {
+  content: $nc-settings-91;
+}
+
+.nc-bulb-63::before {
+  content: $nc-bulb-63;
+}
+
+.nc-sign-closed::before {
+  content: $nc-sign-closed;
+}
+
+.nc-lock-2::before {
+  content: $nc-lock-2;
+}
+
+.nc-board-28::before {
+  content: $nc-board-28;
+}
+
+.nc-privacy-policy-2::before {
+  content: $nc-privacy-policy-2;
+}
+
+.nc-priority-high-2::before {
+  content: $nc-priority-high-2;
+}
+
+.nc-socket-europe-1::before {
+  content: $nc-socket-europe-1;
+}
+
+.nc-circle-10::before {
+  content: $nc-circle-10;
+}
+
+.nc-time-clock::before {
+  content: $nc-time-clock;
+}
+
+.nc-a-edit::before {
+  content: $nc-a-edit;
+}
+
+.nc-dots-06::before {
+  content: $nc-dots-06;
+}
+
+.nc-pulse-phone::before {
+  content: $nc-pulse-phone;
+}
+
+.nc-keyboard::before {
+  content: $nc-keyboard;
+}
+
+.nc-microcircuit::before {
+  content: $nc-microcircuit;
+}
+
+.nc-settings::before {
+  content: $nc-settings;
+}
+
+.nc-money-coins::before {
+  content: $nc-money-coins;
+}
+
+.nc-money-11::before {
+  content: $nc-money-11;
+}
+
+.nc-tag-content::before {
+  content: $nc-tag-content;
+}
+
+.nc-hotel::before {
+  content: $nc-hotel;
+}
+
+.nc-b-security::before {
+  content: $nc-b-security;
+}
+
+.nc-filter-organization::before {
+  content: $nc-filter-organization;
+}
+

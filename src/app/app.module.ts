@@ -92,6 +92,7 @@ import { SearchProjectsComponent } from './projects/search-projects/search-proje
 import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
+import { UnitTestComponent } from './unit-test/unit-test.component';
 
 
 @NgModule({
@@ -148,7 +149,8 @@ import { DisplayProjectComponent } from './projects/display-project/display-proj
     BomViewerComponent,
     ProjectRequestsComponent,
     SearchProjectsComponent,
-    DisplayProjectComponent
+    DisplayProjectComponent,
+    UnitTestComponent
   ],
   imports: [
     AppRoutingModule,
