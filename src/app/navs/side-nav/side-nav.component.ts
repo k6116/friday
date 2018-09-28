@@ -134,6 +134,15 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
               permissionProtected: true,
               hidden: false
             },
+            {
+              title: 'Project FTE Rollup',
+              alias: 'reports-project-fte-rollup',
+              path: 'main/reports/project-fte-rollup',
+              parentAlias: 'reports',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            }
           ]
         },
         {

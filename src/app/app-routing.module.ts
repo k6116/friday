@@ -40,6 +40,7 @@ import { PartSetupComponent } from './setups/parts/parts.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
+import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-fte-rollup.component';
 
 // BOM module stuff
 import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
@@ -76,6 +77,7 @@ const routes: Routes = [
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
+      { path: 'reports/project-fte-rollup', component: ProjectFteRollupComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }
     ]

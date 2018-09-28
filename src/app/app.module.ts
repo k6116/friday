@@ -93,6 +93,7 @@ import { MyProjectsComponent } from './projects/my-projects/my-projects.componen
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
+import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-fte-rollup.component';
 
 
 @NgModule({
@@ -150,7 +151,8 @@ import { UnitTestComponent } from './unit-test/unit-test.component';
     ProjectRequestsComponent,
     SearchProjectsComponent,
     DisplayProjectComponent,
-    UnitTestComponent
+    UnitTestComponent,
+    ProjectFteRollupComponent
   ],
   imports: [
     AppRoutingModule,
