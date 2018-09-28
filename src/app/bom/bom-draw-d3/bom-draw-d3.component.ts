@@ -20,7 +20,6 @@ export class BomDrawD3Component implements OnInit, OnChanges {
 
   ngOnChanges() {
 
-    console.log('it changed');
     // when bomJson input binding changes value, parse data for the legend and draw the chart
     if (this.bomJson) {
 
@@ -100,6 +99,8 @@ export class BomDrawD3Component implements OnInit, OnChanges {
     // set start position/scale of drawing, and size of nodes (to set default node spacing)
     const initialTransform = d3.zoomIdentity.translate(400, 300).scale(1);
     const nodeSize = {height: 28, width: 20};
+    const height = 600;
+    const width = 1500;
     const zoomSpeed = 1700; // some number between 400 and 2000
     const deptColors: any = {
       HFTC: '#c2b1ff',
@@ -121,8 +122,6 @@ export class BomDrawD3Component implements OnInit, OnChanges {
         svg.attr('transform', d3.event.transform);
       });
 
-    const height = 600;
-    const width = 1500;
     const wrapper = d3.select('#d3-container')
       .attr('style', `padding-bottom:${Math.ceil(height * 100 / width)}%`);
 
@@ -268,6 +267,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
         .attr('text-anchor', 'start')
         .text( (d) => `${d.data.qty}  |  ${d.data.name}` )
         .on('mouseover', (d) => {
+          console.log(d3.event);
           tooltip.transition()
           .duration(100)
           .style('opacity', 1);
@@ -275,7 +275,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
             Dept: ${d.data.dept}<br />
             Type: ${d.data.type}<br />
             Qty: ${d.data.qty}<br />`)
-            .style('top', `${d3.event.pageY + 15}px`).style('left', `${d3.event.pageX + 10}px`);
+            .style('top', `${d3.event.y + 10}px`).style('left', `${d3.event.x + 15}px`);
         })
         .on('mouseout', (d) => {
           tooltip.transition()
