@@ -432,8 +432,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   onTestFormClick() {
     // console.log('form object (this.form):');
     // console.log(this.FTEFormGroup);
-    // console.log('form data (this.form.value.FTEFormArray):');
-    // console.log(this.FTEFormGroup.value.FTEFormArray);
+    console.log('form data (this.form.value.FTEFormArray):');
+    console.log(this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
     // console.log(this.fteProjectVisible);
   }

@@ -44,6 +44,9 @@ export class CacheService {
   nestedOrgDataRequested: boolean;
   nestedOrgDataCached: boolean;
 
+  // Store team employee list
+  teamEmployeeList: any;
+
   appLoadPath: string;  // the url that was hit on app load/refresh, stored for deep linking if user is not authenticated
 
   // emit data to the dashboard component telling it to remove the message telling user to update their job title

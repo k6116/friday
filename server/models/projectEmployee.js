@@ -24,6 +24,26 @@ const ProjectEmployee = sequelize.define('projectEmployee',
   }
 );
 
+const ProjectEmployeePlanning = sequelize.define('projectEmployeePlanning',
+  {
+    id: { type: Sequelize.INTEGER, field: 'ProjectEmployeesPlanningID', primaryKey: true, autoIncrement: true },
+    planName: { type: Sequelize.STRING, field: 'PlanName' },
+    projectID: { type: Sequelize.INTEGER, field: 'ProjectID' },
+    employeeID: { type: Sequelize.INTEGER, field: 'EmployeeID' },
+    fiscalDate: { type: Sequelize.DATE, field: 'FiscalDate' },
+    fte: { type: Sequelize.DECIMAL, field: 'FTE' },
+    createdBy: { type: Sequelize.INTEGER, field: 'CreatedBy' },
+    createdAt: { type: Sequelize.DATE, field: 'CreationDate' },
+    updatedBy: { type: Sequelize.INTEGER, field: 'LastUpdatedBy' },
+    updatedAt: { type: Sequelize.DATE, field: 'LastUpdateDate' }
+  },
+  {
+    schema: 'resources',
+    tableName: 'ProjectEmployeesPlanning',
+    timestamps: false
+  }
+);
+
 const ProjectEmployeeRoles = sequelize.define('projectEmployeeRoles',
   {
     id: { type: Sequelize.INTEGER, field: 'ProjectEmployeeRoleID', primaryKey: true, autoIncrement: true },
@@ -49,6 +69,9 @@ ProjectEmployee.belongsTo(Projects, {foreignKey: 'projectID'});
 User.hasMany(ProjectEmployee, {foreignKey: 'id'});
 ProjectEmployee.belongsTo(User, {foreignKey: 'employeeID'});
 
+Projects.hasMany(ProjectEmployeePlanning, {foreignKey: 'id'});
+ProjectEmployeePlanning.belongsTo(Projects, {foreignKey: 'projectID'});
+
 Projects.hasMany(ProjectEmployeeRoles, {foreignKey: 'id'});
 ProjectEmployeeRoles.belongsTo(Projects, {foreignKey: 'projectID'});
 
@@ -63,5 +86,6 @@ ProjectEmployeeRoles.belongsTo(JobSubTitle, {foreignKey: 'jobSubTitleID'});
 
 module.exports = {
   ProjectEmployee: ProjectEmployee, 
+  ProjectEmployeePlanning: ProjectEmployeePlanning,
   ProjectEmployeeRoles: ProjectEmployeeRoles
 }

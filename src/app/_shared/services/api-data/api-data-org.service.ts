@@ -23,4 +23,17 @@ export class ApiDataOrgService {
       .map((response: Response) => response.json());
   }
 
+  getTeamList(emailAddress: string): Observable<any> {
+    return this.http.get(`/api/org/getTeamList/${emailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getEmployeeList(emailAddress: string): Observable<any> {
+    return this.http.get(`/api/org/getEmployeeList/${emailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+
 }
