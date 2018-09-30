@@ -41,8 +41,9 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 
 // BOM module stuff
-import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
-import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
+// temporarily hiding until BOM editor is complete
+// import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
+// import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 
 
 const routes: Routes = [
@@ -66,8 +67,8 @@ const routes: Routes = [
       { path: 'projects/display/:id', component: DisplayProjectComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
-      { path: 'bom/bom-editor', component: BomEditorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
-      { path: 'bom/bom-viewer', component: BomViewerComponent, canActivate: [AuthGuardService] },
+      // { path: 'bom/bom-editor', component: BomEditorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      // { path: 'bom/bom-viewer', component: BomViewerComponent, canActivate: [AuthGuardService] },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },

@@ -217,8 +217,6 @@ considering topnav, sidenav, and footer -->
       <!-- - -->
 
 
-      
-
       <!-- hidden container for record history html -->
       <div class="project-record-history-cont">
 
@@ -269,11 +267,17 @@ considering topnav, sidenav, and footer -->
       </div>
 
 
-      <!-- second col is BOM viewer -->
+      <!-- BOM viewer -->
       <div class="bom-chart-cont">
         <div class="bom-chart-header">Bill of Materials</div>
-        <div *ngIf="!bomJson" class="bom-chart-body">No BOM in database</div>
-        <app-bom-draw-d3 *ngIf="bomJson" [bomJson]="bomJson"></app-bom-draw-d3>
+        <ng-container *ngIf="!bomAuthorized">
+          <img class="bom-paywall" src="../assets/bom-paywall.png">
+          <div class="bom-paywall-text">BOM Viewer is only available to Jarvis Resources participants.<br /><br />Contact your manager to request access.</div>
+        </ng-container>
+        <ng-container *ngIf="bomAuthorized">
+          <app-bom-draw-d3 *ngIf="bomJson" [bomJson]="bomJson"></app-bom-draw-d3>
+          <div *ngIf="!bomJson" class="bom-chart-body">No BOM in database</div>
+        </ng-container>
       </div>
 
 

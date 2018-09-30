@@ -38,6 +38,7 @@ export class DisplayProjectComponent implements OnInit {
   displayScheduleChart: boolean;
   chart: any;
   bomJson: any; // nested JSON containing BOM data
+  bomAuthorized = true;
   bla: any;
 
   @HostListener('window:resize', ['$event'])
@@ -80,6 +81,11 @@ export class DisplayProjectComponent implements OnInit {
       // only set bomJson with the nested response if it is not empty
       if (Object.keys(res2).length) {
         this.bomJson = res2;
+      }
+    }).catch(err => {
+      // if the user is unauthorized to see BOMs, show the paywall
+      if (err.status === 401) {
+        this.bomAuthorized = false;
       }
     });
 
