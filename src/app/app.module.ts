@@ -8,9 +8,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NouisliderModule } from 'ng2-nouislider';
 import { ClickOutsideModule } from 'ng4-click-outside';
-import { Ng2CompleterModule } from 'ng2-completer';
 import { TreeModule } from 'angular-tree-component';
 // import { TreeModule } from 'ng2-tree';
+import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 
 // ANGULAR MATERIAL MODULES
 import { MatSlideToggleModule, MatButtonModule, MatCheckboxModule, MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
@@ -42,6 +42,7 @@ import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 import { BrowserGuard } from './_shared/guards/browser.guard';
 import { PermissionsGuard } from './_shared/guards/permissions.guard';
 import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
+import { FteTeamEntryGuard } from './fte-entry/team/fte-entry.guard';
 
 // CHARTS
 import 'hammerjs';
@@ -62,7 +63,7 @@ import { EmployeesReportsComponent } from './reports/employees/employees.compone
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
-import { OrgDropdownComponent } from './reports/team-fte-summary/org-dropdown/org-dropdown.component';
+import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
 import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
 import { ChartsModule } from 'ng2-charts';
@@ -92,7 +93,9 @@ import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 import { SearchProjectsComponent } from './projects/search-projects/search-projects.component';
 import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
+import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
+import { UnitTestComponent } from './unit-test/unit-test.component';
 
 
 @NgModule({
@@ -149,7 +152,9 @@ import { DisplayProjectComponent } from './projects/display-project/display-proj
     BomViewerComponent,
     ProjectRequestsComponent,
     SearchProjectsComponent,
-    DisplayProjectComponent
+    TeamRolesComponent,
+    DisplayProjectComponent,
+    UnitTestComponent
   ],
   imports: [
     AppRoutingModule,
@@ -166,8 +171,8 @@ import { DisplayProjectComponent } from './projects/display-project/display-proj
     NouisliderModule,
     ClickOutsideModule,
     ChartsModule,
-    Ng2CompleterModule,
-    TreeModule.forRoot()
+    TreeModule.forRoot(),
+    MultiselectDropdownModule
   ],
   providers: [
     ApiDataAuthService,
@@ -199,6 +204,7 @@ import { DisplayProjectComponent } from './projects/display-project/display-proj
     BrowserGuard,
     PermissionsGuard,
     FteEntryGuard,
+    FteTeamEntryGuard,
     TitleCasePipe,
     RoutingHistoryService,
     ExcelExportService

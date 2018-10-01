@@ -1,5 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
-import { Location, PlatformLocation } from '@angular/common';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { CacheService } from './_shared/services/cache.service';
@@ -8,7 +8,7 @@ import { ClickTrackingService } from './_shared/services/click-tracking.service'
 import { WebsocketService } from './_shared/services/websocket.service';
 import { RoutingHistoryService } from './_shared/services/routing-history.service';
 
-// import * as bowser from 'bowser';
+
 declare var $: any;
 
 @Component({
@@ -21,23 +21,12 @@ declare var $: any;
     '(document:keydown)': 'onDocumentKeyDown()'
   }
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   timer: any;
   timerInterval: number;  // interval in minutes
   subscription1: Subscription;
   subscription2: Subscription;
-
-  // NOTE: this is the 'new' way to do it but not working
-  // @HostListener('click') onDocumentClicked() {
-  //   // console.log('document was clicked');
-  // }
-
-  // @HostListener('window:popstate', ['$event'])
-  // onPopState(event) {
-  //   console.log('browser button pressed');
-  //   console.log(event);
-  // }
 
   constructor(
     private router: Router,
@@ -53,6 +42,9 @@ export class AppComponent implements OnInit {
     // to reset the token expiration
     this.timerInterval = 1;
 
+    // start subscription to listen for routing events and push history in an array
+    // accessible by: this.routingHistoryService.history
+    // can be used when conditional logic depends on previous route
     this.routingHistoryService.loadRouting();
 
   }
@@ -78,16 +70,21 @@ export class AppComponent implements OnInit {
     this.authService.getInfoFromToken();
 
     // subscibe to the resetTimer, can be used to synch up the clock
-    this.subscription1 = this.cacheService.resetTimer.subscribe(
-      (resetTimer: boolean) => {
-        // console.log('subscription to resetTimer receivevd in the app component');
-        this.resetTimer();
+    this.subscription1 = this.cacheService.resetTimer.subscribe((resetTimer: boolean) => {
+      // console.log('subscription to resetTimer receivevd in the app component');
+      this.resetTimer();
     });
 
-    // this.location.subscribe(x => {
-    //   console.log(x);
-    // });
+    // subscribe to browser location changes (back or forward button clicks)
+    this.subscription2 = <Subscription>this.location.subscribe(location => {
+      this.cacheService.browserLocation.emit(location);
+    });
 
+  }
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   onDocumentEvent() {

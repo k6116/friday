@@ -3,6 +3,7 @@ const models = require('../models/_index');
 const sequelize = require('../db/sequelize').sequelize;
 const Sequelize = require('sequelize');
 const Treeize = require('treeize');
+const moment = require('moment');
 const dotevnv = require('dotenv').config(
     {path: '/.env'}
   );
@@ -50,9 +51,9 @@ function indexJobTitle(req, res) {
 		FROM 
 			resources.JobTitle J
 			LEFT JOIN resources.JobTitleMap JM ON J.JobTitleID = JM.JobTitleID
-            LEFT JOIN resources.JobSubTitle JS ON JM.JobSubTitleID = JS.JobSubTitleID
-        ORDER BY
-            J.JobTitleName
+      LEFT JOIN resources.JobSubTitle JS ON JM.JobSubTitleID = JS.JobSubTitleID
+    ORDER BY
+      J.JobTitleName
 	`
 
 	sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
@@ -415,16 +416,143 @@ function deleteJobTitleMap(req, res) {
     })
 }
 
+function indexEmployeesJobTitles(req, res) {
+
+  const emailAddress = req.params.emailAddress;
+
+  sequelize.query('EXECUTE resources.EmployeeRoles :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+  .then(results => {
+    const jobTitleTree = new Treeize();
+    jobTitleTree.grow(results);
+    res.json({
+      nested: jobTitleTree.getData(),
+      flat: results
+    });
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
+
+function updateEmployeesJobTitlesBulk(req, res) {
+
+  // This function will:
+  // - Add a new user to the employees table with their designated jobTitleID and jobSubTitleID
+  // - Update an employee's jobTitleID and jobSubTitleID
+  // The formData object array should be in this format:
+
+  const formData = req.body;
+  const userID = req.params.userID;
+
+  // build arrays of objects for insert and update
+  const insertData = [];
+  const updateData = [];
+  
+  formData.forEach(data => {
+    // insert array
+    if (data.newUser && data.jobTitleID !== null) {
+      insertData.push({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        fullName: data.fullName,
+        email: data.emailAddress,
+        jobTitleID: data.jobTitleID,
+        jobSubTitleID: data.jobSubTitleID,
+        roleID: 2,
+        createdBy: userID,
+        createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+      })
+    }
+    // update array
+    if (!data.newUser) {
+      updateData.push({
+        email: data.emailAddress,
+        jobTitleID: data.jobTitleID,
+        jobSubTitleID: data.jobSubTitleID,
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+      })
+    }
+
+  });
+
+  console.log('insertData')
+  console.log(insertData)
+  console.log('updateData')
+  console.log(updateData)
+
+  return sequelize.transaction((t) => {
+
+    return models.User.bulkCreate(
+    insertData,
+    {transaction: t}
+    )
+    .then(savedJobTitle => {
+
+      // update the existing records
+      var promises = [];
+      for (var i = 0; i < updateData.length; i++) {
+          var newPromise = models.User.update(
+          {
+            jobTitleID: updateData[i].jobTitleID,
+            jobSubTitleID: updateData[i].jobSubTitleID,
+            updatedBy: userID,
+            updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+          },
+          {
+            where: { email: updateData[i].email },
+            transaction: t
+          }
+          );
+          promises.push(newPromise);
+      };
+      return Promise.all(promises)
+      .then(updatedJobTitle => {
+
+        console.log(`job titles updated`);
+        
+      });
+        
+    })
+
+  }).then(() => {
+
+    res.json({
+      message: 'Your team job title have been successfully updated!'
+    })
+
+  }).catch(error => {
+
+    // console.log(error);
+    res.status(500).json({
+      message: 'update failed',
+      error: error
+    });
+
+  })
+  
+
+}
+  
+
 module.exports = {
-    indexJobTitle: indexJobTitle,
-    indexJobSubTitle: indexJobSubTitle,
-    updateEmployeeJobTitle: updateEmployeeJobTitle,
-    insertJobTitle: insertJobTitle,
-        deleteJobTitle: deleteJobTitle,
-        updateJobTitle: updateJobTitle,
-        insertJobSubTitle: insertJobSubTitle,
-        deleteJobSubTitle: deleteJobSubTitle,
-        updateJobSubTitle: updateJobSubTitle,
-        insertJobTitleMap: insertJobTitleMap,
-        deleteJobTitleMap: deleteJobTitleMap    
+  indexJobTitle: indexJobTitle,
+  indexJobSubTitle: indexJobSubTitle,
+  updateEmployeeJobTitle: updateEmployeeJobTitle,
+  insertJobTitle: insertJobTitle,
+  deleteJobTitle: deleteJobTitle,
+  updateJobTitle: updateJobTitle,
+  insertJobSubTitle: insertJobSubTitle,
+  deleteJobSubTitle: deleteJobSubTitle,
+  updateJobSubTitle: updateJobSubTitle,
+  insertJobTitleMap: insertJobTitleMap,
+  deleteJobTitleMap: deleteJobTitleMap,
+  indexEmployeesJobTitles: indexEmployeesJobTitles,
+  updateEmployeesJobTitlesBulk: updateEmployeesJobTitlesBulk
 }

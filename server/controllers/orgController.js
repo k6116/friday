@@ -1,13 +1,14 @@
 
 const models = require('../models/_index');
 const sequelizePLM = require('../db/sequelize').sequelizePLM;
-const sequelize = require('../db/sequelize').sequelize2017;
+const sequelize2017 = require('../db/sequelize').sequelize2017;
+const sequelize = require('../db/sequelize').sequelize;
 
 
 // right now, this function doesn't seem to fetch all subordinates.  Example - George Nacouzi doesn't show up under Ethan
 function show(req, res) {
   const emailAddress = req.params.emailAddress;
-  sequelize.query('EXECUTE dbo.GetNestedOrgJson :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+  sequelize2017.query('EXECUTE dbo.GetNestedOrgJson :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
     .then(org => {
       // console.log("returning nested org data");
       res.json(org);
@@ -23,7 +24,7 @@ function show(req, res) {
 function getSubordinatesFlat(req, res) {
   const emailAddress = req.params.emailAddress;
   const sql = `EXEC jarvis.getOrgChart '${emailAddress}'`
-  sequelizePLM.query(sql, { type: sequelize.QueryTypes.SELECT })
+  sequelize2017.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
       console.log("returning user PLM data");
       res.json(org);
@@ -36,7 +37,39 @@ function getSubordinatesFlat(req, res) {
     });
 }
 
+function getTeamList(req, res) {
+  const emailAddress = req.params.emailAddress;
+  sequelize.query('EXECUTE resources.GetTeamList :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+    .then(org => {
+      // console.log("returning nested org data");
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+function getEmployeeList(req, res) {
+  const emailAddress = req.params.emailAddress;
+  sequelize.query('EXECUTE resources.GetEmployeeList :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+    .then(org => {
+      // console.log("returning nested org data");
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 module.exports = {
   show: show,
-  getSubordinatesFlat: getSubordinatesFlat
+  getSubordinatesFlat: getSubordinatesFlat,
+  getTeamList: getTeamList,
+  getEmployeeList: getEmployeeList
 }

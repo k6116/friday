@@ -1,3 +1,30 @@
+<a name="1.13.0"></a>
+# [1.13.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.12.1...v1.13.0) (2018-09-29)
+
+
+### Bug Fixes
+
+* **team-roles setup:** add z-index to side nav ([c05f4fe](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c05f4fe))
+* **team-roles.component:** fix scrolling behaviour ([ad0a80b](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/ad0a80b))
+
+
+### Features
+
+* **fte-entry team:** added manager edit features ([0f346e2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/0f346e2))
+* **team-roles:** add styling and insert new roles functionality ([bf1ef79](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/bf1ef79))
+
+
+
+<a name="1.12.1"></a>
+## [1.12.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.12.0...v1.12.1) (2018-09-28)
+
+
+### Bug Fixes
+
+* highlight correct sidenav item on browser back and forward button clicks ([469f388](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/469f388))
+
+
+
 <a name="1.12.0"></a>
 # [1.12.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.11.0...v1.12.0) (2018-09-17)
 

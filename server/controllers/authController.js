@@ -120,14 +120,15 @@ function authenticate(req, res) {
             logger.writeLog('info', `user ${fullName} has logged in`, {color: 'blue'});
 
             // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
-            res.json({
+            res.status(200).json({
               ldapUser: ldapUser,
               jarvisUser: userDataTreeized[0],
               token: {
                 signedToken: newToken,
                 issuedAt: decodedToken.iat,
                 expiringAt: decodedToken.exp
-              }
+              },
+              status: 200
             });
 
             // TEMP CODE: testing websockets
@@ -147,7 +148,7 @@ function authenticate(req, res) {
       } else {
 
         // send a an error response (status code 500) indicating the credentials are invalid
-        res.status(500).json({
+        res.status(401).json({
           title: 'invalid user credentials',
           error: err
         });
@@ -162,7 +163,7 @@ function authenticate(req, res) {
       console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
       
       // send a an error response (status code 500) indicating the credentials are invalid
-      res.status(500).json({
+      res.status(401).json({
         title: 'invalid user credentials',
         error: err
       });
@@ -393,7 +394,6 @@ function logout(req, res) {
   res.json(`user ${userName} has been removed from the array of logged in users`);
 
 }
-
 
 module.exports = {
   authenticate: authenticate,
