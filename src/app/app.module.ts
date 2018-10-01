@@ -8,6 +8,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NouisliderModule } from 'ng2-nouislider';
 import { ClickOutsideModule } from 'ng4-click-outside';
+import { TreeModule } from 'angular-tree-component';
+// import { TreeModule } from 'ng2-tree';
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 
 // ANGULAR MATERIAL MODULES
@@ -26,7 +28,7 @@ import { TitleCasePipe } from '@angular/common';
 import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
-import { CacheService, ClickTrackingService, CookiesService,
+import { BomService, CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
@@ -45,7 +47,6 @@ import { FteTeamEntryGuard } from './fte-entry/team/fte-entry.guard';
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
-import { TreeModule } from 'ng2-tree';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -170,8 +171,8 @@ import { UnitTestComponent } from './unit-test/unit-test.component';
     NouisliderModule,
     ClickOutsideModule,
     ChartsModule,
-    MultiselectDropdownModule,
-    TreeModule
+    TreeModule.forRoot(),
+    MultiselectDropdownModule
   ],
   providers: [
     ApiDataAuthService,
@@ -190,6 +191,7 @@ import { UnitTestComponent } from './unit-test/unit-test.component';
     ApiDataPartService,
     ApiDataAnalyticsService,
     ApiDataBomService,
+    BomService,
     CacheService,
     AuthService,
     AuthGuardService,

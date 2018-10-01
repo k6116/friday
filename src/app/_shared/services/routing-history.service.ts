@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
+import 'rxjs/add/operator/filter';
 
 @Injectable()
 export class RoutingHistoryService {
