@@ -1,3 +1,18 @@
+<a name="1.14.0"></a>
+# [1.14.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.13.0...v1.14.0) (2018-10-01)
+
+
+### Bug Fixes
+
+* **FTE entry component:** added toast for projects that cannot be deleted, and allow saving for proj ([c2f11eb](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c2f11eb))
+
+
+### Features
+
+* **Display Project page:** BOM viewer appears in project display page as its own card ([658c536](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/658c536))
+
+
+
 <a name="1.13.0"></a>
 # [1.13.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.12.1...v1.13.0) (2018-09-29)
 
