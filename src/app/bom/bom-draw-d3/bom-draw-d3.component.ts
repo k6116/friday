@@ -99,8 +99,9 @@ export class BomDrawD3Component implements OnInit, OnChanges {
     // set start position/scale of drawing, and size of nodes (to set default node spacing)
     const initialTransform = d3.zoomIdentity.translate(400, 300).scale(1);
     const nodeSize = {height: 28, width: 20};
-    const height = 600;
-    const width = 1500;
+    const aspect = (window.innerWidth - 180) / (window.innerHeight - 65); // calculate aspect ratio, including side and top nav
+    const height = 0.82 * window.innerHeight;
+    const width = height * aspect;
     const zoomSpeed = 1700; // some number between 400 and 2000
     const deptColors: any = {
       HFTC: '#c2b1ff',

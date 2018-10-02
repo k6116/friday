@@ -39,7 +39,6 @@ export class DisplayProjectComponent implements OnInit {
   chart: any;
   bomJson: any; // nested JSON containing BOM data
   bomAuthorized = true;
-  bla: any;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -539,6 +538,10 @@ export class DisplayProjectComponent implements OnInit {
     // dispose of the popover
     $el.popover('dispose');
 
+  }
+
+  expandBomFullscreen() {
+    $('.bom-chart-cont').toggleClass('bom-chart-cont-full');
   }
 
 }
