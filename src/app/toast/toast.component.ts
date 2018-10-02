@@ -31,6 +31,10 @@ export class ToastComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnDestroy() {
+    this.toastSubscription.unsubscribe();
+  }
+
   onToastReceive(toast: any) {
     // set type CSS class for toast, and the body of the message
     this.toastType = toast.type;
@@ -59,7 +63,4 @@ export class ToastComponent implements OnInit, OnDestroy {
     this.toastVisible = false;
   }
 
-  ngOnDestroy() {
-    this.toastSubscription.unsubscribe();
-  }
 }
