@@ -97,6 +97,7 @@ export class TeamRolesComponent implements OnInit {
           this.allEmployees[i].jobTitleID = null;
           this.allEmployees[i].jobSubTitleID = null;
           this.allEmployees[i].newUser = true;
+          console.log(this.allEmployees[i])
         } else if (j === this.employeesJobTitlesFlat.length - 1 && this.allEmployees[i].employeeID !== 0) {
           this.allEmployees[i].jobTitleID = null;
           this.allEmployees[i].jobSubTitleID = null;
@@ -108,7 +109,7 @@ export class TeamRolesComponent implements OnInit {
 
   async getTeam(email: string): Promise<any> {
     // get list of subordinates
-    return await this.apiDataOrgService.getOrgData(email).toPromise();
+    return await this.apiDataOrgService.getEmployeeList(email).toPromise();
   }
 
   async getEmployeesJobTitles(emailList: string): Promise<any> {
