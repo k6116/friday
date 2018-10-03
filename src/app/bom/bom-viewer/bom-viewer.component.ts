@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiDataBomService } from '../../_shared/services/api-data/_index';
 
 @Component({
   selector: 'app-bom-viewer',
@@ -7,15 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BomViewerComponent implements OnInit {
 
-  selectedBom: any;
+  bomJson: any;
 
-  constructor() { }
+  constructor(private apiDataBomService: ApiDataBomService) { }
 
   ngOnInit() {
   }
 
-  onBomSelect(selection: any) {
-    this.selectedBom = selection;
+  drawBom(bomJson: any) {
+    this.bomJson = bomJson;
   }
 
 }

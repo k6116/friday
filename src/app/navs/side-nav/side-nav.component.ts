@@ -155,36 +155,37 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
             },
           ]
         },
-        {
-          title: 'BOM',
-          iconClass: 'nc-hierarchy-53',
-          alias: 'bom',
-          expanded: false,
-          active: false,
-          highlighted: false,
-          permissionProtected: true,
-          hidden: false,
-          subItems: [
-            {
-              title: 'BOM Viewer',
-              alias: 'bom-viewer',
-              path: 'main/bom/bom-viewer',
-              parentAlias: 'bom',
-              active: false,
-              permissionProtected: false,
-              hidden: false
-            },
-            {
-              title: 'BOM Editor',
-              alias: 'bom-editor',
-              path: 'main/bom/bom-editor',
-              parentAlias: 'bom',
-              active: false,
-              permissionProtected: true,
-              hidden: false
-            }
-          ]
-        },
+        // temporarily hiding BOM from sidenav until we can complete BOM editor
+        // {
+        //   title: 'BOM',
+        //   iconClass: 'nc-hierarchy-53',
+        //   alias: 'bom',
+        //   expanded: false,
+        //   active: false,
+        //   highlighted: false,
+        //   permissionProtected: true,
+        //   hidden: false,
+        //   subItems: [
+        //     {
+        //       title: 'BOM Viewer',
+        //       alias: 'bom-viewer',
+        //       path: 'main/bom/bom-viewer',
+        //       parentAlias: 'bom',
+        //       active: false,
+        //       permissionProtected: false,
+        //       hidden: false
+        //     },
+        //     {
+        //       title: 'BOM Editor',
+        //       alias: 'bom-editor',
+        //       path: 'main/bom/bom-editor',
+        //       parentAlias: 'bom',
+        //       active: false,
+        //       permissionProtected: true,
+        //       hidden: false
+        //     }
+        //   ]
+        // },
         {
           title: 'Setups',
           iconClass: 'nc-settings',

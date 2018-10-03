@@ -17,20 +17,22 @@
 div.part-details {
   position: fixed;
   top: 0px;
+  left: 0px;
   text-align: left;
   width: 250px;
   height: 130px;
   padding: 2px;
   font: 16px sans-serif;
-  background: lightsteelblue;
+  background: white;
   border: 1px solid black;
   opacity: 0;
 }
 
 div.d3-legend {
-  position: fixed;
-  top: 90px;
-  right: 15px;
+  position: absolute;
+  float: right;
+  top: -36px;
+  right: 0px;
   width: 120px;
   height: 200px;
 }

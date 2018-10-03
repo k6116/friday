@@ -86,7 +86,7 @@
             <ng-container *ngFor="let project of projects; let i = index">
               <div class="fte-table-row" [formGroupName]="i" [style.display]="(fteProjectVisible[i]) ? 'table-row' : 'none'">
                 <div class="fte-table-cell icon"> <!-- for trash icon -->
-                  <i *ngIf="fteProjectDeletable[i]" class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
+                  <i [ngClass]="fteProjectDeletable[i] ? 'fa fa-trash-o' : 'fa fa-trash-o trash-not-allowed'" (click)="onTrashClick(i)"></i>
                 </div>
                 <div class="fte-table-cell col-project-name" data-toggle="tooltip" data-placement="top" [title]="project.projectName.length > 20 ? project.projectName : ''">{{ (project.projectName.length > 20) ? (project.projectName | slice:0:20) + '...' : (project.projectName) }}</div>
                 <div class="fte-table-cell col-project-role" data-toggle="tooltip" data-placement="top" [title]="((project.jobTitle.length + project.jobSubTitle.length) > 30) ? (project.jobTitle + ' - ' + project.jobSubTitle) : ''">{{ ((project.jobTitle.length + project.jobSubTitle.length) > 30) ? ((project.jobTitle + ' - ' + project.jobSubTitle) | slice:0:30) + '...' : (project.jobTitle + ' - ' + project.jobSubTitle) }}</div>

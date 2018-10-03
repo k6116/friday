@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs/subject';
+import { Subject } from 'rxjs/Subject';
 import { ApiDataDashboardService } from '../_shared/services/api-data/_index';
 import { ApiDataFteService } from '../_shared/services/api-data/api-data-fte.service';
 import { AuthService } from '../_shared/services/auth.service';
