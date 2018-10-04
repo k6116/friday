@@ -62,3 +62,10 @@ div.toast-show {
 span.toast-title {
   font-weight: bold;
 }
+
+div.toast-close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 17px;
+}

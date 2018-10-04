@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { CacheService } from '../_shared/services/cache.service';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -9,9 +10,13 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class ToastComponent implements OnInit, OnDestroy {
 
-  constructor(private cacheService: CacheService) { }
+  constructor(
+    private cacheService: CacheService,
+    private router: Router
+  ) { }
 
   toastSubscription: Subscription;
+  routerSubscription: Subscription;
   toastClass = 'toast'; // default css class
   toastText: string;
   toastType: string;
@@ -29,6 +34,18 @@ export class ToastComponent implements OnInit, OnDestroy {
         this.onToastReceive(toast);
       }
     });
+
+    this.routerSubscription = this.router.events.subscribe( () => {
+      // subscribe to the router.  If the router changes paths (user navigated away) then dismiss the current toast
+      if (this.toastVisible) {
+        this.dismissToast();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.toastSubscription.unsubscribe();
+    this.routerSubscription.unsubscribe();
   }
 
   onToastReceive(toast: any) {
@@ -59,7 +76,4 @@ export class ToastComponent implements OnInit, OnDestroy {
     this.toastVisible = false;
   }
 
-  ngOnDestroy() {
-    this.toastSubscription.unsubscribe();
-  }
 }
