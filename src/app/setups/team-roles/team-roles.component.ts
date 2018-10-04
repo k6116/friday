@@ -16,7 +16,6 @@ export class TeamRolesComponent implements OnInit {
   employeesJobTitlesFlat: any;
   teamOrgStructure: any;
   teamEditableMembers: any;
-  allEmployees: any;
   totalArray: any;
 
   // for jobtitle and subtiitle combobox
@@ -66,10 +65,7 @@ export class TeamRolesComponent implements OnInit {
 
   async initializeEmployeeData() {
     // Get Team Data - Manager and Employees
-    const teamOrgStructure = await this.getTeam(this.loginAsEmail);
-    this.teamOrgStructure = JSON.parse('[' + teamOrgStructure[0].json + ']')[0];
-
-    this.allEmployees = this.teamOrgStructure.employees;
+    this.teamOrgStructure = await this.getTeam(this.loginAsEmail);
 
     // Build email string of only employees
     await this.buildTeamEditableMembers();
@@ -79,29 +75,29 @@ export class TeamRolesComponent implements OnInit {
     this.employeesJobTitlesNested = employeesJobTitles.nested;
     this.employeesJobTitlesFlat = employeesJobTitles.flat;
 
-    // add jobTitles to the allEmployees object
-    for (let i = 0; i < this.allEmployees.length; i++) {
+    // add jobTitles to the teamOrgStructure object
+    for (let i = 0; i < this.teamOrgStructure.length; i++) {
       for (let j = 0; j < this.employeesJobTitlesFlat.length; j++) {
-        const fullName = this.allEmployees[i].fullName.split(' ');
-        this.allEmployees[i].firstName = fullName[0];
-        this.allEmployees[i].lastName = fullName[1];
-        // First if employee has job title, then add jobtitle data to allEmployees
+        const fullName = this.teamOrgStructure[i].fullName.split(' ');
+        this.teamOrgStructure[i].firstName = fullName[0];
+        this.teamOrgStructure[i].lastName = fullName[1];
+        // First if employee has job title, then add jobtitle data to teamOrgStructure
         // Else if employee has no job title, but exists in employees table, then just update job titles
         // Else employee does not exists in employees table, then insert employee
-        if (this.allEmployees[i].emailAddress === this.employeesJobTitlesFlat[j]['Employees: EmailAddress']) {
-          this.allEmployees[i].jobTitleID = this.employeesJobTitlesFlat[j].JobTitleID;
-          this.allEmployees[i].jobSubTitleID = this.employeesJobTitlesFlat[j].JobSubTitleID;
-          this.allEmployees[i].newUser = false;
+        if (this.teamOrgStructure[i].emailAddress === this.employeesJobTitlesFlat[j]['Employees: EmailAddress']) {
+          this.teamOrgStructure[i].jobTitleID = this.employeesJobTitlesFlat[j].JobTitleID;
+          this.teamOrgStructure[i].jobSubTitleID = this.employeesJobTitlesFlat[j].JobSubTitleID;
+          this.teamOrgStructure[i].newUser = false;
           break;
-        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.allEmployees[i].employeeID === 0) {
-          this.allEmployees[i].jobTitleID = null;
-          this.allEmployees[i].jobSubTitleID = null;
-          this.allEmployees[i].newUser = true;
-          console.log(this.allEmployees[i])
-        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.allEmployees[i].employeeID !== 0) {
-          this.allEmployees[i].jobTitleID = null;
-          this.allEmployees[i].jobSubTitleID = null;
-          this.allEmployees[i].newUser = false;
+        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID === 0) {
+          this.teamOrgStructure[i].jobTitleID = null;
+          this.teamOrgStructure[i].jobSubTitleID = null;
+          this.teamOrgStructure[i].newUser = true;
+          console.log(this.teamOrgStructure[i])
+        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID !== 0) {
+          this.teamOrgStructure[i].jobTitleID = null;
+          this.teamOrgStructure[i].jobSubTitleID = null;
+          this.teamOrgStructure[i].newUser = false;
         }
       }
     }
@@ -119,16 +115,16 @@ export class TeamRolesComponent implements OnInit {
   async buildTeamEditableMembers(): Promise<any> {
     this.teamEditableMembers = '';
     // build the string of employee email address to use as a parameter for the SP resources.DisplayTeamFTE
-    for (let i = 0; i < this.allEmployees.length; i++) {
-      this.teamEditableMembers = this.allEmployees[i].emailAddress + '\',\'' + this.teamEditableMembers;
+    for (let i = 0; i < this.teamOrgStructure.length; i++) {
+      this.teamEditableMembers = this.teamOrgStructure[i].emailAddress + '\',\'' + this.teamEditableMembers;
     }
     this.teamEditableMembers = this.teamEditableMembers.substr(0, this.teamEditableMembers.lastIndexOf(','));
     this.teamEditableMembers = '\'\'' + this.teamEditableMembers + '\'';
   }
 
   onSelectChange(indexJT: number, indexEmp: number, jobTitle: any) {
-    this.allEmployees[indexEmp].jobTitleID = jobTitle.JobTitleID;
-    this.allEmployees[indexEmp].jobSubTitleID = jobTitle.JobSubTitleID;
+    this.teamOrgStructure[indexEmp].jobTitleID = jobTitle.JobTitleID;
+    this.teamOrgStructure[indexEmp].jobSubTitleID = jobTitle.JobSubTitleID;
   }
 
   getJobTitleList() {
@@ -223,7 +219,7 @@ export class TeamRolesComponent implements OnInit {
 
   onSaveClick() {
      // call the api data service to send the put request
-     this.apiDataJobTitleService.updateEmployeesJobTitlesBulk(this.allEmployees, this.authService.loggedInUser.id)
+     this.apiDataJobTitleService.updateEmployeesJobTitlesBulk(this.teamOrgStructure, this.authService.loggedInUser.id)
      .subscribe(
        res => {
          this.cacheService.raiseToast('success', res.message);
@@ -240,7 +236,7 @@ export class TeamRolesComponent implements OnInit {
   onTestFormClick() {
     console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
     console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
-    console.log('this.allEmployees', this.allEmployees);
+    console.log('this.teamOrgStructure', this.teamOrgStructure);
     console.log('teamOrgStructure', this.teamOrgStructure)
   }
 
