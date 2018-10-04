@@ -43,7 +43,7 @@ export class DisplayProjectComponent implements OnInit {
     this.resizeChart();
   }
 
-  @HostListener('document:keypress', ['$event']) onKeyPress(event) {
+  @HostListener('document:keydown', ['$event']) onKeyPress(event) {
     if (event.code === 'Escape') {
       // if user is in full-screen mode, pressing escape will close it
       const currentState = $('.bom-chart-cont').attr('class');

@@ -1,4 +1,4 @@
-import { Directive, Input, HostListener, ElementRef, Renderer } from '@angular/core';
+import { Directive, HostListener } from '@angular/core';
 
 @Directive({
   selector: '[appFteInputRestrict]'
@@ -14,10 +14,7 @@ export class FteInputRestrictDirective {
     }
   }
 
-  constructor(
-    private elementRef: ElementRef,
-    private renderer: Renderer
-  ) { }
+  constructor() { }
 
   restrictToNumeric(event) {
     // simple regex to restrict each input key to only numbers
