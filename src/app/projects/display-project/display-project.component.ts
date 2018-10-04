@@ -542,6 +542,8 @@ export class DisplayProjectComponent implements OnInit {
 
   expandBomFullscreen() {
     $('.bom-chart-cont').toggleClass('bom-chart-cont-full');
+    const overflowState = $('.body-custom').css('overflow');
+    $('.body-custom').css('overflow', overflowState === 'visible' ? 'hidden' : 'visible');
   }
 
 }
