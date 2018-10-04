@@ -1,3 +1,13 @@
+<a name="1.14.1"></a>
+## [1.14.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.0...v1.14.1) (2018-10-04)
+
+
+### Bug Fixes
+
+* **team-roles:** fixed bug that prevented managers from updating team roles ([fe8e4b1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/fe8e4b1))
+
+
+
 <a name="1.14.0"></a>
 # [1.14.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.13.0...v1.14.0) (2018-10-01)
 

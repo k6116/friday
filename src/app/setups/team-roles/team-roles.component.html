@@ -2,7 +2,7 @@
   <div class="row row-custom">
     <div class="col-sm col-custom">
       <!-- USEFUL TEST BUTTON -->
-      <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
+      <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
       <button class="btn btn-secondary btn-fte-toolbar" (click)="onSaveClick()">
         <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
       </button>
@@ -18,7 +18,7 @@
     <thead style="line-height: 3rem">
       <tr>
         <th colspan="3" style="border-right: 1px solid #dee2e6;"></th>
-        <th *ngFor="let employee of allEmployees; let k = index" class="rotate">{{ employee.fullName }}</th>
+        <th *ngFor="let employee of teamOrgStructure; let k = index" class="rotate">{{ employee.fullName }}</th>
       </tr>
     </thead>
     <tbody>
@@ -26,7 +26,7 @@
         <td>&nbsp;</td>
         <td scope="row" data-toggle="tooltip" data-placement="top">{{ jobTitle.JobTitleName }}</td>
         <td scope="row" style="vertical-align: center; border-right: 1px solid #dee2e6;" data-toggle="tooltip" data-placement="top">{{ jobTitle.JobSubTitleName }}</td>
-        <td *ngFor="let employee of allEmployees; let j = index">
+        <td *ngFor="let employee of teamOrgStructure; let j = index">
           <div class="custom-control custom-radio">                    
             <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (change)="onSelectChange(i, j, jobTitle)">
             <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
