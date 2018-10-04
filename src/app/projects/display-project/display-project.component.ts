@@ -11,8 +11,6 @@ require('highcharts/modules/xrange.js')(Highcharts);
 require('highcharts/modules/annotations.js')(Highcharts);
 import * as moment from 'moment';
 
-
-
 @Component({
   selector: 'app-display-project',
   templateUrl: './display-project.component.html',
@@ -43,6 +41,16 @@ export class DisplayProjectComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.resizeChart();
+  }
+
+  @HostListener('document:keypress', ['$event']) onKeyPress(event) {
+    if (event.code === 'Escape') {
+      // if user is in full-screen mode, pressing escape will close it
+      const currentState = $('.bom-chart-cont').attr('class');
+      if (currentState === 'bom-chart-cont bom-chart-cont-full') {
+        this.expandBomFullscreen();
+      }
+    }
   }
 
   constructor(
@@ -541,7 +549,10 @@ export class DisplayProjectComponent implements OnInit {
   }
 
   expandBomFullscreen() {
+    // toggle the full-screen CSS class
     $('.bom-chart-cont').toggleClass('bom-chart-cont-full');
+
+    // toggle the current state of the parent page scrollbar, to hide it while in full-screen mode
     const overflowState = $('.body-custom').css('overflow');
     $('.body-custom').css('overflow', overflowState === 'visible' ? 'hidden' : 'visible');
   }

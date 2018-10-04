@@ -364,6 +364,7 @@ input.chart-options-checkbox {
   top: 5px;
   right: 5px;
   font-size: 18px;
+  z-index: 1;
 }
 
 .bom-expand-icon:hover {
