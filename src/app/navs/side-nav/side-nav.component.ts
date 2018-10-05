@@ -187,6 +187,17 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
         //   ]
         // },
         {
+          title: 'Matplan',
+          iconClass: 'nc-privacy-policy-2',
+          alias: 'matplan',
+          path: 'main/matplan',
+          expanded: false,
+          active: false,
+          highlighted: false,
+          permissionProtected: true,
+          hidden: false
+        },
+        {
           title: 'Setups',
           iconClass: 'nc-settings',
           alias: 'setups',
