@@ -136,6 +136,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
   }
 
 
+
   async ngOnInit() {
 
     // hide the footer until the page is ready to be rendered

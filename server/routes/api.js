@@ -170,6 +170,9 @@ router.get('/destroyScheduleSP/:scheduleID', controllers.schedules.destroySchedu
 // EXPORT CONTROLLER
 router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
 
+// REPORT CONTROLLER
+router.get('/report/reports-project-fte-rollup/show/getProjectFTERollupData/:projectID/:startDate/:endDate', controllers.report.getProjectFTERollupData);
+
 
 
 // middleware to protect permissions protected routes

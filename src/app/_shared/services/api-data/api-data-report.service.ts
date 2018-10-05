@@ -71,5 +71,14 @@ export class ApiDataReportService {
       .map((response: Response) => response.json());
   }
 
+  getProjectFTERollupData(projectID: number, startDate: string, endDate: string) {
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/report/reports-project-fte-rollup/show/getProjectFTERollupData/
+      ${projectID}/${startDate}/${endDate}/`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 
 }
