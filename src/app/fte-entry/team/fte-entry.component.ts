@@ -72,6 +72,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   newPlanName: string;
   planNameRegex: any;
   employeeVisible = new Array;
+  projectVisible = new Array;
   displayNewPlanModal: boolean;
   loginAsEmail: string;
   loginAsID: any;
@@ -245,7 +246,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('teamFTEFlat', this.teamFTEsFlat);
     // console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
     // console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
-    // console.log('this.allProjects', this.allProjects)
+    console.log('this.allProjects', this.allProjects)
     // console.log('this.projects', this.projects)
     // console.log('this.teamOrgStructure', this.teamOrgStructure);
     // console.log('this.filterEmployees', this.filterEmployees)
@@ -253,6 +254,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
     // console.log('this.employeeTotals', this.employeeTotals)
+    console.log('this.projectVisible', this.projectVisible)
     // this.updateEmployeeTotals();
 
   }
@@ -284,6 +286,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           this.onCreateNewPlanClick(this.teamEditableMembers, this.loginAsEmail, 'Plan 1');
         } else {
           await this.getPlan(this.loginAsEmail, this.defaultPlan);
+          this.updateProjectFilters();
           this.comparePlanToFTE();
           this.createFtePlanningChartData(this.allProjects);
           this.checkDisableDeletePlan();
@@ -293,6 +296,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         }
         this.teamOrgStructure.forEach(emp => {
           this.employeeVisible.push(true);
+        });
+        this.allProjects.forEach(proj => {
+          this.projectVisible.push(true);
         });
         this.createFtePlanningChartXAxis();
       }
@@ -408,15 +414,18 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
 
   onFTEChange(i, j, value) {
-    // console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
+    console.log(`fte entry changed for project ${i}, month ${j}, with value ${value}`);
     this.displayNewPlanModal = false;
 
     value = Number(value);
 
-    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+    // const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+    const FTEFormArray = this.FTEFormGroup.value.FTEFormArray;
     const FTEFormProjectArray = <FormArray>FTEFormArray.at(i);
     const FTEFormGroup = FTEFormProjectArray.at(j);
-
+console.log('FTEFormArray', FTEFormArray)
+console.log('FTEFormProjectArray', FTEFormProjectArray)
+console.log('FTEFormGroup', FTEFormGroup)
     // if user typed a 0, replace with null
     if (value === 0) {
       FTEFormGroup.patchValue({
@@ -959,8 +968,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   async getTeam(email: string): Promise<any> {
     this.teamOrgStructure = await this.apiDataOrgService.getEmployeeList(email).toPromise();
     this.cacheService.teamEmployeeList = this.teamOrgStructure;
-    this.displayEmployees = this.teamOrgStructure;
-    this.filteredEmployees = this.displayEmployees;
+    // this.displayEmployees = this.teamOrgStructure;
+    this.filteredEmployees = this.teamOrgStructure;
     this.updateEmployeeFilters();
     this.buildTeamEditableMembers();
   }
@@ -1022,11 +1031,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.teamFTEsFlat = res.flat;
     this.teamFTEsFlatLive = this.teamFTEsFlat;
 
-    // Get launch date from first element
-    if (this.allTeamFTEs[0].allocations[0].launchDate) {
-      this.launchDate = moment(this.allTeamFTEs[0].allocations[0].launchDate).format('YYYY-MM-DD');
-    }
-
     this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
     this.display = true;  // ghetto way to force rendering after FTE data is fetched
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
@@ -1040,7 +1044,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.updateEmployeeTotals();
     this.setEmployeeTotalsBorder();
 
-    this.updateProjectFilters();
+    // this.updateProjectFilters();
   }
 
   async comparePlanToFTE() {
@@ -1356,6 +1360,14 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // update the projects list with the filtered list
     // allProjects will always contain the full project list
     this.projects = this.allProjects.filter(o1 => this.filterProjects.some(o2 => o1.projectName === o2.name));
+
+    for (let i = 0; i < this.projectVisible.length; i++) {
+      this.projectVisible[i] = false;
+    }
+    for (let j = 0; j < this.filterProjects.length; j++) {
+      this.projectVisible[this.filterProjects[j].id - 1] = true;
+    }
+
     // update the teamFTEs to remove the projects from the display
     // allTeamFTEs will always contain the full teamFTE list
     this.teamFTEs = this.allTeamFTEs.filter(o1 => this.projects.some(o2 => o1.projectName === o2.projectName));
