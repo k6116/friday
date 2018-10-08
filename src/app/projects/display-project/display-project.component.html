@@ -22,6 +22,7 @@ considering topnav, sidenav, and footer -->
       </div>
 
       
+      
       <!-- project header row with project type, name, description, back button -->
       <div class="project-header-row">
 
@@ -266,7 +267,20 @@ considering topnav, sidenav, and footer -->
       </div>
 
 
-      
-    </div>  
+      <!-- BOM viewer -->
+      <div class="bom-chart-cont">
+        <div class="bom-chart-header">Bill of Materials</div>
+        <i *ngIf="bomJson" class="fa fa-expand bom-expand-icon" (click)="expandBomFullscreen()"></i>
+        <ng-container *ngIf="!bomAuthorized">
+          <img class="bom-paywall" src="../assets/bom-paywall.png">
+          <div class="bom-paywall-text">BOM Viewer is only available to Jarvis Resources participants.<br /><br />Contact your manager to request access.</div>
+        </ng-container>
+        <ng-container *ngIf="bomAuthorized">
+          <app-bom-draw-d3 *ngIf="bomJson" [bomJson]="bomJson"></app-bom-draw-d3>
+          <div *ngIf="!bomJson" class="bom-chart-body">No BOM in database</div>
+        </ng-container>
+      </div>
+
+    </div>
   
   </div>

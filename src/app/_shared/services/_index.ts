@@ -1,4 +1,5 @@
 export * from './auth.service';
+export * from './bom.service';
 export * from './cache.service';
 export * from './click-tracking.service';
 export * from './cookies.service';

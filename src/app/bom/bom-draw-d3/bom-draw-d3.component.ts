@@ -1,7 +1,4 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { ApiDataBomService } from '../../_shared/services/api-data/_index';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
 @Component({
@@ -11,135 +8,105 @@ import * as d3 from 'd3';
 })
 export class BomDrawD3Component implements OnInit, OnChanges {
 
-  @Input() selectedBom: any;
+  @Input() bomJson: any;
 
-  bill: any;  // for storing the selected bill as flat array
-  billHierarchy: any; // for storing the selected bill as nested JSON
-  partDepartmentSummary: any = {};  // for storing d3 legend data
+  partDeptLegend: any;  // for storing d3 legend data
 
-  constructor(private apiDataBomService: ApiDataBomService) { }
+  constructor() { }
 
   ngOnInit() {
+    // listen for changes to window size, and redraw the BOM chart if it changes
+    window.addEventListener('resize', () => {
+      this.drawD3Plot(this.bomJson);
+    });
   }
 
   ngOnChanges() {
 
-    // when selectedBom input binding changes value, fetch the new BOM and draw the chart
-    if (this.selectedBom) {
-      // parse selected BOM info from bom-selector child component
-      const selectedName = this.selectedBom.PartOrProjectName;
-      const selectedEntity = this.selectedBom.EntityType;
-      const selectedID = selectedEntity === 'Project' ? this.selectedBom.ParentProjectID : this.selectedBom.ParentPartID;
+    // when bomJson input binding changes value, parse data for the legend and draw the chart
+    if (this.bomJson) {
 
-      // get the selected BOM as flat array
-      const bomSubscription = this.apiDataBomService.showSingleBom(selectedID, selectedEntity).subscribe( res => {
+      if (this.bomJson.constructor === Object) {
+        // this is the expected data type, so we're good
+      } else if (this.bomJson.constructor === Array && this.bomJson.length === 1) {
+        // d3 drawing expects a single object, not an array of objects, so let
+        this.bomJson = this.bomJson[0];
+      } else {
+        console.log('ERROR: d3 BOM drawing received an unexpected data type');
+        return;
+      }
 
-        this.bill = res;
-        bomSubscription.unsubscribe();
+      // parse out legend data from nested JSON
+      this.partDeptLegend = this.calcDepartmentLegend(this.bomJson);
 
-        // initialize part department sums
-        this.partDepartmentSummary = {Project: 0, Part: 0};
-        this.sumPartDepartments(this.bill);
-
-        // initialize bomtree
-        this.billHierarchy = {
-          name: this.bill[0].ParentName.length > 19 ? `${this.bill[0].ParentName.slice(0, 20)}...` : this.bill[0].ParentName,
-          longName: this.bill[0].ParentName,
-          id: this.bill[0].ParentID,
-          qty: 1,
-          dept: this.bill[0].ParentDepartment,
-          type: this.bill[0].ParentType,
-          entity: this.bill[0].ParentEntity
-        };
-
-        // using async/await to wait for BOM parser to finish
-        const bomSetup = async () => {
-          // recursively parse the BOM structure
-          const jsonBom = await this.bomTraverse(0, 1);
-
-          // add the recursive output as 'children' property of the tree nodeStructure
-          this.billHierarchy.children = jsonBom.nextLvData;
-
-          // kill any existing plots within the container, and then draw
-          d3.select('#d3-container').selectAll('*').remove();
-          this.drawD3Plot();
-        };
-
-        // execute our async function
-        bomSetup();
-      });
+      // draw the BOM chart
+      this.drawD3Plot(this.bomJson);
     }
 
   }
 
-  bomTraverse(i: number, lv: number) {
-    // i = index of the array to start traversing (usu 0)
-    // lv - initial level of the BOM (usu 1)
-    const children = [];
-    while (i < this.bill.length) {
-      if (this.bill[i].Level === lv) {
-        // traverse down and collect all the siblings in this level
-        let newNode: any;
-        newNode = {
-          name: this.bill[i].ChildName.length > 19 ? `${this.bill[i].ChildName.slice(0, 20)}...` : this.bill[i].ChildName,
-          longName: this.bill[i].ChildName,
-          qty: this.bill[i].QtyPer,
-          id: this.bill[i].ChildID,
-          dept: this.bill[i].ChildDepartment,
-          type: this.bill[i].ChildType,
-          entity: this.bill[i].ChildEntity
-        };
-        children.push(newNode);
-        i++;
-      } else if (this.bill[i].Level > lv) {
-        // if the next record is a child, recurse
-        // when we return to this level, continue traversing from the farthest-reached index
-        const output = this.bomTraverse(i, lv + 1);
-        const lastIndex = children.length - 1;
-        children[lastIndex].children = output.nextLvData;
-        i = Number(output.nextRow);
-      } else if (this.bill[i].Level < lv) {
-        // if the next record is a parent, return the complete set of nested children
-        // and the next value to continue traversing at
-        return {
-          nextRow: i,
-          nextLvData: children
-        };
-      }
-    } // end while
-    return {
-      nextRow: i,
-      nextLvData: children
-    };
-  } // end bomTraverse
+  calcDepartmentLegend(bom: any) {
+    // recursively traverse nested JSON BOM to get count of part departments for legend
 
-  sumPartDepartments(bill: any) {
-    // loop through the flat bill of materials, and sum up the departments of each of the parts
-    bill.forEach( item => {
-      if (item.ChildEntity === 'Part') {
+    const legend = {};
 
-        // increment number of parts
-        this.partDepartmentSummary.Part = this.partDepartmentSummary.Part + 1;
-
-        const deptName = item.ChildDepartment;
-        if (this.partDepartmentSummary.hasOwnProperty(deptName)) {
-          // if the department exists in our object, increment its value
-          this.partDepartmentSummary[deptName] = this.partDepartmentSummary[deptName] + 1;
-        } else {
-          this.partDepartmentSummary[deptName] = 1;
+    // helper function for summing child legend values
+    const sumChildLegend = (acc, currentValue) => {
+      for (const prop in currentValue) {
+        if (currentValue.hasOwnProperty(prop)) {
+          acc[prop] = (acc[prop] || 0) + currentValue[prop];
         }
-      } else {
-        // must be a project
-        this.partDepartmentSummary.Project = this.partDepartmentSummary.Project + 1;
       }
-    });
+      return acc;
+    };
+
+    if (Array.isArray(bom)) {
+      // if current level is an array, loop through each element and recursively collect the legend values for its children
+      bom.forEach( el => {
+        // add entity ('part' or 'project') to legend (or initialize it to 0 + 1 if it doesn't exist)
+        legend[el.entity] = (legend[el.entity] || 0) + 1;
+        if (el.entity === 'Part') {
+          // if it's a part, also add its department to the legend
+          legend[el.dept] = (legend[el.dept] || 0) + 1;
+        }
+
+        // if element has children, recursively compute the child's legend, and sum it with current level
+        if (el.hasOwnProperty('children')) {
+          const nextLv = this.calcDepartmentLegend(el.children);
+          const sum = [legend, nextLv];
+          return sum.reduce(sumChildLegend);
+        }
+      });
+
+    } else {
+      // if current level is a single level, just add its values
+      legend[bom.entity] = (legend[bom.entity] || 0) + 1;
+      if (bom.entity === 'Part') {
+        legend[bom.dept] = (legend[bom.dept] || 0) + 1;
+      }
+
+      // if element has children, recursively compute the child's legend, and sum it with current level
+      if (bom.hasOwnProperty('children')) {
+        const nextLv = this.calcDepartmentLegend(bom.children);
+        const sum = [legend, nextLv];
+        return sum.reduce(sumChildLegend);
+      }
+    }
+
+    return legend;
   }
 
-  drawD3Plot() {
+  drawD3Plot(bomJson: any) {
+
+    // kill any existing drawings, if any
+    d3.select('#d3-container').selectAll('*').remove();
 
     // set start position/scale of drawing, and size of nodes (to set default node spacing)
-    const initialTransform = d3.zoomIdentity.translate(400, 400).scale(1);
+    const initialTransform = d3.zoomIdentity.translate(400, 300).scale(1);
     const nodeSize = {height: 28, width: 20};
+    const aspect = (window.innerWidth - 180) / (window.innerHeight - 70); // calculate aspect ratio, including side and top nav
+    const height = 0.75 * window.innerHeight;
+    const width = height * aspect;
     const zoomSpeed = 1700; // some number between 400 and 2000
     const deptColors: any = {
       HFTC: '#c2b1ff',
@@ -161,29 +128,29 @@ export class BomDrawD3Component implements OnInit, OnChanges {
         svg.attr('transform', d3.event.transform);
       });
 
+    // padding-bottom trick to make the container padding match the SVG height
+    const wrapper = d3.select('#d3-container')
+      .attr('style', `padding-bottom:${Math.ceil(height * 100 / width)}%`);
+
     // append the svg object to the body of the page and appends a 'group' container element to 'svg'
     const svg = d3.select('#d3-container').append('svg')
-      .attr('width', '100%')
-      .attr('height', '100%')
+      .attr('viewBox', `0 0 ${width} ${height}`)
       .append('g');
 
     // define a zoom function for the SVG, and an initial transform for the zoom
     // if you don't set the initial transform using the defined zoom function, it will 'snap' back to the origin on first move
-    d3.select('svg')
+    d3.select('#d3-container').select('svg')
       .call(zoom) // adds zoom functionality
       .call(zoom.transform, initialTransform);  // applies initial transform
 
     // create tooltip overlay object
     const tooltip = d3.select('#d3-container').append('div')
-      .attr('class', 'part-details')
-      .style('opacity', 0);
+      .attr('class', 'part-details');
 
     // setup legend container
     const legend = d3.select('#d3-container').append('div')
       .attr('class', 'd3-legend')
-      .append('svg')
-      .attr('width', 120)
-      .attr('height', 200);
+      .append('svg');
 
     // setup legend header text
     const legendHeader = legend.append('text')
@@ -201,7 +168,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
       legendValues.push([key, deptColors[key]]);
     });
 
-    // draw legend
+    // draw legend from legend array
     const deptLegend = legend.selectAll('.container')
       .data(legendValues)
       .enter()
@@ -214,30 +181,27 @@ export class BomDrawD3Component implements OnInit, OnChanges {
       .attr('rx', 4)
       .attr('ry', 4)
       .style('stroke', '#000')
-      .style('stroke-width', (d) => d[0] === 'Project' ? 2 : 0)
-      .style('fill', (d) => d[1] );
+      .style('stroke-width', (d) => d[0] === 'Project' ? 2 : 0) // draw projects with a border
+      .style('fill', (d) => d[1] ); // fill color is determined from the legend array
     deptLegend.append('text')
       .attr('dy', '.35em')
       .attr('y', (d, index) => index * 21 + 29)
       .attr('x', 6)
       .text( (d) => {
-        const total = this.partDepartmentSummary[d[0]] ? this.partDepartmentSummary[d[0]] : 0;
+        const total = this.partDeptLegend[d[0]] ? this.partDeptLegend[d[0]] : 0;
         return `${total} | ${d[0]}`;
       });
 
-
-    let i = 0;
-    const duration = 750;
-
     // declares a tree layout and assigns the size
-    // const treemap = d3.tree().size([height, width]);
     const treemap = d3.tree().nodeSize([nodeSize.height, nodeSize.width]);
 
     // Assigns data for root node, and the starting location of the root node
-    const root = d3.hierarchy(this.billHierarchy);
+    const root = d3.hierarchy(bomJson);
     root.x0 = 0;
     root.y0 = 0;
 
+    // set index counter for node ID assignment
+    let i = 1;
     update(root);
 
     // describes how to collapse a node and all its children
@@ -251,6 +215,45 @@ export class BomDrawD3Component implements OnInit, OnChanges {
 
     function update(source) {
 
+      // --- SETTINGS --- //
+      const treeLevelSeparation = 280;  // horizontal spacing between tiers/levels of the BOM tree
+      const collapseAnimSpeed = 750;
+      const tooltipAnimSpeed = 100;
+      const rectXpos = -8;
+      const rectYpos = -11;
+      const rectBorderRadius = 4;
+      const rectHeight = 20;
+      const textHeight = rectHeight - 5;  // height of the text in nodes is somewhat dependent on the node height
+
+      // --- HELPER FUNCTIONS --- //
+      function calcLabelWidth(label: string) {
+        // function to calculate the width of a node's text box based on the number of chars
+        return Math.max(87, 62 + 5 * label.length);
+      }
+
+      function hideChildren(d) {
+        // function to temporarily hide/unhide child nodes on click
+        if (d.children) {
+          d._children = d.children;
+          d.children = null;
+        } else {
+          d.children = d._children;
+          d._children = null;
+        }
+        update(d);
+      }
+
+      function colorNodeByType(d) {
+        if (d._children) {
+          // if collapsed, show a special fill color
+          return 'silver';
+        } else if (d.data.entity === 'Project') {
+          return '#fff';
+        } else {
+          return deptColors[d.data.dept] ? deptColors[d.data.dept] : '#FFF';
+        }
+      }
+
       // Assigns the x and y position for the nodes
       const treeData = treemap(root);
 
@@ -259,112 +262,87 @@ export class BomDrawD3Component implements OnInit, OnChanges {
       const links = treeData.descendants().slice(1);
 
       // set fixed-distance between tree "levels"
-      nodes.forEach( (d) => d.y = d.depth * 280 );
+      nodes.forEach( (d) => d.y = d.depth * treeLevelSeparation );
 
       // ****************** Nodes section ***************************
 
-      // Update the nodes...
+      // assign each node a sequential ID
       const node = svg.selectAll('g.node')
-        .data(nodes, function(d) {return d.id || (d.id = ++i); });
+        .data(nodes, (d) => d.id || (d.id = i++));
 
       // --------- NODE ENTRY ANIMATIONS
       // Enter any new modes at the parent's previous position.
       const nodeEnter = node.enter().append('g')
         .attr('class', 'node')
         .attr('transform', (d) => `translate(${source.y0},${source.x0})`)
-        .on('click', click);
+        .on('click', hideChildren);
 
-      // draw rectangle for each node
+      // when a node enters the drawing, draw rectangle for each node
       nodeEnter.append('rect')
         .attr('class', 'node')
-        .attr('width', (d) => Math.max(85, 60 + 5 * d.data.name.length))
-        .attr('height', 20)
-        .attr('x', -8)
-        .attr('y', -11)
-        .attr('rx', 4)
-        .attr('ry', 4)
-        .attr('cursor', 'pointer')
+        .attr('width', (d) => d.width = calcLabelWidth(d.data.name))
+        .attr('height', rectHeight)
+        .attr('x', rectXpos)
+        .attr('y', rectYpos)
+        .attr('rx', rectBorderRadius)
+        .attr('ry', rectBorderRadius)
         .style('stroke-width', (d) => d.data.entity === 'Project' ? 2 : 0)
-        .style('stroke', '#000')
-        .style('fill', (d) => {
-          if (d._children) {
-            // special case for collapsed
-            return 'lightsteelblue';
-          } else if (d.data.entity === 'Project') {
-            return '#fff';
-          } else {
-            return deptColors[d.data.dept] ? deptColors[d.data.dept] : '#FFF';
-          }
-        });
-
-      // Add labels for the nodes
-      nodeEnter.append('text')
-        .attr('dy', '.35em')
-        .attr('cursor', 'pointer')
-        .attr('text-anchor', 'start')
-        .text( (d) => `${d.data.qty}  |  ${d.data.name}` )
-        .on('mouseover', (d) => {
+        .style('fill', (d) => colorNodeByType(d))
+        .on('mouseover', (d) => { // assign a mouseover function for tooltip effects
           tooltip.transition()
-          .duration(100)
+          .duration(tooltipAnimSpeed)
           .style('opacity', 1);
           tooltip.html(`<strong>${d.data.longName}</strong><br /><br />
             Dept: ${d.data.dept}<br />
             Type: ${d.data.type}<br />
             Qty: ${d.data.qty}<br />`)
-            .style('top', `${d3.event.pageY + 15}px`).style('left', `${d3.event.pageX + 10}px`);
+            .style('top', `${d3.event.y + 10}px`).style('left', `${d3.event.x + 15}px`);
         })
         .on('mouseout', (d) => {
           tooltip.transition()
-            .duration(100)
+            .duration(tooltipAnimSpeed)
             .style('opacity', 0);
         });
+
+      // Add labels for the nodes
+      nodeEnter.append('text')
+        .attr('y', rectYpos)
+        .attr('dy', `${textHeight}px`)
+        .attr('text-anchor', 'start')
+        .text( (d) => `${d.data.qty}  |  ${d.data.name}` );
 
       // --------- NODE UPDATE CONTENTS
       const nodeUpdate = nodeEnter.merge(node);
 
       // Transition to the proper position for the node
       nodeUpdate.transition()
-        .duration(duration)
+        .duration(collapseAnimSpeed)
         .attr('transform', (d) => `translate(${d.y},${d.x})`);
 
       // Update the node attributes and style
       nodeUpdate.select('rect.node')
         .attr('class', 'node')
-        .attr('width', (d) => {
-          d.width = Math.max(85, 60 + 5 * d.data.name.length);
-          return d.width;
-        })
-        .attr('height', 20)
-        .attr('x', -8)
-        .attr('y', -11)
-        .attr('rx', 4)
-        .attr('ry', 4)
-        .attr('cursor', 'pointer')
+        .attr('width', (d) => d.width = calcLabelWidth(d.data.name))
+        .attr('height', rectHeight)
+        .attr('x', rectXpos)
+        .attr('y', rectYpos)
+        .attr('rx', rectBorderRadius)
+        .attr('ry', rectBorderRadius)
         .style('stroke-width', (d) => d.data.entity === 'Project' ? 2 : 0)
-        .style('stroke', '#000')
-        .style('fill', (d) => {
-          if (d._children) {
-            // special case for collapsed
-            return 'lightsteelblue';
-          } else if (d.data.entity === 'Project') {
-            return '#fff';
-          } else {
-            return deptColors[d.data.dept] ? deptColors[d.data.dept] : '#FFF';
-          }
-        });
+        .style('fill', (d) => colorNodeByType(d));
 
       // Remove any exiting nodes
       const nodeExit = node.exit().transition()
-        .duration(duration)
+        .duration(collapseAnimSpeed)
         .attr('transform', (d) => `translate(${source.y},${source.x})`)
         .remove();
 
-      // On exit reduce the node circles size to 0
+      // on exit, shrink node rectangle size to 0
       nodeExit.select('rect')
       .attr('width', 1e-6)
       .attr('height', 1e-6);
 
-      // On exit reduce the opacity of text labels
+      // on exit, reduce the opacity of text labels
       nodeExit.select('text')
       .style('fill-opacity', 1e-6);
 
@@ -387,7 +365,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
 
       // Transition back to the parent element position
       linkUpdate.transition()
-        .duration(duration)
+        .duration(collapseAnimSpeed)
         .attr('d',
           d3.linkHorizontal()
           .source( (d) => [d.parent.y + d.parent.width - 10, d.parent.x] )
@@ -396,7 +374,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
 
       // Remove any exiting links
       const linkExit = link.exit().transition()
-        .duration(duration)
+        .duration(collapseAnimSpeed)
         .attr('d',
           d3.linkHorizontal()
           .source( () => [source.y, source.x])
@@ -405,22 +383,10 @@ export class BomDrawD3Component implements OnInit, OnChanges {
         .remove();
 
       // Store the old positions for transition.
-      nodes.forEach(function(d) {
+      nodes.forEach( (d) => {
         d.x0 = d.x;
         d.y0 = d.y;
       });
-
-      // Toggle children on click
-      function click(d) {
-        if (d.children) {
-          d._children = d.children;
-          d.children = null;
-        } else {
-          d.children = d._children;
-          d._children = null;
-        }
-        update(d);
-      }
     }
   }
 }

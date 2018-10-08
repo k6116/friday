@@ -20,6 +20,26 @@ router.get('/auth/logout/:userName', controllers.auth.logout);  // TEMP CODE: fo
 // CLICK TRACKING CONTROLLER
 router.post('/clickTracking', controllers.clickTracking.insert);
 
+// FTE CONTROLLER
+router.get('/fte/indexUserData/:userID', controllers.fte.indexUserData);
+router.get('/fte/indexTeamData/:emailAddress/:startDate', controllers.fte.indexTeamData);
+router.post('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProject);   // PROTECT
+router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
+router.post('/fte/updateTeamData/:userID/:planName', controllers.fte.updateTeamData);
+router.post('/fte/destroyTeamProject/', controllers.fte.destroyTeamProject);   // PROTECT
+router.get('/fte/indexNewPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.indexNewPlan);
+router.get('/fte/indexPlanList/:emailAddress', controllers.fte.indexPlanList);
+router.get('/fte/indexPlan/:emailAddress/:planName', controllers.fte.indexPlan);
+router.post('/fte/destroyPlan/', controllers.fte.destroyPlan);
+router.get('/fte/checkTeamJobTitle/:emailAddress', controllers.fte.checkTeamJobTitle);
+router.get('/fte/launchPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.launchPlan);
+router.get('/fte/checkTeamFTEAdminPermission/:userID/', controllers.fte.checkTeamFTEAdminPermission);
+router.get('/fte/compareFTEToPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.compareFTEToPlan);
+
+// TEMP JOB TITLE API FOR MANAGER EDIT
+router.get('/indexEmployeesJobTitles/:emailAddress', controllers.jobTitle.indexEmployeesJobTitles);
+router.post('/updateEmployeesJobTitlesBulk/:userID/', controllers.jobTitle.updateEmployeesJobTitlesBulk);
+
 // PROJECT CONTROLLER
 router.get('/indexProjects', controllers.project.indexProjects)
 router.get('/indexProjectsFilterProjectType', controllers.project.indexProjectsFilterProjectType)
@@ -54,10 +74,13 @@ router.get('/employeeList/:managerEmailAddress', controllers.employee.show);
 router.get('/showUserPLMData/:userEmailAddress', controllers.employee.showUserPLMData);
 router.get('/getDesigners', controllers.employee.getDesigners);
 router.get('/getPlanners', controllers.employee.getPlanners);
+router.get('/getEmployeeData/:emailAddress', controllers.employee.getEmployeeData);
 
 // ORG CONTROLLER
 router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
 router.get('/org/:emailAddress', controllers.org.show);
+router.get('/org/getTeamList/:emailAddress', controllers.org.getTeamList);
+router.get('/org/getEmployeeList/:emailAddress', controllers.org.getEmployeeList);
 
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
@@ -144,6 +167,8 @@ router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle
 router.get('/fte/fte/index/indexUserData', controllers.fte.indexUserData);
 router.delete('/fte/fte/destroy/destroyUserProject/:projectID', controllers.fte.destroyUserProject);   // PROTECT
 router.put('/fte/fte/update/updateUserData', controllers.fte.updateUserData);
+router.get('/fte/checkTeamFTEAdminPermission', controllers.fte.checkTeamFTEAdminPermission);
+
 
 // TEMP JOB TITLE CONTROLLER
 router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);

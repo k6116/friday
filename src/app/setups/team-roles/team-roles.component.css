@@ -1,0 +1,58 @@
+.btn-primary {
+  color: #fff;
+  background-color: rgb(108, 117, 125);
+  border-color: rgb(108, 117, 125);;
+}
+
+.btn-fte-toolbar {
+  width: 90px;
+  height: 35px;
+  /* z-index: -1; */
+  position: sticky;
+}
+
+.rotate {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  white-space: nowrap;
+  min-width: 5rem;
+  max-width: 5rem;
+}
+
+.table td {
+  vertical-align: middle;
+  border-top: none;
+  white-space: nowrap;
+  /* z-index: -1; */
+  position: sticky;
+}
+
+.table th {
+  border-top: none;
+}
+
+.btn-circle {
+  width: 25px;
+  height: 25px;
+  padding: 4px 4px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+i.fa-plus {
+  font-size: 13pt;
+  color: gray;
+  vertical-align: middle;
+}
+
+.duplicate-role {
+  border: 1px solid red;
+}
+
+.duplicate-role-small {
+  color: red; 
+  display: block
+}
+
+
+ 

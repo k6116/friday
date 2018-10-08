@@ -1,11 +1,183 @@
 
-<!-- temp page content for testing routes -->
-<div class="container-fluid">
-  <div class="row row-custom">
-    <div class="col-xs-12 col-custom">
-      <h2 class="page-header-text">
-        Team FTE Entry Page
-      </h2>
+<app-projects-modal *ngIf="showProjectsModal" [projects]="projectList"
+(selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()" (addedProjects)="onAddedProjects($event)"></app-projects-modal>
+<app-projects-create-modal (createSuccess)="onCreateSuccess($event)"></app-projects-create-modal>
+
+<div [hidden]="!display" class="container-fluid">
+
+<div class="row row-custom">
+  <div class="col-sm col-custom">
+    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onAddProjectClick()" id="intro-add-project">
+      <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
+    </button>
+    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
+      <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
+    </button>
+    
+    <!-- Don't Delete - useful buttons for later -->
+    <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
+      <i class="fa fa-table"></i>&nbsp;&nbsp;Export
+    </button> -->
+    <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
+    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
+      <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+    </button>
+    <button class="btn btn-secondary btn-fte-toolbar" (click)="onLaunchClick()">
+      <i class="fa fa-play"></i>&nbsp;&nbsp;Launch
+    </button>
+    <button *ngIf="displaySyncNoticeButton" class="btn btn-primary" (click)="comparePlanToFTE()">Sync Notice</button>
+
+    <div *ngIf="displayAdminViewMessage"  style="color: red; display: inline-block; margin-left: 100px">
+      <h3>ADMIN: Viewing this page under email {{ loginAsEmail }}</h3>
+    </div>
+
+    <!-- <div style="float: right;">
+      <h5 *ngIf="launchDate">Last Launched: {{ launchDate }}</h5>
+      <h5 *ngIf="!launchDate">Last Launched: never</h5>
+    </div> -->
+    <!-- <div class="dropdown btn-help ">
+      <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-question"></i>&nbsp;&nbsp;Help
+      </button>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" (click)="tutorialPart1()">Interactive Tutorial</a>
+        <a class="dropdown-item" (click)="onInstructionsClick()">Instructions</a>
+        <a class="dropdown-item" >Confluence Documentation</a>
+      </div>
+    </div> -->
+  </div>  
+</div>
+
+<div class="row row-custom">
+  <div class="col-sm-3 col-custom">
+      <div style="display: inline-flex">
+        <button class="btn btn-secondary" [disabled]="disablePreviousMonth" (click)="onPreviousMonthClick()">Prev</button>
+        <span style="width: 5px"></span>
+        <button class="btn btn-secondary" (click)="onNextMonthClick()">Next</button>
+        <span style="width: 10px"></span>
+        <h4>{{ setMonthName }} {{ setYear }}</h4>
+      </div>
+  </div>
+  <div class="col-sm-1 col-custom col-multiselect">
+    <div style="float: right; padding-top: 6px">
+      <h6>Filters:</h6>
     </div>
   </div>
+  <div class="col-sm-5 col-custom col-multiselect">
+      <ss-multiselect-dropdown #filterEmployeesDropdown [options]="filterEmployeesOptions" [texts]="filterEmployeesTexts" 
+            [settings]="filterEmployeesSettings" [(ngModel)]="filterEmployeesModel" (ngModelChange)="onFilterEmployeesChange()"></ss-multiselect-dropdown>
+      <ss-multiselect-dropdown #filterProjectsDropdown [options]="filterProjectsOptions" [texts]="filterProjectsTexts" 
+            [settings]="filterProjectsSettings" [(ngModel)]="filterProjectsModel" (ngModelChange)="onFilterProjectsChange()"></ss-multiselect-dropdown>
+  </div>
+
+  <!-- <div class="col-sm-3 col-custom">
+    <div class="col-newplan" style="display: inline-flex">
+      <button *ngIf="!displayNewPlanModal" class="btn btn-secondary" (click)="onNewPlanClick()">
+        <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
+      </button>
+      <button *ngIf="displayNewPlanModal" class="btn btn-secondary" data-toggle="modal" data-target="#newPlanModal" (click)="onNewPlanClick()">
+        <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
+      </button>
+      <span style="width: 5px"></span>
+      <select class="form-control" style="width: 200px" (change)="selectPlan($event.target.value)">
+        <option *ngFor="let plan of planList; let i = index" [selected]="plan.planName == currentPlan" [value]="plan.planName">{{ plan.planName }}</option>
+      </select>
+      <span style="width: 5px"></span>
+      <button class="btn btn-secondary" [disabled]="disableDeletePlan" (click)="onDeletePlanClick()">
+        <i class="fa fa-times"></i>&nbsp;&nbsp;Del Plan
+      </button>
+    </div>
+  </div> -->
+
 </div>
+<!-- begin row for FTE entry table -->
+<div class="row row-custom">
+
+  <!-- block for FTE entry div table -->
+  <div class="col-sm col-custom fte-table-container tutorial-part3" id="intro-add-ftes">
+    <form [formGroup]="FTEFormGroup">
+
+      <div class="fte-table" formArrayName="FTEFormArray">
+
+        <div class="fte-table-header">
+          <div class="fte-table-row">
+            <div class="fte-table-cell icon icon-month-header">&nbsp;</div> <!-- for trash icon -->
+            <div class="fte-table-cell row-month-header col-projects-totals">Project</div>
+            <!-- loop through each month in the userFTEs data object-->
+            <ng-container *ngFor="let employee of teamOrgStructure; let k = index">
+              <!-- only show the month column if the slider deems it visible -->
+              <div class="fte-table-cell row-month-header"  [style.display]="employeeVisible[k] ? 'table-cell' : 'none'">{{ employee.fullName }}</div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="fte-table-body">
+          <!-- loop through each project, one row per project -->
+          <ng-container *ngFor="let project of projects; let i = index">
+            <div class="fte-table-row" [formGroupName]="i">
+              <div class="fte-table-cell icon"> <!-- for trash icon -->
+                <i class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
+              </div>
+              <div class="fte-table-cell col-project-name" data-toggle="tooltip" data-placement="top" [title]="project.projectName.length > 40 ? project.projectName : ''">{{ (project.projectName.length > 40) ? (project.projectName | slice:0:40) + '...' : (project.projectName) }}</div>
+              <!-- loop through each month's FTE allocation, "monthly" cells per project -->
+              <ng-container *ngFor="let employee of teamOrgStructure; let j = index">
+                <div class="fte-table-cell" [formGroupName]="j" [style.display]="employeeVisible[j] ? 'table-cell' : 'none'">
+                  <input type="text" formControlName="fte" class="form-control" maxlength="3" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="fte-table-footer">
+          <div class="fte-table-row tutorial-part3" id="intro-fte-total">
+            <div class="fte-table-cell icon">&nbsp;</div> <!-- for trash icon -->
+            <div class="fte-table-cell col-projects-totals">TOTAL</div>
+            <ng-container *ngFor="let employee of teamOrgStructure; let z = index">
+              <div class="fte-table-cell" [style.display]="employeeVisible[z] ? 'table-cell' : 'none'">
+                <input disabled [value]="employeeTotals[z] | percent" type="text" [class]="'form-control' + (!employeeTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+      </div> <!-- end div table -->
+
+    </form>
+  </div> <!-- end div that controls entire FTE entry table visibility -->
+</div> <!-- end row for FTE entry table -->
+
+<div class="row row-custom">
+  <div class="col fte-planning-chart">
+    <div id="FTEPlanningChart"></div>
+  </div>
+</div>
+
+</div> <!-- end FTE component container div -->
+
+
+<!-- Edit New Plan Modal -->
+<div [hidden]="!displayNewPlanModal" class="modal fade" tabindex="-1" role="dialog" id="newPlanModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="width:150%">
+        <div class="modal-header" style="border-bottom: none; height: 2rem;">
+          <h5 class="title">Create a New Plan</h5>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="newPlanForm">
+            <p><i>**Project names cannot start with a space or contain any special characters. Hyphens (-) are allowed. Must be at least two characters.</i></p>
+            <div class="form-group">
+              <div class="input-group">
+                <input [(ngModel)]="newPlanName" formControlName="newPlanName" type="text" class="form-control" placeholder="New plan name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'New plan name'">
+                <div class="input-group-append">
+                  <button [disabled]="!newPlanForm.valid" type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onCreateNewPlanClick(null, null, newPlanName)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
+                  <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->

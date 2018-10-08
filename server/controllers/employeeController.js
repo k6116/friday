@@ -85,9 +85,30 @@ function getPlanners(req, res) {
   })
 }
 
+function getEmployeeData(req, res) {  
+  
+  const emailAddress = req.params.emailAddress;
+
+  const sql = `
+   SELECT 
+      EmployeeID, 
+      FullName
+    FROM  
+      accesscontrol.Employees
+    WHERE
+      EmailAddress = '${emailAddress}'
+    `
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+}
+
 module.exports = {
   show: show,
   showUserPLMData: showUserPLMData,
   getDesigners: getDesigners,
-  getPlanners: getPlanners
+  getPlanners: getPlanners,
+  getEmployeeData: getEmployeeData
 }

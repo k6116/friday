@@ -1,0 +1,246 @@
+
+/* need to override introjs automatic setting of relative position to bring Totals Row to front */
+div.fte-table-row.tutorial-part3.introjs-showElement.introjs-relativePosition {
+    position: absolute !important;
+  }
+
+  .test-buttons {
+    margin-top: 25px;
+    padding-left: 10px;
+    padding-bottom: 20px;
+  }
+  
+  .btn-primary {
+    color: #fff;
+    background-color: rgb(108, 117, 125);
+    border-color: rgb(108, 117, 125);;
+  }
+  
+  .btn-save {
+    color: #fff;
+    background-color: rgb(49, 78, 58);
+    border-color: rgb(108, 117, 125);;
+  }
+  
+  .btn-fte-toolbar {
+    width: 90px;
+    height: 35px;
+  }
+  
+  .btn-help {
+    float: right;
+  }
+  
+  /* .btn-fte-toolbar:hover {
+    background-color: rgb(138, 147, 155);
+  } */
+  
+
+  /* trash button icon */
+  i.fa-trash-o {
+    font-size: 13pt;
+    color: gray;
+  }
+  
+  i.fa-trash-o:hover {
+    color: red; /* bootstrap4 danger-red */
+    cursor: pointer;
+  }
+  
+  /* TOTALS ROW */
+  input.form-control.highlight-invalid {
+    border-color: rgb(236, 154, 154);
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
+  }
+  
+  
+  /* FTE Table CSS */
+  
+  div.fte-table-container {
+    /* forces the table container to be a consistent height and width, even when no FTE values exist for the selected period */
+    height: 500px;
+    width: 100%;
+    overflow: auto;
+    /* border: 8px solid white; */
+    border-radius: 2px;
+    background-color: rgb(245, 245, 245);
+  }
+  
+  div.fte-table {
+    display: table;
+    overflow: scroll;
+    vertical-align: middle;
+    border-spacing: 0px 2px;
+  }
+  
+  div.fte-table-header {
+    display: table-header-group;
+  }
+  
+  div.fte-table-body {
+    display: table-row-group;
+  }
+  
+  div.fte-table-footer {
+    display: table-footer-group;
+  }
+  
+  div.fte-table-row {
+    display: table-row;
+    vertical-align: middle;
+  }
+  
+  div.fte-table-cell.quarter-spacer {
+    min-width: unset;
+    width: 5px;
+    min-width: 5px;
+    background-color: rgb(245, 245, 245);
+  }
+  
+  div.fte-table-header div.fte-table-row div.fte-table-cell.quarter-spacer-header {
+    min-width: unset;
+    width: 5px;
+    min-width: 5px;
+  }
+  
+  div.fte-table-cell {
+    display: table-cell;
+    vertical-align: middle;
+    width: 70px;
+    min-width: 70px;
+    max-width: 70px;
+    height: 30px;
+    z-index: 0;
+  }
+  
+  /* table header and footer css */
+  
+  div.fte-table-header div.fte-table-row {
+    /* css for the header row itself */
+    min-height: 30px;
+    max-height: 30px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  div.fte-table-header div.fte-table-row div.fte-table-cell {
+    /* css for cells in the header */
+    background-color: rgb(245, 245, 245);
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+  }
+  
+  div.fte-table-header div.fte-table-row div.fte-table-cell.border-bottom {
+    border-bottom: 1px solid rgb(130, 130, 130) !important;
+    /* wtf, bootstrap is using !important in their default display:table-row class, so we have to use it here too sadly */
+    /* background-color: rgb(64, 125, 174, 0.1); */
+  }
+  
+  div.fte-table-header div.fte-table-row div.fte-table-cell.row-month-header {
+    /* css for the month-header cells in the header */
+    background-color: rgb(245, 245, 245);
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+  }
+  
+  div.fte-table-header div.fte-table-row div.fte-table-cell.icon-month-header {
+    /* css for trash icons in the header */
+    position: sticky;
+    top: 0px;
+  }
+  
+  div.fte-table-footer div.fte-table-row div.fte-table-cell {
+    /* css for cells in the footer */
+    background-color: rgb(245, 245, 245);
+    position: sticky;
+    bottom: 0px;
+    z-index: 1;
+  }
+  
+  div.fte-table-header div.fte-table-row div.fte-table-cell.col-projects-totals,
+  div.fte-table-footer div.fte-table-row div.fte-table-cell.col-projects-totals {
+    /* css for cells that are the Projects and Totals headings */
+    background-color: rgb(245, 245, 245);
+    position: sticky;
+    left: 30px;
+    min-width: 280px;
+    text-align: left;
+    font-weight: bold;
+    z-index: 3;
+  }
+  
+  div.fte-table-header div.fte-table-row div.fte-table-cell.col-projects-roles,
+  div.fte-table-footer div.fte-table-row div.fte-table-cell.col-projects-roles {
+    /* css for cells that are the Projects and Totals headings */
+    background-color: rgb(245, 245, 245);
+    position: sticky;
+    left: 200px;
+    min-width: 200px;
+    text-align: left;
+    font-weight: bold;
+    z-index: 3;
+  }
+  
+  div.fte-table-header div.fte-table-row div.fte-table-cell.icon,
+  div.fte-table-footer div.fte-table-row div.fte-table-cell.icon {
+    /* trash icons in the header are sticky towards the top-scroll */
+    background-color: rgb(245, 245, 245);
+    position: sticky;
+    left: 0px;
+    min-width: 30px;
+    max-width: 30px;
+    width: 30px;
+    z-index: 3; /* icons in the header and footer need to be higher */
+  }
+  
+  
+  /* table body css */
+  
+  div.fte-table-body div.fte-table-row div.fte-table-cell.col-project-name {
+    /* css for cells in the body that also have the col-project-name class */
+    background-color: rgb(245, 245, 245);
+    position: sticky;
+    left: 30px;
+    min-width: 280px;
+    z-index: 1;
+  }
+  
+  div.fte-table-body div.fte-table-row div.fte-table-cell.col-project-role {
+    /* css for cells in the body that also have the col-project-role class */
+    background-color: rgb(245, 245, 245);
+    position: sticky;
+    left: 200px;
+    min-width: 280px;
+    z-index: 1;
+  }
+  
+  div.fte-table-body div.fte-table-row div.fte-table-cell.icon {
+    /* trash icons in the body are sticky towards the left-scroll */
+    background-color: rgb(245, 245, 245);
+    position: sticky;
+    text-align: center;
+    left: 0px;
+    min-width: 30px;
+    max-width: 30px;
+    width: 30px;
+    z-index: 2;
+  }
+  
+  /* help drop down css */
+  
+  .dropdown-item {
+    cursor: pointer;
+  }
+
+  .col-newplan {
+    float: right;
+  }
+
+  .col-multiselect {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }

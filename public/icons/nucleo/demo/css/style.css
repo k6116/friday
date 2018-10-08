@@ -1,0 +1,348 @@
+/*--------------------------------
+
+Nucleo Web Font
+Generated using nucleoapp.com
+
+-------------------------------- */
+@font-face {
+  font-family: 'Nucleo';
+  src: url('../../fonts/Nucleo.eot');
+  src: url('../../fonts/Nucleo.eot') format('embedded-opentype'), url('../../fonts/Nucleo.woff2') format('woff2'), url('../../fonts/Nucleo.woff') format('woff'), url('../../fonts/Nucleo.ttf') format('truetype'), url('../../fonts/Nucleo.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* --------------------------------
+
+Primary style
+
+-------------------------------- */
+*, *::after, *::before {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+  font-family: sans-serif;
+  color: #333333;
+  background: white;
+}
+
+a {
+  color: #608CEE;
+  text-decoration: none;
+}
+
+/* --------------------------------
+
+Main components
+
+-------------------------------- */
+header {
+  text-align: center;
+  padding: 80px 0 48px;
+}
+
+header h1 {
+  font-size: 2.8rem;
+}
+
+header p {
+  font-size: 1.4rem;
+  margin-top: 1em;
+}
+
+header a:hover {
+  text-decoration: underline;
+}
+
+ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+ul li {
+  border-radius: .25em;
+  transition: background 0.2s;
+  user-select: none;
+  overflow: hidden;
+  text-align: center;
+  padding: 1em;
+}
+
+ul li:hover {
+  background: #f8f8f8;
+}
+
+ul p, ul em, ul input {
+  display: block;
+  font-size: 1.1rem;
+  color: rgba(0,0,0,0.6);
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  max-width: 11rem;
+}
+
+ul p {
+  padding: 10px 0;
+}
+
+ul p::selection, ul em::selection {
+  background: #608CEE;
+  color: #fff;
+}
+
+ul p::-moz-selection, ul em::-moz-selection {
+  background: #608CEE;
+  color: #fff;
+}
+
+ul em {
+  margin-bottom: 8px;
+}
+
+ul em::before {
+  content: '[';
+}
+ul em::after {
+  content: ']';
+}
+
+ul input {
+  text-align: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+/* --------------------------------
+
+icons
+
+-------------------------------- */
+.nc-icon {
+  display: inline-block;
+  font: normal normal normal 32px/1 'Nucleo';
+  speak: none;
+  text-transform: none;
+  /* Better Font Rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*------------------------
+  font icons
+-------------------------*/
+
+.nc-badge-1::before {
+    content: "\ea02";
+}
+
+.nc-archive-check::before {
+    content: "\ea03";
+}
+
+.nc-small-remove::before {
+    content: "\ea04";
+}
+
+.nc-badge-2::before {
+    content: "\ea05";
+}
+
+.nc-board-29::before {
+    content: "\ea06";
+}
+
+.nc-calendar-add::before {
+    content: "\ea07";
+}
+
+.nc-a-check::before {
+    content: "\ea08";
+}
+
+.nc-chart-bar-33::before {
+    content: "\ea09";
+}
+
+.nc-dashboard-half::before {
+    content: "\ea0a";
+}
+
+.nc-lock::before {
+    content: "\ea0b";
+}
+
+.nc-chat-round-content::before {
+    content: "\ea0c";
+}
+
+.nc-single-05::before {
+    content: "\ea0d";
+}
+
+.nc-time-countdown::before {
+    content: "\ea0e";
+}
+
+.nc-socket::before {
+    content: "\ea0f";
+}
+
+.nc-gantt::before {
+    content: "\ea10";
+}
+
+.nc-bars-rotate::before {
+    content: "\ea11";
+}
+
+.nc-opening-times::before {
+    content: "\ea12";
+}
+
+.nc-dots-07::before {
+    content: "\ea13";
+}
+
+.nc-light-traffic::before {
+    content: "\ea14";
+}
+
+.nc-priority-high::before {
+    content: "\ea15";
+}
+
+.nc-microscope::before {
+    content: "\ea16";
+}
+
+.nc-hierarchy-53::before {
+    content: "\ea17";
+}
+
+.nc-book-open-2::before {
+    content: "\ea18";
+}
+
+.nc-ram::before {
+    content: "\ea19";
+}
+
+.nc-l-security::before {
+    content: "\ea1a";
+}
+
+.nc-keyboard-wireless::before {
+    content: "\ea1b";
+}
+
+.nc-code-editor::before {
+    content: "\ea1c";
+}
+
+.nc-lab::before {
+    content: "\ea1d";
+}
+
+.nc-settings-91::before {
+    content: "\ea1e";
+}
+
+.nc-bulb-63::before {
+    content: "\ea1f";
+}
+
+.nc-sign-closed::before {
+    content: "\ea20";
+}
+
+.nc-lock-2::before {
+    content: "\ea21";
+}
+
+.nc-board-28::before {
+    content: "\ea22";
+}
+
+.nc-privacy-policy-2::before {
+    content: "\ea23";
+}
+
+.nc-priority-high-2::before {
+    content: "\ea24";
+}
+
+.nc-socket-europe-1::before {
+    content: "\ea25";
+}
+
+.nc-circle-10::before {
+    content: "\ea26";
+}
+
+.nc-time-clock::before {
+    content: "\ea27";
+}
+
+.nc-a-edit::before {
+    content: "\ea28";
+}
+
+.nc-dots-06::before {
+    content: "\ea29";
+}
+
+.nc-pulse-phone::before {
+    content: "\ea2a";
+}
+
+.nc-keyboard::before {
+    content: "\ea2b";
+}
+
+.nc-microcircuit::before {
+    content: "\ea2c";
+}
+
+.nc-settings::before {
+    content: "\ea2d";
+}
+
+.nc-money-coins::before {
+    content: "\ea2e";
+}
+
+.nc-money-11::before {
+    content: "\ea2f";
+}
+
+.nc-tag-content::before {
+    content: "\ea30";
+}
+
+.nc-hotel::before {
+    content: "\ea31";
+}
+
+.nc-b-security::before {
+    content: "\ea32";
+}
+
+.nc-filter-organization::before {
+    content: "\ea33";
+}
+

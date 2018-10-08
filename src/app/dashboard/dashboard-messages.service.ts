@@ -84,7 +84,7 @@ export class DashboardMessagesService {
       const initial = this.authService.loggedInUser.fullName[0].toUpperCase();
       return {
         id: 'updateProfileMessage',
-        iconFontClass: 'nc-badge',
+        iconFontClass: 'nc-badge-1',
         iconType: 'warning',
         messageText: `Please update your
         <span class="message-link" data-action="onProfileLinkClick" style="text-decoration: underline;

@@ -1,3 +1,67 @@
+<a name="1.14.2"></a>
+## [1.14.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.1...v1.14.2) (2018-10-04)
+
+
+### Bug Fixes
+
+* **BOM viewer:** added full-screen functionality for BOM viewer ([9302515](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9302515))
+* **toast component:** when user navigates away, dismiss the current toast (if any) ([10c6ab2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/10c6ab2))
+* **Toast component:** added X in corner of toast to encourage click-to-dismiss ([41db331](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/41db331))
+
+
+
+<a name="1.14.1"></a>
+## [1.14.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.0...v1.14.1) (2018-10-04)
+
+
+### Bug Fixes
+
+* **team-roles:** fixed bug that prevented managers from updating team roles ([fe8e4b1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/fe8e4b1))
+
+
+
+<a name="1.14.0"></a>
+# [1.14.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.13.0...v1.14.0) (2018-10-01)
+
+
+### Bug Fixes
+
+* **FTE entry component:** added toast for projects that cannot be deleted, and allow saving for proj ([c2f11eb](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c2f11eb))
+
+
+### Features
+
+* **Display Project page:** BOM viewer appears in project display page as its own card ([658c536](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/658c536))
+
+
+
+<a name="1.13.0"></a>
+# [1.13.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.12.1...v1.13.0) (2018-09-29)
+
+
+### Bug Fixes
+
+* **team-roles setup:** add z-index to side nav ([c05f4fe](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c05f4fe))
+* **team-roles.component:** fix scrolling behaviour ([ad0a80b](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/ad0a80b))
+
+
+### Features
+
+* **fte-entry team:** added manager edit features ([0f346e2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/0f346e2))
+* **team-roles:** add styling and insert new roles functionality ([bf1ef79](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/bf1ef79))
+
+
+
+<a name="1.12.1"></a>
+## [1.12.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.12.0...v1.12.1) (2018-09-28)
+
+
+### Bug Fixes
+
+* highlight correct sidenav item on browser back and forward button clicks ([469f388](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/469f388))
+
+
+
 <a name="1.12.0"></a>
 # [1.12.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.11.0...v1.12.0) (2018-09-17)
 

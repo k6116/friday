@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef 
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs/subject';
+import { Subject } from 'rxjs/Subject';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ToolsService } from '../../_shared/services/tools.service';
@@ -171,9 +171,6 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
       this.projectsBrowseData = this.cacheService.projectsBrowseData;
 
     }
-
-    // console.log('projects browse data:');
-    // console.log(this.projectsBrowseData);
 
     // store the projects in the component
     this.projects = this.projectsBrowseData[0];
