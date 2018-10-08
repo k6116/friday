@@ -89,11 +89,11 @@ export class TeamRolesComponent implements OnInit {
           this.teamOrgStructure[i].jobSubTitleID = this.employeesJobTitlesFlat[j].JobSubTitleID;
           this.teamOrgStructure[i].newUser = false;
           break;
-        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID === 0) {
+        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID === null) {
           this.teamOrgStructure[i].jobTitleID = null;
           this.teamOrgStructure[i].jobSubTitleID = null;
           this.teamOrgStructure[i].newUser = true;
-        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID !== 0) {
+        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID !== null) {
           this.teamOrgStructure[i].jobTitleID = null;
           this.teamOrgStructure[i].jobSubTitleID = null;
           this.teamOrgStructure[i].newUser = false;
