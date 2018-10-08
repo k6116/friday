@@ -5,20 +5,20 @@
 <!-- Might be moved to it's own component -->
 <div class="modal" tabindex="-1" role="dialog" id="requestDenyModal">
   <div class="modal-dialog" role="document">
-    <div class="modal-content" style="width:150%">
-      <div class="modal-header" style="border-bottom: none; height: 2rem;">
-        <h5 class="title">Please add a comment</h5>
-      </div>
-      <div class="modal-body">
-      <div class="input-group">
-        <input [(ngModel)]="replyComment" type="text" class="form-control" placeholder="Add a comment">
-        <div class="input-group-append">
-          <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="requestResponse(request, 'Denied', replyComment)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
-          <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
-        </div>
-      </div>
-      </div>
-    </div>
+	<div class="modal-content" style="width:150%">
+	  <div class="modal-header" style="border-bottom: none; height: 2rem;">
+		<h5 class="title">Please add a comment</h5>
+	  </div>
+	  <div class="modal-body">
+	  <div class="input-group">
+		<input [(ngModel)]="replyComment" type="text" class="form-control" placeholder="Add a comment">
+		<div class="input-group-append">
+		  <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="requestResponse(request, 'Denied', replyComment)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
+		  <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+		</div>
+	  </div>
+	  </div>
+	</div>
   </div>
 </div>
 <!--  -->
@@ -26,217 +26,371 @@
 <!-- Edit Project Role Modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="projectRoleModal">
   <div class="modal-dialog" role="document">
-    <div class="modal-content" style="width:150%">
-      <div class="modal-header" style="border-bottom: none; height: 2rem;">
-        <h5 class="title">Change your role for this project</h5>
-      </div>
-      <div class="modal-body">
-      <div class="input-group">
-        <input [(ngModel)]="replyComment" type="text" class="form-control" placeholder="Add a comment">
-        <div class="input-group-append">
-          <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="requestResponse(request, 'Denied', replyComment)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
-          <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
-        </div>
-      </div>
-      </div>
-    </div>
+	<div class="modal-content" style="width:150%">
+	  <div class="modal-header" style="border-bottom: none; height: 2rem;">
+		<h5 class="title">Change your role for this project</h5>
+	  </div>
+	  <div class="modal-body">
+	  <div class="input-group">
+		<input [(ngModel)]="replyComment" type="text" class="form-control" placeholder="Add a comment">
+		<div class="input-group-append">
+		  <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="requestResponse(request, 'Denied', replyComment)"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp;&nbsp;OK</button>&nbsp;
+		  <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+		</div>
+	  </div>
+	  </div>
+	</div>
   </div>
 </div>
 <!--  -->
 
 <div class="container-fluid">
 
-  <!-- Create New Project Button -->
-  <button *ngIf="!showSpinner" class="btn btn-primary btn-fte-toolbar" style="display: block" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
-    <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
-  </button>
-  <!--  -->
-
-  <br>
-
   <!-- spinner -->
   <div class="row row-custom" *ngIf="showSpinner">
-    <div class="col-lg-12 col-custom">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_bars-rotate-32" transform="rotate(270 16 16)"> <rect x="14" fill="#111111" width="4" height="7"></rect> <rect x="22.83883" y="3.66117" transform="matrix(0.70711 0.70711 -0.70711 0.70711 12.33883 -15.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="25" y="14" fill="#111111" width="7" height="4" style="opacity: 0.4;"></rect> <rect x="22.83883" y="21.33883" transform="matrix(-0.70711 0.70711 -0.70711 -0.70711 59.96625 24.83883)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="14" y="25" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="5.16117" y="21.33883" transform="matrix(-0.70711 -0.70711 0.70711 -0.70711 -5.33883 47.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="0" y="14" fill="#111111" width="7" height="4" style="opacity: 0.6;"></rect> <rect x="5.16117" y="3.66117" transform="matrix(0.70711 -0.70711 0.70711 0.70711 -2.96625 7.16117)" fill="#111111" width="4" height="7" style="opacity: 0.8;"></rect> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_bars-rotate-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg>
-      <!-- <svg viewBox="0 0 32 32" width="32" height="32"><title>dots 06</title><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_dots-06-32" transform="rotate(0 16 16)"> <circle fill="#111111" cx="16" cy="3" r="3"></circle> <circle fill="#111111" cx="25.19239" cy="6.80761" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="29" cy="16" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="25.19239" cy="25.19239" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="16" cy="29" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="6.80761" cy="25.19239" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="3" cy="16" r="3" style="opacity: 0.6;"></circle> <circle fill="#111111" cx="6.80761" cy="6.80761" r="3" style="opacity: 0.8;"></circle> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_dots-06-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg> -->
-    </div>
+	<div class="col-lg-12 col-custom">
+	  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_bars-rotate-32" transform="rotate(270 16 16)"> <rect x="14" fill="#111111" width="4" height="7"></rect> <rect x="22.83883" y="3.66117" transform="matrix(0.70711 0.70711 -0.70711 0.70711 12.33883 -15.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="25" y="14" fill="#111111" width="7" height="4" style="opacity: 0.4;"></rect> <rect x="22.83883" y="21.33883" transform="matrix(-0.70711 0.70711 -0.70711 -0.70711 59.96625 24.83883)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="14" y="25" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="5.16117" y="21.33883" transform="matrix(-0.70711 -0.70711 0.70711 -0.70711 -5.33883 47.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="0" y="14" fill="#111111" width="7" height="4" style="opacity: 0.6;"></rect> <rect x="5.16117" y="3.66117" transform="matrix(0.70711 -0.70711 0.70711 0.70711 -2.96625 7.16117)" fill="#111111" width="4" height="7" style="opacity: 0.8;"></rect> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_bars-rotate-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg>
+	  <!-- <svg viewBox="0 0 32 32" width="32" height="32"><title>dots 06</title><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_dots-06-32" transform="rotate(0 16 16)"> <circle fill="#111111" cx="16" cy="3" r="3"></circle> <circle fill="#111111" cx="25.19239" cy="6.80761" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="29" cy="16" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="25.19239" cy="25.19239" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="16" cy="29" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="6.80761" cy="25.19239" r="3" style="opacity: 0.4;"></circle> <circle fill="#111111" cx="3" cy="16" r="3" style="opacity: 0.6;"></circle> <circle fill="#111111" cx="6.80761" cy="6.80761" r="3" style="opacity: 0.8;"></circle> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_dots-06-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg> -->
+	</div>
   </div>
 
-  <!-- Request Alerts -->
-  <div class="card" style="display: inline-block; margin-bottom: 1rem;" *ngIf="requestResponseFlag">
-      <div class="card-header">
-        <div><h6>People are requesting access to your projects:</h6></div>
-      </div>
-    <ng-container *ngFor="let request of projectPermissionRequestsList">
-      <div class="card-body" *ngIf="request.requestStatus=='Submitted'">
-        <p class="card-text" style="line-height: 32px; margin-left: 1px">{{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}&nbsp;&nbsp;
-          <span class="float-right">
-            <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="requestResponse(request, 'Approved', 'Approved')"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Accept</button>
-            <button type="button" class="btn btn-primary btn-fte-toolbar" data-toggle="modal" data-target="#requestDenyModal" (click)="onDenyClick(request)"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Deny</button>
-          </span>
-        </p>
-      </div>
-    </ng-container>
-  </div>
-  <!--  -->
+  <!-- outer page container; don't show until data is ready -->
+  <div class="page-cont" *ngIf="!showSpinner">
+		
+		<div class="projects-filters-cont">
 
-  <br>
+			<!-- Create New Project Button -->
+			<button class="btn btn-primary btn-fte-toolbar" style="margin-bottom:5px" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
+				<i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
+			</button>&nbsp;&nbsp;
+
+			<div class="projects-filter-string">
+				<input type="text" name="filterString" [(ngModel)]="filterString" class="form-control projects-filter-input" appAutofocus>
+				<i class="projects-filter-icon-search fa fa-search"></i>
+				<i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
+			</div>
+
+			<!-- Request Alerts -->
+			<div *ngIf="requestResponseFlag" class="input-group projects-request-group accordion" id="requestAlertCollapse">
+				<input type="text" placeholder="People are requesting access to your projects" class="form-control projects-request-input" readonly>
+				<div class="input-group-append">
+					<button type="button" data-toggle="collapse" data-target="#collapse" class="btn btn-danger">
+						<i class="fa fa-angle-double-down" aria-hidden="true"></i>
+					</button>
+				</div>
+			</div>
+
+			<div id="collapse" class="collapse" data-parent="requestAlertCollapse">
+				<div class="my-project-card">
+					<div class="project-attributes-row" *ngFor="let request of projectPermissionRequestsList">
+						
+						<ng-container *ngIf="request.requestStatus=='Submitted'">
+							<div class="project-attributes-cell">
+								<button class="btn-standard icon-text-only hover-green" (click)="requestResponse(request, 'Approved', 'Approved')">
+									<i class="fa fa-check button-icon"></i>
+									Accept
+								</button>
+							</div>
+							<div class="project-attributes-cell">
+								<button class="btn-standard icon-text-only hover-green" data-toggle="modal" data-target="#requestDenyModal" (click)="onDenyClick(request)">
+									<i class="fa fa-times button-icon"></i>
+									Deny
+								</button>
+							</div>
+							<div class="project-attributes-cell">
+								<button class="btn-standard icon-text-only request-btn-fake">
+									<i class="fa fa-user button-icon"></i>
+									{{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}
+								</button>
+							</div>
+						</ng-container>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- Request Alerts -->
+		<!-- <div class="card" style="display: inline-block; margin-bottom: 1rem;" *ngIf="requestResponseFlag">
+				<div class="card-header">
+					<div><h6>People are requesting access to your projects:</h6></div>
+				</div>
+			<ng-container *ngFor="let request of projectPermissionRequestsList">
+				<div class="card-body" *ngIf="request.requestStatus=='Submitted'">
+					<p class="card-text" style="line-height: 32px; margin-left: 1px">{{ request['user.fullName'] }} has requested access to {{ request['project.projectName'] }}&nbsp;&nbsp;
+						<span class="float-right">
+							<button type="button" class="btn btn-primary btn-fte-toolbar" (click)="requestResponse(request, 'Approved', 'Approved')"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Accept</button>
+							<button type="button" class="btn btn-primary btn-fte-toolbar" data-toggle="modal" data-target="#requestDenyModal" (click)="onDenyClick(request)"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Deny</button>
+						</span>
+					</p>
+				</div>
+			</ng-container>
+		</div> -->
+		<!--  -->
+
+		<br>
   
-  <div class="projects-filters-cont">
-    <div class="projects-filter-string">
-      <input type="text" name="filterString" [(ngModel)]="filterString" class="form-control projects-filter-input" appAutofocus>
-      <i class="projects-filter-icon-search fa fa-search"></i>
-      <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
-    </div>
-  </div>
 
-  <!-- Project Table -->
-  <div class="card" *ngIf="!showSpinner">
-    <!-- table headers start -->
-    <div class="card-header">
-      <div class="row header-project-table">
-        <div class="col-2">
-          <div><h6>Name</h6></div>
-        </div>
-        
-        <div class="col-2">
-          <div><h6>Project Type</h6></div>
-        </div>
-        <div class="col-4">
-          <div><h6>Description</h6></div>
-        </div>
-        <div class="col-3">
-          <div><h6>Notes</h6></div>
-        </div>
-        <div class="col-1">
-          <div class="row">
-            <div class="col-6">
-              <div><h6></h6></div>
-            </div>
-            <div class="col-6">
-              <div><h6></h6></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- table headers end -->
 
-    <!-- ACCORDION START -->
-    <div class="accordion" id="accordionProjectList">
-      <ng-container *ngFor="let project of projectList | filter : filterString : 'projectName': {matchFuzzy: {on: true}}; let k = index" class="table-container">
-        <!-- table row start -->
-        <!-- <div class="card-header-custom" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)"> -->
-            <div class="card-header-custom" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)">
-          <div class="col-2" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
-            <div>{{ (project['projectName'].length > 35) ? (project['projectName'] | slice:0:35) + '...' : (project['projectName']) }}</div>
-          </div>
-          <div class="col-2" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
-            <div>{{ project['projectType.projectTypeName'] }}</div>
-          </div>
-          <div *ngIf="!project.description" class="col-4" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
-            <div>{{ project['description'] }}</div>
-          </div>
-          <div *ngIf="project.description" class="col-4" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
-            <div>{{ (project['description'].length > 50) ? (project['description'] | slice:0:50) + '...' : (project['description']) }}</div>
-          </div>
-          <div *ngIf="!project.notes" class="col-3" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
-            <div>{{ project['notes'] }}</div>
-          </div>
-          <div *ngIf="project.notes" class="col-3" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
-            <div>{{ (project['notes'].length > 50) ? (project['notes'] | slice:0:50) + '...' : (project['notes']) }}</div>
-          </div>
-          <div *ngIf="loggedInUser.id===project.createdBy" class="col-1">
-            <div class="row">
-              <div class="col-6">
-                <div><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="editProject(project)"></i></div>
-              </div>
-              <div class="col-6">
-                <div><i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal" (click)="onDeleteProjectClick(project)"></i></div>
-              </div>
-            </div>
-          </div>
-          <div *ngIf="loggedInUser.id!==project.createdBy" class="col-1" data-toggle="collapse" [attr.data-target]="'#collapse'+ k"> 
-            <div class="row">
-              <div class="col">
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- table row end --> 
-        
-        <!-- card collapse start -->
-        <div id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
-          <div class="card">
-            <div class="card-body" style="background: #485b65">
-              <div class="card-deck">
+		<!-- ATTEMPT TO RE-CREATE BILLS CARDS -->
+		<div class="projects-cards-cont">
 
-                <div class="card">
-                  <div class="card-body table-responsive">
-                    <h5 class="card-title">Basic Info</h5>
-                    <table class="table table-sm">
-                        <tbody>
-                          <tr *ngFor="let field of projectBasicInfo">
-                            <td>{{ field.field }}</td>
-                            <td>{{ field.value }}</td>
-                          </tr>
-                        </tbody>
-                    </table>
-                  </div>
-                </div>
-              
-                <div class="card">
-                  <div class="card-body table-responsive">
-                    <h5 class="card-title">Project Team</h5>
-                    <table class="table table-sm">
-                      <tbody>
-                        <tr *ngFor="let teamMember of projectRoster?.teamMembers">
-                          <td width="40%">{{ teamMember.name }}</td>
-                          <td width = "55%">{{ teamMember.jobTitle }}</td>
-                          <!-- <td width = "55%" *ngIf="toggleEditProjectRole && teamMember.name===loggedInUser.fullName">
-                              <form>
-                                <div class="form-group form-group-custom">
-                                  <select class="custom-select custom-select-project-role" (change)="selectProjectRoleChangeHandler($event, project)">
-                                    <option>Select a Job Title...</option>
-                                    <option *ngFor="let role of projectRolesList">{{ role.projectRole }}</option>
-                                  </select>
-                                </div>
-                              </form>
-                          </td> -->
-                          <td width = "5%"><i *ngIf="teamMember.name===loggedInUser.fullName" class="fa fa-pencil-square-o fa-sm" data-toggle="modal" data-target="#projectRoleModal" (click)="onProjectRoleEditClick()"></i></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+			<!-- each row is a project card, with bottom margin separating it from the next one -->
+			<div *ngFor="let project of projectList | filter : filterString : 'projectName': {matchFuzzy: {on: true}}; let k = index" class="row row-custom row-project-card">
+				
+				<!-- single project card container-->      
+				<div class="my-project-card">
 
-                <div class="card">
-                  <div class="card-body table-responsive">
-                    <h5 class="card-title">Schedule</h5>
-                    <table class="table table-sm">
-                      <tbody>
-                        <tr *ngFor="let schedule of projectSchedule">
-                          <td>{{ schedule.PLCStatusName}}</td>
-                          <td>{{ schedule.PLCDate}}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              
-              </div>
-              <footer class="blockquote-footer" style="padding-top: inherit; color: #b7bdc2;">
-                <span style="font-weight: bold">Created By:</span> {{ project['createdByFullName'] }}, {{ project['createdAt'] | slice:0:10 }} &nbsp;&nbsp; 
-                <span style="font-weight: bold">Last Updated:</span> {{ project['updatedByFullName'] }}, {{ project['updatedAt'] | slice:0:10 }}
-              </footer>
-            </div>
-          </div>
-        </div>
-        <!-- card collapse end -->
+					<!-- container for project type (left side element) -->
+					<div class="my-project-type-cont" [ngStyle]="{ 'color': toolsService.setProjctTypeColor(project['projectType.projectTypeName']) }">
+						
+						<!-- project type name text -->
+						<div class="my-project-type-name"> 
+							{{ project['projectType.projectTypeName'] }}
+						</div>
 
-      </ng-container>
-    </div>
-    <!-- ACCORDION END -->
-    
-  </div>
+						<!-- project type icon -->
+						<!-- <div class="project-type-icon"> 
+							<i [ngClass]="toolsService.setProjctTypeIconClass(project['projectType.projectTypeName'])"></i>
+						</div> -->
+
+					</div>
+
+					<!-- container for project name -->
+					<div class="my-project-name-cont">
+
+						<div class="project-name" [attr.data-id]="project.projectID">
+							{{ project['projectName'] }}
+						</div>
+
+						<!-- <div class="project-description" [attr.data-id]="project.projectID">
+							{{ project['description'] }}
+						</div> -->
+						
+					</div>
+
+					<!-- container for project description -->
+					<div class="my-project-details-cont">
+
+						<div class="project-description" [attr.data-id]="project.projectID">
+							{{ project['description'] }}
+						</div>
+						
+					</div>
+
+					<!-- container for team roster -->
+					<!-- <div class="project-attributes-cont">
+
+					</div> -->
+
+					<!-- container for record history/info - created by and creation date-->
+					<div class="my-project-creation-cont" [attr.data-id]="project.projectID">
+
+						<div class="project-attributes-table">
+							<div class="project-attributes-row">
+								<div class="project-attributes-cell creation icon-cell">
+									<i class="nc-icon nc-a-edit"></i>
+								</div>
+								<div class="project-attributes-cell creation label-cell">
+									Created By
+								</div>
+								<div class="project-attributes-cell creation value-cell">
+										{{ project.createdByFullName ? project.createdByFullName : '--' }}
+								</div>
+							</div>
+							<div class="project-attributes-row">
+								<div class="project-attributes-cell creation icon-cell">
+									<i class="nc-icon nc-time-clock"></i>
+								</div>
+								<div class="project-attributes-cell creation label-cell">
+									Creation Date
+								</div>
+								<div class="project-attributes-cell creation value-cell">
+									{{ project.createdAt ? (project.createdAt | date:'mediumDate') : '--' }}
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<!-- container for buttons -->
+					<div class="my-project-update-cont">
+
+						<div class="project-attributes-table">
+							<div class="project-attributes-row">
+								<button class="btn-standard icon-text-only hover-green button-cell">
+									<i class="fa fa-pencil button-icon"></i>
+									Edit
+								</button>
+							</div>
+							<div class="project-attributes-row">
+								<button class="btn-standard icon-text-only hover-green button-cell">
+									<i class="fa fa-trash button-icon"></i>
+									Delete
+								</button>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<!-- Project Table -->
+		<!-- <div class="card"> -->
+			<!-- table headers start -->
+			<!-- <div class="card-header">
+				<div class="row header-project-table">
+					<div class="col-2">
+						<div><h6>Name</h6></div>
+					</div>
+					
+					<div class="col-2">
+						<div><h6>Project Type</h6></div>
+					</div>
+					<div class="col-4">
+						<div><h6>Description</h6></div>
+					</div>
+					<div class="col-3">
+						<div><h6>Notes</h6></div>
+					</div>
+					<div class="col-1">
+						<div class="row">
+							<div class="col-6">
+								<div><h6></h6></div>
+							</div>
+							<div class="col-6">
+								<div><h6></h6></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> -->
+			<!-- table headers end -->
+
+			<!-- ACCORDION START -->
+			<!-- <div class="accordion" id="accordionProjectList"> -->
+				<!-- <ng-container *ngFor="let project of projectList | filter : filterString : 'projectName': {matchFuzzy: {on: true}}; let k = index" class="table-container"> -->
+					<!-- table row start -->
+					<!-- <div class="card-header-custom" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)"> -->
+						<!-- <div class="card-header-custom" aria-expanded="false" [class.active]="k==selectedRow" [attr.id]="k" (click)="onCollapseClick(project, k)">
+						<div class="col-2" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
+							<div>{{ (project['projectName'].length > 35) ? (project['projectName'] | slice:0:35) + '...' : (project['projectName']) }}</div>
+						</div>
+						<div class="col-2" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
+							<div>{{ project['projectType.projectTypeName'] }}</div>
+						</div>
+						<div *ngIf="!project.description" class="col-4" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
+							<div>{{ project['description'] }}</div>
+						</div>
+						<div *ngIf="project.description" class="col-4" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
+							<div>{{ (project['description'].length > 50) ? (project['description'] | slice:0:50) + '...' : (project['description']) }}</div>
+						</div>
+						<div *ngIf="!project.notes" class="col-3" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
+							<div>{{ project['notes'] }}</div>
+						</div>
+						<div *ngIf="project.notes" class="col-3" data-toggle="collapse" [attr.data-target]="'#collapse'+ k" >
+							<div>{{ (project['notes'].length > 50) ? (project['notes'] | slice:0:50) + '...' : (project['notes']) }}</div>
+						</div>
+						<div *ngIf="loggedInUser.id===project.createdBy" class="col-1">
+							<div class="row">
+								<div class="col-6">
+									<div><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true" data-toggle="modal" data-target="#projectsEditModal" (click)="editProject(project)"></i></div>
+								</div>
+								<div class="col-6">
+									<div><i class="fa fa-trash-o fa-lg" data-toggle="modal" data-target="#deleteModal" (click)="onDeleteProjectClick(project)"></i></div>
+								</div>
+							</div>
+						</div>
+						<div *ngIf="loggedInUser.id!==project.createdBy" class="col-1" data-toggle="collapse" [attr.data-target]="'#collapse'+ k"> 
+							<div class="row">
+								<div class="col">
+								</div>
+							</div>
+						</div>
+						</div> -->
+					<!-- table row end --> 
+					
+					<!-- card collapse start -->
+					<!-- <div id="collapse{{k}}" class="collapse" [attr.aria-labelledby]="k" data-parent="#accordionProjectList">
+						<div class="card">
+							<div class="card-body" style="background: #485b65">
+								<div class="card-deck">
+
+									<div class="card">
+										<div class="card-body table-responsive">
+											<h5 class="card-title">Basic Info</h5>
+											<table class="table table-sm">
+													<tbody>
+														<tr *ngFor="let field of projectBasicInfo">
+															<td>{{ field.field }}</td>
+															<td>{{ field.value }}</td>
+														</tr>
+													</tbody>
+											</table>
+										</div>
+									</div>
+								
+									<div class="card">
+										<div class="card-body table-responsive">
+											<h5 class="card-title">Project Team</h5>
+											<table class="table table-sm">
+												<tbody>
+													<tr *ngFor="let teamMember of projectRoster?.teamMembers">
+														<td width="40%">{{ teamMember.name }}</td>
+														<td width = "55%">{{ teamMember.jobTitle }}</td>
+														<td width = "5%"><i *ngIf="teamMember.name===loggedInUser.fullName" class="fa fa-pencil-square-o fa-sm" data-toggle="modal" data-target="#projectRoleModal" (click)="onProjectRoleEditClick()"></i></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+
+									<div class="card">
+										<div class="card-body table-responsive">
+											<h5 class="card-title">Schedule</h5>
+											<table class="table table-sm">
+												<tbody>
+													<tr *ngFor="let schedule of projectSchedule">
+														<td>{{ schedule.PLCStatusName}}</td>
+														<td>{{ schedule.PLCDate}}</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								
+								</div>
+								<footer class="blockquote-footer" style="padding-top: inherit; color: #b7bdc2;">
+									<span style="font-weight: bold">Created By:</span> {{ project['createdByFullName'] }}, {{ project['createdAt'] | slice:0:10 }} &nbsp;&nbsp; 
+									<span style="font-weight: bold">Last Updated:</span> {{ project['updatedByFullName'] }}, {{ project['updatedAt'] | slice:0:10 }}
+								</footer>
+							</div>
+						</div>
+					</div> -->
+					<!-- card collapse end -->
+
+				<!-- </ng-container> -->
+			<!-- </div> -->
+			<!-- ACCORDION END -->
+			
+		<!-- </div> -->
+	</div>
 </div>

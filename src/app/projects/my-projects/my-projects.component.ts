@@ -7,6 +7,9 @@ import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/pro
 import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
 import { User } from '../../_shared/models/user.model';
 import * as moment from 'moment';
+import { ToolsService } from '../../_shared/services/tools.service';
+
+declare var $: any;
 
 @Component({
   selector: 'app-projects-setups',
@@ -59,6 +62,7 @@ export class MyProjectsComponent implements OnInit {
     private apiDataEmailService: ApiDataEmailService,
     private cacheService: CacheService,
     private authService: AuthService,
+    private toolsService: ToolsService,
   ) {
     this.loggedInUser = this.authService.loggedInUser;
   }
@@ -354,6 +358,23 @@ export class MyProjectsComponent implements OnInit {
       }
     );
   }
+
+  // onEditButtonMouseEnter() {
+
+  //   const options = {
+  //     title: 'Edit Project',
+  //     placement: 'left'
+  //   };
+
+  //   $('button.export-button').tooltip(options);
+  //   $('button.export-button').tooltip('show');
+
+  // }
+
+
+  // onEditButtonMouseLeave() {
+  //   $('button.export-button').tooltip('dispose');
+  // }
 
   onDeleteProjectClick(project: any) {
 
