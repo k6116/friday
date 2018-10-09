@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/observable';
-import { CacheService } from '../cache.service';
 import 'rxjs/add/operator/timeout';
 import 'rxjs/add/operator/map';
 
@@ -31,6 +30,12 @@ export class ApiDataOrgService {
 
   getEmployeeList(emailAddress: string): Observable<any> {
     return this.http.get(`/api/org/getEmployeeList/${emailAddress}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
+  getOrgFtes(emailAddress: string, startDate: string, endDate: string): Observable<any> {
+    return this.http.get(`/api/org/getOrgFtes/${emailAddress}/${startDate}/${endDate}`)
       .timeout(this.timeout)
       .map((response: Response) => response.json());
   }

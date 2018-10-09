@@ -43,6 +43,7 @@ import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
 import { MatplanComponent } from './mat-plan/matplan/matplan.component';
+import { OrgViewerComponent } from './org/org-viewer/org-viewer.component';
 
 // BOM module stuff
 // temporarily hiding until BOM editor is complete
@@ -72,6 +73,7 @@ const routes: Routes = [
       { path: 'projects/search', component: SearchProjectsComponent },
       { path: 'projects/display/:id', component: DisplayProjectComponent },
       { path: 'matplan', component: MatplanComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      { path: 'org/org-viewer', component: OrgViewerComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       // { path: 'bom/bom-editor', component: BomEditorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
