@@ -91,12 +91,11 @@ export class TeamRolesComponent implements OnInit {
           this.teamOrgStructure[i].jobSubTitleID = this.employeesJobTitlesFlat[j].JobSubTitleID;
           this.teamOrgStructure[i].newUser = false;
           break;
-        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID === 0) {
+        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID === null) {
           this.teamOrgStructure[i].jobTitleID = null;
           this.teamOrgStructure[i].jobSubTitleID = null;
           this.teamOrgStructure[i].newUser = true;
-          console.log(this.teamOrgStructure[i])
-        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID !== 0) {
+        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID !== null) {
           this.teamOrgStructure[i].jobTitleID = null;
           this.teamOrgStructure[i].jobSubTitleID = null;
           this.teamOrgStructure[i].newUser = false;
@@ -239,7 +238,7 @@ export class TeamRolesComponent implements OnInit {
     console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
     console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
     console.log('this.teamOrgStructure', this.teamOrgStructure);
-    console.log('teamOrgStructure', this.teamOrgStructure)
+    console.log('teamOrgStructure', this.teamOrgStructure);
   }
 
 }
