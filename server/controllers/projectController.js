@@ -24,7 +24,7 @@ function indexProjects(req, res) {
         p.DepartmentID,
         p.MU,
         p.IBO,
-        p.ProjectOrgManager,
+        p.ProjectOwner,
         p.ProjectNumber,
         p.PlanOfRecordFlag,
         p.OracleItemNumber,
@@ -80,7 +80,7 @@ function getProject(req, res) {
       ey.EntityName,
       eo.EntityOwnerName,
       p.NPIHWProjectManager,
-      p.ProjectOrgManager,
+      p.ProjectOwner,
       e.FullName as 'CreatedBy',
       p.CreationDate,
       e2.FullName as 'LastUpdatedBy',
@@ -221,6 +221,36 @@ function indexUserProjectList(req, res) {
     });
 }
 
+function indexTeamProjectList(req, res) {
+
+  const emailAddress = req.params.emailAddress;
+
+  const sql = `
+    SELECT
+      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes, P1.ProjectOwner as projectOwner,
+      P1.CreatedBy as createdBy, E1.FullName as createdByFullName, P1.CreationDate as createdAt,
+      P1.LastUpdatedBy as updatedBy, E2.FullName as updatedByFullName, P1.LastUpdateDate as updatedAt,
+      P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
+    FROM
+      projects.Projects P1
+      LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
+      LEFT JOIN accesscontrol.Employees E1 ON P1.CreatedBy = E1.EmployeeID
+      LEFT JOIN accesscontrol.Employees E2 ON P1.LastUpdatedBy = E2.EmployeeID
+    WHERE
+      P1.ProjectOwner = '${emailAddress}'
+  `
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      console.log("returning team project list");
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
 
 function insertProject(req, res) {
 
@@ -239,7 +269,7 @@ function insertProject(req, res) {
           description: project.projectDescription,
           projectTypeID: project.projectTypeID,
           notes: project.projectNotes,
-          projectOrgManager: project.projectOrgManager,
+          projectOwner: project.projectOwner,
           createdBy: userID,
           createdAt: today,
           updatedBy: userID,
@@ -951,6 +981,7 @@ module.exports = {
   indexProjectsFilterProjectType: indexProjectsFilterProjectType,
   indexProjectRoster: indexProjectRoster,
   indexUserProjectList: indexUserProjectList,
+  indexTeamProjectList: indexTeamProjectList,
   insertProject: insertProject,
   updateProject: updateProject,
   destroyProject: destroyProject,

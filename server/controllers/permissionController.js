@@ -79,7 +79,7 @@ function indexProjectPermissionTeamList(req, res) {
       projects.Projects P
       LEFT JOIN accesscontrol.Employees E ON P.CreatedBy = E.EmployeeID
     WHERE
-      P.ProjectOrgManager = '${managerEmailAddress}' OR P.ProjectOrgManager = '${emailAddress}' OR P.CreatedBy = ${userID} OR E.EmailAddress = '${managerEmailAddress}'
+      P.ProjectOwner = '${managerEmailAddress}' OR P.ProjectOwner = '${emailAddress}' OR P.CreatedBy = ${userID} OR E.EmailAddress = '${managerEmailAddress}'
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(indexProjectPermissionTeamList => {
