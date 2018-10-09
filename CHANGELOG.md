@@ -1,3 +1,25 @@
+<a name="1.14.2"></a>
+## [1.14.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.1...v1.14.2) (2018-10-04)
+
+
+### Bug Fixes
+
+* **BOM viewer:** added full-screen functionality for BOM viewer ([9302515](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9302515))
+* **toast component:** when user navigates away, dismiss the current toast (if any) ([10c6ab2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/10c6ab2))
+* **Toast component:** added X in corner of toast to encourage click-to-dismiss ([41db331](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/41db331))
+
+
+
+<a name="1.14.1"></a>
+## [1.14.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.0...v1.14.1) (2018-10-04)
+
+
+### Bug Fixes
+
+* **team-roles:** fixed bug that prevented managers from updating team roles ([fe8e4b1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/fe8e4b1))
+
+
+
 <a name="1.14.0"></a>
 # [1.14.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.13.0...v1.14.0) (2018-10-01)
 

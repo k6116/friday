@@ -1,7 +1,7 @@
 
 <div [class]="toastClass" [class.toast-show]="toastVisible" (click)="dismissToast()">
-  <span class="toast-title">
-    {{toastType | titlecase}}:
-  </span><br />
+  <span class="toast-title">{{toastType | titlecase}}:</span>
+  <div class="toast-close"><i class="fa fa-times"></i></div>
+  <br />
   {{toastText}}
 </div>
