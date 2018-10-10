@@ -208,8 +208,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     const permRes = await this.apiDataFteService.checkTeamFTEAdminPermission(token);
 
     if (permRes.length > 0) {
-      // this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
-      this.loginAsEmail = 'ermina_chua@keysight.com';
+      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      // this.loginAsEmail = 'ermina_chua@keysight.com';
       const res2 = await this.apiDataEmployeeService.getEmployeeData(this.loginAsEmail).toPromise();
       this.loginAsID = res2[0].EmployeeID;
       this.displayAdminViewMessage = true;
@@ -255,11 +255,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
     // console.log('this.employeeTotals', this.employeeTotals)
-    console.log('this.projectVisible', this.projectVisible)
-    console.log('this.filterProjects', this.filterProjects)
-    console.log('this.filterProjectsModel', this.filterProjectsModel)
-    console.log('this.filterProjectsOptions', this.filterProjectsOptions)
-
+    // console.log('this.projectVisible', this.projectVisible)
+    // console.log('this.filterProjects', this.filterProjects)
+    // console.log('this.filterProjectsModel', this.filterProjectsModel)
+    // console.log('this.filterProjectsOptions', this.filterProjectsOptions)
     // this.updateEmployeeTotals();
     // this.updateProjectFilters()
 
