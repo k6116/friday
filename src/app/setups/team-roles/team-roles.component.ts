@@ -53,8 +53,8 @@ export class TeamRolesComponent implements OnInit {
     const permRes = await this.apiDataFteService.checkTeamFTEAdminPermission(token);
 
     if (permRes.length > 0) {
-      // this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
-      this.loginAsEmail = 'john_grubb@keysight.com';
+      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      // this.loginAsEmail = 'john_grubb@keysight.com';
       this.displayAdminViewMessage = true;
     } else {
       this.loginAsEmail = this.authService.loggedInUser.email;
