@@ -54,9 +54,11 @@ export class TeamRolesComponent implements OnInit {
 
     if (permRes.length > 0) {
       this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
-            this.displayAdminViewMessage = true;
+      // this.loginAsEmail = 'ermina_chua@keysight.com';
+      this.displayAdminViewMessage = true;
     } else {
       this.loginAsEmail = this.authService.loggedInUser.email;
+
     }
 
     this.initializeEmployeeData();
@@ -77,26 +79,22 @@ export class TeamRolesComponent implements OnInit {
 
     // add jobTitles to the teamOrgStructure object
     for (let i = 0; i < this.teamOrgStructure.length; i++) {
+      const fullName = this.teamOrgStructure[i].fullName.split(' ');
+      this.teamOrgStructure[i].firstName = fullName[0];
+      this.teamOrgStructure[i].lastName = fullName[1];
+      this.teamOrgStructure[i].jobTitleID = null;
+      this.teamOrgStructure[i].jobSubTitleID = null;
+      this.teamOrgStructure[i].newUser = true;
       for (let j = 0; j < this.employeesJobTitlesFlat.length; j++) {
-        const fullName = this.teamOrgStructure[i].fullName.split(' ');
-        this.teamOrgStructure[i].firstName = fullName[0];
-        this.teamOrgStructure[i].lastName = fullName[1];
         // First if employee has job title, then add jobtitle data to teamOrgStructure
         // Else if employee has no job title, but exists in employees table, then just update job titles
-        // Else employee does not exists in employees table, then insert employee
         if (this.teamOrgStructure[i].emailAddress === this.employeesJobTitlesFlat[j]['Employees: EmailAddress']) {
           this.teamOrgStructure[i].jobTitleID = this.employeesJobTitlesFlat[j].JobTitleID;
           this.teamOrgStructure[i].jobSubTitleID = this.employeesJobTitlesFlat[j].JobSubTitleID;
           this.teamOrgStructure[i].newUser = false;
           break;
-        } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID === null) {
-          this.teamOrgStructure[i].jobTitleID = null;
-          this.teamOrgStructure[i].jobSubTitleID = null;
-          this.teamOrgStructure[i].newUser = true;
         } else if (j === this.employeesJobTitlesFlat.length - 1 && this.teamOrgStructure[i].employeeID !== null) {
-          this.teamOrgStructure[i].jobTitleID = null;
-          this.teamOrgStructure[i].jobSubTitleID = null;
-          this.teamOrgStructure[i].newUser = false;
+            this.teamOrgStructure[i].newUser = false;
         }
       }
     }

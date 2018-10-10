@@ -1,0 +1,33 @@
+<div class="container-fluid">
+  <div class="row row-custom">
+
+    <!-- Job Subtitle Section -->
+    <div class="col-sm">
+        <h2>Team Project List</h2>
+
+        <!-- List of Subtitles with checkbox: Show only when clicked on a specific job title -->
+        <div class="list-group">
+          <div *ngFor="let project of teamProjectList">
+          <!-- <button type="button" [disabled]="subTitlesInit" class="list-group-item list-group-item-action" [class.selected]="sublist.checked===true"> -->
+          <button type="button" class="list-group-item list-group-item-action">
+            <div class="row">
+              <!-- Checkboxes -->
+              <div class="col-1">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <input name="checkbox" type="checkbox" (change)="onCheckboxClick(project)">
+                  </div>
+                </div>
+              </div>
+              <!-- List of Names -->
+              <div class="col-9">
+                {{ project.projectName }} - {{ project.projectOwner }}
+              </div>
+            </div>
+          </button>
+          </div>
+        </div>
+      </div>
+
+  </div>
+</div>
