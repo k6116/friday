@@ -209,7 +209,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
     if (permRes.length > 0) {
       this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
-      // this.loginAsEmail = 'ermina_chua@keysight.com';
       const res2 = await this.apiDataEmployeeService.getEmployeeData(this.loginAsEmail).toPromise();
       this.loginAsID = res2[0].EmployeeID;
       this.displayAdminViewMessage = true;
@@ -1508,6 +1507,17 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     };
 
     this.ftePlanningChart = Highcharts.chart('FTEPlanningChart', this.ftePlanningSeriesOptions);
+  }
+
+  async onViewAsClick(managerEmailAddress: string) {
+    this.loginAsEmail = managerEmailAddress;
+    const res2 = await this.apiDataEmployeeService.getEmployeeData(this.loginAsEmail).toPromise();
+    if (res2.length === 0) {
+      this.cacheService.raiseToast('error', `Please enter a valid manager email address`);
+    } else {
+      this.loginAsID = res2[0].EmployeeID;
+      this.planLoadSequence();
+    }
   }
 
 }

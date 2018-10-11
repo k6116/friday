@@ -26,6 +26,9 @@
       <i class="fa fa-play"></i>&nbsp;&nbsp;Launch
     </button>
     <button *ngIf="displaySyncNoticeButton" class="btn btn-primary" (click)="comparePlanToFTE()">Sync Notice</button>
+    <button *ngIf="displayAdminViewMessage" class="btn btn-primary btn-fte-toolbar" data-toggle="modal" data-target="#viewAsModal">
+      <i class="fa fa-shield"></i>&nbsp;&nbsp;View As
+    </button>
 
     <div *ngIf="displayAdminViewMessage"  style="color: red; display: inline-block; margin-left: 100px">
       <h3>ADMIN: Viewing this page under email {{ loginAsEmail }}</h3>
@@ -181,3 +184,23 @@
     </div>
   </div>
   <!--  -->
+
+<!-- "View As" Modal -->
+<div class="modal" tabindex="-1" role="dialog" id="viewAsModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width:150%">
+      <div class="modal-header" style="border-bottom: none; height: 2rem;">
+        <h5 class="title">ADMIN ONLY: View As Manager</h5>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <input type="text" #viewAsEmailAddress class="form-control" placeholder="Email Address">&nbsp;
+          <div class="input-group-append">
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onViewAsClick(viewAsEmailAddress.value)">OK</button>&nbsp;
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
