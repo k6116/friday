@@ -16,7 +16,8 @@ considering topnav, sidenav, and footer -->
 
         <button class="btn-standard" (click)="onBackButtonClick()">
           <i class="fa fa-backward button-icon"></i>
-          Search
+            <span *ngIf="cacheService.fromMyProjectsFlag === false">Search</span>
+            <span *ngIf="cacheService.fromMyProjectsFlag === true">My Projects</span>
         </button>
 
       </div>
