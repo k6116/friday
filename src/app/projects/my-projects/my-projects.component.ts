@@ -1,4 +1,5 @@
-import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter, ViewChildren } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
   ApiDataMetaDataService, ApiDataEmailService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
@@ -8,6 +9,7 @@ import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal
 import { User } from '../../_shared/models/user.model';
 import * as moment from 'moment';
 import { ToolsService } from '../../_shared/services/tools.service';
+import { DisplayProjectComponent } from '../display-project/display-project.component';
 
 declare var $: any;
 
@@ -51,10 +53,12 @@ export class MyProjectsComponent implements OnInit {
 
 
   @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
-  @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
+  @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent; // to populate form in projects-edit-modal
+  // @ViewChild(DisplayProjectComponent) displayProjectComponent;
   // @Output() deleteSuccess = new EventEmitter<boolean>();
 
   constructor(
+    private router: Router,
     private apiDataEmployeeService: ApiDataEmployeeService,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataPermissionService: ApiDataPermissionService,
@@ -77,9 +81,10 @@ export class MyProjectsComponent implements OnInit {
     // get the list of requests that are waiting for the users permission
     this.getProjectPermissionRequestsList();
 
-    this.getProjectTypeDisplayFields();
+    // this.getProjectTypeDisplayFields();
   }
 
+  // Get project list
   getUserProjectList() {
     this.apiDataProjectService.getUserProjectList(this.authService.loggedInUser.id)
     .subscribe(
@@ -89,6 +94,7 @@ export class MyProjectsComponent implements OnInit {
 
         // hide the spinner
         this.showSpinner = false;
+
       },
       err => {
         // console.log(err);
@@ -97,7 +103,6 @@ export class MyProjectsComponent implements OnInit {
   }
 
   // List of all requests that have been made to join a project.
-  //  Gets called onInit and requestResponse()
   getProjectPermissionRequestsList() {
     this.apiDataPermissionService.getProjectPermissionRequestsList(this.authService.loggedInUser.id)
     .subscribe(
@@ -118,6 +123,7 @@ export class MyProjectsComponent implements OnInit {
     );
   }
 
+  // Open modal to create new project
   createProject() {
     this.showProjectsCreateModal = true;
     setTimeout(() => {
@@ -125,8 +131,10 @@ export class MyProjectsComponent implements OnInit {
     }, 0);
   }
 
-  onCreateSuccess() {
-    // console.log('Create project success. My Project List Refreshed');
+  // Refresh projectList to include new created project 
+  projectListRefresh() {
+
+    // on delete, update and create succecss
     this.getUserProjectList();
   }
 
@@ -142,47 +150,27 @@ export class MyProjectsComponent implements OnInit {
     // this.onFilterStringChange();
   }
 
-  onUpdateSuccess() {
-    // console.log('Update project success. My Project List Refreshed');
-    this.getUserProjectList();
-  }
-
-  onDeleteSuccess() {
-    // console.log('Delete project success. My Project List Refreshed');
-    this.getUserProjectList();
-  }
-
   editProject(project: any) {
+
+    // open modal to update existing project
     this.showProjectsEditModal = true;
+
     this.projectData = project;
+
+    // Call function in projects-edit-modal
     setTimeout(() => {
       this.projectsEditModalComponent.populateForm();
     }, 0);
   }
 
-  onCollapseClick(project: any, k) {
-    // k is index of projectList; selected row gets highlighted
-    if ( this.selectedRow === k) {
-      this.selectedRow = null;
-    } else {
-        this.selectedRow = k;
-        this.projectBasicInfo.length = 0;
-        // Assign projectList values to projectTypeDisplayFields object
-        for (let i = 0; i < this.projectTypeDisplayFields.length; i++) {
-          for (let j = 0; j < Object.keys(project).length; j++) {
-            if (this.projectTypeDisplayFields[i]['projectType.projectTypeName'] === project['projectType.projectTypeName'] &&
-              this.projectTypeDisplayFields[i].projectField.toUpperCase() === Object.keys(project)[j].toUpperCase()) {
-                this.projectBasicInfo.push({
-                  field: Object.keys(project)[j],
-                  value: Object.values(project)[j]
-                });
-            }
-          }
-        }
-    }
-    this.getProjectRoster(project.id);
-    this.getProjectSchedule(project.id);
+  onProjectClick(project) {
 
+    // set flag true to navigate back to myProjects
+    this.cacheService.fromMyProjectsFlag = true;
+    
+    // navigate to the display-project page
+    this.router.navigate([`/main/projects/display/${project.id}`]);
+    
   }
 
   // Accept or deny a request
@@ -220,31 +208,6 @@ export class MyProjectsComponent implements OnInit {
     // So that request can be used in request-denied modal
     this.request = request;
   }
-
-  getProjectRoster(projectID: number) {
-    this.apiDataProjectService.getProjectRoster(projectID)
-    .subscribe(
-      res => {
-        // console.log('project roster:', res);
-        // Check if roster for this project exists
-        if ('teamMembers' in res[0]) {
-          // This loop will move the loggedInUser to the top of the project roster list
-          for (let i = 0; i < res[0].teamMembers.length; i++) {
-            if (res[0].teamMembers[i].employeeID === this.authService.loggedInUser.id) {
-                const a = res[0].teamMembers.splice(i, 1);   // removes the item
-                res[0].teamMembers.unshift(a[0]);         // adds it back to the beginning
-                this.projectRoster = res[0];
-                break;
-            }
-        }
-        }
-      },
-      err => {
-        // console.log(err);
-      }
-    );
-  }
-
 
   // Get the primary key references for "ProjectID". This searches all Jarvis tables
   getPrimaryKeyRefs(projectID: number) {
@@ -311,70 +274,33 @@ export class MyProjectsComponent implements OnInit {
       );
   }
 
-  getProjectSchedule(projectID: number) {
+  onEditButtonMouseEnter(id, createdByID) {
 
-    this.apiDataProjectService.getProjectSchedule(projectID)
-    .subscribe(
-      res => {
-        // console.log('project schedule:', res);
-        this.projectSchedule = res;
-        for (let i = 0; i < this.projectSchedule.length; i++) {
-          this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
-        }
-      },
-      err => {
-        // console.log(err);
-      }
-    );
-  }
+    // Only show tooltip if not your project
+    if (this.loggedInUser.id !== createdByID) {
 
-  onProjectRoleEditClick() {
-    this.toggleEditProjectRole = !this.toggleEditProjectRole;
-  }
+      // set the jquery element
+      const $el = $(`div.project-attributes-table[data-id="${id}"]`);
 
-  selectProjectRoleChangeHandler(event: any, project: any) {
+      // tooltip options
+      const options = {
+        title: 'Edit and Delete only allowed for projects you have created',
+        placement: 'bottom'
+      };
 
-    // create object for api post
-    const projectEmployeeRoleData = {
-      projectRoleID: null,
-      projectRole: null,
-      projectID: null
-    };
-    projectEmployeeRoleData.projectRole = event.target.value;
-    for (let i = 0; i < this.projectRolesList.length; i++) {
-      if (this.projectRolesList[i].projectRole === event.target.value) {
-        projectEmployeeRoleData.projectRoleID = this.projectRolesList[i].id;
-      }
+      $el.tooltip(options);
+      $el.tooltip('show');
     }
-    projectEmployeeRoleData.projectID = project.id;
 
-    this.apiDataProjectService.updateProjectEmployeeRole(projectEmployeeRoleData, this.authService.loggedInUser.id)
-    .subscribe(
-      res => {
-        // console.log(res);
-      },
-      err => {
-        // console.log(err);
-      }
-    );
   }
 
-  // onEditButtonMouseEnter() {
+  onEditButtonMouseLeave(id) {
+    
+    // set the jquery element
+    const $el = $(`div.project-attributes-table[data-id="${id}"]`);
 
-  //   const options = {
-  //     title: 'Edit Project',
-  //     placement: 'left'
-  //   };
-
-  //   $('button.export-button').tooltip(options);
-  //   $('button.export-button').tooltip('show');
-
-  // }
-
-
-  // onEditButtonMouseLeave() {
-  //   $('button.export-button').tooltip('dispose');
-  // }
+    $el.tooltip('dispose');
+  }
 
   onDeleteProjectClick(project: any) {
 
@@ -409,7 +335,7 @@ export class MyProjectsComponent implements OnInit {
         .subscribe(
           del => {
             // this.deleteSuccess.emit(true);
-            this.onDeleteSuccess();
+            this.projectListRefresh();
           },
           err => {
             // console.log(err);
@@ -422,18 +348,129 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
-  getProjectTypeDisplayFields() {
-    this.apiDataProjectService.getProjectTypeDisplayFields()
-    .subscribe(
-      res => {
-        // console.log(res);
-        this.projectTypeDisplayFields = res;
-      },
-      err => {
-        // console.log(err);
-      }
-    );
-  }
+  // onUpdateSuccess() {
+  //   // console.log('Update project success. My Project List Refreshed');
+  //   this.getUserProjectList();
+  // }
 
+  // onDeleteSuccess() {
+  //   // console.log('Delete project success. My Project List Refreshed');
+  //   this.getUserProjectList();
+  // }
 
+    // OLD!
+  // onCollapseClick(project: any, k) {
+  //   // k is index of projectList; selected row gets highlighted
+  //   if ( this.selectedRow === k) {
+  //     this.selectedRow = null;
+  //   } else {
+  //       this.selectedRow = k;
+  //       this.projectBasicInfo.length = 0;
+  //       // Assign projectList values to projectTypeDisplayFields object
+  //       for (let i = 0; i < this.projectTypeDisplayFields.length; i++) {
+  //         for (let j = 0; j < Object.keys(project).length; j++) {
+  //           if (this.projectTypeDisplayFields[i]['projectType.projectTypeName'] === project['projectType.projectTypeName'] &&
+  //             this.projectTypeDisplayFields[i].projectField.toUpperCase() === Object.keys(project)[j].toUpperCase()) {
+  //               this.projectBasicInfo.push({
+  //                 field: Object.keys(project)[j],
+  //                 value: Object.values(project)[j]
+  //               });
+  //           }
+  //         }
+  //       }
+  //   }
+  //   this.getProjectRoster(project.id);
+  //   this.getProjectSchedule(project.id);
+
+  // }
+
+    // OLD!
+  // getProjectRoster(projectID: number) {
+  //   this.apiDataProjectService.getProjectRoster(projectID)
+  //   .subscribe(
+  //     res => {
+  //       // console.log('project roster:', res);
+  //       // Check if roster for this project exists
+  //       if ('teamMembers' in res[0]) {
+  //         // This loop will move the loggedInUser to the top of the project roster list
+  //         for (let i = 0; i < res[0].teamMembers.length; i++) {
+  //           if (res[0].teamMembers[i].employeeID === this.authService.loggedInUser.id) {
+  //               const a = res[0].teamMembers.splice(i, 1);   // removes the item
+  //               res[0].teamMembers.unshift(a[0]);         // adds it back to the beginning
+  //               this.projectRoster = res[0];
+  //               break;
+  //           }
+  //       }
+  //       }
+  //     },
+  //     err => {
+  //       // console.log(err);
+  //     }
+  //   );
+  // }
+
+  // Not Used
+  // getProjectTypeDisplayFields() {
+  //   this.apiDataProjectService.getProjectTypeDisplayFields()
+  //   .subscribe(
+  //     res => {
+  //       // console.log(res);
+  //       this.projectTypeDisplayFields = res;
+  //     },
+  //     err => {
+  //       // console.log(err);
+  //     }
+  //   );
+  // }
+
+  // OLD!
+  // getProjectSchedule(projectID: number) {
+
+  //   this.apiDataProjectService.getProjectSchedule(projectID)
+  //   .subscribe(
+  //     res => {
+  //       // console.log('project schedule:', res);
+  //       this.projectSchedule = res;
+  //       for (let i = 0; i < this.projectSchedule.length; i++) {
+  //         this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
+  //       }
+  //     },
+  //     err => {
+  //       // console.log(err);
+  //     }
+  //   );
+  // }
+
+  // Not Used!
+  // onProjectRoleEditClick() {
+  //   this.toggleEditProjectRole = !this.toggleEditProjectRole;
+  // }
+
+  // Not Used!
+  // selectProjectRoleChangeHandler(event: any, project: any) {
+
+  //   // create object for api post
+  //   const projectEmployeeRoleData = {
+  //     projectRoleID: null,
+  //     projectRole: null,
+  //     projectID: null
+  //   };
+  //   projectEmployeeRoleData.projectRole = event.target.value;
+  //   for (let i = 0; i < this.projectRolesList.length; i++) {
+  //     if (this.projectRolesList[i].projectRole === event.target.value) {
+  //       projectEmployeeRoleData.projectRoleID = this.projectRolesList[i].id;
+  //     }
+  //   }
+  //   projectEmployeeRoleData.projectID = project.id;
+
+  //   this.apiDataProjectService.updateProjectEmployeeRole(projectEmployeeRoleData, this.authService.loggedInUser.id)
+  //   .subscribe(
+  //     res => {
+  //       // console.log(res);
+  //     },
+  //     err => {
+  //       // console.log(err);
+  //     }
+  //   );
+  // }
 }
