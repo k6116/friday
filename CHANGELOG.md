@@ -1,3 +1,14 @@
+<a name="1.14.3"></a>
+## [1.14.3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.2...v1.14.3) (2018-10-08)
+
+
+### Bug Fixes
+
+* **projects-create-modal:** Disabled click-outside and ESC triggers that close the modal ([10a1fa6](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/10a1fa6))
+* **Team-Roles:** fixed employee update error ([1f45b1a](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/1f45b1a))
+
+
+
 <a name="1.14.2"></a>
 ## [1.14.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.1...v1.14.2) (2018-10-04)
 

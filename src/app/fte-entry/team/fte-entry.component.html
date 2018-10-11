@@ -113,8 +113,8 @@
 
         <div class="fte-table-body">
           <!-- loop through each project, one row per project -->
-          <ng-container *ngFor="let project of projects; let i = index">
-            <div class="fte-table-row" [formGroupName]="i">
+          <ng-container *ngFor="let project of allProjects; let i = index">
+            <div class="fte-table-row" [formGroupName]="i" [style.display]="projectVisible[i] ? 'table-row' : 'none'">
               <div class="fte-table-cell icon"> <!-- for trash icon -->
                 <i class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
               </div>

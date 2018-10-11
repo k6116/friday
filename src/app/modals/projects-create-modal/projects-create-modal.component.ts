@@ -89,7 +89,12 @@ export class ProjectsCreateModalComponent implements OnInit {
       }
     }
 
-    project.projectOrgManager = this.managerEmailAddress;
+    // Managers will own their projects as well as any projects their subordinates create
+    if (this.authService.loggedInUser.isManager) {
+      project.projectOwner = this.userEmail;
+    } else {
+      project.projectOwner = this.managerEmailAddress;
+    }
 
     this.apiDataProjectService.createProject(project, this.userID)
     .subscribe(
