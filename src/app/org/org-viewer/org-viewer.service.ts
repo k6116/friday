@@ -5,6 +5,7 @@ import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
 export class OrgViewerService {
 
   org: any;
+  managerChain;
 
   constructor(private apiDataOrgService: ApiDataOrgService) { }
 
@@ -12,12 +13,17 @@ export class OrgViewerService {
     // get the requested org as flat array, synchronously
     const startDate = '2018-08-01';
     const endDate = '2018-10-01';
-    this.org = await this.fetchApiData(supervisorEmailAddress, startDate, endDate);
+    const queryEmail = 'ron_nersesian@keysight.com';
+    this.org = await this.fetchApiData(queryEmail, startDate, endDate);
 
     // return early if no data returned
     if (!this.org.length) {
       return {};
     }
+
+    // build list of supervisors who are upstream from user's manager
+    const manager = this.org.filter( record => record.EMAIL_ADDRESS === supervisorEmailAddress)[0];
+    this.managerChain = await this.buildManagerChain(manager.PERSON_ID);
 
     // initialize top level of nested JSON org
     const orgHierarchy = {
@@ -25,7 +31,7 @@ export class OrgViewerService {
       id: this.org[0].PERSON_ID,
       teamFtes: this.org[0].TotalTeamFTE,
       teamCount: this.org[0].TotalEmployeeCount,
-      isExpanded: true,
+      defaultCollapsed: false,
       children: {}
     };
     this.org = this.org.slice(1); // remove the first row, since we don't need it anymore
@@ -43,6 +49,20 @@ export class OrgViewerService {
     return this.apiDataOrgService.getOrgFtes(supervisorEmailAddress, startDate, endDate).toPromise();
   }
 
+  buildManagerChain(personID: number) {
+    // recursively build an array of manager IDs from the user's manager up to the top level (Ron)
+    const relationship = this.org.filter( record => record.PERSON_ID === personID)[0];
+    if (relationship.Level === 1) {
+      // we've made it to Ron
+      return relationship.PERSON_ID;
+    } else {
+      let nextManager = [];
+      nextManager = nextManager.concat(this.buildManagerChain(relationship.SUPERVISOR_ID));
+      nextManager = nextManager.concat(personID);
+      return nextManager;
+    }
+  }
+
   orgTraverse(i: number, lv: number) {
     // i = index of the array to start traversing (usu 0)
     // lv - initial level of the org structure (usu 2)
@@ -55,7 +75,8 @@ export class OrgViewerService {
           name: this.org[i].FullName,
           id: this.org[i].PERSON_ID,
           teamFtes: this.org[i].TotalTeamFTE,
-          teamCount: this.org[i].TotalEmployeeCount
+          teamCount: this.org[i].TotalEmployeeCount,
+          defaultCollapsed: this.managerChain.find(managerID => managerID === this.org[i].PERSON_ID) ? false : true
         };
         children.push(newNode);
         i++;

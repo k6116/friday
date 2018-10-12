@@ -32,7 +32,6 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
   }
 
   drawD3Plot(bomJson: any) {
-
     // kill any existing drawings, if any
     d3.select('#d3-container').selectAll('*').remove();
 
@@ -44,9 +43,28 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     const width = height * aspect;
     const zoomSpeed = 1700; // some number between 400 and 2000
 
+    // HELPER FUNCTIONS //
+    function collapseNode(d) {
+      // recursively collapse a node and all its children
+      if (d.children) {
+        d._children = d.children;
+        d._children.forEach(collapseNode);
+        d.children = null;
+      }
+    }
+
+    // recursively collapses a node and all its children if it is not called out to be expanded by default
+    function initialCollapse(d) {
+      if (d.data.defaultCollapsed) {
+        collapseNode(d);
+      } else if (d.children) {
+        d.children.forEach(initialCollapse);
+      }
+    }
+
     // set custom zoom settings
     const zoom = d3.zoom()
-      // .scaleExtent([0.2, 4])  // restrict zoom to this scale range
+      .scaleExtent([0.09, 4])  // restrict zoom to this scale range
       .wheelDelta(() => { // custom wheel delta function to reduce zoom speed
         return -d3.event.deltaY * (d3.event.deltaMode ? 120 : 1) / zoomSpeed;
       })
@@ -80,16 +98,8 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
 
     // set index counter for node ID assignment
     let i = 1;
+    root.children.forEach(initialCollapse);
     update(root);
-
-    // describes how to collapse a node and all its children
-    function collapse(d) {
-      if (d.children) {
-        d._children = d.children;
-        d._children.forEach(collapse);
-        d.children = null;
-      }
-    }
 
     function update(source) {
 
@@ -126,7 +136,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       }
 
       // Assigns the x and y position for the nodes
-      const treeData = treemap(root);
+      const treeData = treemap(source);
 
       // Compute the new tree layout.
       const nodes = treeData.descendants();

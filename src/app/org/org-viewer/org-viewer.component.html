@@ -1,4 +1,8 @@
 <div class="container-fluid">
-  <button class="btn btn-success">button</button>
-  <app-org-draw-d3 *ngIf="orgJson" [orgJson]="orgJson"></app-org-draw-d3>
+  <div *ngIf="!orgJson" class="loading-spinner"></div>
+  <div *ngIf="orgJson" class="org-chart-cont">
+    <div class="org-chart-header">Org Chart</div>
+    <i class="fa fa-expand chart-expand-icon" (click)="expandChartFullscreen()"></i>
+    <app-org-draw-d3 [orgJson]="orgJson"></app-org-draw-d3>
+  </div>
 </div>

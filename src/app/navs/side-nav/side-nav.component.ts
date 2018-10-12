@@ -198,6 +198,17 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
           hidden: false
         },
         {
+          title: 'Org Chart',
+          iconClass: 'nc-hierarchy-53',
+          alias: 'orgchart',
+          path: 'main/org/org-viewer',
+          expanded: false,
+          active: false,
+          highlighted: false,
+          permissionProtected: false,
+          hidden: false
+        },
+        {
           title: 'Setups',
           iconClass: 'nc-settings',
           alias: 'setups',
