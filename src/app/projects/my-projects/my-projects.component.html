@@ -86,8 +86,8 @@
 
 			<!-- Request Alert Collapse-->
 			<div id="collapse" class="collapse" data-parent="requestAlertCollapse">
-				<div class="my-project-card">
-					<div class="project-attributes-row" *ngFor="let request of projectPermissionRequestsList">
+				<div class="my-project-request-card" *ngIf="requestResponseFlag">
+					<div class="project-attributes-row" *ngFor="let request of submittedRequests">
 						
 						<ng-container *ngIf="request.requestStatus=='Submitted'">
 							<div class="project-attributes-cell">

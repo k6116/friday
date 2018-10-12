@@ -102,8 +102,22 @@ div.my-project-card {
 }
 
 div.my-project-card:hover {
+  box-shadow: 0 3px 10px 2px rgba(0,0,0,0.15);
+}
+
+div.my-project-request-card {
+	height: auto;
+	max-height: 93px;
+	width: 100%;
+	border: 1px solid lightgrey;
+	background-color: white;
+	transition: box-shadow 0.2s;
+	white-space: nowrap;
+	overflow-y: auto;
+}
+
+div.my-project-request-card:hover {
   box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-  /* cursor: pointer; */
 }
 
 div.my-project-type-cont {

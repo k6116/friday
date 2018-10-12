@@ -27,6 +27,7 @@ export class MyProjectsComponent implements OnInit {
   projectList: any;
   projectData: any;
   projectPermissionRequestsList: any;
+  submittedRequests: any;
   showProjectsEditModal: boolean;
   showProjectsCreateModal: boolean;
   selectedRow: any;
@@ -108,14 +109,28 @@ export class MyProjectsComponent implements OnInit {
     .subscribe(
       res => {
         this.projectPermissionRequestsList = res;
-        // console.log('projectPermissionRequest: ', this.projectPermissionRequestsList);
+
+        // Filter for 'submitted' requests
+        this.submittedRequests = [];
+        let j = 0;
         for (let i = 0; i < this.projectPermissionRequestsList.length; i++) {
           if ( this.projectPermissionRequestsList[i].requestStatus === 'Submitted') {
+
+            // store in seperate array
+            this.submittedRequests[j] = this.projectPermissionRequestsList[i];
+            j++
+
+            // set flag so that request box shows up
             this.requestResponseFlag = true;
           }
         }
-      // hide the spinner
-      this.showSpinner = false;
+
+        console.log(this.submittedRequests);
+
+        // this.getSubmittedRequests();
+
+        // hide the spinner
+        this.showSpinner = false;
       },
       err => {
         // console.log(err);
@@ -123,6 +138,10 @@ export class MyProjectsComponent implements OnInit {
     );
   }
 
+  // getSubmittedRequests() {
+
+  // }
+  
   // Open modal to create new project
   createProject() {
     this.showProjectsCreateModal = true;
