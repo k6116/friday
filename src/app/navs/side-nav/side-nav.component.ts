@@ -177,7 +177,7 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         {
           title: 'Setups',
-          iconClass: 'nc-settings',
+          iconClass: 'nc-settings-91',
           alias: 'setups',
           expanded: false,
           active: false,

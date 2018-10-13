@@ -1,0 +1,65 @@
+
+table.rollup-table {
+  margin-top: 25px;
+  background-color: white;
+  /* width: unset; */
+}
+
+td.drilldown-table-cell {
+  font-weight: 500;
+}
+
+td.project-name-text {
+  font-weight: 500;
+}
+
+.fa.point-icon {
+  font-size: 10px;
+  margin-right: 10px;
+  position: relative;
+  top: -1px;
+}
+
+th.col-level {
+  width: 100px;
+}
+
+td.cell-level {
+  font-weight: 500;
+  padding-left: 10px;
+}
+
+th.col-project {
+  width: 500px;
+}
+
+th.col-type {
+  width: 200px;
+}
+
+th.col-fte {
+  width: 100px;
+}
+
+th.col-cum-fte {
+  width: 100px;
+}
+
+th.col-spark-bar {
+  width: calc(100% - (100px + 500px + 200px + 100px + 100px));
+  /* width: 20%; */
+}
+
+div.spark-bar {
+  height: 5px;
+  width: 10px;
+  border: 1px solid lightgrey;
+}
+
+div.spark-bar {
+  height: 15px;
+  /* width: calc(96px * 3); */
+  border: 1px solid lightgrey;
+  margin-top: 3px;
+  /* background-color: #7cb5ec; */
+}
