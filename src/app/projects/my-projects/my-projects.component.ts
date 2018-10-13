@@ -104,9 +104,17 @@ export class MyProjectsComponent implements OnInit {
             this.submittedRequests[j] = this.projectPermissionRequestsList[i];
             j++
 
-            // set flag so that request box shows up
-            this.requestResponseFlag = true;
           }
+        }
+
+        // hide request box if there are no submitted requests
+        if (this.submittedRequests.length === 0) {
+
+          this.requestResponseFlag = false;
+
+        } else {
+          
+          this.requestResponseFlag = true;
         }
 
         // hide the spinner
@@ -166,7 +174,6 @@ export class MyProjectsComponent implements OnInit {
 
   // Accept or deny a request
   requestResponse(request: any, reply: string, replyComment: string) {
-    this.requestResponseFlag = false;
 
     this.apiDataPermissionService.updateProjectPermissionResponse(request, reply, replyComment, this.authService.loggedInUser.id)
     .subscribe(
@@ -197,6 +204,45 @@ export class MyProjectsComponent implements OnInit {
   onDenyClick(request: any) {
     // So that request can be used in request-denied modal
     this.request = request;
+  }
+
+  // Mouseover on disabled buttons 
+  onEditButtonMouseEnter(id, createdByID) {
+
+    // Only show tooltip if not your project
+    if (this.loggedInUser.id !== createdByID) {
+
+      // set the jquery element
+      const $el = $(`div.project-attributes-table[data-id="${id}"]`);
+
+      // tooltip options
+      const options = {
+        title: 'Edit and Delete only allowed for projects you have created',
+        placement: 'bottom'
+      };
+
+      $el.tooltip(options);
+      $el.tooltip('show');
+    }
+
+  }
+
+  // Mouseleave disabled buttons
+  onEditButtonMouseLeave(id) {
+    
+    // set the jquery element
+    const $el = $(`div.project-attributes-table[data-id="${id}"]`);
+
+    $el.tooltip('dispose');
+  }
+
+  onDeleteProjectClick(project: any) {
+
+    this.selectdProject = project;
+
+    // First check if the project has referential integrity to other tables in the database
+    this.getPrimaryKeyRefs(this.selectdProject.id);
+
   }
 
   // On Delete: Get the primary key references for "ProjectID". This searches all Jarvis tables
@@ -267,43 +313,7 @@ export class MyProjectsComponent implements OnInit {
       );
   }
 
-  onEditButtonMouseEnter(id, createdByID) {
-
-    // Only show tooltip if not your project
-    if (this.loggedInUser.id !== createdByID) {
-
-      // set the jquery element
-      const $el = $(`div.project-attributes-table[data-id="${id}"]`);
-
-      // tooltip options
-      const options = {
-        title: 'Edit and Delete only allowed for projects you have created',
-        placement: 'bottom'
-      };
-
-      $el.tooltip(options);
-      $el.tooltip('show');
-    }
-
-  }
-
-  onEditButtonMouseLeave(id) {
-    
-    // set the jquery element
-    const $el = $(`div.project-attributes-table[data-id="${id}"]`);
-
-    $el.tooltip('dispose');
-  }
-
-  onDeleteProjectClick(project: any) {
-
-    this.selectdProject = project;
-
-    // First check if the project has referential integrity to other tables in the database
-    this.getPrimaryKeyRefs(this.selectdProject.id);
-
-  }
-
+  // delete project modal
   deleteModal() {
     const projectData = {projectID: this.selectdProject.id};
 

@@ -1,3 +1,54 @@
+div.team-roles-cont {
+  height: 70vh;  /* TO-DO: replace with javascipt */
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+div.team-cont {
+  display: contents;
+}
+
+.team-roles-table {
+  display: table;
+  overflow: scroll;
+  vertical-align: middle;
+  border-spacing: 0px 2px;
+}
+
+div.team-roles-header {
+  display: table-header-group;
+}
+
+div.team-roles-body {
+  display: table-row-group;
+}
+
+div.team-roles-row {
+  display: table-row;
+  vertical-align: middle;
+}
+
+div.team-roles-cell {
+  display: table-cell;
+  vertical-align: middle;
+  width: 70px;
+  min-width: 70px;
+  height: 30px;
+  z-index: 0;
+}
+
+div.fte-table-header div.fte-table-row div.fte-table-cell.row-month-header {
+  /* css for the month-header cells in the header */
+  background-color: rgb(245, 245, 245);
+  position: sticky;
+  top: 30px;
+  z-index: 1;
+}
+
+
+
+
+
 .btn-primary {
   color: #fff;
   background-color: rgb(108, 117, 125);

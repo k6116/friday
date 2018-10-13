@@ -14,11 +14,17 @@
     </div>  
   </div>
           
-  <table class="table team-roles-table">
+
+
+  <table class="table">
     <thead style="line-height: 3rem">
       <tr>
         <th colspan="3" style="border-right: 1px solid #dee2e6;"></th>
-        <th *ngFor="let employee of teamOrgStructure; let k = index" class="rotate">{{ employee.fullName }}</th>
+
+        <th *ngFor="let employee of teamOrgStructure; let k = index">
+          <span class="rotate">{{ employee.fullName }}</span>
+        </th>
+        
       </tr>
     </thead>
     <tbody>
@@ -65,5 +71,4 @@
       </tr>
     </tbody>
   </table>
-
 </div> 
