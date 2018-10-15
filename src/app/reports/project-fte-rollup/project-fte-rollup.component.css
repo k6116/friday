@@ -9,6 +9,12 @@ td.drilldown-table-cell {
   font-weight: 500;
 }
 
+tr.drilldown-table-header-row {
+  height: 45px;
+  padding-bottom: 5px;
+  /* background-color: rgb(232, 232, 232); */
+}
+
 td.project-name-text {
   font-weight: 500;
 }
@@ -26,15 +32,15 @@ th.col-level {
 
 td.cell-level {
   font-weight: 500;
-  padding-left: 10px;
+  padding-left: 15px;
 }
 
 th.col-project {
-  width: 500px;
+  width: 450px;
 }
 
 th.col-type {
-  width: 200px;
+  width: 150px;
 }
 
 th.col-fte {
@@ -46,7 +52,7 @@ th.col-cum-fte {
 }
 
 th.col-spark-bar {
-  width: calc(100% - (100px + 500px + 200px + 100px + 100px));
+  width: calc(100% - (100px + 450px + 150px + 100px + 100px));
   /* width: 20%; */
 }
 

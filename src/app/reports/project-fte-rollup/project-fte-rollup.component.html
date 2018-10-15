@@ -7,7 +7,7 @@ considering topnav, sidenav, and footer -->
 
   <table *ngIf="displayTable" class="table table-sm rollup-table">
     <thead>
-      <tr>
+      <tr class="drilldown-table-header-row">
         <th scope="col" class="col-level">Level</th>
         <th scope="col" class="col-project">Project</th>
         <th scope="col" class="col-type">Type</th>
@@ -17,8 +17,8 @@ considering topnav, sidenav, and footer -->
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let tableRow of tableData">
-        <td class="drilldown-table-cell cell-level">{{ tableRow?.level }}</td>
+      <tr *ngFor="let tableRow of tableData" [style.background-color]="tableRow.highlight ? 'rgb(255, 255, 240)' : 'white'">
+        <td class="drilldown-table-cell cell-level">{{ tableRow.level }}</td>
         <td class="drilldown-table-cell project-name-text" [style.padding-left]="(5 + (tableRow.level - 1) * 15) + 'px'"><i [style.color]='tableRow.bulletColor' class="fa fa-circle point-icon"></i>{{ tableRow.name }}</td>
         <td class="drilldown-table-cell">{{ tableRow.type }}</td>
         <td class="drilldown-table-cell">{{ tableRow.fte }}</td>

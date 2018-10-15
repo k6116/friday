@@ -31,6 +31,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   chartData: any;
   drillLevel: number;
   drillHistory: any = [];
+  drillDownIDs: any = [];
   tableData: any = [];
   displayTable: boolean;
 
@@ -408,6 +409,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     if (levelOneItem.length) {
       // this.tableData.push(levelOneItem[0]);
       this.tableData.splice(0, 0, ...levelOneItem);
+      this.tableData[0].highlight = true;
     }
 
     console.log('this.tableData:');
@@ -436,13 +438,21 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     console.log('row of clicked item in table:');
     console.log(tableRow);
 
+    // remove all existing highlighted rows
+    // this.removeAllRowHighlights();
+
     const childItems = this.chartData.filter(data => {
       return data.parent === parentID;
     });
 
+    // childItems.forEach(item => {
+    //   item.highlight = true;
+    // });
+
     console.log('child items:');
     console.log(childItems);
 
+    // add the child items to the table, below the parent item
     if (childItems.length) {
       // this.tableData.push(childItems[0]);
       this.tableData.splice(tableRow, 0, ...childItems);
@@ -455,7 +465,81 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   }
 
 
-  
+  pushChildIDsIntoHistory(parentID) {
+
+    // filter to get child items
+    const childItems = this.chartData.filter(data => {
+      return data.parent === parentID;
+    });
+
+    const idArray: number[] = [];
+    childItems.forEach(item => {
+      idArray.push(item.id);
+    });
+    console.log('ids array:');
+    console.log(idArray);
+
+    this.drillDownIDs.push(idArray);
+
+    console.log('drill down ids array:');
+    console.log(this.drillDownIDs);
+
+  }
+
+
+  removeChildItemsFromTable() {
+
+    // get the last array of drill down ids
+    const tableIds = this.drillDownIDs[this.drillDownIDs.length - 1];
+
+    console.log('table ids to remove from table:');
+    console.log(tableIds);
+
+    // loop through the table data in reverse order
+    for (let i = this.tableData.length - 1; i >= 0; i--) {
+      if (tableIds.includes(this.tableData[i].id)) {
+        console.log(`found table id to remove at index: ${i}`);
+        this.tableData.splice(i, 1);
+      }
+    }
+
+    // remove the last table ids array
+    this.drillDownIDs.pop();
+
+    console.log('new table data with removed children:');
+    console.log(this.tableData);
+
+  }
+
+
+  highlightDisplayedItems(parentID, level?) {
+
+    // remove all existing highlighted rows
+    this.removeAllRowHighlights();
+
+    const childItems = this.chartData.filter(data => {
+      if (level) {
+        return data.level === level;
+      } else {
+        return data.parent === parentID;
+      }
+    });
+
+    childItems.forEach(item => {
+      item.highlight = true;
+    });
+
+  }
+
+
+  removeAllRowHighlights() {
+
+    this.tableData.forEach(row => {
+      row.highlight = false;
+    });
+
+
+  }
 
 
 
@@ -525,22 +609,34 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
               }
             }
             // this.chart.title.text = 'Project FTEs for Loki Program';
-            this.chart.setTitle({text: `Project FTEs for ${e.point.name}`});
+
+            let drilledDown = false;
 
             // console.log('test of that');
             // console.log(that.chartData);
             if (e.point.node.children.length) {
-              that.drillHistory.push({
-                level: e.point.level,
-                id: e.point.id,
-                name: e.point.name
-              });
+              drilledDown = true;
+              // that.drillHistory.push({
+              //   level: e.point.level,
+              //   id: e.point.id,
+              //   name: e.point.name
+              // });
             }
 
-            console.log('drill history:');
-            console.log(that.drillHistory);
+            if (drilledDown) {
 
-            that.pushChildItemsIntoTable(e.point.id);
+              this.chart.setTitle({text: `Project FTEs for ${e.point.name}`});
+
+              that.pushChildItemsIntoTable(e.point.id);
+
+              that.pushChildIDsIntoHistory(e.point.id);
+
+              that.highlightDisplayedItems(e.point.id);
+
+            }
+
+            // console.log('drill history:');
+            // console.log(that.drillHistory);
 
             // console.log('updated data');
             // console.log(this.data);
@@ -567,14 +663,14 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
     const that = this;
 
-    const temp = [
-      {
-        ids: [1, 2, 4]
-      },
-      {
-        ids: [1, 5, 6, 9, 10, 11]
-      }
-    ];
+    // const temp = [
+    //   {
+    //     ids: [1, 2, 4]
+    //   },
+    //   {
+    //     ids: [1, 5, 6, 9, 10, 11]
+    //   }
+    // ];
 
     $(function() {
       (function(H: any) {
@@ -600,6 +696,13 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
               }
             }
           }
+
+          // remove the drilled down children from the table
+          that.removeChildItemsFromTable();
+
+          // highlight the displayed items (next level up)
+          that.highlightDisplayedItems(undefined, level);
+
           // console.log('drill history:');
           // console.log(that.drillHistory);
           // console.log('data:');
