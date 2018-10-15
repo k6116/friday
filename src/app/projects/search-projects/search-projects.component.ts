@@ -715,6 +715,9 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     this.cacheService.projectSelectedFilter = this.selectedFilter;
     this.cacheService.projectSelectedValue = this.filterSelection;
 
+    // set flag for back button
+    this.cacheService.fromMyProjectsFlag = false;
+
     // navigate to the display page
     this.router.navigate([`/main/projects/display/${project.ProjectID}`]);
   }

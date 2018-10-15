@@ -105,8 +105,11 @@ export class ProjectsCreateModalComponent implements OnInit {
         this.websocketService.sendNewProject(res);
         // clear the projects browse data in the cache, to force the projects search component to refresh from the database
         this.cacheService.projectsBrowseData = undefined;
+
+        this.cacheService.raiseToast('success', `Project ${project.projectName} created`);
       },
       err => {
+        this.cacheService.raiseToast('error', err);
         // console.log(err);
       }
     );
