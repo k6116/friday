@@ -11,7 +11,7 @@ export class OrgViewerService {
 
   async getOrg(supervisorEmailAddress: string) {
     // get the requested org as flat array, synchronously
-    const startDate = '2018-08-01';
+    const startDate = '2018-09-01';
     const endDate = '2018-10-01';
     const queryEmail = 'ron_nersesian@keysight.com';
     this.org = await this.fetchApiData(queryEmail, startDate, endDate);

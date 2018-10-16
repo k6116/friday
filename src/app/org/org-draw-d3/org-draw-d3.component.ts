@@ -36,7 +36,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     d3.select('#d3-container').selectAll('*').remove();
 
     // set start position/scale of drawing, and size of nodes (to set default node spacing)
-    const initialTransform = d3.zoomIdentity.translate(400, 300).scale(1);
+    const initialTransform = d3.zoomIdentity.translate(100, 300).scale(1);
     const nodeSize = {height: 28, width: 20};
     const aspect = (window.innerWidth - 180) / (window.innerHeight - 70); // calculate aspect ratio, including side and top nav
     const height = 0.75 * window.innerHeight;
@@ -50,6 +50,17 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
         d._children = d.children;
         d._children.forEach(collapseNode);
         d.children = null;
+      }
+    }
+
+    function expandNode(d) {
+      // recursively expand a node and all its children
+      if (d._children) {
+        d.children = d._children;
+        d._children = null;
+      }
+      if (d.children) {
+        d.children.forEach(expandNode);
       }
     }
 
@@ -101,6 +112,22 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     root.children.forEach(initialCollapse);
     update(root);
 
+    // add toolbar button functionality
+    d3.select('#expandAll')
+    .on('click', () => {
+      expandNode(root);
+      update(root);
+    });
+
+    d3.select('#defaultCollapse')
+    .on('click', () => {
+      root.children.forEach(initialCollapse);
+      update(root);
+      d3.select('#d3-container').select('svg')
+      .call(zoom) // adds zoom functionality
+      .call(zoom.transform, initialTransform);  // applies initial transform
+    });
+
     function update(source) {
 
       // --- SETTINGS --- //
@@ -121,6 +148,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
 
       function hideChildren(d) {
         // function to temporarily hide/unhide child nodes on click
+        console.log(d);
         if (d.children) {
           d._children = d.children;
           d.children = null;
@@ -132,11 +160,32 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       }
 
       function colorNodeByType(d) {
-        return d._children ? 'silver' : '#fff';
+        if (!d.data.defaultCollapsed) {
+          // if node is in your manager chain, highlight with yellow (regardless of collapse state)
+          return '#fff572';
+        } else if (d._children) {
+          // if manager is collapsed, show greyed out
+          return '#d8d8d8';
+        }
+        return '#fff';
+      }
+
+      function colorBorderByFTEs(d) {
+        if (!d.data.teamFtes) {
+          return 'red';
+        }
+        const fteCompletion = d.data.teamFtes / d.data.teamCount;
+        if (fteCompletion < .5) {
+          return '#ffb121';
+        } else if (fteCompletion < 1) {
+          return '#58e454';
+        } else {
+          return 'green';
+        }
       }
 
       // Assigns the x and y position for the nodes
-      const treeData = treemap(source);
+      const treeData = treemap(root);
 
       // Compute the new tree layout.
       const nodes = treeData.descendants();
@@ -167,7 +216,8 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
         .attr('y', rectYpos)
         .attr('rx', rectBorderRadius)
         .attr('ry', rectBorderRadius)
-        .style('stroke-width', 1)
+        .style('stroke-width', 2)
+        .style('stroke', (d) => colorBorderByFTEs(d))
         .style('fill', (d) => colorNodeByType(d));
 
       // Add labels for the nodes
@@ -176,6 +226,19 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
         .attr('dy', `${textHeight}px`)
         .attr('text-anchor', 'start')
         .text( (d) => `${d.data.name}` );
+
+      nodeEnter.append('text')
+      .attr('style', 'font-family:FontAwesome')
+      .attr('y', rectYpos)
+      .attr('dy', `${textHeight}px`)
+      .attr('x', (d) => calcLabelWidth(d.data.name) - 24)
+      .text( (d) => {
+        if (d._children) {
+          return '\uf067';
+        } else if (d.children) {
+          return '\uf068';
+        }
+      });
 
       // --------- NODE UPDATE CONTENTS
       const nodeUpdate = nodeEnter.merge(node);
@@ -194,7 +257,8 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
         .attr('y', rectYpos)
         .attr('rx', rectBorderRadius)
         .attr('ry', rectBorderRadius)
-        .style('stroke-width', 1)
+        .style('stroke-width', 2)
+        .style('stroke', (d) => colorBorderByFTEs(d))
         .style('fill', (d) => colorNodeByType(d));
 
       // Remove any exiting nodes
@@ -209,8 +273,8 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       .attr('height', 1e-6);
 
       // on exit, reduce the opacity of text labels
-      nodeExit.select('text')
-      .style('fill-opacity', 1e-6);
+      nodeExit.selectAll('text')
+      .style('opacity', 1e-6);
 
       // ****************** links section ***************************
 
