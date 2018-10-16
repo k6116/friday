@@ -17,6 +17,7 @@ export class TeamRolesComponent implements OnInit {
   teamOrgStructure: any;
   teamEditableMembers: any;
   totalArray: any;
+  showSpinner: boolean;
 
   // for jobtitle and subtiitle combobox
   jobTitles: any;           // List of jobtitles
@@ -43,6 +44,7 @@ export class TeamRolesComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.showSpinner = true;
     // get the token from local storage
     // NOTE: we can count on the token being there; if it is not, the user would have been logged out already
     // with the AuthGuardService on the main route
@@ -53,7 +55,8 @@ export class TeamRolesComponent implements OnInit {
     const permRes = await this.apiDataFteService.checkTeamFTEAdminPermission(token);
 
     if (permRes.length > 0) {
-      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      // this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      this.loginAsEmail = 'ethan_hunt@keysight.com';
       // this.loginAsEmail = 'ermina_chua@keysight.com';
       this.displayAdminViewMessage = true;
     } else {
@@ -98,6 +101,7 @@ export class TeamRolesComponent implements OnInit {
         }
       }
     }
+    this.showSpinner = false;
   }
 
   async getTeam(email: string): Promise<any> {

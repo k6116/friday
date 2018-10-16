@@ -1,0 +1,66 @@
+
+<div class="container-fluid">
+
+    <!-- buttons row -->
+  <div class="row row-custom">
+    <div class="col-sm col-custom">
+      <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
+        <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+      </button>
+    </div>
+  </div>
+  
+  <!-- begin row for FTE entry table -->
+  <div class="row row-custom">
+  
+    <!-- block for FTE entry div table -->
+    <div class="col-sm col-custom fte-table-container">
+        <div class="fte-table">
+  
+          <!-- Table Headers with employee names -->
+          <div class="fte-table-header">
+
+            <!-- placeholer row -->
+            <div class="fte-table-row">
+              <div class="fte-table-cell row-month-header col-projects-totals">Project</div>
+              <div class="fte-table-cell row-month-header col-projects-roles">Role</div>
+            </div>
+            
+            <!-- names row -->
+            <div class="fte-table-row">
+              <div class="fte-table-cell col-projects-totals">&nbsp;</div>
+              <div class="fte-table-cell col-projects-roles">&nbsp;</div> <!-- spacer for project-role column -->
+              <ng-container *ngFor="let employee of teamOrgStructure; let k = index">
+                <div class="fte-table-cell border-bottom rotate">{{ employee.fullName }}</div>
+              </ng-container>
+            </div>
+            
+          </div>
+  
+          <div class="fte-table-body">
+            <!-- loop through each jobtitle, one row per jobtitle -->
+            <ng-container *ngFor="let jobTitle of employeesJobTitlesNested; let i = index">
+              <div class="fte-table-row">
+                <div class="fte-table-cell col-project-name">{{ jobTitle.JobTitleName }}</div>
+                <div class="fte-table-cell col-project-name">{{ jobTitle.JobSubTitleName }}</div>
+
+                <!-- loop through each employees's role -->
+                <ng-container *ngFor="let employee of teamOrgStructure; let j = index">
+                  <div class="fte-table-cell">  
+                    <div class="custom-control custom-radio">                    
+                      <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (change)="onSelectChange(i, j, jobTitle)">
+                      <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+  
+        </div> <!-- end div table -->
+  
+    </div> <!-- end div that controls entire FTE entry table visibility -->
+  </div> <!-- end row for FTE entry table -->
+  
+  </div> <!-- end FTE component container div -->
+  
