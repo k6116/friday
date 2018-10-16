@@ -35,13 +35,13 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     // kill any existing drawings, if any
     d3.select('#d3-container').selectAll('*').remove();
 
-    // set start position/scale of drawing, and size of nodes (to set default node spacing)
-    const initialTransform = d3.zoomIdentity.translate(10, 300).scale(.9);
-    const nodeSize = {height: 28, width: 20};
+    const nodeSize = {height: 28, width: 200};
     const aspect = (window.innerWidth - 180) / (window.innerHeight - 70); // calculate aspect ratio, including side and top nav
     const height = 0.75 * window.innerHeight;
     const width = height * aspect;
     const zoomSpeed = 1700; // some number between 400 and 2000
+    // set start position/scale of drawing, and size of nodes (to set default node spacing)
+    const initialTransform = d3.zoomIdentity.translate(width / 2, 50).scale(.9);
 
     // HELPER FUNCTIONS //
     function collapseNode(d) {
@@ -100,7 +100,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       .call(zoom.transform, initialTransform);  // applies initial transform
 
     // declares a tree layout and assigns the size
-    const treemap = d3.tree().nodeSize([nodeSize.height, nodeSize.width]);
+    const treemap = d3.tree().nodeSize([nodeSize.width, nodeSize.height]);
 
     // Assigns data for root node, and the starting location of the root node
     const root = d3.hierarchy(bomJson);
@@ -136,7 +136,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     function update(source) {
 
       // --- SETTINGS --- //
-      const treeLevelSeparation = 450;  // horizontal spacing between tiers/levels of the BOM tree
+      const treeLevelSeparation = 280;  // horizontal spacing between tiers/levels of the BOM tree
       const collapseAnimSpeed = 750;
       const tooltipAnimSpeed = 100;
       const rectXpos = -8;
@@ -166,11 +166,11 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       function colorNodeByFTE(d) {
         // set background color of node based on percent of a manager's subordinate's FTE completion
         if (!d.data.teamFtes) {
-          return '#ff6363';
+          return '#f23535';
         }
         const fteCompletion = d.data.teamFtes / d.data.teamCount;
         if (fteCompletion < .5) {
-          return '#ffb121';
+          return '#ffdc5e';
         } else if (fteCompletion < 1) {
           return '#58e454';
         } else {
@@ -198,7 +198,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       // Enter any new modes at the parent's previous position.
       const nodeEnter = node.enter().append('g')
       .attr('class', 'node')
-      .attr('transform', (d) => `translate(${source.y0},${source.x0})`)
+      .attr('transform', (d) => `translate(${source.x0},${source.y0})`)
       .on('click', hideChildren);
 
       // when a node enters the drawing, draw rectangle for each node
@@ -219,6 +219,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       .attr('y', rectYpos)
       .attr('dy', `${textHeight}px`)
       .attr('text-anchor', 'start')
+      .attr('fill', (d) => d.data.teamFtes ? 'black' : 'white')
       .text( (d) => `${d.data.name}` );
 
       // add FA icon to show whether node is collapsible/expandable
@@ -242,7 +243,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       // Transition to the proper position for the node
       nodeUpdate.transition()
       .duration(collapseAnimSpeed)
-      .attr('transform', (d) => `translate(${d.y},${d.x})`);
+      .attr('transform', (d) => `translate(${d.x},${d.y})`);
 
       // Update the node attributes and style
       nodeUpdate.select('rect.node')
@@ -270,7 +271,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       // Remove any exiting nodes
       const nodeExit = node.exit().transition()
       .duration(collapseAnimSpeed)
-      .attr('transform', (d) => `translate(${source.y},${source.x})`)
+      .attr('transform', (d) => `translate(${source.x},${source.y})`)
       .remove();
 
       // on exit, shrink node rectangle size to 0
@@ -291,9 +292,9 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       // Enter any new links at the parent's previous position.
       const linkEnter = link.enter().insert('path', 'g')
         .attr('class', 'link')
-        .attr('d', d3.linkHorizontal()
-          .source( () => [source.y0, source.x0])
-          .target( () => [source.y0, source.x0])
+        .attr('d', d3.linkVertical()
+          .source( () => [source.x0, source.y0])
+          .target( () => [source.x0, source.y0])
         );
 
       // UPDATE
@@ -303,9 +304,9 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       linkUpdate.transition()
         .duration(collapseAnimSpeed)
         .attr('d',
-          d3.linkHorizontal()
-          .source( (d) => [d.parent.y + d.parent.width - 10, d.parent.x] )
-          .target( (d) => [d.y, d.x])
+          d3.linkVertical()
+          .source( (d) => [d.parent.x - 5 + (d.parent.width / 2), d.parent.y] )
+          .target( (d) => [d.x - 5 + (d.width / 2), d.y])
         );
 
       // Remove any exiting links
@@ -313,8 +314,8 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
         .duration(collapseAnimSpeed)
         .attr('d',
           d3.linkHorizontal()
-          .source( () => [source.y, source.x])
-          .target( () => [source.y, source.x])
+          .source( () => [source.x, source.y])
+          .target( () => [source.x, source.y])
         )
         .remove();
 
