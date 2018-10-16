@@ -47,7 +47,7 @@ export class DisplayProjectComponent implements OnInit {
     if (event.code === 'Escape') {
       // if user is in full-screen mode, pressing escape will close it
       const currentState = $('.bom-chart-cont').attr('class');
-      if (currentState === 'bom-chart-cont bom-chart-cont-full') {
+      if (currentState.search('bom-chart-cont-full')) {
         this.expandBomFullscreen();
       }
     }

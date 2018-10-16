@@ -57,6 +57,7 @@ export class OrgViewerService {
       return relationship.PERSON_ID;
     } else {
       let nextManager = [];
+      // concatenating the recursive output first creates a list of manager IDs where 0 index is Ron and last index is the user's boss
       nextManager = nextManager.concat(this.buildManagerChain(relationship.SUPERVISOR_ID));
       nextManager = nextManager.concat(personID);
       return nextManager;

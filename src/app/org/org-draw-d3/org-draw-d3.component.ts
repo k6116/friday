@@ -36,7 +36,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     d3.select('#d3-container').selectAll('*').remove();
 
     // set start position/scale of drawing, and size of nodes (to set default node spacing)
-    const initialTransform = d3.zoomIdentity.translate(100, 300).scale(1);
+    const initialTransform = d3.zoomIdentity.translate(10, 300).scale(.9);
     const nodeSize = {height: 28, width: 20};
     const aspect = (window.innerWidth - 180) / (window.innerHeight - 70); // calculate aspect ratio, including side and top nav
     const height = 0.75 * window.innerHeight;
@@ -112,15 +112,20 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     root.children.forEach(initialCollapse);
     update(root);
 
-    // add toolbar button functionality
+    // TOOLBAR BUTTONS
+
+    // add toolbar button functionality for expand all nodes
     d3.select('#expandAll')
     .on('click', () => {
       expandNode(root);
       update(root);
     });
 
+    // add toolbar functionality for reset collapse to
     d3.select('#defaultCollapse')
     .on('click', () => {
+      // first, expand all nodes, then apply the initial collapse
+      expandNode(root);
       root.children.forEach(initialCollapse);
       update(root);
       d3.select('#d3-container').select('svg')
@@ -131,7 +136,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     function update(source) {
 
       // --- SETTINGS --- //
-      const treeLevelSeparation = 480;  // horizontal spacing between tiers/levels of the BOM tree
+      const treeLevelSeparation = 450;  // horizontal spacing between tiers/levels of the BOM tree
       const collapseAnimSpeed = 750;
       const tooltipAnimSpeed = 100;
       const rectXpos = -8;
@@ -148,7 +153,6 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
 
       function hideChildren(d) {
         // function to temporarily hide/unhide child nodes on click
-        console.log(d);
         if (d.children) {
           d._children = d.children;
           d.children = null;
@@ -159,20 +163,10 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
         update(d);
       }
 
-      function colorNodeByType(d) {
-        if (!d.data.defaultCollapsed) {
-          // if node is in your manager chain, highlight with yellow (regardless of collapse state)
-          return '#fff572';
-        } else if (d._children) {
-          // if manager is collapsed, show greyed out
-          return '#d8d8d8';
-        }
-        return '#fff';
-      }
-
-      function colorBorderByFTEs(d) {
+      function colorNodeByFTE(d) {
+        // set background color of node based on percent of a manager's subordinate's FTE completion
         if (!d.data.teamFtes) {
-          return 'red';
+          return '#ff6363';
         }
         const fteCompletion = d.data.teamFtes / d.data.teamCount;
         if (fteCompletion < .5) {
@@ -198,36 +192,38 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
 
       // assign each node a sequential ID
       const node = svg.selectAll('g.node')
-        .data(nodes, (d) => d.id || (d.id = i++));
+      .data(nodes, (d) => d.id || (d.id = i++));
 
       // --------- NODE ENTRY ANIMATIONS
       // Enter any new modes at the parent's previous position.
       const nodeEnter = node.enter().append('g')
-        .attr('class', 'node')
-        .attr('transform', (d) => `translate(${source.y0},${source.x0})`)
-        .on('click', hideChildren);
+      .attr('class', 'node')
+      .attr('transform', (d) => `translate(${source.y0},${source.x0})`)
+      .on('click', hideChildren);
 
       // when a node enters the drawing, draw rectangle for each node
       nodeEnter.append('rect')
-        .attr('class', 'node')
-        .attr('width', (d) => d.width = calcLabelWidth(d.data.name))
-        .attr('height', rectHeight)
-        .attr('x', rectXpos)
-        .attr('y', rectYpos)
-        .attr('rx', rectBorderRadius)
-        .attr('ry', rectBorderRadius)
-        .style('stroke-width', 2)
-        .style('stroke', (d) => colorBorderByFTEs(d))
-        .style('fill', (d) => colorNodeByType(d));
+      .attr('class', 'node')
+      .attr('width', (d) => d.width = calcLabelWidth(d.data.name))
+      .attr('height', rectHeight)
+      .attr('x', rectXpos)
+      .attr('y', rectYpos)
+      .attr('rx', rectBorderRadius)
+      .attr('ry', rectBorderRadius)
+      .style('stroke-width', 1)
+      .style('stroke', 'black')
+      .style('fill', (d) => colorNodeByFTE(d));
 
       // Add labels for the nodes
       nodeEnter.append('text')
-        .attr('y', rectYpos)
-        .attr('dy', `${textHeight}px`)
-        .attr('text-anchor', 'start')
-        .text( (d) => `${d.data.name}` );
+      .attr('y', rectYpos)
+      .attr('dy', `${textHeight}px`)
+      .attr('text-anchor', 'start')
+      .text( (d) => `${d.data.name}` );
 
+      // add FA icon to show whether node is collapsible/expandable
       nodeEnter.append('text')
+      .attr('class', 'collapse-icon')
       .attr('style', 'font-family:FontAwesome')
       .attr('y', rectYpos)
       .attr('dy', `${textHeight}px`)
@@ -245,27 +241,37 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
 
       // Transition to the proper position for the node
       nodeUpdate.transition()
-        .duration(collapseAnimSpeed)
-        .attr('transform', (d) => `translate(${d.y},${d.x})`);
+      .duration(collapseAnimSpeed)
+      .attr('transform', (d) => `translate(${d.y},${d.x})`);
 
       // Update the node attributes and style
       nodeUpdate.select('rect.node')
-        .attr('class', 'node')
-        .attr('width', (d) => d.width = calcLabelWidth(d.data.name))
-        .attr('height', rectHeight)
-        .attr('x', rectXpos)
-        .attr('y', rectYpos)
-        .attr('rx', rectBorderRadius)
-        .attr('ry', rectBorderRadius)
-        .style('stroke-width', 2)
-        .style('stroke', (d) => colorBorderByFTEs(d))
-        .style('fill', (d) => colorNodeByType(d));
+      .attr('class', 'node')
+      .attr('width', (d) => d.width = calcLabelWidth(d.data.name))
+      .attr('height', rectHeight)
+      .attr('x', rectXpos)
+      .attr('y', rectYpos)
+      .attr('rx', rectBorderRadius)
+      .attr('ry', rectBorderRadius)
+      .style('stroke-width', 1)
+      .style('stroke', 'black')
+      .style('fill', (d) => colorNodeByFTE(d));
+
+      // on update, change the icon to match new collapsibility state
+      nodeUpdate.select('text.collapse-icon')
+      .text( (d) => {
+        if (d._children) {
+          return '\uf067';
+        } else if (d.children) {
+          return '\uf068';
+        }
+      });
 
       // Remove any exiting nodes
       const nodeExit = node.exit().transition()
-        .duration(collapseAnimSpeed)
-        .attr('transform', (d) => `translate(${source.y},${source.x})`)
-        .remove();
+      .duration(collapseAnimSpeed)
+      .attr('transform', (d) => `translate(${source.y},${source.x})`)
+      .remove();
 
       // on exit, shrink node rectangle size to 0
       nodeExit.select('rect')

@@ -1,3 +1,7 @@
+.container-fluid.org-viewer-cont {
+  margin-bottom: 20px;
+}
+
 .org-chart-cont {
   position: relative;
   width: 100%;

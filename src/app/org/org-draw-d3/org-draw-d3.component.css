@@ -16,5 +16,8 @@
 }
 
 .toolbar {
-  margin-left: 20px;
+  position: absolute;
+  left: 20px;
+  top: 10px;
+  /* margin-left: 20px; */
 }

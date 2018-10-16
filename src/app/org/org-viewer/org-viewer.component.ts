@@ -17,7 +17,7 @@ export class OrgViewerComponent implements OnInit {
     if (event.code === 'Escape') {
       // if user is in full-screen mode, pressing escape will close it
       const currentState = $('.org-chart-cont').attr('class');
-      if (currentState === 'org-chart-cont org-chart-cont-full') {
+      if (currentState.search('org-chart-cont-full')) {
         this.expandChartFullscreen();
       }
     }
@@ -30,7 +30,7 @@ export class OrgViewerComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.toolsService.hideFooter();
+    // this.toolsService.hideFooter();
     const bla = await this.orgViewerService.getOrg(this.authService.loggedInUser.managerEmailAddress);
     this.orgJson = bla;
   }
