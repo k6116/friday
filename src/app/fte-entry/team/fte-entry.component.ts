@@ -39,14 +39,13 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   deleteModalSubscription: Subscription;
   FTEFormGroup: FormGroup;
   newPlanForm: FormGroup;
-  allTeamFTEs: any;
   teamFTEs: any;  // array to store team FTE data
   teamFTEsFlat: any;  // array to store team FTE data (flattened/non-treeized version)
   teamFTEsFlatLive: any;
   display: boolean; // TODO: find a better solution to FTE display timing issue
   displayFTETable = false;
   projects: any;  // for aliasing formarray
-  allProjects: any;
+  allProjects: any[] = [];
   months: string[] = [];
   employeeTotals: number[];
   employeeTotalsValid: boolean[];
@@ -68,7 +67,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   currentPlan: any;
   disablePreviousMonth: boolean;
   disableDeletePlan: boolean;
-  FTEFormGroupLive: any;
+  FTEFormGroupLive: any[] = [];
   newPlanName: string;
   planNameRegex: any;
   employeeVisible = new Array;
@@ -241,12 +240,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log(this.FTEFormGroup);
     // console.log('this.FTEFormGroup.value.FTEFormArray', this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
-    // console.log('teamFTE', this.teamFTEs);
-    // console.log('allTeamFTE', this.allTeamFTEs);
+    console.log('teamFTE', this.teamFTEs);
     // console.log('teamFTEFlat', this.teamFTEsFlat);
-    // console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
-    // console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
-    // console.log('this.allProjects', this.allProjects)
+    console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
+    console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
+    console.log('this.allProjects', this.allProjects)
     // console.log('this.projects', this.projects)
     // console.log('this.teamOrgStructure', this.teamOrgStructure);
     // console.log('this.filterEmployees', this.filterEmployees)
@@ -254,7 +252,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
     // console.log('this.employeeTotals', this.employeeTotals)
-    // console.log('this.projectVisible', this.projectVisible)
+    console.log('this.projectVisible', this.projectVisible)
     // console.log('this.filterProjects', this.filterProjects)
     // console.log('this.filterProjectsModel', this.filterProjectsModel)
     // console.log('this.filterProjectsOptions', this.filterProjectsOptions)
@@ -281,6 +279,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // Second, retrieve data for that plan
     // If plan does not exist, create one
     // Promise.all allows us to run two functions asynchronously
+    this.projectVisible = [];
+
     Promise.all([
       this.getPlanList(this.loginAsEmail),
       this.getTeam(this.loginAsEmail),
@@ -293,11 +293,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           });
         } else {
           await this.getPlan(this.loginAsEmail, this.defaultPlan);
+          this.updateEmployeeFilters();
           this.updateProjectFilters(true);
           this.comparePlanToFTE();
           this.createFtePlanningChartData(this.allProjects);
           this.checkDisableDeletePlan();
-          this.updateEmployeeTotals();
           this.setEmployeeTotalsBorder();
           this.displayFTETable = true;
           this.allProjects.forEach(proj => {
@@ -388,7 +388,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onModalClosed(selectedProject: any) {
-    // console.log('this.teamFTEs', this.teamFTEs)
     this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
@@ -400,19 +399,13 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
     const currentProjectsList = [];
     fteFormArray.forEach( project => {
-      if (project.length !== 0) {
-        currentProjectsList.push(project[0].projectID);
-      }
+      currentProjectsList.push(project.projectID);
     });
-
-    // add the project to the projectvisible array so it shows as soon as it is added
-    this.projectVisible.push(true);
 
     const alreadyExists = currentProjectsList.find( value => {
       return value === selectedProject.ProjectID;
     });
     if (!alreadyExists) {
-
       this.addNewProjectToForm(selectedProject.ProjectID, selectedProject.ProjectName);
       this.cacheService.raiseToast('success', `Added Project ${selectedProject.ProjectName}.  Please check the bottom of the list`);
     } else {
@@ -443,20 +436,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     if (value === 0) {
       FTEFormGroup.patchValue({
         fte: null
-      });
-    }
-
-    if ( (FTEFormGroup.value.fte === null) && (FTEFormGroup.value.recordID !== null) ) {
-      // if user typed a null and the recordID is accessible, delete that record
-      // TODO: get the newly created recordID after a save transaction is completed
-      FTEFormGroup.patchValue({
-        toBeDeleted: true,
-        updated: false
-      });
-    } else {
-      // user changed the value, so set the update flag for us to update it in the DB
-      FTEFormGroup.patchValue({
-        updated: true
       });
     }
 
@@ -497,40 +476,25 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // Any other month is handled on a case by case basis per edit. This is ok since the controller function only checks the
     //  toBeDeleted, newRecord, updated booleans
 
-    const foundIndexFG = this.FTEFormGroupLive[this.FTEFormGroupLive.length - 1].findIndex(o =>
+    const foundIndexFG = this.FTEFormGroupLive.findIndex(o =>
       o.employeeID === FTEFormGroup.value.employeeID &&
       o.projectID === FTEFormGroup.value.projectID &&
       moment(o.month).utc().format('YYYY-MM-DD') ===
       moment(FTEFormGroup.value.month, 'MM-DD-YYYY').format('YYYY-MM-DD')
     );
 
-    if (FTEFormGroup.value.month === moment(this.currentMonth).format('MM-DD-YYYY')) {
-      this.FTEFormGroupLive[i][j].emailAddress = FTEFormGroup.value.emailAddress;
-      this.FTEFormGroupLive[i][j].employeeID = FTEFormGroup.value.employeeID;
-      this.FTEFormGroupLive[i][j].fte = FTEFormGroup.value.fte;
-      this.FTEFormGroupLive[i][j].fullName = FTEFormGroup.value.fullName;
-      this.FTEFormGroupLive[i][j].month = FTEFormGroup.value.month;
-      this.FTEFormGroupLive[i][j].newRecord = FTEFormGroup.value.newRecord;
-      this.FTEFormGroupLive[i][j].projectID = FTEFormGroup.value.projectID;
-      this.FTEFormGroupLive[i][j].projectName = FTEFormGroup.value.projectName;
-      this.FTEFormGroupLive[i][j].recordID = FTEFormGroup.value.recordID;
-      this.FTEFormGroupLive[i][j].toBeDeleted = FTEFormGroup.value.toBeDeleted;
-      this.FTEFormGroupLive[i][j].updated = FTEFormGroup.value.updated;
-    } else if (foundIndexFG !== -1) {
-      this.FTEFormGroupLive[this.FTEFormGroupLive.length - 1][foundIndexFG].fte = FTEFormGroup.value.fte;
+    if (foundIndexFG !== -1) {
+      this.FTEFormGroupLive[foundIndexFG].fte = FTEFormGroup.value.fte;
     } else {
-      this.FTEFormGroupLive[this.allProjects.length].push({
+      this.FTEFormGroupLive.push({
         emailAddress: FTEFormGroup.value.emailAddress,
         employeeID: FTEFormGroup.value.employeeID,
         fte: FTEFormGroup.value.fte,
         fullName: FTEFormGroup.value.fullName,
         month: FTEFormGroup.value.month,
-        newRecord: FTEFormGroup.value.newRecord,
         projectID: FTEFormGroup.value.projectID,
         projectName: FTEFormGroup.value.projectName,
         recordID: FTEFormGroup.value.recordID,
-        toBeDeleted: FTEFormGroup.value.toBeDeleted,
-        updated: FTEFormGroup.value.updated
       });
     }
 
@@ -575,7 +539,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     let totals = new Array(employeeCount).fill(0);
 
     // loop through each project
-    FTEFormArray.forEach( project => {
+    FTEFormArray.forEach(project => {
       project.forEach( (projemp, i) => {
         totals[i] += +projemp.fte;
       });
@@ -635,13 +599,13 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           this.cacheService.raiseToast('success', res.message);
 
           Promise.all([
-          // rebuild the FTE entry page
-          this.getPlan(this.loginAsEmail, this.currentPlan),
-          this.buildFteEntryForm(),
-          this.displayFTETable = true,
-          this.FTEFormGroup.markAsUntouched(),
-          this.checkDisableDeletePlan(),
-          this.displayNewPlanModal = true
+            // rebuild the FTE entry page
+            this.getPlan(this.loginAsEmail, this.currentPlan),
+            this.buildFteEntryForm(),
+            this.displayFTETable = true,
+            this.FTEFormGroup.markAsUntouched(),
+            this.checkDisableDeletePlan(),
+            this.displayNewPlanModal = true
           ]).then(next => {
             this.updateProjectFilters(false);
           });
@@ -777,9 +741,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           month: [moment(this.setMonth).format('MM-01-YYYY')],
           // convert db values to a percent without the percent sign. Ensure no decimals XX.000.
           fte: [foundEntry ? (foundEntry['allocations:fte'] * 100).toFixed(0) : null],
-          newRecord: [foundEntry ? false : true],
-          updated: [false],
-          toBeDeleted: [false]
         })
       );
     });
@@ -798,44 +759,34 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     newProject.projectID = projectID;
     newProject.projectName = projectName;
 
-     // loop through the already-built months array and initialize null FTEs for each month in this new project
-     newProject.allocations = new Array<AllocationsArray>();
+    // loop through the already-built months array and initialize null FTEs for each month in this new project
+    newProject.allocations = new Array<AllocationsArray>();
 
-     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-     this.addProjectToFormArray(FTEFormArray, newProject, true);
+    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+    this.addProjectToFormArray(FTEFormArray, newProject, true);
 
-     // Since a new project is being added, we need to move the last array thats
-     //  being used dynamically for case-by-case updates, back to the end
-     const tempArr = this.FTEFormGroupLive[this.FTEFormGroupLive.length - 1];
-     this.FTEFormGroupLive.pop();
-     this.FTEFormGroupLive.push(this.FTEFormGroup.value.FTEFormArray[this.FTEFormGroup.value.FTEFormArray.length - 1]);
-     this.FTEFormGroupLive.push(tempArr);
+    this.teamFTEs.push({
+      planName: this.currentPlan,
+      projectID: newProject.projectID,
+      projectName: newProject.projectName,
+      allocations: newProject.allocations
+    });
 
-    // CONFUSED!!!!!
-    // For some reason, when onModalClosed is activated and this chunk of code below is uncommented,
-    //  this.teamFTEs adds the new project TWICE. Cannot find where teamFTEs is being used when user click the "select"
-    //  button on the projectsModal.
-    //  this.teamFTEs.push({
-    //    planName: this.currentPlan,
-    //    projectID: newProject.projectID,
-    //    projectName: newProject.projectName,
-    //    allocations: newProject.allocations
-    //  });
+    this.allProjects.push({
+      projectID: projectID,
+      projectName: projectName
+    });
 
-     this.allTeamFTEs.push({
-       planName: this.currentPlan,
-       projectID: newProject.projectID,
-       projectName: newProject.projectName,
-       allocations: newProject.allocations
-     });
-
-    //  this.allProjects.push(FTEFormArray.controls[FTEFormArray.controls.length - 1]);
-     this.projects = FTEFormArray.controls;
+    this.projects = this.allProjects;
 
      // Update the project filter to add the newly added project
      this.filterProjectsOptions.push({
        id: this.allProjects.length,
        name: this.allProjects[this.allProjects.length - 1].projectName
+     });
+     this.filterProjects.push({
+      id: this.allProjects.length,
+      name: this.allProjects[this.allProjects.length - 1].projectName
      });
      this.filterProjectsModel.push(this.allProjects.length);
      this.filterProjectsDropdown.renderFilteredOptions = this.filterProjectsOptions;
@@ -857,7 +808,10 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
        ['allocations:fte']: null
      });
 
-     this.displayFTETable = true;
+     // add the project to the projectvisible array so it shows as soon as it is added
+    this.projectVisible.push(true);
+
+    this.displayFTETable = true;
   }
 
   onTrashClick(index: number) {
@@ -946,7 +900,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     });
   }
 
-  createProject() {
+  onCreateProjectClick() {
     setTimeout(() => {
       this.projectsCreateModalComponent.resetForm();
     }, 0);
@@ -976,14 +930,16 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
       this.addNewProjectToForm(selectedProject.projectID, selectedProject.projectName);
 
-      this.cacheService.raiseToast('success', `Added Project ${selectedProject.ProjectName}.  Please check the bottom of the list`);
+      this.cacheService.raiseToast('success', `Added Project ${selectedProject.projectName}.  Please check the bottom of the list`);
 
     } else {
-      this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
+      this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.projectName}.  It already exists in your FTE table`);
     }
   }
 
   async getTeam(email: string): Promise<any> {
+    this.teamOrgStructure = [];
+    this.filteredEmployees = [];
     this.teamOrgStructure = await this.apiDataOrgService.getEmployeeList(email).toPromise();
     this.cacheService.teamEmployeeList = this.teamOrgStructure;
     // this.displayEmployees = this.teamOrgStructure;
@@ -994,6 +950,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
   buildTeamEditableMembers() {
     // build the string of employee email address to use as a parameter for the SP resources.DisplayTeamFTE
+    this.teamEditableMembers = '';
     for (let i = 0; i < this.teamOrgStructure.length; i++) {
       this.teamEditableMembers = this.teamOrgStructure[i].emailAddress + '\',\'' + this.teamEditableMembers;
     }
@@ -1012,8 +969,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // create new plan and get FTE data
     const res = await this.apiDataFteService.indexNewPlan(emailAddress, firstMonth, creatorEmailAddress, planName).toPromise();
 
-    this.allTeamFTEs = res.nested;
-    this.teamFTEs = this.allTeamFTEs;
+    this.teamFTEs = res.nested;
     this.teamFTEsFlat = res.flat;
     this.teamFTEsFlatLive = this.teamFTEsFlat;
 
@@ -1044,25 +1000,53 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
   async getPlan(userID: any, planName: string): Promise<any> {
     const res = await this.apiDataFteService.indexPlan(userID, planName).toPromise();
-    this.allTeamFTEs = res.nested;
-    this.teamFTEs = this.allTeamFTEs;
+    this.teamFTEs = res.nested;
     this.teamFTEsFlat = res.flat;
     this.teamFTEsFlatLive = this.teamFTEsFlat;
 
-    this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
-    this.display = true;  // ghetto way to force rendering after FTE data is fetched
-    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-    this.allProjects = FTEFormArray.controls;
+    this.allProjects = [];
+    res.nested.forEach(proj => {
+      this.allProjects.push({
+        projectID: proj.projectID,
+        projectName: proj.projectName
+      });
+    });
     this.projects = this.allProjects;
 
-    // Initialize the cache array for the FTEFormGroup, then add an extra element to add all edits in months other than the current
-    this.FTEFormGroupLive = this.FTEFormGroup.value.FTEFormArray;
-    this.FTEFormGroupLive.push([]);
+    this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
+    this.display = true;  // ghetto way to force rendering after FTE data is fetched
 
+    // Initialize the cache array for the FTEFormGroup, then add an extra element to add all edits in months other than the current
+    // this.FTEFormGroupLive = this.FTEFormGroup.value.FTEFormArray;
+    // this.FTEFormGroupLive.push([]);
+    this.initFormGroupArrays();
     this.updateEmployeeTotals();
     this.setEmployeeTotalsBorder();
 
     // this.updateProjectFilters();
+  }
+
+  initFormGroupArrays() {
+    // Need to update the FTEFormGroupLive array to include FTE values for all months
+    //  so if user doesn't browse to a month, it will insert the current values again
+    //  since the controller deletes all values first
+    this.FTEFormGroupLive = [];
+
+    this.teamFTEsFlatLive.forEach(teamFTE => {
+      // if (moment(teamFTE['allocations:fiscalDate']).utc().format('YYYY-MM-DD') !== moment(this.setMonth).format('YYYY-MM-DD')) {
+        // this.FTEFormGroupLive[this.allProjects.length].push({
+        this.FTEFormGroupLive.push({
+          emailAddress: teamFTE['allocations:emailAddress'],
+          employeeID: teamFTE['allocations:employeeID'],
+          fte: String(teamFTE['allocations:fte'] * 100),
+          fullName: teamFTE['allocations:fullName'],
+          month: teamFTE['allocations:fiscalDate'],
+          projectID: teamFTE.projectID,
+          projectName: teamFTE.projectName,
+          recordID: teamFTE['allocations:recordID'],
+        });
+      // }
+    });
   }
 
   async comparePlanToFTE() {
@@ -1122,6 +1106,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   updateEmployeeFilters() {
+    this.filterEmployeesOptions = [];
+    this.filterEmployeesModel = [];
     // Update list for employee dropdown filter
     for (let i = 0; i < this.teamOrgStructure.length; i++ ) {
       this.filterEmployeesOptions.push({
@@ -1143,6 +1129,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.filterProjectsModelStaging = [];
     this.filterProjectsOptionsStaging = [];
 
+    // loop through allProjects and add all project names as a filter option
+    // using "staging" variables because filter objects behave unpredictably when dynamically updating their models
     for (let i = 0; i < this.allProjects.length; i++ ) {
       this.filterProjectsOptionsStaging.push({
         id: i + 1,
@@ -1154,17 +1142,17 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.filterProjectsOptions = this.filterProjectsOptionsStaging;
     this.filterProjectsModel = this.filterProjectsModelStaging;
 
-    // // Set the filterProjectsModel back to the selections user had originally
-    // if (!init) {
-    //   this.filterProjectsModel = [];
-    //   for (let i = 0; i < this.filterProjectsOptions.length; i++) {
-    //     for (let j = 0; j < tempFilterList.length; j++) {
-    //       if (this.filterProjectsOptions[i].name === tempFilterList[j].name) {
-    //         this.filterProjectsModel.push(this.filterProjectsOptions[i].id);
-    //       }
-    //     }
-    //   }
-    // }
+    // Set the filterProjectsModel back to the selections user had originally
+    if (!init) {
+      this.filterProjectsModel = [];
+      for (let i = 0; i < this.filterProjectsOptions.length; i++) {
+        for (let j = 0; j < tempFilterList.length; j++) {
+          if (this.filterProjectsOptions[i].name === tempFilterList[j].name) {
+            this.filterProjectsModel.push(this.filterProjectsOptions[i].id);
+          }
+        }
+      }
+    }
 
     // For some reason, this does not render dynamically, so this will force the rendering
     //  by accessing the model and updating the renderFilteredOptions manually
@@ -1406,6 +1394,135 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // this.display = true;  // ghetto way to force rendering after FTE data is fetched
 
     this.createFtePlanningChartData(this.projects);
+  }
+
+  onCopyOneMonthClick() {
+    this.copyFTEsToMonth(1);
+  }
+
+  onCopyThreeMonthClick() {
+    this.copyFTEsToMonth(3);
+  }
+
+  onCopySixMonthClick() {
+    this.copyFTEsToMonth(6);
+  }
+
+  copyFTEsToMonth(numOfMonths: number) {
+
+    const monthsToUpdate = [];
+    const copiedTeamFTEs = [];
+    const newTeamFTEsFlatLive = [];
+    const copiedFormFTEs = [];
+    const newFTEFormGroupLive = [];
+
+    // get setMonth to determine which month to copy
+    for (let i = 0; i < numOfMonths; i++) {
+      monthsToUpdate[i] = moment(this.setMonth).add(i + 1, 'M').format('YYYY-MM-DD');
+    }
+
+    // ---update the teamFTEsLive array
+    // delete the fte values for the specified months
+    // loop through the teamFTEsFlat live and if an element does not fall into the monthsToUpdate bucket, move it to the new array
+    this.teamFTEsFlatLive.forEach(teamFTE => {
+      // add all copied FTEs to copiedFTEs array by checking if their fiscalDates = setMonth
+      if (moment(teamFTE['allocations:fiscalDate']).utc().format('YYYY-MM-DD') === moment(this.setMonth).format('YYYY-MM-DD')) {
+        copiedTeamFTEs.push(Object.assign({}, teamFTE)); // Using Object.assign to ensure we deep copy the teamFTE
+      }
+      // loop through the monthsToUpdate array and if an FTE doesn't not fall within the months, add it to the newTeamFTEsFlatLive array
+      for (let month = 0; month < monthsToUpdate.length; month++) {
+        if (moment(teamFTE['allocations:fiscalDate']).utc().format('YYYY-MM-DD') === monthsToUpdate[month]) {
+          break;
+        } else if (month === monthsToUpdate.length - 1) {
+          newTeamFTEsFlatLive.push(teamFTE);
+        }
+      }
+    });
+
+    // insert the copied months FTE values with the updated fiscal date
+    for (let i = 0; i < monthsToUpdate.length; i++) {
+      copiedTeamFTEs.forEach(copiedFTE => {
+        copiedFTE['allocations:fiscalDate'] = monthsToUpdate[i];
+      });
+      newTeamFTEsFlatLive.push.apply(newTeamFTEsFlatLive, JSON.parse(JSON.stringify(copiedTeamFTEs)));
+    }
+
+    // ---update the formFTEsLive array
+    this.FTEFormGroupLive.forEach(formFTE => {
+      if (moment(formFTE.month).format('MM-DD-YYYY') === moment(this.setMonth).format('MM-DD-YYYY') && formFTE.fte !== null) {
+        copiedFormFTEs.push(Object.assign({}, formFTE)); // Using Object.assign to ensure we deep copy the formFTE
+      }
+      // retain any updated FTE values in the last array that do not fall in the monthsToUpdate
+      for (let month = 0; month < monthsToUpdate.length; month++) {
+        if (moment(formFTE.month).format('MM-DD-YYYY') === moment(monthsToUpdate[month]).format('MM-DD-YYYY')) {
+          break;
+        } else if (month === monthsToUpdate.length - 1) {
+          newFTEFormGroupLive.push(Object.assign({}, formFTE));
+        }
+      }
+    });
+
+    for (let i = 0; i < monthsToUpdate.length; i++) {
+      copiedFormFTEs.forEach(copiedFTE => {
+        copiedFTE.month = moment(monthsToUpdate[i]).format('MM-DD-YYYY');
+      });
+      newFTEFormGroupLive.push.apply(newFTEFormGroupLive, JSON.parse(JSON.stringify(copiedFormFTEs)));
+    }
+
+    this.teamFTEsFlatLive = newTeamFTEsFlatLive;
+    this.FTEFormGroupLive = newFTEFormGroupLive;
+    this.buildFteEntryForm();
+  }
+
+  onCopyMonthButtonMouseEnter(numOfMonths: number) {
+
+    const copyToMonth = moment(this.setMonth).add(numOfMonths, 'M').format('MMMM');
+
+    const options = {
+      title: 'Copy ' + this.setMonthName + ' values through ' + copyToMonth,
+      placement: 'top'
+    };
+
+    $('button.copy-month-button-' + numOfMonths).tooltip(options);
+    $('button.copy-month-button-' + numOfMonths).tooltip('show');
+
+  }
+
+  onCopyMonthButtonMouseLeave(numOfMonths: number) {
+    $('button.copy-month-button-' + numOfMonths).tooltip('dispose');
+  }
+
+
+  onClearMonthClick() {
+    const newTeamFTEsFlatLive = [];
+    const newFTEFormGroupLive = [];
+
+    // Loop through and if any element's fiscalDate is not the current months', don't add to the new array
+    this.teamFTEsFlatLive.forEach(teamFTE => {
+      if (moment(teamFTE['allocations:fiscalDate']).utc().format('YYYY-MM-DD') !== moment(this.setMonth).format('YYYY-MM-DD')) {
+        newTeamFTEsFlatLive.push(teamFTE);
+      }
+    });
+
+    this.FTEFormGroupLive.forEach(formFTE => {
+      if (moment(formFTE.month).format('MM-DD-YYYY') !== moment(this.setMonth).format('MM-DD-YYYY')) {
+        newFTEFormGroupLive.push(formFTE); // Using Object.assign to ensure we deep copy the formFTE
+      }
+    });
+
+    this.teamFTEsFlatLive = newTeamFTEsFlatLive;
+    this.FTEFormGroupLive = newFTEFormGroupLive;
+    this.buildFteEntryForm();
+    this.updateEmployeeTotals();
+    this.setEmployeeTotalsBorder();
+  }
+
+  onClearPlanClick() {
+    this.teamFTEsFlatLive = [];
+    this.FTEFormGroupLive = [];
+    this.buildFteEntryForm();
+    this.updateEmployeeTotals();
+    this.setEmployeeTotalsBorder();
   }
 
   // Highchart Functions

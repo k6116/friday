@@ -10,7 +10,7 @@
     <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onAddProjectClick()" id="intro-add-project">
       <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
     </button>
-    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
+    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onCreateProjectClick()" data-toggle="modal" data-target="#projectsCreateModal">
       <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
     </button>
     
@@ -18,7 +18,7 @@
     <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
       <i class="fa fa-table"></i>&nbsp;&nbsp;Export
     </button> -->
-    <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
+    <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
     <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
       <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
     </button>
@@ -61,18 +61,46 @@
         <h4>{{ setMonthName }} {{ setYear }}</h4>
       </div>
   </div>
-  <div class="col-sm-1 col-custom col-multiselect">
-    <div style="float: right; padding-top: 6px">
-      <h6>Filters:</h6>
-    </div>
-  </div>
   <div class="col-sm-5 col-custom col-multiselect">
+    <div style="display: inline-flex">
+      <div style="padding-top: 6px">
+        <h6>Filters:</h6>
+      </div>
+      <span style="width: 10px"></span>
       <ss-multiselect-dropdown #filterEmployeesDropdown [options]="filterEmployeesOptions" [texts]="filterEmployeesTexts" 
             [settings]="filterEmployeesSettings" [(ngModel)]="filterEmployeesModel" (ngModelChange)="onFilterEmployeesChange()"></ss-multiselect-dropdown>
+      <span style="width: 5px"></span>
       <ss-multiselect-dropdown #filterProjectsDropdown [options]="filterProjectsOptions" [texts]="filterProjectsTexts" 
             [settings]="filterProjectsSettings" [(ngModel)]="filterProjectsModel" (ngModelChange)="onFilterProjectsChange()"></ss-multiselect-dropdown>
+    </div>
   </div>
-
+  <div class="col-sm-4 col-custom">
+    <div style="display: inline-flex">
+      <div style="padding-top: 6px">
+        <h6>Copy to Next:</h6>
+      </div>
+      <span style="width: 10px"></span>
+      <button class="btn btn-secondary copy-month-button-1" (mouseenter)="onCopyMonthButtonMouseEnter(1)" (mouseleave)="onCopyMonthButtonMouseLeave(1)" (click)="onCopyOneMonthClick()">
+        1
+      </button>
+      <span style="width: 5px"></span>
+      <button class="btn btn-secondary copy-month-button-3" (mouseenter)="onCopyMonthButtonMouseEnter(3)" (mouseleave)="onCopyMonthButtonMouseLeave(3)" (click)="onCopyThreeMonthClick()">
+        3
+      </button>
+      <span style="width: 5px"></span>
+      <button class="btn btn-secondary copy-month-button-6" (mouseenter)="onCopyMonthButtonMouseEnter(6)" (mouseleave)="onCopyMonthButtonMouseLeave(6)" (click)="onCopySixMonthClick()">
+        6
+      </button>
+      <span style="width: 10px"></span>
+      <button class="btn btn-secondary" (click)="onClearMonthClick()">
+        Clear Month
+      </button>
+      <span style="width: 5px"></span>
+      <button class="btn btn-secondary" (click)="onClearPlanClick()">
+        Clear Plan
+      </button>
+    </div>
+  </div>
   <!-- <div class="col-sm-3 col-custom">
     <div class="col-newplan" style="display: inline-flex">
       <button *ngIf="!displayNewPlanModal" class="btn btn-secondary" (click)="onNewPlanClick()">
