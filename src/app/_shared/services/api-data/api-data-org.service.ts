@@ -40,5 +40,11 @@ export class ApiDataOrgService {
       .map((response: Response) => response.json());
   }
 
+  getTeamFteList(emailAddress: string, startDate: string, endDate: string): Observable<any> {
+    return this.http.get(`/api/org/getTeamFteList/${emailAddress}/${startDate}/${endDate}`)
+      .timeout(this.timeout)
+      .map((response: Response) => response.json());
+  }
+
 
 }

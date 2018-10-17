@@ -7,6 +7,7 @@ export class OrgViewerService {
 
   org: any;
   managerChain;
+  monthsBetween: number;
 
   constructor(private apiDataOrgService: ApiDataOrgService) { }
 
@@ -14,7 +15,7 @@ export class OrgViewerService {
     // get the requested org as flat array, synchronously
     const queryEmail = 'ron_nersesian@keysight.com';
     this.org = await this.fetchApiData(queryEmail, startDate, endDate);
-    const monthsBetween = moment(endDate).diff(moment(startDate), 'months');
+    this.monthsBetween = moment(endDate).diff(moment(startDate), 'months');
 
     // return early if no data returned
     if (!this.org.length) {
@@ -29,7 +30,8 @@ export class OrgViewerService {
     const orgHierarchy = {
       name: this.org[0].FullName,
       id: this.org[0].PERSON_ID,
-      teamFtes: this.org[0].TotalTeamFTE / monthsBetween, // avg FTEs/month over the number of months in range
+      email: this.org[0].EMAIL_ADDRESS,
+      teamFtes: this.org[0].TotalTeamFTE / this.monthsBetween, // avg FTEs/month over the number of months in range
       teamCount: this.org[0].TotalEmployeeCount,
       defaultCollapsed: false,
       children: {}
@@ -75,7 +77,8 @@ export class OrgViewerService {
         newNode = {
           name: this.org[i].FullName,
           id: this.org[i].PERSON_ID,
-          teamFtes: this.org[i].TotalTeamFTE,
+          email: this.org[i].EMAIL_ADDRESS,
+          teamFtes: this.org[i].TotalTeamFTE / this.monthsBetween,
           teamCount: this.org[i].TotalEmployeeCount,
           defaultCollapsed: this.managerChain.find(managerID => managerID === this.org[i].PERSON_ID) ? false : true
         };

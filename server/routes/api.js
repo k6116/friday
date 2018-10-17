@@ -82,6 +82,7 @@ router.get('/org/:emailAddress', controllers.org.show);
 router.get('/org/getTeamList/:emailAddress', controllers.org.getTeamList);
 router.get('/org/getEmployeeList/:emailAddress', controllers.org.getEmployeeList);
 router.get('/org/getOrgFtes/:emailAddress/:startDate/:endDate', controllers.org.getOrgFtes);
+router.get('/org/getTeamFteList/:emailAddress/:startDate/:endDate', controllers.org.getTeamFteList);
 
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);

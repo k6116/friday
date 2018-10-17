@@ -83,10 +83,27 @@ function getOrgFtes(req, res) {
     });
 }
 
+function getTeamFteList(req, res) {
+  const emailAddress = req.params.emailAddress;
+  const startDate = req.params.startDate;
+  const endDate = req.params.endDate;
+  sequelize.query(`EXECUTE resources.GetTeamFTEList :emailAddress, :startDate, :endDate`, {replacements: {emailAddress: emailAddress, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
+    .then(team => {
+      res.json(team);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 module.exports = {
   show: show,
   getSubordinatesFlat: getSubordinatesFlat,
   getTeamList: getTeamList,
   getEmployeeList: getEmployeeList,
-  getOrgFtes: getOrgFtes
+  getOrgFtes: getOrgFtes,
+  getTeamFteList: getTeamFteList
 }

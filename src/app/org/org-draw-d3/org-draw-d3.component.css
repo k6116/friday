@@ -17,7 +17,62 @@
 
 .toolbar {
   position: absolute;
-  left: 20px;
+  left: 5px;
   top: 10px;
-  /* margin-left: 20px; */
+}
+
+.fte-legend {
+  position: absolute;
+  top: 15px;
+  right: 5px;
+  text-align: left;
+  padding: 2px;
+  font: 16px sans-serif;
+  background: white;
+  opacity: 1;
+}
+
+.fte-legend-header {
+  font-weight: bold;
+}
+
+.fte-legend .no-ftes {
+  background-color: #f23535;
+  color: white;
+}
+
+.fte-legend .low-ftes {
+  background-color: #ffdc5e;
+}
+
+.fte-legend .high-ftes {
+  background-color: #58e454;
+}
+
+.fte-legend .full-ftes {
+  background-color: green;
+  color: white;
+}
+
+.people-details {
+  position: absolute;
+  top: 55px;
+  left: 5px;
+  text-align: left;
+  padding: 2px;
+  font: 16px sans-serif;
+  background: white;
+  opacity: 1;
+}
+
+.people-details-row {
+  border: 1px solid black;
+}
+
+th {
+  font-weight: bold;
+}
+
+th, td {
+  padding: 2px 8px;
 }

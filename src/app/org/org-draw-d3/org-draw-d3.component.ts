@@ -1,4 +1,6 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import { ToolsService } from '../../_shared/services/_index';
 import * as d3 from 'd3';
 
 @Component({
@@ -10,9 +12,14 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
 
   @Input() orgJson: any;
 
-  partDeptLegend: any;  // for storing d3 legend data
+  fteMode = false;
+  peopleDetails: any;  // contains team roster and FTEs to display on click
+  currentFiscalQuarter = this.toolsService.fiscalQuarterString(new Date);
 
-  constructor() { }
+  constructor(
+    private apiDataOrgService: ApiDataOrgService,
+    private toolsService: ToolsService
+  ) { }
 
   ngOnInit() {
     // listen for changes to window size, and redraw the BOM chart if it changes
@@ -22,16 +29,17 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-
     // when bomJson input binding changes value, parse data for the legend and draw the chart
     if (this.orgJson) {
       // draw the BOM chart
       this.drawD3Plot(this.orgJson);
     }
-
   }
 
   drawD3Plot(bomJson: any) {
+
+    const self = this;  // hack to reach API data service and tools service from inside d3 context
+
     // kill any existing drawings, if any
     d3.select('#d3-container').selectAll('*').remove();
 
@@ -73,6 +81,33 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       }
     }
 
+    // TOOLBAR BUTTONS //
+    // add toolbar button functionality for expand all nodes
+    d3.select('#expandAll')
+    .on('click', () => {
+      expandNode(root);
+      update(root);
+    });
+
+    // add toolbar functionality for reset collapse to
+    d3.select('#defaultCollapse')
+    .on('click', () => {
+      // first, expand all nodes, then apply the initial collapse
+      expandNode(root);
+      root.children.forEach(initialCollapse);
+      update(root);
+      d3.select('#d3-container').select('svg')
+      .call(zoom) // adds zoom functionality
+      .call(zoom.transform, initialTransform);  // applies initial transform
+    });
+
+    // toolbar functionality to toggle FTE mode
+    d3.select('#fteMode')
+    .on('click', () => {
+      self.fteMode = self.fteMode ? false : true;
+      update(root); // update all nodes to trigger node color changes
+    });
+
     // set custom zoom settings
     const zoom = d3.zoom()
       .scaleExtent([0.09, 4])  // restrict zoom to this scale range
@@ -112,27 +147,6 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     root.children.forEach(initialCollapse);
     update(root);
 
-    // TOOLBAR BUTTONS
-
-    // add toolbar button functionality for expand all nodes
-    d3.select('#expandAll')
-    .on('click', () => {
-      expandNode(root);
-      update(root);
-    });
-
-    // add toolbar functionality for reset collapse to
-    d3.select('#defaultCollapse')
-    .on('click', () => {
-      // first, expand all nodes, then apply the initial collapse
-      expandNode(root);
-      root.children.forEach(initialCollapse);
-      update(root);
-      d3.select('#d3-container').select('svg')
-      .call(zoom) // adds zoom functionality
-      .call(zoom.transform, initialTransform);  // applies initial transform
-    });
-
     function update(source) {
 
       // --- SETTINGS --- //
@@ -163,27 +177,44 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
         update(d);
       }
 
+      function showTeamDetails(d) {
+        // query team FTE data for the selected manager
+        const currentDateRange = self.toolsService.fiscalQuarterRange(new Date, 'YYYY-MM-DD');
+        self.apiDataOrgService.getTeamFteList(d.data.email, currentDateRange[0], currentDateRange[1]).subscribe(res => {
+          // store the response in the component class to display in view
+          self.peopleDetails = res;
+        });
+      }
+
       function colorNodeByFTE(d) {
-        // set background color of node based on percent of a manager's subordinate's FTE completion
-        if (!d.data.teamFtes) {
-          return '#f23535';
-        }
-        const fteCompletion = d.data.teamFtes / d.data.teamCount;
-        if (fteCompletion < .5) {
-          return '#ffdc5e';
-        } else if (fteCompletion < 1) {
-          return '#58e454';
+        if (!self.fteMode) {
+          return 'white';
         } else {
-          return 'green';
+          // if in FTE mode, set background color of node based on percent of a manager's subordinate's FTE completion
+          if (!d.data.teamFtes) {
+            return '#f23535';
+          }
+          const fteCompletion = d.data.teamFtes / d.data.teamCount;
+          if (fteCompletion < .5) {
+            return '#ffdc5e';
+          } else if (fteCompletion < 1) {
+            return '#58e454';
+          } else {
+            return 'green';
+          }
         }
       }
 
       function colorTextByFTE(d) {
-        const fteCompletion = d.data.teamFtes / d.data.teamCount;
-        if (!d.data.teamFtes || fteCompletion >= 1) {
-          return 'white';
-        } else {
+        if (!self.fteMode) {
           return 'black';
+        } else {
+          const fteCompletion = d.data.teamFtes / d.data.teamCount;
+          if (!d.data.teamFtes || fteCompletion >= 1) {
+            return 'white';
+          } else {
+            return 'black';
+          }
         }
       }
 
@@ -208,7 +239,10 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       const nodeEnter = node.enter().append('g')
       .attr('class', 'node')
       .attr('transform', (d) => `translate(${source.x0},${source.y0})`)
-      .on('click', hideChildren);
+      .on('click', (d) => {
+        hideChildren(d);
+        showTeamDetails(d);
+      });
 
       // when a node enters the drawing, draw rectangle for each node
       nodeEnter.append('rect')
@@ -266,6 +300,10 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       .style('stroke-width', 1)
       .style('stroke', 'black')
       .style('fill', (d) => colorNodeByFTE(d));
+
+      // on update, re-color the text
+      nodeUpdate.select('text')
+      .attr('fill', (d) => colorTextByFTE(d));
 
       // on update, change the icon to match new collapsibility state
       nodeUpdate.select('text.collapse-icon')
