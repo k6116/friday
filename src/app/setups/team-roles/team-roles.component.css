@@ -54,6 +54,14 @@ i.fa-plus {
   display: block
 }
 
+/* Popover */
+/* div.popover-body {
+  position: absolute;
+  transform: translate3d(661px, 351px, 0px);
+  top: -45px;
+  left: 0px;
+  will-change: transform;
+} */
 
 
 /* FTE Table CSS */

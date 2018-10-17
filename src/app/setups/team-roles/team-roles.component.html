@@ -11,7 +11,7 @@
     <div class="row row-custom" *ngIf="!showSpinner">
       <div class="col-sm col-custom">
         <!-- USEFUL TEST BUTTON -->
-        <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
+        <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
         <button class="btn btn-secondary btn-fte-toolbar" (click)="onSaveClick()">
           <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
         </button>
@@ -40,8 +40,8 @@
               <div class="fte-table-cell col-projects-totals"></div> <!-- Placeholder -->
               <div class="fte-table-cell col-projects-roles"></div> <!-- Placeholder -->
               <ng-container *ngFor="let employee of teamOrgStructure; let k = index">
-                <div class="fte-table-cell rotate" style="text-align:left; padding-bottom:20px; border-bottom:none !important"> <!-- move style to css -->
-                  {{ employee.fullName }}
+                <div class="fte-table-cell rotate name-popover" data-toggle="tooltip" data-placement="top" [attr.title]="employee.fullName" [attr.data-id]="employee.personID" style="text-align:left; padding-bottom:20px; border-bottom:none !important"> <!-- move style to css -->
+                  {{ (employee.fullName.length > 14) ? (employee.fullName | slice:0:13) + '...' : (employee.fullName) }}
                 </div>
               </ng-container>
             </div>

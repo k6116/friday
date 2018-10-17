@@ -5,6 +5,8 @@ import { CacheService } from '../../_shared/services/cache.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { NewRole } from './team-roles.interface';
 
+declare var $: any;
+
 @Component({
   selector: 'app-team-roles',
   templateUrl: './team-roles.component.html',
@@ -239,6 +241,38 @@ export class TeamRolesComponent implements OnInit {
     console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
     console.log('this.teamOrgStructure', this.teamOrgStructure);
     console.log('teamOrgStructure', this.teamOrgStructure);
+  }
+
+  onEmployeeNameMouseEnter(employee: any) {
+
+    // set the jquery element
+    const $el = $(`div.name-popover[data-id="${employee.personID}"]`);
+
+    // set the popover options
+    const options = {
+      // animation: false,
+      placement: 'top',
+      // html: true,
+      // trigger: 'focus',
+      content: employee.fullName
+    };
+
+
+    $el.tooltip(options);
+    $el.tooltip('show');
+    // show the popover
+    // $el.popover(options);
+    // $el.popover('show');
+
+  }
+
+
+  onEmployeeNameMouseLeave(id: number) {
+    // set the jquery element
+    const $el = $(`div.name-popover[data-id="${id}"]`);
+    
+    // dispose of the popover
+    // $el.popover('dispose');
   }
 
 }
