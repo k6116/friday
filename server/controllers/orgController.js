@@ -3,6 +3,7 @@ const models = require('../models/_index');
 const sequelizePLM = require('../db/sequelize').sequelizePLM;
 const sequelize2017 = require('../db/sequelize').sequelize2017;
 const sequelize = require('../db/sequelize').sequelize;
+const token = require('../token/token');
 
 
 // right now, this function doesn't seem to fetch all subordinates.  Example - George Nacouzi doesn't show up under Ethan
@@ -23,7 +24,7 @@ function show(req, res) {
 
 function getSubordinatesFlat(req, res) {
   const emailAddress = req.params.emailAddress;
-  const sql = `EXEC jarvis.getOrgChart '${emailAddress}'`
+  const sql = `EXEC jarvis.getOrgChart '${emailAddress}'`;
   sequelize2017.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
       console.log("returning user PLM data");
@@ -99,11 +100,26 @@ function getTeamFteList(req, res) {
     });
 }
 
+function getFteModePermissions(req, res) {
+  // if we are even here, the user must have permissions to access FTE mode so it doesn't matter what we actually query
+  sequelize.query(`SELECT 1`, {type: sequelize.QueryTypes.SELECT})
+    .then(user => {
+      res.json(user);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 module.exports = {
   show: show,
   getSubordinatesFlat: getSubordinatesFlat,
   getTeamList: getTeamList,
   getEmployeeList: getEmployeeList,
   getOrgFtes: getOrgFtes,
-  getTeamFteList: getTeamFteList
+  getTeamFteList: getTeamFteList,
+  getFteModePermissions: getFteModePermissions
 }

@@ -2,7 +2,7 @@
 <div class="toolbar">
   <button id="defaultCollapse" class="btn btn-secondary">Reset to Default</button>
   <button id="expandAll" class="btn btn-secondary">Expand All</button>
-  <button id="fteMode" class="btn btn-secondary">FTE Mode</button>
+  <button id="fteMode" [hidden]="!fteModeVisible" class="btn btn-secondary">FTE Mode</button>
 </div>
 
 <!-- the d3 drawing itself -->
