@@ -1,12 +1,14 @@
-import { Component, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
-import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
-  ApiDataMetaDataService, ApiDataEmailService } from '../../_shared/services/api-data/_index';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { ApiDataProjectService, ApiDataPermissionService, ApiDataMetaDataService, ApiDataEmailService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { ProjectsEditModalComponent } from '../../modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
 import { User } from '../../_shared/models/user.model';
-import * as moment from 'moment';
+import { ToolsService } from '../../_shared/services/tools.service';
+
+declare var $: any;
 
 @Component({
   selector: 'app-projects-setups',
@@ -15,69 +17,69 @@ import * as moment from 'moment';
 })
 export class MyProjectsComponent implements OnInit {
 
-
-  // TO-DO PAUL: create model for at least projects
-
+  // Main
   loggedInUser: User;
   projectList: any;
   projectData: any;
-  projectPermissionRequestsList: any;
-  showProjectsEditModal: boolean;
-  showProjectsCreateModal: boolean;
-  selectedRow: any;
-  selectdProject: any;
-  projectRoster: any;
-  pKeyRefList: any;
-  showDetails: boolean;
   projectID: number;
+  showSpinner: boolean;
+  filterString: string;
+
+  // Project Request
+  projectPermissionRequestsList: any;
+  submittedRequests: any;
   requestResponseFlag: boolean;
   request: any;
-  projectSchedule: any;
-  toggleEditProjectRole: boolean;
-  projectRolesList: any;
-  projectRole: any;
   replyComment: string;
+
+  // Modals
+  selectdProject: any;
+  showProjectsEditModal: boolean;
+  showProjectsCreateModal: boolean;
   deleteModalMessage: string;
   deleteModalButtons: any;
-  projectTypeDisplayFields: any;
-  projectBasicInfo = [];
+  pKeyRefList: any;
 
-  @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent;
-  @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent;
-  // @Output() deleteSuccess = new EventEmitter<boolean>();
+
+  @ViewChild(ProjectsCreateModalComponent) projectsCreateModalComponent; // to reset form on projects-create 
+  @ViewChild(ProjectsEditModalComponent) projectsEditModalComponent; // to populate form in projects-edit-modal
 
   constructor(
-    private apiDataEmployeeService: ApiDataEmployeeService,
+    private router: Router,
     private apiDataProjectService: ApiDataProjectService,
     private apiDataPermissionService: ApiDataPermissionService,
     private apiDataMetaDataService: ApiDataMetaDataService,
     private apiDataEmailService: ApiDataEmailService,
     private cacheService: CacheService,
     private authService: AuthService,
+    private toolsService: ToolsService, // needed in html for project type style
   ) {
     this.loggedInUser = this.authService.loggedInUser;
   }
 
   ngOnInit() {
+    // show the spinner
+    this.showSpinner = true;
+
+    //  get all projects the user created
     this.getUserProjectList();
+
+    // get the list of requests that are waiting for the users permission
     this.getProjectPermissionRequestsList();
-    this.getProjectTypeDisplayFields();
+
   }
 
-  editProject(project: any) {
-    this.showProjectsEditModal = true;
-    this.projectData = project;
-    setTimeout(() => {
-      this.projectsEditModalComponent.populateForm();
-    }, 0);
-  }
-
+  // Get project list
   getUserProjectList() {
     this.apiDataProjectService.getUserProjectList(this.authService.loggedInUser.id)
     .subscribe(
       res => {
-        // console.log('Project List: ', res);
+
         this.projectList = res;
+
+        // hide the spinner
+        this.showSpinner = false;
+
       },
       err => {
         // console.log(err);
@@ -86,18 +88,37 @@ export class MyProjectsComponent implements OnInit {
   }
 
   // List of all requests that have been made to join a project.
-  //  Gets called onInit and requestResponse()
   getProjectPermissionRequestsList() {
     this.apiDataPermissionService.getProjectPermissionRequestsList(this.authService.loggedInUser.id)
     .subscribe(
       res => {
         this.projectPermissionRequestsList = res;
-        // console.log('projectPermissionRequest: ', this.projectPermissionRequestsList);
+
+        // Filter for 'submitted' requests
+        this.submittedRequests = [];
+        let j = 0;
         for (let i = 0; i < this.projectPermissionRequestsList.length; i++) {
           if ( this.projectPermissionRequestsList[i].requestStatus === 'Submitted') {
-            this.requestResponseFlag = true;
+
+            // store in seperate array
+            this.submittedRequests[j] = this.projectPermissionRequestsList[i];
+            j++
+
           }
         }
+
+        // hide request box if there are no submitted requests
+        if (this.submittedRequests.length === 0) {
+
+          this.requestResponseFlag = false;
+
+        } else {
+          
+          this.requestResponseFlag = true;
+        }
+
+        // hide the spinner
+        this.showSpinner = false;
       },
       err => {
         // console.log(err);
@@ -105,6 +126,7 @@ export class MyProjectsComponent implements OnInit {
     );
   }
 
+  // Open modal to create new project
   createProject() {
     this.showProjectsCreateModal = true;
     setTimeout(() => {
@@ -112,49 +134,46 @@ export class MyProjectsComponent implements OnInit {
     }, 0);
   }
 
-  onCreateSuccess() {
-    // console.log('Create project success. My Project List Refreshed');
+  // Refresh projectList after delete, update and create succecss
+  projectListRefresh() {
+
     this.getUserProjectList();
+  
   }
 
-  onUpdateSuccess() {
-    // console.log('Update project success. My Project List Refreshed');
-    this.getUserProjectList();
+  // on clicking the 'x' icon at the right of the search/filter input
+  onClearSearchClick() {
+
+    // clear the filter string
+    this.filterString = undefined;
+
   }
 
-  onDeleteSuccess() {
-    // console.log('Delete project success. My Project List Refreshed');
-    this.getUserProjectList();
+  editProject(project: any) {
+
+    // open modal to update existing project
+    this.showProjectsEditModal = true;
+
+    this.projectData = project;
+
+    // Call function in projects-edit-modal
+    setTimeout(() => {
+      this.projectsEditModalComponent.populateForm();
+    }, 0);
   }
 
-  onCollapseClick(project: any, k) {
-    // k is index of projectList; selected row gets highlighted
-    if ( this.selectedRow === k) {
-      this.selectedRow = null;
-    } else {
-        this.selectedRow = k;
-        this.projectBasicInfo.length = 0;
-        // Assign projectList values to projectTypeDisplayFields object
-        for (let i = 0; i < this.projectTypeDisplayFields.length; i++) {
-          for (let j = 0; j < Object.keys(project).length; j++) {
-            if (this.projectTypeDisplayFields[i]['projectType.projectTypeName'] === project['projectType.projectTypeName'] &&
-              this.projectTypeDisplayFields[i].projectField.toUpperCase() === Object.keys(project)[j].toUpperCase()) {
-                this.projectBasicInfo.push({
-                  field: Object.keys(project)[j],
-                  value: Object.values(project)[j]
-                });
-            }
-          }
-        }
-    }
-    this.getProjectRoster(project.id);
-    this.getProjectSchedule(project.id);
+  onProjectClick(project) {
 
+    // set flag true to navigate back to myProjects
+    this.cacheService.fromMyProjectsFlag = true;
+    
+    // navigate to the display-project page
+    this.router.navigate([`/main/projects/display/${project.id}`]);
+    
   }
 
   // Accept or deny a request
   requestResponse(request: any, reply: string, replyComment: string) {
-    this.requestResponseFlag = false;
 
     this.apiDataPermissionService.updateProjectPermissionResponse(request, reply, replyComment, this.authService.loggedInUser.id)
     .subscribe(
@@ -172,7 +191,6 @@ export class MyProjectsComponent implements OnInit {
             // console.log(err);
           }
         );
-        // console.log(res);
 
       },
       err => {
@@ -188,40 +206,55 @@ export class MyProjectsComponent implements OnInit {
     this.request = request;
   }
 
-  getProjectRoster(projectID: number) {
-    this.apiDataProjectService.getProjectRoster(projectID)
-    .subscribe(
-      res => {
-        // console.log('project roster:', res);
-        // Check if roster for this project exists
-        if ('teamMembers' in res[0]) {
-          // This loop will move the loggedInUser to the top of the project roster list
-          for (let i = 0; i < res[0].teamMembers.length; i++) {
-            if (res[0].teamMembers[i].employeeID === this.authService.loggedInUser.id) {
-                const a = res[0].teamMembers.splice(i, 1);   // removes the item
-                res[0].teamMembers.unshift(a[0]);         // adds it back to the beginning
-                this.projectRoster = res[0];
-                break;
-            }
-        }
-        }
-      },
-      err => {
-        // console.log(err);
-      }
-    );
+  // Mouseover on disabled buttons 
+  onEditButtonMouseEnter(id, createdByID) {
+
+    // Only show tooltip if not your project
+    if (this.loggedInUser.id !== createdByID) {
+
+      // set the jquery element
+      const $el = $(`div.project-attributes-table[data-id="${id}"]`);
+
+      // tooltip options
+      const options = {
+        title: 'Edit and Delete only allowed for projects you have created',
+        placement: 'bottom'
+      };
+
+      $el.tooltip(options);
+      $el.tooltip('show');
+    }
+
   }
 
+  // Mouseleave disabled buttons
+  onEditButtonMouseLeave(id) {
+    
+    // set the jquery element
+    const $el = $(`div.project-attributes-table[data-id="${id}"]`);
 
-  // Get the primary key references for "ProjectID". This searches all Jarvis tables
+    $el.tooltip('dispose');
+  }
+
+  onDeleteProjectClick(project: any) {
+
+    this.selectdProject = project;
+
+    // First check if the project has referential integrity to other tables in the database
+    this.getPrimaryKeyRefs(this.selectdProject.id);
+
+  }
+
+  // On Delete: Get the primary key references for "ProjectID". This searches all Jarvis tables
   getPrimaryKeyRefs(projectID: number) {
     const pKeyName = 'ProjectID';
     this.projectID = projectID;
     this.apiDataMetaDataService.getPrimaryKeyRefs(pKeyName, this.projectID, this.authService.loggedInUser.id)
       .subscribe(
         res => {
-          // console.log('PrimaryKeyRefs', res);
+
           this.pKeyRefList = res;
+
           if (this.pKeyRefList.length === 0) {
             this.deleteModalMessage = `Are you sure you want to delete "${this.selectdProject.projectName}"?`;
             this.deleteModalButtons = [
@@ -236,7 +269,9 @@ export class MyProjectsComponent implements OnInit {
                 emit: false
               }
             ];
+
           } else {
+
             // If the project is a foreign key to other tables, display the list
             this.deleteModalMessage = `
               <div>
@@ -278,63 +313,7 @@ export class MyProjectsComponent implements OnInit {
       );
   }
 
-  getProjectSchedule(projectID: number) {
-
-    this.apiDataProjectService.getProjectSchedule(projectID)
-    .subscribe(
-      res => {
-        // console.log('project schedule:', res);
-        this.projectSchedule = res;
-        for (let i = 0; i < this.projectSchedule.length; i++) {
-          this.projectSchedule[i].PLCDate = moment().format('YYYY-MM-DD');
-        }
-      },
-      err => {
-        // console.log(err);
-      }
-    );
-  }
-
-  onProjectRoleEditClick() {
-    this.toggleEditProjectRole = !this.toggleEditProjectRole;
-  }
-
-  selectProjectRoleChangeHandler(event: any, project: any) {
-
-    // create object for api post
-    const projectEmployeeRoleData = {
-      projectRoleID: null,
-      projectRole: null,
-      projectID: null
-    };
-    projectEmployeeRoleData.projectRole = event.target.value;
-    for (let i = 0; i < this.projectRolesList.length; i++) {
-      if (this.projectRolesList[i].projectRole === event.target.value) {
-        projectEmployeeRoleData.projectRoleID = this.projectRolesList[i].id;
-      }
-    }
-    projectEmployeeRoleData.projectID = project.id;
-
-    this.apiDataProjectService.updateProjectEmployeeRole(projectEmployeeRoleData, this.authService.loggedInUser.id)
-    .subscribe(
-      res => {
-        // console.log(res);
-      },
-      err => {
-        // console.log(err);
-      }
-    );
-  }
-
-  onDeleteProjectClick(project: any) {
-
-    this.selectdProject = project;
-
-    // First check if the project has referential integrity to other tables in the database
-    this.getPrimaryKeyRefs(this.selectdProject.id);
-
-  }
-
+  // delete project modal
   deleteModal() {
     const projectData = {projectID: this.selectdProject.id};
 
@@ -359,7 +338,7 @@ export class MyProjectsComponent implements OnInit {
         .subscribe(
           del => {
             // this.deleteSuccess.emit(true);
-            this.onDeleteSuccess();
+            this.projectListRefresh();
           },
           err => {
             // console.log(err);
@@ -371,19 +350,5 @@ export class MyProjectsComponent implements OnInit {
       deleteModalSubscription.unsubscribe();
     });
   }
-
-  getProjectTypeDisplayFields() {
-    this.apiDataProjectService.getProjectTypeDisplayFields()
-    .subscribe(
-      res => {
-        // console.log(res);
-        this.projectTypeDisplayFields = res;
-      },
-      err => {
-        // console.log(err);
-      }
-    );
-  }
-
 
 }

@@ -1,4 +1,4 @@
-<div class="modal fade" id="projectsEditModal" tabindex="-1" role="dialog" aria-labelledby="projectsEditModalLabel" aria-hidden="true">
+<div class="modal fade" id="projectsEditModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="projectsEditModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -32,7 +32,12 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="updateProject()">Update</button>
+        <button type="button" class="btn btn-secondary btn-fte-toolbar" data-dismiss="modal" (click)="updateProject()">
+          <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+        </button>
+        <button type="button" class="btn btn-secondary btn-fte-toolbar" data-dismiss="modal">
+          <i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel
+        </button>
       </div>
     </div>
   </div>

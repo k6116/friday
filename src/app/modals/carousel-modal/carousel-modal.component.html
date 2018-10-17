@@ -27,14 +27,14 @@
                 <img class="d-block w-100" [src]="slide.src" [alt]="slide.alt">
                 <div class="carousel-caption d-none d-md-block">
                   <h5 class="caption-header">{{ slide.captionHeader }}</h5>
-                  <p class="caption-body">{{ slide.captionBody }}</p>
+                  <p class="caption-body" style="font-weight: bold; background-color: white">{{ slide.captionBody }}</p>
                 </div>
               </div>
               <div *ngIf="!slide.active" class="carousel-item">
                 <img class="d-block w-100" [src]="slide.src" [alt]="slide.alt">
                 <div class="carousel-caption d-none d-md-block">
                   <h5 class="caption-header">{{ slide.captionHeader }}</h5>
-                  <p class="caption-body">{{ slide.captionBody }}</p>
+                  <p class="caption-body" style="font-weight: bold; background-color: white">{{ slide.captionBody }}</p>
                 </div>
               </div>
             </ng-container>

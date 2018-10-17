@@ -5,8 +5,6 @@ import { CacheService } from '../../_shared/services/cache.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { NewRole } from './team-roles.interface';
 
-declare var $: any;
-
 @Component({
   selector: 'app-team-roles',
   templateUrl: './team-roles.component.html',
@@ -57,8 +55,8 @@ export class TeamRolesComponent implements OnInit {
     const permRes = await this.apiDataFteService.checkTeamFTEAdminPermission(token);
 
     if (permRes.length > 0) {
-      // this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
-      this.loginAsEmail = 'ethan_hunt@keysight.com';
+      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      // this.loginAsEmail = 'ethan_hunt@keysight.com';
       // this.loginAsEmail = 'ermina_chua@keysight.com';
       this.displayAdminViewMessage = true;
     } else {
@@ -235,10 +233,6 @@ export class TeamRolesComponent implements OnInit {
          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
        }
      );
-  }
-
-  emptyRoleFlag() {
-
   }
 
   onTestFormClick() {

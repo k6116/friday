@@ -259,7 +259,6 @@ function insertProject(req, res) {
   const userID = req.params.userID;
   const today = new Date();
 
-
   return sequelize.transaction((t) => {
 
     return models.Projects
