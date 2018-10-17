@@ -250,7 +250,7 @@ function updateTeamData(req, res) {
         planName: planName,
         projectID: data.projectID,
         employeeID: data.employeeID,
-        fiscalDate: moment(data.month).format("YYYY-MM-DD"),
+        fiscalDate: moment(data.month).utc().format("YYYY-MM-DD"),
         fte: +data.fte / 100, // convert the FTE value to a decimal
         createdBy: userID,
         createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),

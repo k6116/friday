@@ -236,8 +236,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onTestFormClick() {
-    // console.log('form object (this.form):');
-    // console.log(this.FTEFormGroup);
+    console.log('form object (this.form):');
+    console.log(this.FTEFormGroup);
     // console.log('this.FTEFormGroup.value.FTEFormArray', this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
     // console.log('teamFTE', this.teamFTEs);
@@ -248,14 +248,15 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('this.projects', this.projects)
     // console.log('this.teamOrgStructure', this.teamOrgStructure);
     // console.log('this.filterEmployees', this.filterEmployees)
-    console.log('this.employeeVisible', this.employeeVisible)
+    // console.log('this.employeeVisible', this.employeeVisible)
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
     // console.log('this.employeeTotals', this.employeeTotals)
-    console.log('this.projectVisible', this.projectVisible)
+    // console.log('this.projectVisible', this.projectVisible)
     // console.log('this.filterProjects', this.filterProjects)
     // console.log('this.filterProjectsModel', this.filterProjectsModel)
     // console.log('this.filterProjectsOptions', this.filterProjectsOptions)
+    // console.log('this.currentPlan', this.currentPlan)
     // this.updateEmployeeTotals();
     // this.updateProjectFilters()
 
@@ -585,7 +586,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       .subscribe(
         res => {
           this.cacheService.raiseToast('success', res.message);
-
           Promise.all([
             // rebuild the FTE entry page
             this.getPlan(this.loginAsEmail, this.currentPlan),
@@ -803,14 +803,15 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onTrashClick(index: number) {
-    console.log('user clicked to delete project index ' + index);
+    // console.log('user clicked to delete project index ' + index);
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
     // emit confirmation modal after they click delete button
     this.cacheService.confirmModalData.emit(
       {
         title: 'Confirm Deletion',
-        message: `Are you sure you want to permanently delete project "${deletedProject.projectName}" from this plan?<br><br>
+        message: `Are you sure you want to delete project "${deletedProject.projectName}" from this plan?
+                  The plan will save automatically.<br><br>
                   If launched, this project will be completely removed from your team
                   and no employee will be associated with this project.<br><br>
                   **If you meant to remove the project from the screen, please use the project filter instead**`,
@@ -861,7 +862,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           }
         );
       } else {
-        console.log('delete aborted');
+        // console.log('delete aborted');
       }
       deleteModalSubscription.unsubscribe();
     });
@@ -980,10 +981,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.updateEmployeeTotals();
     this.setEmployeeTotalsBorder();
 
-    // Uncomment when if "Plans" are re-implemented
-    // this.planList.splice(0, 0, {planName: planName});
-    // this.defaultPlan = this.planList[0].planName;
-    // this.currentPlan = this.defaultPlan;
+    this.planList.splice(0, 0, {planName: planName});
+    this.defaultPlan = this.planList[0].planName;
+    this.currentPlan = this.defaultPlan;
     // this.checkDisableDeletePlan();
   }
 
@@ -1020,19 +1020,16 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.FTEFormGroupLive = [];
 
     this.teamFTEsFlatLive.forEach(teamFTE => {
-      // if (moment(teamFTE['allocations:fiscalDate']).utc().format('YYYY-MM-DD') !== moment(this.setMonth).format('YYYY-MM-DD')) {
-        // this.FTEFormGroupLive[this.allProjects.length].push({
-        this.FTEFormGroupLive.push({
-          emailAddress: teamFTE['allocations:emailAddress'],
-          employeeID: teamFTE['allocations:employeeID'],
-          fte: String(teamFTE['allocations:fte'] * 100),
-          fullName: teamFTE['allocations:fullName'],
-          month: teamFTE['allocations:fiscalDate'],
-          projectID: teamFTE.projectID,
-          projectName: teamFTE.projectName,
-          recordID: teamFTE['allocations:recordID'],
-        });
-      // }
+      this.FTEFormGroupLive.push({
+        emailAddress: teamFTE['allocations:emailAddress'],
+        employeeID: teamFTE['allocations:employeeID'],
+        fte: String(teamFTE['allocations:fte'] * 100),
+        fullName: teamFTE['allocations:fullName'],
+        month: teamFTE['allocations:fiscalDate'],
+        projectID: teamFTE.projectID,
+        projectName: teamFTE.projectName,
+        recordID: teamFTE['allocations:recordID'],
+      });
     });
   }
 
@@ -1074,6 +1071,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                 allowOutsideClickDismiss: true,
                 allowEscKeyDismiss: true,
                 buttons: [
+                  // {
+                  //   text: 'Sync',
+                  //   bsClass: 'btn-success',
+                  //   emit: true
+                  // },
                   {
                     text: 'Dismiss',
                     bsClass: 'btn-secondary',
@@ -1438,12 +1440,12 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
     // ---update the formFTEsLive array
     this.FTEFormGroupLive.forEach(formFTE => {
-      if (moment(formFTE.month).format('MM-DD-YYYY') === moment(this.setMonth).format('MM-DD-YYYY') && formFTE.fte !== null) {
+      if (moment(formFTE.month).utc().format('MM-DD-YYYY') === moment(this.setMonth).format('MM-DD-YYYY') && formFTE.fte !== null) {
         copiedFormFTEs.push(Object.assign({}, formFTE)); // Using Object.assign to ensure we deep copy the formFTE
       }
       // retain any updated FTE values in the last array that do not fall in the monthsToUpdate
       for (let month = 0; month < monthsToUpdate.length; month++) {
-        if (moment(formFTE.month).format('MM-DD-YYYY') === moment(monthsToUpdate[month]).format('MM-DD-YYYY')) {
+        if (moment(formFTE.month).utc().format('MM-DD-YYYY') === moment(monthsToUpdate[month]).format('MM-DD-YYYY')) {
           break;
         } else if (month === monthsToUpdate.length - 1) {
           newFTEFormGroupLive.push(Object.assign({}, formFTE));
