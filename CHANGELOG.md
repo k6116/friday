@@ -1,3 +1,18 @@
+<a name="1.16.0"></a>
+# [1.16.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.15.0...v1.16.0) (2018-10-17)
+
+
+### Bug Fixes
+
+* **TeamFTE:** added instructional carousel ([69bfa38](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/69bfa38))
+
+
+### Features
+
+* **fte-etnrey-team:** added copy and clear plan buttons ([a15bb89](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a15bb89))
+
+
+
 <a name="1.15.0"></a>
 # [1.15.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.3...v1.15.0) (2018-10-15)
 
