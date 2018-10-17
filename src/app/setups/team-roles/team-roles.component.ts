@@ -243,37 +243,5 @@ export class TeamRolesComponent implements OnInit {
     console.log('teamOrgStructure', this.teamOrgStructure);
   }
 
-  onEmployeeNameMouseEnter(employee: any) {
-
-    // set the jquery element
-    const $el = $(`div.name-popover[data-id="${employee.personID}"]`);
-
-    // set the popover options
-    const options = {
-      // animation: false,
-      placement: 'top',
-      // html: true,
-      // trigger: 'focus',
-      content: employee.fullName
-    };
-
-
-    $el.tooltip(options);
-    $el.tooltip('show');
-    // show the popover
-    // $el.popover(options);
-    // $el.popover('show');
-
-  }
-
-
-  onEmployeeNameMouseLeave(id: number) {
-    // set the jquery element
-    const $el = $(`div.name-popover[data-id="${id}"]`);
-    
-    // dispose of the popover
-    // $el.popover('dispose');
-  }
-
 }
 
