@@ -178,6 +178,15 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
         }
       }
 
+      function colorTextByFTE(d) {
+        const fteCompletion = d.data.teamFtes / d.data.teamCount;
+        if (!d.data.teamFtes || fteCompletion >= 1) {
+          return 'white';
+        } else {
+          return 'black';
+        }
+      }
+
       // Assigns the x and y position for the nodes
       const treeData = treemap(root);
 
@@ -219,7 +228,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       .attr('y', rectYpos)
       .attr('dy', `${textHeight}px`)
       .attr('text-anchor', 'start')
-      .attr('fill', (d) => d.data.teamFtes ? 'black' : 'white')
+      .attr('fill', (d) => colorTextByFTE(d))
       .text( (d) => `${d.data.name}` );
 
       // add FA icon to show whether node is collapsible/expandable
@@ -271,7 +280,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       // Remove any exiting nodes
       const nodeExit = node.exit().transition()
       .duration(collapseAnimSpeed)
-      .attr('transform', (d) => `translate(${source.x},${source.y})`)
+      .attr('transform', (d) => `translate(${source.x + source.width / 2},${source.y})`)
       .remove();
 
       // on exit, shrink node rectangle size to 0
@@ -293,8 +302,8 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       const linkEnter = link.enter().insert('path', 'g')
         .attr('class', 'link')
         .attr('d', d3.linkVertical()
-          .source( () => [source.x0, source.y0])
-          .target( () => [source.x0, source.y0])
+          .source( () => [source.x0 + source.width / 2, source.y0])
+          .target( () => [source.x0 + source.width / 2, source.y0])
         );
 
       // UPDATE
@@ -313,9 +322,9 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       const linkExit = link.exit().transition()
         .duration(collapseAnimSpeed)
         .attr('d',
-          d3.linkHorizontal()
-          .source( () => [source.x, source.y])
-          .target( () => [source.x, source.y])
+          d3.linkVertical()
+          .source( () => [source.x + source.width / 2, source.y])
+          .target( () => [source.x + source.width / 2, source.y])
         )
         .remove();
 

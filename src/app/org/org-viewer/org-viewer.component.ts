@@ -30,8 +30,9 @@ export class OrgViewerComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    // this.toolsService.hideFooter();
-    const bla = await this.orgViewerService.getOrg(this.authService.loggedInUser.managerEmailAddress);
+    // on init, fetch org chart data from org service using today's date as date range
+    const currentQuarter = this.toolsService.fiscalQuarterRange(new Date, 'YYYY-MM-DD');
+    const bla = await this.orgViewerService.getOrg(this.authService.loggedInUser.managerEmailAddress, currentQuarter[0], currentQuarter[1]);
     this.orgJson = bla;
   }
 

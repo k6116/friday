@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import * as moment from 'moment';
 
 @Injectable()
 export class OrgViewerService {
@@ -9,12 +10,11 @@ export class OrgViewerService {
 
   constructor(private apiDataOrgService: ApiDataOrgService) { }
 
-  async getOrg(supervisorEmailAddress: string) {
+  async getOrg(supervisorEmailAddress: string, startDate: string, endDate: string) {
     // get the requested org as flat array, synchronously
-    const startDate = '2018-09-01';
-    const endDate = '2018-10-01';
     const queryEmail = 'ron_nersesian@keysight.com';
     this.org = await this.fetchApiData(queryEmail, startDate, endDate);
+    const monthsBetween = moment(endDate).diff(moment(startDate), 'months');
 
     // return early if no data returned
     if (!this.org.length) {
@@ -29,7 +29,7 @@ export class OrgViewerService {
     const orgHierarchy = {
       name: this.org[0].FullName,
       id: this.org[0].PERSON_ID,
-      teamFtes: this.org[0].TotalTeamFTE,
+      teamFtes: this.org[0].TotalTeamFTE / monthsBetween, // avg FTEs/month over the number of months in range
       teamCount: this.org[0].TotalEmployeeCount,
       defaultCollapsed: false,
       children: {}
