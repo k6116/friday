@@ -10,7 +10,7 @@
     <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onAddProjectClick()" id="intro-add-project">
       <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
     </button>
-    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="createProject()" data-toggle="modal" data-target="#projectsCreateModal">
+    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onCreateProjectClick()" data-toggle="modal" data-target="#projectsCreateModal">
       <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
     </button>
     
@@ -26,6 +26,9 @@
       <i class="fa fa-play"></i>&nbsp;&nbsp;Launch
     </button>
     <button *ngIf="displaySyncNoticeButton" class="btn btn-primary" (click)="comparePlanToFTE()">Sync Notice</button>
+    <button *ngIf="displayAdminViewMessage" class="btn btn-primary btn-fte-toolbar" data-toggle="modal" data-target="#viewAsModal">
+      <i class="fa fa-shield"></i>&nbsp;&nbsp;View As
+    </button>
 
     <div *ngIf="displayAdminViewMessage"  style="color: red; display: inline-block; margin-left: 100px">
       <h3>ADMIN: Viewing this page under email {{ loginAsEmail }}</h3>
@@ -35,16 +38,16 @@
       <h5 *ngIf="launchDate">Last Launched: {{ launchDate }}</h5>
       <h5 *ngIf="!launchDate">Last Launched: never</h5>
     </div> -->
-    <!-- <div class="dropdown btn-help ">
+    <div class="dropdown btn-help ">
       <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-question"></i>&nbsp;&nbsp;Help
       </button>
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" (click)="tutorialPart1()">Interactive Tutorial</a>
+        <!-- <a class="dropdown-item" (click)="tutorialPart1()">Interactive Tutorial</a> -->
         <a class="dropdown-item" (click)="onInstructionsClick()">Instructions</a>
-        <a class="dropdown-item" >Confluence Documentation</a>
+        <!-- <a class="dropdown-item" >Confluence Documentation</a> -->
       </div>
-    </div> -->
+    </div>
   </div>  
 </div>
 
@@ -58,18 +61,46 @@
         <h4>{{ setMonthName }} {{ setYear }}</h4>
       </div>
   </div>
-  <div class="col-sm-1 col-custom col-multiselect">
-    <div style="float: right; padding-top: 6px">
-      <h6>Filters:</h6>
-    </div>
-  </div>
   <div class="col-sm-5 col-custom col-multiselect">
+    <div style="display: inline-flex">
+      <div style="padding-top: 6px">
+        <h6>Filters:</h6>
+      </div>
+      <span style="width: 10px"></span>
       <ss-multiselect-dropdown #filterEmployeesDropdown [options]="filterEmployeesOptions" [texts]="filterEmployeesTexts" 
             [settings]="filterEmployeesSettings" [(ngModel)]="filterEmployeesModel" (ngModelChange)="onFilterEmployeesChange()"></ss-multiselect-dropdown>
+      <span style="width: 5px"></span>
       <ss-multiselect-dropdown #filterProjectsDropdown [options]="filterProjectsOptions" [texts]="filterProjectsTexts" 
             [settings]="filterProjectsSettings" [(ngModel)]="filterProjectsModel" (ngModelChange)="onFilterProjectsChange()"></ss-multiselect-dropdown>
+    </div>
   </div>
-
+  <div class="col-sm-4 col-custom">
+    <div style="display: inline-flex">
+      <div style="padding-top: 6px">
+        <h6>Copy to Next:</h6>
+      </div>
+      <span style="width: 10px"></span>
+      <button class="btn btn-secondary copy-month-button-1" (mouseenter)="onCopyMonthButtonMouseEnter(1)" (mouseleave)="onCopyMonthButtonMouseLeave(1)" (click)="onCopyOneMonthClick()">
+        1
+      </button>
+      <span style="width: 5px"></span>
+      <button class="btn btn-secondary copy-month-button-3" (mouseenter)="onCopyMonthButtonMouseEnter(3)" (mouseleave)="onCopyMonthButtonMouseLeave(3)" (click)="onCopyThreeMonthClick()">
+        3
+      </button>
+      <span style="width: 5px"></span>
+      <button class="btn btn-secondary copy-month-button-6" (mouseenter)="onCopyMonthButtonMouseEnter(6)" (mouseleave)="onCopyMonthButtonMouseLeave(6)" (click)="onCopySixMonthClick()">
+        6
+      </button>
+      <span style="width: 10px"></span>
+      <button class="btn btn-secondary" (click)="onClearMonthClick()">
+        Clear Month
+      </button>
+      <span style="width: 5px"></span>
+      <button class="btn btn-secondary" (click)="onClearPlanClick()">
+        Clear Plan
+      </button>
+    </div>
+  </div>
   <!-- <div class="col-sm-3 col-custom">
     <div class="col-newplan" style="display: inline-flex">
       <button *ngIf="!displayNewPlanModal" class="btn btn-secondary" (click)="onNewPlanClick()">
@@ -181,3 +212,23 @@
     </div>
   </div>
   <!--  -->
+
+<!-- "View As" Modal -->
+<div class="modal" tabindex="-1" role="dialog" id="viewAsModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width:150%">
+      <div class="modal-header" style="border-bottom: none; height: 2rem;">
+        <h5 class="title">ADMIN ONLY: View As Manager</h5>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <input type="text" #viewAsEmailAddress class="form-control" placeholder="Email Address">&nbsp;
+          <div class="input-group-append">
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onViewAsClick(viewAsEmailAddress.value)">OK</button>&nbsp;
+            <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

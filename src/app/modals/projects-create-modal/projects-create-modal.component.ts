@@ -99,7 +99,6 @@ export class ProjectsCreateModalComponent implements OnInit {
     this.apiDataProjectService.createProject(project, this.userID)
     .subscribe(
       res => {
-        // console.log(res);
         project.projectID = res.newProjectID;
         this.createSuccess.emit(project);
         this.websocketService.sendNewProject(res);
