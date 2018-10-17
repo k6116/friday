@@ -9,13 +9,14 @@
 
     <div class="row row-custom" *ngIf="!showSpinner">
       <div class="col-sm col-custom">
-        <!-- USEFUL TEST BUTTON -->
-        <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
 
         <!-- Save button -->
         <button class="btn btn-secondary btn-fte-toolbar" (click)="onSaveClick()">
           <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
         </button>
+
+        <!-- USEFUL TEST BUTTON -->
+        <!-- <button class="btn btn-secondary btn-fte-toolbar" (click)="onTestFormClick()" style="width: 120px">Test Form Data</button> -->
 
       </div>  
   
@@ -40,7 +41,7 @@
               <div class="teamrole-table-cell col-role-titles"></div> <!-- Placeholder -->
               <div class="teamrole-table-cell col-role-subtitles"></div> <!-- Placeholder -->
               <ng-container *ngFor="let employee of teamOrgStructure; let k = index">
-                <div class="teamrole-table-cell rotate" data-toggle="tooltip" data-placement="top" [attr.title]="employee.fullName">
+                <div class="teamrole-table-cell rotate" [class.empty-role]="employee.jobTitleID===null" data-toggle="tooltip" data-placement="top" [attr.title]="employee.fullName">
                   {{ (employee.fullName.length > 14) ? (employee.fullName | slice:0:13) + '...' : (employee.fullName) }}
                 </div>
               </ng-container>
@@ -52,21 +53,45 @@
 
             <!-- Each row is one role (jobTitle + JobSubtitle) -->
             <div class="teamrole-table-row" *ngFor="let jobTitle of employeesJobTitlesNested; let i = index">
-              <!-- <div class="teamrole-table-cell icon">&nbsp;</div> -->
               <div class="col-role-title teamrole-table-cell">{{ jobTitle.JobTitleName }}</div>
               <div class="col-role-subtitle teamrole-table-cell">{{ jobTitle.JobSubTitleName }}</div>
               <div class="teamrole-table-cell" *ngFor="let employee of teamOrgStructure; let j = index">
-                <div class="custom-control custom-radio">                    
+                <div class="custom-control custom-radio" style="margin-left: 5px">                    
                   <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (change)="onSelectChange(i, j, jobTitle)">
                   <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
                 </div>
               </div>
             </div> <!-- end of role row -->
 
-            <!-- Row for adding new role -->
+            <!-- IF there's no roles added yet -->
+            <div class="teamrole-table-row" *ngIf="employeesJobTitlesNested.length === 0">
+              <!-- <div class="teamrole-table-cell icon">&nbsp;</div> -->
+              <div class="col-role-title teamrole-table-cell" style="color: gray">Add a jobtitle and a subtitle.</div>
+              <div class="col-role-subtitle teamrole-table-cell"></div>
+              <div class="teamrole-table-cell" *ngFor="let employee of teamOrgStructure; let j = index">
+                <div class="custom-control custom-radio" style="margin-left: 5px">                    
+                  <input class="custom-control-input" [attr.id]="'customRadio' + j" disabled>
+                  <label class="custom-control-label empty-role" [attr.for]="'customRadio' + j"></label>
+                </div>
+              </div>
+            </div> <!-- end of role row -->
+
+          </div> <!-- End of body -->
+
+          <!-- <div class="teamrole-table-row" *ngIf="employeesJobTitlesNested.length === 0" >
+            <div class="col-role-title teamrole-table-cell">
+              Add a jobtitle and a subtitle.
+            </div>
+          </div> -->
+
+          <!-- Footer for adding titles -->
+          <div class="teamrole-table-footer">
+
+            <!-- Row for Comboboxes -->
             <div class="teamrole-table-row"> 
 
-              <div class="teamrole-table-cell col-role-title">
+              <!-- jobtitle selection -->
+              <div class="col-role-title teamrole-table-cell">
                 <select class="custom-select" [class.duplicate-role]="duplicateRole" id="formGroupJobTitle" (change)="onJobTitleChange($event)">
                   <option [selected]="newRoleInit" value="null">Jobtitle...</option>
                   <option [attr.value]="m" *ngFor="let list of jobTitles; let m = index">{{list.jobTitleName}}</option>                
@@ -74,7 +99,8 @@
                 <small *ngIf="duplicateRole" class="duplicate-role-small">This role already exists.</small>
               </div>
 
-              <div class="teamrole-table-cell col-role-subtitle">
+              <!-- subtitle selection -->
+              <div class="col-role-subtitle teamrole-table-cell">
                 <select class="custom-select" [class.duplicate-role]="duplicateRole" id="formGroupJobTitle" [disabled]="!jobSubTitles" (change)="onJobSubTitleChange($event)">
                   <ng-container *ngIf="jobSubTitles">
                     <option [selected]="newRoleInit" value="null">Subtitle...</option>                  
@@ -84,12 +110,10 @@
                 <small *ngIf="duplicateRole" class="duplicate-role-small">&nbsp;&nbsp;</small>
               </div>
 
-            </div> <!-- End of options row -->
-
-            <!-- Row for ADD button -->
+            </div> <!-- End of combobox row -->
 
               <!-- disabled button -->
-              <div style="text-align: left; position: fixed; padding-left: 15px" *ngIf="newRole.JobTitleID === null || newRole.JobSubTitleID === null">
+              <div class="col-role-title teamrole-table-cell" *ngIf="newRole.JobTitleID === null || newRole.JobSubTitleID === null">
                 <button type="button" class="btn" disabled>
                   <i class="fa fa-plus"></i>&nbsp;&nbsp;Add
                 </button>
@@ -97,13 +121,13 @@
               </div>
   
               <!-- success button -->
-              <div style="text-align: left; position: fixed; padding-left: 15px" *ngIf="newRole.JobTitleID !== null && newRole.JobSubTitleID !== null">
+              <div style="text-align: left; position: fixed; padding-left: 12px" *ngIf="newRole.JobTitleID !== null && newRole.JobSubTitleID !== null">
                 <button type="button" class="btn btn-outline-success" (click)="onAddNewRoleClick()">
                   <i class="fa fa-plus"></i>&nbsp;&nbsp;Add
                 </button>
               </div>
 
-          </div> <!-- End of body -->
+          </div> <!-- End of Footer -->
 
         </div> <!-- TABLE start -->
 

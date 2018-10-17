@@ -1,52 +1,12 @@
-.btn-primary {
-  color: #fff;
-  background-color: rgb(108, 117, 125);
-  border-color: rgb(108, 117, 125);;
-}
+/* Toolbar */
 
 .btn-fte-toolbar {
   width: 90px;
   height: 35px;
-  /* z-index: -1; */
   position: sticky;
 }
 
-.rotate {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  white-space: nowrap;
-  min-width: 5rem;
-  max-width: 5rem;
-}
-
-.table td {
-  vertical-align: middle;
-  border-top: none;
-  white-space: nowrap;
-  /* z-index: -1; */
-  position: sticky;
-}
-
-.table th {
-  border-top: none;
-}
-
-i.fa-plus {
-  font-size: 13pt;
-  /* color: gray; */
-  vertical-align: middle;
-}
-
-.duplicate-role {
-  border: 1px solid red;
-}
-
-.duplicate-role-small {
-  color: red; 
-  display: block
-}
-
-/* FTE Table CSS */
+/* Table CSS */
 
 div.teamrole-table-container {
   height: 500px;
@@ -70,6 +30,10 @@ div.teamrole-table-body {
   display: table-row-group;
 }
 
+div.teamrole-table-footer {
+  display: table-footer-group;
+}
+
 div.teamrole-table-row {
   display: table-row;
   vertical-align: middle;
@@ -84,16 +48,16 @@ div.teamrole-table-cell {
   z-index: 0;
 }
 
-/* table body css */
+/* TABLE BODY CSS */
 
 /* Jobtitle Column */
 div.teamrole-table-cell.col-role-title {
   background-color: white;
   position: sticky;
-  left: 1px;
+  left: 0px;  /* needed to keep column sticky */
   min-width: 199px;
   z-index: 1;
-  padding-left: 15px;
+  padding-left: 13px;
 }
 
 /* Subtitle Column */
@@ -107,7 +71,12 @@ div.teamrole-table-cell.col-role-subtitle {
   z-index: 1;
 }
 
-/* table header css */
+/* get rid of the white dot inside radio button*/
+.custom-radio .custom-control-input:checked~.custom-control-label::after {
+  background-image: none !important;
+}
+
+/* TABLE HEADER CSS */
 
 /* Row in header */
 div.teamrole-table-header div.teamrole-table-row {
@@ -147,4 +116,61 @@ div.teamrole-table-header div.teamrole-table-row div.teamrole-table-cell.col-rol
   text-align: left;
   font-weight: bold;
   z-index: 3;
+}
+
+/* Employee names */
+div.rotate {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  white-space: nowrap;
+  min-width: 5rem;
+  max-width: 5rem;
+}
+
+/* To highlight employees without roles */
+div.teamrole-table-header .empty-role {
+  color: red;
+}
+
+
+/* FOOTER */
+
+div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell {
+  background-color: white;
+  position: sticky;
+  bottom: 0px;
+  z-index: 1;
+}
+
+/* Jobtitle Column */
+div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell.col-role-title {
+  background-color: white;
+  position: sticky;
+  /* left: 30px; */
+  min-width: 170px;
+  text-align: left;
+  font-weight: bold;
+  z-index: 3;
+  padding-left: 12px;
+  padding-right: 1px;
+}
+
+div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell.col-role-subtitle {
+  background-color: white;
+  position: sticky;
+  left: 200px;
+  min-width: 220px;
+  text-align: left;
+  font-weight: bold;
+  z-index: 3;
+  padding-left: 6px;
+}
+
+.duplicate-role {
+  border: 1px solid red;
+}
+
+.duplicate-role-small {
+  color: red; 
+  display: block
 }

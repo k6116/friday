@@ -103,6 +103,7 @@ export class TeamRolesComponent implements OnInit {
         }
       }
     }
+    
     this.showSpinner = false;
   }
 
@@ -234,6 +235,10 @@ export class TeamRolesComponent implements OnInit {
          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
        }
      );
+  }
+
+  emptyRoleFlag() {
+
   }
 
   onTestFormClick() {
