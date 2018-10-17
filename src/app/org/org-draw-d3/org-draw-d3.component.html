@@ -1,22 +1,15 @@
+<!-- toolbar of buttons within d3 drawing -->
 <div class="toolbar">
   <button id="defaultCollapse" class="btn btn-secondary">Reset to Default</button>
   <button id="expandAll" class="btn btn-secondary">Expand All</button>
   <button id="fteMode" class="btn btn-secondary">FTE Mode</button>
 </div>
 
+<!-- the d3 drawing itself -->
 <div id="d3-container"></div>
-<div *ngIf="fteMode" class="fte-legend">
-  <span class="fte-legend-header">FTE Legend:</span> (Data for {{currentFiscalQuarter}})<br />
-  <table>
-    <tr>
-      <td class="no-ftes">No data</td>
-      <td class="low-ftes">1-49%</td>
-      <td class="high-ftes">50-99%</td>
-      <td class="full-ftes">100%</td>
-    </tr>
-  </table>
-</div>
-<div *ngIf="peopleDetails" class="people-details">
+
+<!-- people details table overlay -->
+<div *ngIf="peopleDetails.length !== 0" class="people-details">
   <table>
     <tr class="people-details-row">
       <th>Employees</th>
@@ -28,3 +21,16 @@
     </tr>
   </table>
 </div>
+
+<!-- the FTE legend -->
+<div *ngIf="fteMode" class="fte-legend">
+    <span class="fte-legend-header">FTE Legend:</span> (Data for {{currentFiscalQuarter}})<br />
+    <table>
+      <tr>
+        <td class="no-ftes">No data</td>
+        <td class="low-ftes">1-49%</td>
+        <td class="high-ftes">50-99%</td>
+        <td class="full-ftes">100%</td>
+      </tr>
+    </table>
+  </div>

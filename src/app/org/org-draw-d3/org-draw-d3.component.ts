@@ -97,8 +97,9 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       root.children.forEach(initialCollapse);
       update(root);
       d3.select('#d3-container').select('svg')
-      .call(zoom) // adds zoom functionality
-      .call(zoom.transform, initialTransform);  // applies initial transform
+      .call(zoom)
+      .call(zoom.transform, initialTransform);
+      self.peopleDetails.length = 0;  // clear out people details table
     });
 
     // toolbar functionality to toggle FTE mode
