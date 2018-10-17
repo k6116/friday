@@ -44,6 +44,9 @@ export class CacheService {
   nestedOrgDataRequested: boolean;
   nestedOrgDataCached: boolean;
 
+  // MyProjects: Navigate from display-project back to either myProjects or search
+  fromMyProjectsFlag: boolean;
+
   // Store team employee list
   teamEmployeeList: any;
 
