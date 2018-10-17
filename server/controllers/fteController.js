@@ -250,7 +250,7 @@ function updateTeamData(req, res) {
         planName: planName,
         projectID: data.projectID,
         employeeID: data.employeeID,
-        fiscalDate: moment(data.month).format("YYYY-MM-DD HH:mm:ss"),
+        fiscalDate: moment(data.month).format("YYYY-MM-DD"),
         fte: +data.fte / 100, // convert the FTE value to a decimal
         createdBy: userID,
         createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -261,7 +261,7 @@ function updateTeamData(req, res) {
     }
   });
 
-  console.log('insertData');
+  console.log('insertData3');
   console.log(insertData);
 
   return sequelize.transaction((t) => {
