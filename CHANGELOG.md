@@ -1,3 +1,21 @@
+<a name="1.17.0"></a>
+# [1.17.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.16.0...v1.17.0) (2018-10-18)
+
+
+### Bug Fixes
+
+* **setups team-roles:** fix Add button on scroll ([6d44ff4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/6d44ff4))
+* **setups team-roles:** fix scroll issue on top ([d98a388](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/d98a388))
+
+
+### Features
+
+* **setups team-roles:** add footer and flag for empty roles ([9ab77be](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9ab77be))
+* **setups team-roles:** add tooltip on employee names ([f015935](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f015935))
+* **setups team-roles:** scrolling in table with fix columns ([cdfbf4e](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/cdfbf4e))
+
+
+
 <a name="1.16.0"></a>
 # [1.16.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.15.0...v1.16.0) (2018-10-17)
 
