@@ -44,7 +44,9 @@ export class TeamRolesComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    
     this.showSpinner = true;
+
     // get the token from local storage
     // NOTE: we can count on the token being there; if it is not, the user would have been logged out already
     // with the AuthGuardService on the main route

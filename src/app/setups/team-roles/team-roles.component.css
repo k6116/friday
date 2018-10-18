@@ -145,7 +145,7 @@ div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell {
 /* Jobtitle Column */
 div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell.col-role-title {
   background-color: white;
-  position: sticky;
+  position: inherit;
   /* left: 30px; */
   min-width: 170px;
   text-align: left;
@@ -157,7 +157,7 @@ div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell.col-rol
 
 div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell.col-role-subtitle {
   background-color: white;
-  position: sticky;
+  position: inherit;
   left: 200px;
   min-width: 220px;
   text-align: left;

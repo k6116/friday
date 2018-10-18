@@ -121,7 +121,7 @@
               </div>
   
               <!-- success button -->
-              <div style="text-align: left; position: fixed; padding-left: 12px" *ngIf="newRole.JobTitleID !== null && newRole.JobSubTitleID !== null">
+              <div class="col-role-title teamrole-table-cell" *ngIf="newRole.JobTitleID !== null && newRole.JobSubTitleID !== null">
                 <button type="button" class="btn btn-outline-success" (click)="onAddNewRoleClick()">
                   <i class="fa fa-plus"></i>&nbsp;&nbsp;Add
                 </button>
