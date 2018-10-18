@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import { ApiDataOrgService } from '../../../_shared/services/api-data/_index';
 import * as moment from 'moment';
 
 @Injectable()

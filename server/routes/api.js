@@ -170,10 +170,6 @@ router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobT
 router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
 router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
-// ORG CONTROLLER
-router.get('/org/getOrgFtes/:emailAddress/:startDate/:endDate', controllers.org.getOrgFtes);
-router.get('/org/getTeamFteList/:emailAddress/:startDate/:endDate', controllers.org.getTeamFteList);
-
 // TEMP JOB TITLE CONTROLLER
 router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
@@ -290,7 +286,8 @@ router.get('/bom/bom/show/showPartInfo/:partID', controllers.bom.showPartInfo);
 router.get('/bom/bom/show/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
 
 // ORG CONTROLLER
-router.get('/org/adoptionChart/show', controllers.org.getFteModePermissions);
+router.get('/org/reports-jarvisAdoption/show/getOrgFtes/:emailAddress/:startDate/:endDate', controllers.org.getOrgFtes);
+router.get('/org/reports-jarvisAdoption/show/getTeamFteList/:emailAddress/:startDate/:endDate', controllers.org.getTeamFteList);
 
 // REPORT CONTROLLER
 router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.report.getTopFTEProjectList);

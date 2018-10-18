@@ -44,7 +44,7 @@ import { DisplayProjectComponent } from './projects/display-project/display-proj
 import { UnitTestComponent } from './unit-test/unit-test.component';
 import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
 import { MatplanComponent } from './mat-plan/matplan/matplan.component';
-import { OrgViewerComponent } from './org/org-viewer/org-viewer.component';
+import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 
 // BOM module stuff
 // temporarily hiding until BOM editor is complete
@@ -85,6 +85,7 @@ const routes: Routes = [
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent },
+      { path: 'reports/jarvis-adoption', component: OrgViewerComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'chat', component: ChatComponent },

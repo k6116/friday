@@ -2,7 +2,6 @@
 <div class="toolbar">
   <button id="defaultCollapse" class="btn btn-secondary">Reset to Default</button>
   <button id="expandAll" class="btn btn-secondary">Expand All</button>
-  <button id="fteMode" [hidden]="!fteModeVisible" class="btn btn-secondary">FTE Mode</button>
 </div>
 
 <!-- the d3 drawing itself -->
@@ -13,17 +12,17 @@
   <table>
     <tr class="people-details-row">
       <th>Employees</th>
-      <th *ngIf="fteMode">FTE / mo</th>
+      <th>FTE / mo</th>
     </tr>
     <tr *ngFor="let employee of peopleDetails" class="people-details-row">
       <td>{{employee.fullName}}</td>
-      <td *ngIf="fteMode">{{employee.TotalEmployeeFTE | number:'1.2-2'}}</td>
+      <td>{{employee.TotalEmployeeFTE | number:'1.2-2'}}</td>
     </tr>
   </table>
 </div>
 
 <!-- the FTE legend -->
-<div *ngIf="fteMode" class="fte-legend">
+<div class="fte-legend">
     <span class="fte-legend-header">FTE Legend:</span> (Data for {{currentFiscalQuarter}})<br />
     <table>
       <tr>

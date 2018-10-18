@@ -1,19 +1,17 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
-import { ToolsService, CacheService } from '../../_shared/services/_index';
+import { ApiDataOrgService } from '../../../_shared/services/api-data/_index';
+import { ToolsService, CacheService } from '../../../_shared/services/_index';
 import * as d3 from 'd3';
 
 @Component({
   selector: 'app-org-draw-d3',
   templateUrl: './org-draw-d3.component.html',
-  styleUrls: ['./org-draw-d3.component.css', '../../_shared/styles/common.css']
+  styleUrls: ['./org-draw-d3.component.css', '../../../_shared/styles/common.css']
 })
 export class OrgDrawD3Component implements OnInit, OnChanges {
 
   @Input() orgJson: any;
 
-  fteMode = false;  // toggles whether d3 chart is in 'FTE mode' or not
-  fteModeVisible = false; // set based on whether user has permission to use FTE mode.  re-checked on click to prevent DOM 'hacking'
   peopleDetails = [];  // contains team roster and FTEs to display on click
   currentFiscalQuarter = this.toolsService.fiscalQuarterString(new Date);
 
@@ -24,15 +22,6 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
   ) { }
 
   ngOnInit() {
-    this.apiDataOrgService.getFteModePermissions().subscribe(
-      res => {
-        this.fteModeVisible = true; // if user has permission to use FTE mode, display the button
-      },
-      err => {
-        // user does not have permission to see FTE mode button
-      }
-    );
-
     // listen for changes to window size, and redraw the BOM chart if it changes
     window.addEventListener('resize', () => {
       this.drawD3Plot(this.orgJson);
@@ -113,22 +102,6 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       self.peopleDetails.length = 0;  // clear out people details table
     });
 
-    // toolbar functionality to toggle FTE mode
-    d3.select('#fteMode')
-    .on('click', () => {
-      // double check if user has permissions
-      self.apiDataOrgService.getFteModePermissions().subscribe(
-        res => {
-          self.fteMode = self.fteMode ? false : true;
-          update(root); // update all nodes to trigger node color changes
-        },
-        err => {
-          // user does not have permission to see FTE mode button, so raise a toast
-          self.cacheService.raiseToast('error', 'You do not have permission to access this feature');
-        }
-      );
-    });
-
     // set custom zoom settings
     const zoom = d3.zoom()
       .scaleExtent([0.09, 4])  // restrict zoom to this scale range
@@ -207,35 +180,27 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       }
 
       function colorNodeByFTE(d) {
-        if (!self.fteMode) {
-          return 'white';
+        // if in FTE mode, set background color of node based on percent of a manager's subordinate's FTE completion
+        if (!d.data.teamFtes) {
+          return '#f23535'; // no data, return red
+        }
+        const fteCompletion = d.data.teamFtes / d.data.teamCount;
+        if (fteCompletion < .5) {
+          return '#ffdc5e'; // 'low' amount of FTEs, return yellow
+        } else if (fteCompletion < 1) {
+          return '#58e454'; // 'high' amount of FTEs, return light green
         } else {
-          // if in FTE mode, set background color of node based on percent of a manager's subordinate's FTE completion
-          if (!d.data.teamFtes) {
-            return '#f23535'; // no data, return red
-          }
-          const fteCompletion = d.data.teamFtes / d.data.teamCount;
-          if (fteCompletion < .5) {
-            return '#ffdc5e'; // 'low' amount of FTEs, return yellow
-          } else if (fteCompletion < 1) {
-            return '#58e454'; // 'high' amount of FTEs, return light green
-          } else {
-            return 'green';
-          }
+          return 'green';
         }
       }
 
       function colorTextByFTE(d) {
-        if (!self.fteMode) {
-          return 'black';
+        // if in FTE mode, set the text for nodes with darker colors (red and green) to be white, for readability
+        const fteCompletion = d.data.teamFtes / d.data.teamCount;
+        if (!d.data.teamFtes || fteCompletion >= 1) {
+          return 'white';
         } else {
-          // if in FTE mode, set the text for nodes with darker colors (red and green) to be white, for readability
-          const fteCompletion = d.data.teamFtes / d.data.teamCount;
-          if (!d.data.teamFtes || fteCompletion >= 1) {
-            return 'white';
-          } else {
-            return 'black';
-          }
+          return 'black';
         }
       }
 

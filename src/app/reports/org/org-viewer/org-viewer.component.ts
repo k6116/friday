@@ -1,12 +1,12 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { OrgViewerService } from './org-viewer.service';
-import { AuthService, ToolsService } from '../../_shared/services/_index';
+import { AuthService, ToolsService } from '../../../_shared/services/_index';
 
 declare var $: any;
 @Component({
   selector: 'app-org-viewer',
   templateUrl: './org-viewer.component.html',
-  styleUrls: ['./org-viewer.component.css', '../../_shared/styles/common.css'],
+  styleUrls: ['./org-viewer.component.css', '../../../_shared/styles/common.css'],
   providers: [OrgViewerService]
 })
 export class OrgViewerComponent implements OnInit {

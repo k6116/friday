@@ -100,26 +100,11 @@ function getTeamFteList(req, res) {
     });
 }
 
-function getFteModePermissions(req, res) {
-  // if we are even here, the user must have permissions to access FTE mode so it doesn't matter what we actually query
-  sequelize.query(`SELECT 1`, {type: sequelize.QueryTypes.SELECT})
-    .then(user => {
-      res.json(user);
-    })
-    .catch(error => {
-      res.status(400).json({
-        title: 'Error (in catch)',
-        error: {message: error}
-      })
-    });
-}
-
 module.exports = {
   show: show,
   getSubordinatesFlat: getSubordinatesFlat,
   getTeamList: getTeamList,
   getEmployeeList: getEmployeeList,
   getOrgFtes: getOrgFtes,
-  getTeamFteList: getTeamFteList,
-  getFteModePermissions: getFteModePermissions
+  getTeamFteList: getTeamFteList
 }

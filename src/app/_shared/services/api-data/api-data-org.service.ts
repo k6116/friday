@@ -34,7 +34,7 @@ export class ApiDataOrgService {
   getOrgFtes(emailAddress: string, startDate: string, endDate: string): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/org/getOrgFtes/${emailAddress}/${startDate}/${endDate}`, options)
+    return this.http.get(`/api/org/reports-jarvisAdoption/show/getOrgFtes/${emailAddress}/${startDate}/${endDate}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -42,18 +42,9 @@ export class ApiDataOrgService {
   getTeamFteList(emailAddress: string, startDate: string, endDate: string): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/org/getTeamFteList/${emailAddress}/${startDate}/${endDate}`, options)
+    return this.http.get(`/api/org/reports-jarvisAdoption/show/getTeamFteList/${emailAddress}/${startDate}/${endDate}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
-
-  getFteModePermissions() {
-    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
-    const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/org/adoptionChart/show`, options)
-      .timeout(this.cacheService.apiDataTimeout)
-      .map((response: Response) => response.json());
-  }
-
 
 }
