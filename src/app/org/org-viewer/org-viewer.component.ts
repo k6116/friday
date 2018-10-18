@@ -17,7 +17,7 @@ export class OrgViewerComponent implements OnInit {
     if (event.code === 'Escape') {
       // if user is in full-screen mode, pressing escape will close it
       const currentState = $('.org-chart-cont').attr('class');
-      if (currentState.search('org-chart-cont-full')) {
+      if (currentState.search('org-chart-cont-full') !== -1) {
         this.expandChartFullscreen();
       }
     }
