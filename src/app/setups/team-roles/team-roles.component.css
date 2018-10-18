@@ -19,7 +19,7 @@ div.teamrole-table {
   display: table;
   overflow: scroll;
   vertical-align: middle;
-  border-spacing: 0px 10px;
+  border-spacing: 0px 0px;
 }
 
 div.teamrole-table-header {
@@ -45,6 +45,7 @@ div.teamrole-table-cell {
   width: 70px;
   min-width: 70px;
   height: 25px;
+  padding-top: 15px;
   z-index: 0;
 }
 
@@ -90,10 +91,11 @@ div.teamrole-table-header div.teamrole-table-row {
 div.teamrole-table-header div.teamrole-table-row div.teamrole-table-cell {
   background-color: white;
   position: sticky;
-  top: 24px;
+  top: 0px;
   z-index: 1;
   text-align: left; 
-  padding-bottom: 8px
+  padding-top: 10px;
+  padding-right: 10px;
 }
 
 /* First Cell in Header (above jobtitles) */
@@ -173,4 +175,8 @@ div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell.col-rol
 .duplicate-role-small {
   color: red; 
   display: block
+}
+
+div.add-btn {
+  padding-top: 5px;
 }
