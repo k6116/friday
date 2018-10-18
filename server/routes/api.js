@@ -45,6 +45,7 @@ router.get('/indexProjects', controllers.project.indexProjects)
 router.get('/indexProjectsFilterProjectType', controllers.project.indexProjectsFilterProjectType)
 router.get('/indexProjectRoster/:projectID', controllers.project.indexProjectRoster);
 router.get('/indexUserProjectList/:userID', controllers.project.indexUserProjectList);
+router.get('/indexTeamProjectList/:emailAddress', controllers.project.indexTeamProjectList);
 router.get('/indexProjectTypesList/', controllers.project.indexProjectTypesList);
 router.get('/indexProjectStatusesList/', controllers.project.indexProjectStatusesList);
 router.get('/indexProjectPrioritiesList/', controllers.project.indexProjectPrioritiesList);

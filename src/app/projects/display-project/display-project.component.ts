@@ -72,6 +72,9 @@ export class DisplayProjectComponent implements OnInit {
     this.showLabels = false;
     this.animateChart = true;
 
+    // flag to navigate back button 
+    // this.cacheService.fromMyProjectsFlag = false; 
+
     // set project types that will show the PLC schedule chart
     this.projectTypesToDisplaySchedule = ['NPI', 'NCI', 'NPPI', 'NTI', 'Program'];
 
@@ -123,7 +126,6 @@ export class DisplayProjectComponent implements OnInit {
     this.toolsService.showFooter();
 
   }
-
 
   async getData(): Promise<any> {
 
@@ -472,10 +474,17 @@ export class DisplayProjectComponent implements OnInit {
 
   }
 
-
   onBackButtonClick() {
 
-    this.router.navigate(['main/projects/search']);
+    if (this.cacheService.fromMyProjectsFlag === false) {
+
+      this.router.navigate(['main/projects/search']);
+
+    } else {
+
+      this.router.navigate(['main/projects/my-projects']);
+
+    }
 
   }
 

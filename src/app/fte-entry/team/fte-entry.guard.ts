@@ -36,6 +36,7 @@ export class FteTeamEntryGuard implements CanActivate {
 
     if (permRes.length > 0) {
       this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      // this.loginAsEmail = 'ermina_chua@keysight.com';
     } else {
       this.loginAsEmail = this.authService.loggedInUser.email;
     }

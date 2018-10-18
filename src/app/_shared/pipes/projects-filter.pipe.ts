@@ -18,7 +18,7 @@ export class ProjectsFilterPipe implements PipeTransform {
       for (let i = 0; i < filterChecked.length; i++) {
         if (filterChecked[i].id === 'check0') {
           projectList = projectList.filter(project =>
-            project.ProjectOrgManager === filterChecked[i].value || project.EmailAddress === filterChecked[i].value);
+            project.ProjectOwner === filterChecked[i].value || project.EmailAddress === filterChecked[i].value);
         }
         if (filterChecked[i].id === 'check1') {
           projectList = projectList.filter(project => project.ProjectTypeName === filterChecked[i].value);

@@ -42,6 +42,7 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
+import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
 import { MatplanComponent } from './mat-plan/matplan/matplan.component';
 import { OrgViewerComponent } from './org/org-viewer/org-viewer.component';
 
@@ -79,6 +80,7 @@ const routes: Routes = [
       // { path: 'bom/bom-editor', component: BomEditorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       // { path: 'bom/bom-viewer', component: BomViewerComponent, canActivate: [AuthGuardService] },
       { path: 'setups/team-roles', component: TeamRolesComponent },
+      { path: 'setups/transfer-projects', component: TransferProjectsComponent },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },

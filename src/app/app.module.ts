@@ -95,6 +95,7 @@ import { ProjectRequestsComponent } from './projects/project-requests/project-re
 import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
+import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
 import { MatplanComponent } from './mat-plan/matplan/matplan.component';
 import { OrgViewerComponent } from './org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './org/org-draw-d3/org-draw-d3.component';
@@ -159,7 +160,8 @@ import { OrgDrawD3Component } from './org/org-draw-d3/org-draw-d3.component';
     UnitTestComponent,
     MatplanComponent,
     OrgViewerComponent,
-    OrgDrawD3Component
+    OrgDrawD3Component,
+    TransferProjectsComponent
   ],
   imports: [
     AppRoutingModule,
