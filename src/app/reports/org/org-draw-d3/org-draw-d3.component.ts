@@ -258,6 +258,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       .attr('y', rectYpos)
       .attr('dy', `${textHeight}px`)
       .attr('x', (d) => calcLabelWidth(d.data.name) - 24)
+      .attr('fill', (d) => colorTextByFTE(d))
       .text( (d) => {
         if (d._children) {
           return '\uf067';
