@@ -153,6 +153,15 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
               permissionProtected: true,
               hidden: false
             },
+            {
+              title: 'Jarvis Adoption',
+              alias: 'reports-jarvis-adoption',
+              path: 'main/reports/jarvis-adoption',
+              parentAlias: 'reports',
+              active: false,
+              permissionProtected: true,
+              hidden: false
+            },
           ]
         },
         // temporarily hiding BOM from sidenav until we can complete BOM editor

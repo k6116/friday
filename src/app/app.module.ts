@@ -97,6 +97,8 @@ import { DisplayProjectComponent } from './projects/display-project/display-proj
 import { UnitTestComponent } from './unit-test/unit-test.component';
 import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
 import { MatplanComponent } from './mat-plan/matplan/matplan.component';
+import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
+import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
 
 
 @NgModule({
@@ -156,8 +158,10 @@ import { MatplanComponent } from './mat-plan/matplan/matplan.component';
     TeamRolesComponent,
     DisplayProjectComponent,
     UnitTestComponent,
-    TransferProjectsComponent,
-    MatplanComponent
+    MatplanComponent,
+    OrgViewerComponent,
+    OrgDrawD3Component,
+    TransferProjectsComponent
   ],
   imports: [
     AppRoutingModule,

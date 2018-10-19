@@ -159,31 +159,22 @@ router.get('/dashboard/checkFirstLogin', controllers.dashboard.checkFirstLogin);
 router.get('/dashboard/checkJobTitle', controllers.dashboard.checkJobTitle);
 router.get('/dashboard/checkProjectRequests', controllers.dashboard.checkProjectRequests);
 
-// JOB TITLE CONTROLLER (ADMIN)
-router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
-router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
-router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
-
 // FTE CONTROLLER
 router.get('/fte/fte/index/indexUserData', controllers.fte.indexUserData);
 router.delete('/fte/fte/destroy/destroyUserProject/:projectID', controllers.fte.destroyUserProject);   // PROTECT
 router.put('/fte/fte/update/updateUserData', controllers.fte.updateUserData);
 router.get('/fte/checkTeamFTEAdminPermission', controllers.fte.checkTeamFTEAdminPermission);
 
+// JOB TITLE CONTROLLER (ADMIN)
+router.get('/jobTitle/admin/index/indexJobTitle', controllers.jobTitle.indexJobTitle);
+router.get('/jobTitle/admin/index/indexJobSubTitle', controllers.jobTitle.indexJobSubTitle);
+router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
 // TEMP JOB TITLE CONTROLLER
 router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle.updateEmployeeJobTitle);
 
 // PROJECT CONTROLER
 router.get('/project/displayProject/show/getProject/:projectID', controllers.project.getProject);
-
-// SETUP PARTS
-router.get('/getParts', controllers.parts.indexParts);
-router.get('/getPart/:partID', controllers.parts.getPart);
-router.get('/getPartTypes', controllers.parts.indexPartTypes);
-router.post('/updatePart', controllers.parts.updatePart);
-router.post('/createPart', controllers.parts.createPart);
-router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 
 // SCHEDULES CONTROLLER
 router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
@@ -192,6 +183,14 @@ router.post('/updateProjectScheduleXML/:revisionNotes', controllers.schedules.up
 router.get('/getPartSchedule/:partID', controllers.schedules.indexPartSchedule);
 router.post('/updatePartScheduleXML/:revisionNotes', controllers.schedules.updatePartScheduleXML);
 router.get('/destroyScheduleSP/:scheduleID', controllers.schedules.destroyScheduleSP);
+
+// SETUP PARTS
+router.get('/getParts', controllers.parts.indexParts);
+router.get('/getPart/:partID', controllers.parts.getPart);
+router.get('/getPartTypes', controllers.parts.indexPartTypes);
+router.post('/updatePart', controllers.parts.updatePart);
+router.post('/createPart', controllers.parts.createPart);
+router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 
 // EXPORT CONTROLLER
 router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
@@ -285,6 +284,10 @@ router.get('/bom/bom/index', controllers.bom.index);
 router.get('/bom/bom/show/showSingleBom/:parentID/:parentEntity', controllers.bom.showSingleBom);
 router.get('/bom/bom/show/showPartInfo/:partID', controllers.bom.showPartInfo);
 router.get('/bom/bom/show/showProjectInfo/:projectID', controllers.bom.showProjectInfo);
+
+// ORG CONTROLLER
+router.get('/org/reports-jarvisAdoption/show/getOrgFtes/:emailAddress/:startDate/:endDate', controllers.org.getOrgFtes);
+router.get('/org/reports-jarvisAdoption/show/getTeamFteList/:emailAddress/:startDate/:endDate', controllers.org.getTeamFteList);
 
 // REPORT CONTROLLER
 router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.report.getTopFTEProjectList);
