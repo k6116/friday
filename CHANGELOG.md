@@ -1,3 +1,13 @@
+<a name="1.18.0"></a>
+# [1.18.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.17.0...v1.18.0) (2018-10-19)
+
+
+### Features
+
+* **Org Chart component:** added org chart d3 component with FTE-mode to see Jarvis adoption ([addb6ee](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/addb6ee))
+
+
+
 <a name="1.17.0"></a>
 # [1.17.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.16.0...v1.17.0) (2018-10-18)
 
