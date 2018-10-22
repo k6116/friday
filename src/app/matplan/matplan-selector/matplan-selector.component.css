@@ -1,0 +1,13 @@
+.typeahead {
+  width: 380px;
+}
+
+.btn-table {
+  width: 75px;
+  height: 28px;
+  padding: 0px;
+}
+
+tbody td {
+  padding: 6px 10px;
+}

@@ -1,0 +1,39 @@
+<div class="container-fluid">
+  <!-- row for project selector -->
+  <div class="row row-custom">
+    <div class="project-selector">
+      <input class="form-control typeahead" type="search" placeholder="Enter a Project (ie, G-Max)" appAutofocus>
+    </div>
+  </div>
+
+  <!-- row for list of matplans -->
+  <div class="row row-custom">
+    <table class="table table-bordered table-hover" *ngIf="matplanList">
+      <thead>
+        <tr>
+          <th>Build Name</th>
+          <th>Build Date</th>
+          <th>Build Qty</th>
+          <th>Has Matplan</th>
+          <th>Matplan Last Updated</th>
+          <th>Matplan Updated By</th>
+          <th>Modify Matplan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let matplan of matplanList">
+          <td>{{matplan.BuildStatusName}}</td>
+          <td>{{matplan.NeedByDate | date}}</td>
+          <td>{{matplan.NeededQuantity}}</td>
+          <td>{{matplan.MaterialPlanID !== null ? true : false}}</td>
+          <td>{{matplan.MatplanUpdateDate | date}}</td>
+          <td>{{matplan.MatplanUpdatedBy}}</td>
+          <td>
+            <button class="btn btn-success btn-table" *ngIf="matplan.MaterialPlanID === null" (click)="createMatplan(matplan)"><i class="fa fa-plus"></i>&nbsp;&nbsp;Create</button>
+            <button class="btn btn-info btn-table" *ngIf="matplan.MaterialPlanID !== null" (click)="editMatplan(matplan)"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
