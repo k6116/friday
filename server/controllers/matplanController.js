@@ -77,9 +77,25 @@ function showMatplans(req, res) {
   });
 }
 
+function showMatplanBom(req, res) {
+  const projectID = req.params.projectID;
+  sequelize.query(`EXECUTE dbo.billsDrillDownDetails :projectID, 'Project'`,{replacements: {projectID: projectID}, type: sequelize.QueryTypes.SELECT}
+  )
+  .then(bom => {
+    res.json(bom);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
 
 module.exports = {
   show: show,
   indexProjects: indexProjects,
-  showMatplans: showMatplans
+  showMatplans: showMatplans,
+  showMatplanBom: showMatplanBom
 }

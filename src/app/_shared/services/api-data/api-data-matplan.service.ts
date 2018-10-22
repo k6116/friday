@@ -34,4 +34,12 @@ export class ApiDataMatplanService {
       .map((response: Response) => response.json());
   }
 
+  showMatplanBom(projectID: number) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/matplan/matplan/showMatplanBom/${projectID}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 }
