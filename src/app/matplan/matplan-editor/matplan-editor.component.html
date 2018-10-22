@@ -50,7 +50,7 @@
   <div class="matplan-modules">
     <app-matplan-info *ngIf="stepsOpen[0]" [projectID]="projectID"></app-matplan-info>
     <app-matplan-bom *ngIf="stepsOpen[1]" [projectID]="projectID"></app-matplan-bom>
-    <app-matplan-quote *ngIf="stepsOpen[2]"></app-matplan-quote>
+    <app-matplan-quote *ngIf="stepsOpen[2]" [projectID]="projectID"></app-matplan-quote>
     <app-matplan-order *ngIf="stepsOpen[3]"></app-matplan-order>
   </div>
 

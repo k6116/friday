@@ -1,6 +1,7 @@
 
 const models = require('../models/_index');
 const sequelize = require('../db/sequelize').sequelize;
+const Treeize = require('treeize');
 
 
 function show(req, res) {
@@ -82,7 +83,43 @@ function showMatplanBom(req, res) {
   sequelize.query(`EXECUTE dbo.billsDrillDownDetails :projectID, 'Project'`,{replacements: {projectID: projectID}, type: sequelize.QueryTypes.SELECT}
   )
   .then(bom => {
+    bom.forEach( item => {
+      if (item.Level > 1) {
+        const indentedName = new Array(item.Level - 1).concat(item.ChildName);
+        item.ChildIndentedName = indentedName.join('-');
+      } else {
+        item.ChildIndentedName = item.ChildName;
+      }
+    });
     res.json(bom);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
+function showQuotesForPart(req, res) {
+  const partID = req.params.partID;
+  sequelize.query(`
+    SELECT
+      PartID AS [partID],
+      QuoteID AS [quoteID],
+      Supplier AS [supplier],
+      MFGPartNumber AS [mfgPartNum],
+      ID AS [breaks|id],
+      LeadTime AS [breaks|leadTime],
+      MinOrderQty AS [breaks|minOrderQty],
+      Price AS [breaks|price],
+      NRECharge AS [breaks|nreCharge]
+    FROM parts.Quotes
+    WHERE PartID = :partID`, {replacements: {partID: partID}, type: sequelize.QueryTypes.SELECT})
+  .then(quoteList => {
+    const quoteTree = new Treeize().options({input: {delimiter: '|'}});
+    quoteTree.grow(quoteList);
+    res.json(quoteTree.getData());
   })
   .catch(error => {
     res.status(400).json({
@@ -97,5 +134,6 @@ module.exports = {
   show: show,
   indexProjects: indexProjects,
   showMatplans: showMatplans,
-  showMatplanBom: showMatplanBom
+  showMatplanBom: showMatplanBom,
+  showQuotesForPart: showQuotesForPart
 }

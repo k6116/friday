@@ -1,3 +1,45 @@
-<p>
-  matplan-quote works!
-</p>
+<div class="row">
+
+  <!-- first col is list-box of items in the BOM-->
+  <div class="col-sm-3">
+    <div class="list-group">
+      <button class="list-group-item list-group-item-action" *ngFor="let item of bom" (click)="showQuotes(item)">{{item.ChildIndentedName}}</button>
+    </div>
+  </div>
+
+  <!-- second col is quote selector and editor -->
+  <div class="col-sm-9" *ngIf="selectedPartID">
+
+    <div class="card"> <!-- card for "add new quote" -->
+      <h5 class="card-header">New</h5>
+      <div class="card-body text-center">
+        <button class="btn btn-success">Add New Quote</button>
+      </div>
+    </div>
+    <ng-container *ngFor="let quote of quotes">
+      <div class="card">
+        <h5 class="card-header">{{quote.supplier}} - {{quote.mfgPartNum}}</h5>
+        <div class="card-body">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>MOQ:</th>
+                <th>Price:</th>
+                <th>NRE:</th>
+                <th>LT (wks):</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let break of quote.breaks">
+                <td>{{break.minOrderQty}}</td>
+                <td>{{break.price}}</td>
+                <td>{{break.nreCharge}}</td>
+                <td>{{break.leadTime}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

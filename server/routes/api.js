@@ -129,6 +129,7 @@ router.get('/matplan/matplan/show/:matplanID', controllers.matplan.show)
 router.get('/matplan/matplan/indexProjects', controllers.matplan.indexProjects)
 router.get('/matplan/matplan/showMatplans/:projectID', controllers.matplan.showMatplans)
 router.get('/matplan/matplan/showMatplanBom/:projectID', controllers.matplan.showMatplanBom)
+router.get('/matplan/matplan/showQuotesForPart/:partID', controllers.matplan.showQuotesForPart)
 
 
 // middleware to return an error if the token cannot be verified

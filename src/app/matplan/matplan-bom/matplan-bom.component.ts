@@ -16,15 +16,6 @@ export class MatplanBomComponent implements OnInit {
   ngOnInit() {
     this.apiDataMatplanService.showMatplanBom(this.projectID).subscribe( res => {
       this.bom = res;
-      this.bom.forEach( item => {
-        if (item.Level > 1) {
-          const indentedName = new Array(item.Level - 1).concat(item.ChildName);
-          item.ChildIndentedName = indentedName.join('-');
-        } else {
-          item.ChildIndentedName = item.ChildName;
-        }
-      });
-      console.log(this.bom);
     });
   }
 

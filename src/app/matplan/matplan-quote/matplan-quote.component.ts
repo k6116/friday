@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ApiDataMatplanService } from '../../_shared/services/api-data/_index';
+
 
 @Component({
   selector: 'app-matplan-quote',
@@ -7,9 +9,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MatplanQuoteComponent implements OnInit {
 
-  constructor() { }
+  @Input() projectID: number;
+  bom: any;
+  selectedPartID: number;
+  quotes: any;
+
+  constructor(private apiDataMatplanService: ApiDataMatplanService) { }
 
   ngOnInit() {
+    this.apiDataMatplanService.showMatplanBom(this.projectID).subscribe( res => {
+      this.bom = res;
+    });
+  }
+
+  showQuotes(part: any) {
+    this.selectedPartID = part.ChildID;
+    this.apiDataMatplanService.showQuotesForPart(part.ChildID).subscribe( res => {
+      this.quotes = res;
+    });
   }
 
 }
