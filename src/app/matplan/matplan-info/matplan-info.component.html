@@ -1,3 +1,68 @@
-<p>
-  matplan-info works!
-</p>
+<!-- first row is for project info and team roster -->
+<div class="row">
+  <div class="col-sm-6">
+    
+    <div class="card">
+      <div class="card-header">Project Info:</div>
+      <div class="card-body">
+        <table class="table table-sm" *ngIf="projectData">
+          <tr>
+            <th scope="row">Project Type:</th>
+            <td>{{projectData.ProjectTypeName}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Priority:</th>
+            <td>{{projectData.PriorityName}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Project Description:</th>
+            <td>{{projectData.Description}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Last Update Date:</th>
+            <td>{{projectData.LastUpdateDate | date}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Last Updated By:</th>
+            <td>{{projectData.LastUpdatedBy}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Project Number:</th>
+            <td>{{projectData.ProjectNumber}}</td>
+          </tr>
+          <tr>
+            <th scope="row">MU:</th>
+            <td>{{projectData.MU}}</td>
+          </tr>
+          <tr>
+            <th scope="row">IBO:</th>
+            <td>{{projectData.IBO}}</td>
+          </tr>
+        </table>
+      </div>
+    </div> <!-- end card -->
+  </div> <!-- end col -->
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-header">Project Roster:</div>
+      <div class="card-body">
+        <table class="table table-sm" *ngIf="projectRoster">
+          <thead>
+            <tr>
+              <th>Name:</th>
+              <th>Role:</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let person of projectRoster">
+              <td>{{person.name}}</td>
+              <td>{{person.jobTitle}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p *ngIf="!projectRoster" class="no-roster">No roster found</p>
+      </div>
+    </div> <!-- end card -->
+  </div> <!-- end col-->
+</div> <!-- end row -->

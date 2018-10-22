@@ -14,8 +14,9 @@ import { MatplanOrderComponent } from '../matplan-order/matplan-order.component'
 export class MatplanEditorComponent implements OnInit {
 
   matplanID: number;  // for getting matplanID to query from router params
+  projectID: number;
   matplan: any;
-  stepsOpen = [true, false, false, false]; // show which steps are open
+  stepsOpen = [false, false, false, false]; // show which steps are open
 
   @ViewChild('MatplanInfoComponent') matplanInfoComponent: MatplanInfoComponent;
   @ViewChild('MatplanBomComponent') matplanBomComponent: MatplanBomComponent;
@@ -33,7 +34,8 @@ export class MatplanEditorComponent implements OnInit {
   ngOnInit() {
     this.apiDataMatplanService.show(this.matplanID).subscribe( res => {
       this.matplan = res[0];
-      console.log(res);
+      this.projectID = this.matplan.ProjectID;
+      console.log(this.matplan);
     });
   }
 

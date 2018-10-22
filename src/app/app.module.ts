@@ -33,7 +33,7 @@ import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
   ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
-  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
+  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService, ApiDataMatplanService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { AuthGuardService } from './_shared/guards/auth.guard';
@@ -96,7 +96,12 @@ import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
 import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
-import { MatplanComponent } from './mat-plan/matplan/matplan.component';
+import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
+import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
+import { MatplanInfoComponent } from './matplan/matplan-info/matplan-info.component';
+import { MatplanBomComponent } from './matplan/matplan-bom/matplan-bom.component';
+import { MatplanQuoteComponent } from './matplan/matplan-quote/matplan-quote.component';
+import { MatplanOrderComponent } from './matplan/matplan-order/matplan-order.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
 
@@ -158,7 +163,12 @@ import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.compon
     TeamRolesComponent,
     DisplayProjectComponent,
     UnitTestComponent,
-    MatplanComponent,
+    MatplanSelectorComponent,
+    MatplanEditorComponent,
+    MatplanInfoComponent,
+    MatplanBomComponent,
+    MatplanQuoteComponent,
+    MatplanOrderComponent,
     OrgViewerComponent,
     OrgDrawD3Component,
     TransferProjectsComponent
@@ -198,6 +208,7 @@ import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.compon
     ApiDataPartService,
     ApiDataAnalyticsService,
     ApiDataBomService,
+    ApiDataMatplanService,
     BomService,
     CacheService,
     AuthService,

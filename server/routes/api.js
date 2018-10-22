@@ -124,6 +124,11 @@ router.post('/destroySchedule/:userID', controllers.schedules.destroySchedule);
 router.post('/insertScheduleDetailBulk/:userID', controllers.schedules.insertScheduleDetailBulk);
 router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedules.updateScheduleDetailBulk);
 
+// MATPLAN CONTROLLER
+router.get('/matplan/matplan/show/:matplanID', controllers.matplan.show)
+router.get('/matplan/matplan/indexProjects', controllers.matplan.indexProjects)
+router.get('/matplan/matplan/showMatplans/:projectID', controllers.matplan.showMatplans)
+
 
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
