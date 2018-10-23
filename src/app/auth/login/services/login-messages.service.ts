@@ -93,6 +93,10 @@ export class LoginMessagesService {
         message.text = 'The server is not responding. Please check your connection to the Keysight network.';
         this.toolsService.displayTimeoutError();
       }
+    } else if (error.status === 0) {
+        message.text = 'Error: connection refused. Please check your connection to the Keysight network.';
+    } else {
+      message.text = 'Sorry, an unexpected error occured.  Please contact support.';
     }
     // add handling for sequelize errors here
 

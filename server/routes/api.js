@@ -150,6 +150,7 @@ router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle
 
 // PROJECT CONTROLER
 router.get('/project/displayProject/show/getProject/:projectID', controllers.project.getProject);
+router.get('/project/index/getProjectsList', controllers.project.getProjectsList);
 
 // SETUP PARTS
 router.get('/getParts', controllers.parts.indexParts);

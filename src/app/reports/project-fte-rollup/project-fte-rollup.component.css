@@ -43,16 +43,16 @@ th.col-type {
   width: 150px;
 }
 
-th.col-fte {
+/* th.col-fte {
   width: 100px;
-}
+} */
 
 th.col-cum-fte {
   width: 100px;
 }
 
 th.col-spark-bar {
-  width: calc(100% - (100px + 450px + 150px + 100px + 100px));
+  width: calc(100% - (100px + 450px + 150px + 100px));
   /* width: 20%; */
 }
 

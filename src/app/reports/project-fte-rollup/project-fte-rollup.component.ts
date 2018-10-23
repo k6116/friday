@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
-import { ApiDataReportService } from '../../_shared/services/api-data/api-data-report.service';
+import { Component, OnInit, AfterViewInit, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { ApiDataReportService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { ToolsService } from '../../_shared/services/tools.service';
 
 declare var require: any;
@@ -22,6 +22,8 @@ require('highcharts/highcharts-more.js')(Highcharts);
 })
 export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
+  @ViewChild('testButtonVC') testButtonVC: ElementRef;
+
   data: any;
   chartOptions: any;
   chart: any;
@@ -32,22 +34,21 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   drillLevel: number;
   drillHistory: any = [];
   drillDownIDs: any = [];
+  drillDownTitles: any = [];
   tableData: any = [];
   displayTable: boolean;
+  maxFTE: number;
+  barMultiplier: number;
 
-  // set up a document click hostlistener for the clickable message links
-  @HostListener('document:click', ['$event.target'])
-  onClick(targetElement) {
-    // set the clicked element to a jQuery object
-    const $targetElement = $(targetElement);
-    // if the element has the message-link class, take some action
-    if ($targetElement.hasClass('highcharts-drillup-button')) {
-      console.log('chart drillup button clicked');
-    }
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.resizeChart();
   }
+
 
   constructor(
     private apiDataReportService: ApiDataReportService,
+    private apiDataProjectService: ApiDataProjectService,
     private toolsService: ToolsService
   ) {
 
@@ -57,16 +58,46 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
+    this.getProjectsListData();
+
     // this.renderTestChart();
     this.renderLokiChart();
+
 
   }
 
   ngAfterViewInit() {
 
-    $('g.highcharts-button.highcharts-drillup-button').click(function() {
-      console.log('drill up button clicked');
-    });
+    // $('g.highcharts-button.highcharts-drillup-button').click(function() {
+    //   console.log('drill up button clicked');
+    // });
+
+  }
+
+
+  resizeChart() {
+
+    // reflow the charts to its container during window resize
+    if (this.chart) {
+      this.chart.reflow();
+    }
+    this.calculateBarMultipler();
+
+  }
+
+
+  getProjectsListData() {
+
+    this.apiDataProjectService.getProjectsList()
+    .subscribe(
+      res => {
+        console.log('projects list data:');
+        console.log(res);
+      },
+      err => {
+        console.error('attempt to get projects list data returned error:');
+        console.log(err);
+      });
 
   }
 
@@ -203,6 +234,8 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
       this.setBulletColors();
 
       this.pushLevelOneItemIntoTable();
+
+      this.getHighestFTE();
 
       console.log('final chart data');
       console.log(this.chartData);
@@ -400,6 +433,22 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   }
 
 
+  getHighestFTE() {
+
+    let maxFTE = 0;
+    this.chartData.forEach(data => {
+      if (data.value > maxFTE) {
+        maxFTE = data.value;
+      }
+    });
+    this.maxFTE = maxFTE;
+
+    console.log('max fte:');
+    console.log(this.maxFTE);
+
+  }
+
+
   pushLevelOneItemIntoTable() {
 
     const levelOneItem = this.chartData.filter(data => {
@@ -512,6 +561,26 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   }
 
 
+  pushTitlesIntoHistory(title) {
+
+    this.drillDownTitles.push(title);
+
+    console.log('titles array after push:');
+    console.log(this.drillDownTitles);
+
+  }
+
+  removeTitlesFromHistory() {
+
+    // remove the last title from the array
+    this.drillDownTitles.pop();
+
+    console.log('titles array after pop:');
+    console.log(this.drillDownTitles);
+
+  }
+
+
   highlightDisplayedItems(parentID, level?) {
 
     // remove all existing highlighted rows
@@ -542,6 +611,35 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   }
 
 
+  calculateBarMultipler() {
+
+    // get the width of the bar column
+    const colWidth = $('th.col-spark-bar').outerWidth();
+
+    // console.log('column width:');
+    // console.log(colWidth);
+
+    // divide the width in pixels by the max number of cumulative ftes
+    const multiplier1 = colWidth / this.maxFTE;
+
+    // console.log('multiplier1:');
+    // console.log(multiplier1);
+
+    // subtract 30% to allow for some padding
+    const multiplier2 = this.toolsService.roundTo((multiplier1 - (multiplier1 * 0.33)), 0);
+
+    // console.log('multiplier2:');
+    // console.log(multiplier2);
+
+    // set the bar multiplier
+    this.barMultiplier = multiplier2;
+
+    // console.log('bar multiplier:');
+    // console.log(this.barMultiplier);
+
+  }
+
+
 
   setChartOptions() {
 
@@ -554,21 +652,43 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
           load: function (e) {
             console.log('chart is loaded');
             that.displayTable = true;
+
+            setTimeout(() => {
+              that.calculateBarMultipler();
+            }, 0);
           }
         }
       },
+      plotOptions: {
+        series: {
+          animation: true
+        }
+      },
+      // tooltip: {
+      //   formatter: function () {
+      //     return 'The value for <b>sadfas</b>';
+      //   }
+      // },
       series: [{
         type: 'treemap',
         layoutAlgorithm: 'squarified',  // sliceAndDice, stripes, squarified or strip
         layoutStartingDirection: 'vertical',
         allowDrillToNode: true,
+        interactByLeaf: false,
         animationLimit: 1000,
+        stickyTracking: true,
+        enableMouseTracking: true,
         // tooltip: {
         //   followPointer: true
         // },
         dataLabels: {
           enabled: false
         },
+        // tooltip: {
+        //   pointFormatter: function () {
+        //     return `<b>{point.name}</b>: {point.value}<br/> YES!`;
+        //   }
+        // },
         levelIsConstant: false,
         levels: [{
           level: 1,
@@ -585,7 +705,21 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
         }],
         events: {
           click: function(e) {
+            console.log('CLICK FUNCTION TRIGGERED');
+            // if (1 === 1) {
+            //   throw {error: 'dont drill down'};
+            // }
+
+            const tableData = $.extend(true, [], that.tableData);
+            console.log('table data:');
+            console.log(tableData);
+
             console.log(`clicked on ${e.point.name}; id ${e.point.id}`);
+            console.log(e.point);
+
+            if (that.checkClickedItemIsInChart(e.point.id, tableData)) {
+              console.log('clicked item IS in the chart');
+
             // console.log(e);
             // console.log(e.point.level);
             // console.log('this');
@@ -625,11 +759,18 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
             if (drilledDown) {
 
-              this.chart.setTitle({text: `Project FTEs for ${e.point.name}`});
+              console.log('e.point:');
+              console.log(e.point);
+
+              this.chart.setTitle({text: `FTEs for ${e.point.name} ${e.point.type}`});
+
+              console.log(`chart title: ${this.chart.title.textStr}`);
 
               that.pushChildItemsIntoTable(e.point.id);
 
               that.pushChildIDsIntoHistory(e.point.id);
+
+              that.pushTitlesIntoHistory(this.chart.title.textStr);
 
               that.highlightDisplayedItems(e.point.id);
 
@@ -640,19 +781,20 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
             // console.log('updated data');
             // console.log(this.data);
+          } else {
+            console.log('clicked item is NOT in the chart');
+            throw {error: 'dont drill down'};
           }
-          // drillup: function(e) {
-          //   console.log('drillup');
-          //   console.log(e);
-          // }
+
+          }
         },
         data: this.chartData
       }],
       subtitle: {
-        text: 'Click colored project box to drill down (if pointing hand cursor), grey box in upper right corner to drill up'
+        text: 'Click a box to drill down (if pointing hand cursor); click grey box in upper right corner to drill up'
       },
       title: {
-        text: 'Project FTEs for Loki Program (Cumulative Rollup)'
+        text: `FTEs for ${this.chartData[0].name} ${this.chartData[0].type}`  // initial title for level 1 project/program
       }
     };
 
@@ -663,23 +805,14 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
     const that = this;
 
-    // const temp = [
-    //   {
-    //     ids: [1, 2, 4]
-    //   },
-    //   {
-    //     ids: [1, 5, 6, 9, 10, 11]
-    //   }
-    // ];
-
     $(function() {
       (function(H: any) {
         H.wrap(H.seriesTypes.treemap.prototype, 'drillUp', function(proceed) {
-          // console.log('drillup triggered');
+          console.log('DRILLUP FUNCTION TRIGGERED');
           // console.log('proceed');
           // console.log(proceed);
-          console.log('this:');
-          console.log(this);
+          // console.log('this:');
+          // console.log(this);
           // console.log('H');
           // console.log(H);
           const rootNode = this.chart.series[0].rootNode;
@@ -687,6 +820,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
           const level = rootNode ? rootNode.split('_').length : 0;
           console.log('level:');
           console.log(level);
+
           if (level === 1) {
             for (let i = 0; i < this.data.length; i++) {
               if (this.data[i].level === 2) {
@@ -695,13 +829,28 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
                 });
               }
             }
+            console.log('this.data after color update:');
+            console.log(this.data);
+            that.testButtonVC.nativeElement.focus();
+          }
+
+          // update the title
+          if (that.drillDownTitles.length >= 2) {
+            this.chart.setTitle({text: that.drillDownTitles[that.drillDownTitles.length - 2]});
+          } else if (that.drillDownTitles.length) {
+            this.chart.setTitle({text: that.drillDownTitles[0]});
           }
 
           // remove the drilled down children from the table
           that.removeChildItemsFromTable();
 
+          // remove the last chart title from the array
+          that.removeTitlesFromHistory();
+
           // highlight the displayed items (next level up)
           that.highlightDisplayedItems(undefined, level);
+
+          // this.chart = Highcharts.chart('rollupChart', that.chartOptions);
 
           // console.log('drill history:');
           // console.log(that.drillHistory);
@@ -720,19 +869,47 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
           // console.log('updated data:');
           // console.log(this.data);
           proceed.apply(this);
+
         });
       })(Highcharts);
     });
 
-    // console.log(func);
+
 
     // render the chart
     this.chart = Highcharts.chart('rollupChart', this.chartOptions);
+    setTimeout(() => {
+      this.chart.reflow();
+    }, 0);
 
 
   }
 
 
+  onTestClick() {
+    console.log('test button clicked');
+    console.log(this.chart.series[0].data[0].select(true, true));
+  }
+
+  reRenderChart() {
+    // this.chartOptions.plotOptions.series.animation = false;
+    this.chart.destroy();
+    this.chart = Highcharts.chart('rollupChart', this.chartOptions);
+    setTimeout(() => {
+      this.chart.reflow();
+    }, 0);
+  }
+
+
+  checkClickedItemIsInChart(id: number, tableData: any): boolean {
+    let returnVal: boolean;
+    tableData.forEach(data => {
+      if (data.id.toString() === id.toString() && data.highlight) {
+        returnVal = true;
+      }
+    });
+    return returnVal ? returnVal : false;
+  }
 
 
 }

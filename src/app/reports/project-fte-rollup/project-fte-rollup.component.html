@@ -2,6 +2,9 @@
 considering topnav, sidenav, and footer -->
 <div class="container-fluid">
 
+  <button (click)="onTestClick()">Test</button>
+  <input #testButtonVC type="text">
+
   <div class="highchart schedule-chart" id="rollupChart"></div>
 
 
@@ -11,7 +14,7 @@ considering topnav, sidenav, and footer -->
         <th scope="col" class="col-level">Level</th>
         <th scope="col" class="col-project">Project</th>
         <th scope="col" class="col-type">Type</th>
-        <th scope="col" class="col-fte">FTEs</th>
+        <!-- <th scope="col" class="col-fte">FTEs</th> -->
         <th scope="col" class="col-cum-fte">Cum. FTEs</th>
         <th scope="col" class="col-spark-bar"></th>
       </tr>
@@ -21,10 +24,10 @@ considering topnav, sidenav, and footer -->
         <td class="drilldown-table-cell cell-level">{{ tableRow.level }}</td>
         <td class="drilldown-table-cell project-name-text" [style.padding-left]="(5 + (tableRow.level - 1) * 15) + 'px'"><i [style.color]='tableRow.bulletColor' class="fa fa-circle point-icon"></i>{{ tableRow.name }}</td>
         <td class="drilldown-table-cell">{{ tableRow.type }}</td>
-        <td class="drilldown-table-cell">{{ tableRow.fte }}</td>
+        <!-- <td class="drilldown-table-cell">{{ tableRow.fte }}</td> -->
         <td class="drilldown-table-cell">{{ tableRow.value }}</td>
         <td><div class="spark-bar" [ngStyle]="{
-          'width': 'calc(' + tableRow.value + 'px * 8)',
+          'width': (tableRow.value * barMultiplier) + 'px',
           'background-color': tableRow.bulletColor
           }"></div></td>
       </tr>
