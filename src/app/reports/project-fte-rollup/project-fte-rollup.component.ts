@@ -83,6 +83,13 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
       displayKey: 'ProjectName',  // use this to select the field name in the query you want to display
       limit: 50,
       source: function(query, process) {
+        // if filterString is undefined, null, empty string, then override the query
+        console.log('filterString withing typeahead function:');
+        console.log(that.filterString);
+        if (!that.filterString) {
+          query = undefined;
+        }
+        console.log('query:');
         console.log(query);
         const filteredProjects = that.getFilteredProjects(query);
         console.log('filtered projects within typeadhead function:');
@@ -156,7 +163,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   onFilterStringChange() {
     // get the array of projects objects that are displayed
     this.filteredProjects = this.filterPipe.transform(this.projectsList, this.filterString, 'ProjectName',
-      {limitTo: 50, matchFuzzy: {on: true, threshold: 0.4}});
+      {matchFuzzy: {on: true, threshold: 0.4}, returnAll: false});
 
     console.log('filtered projects list:');
     console.log(this.filteredProjects);
@@ -167,7 +174,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   getFilteredProjects(query): any {
 
     return this.filterPipe.transform(this.projectsList, query, 'ProjectName',
-      {limitTo: 50, matchFuzzy: {on: true, threshold: 0.4}});
+      {matchFuzzy: {on: true, threshold: 0.4}, returnAll: false});
 
   }
 
@@ -209,9 +216,20 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
     // clear the filter string
+    console.log('search input clear clicked');
     this.filterString = undefined;
+    // $('input.projects-filter-input').val('');
+    // this.filterStringVC.nativeElement.value = '';
+    console.log('filterString:');
+    console.log(this.filterString);
+    $('.projects-filter-input').typeahead('val', '');
     // reset the focus on the filter input
     this.filterStringVC.nativeElement.focus();
+
+    // $('.projects-filter-input').typeahead('close');
+    // setTimeout(() => {
+    //   $('div.tt-menu').removeClass('tt-open');
+    // }, 0);
     // update the count display (showing x of y) by calling onFilterStringChange()
     // this.onFilterStringChange();
   }
