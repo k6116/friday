@@ -1,0 +1,178 @@
+/* Page containers */
+
+div.page-cont {
+  overflow-x: hidden;
+}
+
+/* SEARCH BAR */
+
+div.projects-search-cont {
+  margin-bottom: 40px;
+  min-width: 900px;
+  width: 100%;
+  white-space: nowrap;
+}
+
+div.projects-search-label {
+  display: inline-block;
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+div.projects-search-string {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+input.projects-search-input {
+  width: 225px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+i.projects-search-icon-search, i.projects-search-icon-close {
+  position: absolute;
+  top: 10px;
+  color: grey;
+}
+
+i.projects-search-icon-search {
+  left: 10px;
+}
+
+i.projects-search-icon-close {
+  right: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Filter Badge */
+i.filters-badge-icon {
+  cursor: pointer;
+}
+
+/* EXPORT BUTTON */
+
+div.float-right-cont {
+  float: right;
+}
+
+button.btn-standard.export-button {
+  margin-right: 30px;
+  position: relative;
+  top: 1px;
+  width: 125px;
+  text-align: left;
+}
+
+span.downloading-animated-icon {
+  position: relative;
+  top: 2px;
+  padding-left: 5px;
+}
+
+div.projects-display-count {
+  display: inline-block;
+  font-weight: 500;
+  position: relative;
+  top: 4px;
+  width: 200px;
+  text-align: right;
+}
+
+
+/* FILTERS 1*/
+
+div.adv-filters-cont {
+  /* display: inline-block; */
+  width: 50%;
+  /* float: left; */
+  /* background: #fff; */
+  /* padding: 10px; */
+}
+
+div.filter-headers {
+  padding: 4px 0.25rem;
+  background-color: #e9ecef;
+  border-bottom: 1px solid rgba(0,0,0,.125);
+  cursor: pointer;
+}
+
+/* .custom-control-label::before {
+  left: 4px;
+} */
+
+div.filter-collapse.show {
+  max-height: 200px;
+  overflow: hidden auto;
+}
+
+/* div.filter-collapse { CAUSES BAD COLLAPSE
+  margin: 10px 0px;
+} */
+
+div.projects-search-string.projects-owner {
+  /* float: right; */
+  width: auto;
+  margin: 0px;
+  height: auto;
+  padding-left: 3px; /* this is max to keep table on the right */
+}
+
+/* div.filter-headers.project-owner {
+  height: inherit;
+  border: none;
+} */
+
+div.owner-label {
+  display: inline-block;
+  /* margin-right: 10px; */
+}
+
+input.projects-search-input.projects-owner {
+  height: 32px !important;
+  /* width: 100%; */
+}
+
+/* FILTERS 2 */
+
+div.adv-filters2-cont {
+  display: inline-block;
+  margin-left: 15px;
+  width: 50%;
+  /* background: #fff; */
+  /* padding: 10px; */
+}
+
+label.fte {
+  margin: 0px;
+  color: #757779;
+  font-size: smaller;
+}
+
+input.fte {
+  height: 27px !important;
+  padding: 2px 4px;
+}
+
+/* RESULT TABLE */
+
+div.adv-results-cont {
+  display: inline-block;
+  padding-left: 20px;
+  width: calc(100% - ( 402px + 4px));
+  height: 75vh;  /* TO-DO: replace with javascipt */
+  overflow: auto auto;
+}
+
+table.filter-results th {
+  position: sticky;
+  top: -1px;
+  line-height: 6px !important;
+  /* background: white; */
+}
+
+table.table {
+  border: 1px solid #dee2e6;
+}
