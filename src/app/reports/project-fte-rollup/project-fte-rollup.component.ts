@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { ApiDataReportService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { ToolsService } from '../../_shared/services/tools.service';
+import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 
 declare var require: any;
 declare var $: any;
@@ -18,11 +19,13 @@ require('highcharts/highcharts-more.js')(Highcharts);
 @Component({
   selector: 'app-project-fte-rollup',
   templateUrl: './project-fte-rollup.component.html',
-  styleUrls: ['./project-fte-rollup.component.css', '../../_shared/styles/common.css']
+  styleUrls: ['./project-fte-rollup.component.css', '../../_shared/styles/common.css'],
+  providers: [FilterPipe]
 })
 export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('testButtonVC') testButtonVC: ElementRef;
+  // @ViewChild('testButtonVC') testButtonVC: ElementRef;
+  @ViewChild('filterStringVC') filterStringVC: ElementRef;
 
   data: any;
   chartOptions: any;
@@ -39,6 +42,9 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   displayTable: boolean;
   maxFTE: number;
   barMultiplier: number;
+  filterString: string;
+  projectsList: any;
+  filteredProjects: any;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -49,7 +55,8 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   constructor(
     private apiDataReportService: ApiDataReportService,
     private apiDataProjectService: ApiDataProjectService,
-    private toolsService: ToolsService
+    private toolsService: ToolsService,
+    private filterPipe: FilterPipe
   ) {
 
     this.drillLevel = 0;
@@ -63,6 +70,44 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // this.renderTestChart();
     this.renderLokiChart();
 
+    const that = this;
+
+    // initialize typeahead using jquery
+    $('.projects-filter-input').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 1
+    },
+    {
+      name: 'projects',
+      displayKey: 'ProjectName',  // use this to select the field name in the query you want to display
+      limit: 50,
+      source: function(query, process) {
+        console.log(query);
+        const filteredProjects = that.getFilteredProjects(query);
+        console.log('filtered projects within typeadhead function:');
+        console.log(filteredProjects);
+        process(filteredProjects);
+        // process([
+        //   {id: 1, ProjectName: 'Alabama'},
+        //   {id: 2, ProjectName: 'Arizona'},
+        //   {id: 3, ProjectName: 'California'},
+        //   {id: 4, ProjectName: 'Colorado'},
+        //   {id: 5, ProjectName: 'Nevada'},
+        //   {id: 6, ProjectName: 'Oklahoma'},
+        //   {id: 7, ProjectName: 'New Mexico'},
+        //   {id: 8, ProjectName: 'Idaho'}
+        // ]);
+      }
+    })
+    .bind('typeahead:selected', (event, selection) => {
+      console.log('typeahead item has been selected:');
+      console.log(selection);
+    });
+
+    // console.log('getFilteredProjects() test:');
+    // console.log(this.getFilteredProjects());
+
 
   }
 
@@ -71,6 +116,9 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // $('g.highcharts-button.highcharts-drillup-button').click(function() {
     //   console.log('drill up button clicked');
     // });
+    setTimeout(() => {
+      $('div.tt-menu').css('z-index', 5);
+    }, 0);
 
   }
 
@@ -91,14 +139,81 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     this.apiDataProjectService.getProjectsList()
     .subscribe(
       res => {
+
         console.log('projects list data:');
         console.log(res);
+        this.projectsList = res;
+
       },
       err => {
         console.error('attempt to get projects list data returned error:');
         console.log(err);
       });
 
+  }
+
+
+  onFilterStringChange() {
+    // get the array of projects objects that are displayed
+    this.filteredProjects = this.filterPipe.transform(this.projectsList, this.filterString, 'ProjectName',
+      {limitTo: 50, matchFuzzy: {on: true, threshold: 0.4}});
+
+    console.log('filtered projects list:');
+    console.log(this.filteredProjects);
+
+  }
+
+
+  getFilteredProjects(query): any {
+
+    return this.filterPipe.transform(this.projectsList, query, 'ProjectName',
+      {limitTo: 50, matchFuzzy: {on: true, threshold: 0.4}});
+
+  }
+
+
+  // look for instances where we want to log the search for click tracking
+  onFilterStringKeydown(event) {
+    // get the key code
+    // REF: https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+    const key = event.keyCode || event.charCode;
+    // 8 = backspace; 46 = delete
+    // if ( key === 8 || key === 46 ) {
+    if (this.filterString) {
+      // get the number of selected characters
+      const selectedIndexStart = this.filterStringVC.nativeElement.selectionStart;
+      const selectedIndexEnd = this.filterStringVC.nativeElement.selectionEnd;
+      const numSelectedCharacters = selectedIndexEnd - selectedIndexStart;
+      // if all of the text is selected, and the user either hits the backspace, delete,
+      // or any other character (starting a new search), log the search for click tracking
+      // NOTE: since this is key down event the filter string will be the previous string (no need to cache)
+      if (numSelectedCharacters === this.filterString.length) {
+        // log a record in the click tracking table
+        // this.clickTrackingService.logClickWithEvent(`page: Search Projects,
+        //   text: ${this.selectedFilter.displayName} > ${this.filterString}`);
+      }
+    }
+  }
+
+
+  // if there is a filter/search term entered, log it for click tracking on lose focus
+  // NOTE: clicking the x icon will also trigger this
+  onFilterLostFocus() {
+    if (this.filterString) {
+      // log a record in the click tracking table
+      // this.clickTrackingService.logClickWithEvent(`page: Search Projects, text: ${this.selectedFilter.displayName} > ${this.filterString}`);
+    }
+  }
+
+
+  // on clicking the 'x' icon at the right of the search/filter input
+  onClearSearchClick() {
+    // clear the filter string
+    this.filterString = undefined;
+    // reset the focus on the filter input
+    this.filterStringVC.nativeElement.focus();
+    // update the count display (showing x of y) by calling onFilterStringChange()
+    // this.onFilterStringChange();
   }
 
 
@@ -831,7 +946,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
             }
             console.log('this.data after color update:');
             console.log(this.data);
-            that.testButtonVC.nativeElement.focus();
+            // that.testButtonVC.nativeElement.focus();
           }
 
           // update the title
@@ -886,10 +1001,10 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   }
 
 
-  onTestClick() {
-    console.log('test button clicked');
-    console.log(this.chart.series[0].data[0].select(true, true));
-  }
+  // onTestClick() {
+  //   console.log('test button clicked');
+  //   console.log(this.chart.series[0].data[0].select(true, true));
+  // }
 
   reRenderChart() {
     // this.chartOptions.plotOptions.series.animation = false;

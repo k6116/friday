@@ -1,4 +1,58 @@
 
+/* search bar */
+
+div.projects-filters-cont {
+  margin-bottom: 40px;
+  min-width: 900px;
+  width: 100%;
+  white-space: nowrap;
+}
+
+div.projects-filter-label {
+  display: inline-block;
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+div.projects-filter-string {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+/* .tt-menu {
+  max-height: 150px;
+  overflow-y: scroll;
+  z-index: 10;
+} */
+
+input.projects-filter-input {
+  width: 300px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+i.projects-filter-icon-search, i.projects-filter-icon-close {
+  position: absolute;
+  top: 10px;
+  color: grey;
+}
+
+i.projects-filter-icon-search {
+  left: 10px;
+}
+
+i.projects-filter-icon-close {
+  right: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* END - search bar */
+
+
+
+
 table.rollup-table {
   margin-top: 25px;
   background-color: white;
