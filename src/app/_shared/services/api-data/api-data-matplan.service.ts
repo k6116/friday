@@ -50,4 +50,12 @@ export class ApiDataMatplanService {
       .map((response: Response) => response.json());
   }
 
+  showOrdersForPart(matplanID: number, partID: number) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/matplan/matplan/showOrdersForPart/${matplanID}/${partID}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 }

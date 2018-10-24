@@ -3,7 +3,7 @@
   <!-- first col is list-box of items in the BOM-->
   <div class="col-sm-3">
     <div class="list-group">
-      <button class="list-group-item list-group-item-action" *ngFor="let item of bom" (click)="showQuotes(item)">{{item.ChildIndentedName}}</button>
+      <button class="list-group-item list-group-item-action" *ngFor="let item of bom" (click)="showQuotes(item)" [ngClass]="selectedPartID === item.ChildID ? 'active' : ''">{{item.ChildIndentedName}}</button>
     </div>
   </div>
 
@@ -11,7 +11,7 @@
   <div class="col-sm-9" *ngIf="selectedPartID">
 
     <div class="card"> <!-- card for "add new quote" -->
-      <h5 class="card-header">New</h5>
+      <h5 class="card-header">New Quote</h5>
       <div class="card-body text-center">
         <button class="btn btn-success">Add New Quote</button>
       </div>

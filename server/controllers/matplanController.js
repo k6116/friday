@@ -65,7 +65,28 @@ function indexProjects(req, res) {
 
 function showMatplans(req, res) {
   const projectID = req.params.projectID;
-  sequelize.query('EXECUTE supply.showMatplans :projectID',{replacements: {projectID: projectID}, type: sequelize.QueryTypes.SELECT}
+  sequelize.query(`
+    SELECT 
+      T1.ProjectID,
+      T2.NeedByDate,
+      T2.NeededQuantity,
+      T2.BuildStatusID,
+      T4.BuildStatusName,
+      T3.MaterialPlanID,
+      T3.LastUpdateDate AS MatplanUpdateDate,
+      T3.LastUpdatedBy AS MatplanUpdatedBy,
+      T5.FullName AS MatplanUpdatedByName
+    FROM demand.Schedules T1
+    LEFT JOIN demand.SchedulesDetail T2
+        ON T1.ScheduleID = T2.ScheduleID
+    LEFT JOIN supply.MaterialPlan T3
+        ON T2.BuildStatusID = T3.BuildStatusID
+    LEFT JOIN projects.BuildStatus T4
+        ON T3.BuildStatusID = T4.BuildStatusID
+    LEFT JOIN accesscontrol.Employees T5
+      ON T3.LastUpdatedBy = T5.EmployeeID
+    WHERE T1.ProjectID = :projectID
+      AND T2.BuildStatusID IS NOT NULL`, {replacements: {projectID: projectID}, type: sequelize.QueryTypes.SELECT}
   )
   .then(buildList => {
     res.json(buildList);
@@ -129,11 +150,30 @@ function showQuotesForPart(req, res) {
   });
 }
 
+function showOrdersForPart(req, res) {
+  const matplanID = req.params.matplanID;
+  const partID = req.params.partID;
+  sequelize.query(`
+    SELECT *
+    FROM supply.MaterialOrder
+    WHERE MaterialPlanID = :matplanID AND PartID = :partID`, {replacements: {matplanID: matplanID, partID: partID}, type: sequelize.QueryTypes.SELECT})
+  .then(orderList => {
+    res.json(orderList);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
 
 module.exports = {
   show: show,
   indexProjects: indexProjects,
   showMatplans: showMatplans,
   showMatplanBom: showMatplanBom,
-  showQuotesForPart: showQuotesForPart
+  showQuotesForPart: showQuotesForPart,
+  showOrdersForPart: showOrdersForPart
 }

@@ -1,3 +1,33 @@
-<p>
-  matplan-order works!
-</p>
+<div class="row">
+
+  <!-- first col is list-box of items in the BOM-->
+  <div class="col-sm-3">
+    <div class="list-group">
+      <button class="list-group-item list-group-item-action" *ngFor="let item of bom" (click)="showOrders(item)" [ngClass]="selectedPartID === item.ChildID ? 'active' : ''">{{item.ChildIndentedName}}</button>
+    </div>
+  </div>
+
+  <div class="col-sm-9">
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th>Quote:</th>
+          <th>Supplier:</th>
+          <th>LT (wks):</th>
+          <th>MOQ:</th>
+          <th>Price:</th>
+          <th>NRE:</th>
+          <th>Order Qty:</th>
+          <th>Total Cost:</th>
+          <th>PO:</th>
+          <th>Order Date:</th>
+          <th>ETA:</th>
+          <th>Receive Date:</th>
+          <th>Receive Qty:</th>
+          <th>Deliver To:</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+</div>
