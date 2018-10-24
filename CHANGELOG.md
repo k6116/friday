@@ -1,3 +1,19 @@
+<a name="1.19.0"></a>
+# [1.19.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.18.0...v1.19.0) (2018-10-24)
+
+
+### Bug Fixes
+
+* **fte-entry > employee:** fixed timing issue if "add project" button is clicked too fast,  modal lo ([a133a48](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a133a48))
+* **Setups > Team Roles:** RoleID was hardcoded, now will look up "Report User" through the API ([3a24660](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/3a24660))
+
+
+### Features
+
+* **search-projects:** Changes the Created By and Creation Date attributes to Updated By and Update ([d358a50](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/d358a50))
+
+
+
 <a name="1.18.0"></a>
 # [1.18.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.17.0...v1.18.0) (2018-10-19)
 
