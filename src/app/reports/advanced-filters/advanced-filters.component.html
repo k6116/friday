@@ -24,6 +24,9 @@
         <i class="projects-search-icon-search fa fa-search"></i>
         <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
       </div>
+      
+      <!-- Test Button -->
+      <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
 
       <!-- Filter Badges -->
       <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">

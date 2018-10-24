@@ -33,13 +33,14 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   projectPriorities: any;
   plcStatuses: any;
 
+  advancedFilteredResults: any;
 
   constructor(
     private toolsService: ToolsService,
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
     private cacheService: CacheService,
 
-  ) { 
+  ) {
 
     // listen for websocket message for newly created projects
     this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
@@ -158,6 +159,42 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.showDownloadingIcon = false;
     }, 1000);
+  }
+
+  async advancedFilter(filterOptions: any) {
+    this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
+    console.log('this.advancedFilteredResults', this.advancedFilteredResults);
+  }
+
+  onTestFormClick() {
+    // const filterOptions = {
+    //   PLCStatusIDs: '',
+    //   PLCDateRanges: '',
+    //   ProjectName: '',
+    //   ProjecTypeIDs: '',
+    //   ProjectStatusIDs: '',
+    //   ProjectPriorityIDs: '',
+    //   ProjectOwnerEmails: '',
+    //   FTEMin: 'NULL',
+    //   FTEMax: 'NULL',
+    //   FTEDateFrom: 'NULL',
+    //   FTEDateTo: 'NULL'
+    // };
+
+    const filterOptions = {
+      PLCStatusIDs: '1,2,3,4,5,6',
+      PLCDateRanges: 'NULL|NULL,2017-05-01|2019-09-01,2017-05-01|2019-09-01,NULL|NULL,NULL|NULL,2017-05-01|2019-09-01',
+      ProjectName: '',
+      ProjecTypeIDs: '1,2,3',
+      ProjectStatusIDs: '',
+      ProjectPriorityIDs: '1',
+      ProjectOwnerEmails: '',
+      FTEMin: '1.5',
+      FTEMax: '5.5',
+      FTEDateFrom: '2017-01-01',
+      FTEDateTo: '2019-01-01'
+    };
+    this.advancedFilter(filterOptions);
   }
 
 }
