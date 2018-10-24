@@ -37,4 +37,10 @@ export class ApiDataEmployeeService {
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
+
+  getRoleID(roleName: string) {
+    return this.http.get(`/api/getRoleID/${roleName}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
 }
