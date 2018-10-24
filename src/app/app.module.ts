@@ -30,7 +30,7 @@ import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 import { BomService, CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
-import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
+import { ApiDataAdvancedFilterService, ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
   ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
   ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
@@ -99,6 +99,7 @@ import { TransferProjectsComponent } from './setups/transfer-projects/transfer-p
 import { MatplanComponent } from './mat-plan/matplan/matplan.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
+import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-filters.component';
 
 
 @NgModule({
@@ -161,7 +162,8 @@ import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.compon
     MatplanComponent,
     OrgViewerComponent,
     OrgDrawD3Component,
-    TransferProjectsComponent
+    TransferProjectsComponent,
+    AdvancedFiltersComponent
   ],
   imports: [
     AppRoutingModule,
@@ -182,6 +184,7 @@ import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.compon
     MultiselectDropdownModule
   ],
   providers: [
+    ApiDataAdvancedFilterService,
     ApiDataAuthService,
     ApiDataClickTrackingService,
     ApiDataEmailService,

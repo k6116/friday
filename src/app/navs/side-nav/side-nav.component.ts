@@ -162,6 +162,15 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
               permissionProtected: true,
               hidden: false
             },
+            {
+              title: 'Advanced Filters',
+              alias: 'reports-advanced-filters',
+              path: 'main/reports/advanced-filters',
+              parentAlias: 'reports',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            },
           ]
         },
         // temporarily hiding BOM from sidenav until we can complete BOM editor

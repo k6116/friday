@@ -45,6 +45,8 @@ import { UnitTestComponent } from './unit-test/unit-test.component';
 import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
 import { MatplanComponent } from './mat-plan/matplan/matplan.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
+import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-filters.component';
+
 
 // BOM module stuff
 // temporarily hiding until BOM editor is complete
@@ -88,6 +90,7 @@ const routes: Routes = [
       { path: 'reports/jarvis-adoption', component: OrgViewerComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
+      { path: 'reports/advanced-filters', component: AdvancedFiltersComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }
     ]
