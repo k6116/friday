@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../_shared/services/auth.service';
-import { ApiDataJobTitleService, ApiDataOrgService, ApiDataFteService } from '../../_shared/services/api-data/_index';
+import { ApiDataJobTitleService, ApiDataOrgService, ApiDataFteService,
+          ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { NewRole } from './team-roles.interface';
@@ -33,18 +34,20 @@ export class TeamRolesComponent implements OnInit {
   };
   loginAsEmail: string;
   displayAdminViewMessage: boolean;
+  roleID: any;
 
   constructor(
     private authService: AuthService,
     private apiDataOrgService: ApiDataOrgService,
     private apiDataFteService: ApiDataFteService,
     private apiDataJobTitleService: ApiDataJobTitleService,
+    private apiDataEmployeeService: ApiDataEmployeeService,
     private cacheService: CacheService,
     private toolsService: ToolsService
   ) {}
 
   async ngOnInit() {
-    
+
     this.showSpinner = true;
 
     // get the token from local storage
@@ -68,6 +71,7 @@ export class TeamRolesComponent implements OnInit {
 
     this.initializeEmployeeData();
     this.getJobTitleList();
+    this.getRoleID('Report User');
   }
 
   async initializeEmployeeData() {
@@ -86,7 +90,8 @@ export class TeamRolesComponent implements OnInit {
     for (let i = 0; i < this.teamOrgStructure.length; i++) {
       const fullName = this.teamOrgStructure[i].fullName.split(' ');
       this.teamOrgStructure[i].firstName = fullName[0];
-      this.teamOrgStructure[i].lastName = fullName[1];
+      this.teamOrgStructure[i].jobTitleID = null;
+      this.teamOrgStructure[i].roleID = this.roleID[0].RoleID;
       this.teamOrgStructure[i].jobTitleID = null;
       this.teamOrgStructure[i].jobSubTitleID = null;
       this.teamOrgStructure[i].newUser = true;
@@ -103,7 +108,7 @@ export class TeamRolesComponent implements OnInit {
         }
       }
     }
-    
+
     this.showSpinner = false;
   }
 
@@ -124,6 +129,15 @@ export class TeamRolesComponent implements OnInit {
     }
     this.teamEditableMembers = this.teamEditableMembers.substr(0, this.teamEditableMembers.lastIndexOf(','));
     this.teamEditableMembers = '\'\'' + this.teamEditableMembers + '\'';
+  }
+
+  getRoleID(roleName: string) {
+    // get "Report User" Role ID from the database
+    this.apiDataEmployeeService.getRoleID(roleName)
+      .subscribe(
+        res => { this.roleID = res; },
+        err => { console.log(err); }
+      );
   }
 
   onSelectChange(indexJT: number, indexEmp: number, jobTitle: any) {

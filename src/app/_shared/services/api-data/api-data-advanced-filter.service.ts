@@ -20,7 +20,7 @@ export class ApiDataAdvancedFilterService {
     .timeout(this.cacheService.apiDataTimeout)
     .map((response: Response) => response.json());
   }
-  
+
   getAdvancedFilterData(): Observable<any> {
 
     const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
@@ -48,6 +48,14 @@ export class ApiDataAdvancedFilterService {
 
     return forkJoin([projects, projectTypes, projectStatuses, projectPriorities, plcStatuses]);
 
+  }
+
+  getAdvancedFilteredResults(filterOptions: any) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+    return this.http.post(`/api/indexAdvancedFilteredResults`, JSON.stringify(filterOptions), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
   }
 
 }

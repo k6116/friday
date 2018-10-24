@@ -143,7 +143,7 @@ considering topnav, sidenav, and footer -->
             </div>
   
   
-            <!-- container for record history/info - created by and creation date-->
+            <!-- container for record history/info - updated by and update date-->
             <div class="project-creation-cont" [attr.data-id]="project.ProjectID">
   
               <div class="project-attributes-table">
@@ -152,10 +152,10 @@ considering topnav, sidenav, and footer -->
                     <i class="nc-icon nc-a-edit"></i>
                   </div>
                   <div class="project-attributes-cell creation label-cell">
-                    Created By
+                    Updated By
                   </div>
                   <div class="project-attributes-cell creation value-cell">
-                      {{ project.FullName ? project.FullName : '--' }}
+                      {{ project.LastUpdatedBy ? project.LastUpdatedBy : '--' }}
                   </div>
                 </div>
                 <div class="project-attributes-row">
@@ -163,10 +163,10 @@ considering topnav, sidenav, and footer -->
                     <i class="nc-icon nc-time-clock"></i>
                   </div>
                   <div class="project-attributes-cell creation label-cell">
-                    Creation Date
+                    Update Date
                   </div>
                   <div class="project-attributes-cell creation value-cell">
-                    {{ project.CreationDate ? (project.CreationDate | date:'mediumDate') : '--' }}
+                    {{ project.LastUpdateDate ? (project.LastUpdateDate | date:'mediumDate') : '--' }}
                   </div>
                 </div>
               </div>

@@ -76,6 +76,7 @@ router.get('/showUserPLMData/:userEmailAddress', controllers.employee.showUserPL
 router.get('/getDesigners', controllers.employee.getDesigners);
 router.get('/getPlanners', controllers.employee.getPlanners);
 router.get('/getEmployeeData/:emailAddress', controllers.employee.getEmployeeData);
+router.get('/getRoleID/:roleName', controllers.employee.getRoleID);
 
 // ORG CONTROLLER
 router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinatesFlat);
@@ -126,6 +127,7 @@ router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedul
 
 // ADVANCED FILTER CONTROLLER
 router.get('/indexProjectsAdvancedFilter', controllers.advancedFilter.indexProjectsAdvancedFilter);
+router.post('/indexAdvancedFilteredResults/', controllers.advancedFilter.indexAdvancedFilteredResults);
 
 
 // middleware to return an error if the token cannot be verified
