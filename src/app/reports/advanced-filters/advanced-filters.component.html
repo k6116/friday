@@ -28,7 +28,7 @@
       <!-- Filter Badges -->
       <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">
         <div class="badge badge-light">
-          <i class="fa fa-times-circle filters-badge-icon" (click)="onBadgeCloseClick()"></i>  {{ checkbox }}
+          <i class="fa fa-times-circle filters-badge-icon" [attr.title]="checkbox" (click)="onBadgeCloseClick($event)"></i>  {{ checkbox }}
         </div>
       </ng-container>
 

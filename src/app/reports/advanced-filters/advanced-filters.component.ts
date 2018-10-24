@@ -19,6 +19,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   showSpinner: boolean;
   showPage: boolean;
   showDownloadingIcon: boolean;
+  htmlElement: any;
+
 
   filterString: string;
   filterCheckedArray: any;
@@ -107,7 +109,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     console.log(event);
     const value = event.target.checked;
     const name = event.target.name;
-    // const pos = 0 - (this.filterCheckedArray.length - 1);
     let index = 0;
 
     if (value === true) {
@@ -115,18 +116,31 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.filterCheckedArray.splice(0, 0, event.target.name);
     } else {
       // Else, find array position of the checkbox ID and remove
-      // const index = this.filterCheckedArray.filter(item => item === id);
       for (let i = 0; i < this.filterCheckedArray.length; i++) {
         if (this.filterCheckedArray[i] === name) {
           index = i;
         }
       }
       this.filterCheckedArray.splice(index, 1);
-      console.log('index', index);
-      // this.filterCheckedArray.splice()
     }
 
-    console.log(this.filterCheckedArray);
+    // console.log(this.filterCheckedArray);
+
+  }
+
+  onBadgeCloseClick(event: any) {
+    const title = event.target.title;
+
+    // remove string from checklist array    
+    for (let i = 0; i < this.filterCheckedArray.length; i++) {
+      if (this.filterCheckedArray[i] === title) {
+        this.filterCheckedArray.splice(i, 1);
+      }
+    }
+
+    // find the right checkbox and uncheck
+    this.htmlElement = document.getElementsByName(title);
+    this.htmlElement[0].checked = false;
 
   }
 
