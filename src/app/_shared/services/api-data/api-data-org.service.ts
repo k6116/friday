@@ -47,4 +47,10 @@ export class ApiDataOrgService {
       .map((response: Response) => response.json());
   }
 
+  getManagementOrgStructure(emailAddress: string): Observable<any> {
+    return this.http.get(`/api/org/getManagementOrgStructure/${emailAddress}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 }
