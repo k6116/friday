@@ -153,8 +153,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     private decimalPipe: DecimalPipe,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-
-
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
@@ -596,6 +594,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
             this.displayNewPlanModal = true
           ]).then(next => {
             this.updateProjectFilters(false);
+            this.comparePlanToFTE();
           });
         },
         err => {
@@ -951,7 +950,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   async onCreateNewPlanClick(emailAddress: any, creatorEmailAddress: any, planName: string) {
-
+console.log('onCreateNewPlanClick')
     if (emailAddress === null) {
       emailAddress = this.teamEditableMembers;
     }
@@ -1064,18 +1063,19 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                 message: `The FTEs below have been updated by the users.<br><br>
                           ${updatedFTEsList}<br><br>
                           Please manually update the form to reflect these changes,
-                          otherwise the changes will be overwritten when launched`,
+                          otherwise the changes will be overwritten when launched<br><br>
+                          The Reset button will clear this plan and refresh with current fte values`,
                 iconClass: 'fa-exclamation-triangle',
                 iconColor: 'rgb(193, 193, 27)',
                 closeButton: true,
                 allowOutsideClickDismiss: true,
                 allowEscKeyDismiss: true,
                 buttons: [
-                  // {
-                  //   text: 'Sync',
-                  //   bsClass: 'btn-success',
-                  //   emit: true
-                  // },
+                  {
+                    text: 'Reset',
+                    bsClass: 'btn-success',
+                    emit: true
+                  },
                   {
                     text: 'Dismiss',
                     bsClass: 'btn-secondary',
@@ -1084,6 +1084,32 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                 ]
               }
             );
+            const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( modalRes => {
+              if (modalRes) {
+                // create object with delete data
+                const planData = {
+                  planName: this.currentPlan,
+                  userID: this.loginAsID
+                };
+
+                this.apiDataFteService.deletePlan(planData)
+                  .subscribe(
+                    deleteRes => {
+                      console.log('plan deleted', deleteRes);
+
+                      // empty arrays so it won't have objects appended
+                      this.filteredEmployees = [];
+                      this.teamEditableMembers = '';
+                      this.planLoadSequence();
+                      this.displaySyncNoticeButton = false;
+                    },
+                    err => {
+                      console.error(err);
+                    }
+                  );
+              }
+              updateModalSubscription.unsubscribe();
+            });
           } else {
             this.displaySyncNoticeButton = false;
           }
