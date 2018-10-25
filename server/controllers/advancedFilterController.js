@@ -92,7 +92,22 @@ function indexAdvancedFilteredResults(req, res) {
   });
 }
 
+function indexProjectChildren(req, res) {
+  const projectName = req.params.projectName;
+  const sql = `EXECUTE dbo.BillsDrillDownProjects :projectName`
+  sequelize.query(sql, {replacements: {projectName: projectName}, type: sequelize.QueryTypes.SELECT})
+  .then(children => {    
+    res.json(children);
+  }).catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
 module.exports = {
     indexProjectsAdvancedFilter: indexProjectsAdvancedFilter,
-    indexAdvancedFilteredResults: indexAdvancedFilteredResults
+    indexAdvancedFilteredResults: indexAdvancedFilteredResults,
+    indexProjectChildren: indexProjectChildren
 }

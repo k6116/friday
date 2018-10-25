@@ -950,7 +950,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   async onCreateNewPlanClick(emailAddress: any, creatorEmailAddress: any, planName: string) {
-console.log('onCreateNewPlanClick')
+
     if (emailAddress === null) {
       emailAddress = this.teamEditableMembers;
     }

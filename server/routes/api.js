@@ -129,6 +129,7 @@ router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedul
 // ADVANCED FILTER CONTROLLER
 router.get('/indexProjectsAdvancedFilter', controllers.advancedFilter.indexProjectsAdvancedFilter);
 router.post('/indexAdvancedFilteredResults/', controllers.advancedFilter.indexAdvancedFilteredResults);
+router.get('/indexProjectChildren/:projectName', controllers.advancedFilter.indexProjectChildren);
 
 
 // middleware to return an error if the token cannot be verified

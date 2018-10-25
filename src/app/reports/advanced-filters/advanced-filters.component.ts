@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ToolsService } from '../../_shared/services/tools.service';
-import { ApiDataAdvancedFilterService } from '../../_shared/services/api-data/_index';
+import { ApiDataAdvancedFilterService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 import { CacheService } from '../../_shared/services/cache.service';
 
@@ -38,6 +38,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   constructor(
     private toolsService: ToolsService,
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
+    private apiDataOrgService: ApiDataOrgService,
     private cacheService: CacheService,
 
   ) {
@@ -161,6 +162,15 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
+  async getProjectOwnerSubordinates(managerEmailAddress: string) {
+    const managers = await this.apiDataOrgService.getManagementOrgStructure(managerEmailAddress).toPromise();
+    console.log('managers', managers);
+  }
+  async getProjectChildren(projectName: string) {
+    const children = await this.apiDataAdvancedFilterService.getProjectChildren(projectName).toPromise();
+    console.log('children', children);
+  }
+
   async advancedFilter(filterOptions: any) {
     this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
     console.log('this.advancedFilteredResults', this.advancedFilteredResults);
@@ -181,20 +191,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     //   FTEDateTo: 'NULL'
     // };
 
-    const filterOptions = {
-      PLCStatusIDs: '1,2,3,4,5,6',
-      PLCDateRanges: 'NULL|NULL,2017-05-01|2019-09-01,2017-05-01|2019-09-01,NULL|NULL,NULL|NULL,2017-05-01|2019-09-01',
-      ProjectName: '',
-      ProjecTypeIDs: '1,2,3',
-      ProjectStatusIDs: '',
-      ProjectPriorityIDs: '1',
-      ProjectOwnerEmails: '',
-      FTEMin: '1.5',
-      FTEMax: '5.5',
-      FTEDateFrom: '2017-01-01',
-      FTEDateTo: '2019-01-01'
-    };
-    this.advancedFilter(filterOptions);
+    this.getProjectOwnerSubordinates('henri_komrij@keysight.com');
+    this.getProjectChildren('Loki');
   }
 
 }

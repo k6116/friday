@@ -58,4 +58,10 @@ export class ApiDataAdvancedFilterService {
       .map((response: Response) => response.json());
   }
 
+  getProjectChildren(projectName: string): Observable<any> {
+    return this.http.get(`api/indexProjectChildren/${projectName}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
 }
