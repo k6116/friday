@@ -78,6 +78,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   displayAdminViewMessage: boolean;
   launchDate: string;
   displaySyncNoticeButton: boolean;
+  showSpinner: boolean;
 
   // Highchart Declarations
   ftePlanningChart: any;
@@ -274,6 +275,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   async planLoadSequence() {
+
+    // show the waiting to render spinner
+    this.showSpinner = true;
+    this.display = false;
+
     // First, get the list of Plans for current user and get all subordinates for current user
     // Second, retrieve data for that plan
     // If plan does not exist, create one
@@ -301,6 +307,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       this.allProjects.forEach(proj => {
         this.projectVisible.push(true);
       });
+      this.showSpinner = false;
+      this.display = true;
     });
   }
 
@@ -950,7 +958,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   async onCreateNewPlanClick(emailAddress: any, creatorEmailAddress: any, planName: string) {
-console.log('onCreateNewPlanClick')
+
     if (emailAddress === null) {
       emailAddress = this.teamEditableMembers;
     }
@@ -1053,8 +1061,9 @@ console.log('onCreateNewPlanClick')
                 <div class="row">
                   <div class="col-3">${res[i].FullName}</div>
                   <div class="col-5">${res[i].ProjectName}</div>
-                  <div class="col-1">${res[i].FTE}</div>
-                  <div class="col-3">${moment(res[i].FiscalDate).utc().format('YYYY-MM-DD')}</div>
+                  <div class="col-1">${res[i].FTE === null ? '--' : res[i].FTE}</div>
+                  <div class="col-3">${moment(res[i].FiscalDate).utc().format('YYYY-MM-DD') === 'Invalid date' ? 'DELETED' :
+                                      moment(res[i].FiscalDate).utc().format('YYYY-MM-DD')}</div>
                 </div>`;
             }
             this.cacheService.confirmModalData.emit(
@@ -1064,7 +1073,7 @@ console.log('onCreateNewPlanClick')
                           ${updatedFTEsList}<br><br>
                           Please manually update the form to reflect these changes,
                           otherwise the changes will be overwritten when launched<br><br>
-                          The Reset button will clear this plan and refresh with current fte values`,
+                          The Sync button will clear this plan and start over with current fte values`,
                 iconClass: 'fa-exclamation-triangle',
                 iconColor: 'rgb(193, 193, 27)',
                 closeButton: true,
@@ -1072,7 +1081,7 @@ console.log('onCreateNewPlanClick')
                 allowEscKeyDismiss: true,
                 buttons: [
                   {
-                    text: 'Reset',
+                    text: 'Sync',
                     bsClass: 'btn-success',
                     emit: true
                   },
@@ -1095,8 +1104,6 @@ console.log('onCreateNewPlanClick')
                 this.apiDataFteService.deletePlan(planData)
                   .subscribe(
                     deleteRes => {
-                      console.log('plan deleted', deleteRes);
-
                       // empty arrays so it won't have objects appended
                       this.filteredEmployees = [];
                       this.teamEditableMembers = '';
