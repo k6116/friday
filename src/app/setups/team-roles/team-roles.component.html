@@ -55,14 +55,16 @@
 
             <!-- Each row is one role (jobTitle + JobSubtitle) -->
             <div class="teamrole-table-row" *ngFor="let jobTitle of employeesJobTitlesNested; let i = index">
-              <div class="col-role-title teamrole-table-cell">{{ jobTitle.JobTitleName }}</div>
-              <div class="col-role-subtitle teamrole-table-cell">{{ jobTitle.JobSubTitleName }}</div>
-              <div class="teamrole-table-cell" *ngFor="let employee of teamOrgStructure; let j = index">
-                <div class="custom-control custom-radio" style="margin-left: 5px">                    
-                  <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (change)="onSelectChange(i, j, jobTitle)">
-                  <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
+              <ng-container *ngIf="jobTitle.JobTitleID !== 0">
+                <div class="col-role-title teamrole-table-cell">{{ jobTitle.JobTitleName }}</div>
+                <div class="col-role-subtitle teamrole-table-cell">{{ jobTitle.JobSubTitleName }}</div>
+                <div class="teamrole-table-cell" *ngFor="let employee of teamOrgStructure; let j = index">
+                    <div class="custom-control custom-radio" style="margin-left: 5px">                    
+                      <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (change)="onSelectChange(i, j, jobTitle)">
+                      <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
+                    </div>
                 </div>
-              </div>
+              </ng-container>
             </div> <!-- end of role row -->
 
             <!-- IF there's no roles added yet -->

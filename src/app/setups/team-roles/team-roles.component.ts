@@ -60,9 +60,9 @@ export class TeamRolesComponent implements OnInit {
     const permRes = await this.apiDataFteService.checkTeamFTEAdminPermission(token);
 
     if (permRes.length > 0) {
-      // this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
-      this.loginAsEmail = 'ho-fai_wong@keysight.com';
-      // this.loginAsEmail = 'ermina_chua@keysight.com';
+      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      // this.loginAsEmail = 'ho-fai_wong@keysight.com';
+      // this.loginAsEmail = 'ethan_hunt@keysight.com';
       this.displayAdminViewMessage = true;
     } else {
       this.loginAsEmail = this.authService.loggedInUser.email;
@@ -83,8 +83,8 @@ export class TeamRolesComponent implements OnInit {
 
     // Get nested and flat data for jobtitles/subtitles and their employees
     const employeesJobTitles = await this.getEmployeesJobTitles(this.teamEditableMembers);
-    this.employeesJobTitlesNested = employeesJobTitles.nested;
     this.employeesJobTitlesFlat = employeesJobTitles.flat;
+    this.employeesJobTitlesNested = employeesJobTitles.nested;
 
     // add jobTitles to the teamOrgStructure object
     for (let i = 0; i < this.teamOrgStructure.length; i++) {
@@ -97,8 +97,9 @@ export class TeamRolesComponent implements OnInit {
       this.teamOrgStructure[i].newUser = true;
       for (let j = 0; j < this.employeesJobTitlesFlat.length; j++) {
         // First if employee has job title, then add jobtitle data to teamOrgStructure
-        // Else if employee has no job title, but exists in employees table, then just update job titles
-        if (this.teamOrgStructure[i].emailAddress === this.employeesJobTitlesFlat[j]['Employees: EmailAddress']) {
+        // Else if employee has no job title, but exists in employees table, then just flip the newUser flag but nothing will be updated
+        if (this.teamOrgStructure[i].emailAddress === this.employeesJobTitlesFlat[j]['Employees: EmailAddress']
+            && this.employeesJobTitlesFlat[j].JobTitleID !== 0) {
           this.teamOrgStructure[i].jobTitleID = this.employeesJobTitlesFlat[j].JobTitleID;
           this.teamOrgStructure[i].jobSubTitleID = this.employeesJobTitlesFlat[j].JobSubTitleID;
           this.teamOrgStructure[i].newUser = false;
@@ -255,7 +256,6 @@ export class TeamRolesComponent implements OnInit {
     console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
     console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
     console.log('this.teamOrgStructure', this.teamOrgStructure);
-    console.log('teamOrgStructure', this.teamOrgStructure);
   }
 
 }
