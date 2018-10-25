@@ -126,6 +126,10 @@ router.post('/destroySchedule/:userID', controllers.schedules.destroySchedule);
 router.post('/insertScheduleDetailBulk/:userID', controllers.schedules.insertScheduleDetailBulk);
 router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedules.updateScheduleDetailBulk);
 
+// ADVANCED FILTER CONTROLLER
+router.get('/indexProjectsAdvancedFilter', controllers.advancedFilter.indexProjectsAdvancedFilter);
+router.post('/indexAdvancedFilteredResults/', controllers.advancedFilter.indexAdvancedFilteredResults);
+
 
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
