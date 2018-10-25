@@ -33,6 +33,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   fteData: any;
   levelOneData: any;
   childProjects: any = [];
+  hasChartData: boolean;
   chartData: any;
   drillLevel: number;
   drillHistory: any = [];
@@ -45,6 +46,9 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   filterString: string;
   projectsList: any;
   filteredProjects: any;
+  initialChartSubTitle: string;
+  initialChartTitle: string;
+  chartWasRendered: boolean;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -68,7 +72,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     this.getProjectsListData();
 
     // this.renderTestChart();
-    this.renderLokiChart();
+    // this.renderLokiChart(1033);
 
     const that = this;
 
@@ -110,6 +114,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     .bind('typeahead:selected', (event, selection) => {
       console.log('typeahead item has been selected:');
       console.log(selection);
+      that.renderLokiChart(selection);
     });
 
     // console.log('getFilteredProjects() test:');
@@ -226,6 +231,9 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // reset the focus on the filter input
     this.filterStringVC.nativeElement.focus();
 
+
+    this.clearChart();
+
     // $('.projects-filter-input').typeahead('close');
     // setTimeout(() => {
     //   $('div.tt-menu').removeClass('tt-open');
@@ -236,139 +244,179 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
 
 
-  renderLokiChart() {
+  // when the 'x' button is clicked or input is cleared (typeahead selection returns no object)
+  clearChart() {
+
+    this.chartData = undefined;
+    this.tableData.splice(0, this.tableData.length);
+    // this.tableData = [];
+    this.levelOneData = undefined;
+    this.childProjects.splice(0, this.childProjects.length);
+    // this.childProjects = [];
+    this.drillLevel = 0;
+    this.drillHistory.splice(0, this.drillHistory.length);
+    // this.drillHistory = [];
+    this.drillDownIDs.splice(0, this.drillDownIDs.length);
+    // this.drillDownIDs = [];
+    this.drillDownTitles.splice(0, this.drillDownTitles.length);
+    // this.drillDownTitles = [];
+    this.barMultiplier = undefined;
+
+    this.hasChartData = false;
+    this.displayTable = false;
+
+    this.initialChartTitle = 'Project FTE Rollup';
+    this.initialChartSubTitle = '';
+
+    this.setChartOptions();
+
+    if (this.chartWasRendered) {
+      this.reRenderChart();
+    } else {
+      this.renderChart();
+    }
+
+  }
+
+
+
+  renderLokiChart(project: any) {
 
     // get the current fiscal quarter's date range (array of two strings in the format 'MM-DD-YYYY')
     const fiscalQuarterRange = this.toolsService.fiscalQuarterRange(moment(), 'MM-DD-YYYY');
 
-    this.apiDataReportService.getProjectFTERollupData(1033, fiscalQuarterRange[0], fiscalQuarterRange[1])
+    // 16 = Bacon
+    // 1033 = Loki
+    this.apiDataReportService.getProjectFTERollupData(project.ProjectID, fiscalQuarterRange[0], fiscalQuarterRange[1])
     .subscribe(res => {
       this.fteData = res;
-      console.log('response');
-      console.log(res);
+      if (res.length) {
+        console.log('response has contents');
+        console.log('response');
+        console.log(res);
 
-      const project = $.extend(true, {}, res[0]);
-      project.Level = 0;
-      project.ParentID = 1;
-      project.ChildName = project.ParentName;
+        this.hasChartData = true;
 
-      console.log('first project object:');
-      console.log(project);
+        const project = $.extend(true, {}, res[0]);
+        project.Level = 0;
+        project.ParentID = 1;
+        project.ChildName = project.ParentName;
 
-      this.fteData.splice(0, 0, project);
+        console.log('first project object:');
+        console.log(project);
 
-      console.log('fte data after adding first project:');
-      console.log(this.fteData);
+        this.fteData.splice(0, 0, project);
 
-      // this.setLevelOneData(res);
-      // const testProject = this.levelOneData[2];
-      // console.log('test project');
-      // console.log(testProject);
+        console.log('fte data after adding first project:');
+        console.log(this.fteData);
 
-      const firstLevelItem = {
-        id: project.ParentID.toString(),
-        name: project.ParentName,
-        fte: 0,
-        value: 0,
-        entity: project.ParentEntity,
-        type: project.ParentType,
-        level: 0
-      };
+        // this.setLevelOneData(res);
+        // const testProject = this.levelOneData[2];
+        // console.log('test project');
+        // console.log(testProject);
 
-      console.log('first level chart object');
-      console.log(firstLevelItem);
+        const firstLevelItem = {
+          id: project.ParentID.toString(),
+          name: project.ParentName,
+          fte: 0,
+          value: 0,
+          entity: project.ParentEntity,
+          type: project.ParentType,
+          level: 0
+        };
 
-      this.childProjects.push(firstLevelItem);
+        console.log('first level chart object');
+        console.log(firstLevelItem);
 
-      // this.levelOneData.forEach((project, index) => {
+        this.childProjects.push(firstLevelItem);
 
-      //   const chartItem = {
-      //     id: project.ChildID.toString(),
-      //     name: project.ChildName,
-      //     value: project.TotalFTE,
-      //     type: project.ChildEntity,
-      //     level: project.Level,
-      //     color: Highcharts.getOptions().colors[index]
-      //   };
-      //   this.childProjects.push(chartItem);
+        const t0 = performance.now();
 
-      //   this.getChildProjects(project, chartItem);
+        this.getChildProjects(project, firstLevelItem);
 
-      // });
+        const t1 = performance.now();
+        console.log(`get child projects took: ${t1 - t0} milliseconds`);
 
-      const t0 = performance.now();
+        console.log('child projects (explode projects bom):');
+        console.log(this.childProjects);
 
-      this.getChildProjects(project, firstLevelItem);
+        // const t3 = performance.now();
 
-      const t1 = performance.now();
-      console.log(`get child projects took: ${t1 - t0} milliseconds`);
+        // console.log(this.childProjects[3]);
+        // this.rollupFTEValues(this.childProjects[3], this.childProjects[3]);
+        // console.log('test total for project at index 3:');
+        // console.log(this.childProjects[3].value);
+        // console.log(this.childProjects[3]);
 
-      console.log('child projects (explode projects bom):');
-      console.log(this.childProjects);
+        // const t4 = performance.now();
+        // console.log(`rollup fte value took: ${t4 - t3} milliseconds`);
 
-      // const t3 = performance.now();
+        const t3 = performance.now();
 
-      // console.log(this.childProjects[3]);
-      // this.rollupFTEValues(this.childProjects[3], this.childProjects[3]);
-      // console.log('test total for project at index 3:');
-      // console.log(this.childProjects[3].value);
-      // console.log(this.childProjects[3]);
+        // rollup values for all chart point objects
+        this.childProjects.forEach(project => {
+          this.rollupFTEValues(project, project);
+        });
 
-      // const t4 = performance.now();
-      // console.log(`rollup fte value took: ${t4 - t3} milliseconds`);
+        const t4 = performance.now();
+        console.log(`rollup all fte values took: ${t4 - t3} milliseconds`);
 
-      const t3 = performance.now();
+        console.log('chart point objects with rolled up values');
+        console.log(this.childProjects);
 
-      // rollup values for all chart point objects
-      this.childProjects.forEach(project => {
-        this.rollupFTEValues(project, project);
-      });
+        // filter chart point objects to level 1 again
+        const levelOneProjects = this.childProjects.filter(project => {
+          return project.level === 0;
+        });
 
-      const t4 = performance.now();
-      console.log(`rollup all fte values took: ${t4 - t3} milliseconds`);
+        console.log('level one objects:');
+        console.log(levelOneProjects);
 
-      console.log('chart point objects with rolled up values');
-      console.log(this.childProjects);
+        const t5 = performance.now();
 
-      // filter chart point objects to level 1 again
-      const levelOneProjects = this.childProjects.filter(project => {
-        return project.level === 0;
-      });
+        // update the parent ids for child projects
+        levelOneProjects.forEach(project => {
+          this.updateParentIDs(project);
+        });
 
-      console.log('level one objects:');
-      console.log(levelOneProjects);
+        const t6 = performance.now();
+        console.log(`update parent ids took: ${t6 - t5} milliseconds`);
 
-      const t5 = performance.now();
+        console.log('chart point objects with updated parent ids');
+        console.log(this.childProjects);
 
-      // update the parent ids for child projects
-      levelOneProjects.forEach(project => {
-        this.updateParentIDs(project);
-      });
+        // filter chart point objects to only Projects with values
+        this.chartData = this.childProjects.filter(project => {
+          return project.entity === 'Project' && project.value;
+        });
 
-      const t6 = performance.now();
-      console.log(`update parent ids took: ${t6 - t5} milliseconds`);
+        this.setLevelZeroColor();
 
-      console.log('chart point objects with updated parent ids');
-      console.log(this.childProjects);
+        // this.setLevelOneColors();
 
-      // filter chart point objects to only Projects with values
-      this.chartData = this.childProjects.filter(project => {
-        return project.entity === 'Project' && project.value;
-      });
+        this.sortData();
 
-      this.setLevelZeroColor();
+        this.updateLevels2();
 
-      // this.setLevelOneColors();
+        this.setBulletColors();
 
-      this.sortData();
+        this.pushLevelOneItemIntoTable();
 
-      this.updateLevels2();
+        this.getHighestFTE();
 
-      this.setBulletColors();
+        this.initialChartSubTitle = 'Click a box to drill down (if pointing hand cursor); click grey box in upper right corner to drill up';
 
-      this.pushLevelOneItemIntoTable();
+        this.initialChartTitle = `Project FTE Rollup for ${this.chartData[0].name} ${this.chartData[0].type}`;
 
-      this.getHighestFTE();
+
+      } else {
+
+        this.clearChart();
+
+        this.initialChartTitle = `Project FTE Rollup for ${project.ProjectName} ${project.ProjectTypeName}`;
+
+      }
+
 
       console.log('final chart data');
       console.log(this.chartData);
@@ -379,7 +427,11 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
       // render the chart
       console.log('rendering the chart');
-      this.renderChart();
+      if (this.chartWasRendered) {
+        this.reRenderChart();
+      } else {
+        this.renderChart();
+      }
 
     },
     err => {
@@ -784,11 +836,12 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
         events: {
           load: function (e) {
             console.log('chart is loaded');
-            that.displayTable = true;
-
-            setTimeout(() => {
-              that.calculateBarMultipler();
-            }, 0);
+            if (that.hasChartData) {
+              that.displayTable = true;
+              setTimeout(() => {
+                that.calculateBarMultipler();
+              }, 0);
+            }
           }
         }
       },
@@ -875,7 +928,6 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
                 that.chartData.color = pointColor;
               }
             }
-            // this.chart.title.text = 'Project FTEs for Loki Program';
 
             let drilledDown = false;
 
@@ -895,7 +947,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
               console.log('e.point:');
               console.log(e.point);
 
-              this.chart.setTitle({text: `FTEs for ${e.point.name} ${e.point.type}`});
+              this.chart.setTitle({text: `Project FTE Rollup for ${e.point.name} ${e.point.type}`});
 
               console.log(`chart title: ${this.chart.title.textStr}`);
 
@@ -924,10 +976,10 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
         data: this.chartData
       }],
       subtitle: {
-        text: 'Click a box to drill down (if pointing hand cursor); click grey box in upper right corner to drill up'
+        text: this.initialChartSubTitle
       },
       title: {
-        text: `FTEs for ${this.chartData[0].name} ${this.chartData[0].type}`  // initial title for level 1 project/program
+        text: this.initialChartTitle  // initial title for level 1 project/program
       }
     };
 
@@ -935,6 +987,10 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
 
   renderChart() {
+
+    if (this.chart) {
+      this.chart.destroy();
+    }
 
     const that = this;
 
@@ -1014,6 +1070,8 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.chart.reflow();
     }, 0);
+
+    this.chartWasRendered = true;
 
 
   }
