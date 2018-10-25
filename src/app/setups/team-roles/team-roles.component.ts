@@ -44,7 +44,7 @@ export class TeamRolesComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    
+
     this.showSpinner = true;
 
     // get the token from local storage
@@ -57,8 +57,8 @@ export class TeamRolesComponent implements OnInit {
     const permRes = await this.apiDataFteService.checkTeamFTEAdminPermission(token);
 
     if (permRes.length > 0) {
-      this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
-      // this.loginAsEmail = 'ethan_hunt@keysight.com';
+      // this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      this.loginAsEmail = 'ho-fai_wong@keysight.com';
       // this.loginAsEmail = 'ermina_chua@keysight.com';
       this.displayAdminViewMessage = true;
     } else {
