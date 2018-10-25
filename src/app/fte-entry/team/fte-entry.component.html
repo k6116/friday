@@ -3,189 +3,199 @@
 (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()" (addedProjects)="onAddedProjects($event)"></app-projects-modal>
 <app-projects-create-modal (createSuccess)="onCreateSuccess($event)"></app-projects-create-modal>
 
-<div [hidden]="!display" class="container-fluid">
+<div class="container-fluid">
 
-<div class="row row-custom">
-  <div class="col-sm col-custom">
-    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onAddProjectClick()" id="intro-add-project">
-      <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
-    </button>
-    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onCreateProjectClick()" data-toggle="modal" data-target="#projectsCreateModal">
-      <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
-    </button>
-    
-    <!-- Don't Delete - useful buttons for later -->
-    <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
-      <i class="fa fa-table"></i>&nbsp;&nbsp;Export
-    </button> -->
-    <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
-    <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
-      <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
-    </button>
-    <button class="btn btn-secondary btn-fte-toolbar" (click)="onLaunchClick()">
-      <i class="fa fa-play"></i>&nbsp;&nbsp;Launch
-    </button>
-    <button *ngIf="displaySyncNoticeButton" class="btn btn-primary" (click)="comparePlanToFTE()">Sync Notice</button>
-    <button *ngIf="displayAdminViewMessage" class="btn btn-primary btn-fte-toolbar" data-toggle="modal" data-target="#viewAsModal">
-      <i class="fa fa-shield"></i>&nbsp;&nbsp;View As
-    </button>
-
-    <div *ngIf="displayAdminViewMessage"  style="color: red; display: inline-block; margin-left: 100px">
-      <h3>ADMIN: Viewing this page under email {{ loginAsEmail }}</h3>
-    </div>
-
-    <!-- <div style="float: right;">
-      <h5 *ngIf="launchDate">Last Launched: {{ launchDate }}</h5>
-      <h5 *ngIf="!launchDate">Last Launched: never</h5>
-    </div> -->
-    <div class="dropdown btn-help ">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-question"></i>&nbsp;&nbsp;Help
-      </button>
-      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-        <!-- <a class="dropdown-item" (click)="tutorialPart1()">Interactive Tutorial</a> -->
-        <a class="dropdown-item" (click)="onInstructionsClick()">Instructions</a>
-        <!-- <a class="dropdown-item" >Confluence Documentation</a> -->
-      </div>
-    </div>
-  </div>  
+<!-- spinner -->
+<div class="row row-custom" *ngIf="showSpinner">
+  <div class="col-lg-12 col-custom">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"><g class="nc-icon-wrapper" fill="#111111"><g class="nc-loop_bars-rotate-32" transform="rotate(270 16 16)"> <rect x="14" fill="#111111" width="4" height="7"></rect> <rect x="22.83883" y="3.66117" transform="matrix(0.70711 0.70711 -0.70711 0.70711 12.33883 -15.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="25" y="14" fill="#111111" width="7" height="4" style="opacity: 0.4;"></rect> <rect x="22.83883" y="21.33883" transform="matrix(-0.70711 0.70711 -0.70711 -0.70711 59.96625 24.83883)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="14" y="25" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="5.16117" y="21.33883" transform="matrix(-0.70711 -0.70711 0.70711 -0.70711 -5.33883 47.46625)" fill="#111111" width="4" height="7" style="opacity: 0.4;"></rect> <rect x="0" y="14" fill="#111111" width="7" height="4" style="opacity: 0.6;"></rect> <rect x="5.16117" y="3.66117" transform="matrix(0.70711 -0.70711 0.70711 0.70711 -2.96625 7.16117)" fill="#111111" width="4" height="7" style="opacity: 0.8;"></rect> </g> <script>!function(){function t(t){this.element=t,this.animationId,this.start=null,this.init()}if(!window.requestAnimationFrame){var i=null;window.requestAnimationFrame=function(t,n){var e=(new Date).getTime();i||(i=e);var a=Math.max(0,16-(e-i)),o=window.setTimeout(function(){t(e+a)},a);return i=e+a,o}}t.prototype.init=function(){var t=this;this.animationId=window.requestAnimationFrame(t.triggerAnimation.bind(t))},t.prototype.reset=function(){var t=this;window.cancelAnimationFrame(t.animationId)},t.prototype.triggerAnimation=function(t){var i=this;this.start||(this.start=t);var n=t-this.start;800>n||(this.start=this.start+800),this.element.setAttribute("transform","rotate("+parseInt(Math.min(n/100,8))%8*45+" 16 16)");if(document.documentElement.contains(this.element))window.requestAnimationFrame(i.triggerAnimation.bind(i))};var n=document.getElementsByClassName("nc-loop_bars-rotate-32"),e=[];if(n)for(var a=0;n.length>a;a++)!function(i){e.push(new t(n[i]))}(a);document.addEventListener("visibilitychange",function(){"hidden"==document.visibilityState?e.forEach(function(t){t.reset()}):e.forEach(function(t){t.init()})})}();</script></g></svg>
+  </div>
 </div>
 
-<div class="row row-custom">
-  <div class="col-sm-3 col-custom">
+<div class="teamFTE-cont" [hidden]="!display">
+
+  <div class="row row-custom">
+    <div class="col-sm col-custom">
+      <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onAddProjectClick()" id="intro-add-project">
+        <i class="fa fa-plus"></i>&nbsp;&nbsp;Project
+      </button>
+      <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onCreateProjectClick()" data-toggle="modal" data-target="#projectsCreateModal">
+        <i class="fa fa-plus-square"></i>&nbsp;&nbsp;Create
+      </button>
+      
+      <!-- Don't Delete - useful buttons for later -->
+      <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
+        <i class="fa fa-table"></i>&nbsp;&nbsp;Export
+      </button> -->
+      <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
+      <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
+        <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
+      </button>
+      <button class="btn btn-secondary btn-fte-toolbar" (click)="onLaunchClick()">
+        <i class="fa fa-play"></i>&nbsp;&nbsp;Launch
+      </button>
+      <button *ngIf="displaySyncNoticeButton" class="btn btn-primary" (click)="comparePlanToFTE()">Sync Notice</button>
+      <button *ngIf="displayAdminViewMessage" class="btn btn-primary btn-fte-toolbar" data-toggle="modal" data-target="#viewAsModal">
+        <i class="fa fa-shield"></i>&nbsp;&nbsp;View As
+      </button>
+
+      <div *ngIf="displayAdminViewMessage"  style="color: red; display: inline-block; margin-left: 100px">
+        <h3>ADMIN: Viewing this page under email {{ loginAsEmail }}</h3>
+      </div>
+
+      <!-- <div style="float: right;">
+        <h5 *ngIf="launchDate">Last Launched: {{ launchDate }}</h5>
+        <h5 *ngIf="!launchDate">Last Launched: never</h5>
+      </div> -->
+      <div class="dropdown btn-help ">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-question"></i>&nbsp;&nbsp;Help
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+          <!-- <a class="dropdown-item" (click)="tutorialPart1()">Interactive Tutorial</a> -->
+          <a class="dropdown-item" (click)="onInstructionsClick()">Instructions</a>
+          <!-- <a class="dropdown-item" >Confluence Documentation</a> -->
+        </div>
+      </div>
+    </div>  
+  </div>
+
+  <div class="row row-custom">
+    <div class="col-sm-3 col-custom">
+        <div style="display: inline-flex">
+          <button class="btn btn-secondary" [disabled]="disablePreviousMonth" (click)="onPreviousMonthClick()">Prev</button>
+          <span style="width: 5px"></span>
+          <button class="btn btn-secondary" (click)="onNextMonthClick()">Next</button>
+          <span style="width: 10px"></span>
+          <h4>{{ setMonthName }} {{ setYear }}</h4>
+        </div>
+    </div>
+    <div class="col-sm-5 col-custom col-multiselect">
       <div style="display: inline-flex">
-        <button class="btn btn-secondary" [disabled]="disablePreviousMonth" (click)="onPreviousMonthClick()">Prev</button>
-        <span style="width: 5px"></span>
-        <button class="btn btn-secondary" (click)="onNextMonthClick()">Next</button>
+        <div style="padding-top: 6px">
+          <h6>Filters:</h6>
+        </div>
         <span style="width: 10px"></span>
-        <h4>{{ setMonthName }} {{ setYear }}</h4>
+        <ss-multiselect-dropdown #filterEmployeesDropdown [options]="filterEmployeesOptions" [texts]="filterEmployeesTexts" 
+              [settings]="filterEmployeesSettings" [(ngModel)]="filterEmployeesModel" (ngModelChange)="onFilterEmployeesChange()"></ss-multiselect-dropdown>
+        <span style="width: 5px"></span>
+        <ss-multiselect-dropdown #filterProjectsDropdown [options]="filterProjectsOptions" [texts]="filterProjectsTexts" 
+              [settings]="filterProjectsSettings" [(ngModel)]="filterProjectsModel" (ngModelChange)="onFilterProjectsChange()"></ss-multiselect-dropdown>
       </div>
-  </div>
-  <div class="col-sm-5 col-custom col-multiselect">
-    <div style="display: inline-flex">
-      <div style="padding-top: 6px">
-        <h6>Filters:</h6>
+    </div>
+    <div class="col-sm-4 col-custom">
+      <div style="display: inline-flex">
+        <div style="padding-top: 6px">
+          <h6>Copy to Next:</h6>
+        </div>
+        <span style="width: 10px"></span>
+        <button class="btn btn-secondary copy-month-button-1" (mouseenter)="onCopyMonthButtonMouseEnter(1)" (mouseleave)="onCopyMonthButtonMouseLeave(1)" (click)="onCopyOneMonthClick()">
+          1
+        </button>
+        <span style="width: 5px"></span>
+        <button class="btn btn-secondary copy-month-button-3" (mouseenter)="onCopyMonthButtonMouseEnter(3)" (mouseleave)="onCopyMonthButtonMouseLeave(3)" (click)="onCopyThreeMonthClick()">
+          3
+        </button>
+        <span style="width: 5px"></span>
+        <button class="btn btn-secondary copy-month-button-6" (mouseenter)="onCopyMonthButtonMouseEnter(6)" (mouseleave)="onCopyMonthButtonMouseLeave(6)" (click)="onCopySixMonthClick()">
+          6
+        </button>
+        <span style="width: 10px"></span>
+        <button class="btn btn-secondary" (click)="onClearMonthClick()">
+          Clear Month
+        </button>
+        <span style="width: 5px"></span>
+        <button class="btn btn-secondary" (click)="onClearPlanClick()">
+          Clear Plan
+        </button>
       </div>
-      <span style="width: 10px"></span>
-      <ss-multiselect-dropdown #filterEmployeesDropdown [options]="filterEmployeesOptions" [texts]="filterEmployeesTexts" 
-            [settings]="filterEmployeesSettings" [(ngModel)]="filterEmployeesModel" (ngModelChange)="onFilterEmployeesChange()"></ss-multiselect-dropdown>
-      <span style="width: 5px"></span>
-      <ss-multiselect-dropdown #filterProjectsDropdown [options]="filterProjectsOptions" [texts]="filterProjectsTexts" 
-            [settings]="filterProjectsSettings" [(ngModel)]="filterProjectsModel" (ngModelChange)="onFilterProjectsChange()"></ss-multiselect-dropdown>
     </div>
-  </div>
-  <div class="col-sm-4 col-custom">
-    <div style="display: inline-flex">
-      <div style="padding-top: 6px">
-        <h6>Copy to Next:</h6>
+    <!-- <div class="col-sm-3 col-custom">
+      <div class="col-newplan" style="display: inline-flex">
+        <button *ngIf="!displayNewPlanModal" class="btn btn-secondary" (click)="onNewPlanClick()">
+          <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
+        </button>
+        <button *ngIf="displayNewPlanModal" class="btn btn-secondary" data-toggle="modal" data-target="#newPlanModal" (click)="onNewPlanClick()">
+          <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
+        </button>
+        <span style="width: 5px"></span>
+        <select class="form-control" style="width: 200px" (change)="selectPlan($event.target.value)">
+          <option *ngFor="let plan of planList; let i = index" [selected]="plan.planName == currentPlan" [value]="plan.planName">{{ plan.planName }}</option>
+        </select>
+        <span style="width: 5px"></span>
+        <button class="btn btn-secondary" [disabled]="disableDeletePlan" (click)="onDeletePlanClick()">
+          <i class="fa fa-times"></i>&nbsp;&nbsp;Del Plan
+        </button>
       </div>
-      <span style="width: 10px"></span>
-      <button class="btn btn-secondary copy-month-button-1" (mouseenter)="onCopyMonthButtonMouseEnter(1)" (mouseleave)="onCopyMonthButtonMouseLeave(1)" (click)="onCopyOneMonthClick()">
-        1
-      </button>
-      <span style="width: 5px"></span>
-      <button class="btn btn-secondary copy-month-button-3" (mouseenter)="onCopyMonthButtonMouseEnter(3)" (mouseleave)="onCopyMonthButtonMouseLeave(3)" (click)="onCopyThreeMonthClick()">
-        3
-      </button>
-      <span style="width: 5px"></span>
-      <button class="btn btn-secondary copy-month-button-6" (mouseenter)="onCopyMonthButtonMouseEnter(6)" (mouseleave)="onCopyMonthButtonMouseLeave(6)" (click)="onCopySixMonthClick()">
-        6
-      </button>
-      <span style="width: 10px"></span>
-      <button class="btn btn-secondary" (click)="onClearMonthClick()">
-        Clear Month
-      </button>
-      <span style="width: 5px"></span>
-      <button class="btn btn-secondary" (click)="onClearPlanClick()">
-        Clear Plan
-      </button>
-    </div>
+    </div> -->
+
   </div>
-  <!-- <div class="col-sm-3 col-custom">
-    <div class="col-newplan" style="display: inline-flex">
-      <button *ngIf="!displayNewPlanModal" class="btn btn-secondary" (click)="onNewPlanClick()">
-        <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
-      </button>
-      <button *ngIf="displayNewPlanModal" class="btn btn-secondary" data-toggle="modal" data-target="#newPlanModal" (click)="onNewPlanClick()">
-        <i class="fa fa-sticky-note-o"></i>&nbsp;&nbsp;New Plan
-      </button>
-      <span style="width: 5px"></span>
-      <select class="form-control" style="width: 200px" (change)="selectPlan($event.target.value)">
-        <option *ngFor="let plan of planList; let i = index" [selected]="plan.planName == currentPlan" [value]="plan.planName">{{ plan.planName }}</option>
-      </select>
-      <span style="width: 5px"></span>
-      <button class="btn btn-secondary" [disabled]="disableDeletePlan" (click)="onDeletePlanClick()">
-        <i class="fa fa-times"></i>&nbsp;&nbsp;Del Plan
-      </button>
-    </div>
-  </div> -->
+  <!-- begin row for FTE entry table -->
+  <div class="row row-custom">
 
-</div>
-<!-- begin row for FTE entry table -->
-<div class="row row-custom">
+    <!-- block for FTE entry div table -->
+    <div class="col-sm col-custom fte-table-container tutorial-part3" id="intro-add-ftes">
+      <form [formGroup]="FTEFormGroup">
 
-  <!-- block for FTE entry div table -->
-  <div class="col-sm col-custom fte-table-container tutorial-part3" id="intro-add-ftes">
-    <form [formGroup]="FTEFormGroup">
+        <div class="fte-table" formArrayName="FTEFormArray">
 
-      <div class="fte-table" formArrayName="FTEFormArray">
+          <div class="fte-table-header">
+            <div class="fte-table-row">
+              <div class="fte-table-cell icon icon-month-header">&nbsp;</div> <!-- for trash icon -->
+              <div class="fte-table-cell row-month-header col-projects-totals">Project</div>
+              <!-- loop through each month in the userFTEs data object-->
+              <ng-container *ngFor="let employee of teamOrgStructure; let k = index">
+                <!-- only show the month column if the slider deems it visible -->
+                <div class="fte-table-cell row-month-header"  [style.display]="employeeVisible[k] ? 'table-cell' : 'none'">{{ employee.fullName }}</div>
+              </ng-container>
+            </div>
+          </div>
 
-        <div class="fte-table-header">
-          <div class="fte-table-row">
-            <div class="fte-table-cell icon icon-month-header">&nbsp;</div> <!-- for trash icon -->
-            <div class="fte-table-cell row-month-header col-projects-totals">Project</div>
-            <!-- loop through each month in the userFTEs data object-->
-            <ng-container *ngFor="let employee of teamOrgStructure; let k = index">
-              <!-- only show the month column if the slider deems it visible -->
-              <div class="fte-table-cell row-month-header"  [style.display]="employeeVisible[k] ? 'table-cell' : 'none'">{{ employee.fullName }}</div>
+          <div class="fte-table-body">
+            <!-- loop through each project, one row per project -->
+            <ng-container *ngFor="let project of allProjects; let i = index">
+              <div class="fte-table-row" [formGroupName]="i" [style.display]="projectVisible[i] ? 'table-row' : 'none'">
+                <div class="fte-table-cell icon"> <!-- for trash icon -->
+                  <i class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
+                </div>
+                <div class="fte-table-cell col-project-name" data-toggle="tooltip" data-placement="top" [title]="project.projectName.length > 40 ? project.projectName : ''">{{ (project.projectName.length > 40) ? (project.projectName | slice:0:40) + '...' : (project.projectName) }}</div>
+                <!-- loop through each month's FTE allocation, "monthly" cells per project -->
+                <ng-container *ngFor="let employee of teamOrgStructure; let j = index">
+                  <div class="fte-table-cell" [formGroupName]="j" [style.display]="employeeVisible[j] ? 'table-cell' : 'none'">
+                    <input type="text" formControlName="fte" class="form-control" maxlength="3" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
+                  </div>
+                </ng-container>
+              </div>
             </ng-container>
           </div>
-        </div>
 
-        <div class="fte-table-body">
-          <!-- loop through each project, one row per project -->
-          <ng-container *ngFor="let project of allProjects; let i = index">
-            <div class="fte-table-row" [formGroupName]="i" [style.display]="projectVisible[i] ? 'table-row' : 'none'">
-              <div class="fte-table-cell icon"> <!-- for trash icon -->
-                <i class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
-              </div>
-              <div class="fte-table-cell col-project-name" data-toggle="tooltip" data-placement="top" [title]="project.projectName.length > 40 ? project.projectName : ''">{{ (project.projectName.length > 40) ? (project.projectName | slice:0:40) + '...' : (project.projectName) }}</div>
-              <!-- loop through each month's FTE allocation, "monthly" cells per project -->
-              <ng-container *ngFor="let employee of teamOrgStructure; let j = index">
-                <div class="fte-table-cell" [formGroupName]="j" [style.display]="employeeVisible[j] ? 'table-cell' : 'none'">
-                  <input type="text" formControlName="fte" class="form-control" maxlength="3" (change)="onFTEChange(i, j, $event.target.value)" appFteInputRestrict>
+          <div class="fte-table-footer">
+            <div class="fte-table-row tutorial-part3" id="intro-fte-total">
+              <div class="fte-table-cell icon">&nbsp;</div> <!-- for trash icon -->
+              <div class="fte-table-cell col-projects-totals">TOTAL</div>
+              <ng-container *ngFor="let employee of teamOrgStructure; let z = index">
+                <div class="fte-table-cell" [style.display]="employeeVisible[z] ? 'table-cell' : 'none'">
+                  <input disabled [value]="employeeTotals[z] | percent" type="text" [class]="'form-control' + (!employeeTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
                 </div>
               </ng-container>
             </div>
-          </ng-container>
-        </div>
-
-        <div class="fte-table-footer">
-          <div class="fte-table-row tutorial-part3" id="intro-fte-total">
-            <div class="fte-table-cell icon">&nbsp;</div> <!-- for trash icon -->
-            <div class="fte-table-cell col-projects-totals">TOTAL</div>
-            <ng-container *ngFor="let employee of teamOrgStructure; let z = index">
-              <div class="fte-table-cell" [style.display]="employeeVisible[z] ? 'table-cell' : 'none'">
-                <input disabled [value]="employeeTotals[z] | percent" type="text" [class]="'form-control' + (!employeeTotalsValid[z] ? ' highlight-invalid' : '')" [attr.month-index]="z">
-              </div>
-            </ng-container>
           </div>
-        </div>
 
-      </div> <!-- end div table -->
+        </div> <!-- end div table -->
 
-    </form>
-  </div> <!-- end div that controls entire FTE entry table visibility -->
-</div> <!-- end row for FTE entry table -->
+      </form>
+    </div> <!-- end div that controls entire FTE entry table visibility -->
+  </div> <!-- end row for FTE entry table -->
 
-<div class="row row-custom">
-  <div class="col fte-planning-chart">
-    <div id="FTEPlanningChart"></div>
+  <div class="row row-custom">
+    <div class="col fte-planning-chart">
+      <div id="FTEPlanningChart"></div>
+    </div>
   </div>
+
+  </div> <!-- end FTE component container div -->
+
 </div>
-
-</div> <!-- end FTE component container div -->
-
 
 <!-- Edit New Plan Modal -->
 <div [hidden]="!displayNewPlanModal" class="modal fade" tabindex="-1" role="dialog" id="newPlanModal">

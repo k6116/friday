@@ -78,6 +78,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   displayAdminViewMessage: boolean;
   launchDate: string;
   displaySyncNoticeButton: boolean;
+  showSpinner: boolean;
 
   // Highchart Declarations
   ftePlanningChart: any;
@@ -153,8 +154,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     private decimalPipe: DecimalPipe,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-
-
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
@@ -276,6 +275,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   async planLoadSequence() {
+
+    // show the waiting to render spinner
+    this.showSpinner = true;
+    this.display = false;
+
     // First, get the list of Plans for current user and get all subordinates for current user
     // Second, retrieve data for that plan
     // If plan does not exist, create one
@@ -303,6 +307,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       this.allProjects.forEach(proj => {
         this.projectVisible.push(true);
       });
+      this.showSpinner = false;
+      this.display = true;
     });
   }
 
@@ -596,6 +602,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
             this.displayNewPlanModal = true
           ]).then(next => {
             this.updateProjectFilters(false);
+            this.comparePlanToFTE();
           });
         },
         err => {
@@ -1054,8 +1061,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                 <div class="row">
                   <div class="col-3">${res[i].FullName}</div>
                   <div class="col-5">${res[i].ProjectName}</div>
-                  <div class="col-1">${res[i].FTE}</div>
-                  <div class="col-3">${moment(res[i].FiscalDate).utc().format('YYYY-MM-DD')}</div>
+                  <div class="col-1">${res[i].FTE === null ? '--' : res[i].FTE * 100 + '%'}</div>
+                  <div class="col-3">${moment(res[i].FiscalDate).utc().format('YYYY-MM-DD') === 'Invalid date' ? 'DELETED' :
+                                      moment(res[i].FiscalDate).utc().format('YYYY-MM-DD')}</div>
                 </div>`;
             }
             this.cacheService.confirmModalData.emit(
@@ -1063,27 +1071,54 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                 title: 'Plan Sync Notice',
                 message: `The FTEs below have been updated by the users.<br><br>
                           ${updatedFTEsList}<br><br>
-                          Please manually update the form to reflect these changes,
-                          otherwise the changes will be overwritten when launched`,
+                          Option 1)<br> Manually update the form to reflect the fte updates the employee(s) have made.
+                          If this plan is launched without updating the form,
+                          any change the employee(s) have made will be overwritten.<br><br>
+                          Option 2)<br> The Reset button will erase this plan and create a new copy with updated employee fte values.
+                          This will NOT merge updated employee fte values into the plan.`,
                 iconClass: 'fa-exclamation-triangle',
                 iconColor: 'rgb(193, 193, 27)',
                 closeButton: true,
                 allowOutsideClickDismiss: true,
                 allowEscKeyDismiss: true,
                 buttons: [
-                  // {
-                  //   text: 'Sync',
-                  //   bsClass: 'btn-success',
-                  //   emit: true
-                  // },
                   {
-                    text: 'Dismiss',
+                    text: 'Reset to updated FTEs',
+                    bsClass: 'btn-success',
+                    emit: true
+                  },
+                  {
+                    text: 'I will manually update',
                     bsClass: 'btn-secondary',
                     emit: false
                   }
                 ]
               }
             );
+            const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( modalRes => {
+              if (modalRes) {
+                // create object with delete data
+                const planData = {
+                  planName: this.currentPlan,
+                  userID: this.loginAsID
+                };
+
+                this.apiDataFteService.deletePlan(planData)
+                  .subscribe(
+                    deleteRes => {
+                      // empty arrays so it won't have objects appended
+                      this.filteredEmployees = [];
+                      this.teamEditableMembers = '';
+                      this.planLoadSequence();
+                      this.displaySyncNoticeButton = false;
+                    },
+                    err => {
+                      console.error(err);
+                    }
+                  );
+              }
+              updateModalSubscription.unsubscribe();
+            });
           } else {
             this.displaySyncNoticeButton = false;
           }

@@ -147,24 +147,24 @@ div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell {
 /* Jobtitle Column */
 div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell.col-role-title {
   background-color: white;
-  position: inherit;
-  /* left: 30px; */
+  position: sticky;
+  left: 0px;
   min-width: 170px;
   text-align: left;
   font-weight: bold;
-  z-index: 3;
+  z-index: 1;
   padding-left: 12px;
   padding-right: 1px;
 }
 
 div.teamrole-table-footer div.teamrole-table-row div.teamrole-table-cell.col-role-subtitle {
   background-color: white;
-  position: inherit;
+  position: sticky;
   left: 200px;
   min-width: 220px;
   text-align: left;
   font-weight: bold;
-  z-index: 3;
+  z-index: 1;
   padding-left: 6px;
 }
 
