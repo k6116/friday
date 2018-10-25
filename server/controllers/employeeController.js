@@ -105,10 +105,32 @@ function getEmployeeData(req, res) {
   })
 }
 
+function getRoleID(req, res) {    
+
+  const roleName = req.params.roleName;
+
+  const sql = `
+   SELECT 
+      RoleID, 
+      RoleName
+    FROM  
+      accesscontrol.Roles
+    WHERE
+      RoleName = '${roleName}'
+    `
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(p => {    
+   res.json(p);
+  })
+}
+
+
 module.exports = {
   show: show,
   showUserPLMData: showUserPLMData,
   getDesigners: getDesigners,
   getPlanners: getPlanners,
-  getEmployeeData: getEmployeeData
+  getEmployeeData: getEmployeeData,
+  getRoleID: getRoleID
 }

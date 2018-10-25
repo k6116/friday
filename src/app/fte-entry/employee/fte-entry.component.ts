@@ -123,30 +123,19 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     }
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+
     this.setSliderConfig(); // initalize slider config
+
+    this.projectList = await this.apiDataProjectService.getProjects().toPromise();
 
     this.fteComponentInit();  // initialize the FTE entry component
 
-    this.apiDataProjectService.getProjects()
-      .subscribe(
-        res => {
-          // console.log('get project data successfull:');
-          // console.log(res);
-          this.projectList = res;
-          // this.trimProjects(500);
-        },
-        err => {
-          // console.log('get project data error:');
-          // console.log(err);
-        }
-    );
+    this.buildMonthsArray();
+    this.fteFormChangeListener();
+    this.getJobTitleList();
 
-   this.buildMonthsArray();
-   this.fteFormChangeListener();
-   this.getJobTitleList();
-
-   $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip();
 
   }
 
