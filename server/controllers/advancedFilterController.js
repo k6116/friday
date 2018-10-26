@@ -74,7 +74,7 @@ function indexAdvancedFilteredResults(req, res) {
   const filterOptions = req.body;
 
   const sql = `
-    EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjecTypeIDs,
+    EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectTypeIDs,
      :ProjectStatusIDs, :ProjectPriorityIDs, :ProjectOwnerEmails, :FTEMin, :FTEMax, :FTEDateFrom, :FTEDateTo
     `
   
@@ -94,8 +94,10 @@ function indexAdvancedFilteredResults(req, res) {
 
 function indexProjectChildren(req, res) {
   const projectName = req.params.projectName;
-  const sql = `EXECUTE dbo.BillsDrillDownProjects :projectName`
-  sequelize.query(sql, {replacements: {projectName: projectName}, type: sequelize.QueryTypes.SELECT})
+  const projectType = req.params.projectType;
+  const projectOwner = req.params.projectOwner;
+  const sql = `EXECUTE dbo.BillsDrillDownProjects :projectName, :projectType, :projectOwner`
+  sequelize.query(sql, {replacements: {projectName: projectName, projectType: projectType, projectOwner: projectOwner}, type: sequelize.QueryTypes.SELECT})
   .then(children => {    
     res.json(children);
   }).catch(error => {
@@ -106,8 +108,25 @@ function indexProjectChildren(req, res) {
   });
 }
 
+function indexProjectParents(req, res) {
+  const projectName = req.params.projectName;
+  const projectType = req.params.projectType;
+  const projectOwner = req.params.projectOwner;
+  const sql = `EXECUTE dbo.BillsDrillUpProjects :projectName, :projectType, :projectOwner`
+  sequelize.query(sql, {replacements: {projectName: projectName, projectType: projectType, projectOwner: projectOwner}, type: sequelize.QueryTypes.SELECT})
+  .then(parents => {    
+    res.json(parents);
+  }).catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
 module.exports = {
-    indexProjectsAdvancedFilter: indexProjectsAdvancedFilter,
-    indexAdvancedFilteredResults: indexAdvancedFilteredResults,
-    indexProjectChildren: indexProjectChildren
+  indexProjectsAdvancedFilter: indexProjectsAdvancedFilter,
+  indexAdvancedFilteredResults: indexAdvancedFilteredResults,
+  indexProjectChildren: indexProjectChildren,
+  indexProjectParents: indexProjectParents
 }

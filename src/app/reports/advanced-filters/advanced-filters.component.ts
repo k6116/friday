@@ -211,7 +211,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     if (value === true) {
       // Add array with ID and name to object
       this.filterCheckedArray.splice(0, 0, projectData);
-      this.filterObject
+      // this.filterObject
     } else {
       // Else, find array position of the checkbox ID and remove
       for (let i = 0; i < this.filterCheckedArray.length; i++) {
@@ -276,9 +276,15 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     const managers = await this.apiDataOrgService.getManagementOrgStructure(managerEmailAddress).toPromise();
     console.log('managers', managers);
   }
-  async getProjectChildren(projectName: string) {
-    const children = await this.apiDataAdvancedFilterService.getProjectChildren(projectName).toPromise();
+
+  async getProjectChildren(projectName: string, projectType: string, projectOwner: string) {
+    const children = await this.apiDataAdvancedFilterService.getProjectChildren(projectName, projectType, projectOwner).toPromise();
     console.log('children', children);
+  }
+
+  async getProjectParents(projectName: string, projectType: string, projectOwner: string) {
+    const parents = await this.apiDataAdvancedFilterService.getProjectParents(projectName, projectType, projectOwner).toPromise();
+    console.log('parents', parents);
   }
 
   async advancedFilter(filterOptions: any) {
@@ -315,7 +321,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     };
     this.advancedFilter(filterOptions);
     this.getProjectOwnerSubordinates('henri_komrij@keysight.com');
-    this.getProjectChildren('Loki');
+    this.getProjectChildren('Loki', 'Program', 'ethan_hunt@keysight.com');
+    this.getProjectParents('Arges70', 'NCI', 'ethan_hunt@keysight.com');
 
   }
 
