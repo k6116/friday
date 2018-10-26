@@ -31,7 +31,8 @@
       <!-- Filter Badges -->
       <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">
         <div class="badge badge-light">
-          <i class="fa fa-times-circle filters-badge-icon" [attr.title]="checkbox" (click)="onBadgeCloseClick($event)"></i>  {{ checkbox }}
+          <!-- <i class="fa fa-times-circle filters-badge-icon" [attr.title]="checkbox" (click)="onBadgeCloseClick($event)"></i>   -->
+          {{ checkbox }}
         </div>
       </ng-container>
 
@@ -67,7 +68,7 @@
             </div>
             <div class="filter-collapse show" id="projectTypeFilters">
               <div class="custom-control custom-checkbox" *ngFor="let projectType of projectTypes; let i = index">
-                <input type="checkbox" class="custom-control-input" [attr.name]="projectType.projectTypeName" [attr.id]="'projectType' + i" (click)="onCheckboxProjectTypeClick($event, projectType.id, projectType.projectTypeName)">
+                <input type="checkbox" class="custom-control-input" [attr.name]="projectType.projectTypeName" [attr.id]="'projectType' + i" (click)="onCheckboxProjectTypeClick($event, projectType.id)">
                 <label class="custom-control-label" [attr.for]="'projectType' + i" style="padding: 3px 0px 0px 10px;">{{ projectType.projectTypeName }}</label>
               </div>
             </div>
@@ -81,7 +82,7 @@
             </div>
             <div class="filter-collapse show" id="projectStatusFilters">
               <div class="custom-control custom-checkbox" *ngFor="let projectStatus of projectStatuses; let j = index">
-                <input type="checkbox" class="custom-control-input" [attr.name]="projectStatus.projectStatusName" [attr.id]="'projectStatus' + j" (click)="onCheckboxFilterClick($event)">
+                <input type="checkbox" class="custom-control-input" [attr.name]="projectStatus.projectStatusName" [attr.id]="'projectStatus' + j" (click)="onCheckboxProjectStatusClick($event, projectStatus.id)">
                 <label class="custom-control-label" [attr.for]="'projectStatus' + j" style="padding: 3px 0px 0px 10px;">{{ projectStatus.projectStatusName }}</label>
               </div>
             </div>
@@ -95,7 +96,7 @@
             </div>
             <div class="filter-collapse show" id="projectPrioritiesFilters">
               <div class="custom-control custom-checkbox" *ngFor="let projectPriority of projectPriorities; let k = index">
-                <input type="checkbox" class="custom-control-input" [attr.name]="projectPriority.priorityName" [attr.id]="'priority' + k" (click)="onCheckboxFilterClick($event)">
+                <input type="checkbox" class="custom-control-input" [attr.name]="projectPriority.priorityName" [attr.id]="'priority' + k" (click)="onCheckboxProjectPriorityClick($event, projectPriority.id)">
                 <label class="custom-control-label" [attr.for]="'priority' + k" style="padding: 3px 0px 0px 10px;">{{ projectPriority.priorityName }}</label>
               </div>
             </div>
@@ -195,7 +196,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let project of projects | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}};">
+            <!-- <tr *ngFor="let project of projects | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}};"> -->
+              <tr *ngFor="let project of advancedFilteredResults">            
               <td>{{ project.ProjectName }}</td>
               <td>{{ project.ProjectTypeName }}</td>
               <td>{{ project.PriorityName }}</td>

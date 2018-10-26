@@ -72,9 +72,9 @@ function indexAdvancedFilteredResults(req, res) {
   */
 
   const filterOptions = req.body;
-
+console.log('filterOptions:', filterOptions);
   const sql = `
-    EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjecTypeIDs,
+    EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectTypeIDs,
      :ProjectStatusIDs, :ProjectPriorityIDs, :ProjectOwnerEmails, :FTEMin, :FTEMax, :FTEDateFrom, :FTEDateTo
     `
   

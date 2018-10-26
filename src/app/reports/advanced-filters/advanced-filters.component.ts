@@ -66,6 +66,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       FTEDateTo: 'NULL'           // 2017-01-01
     };
 
+    this.filterCheckedArray = [];
+    this.arrID = [];
+
   }
 
   async ngOnInit() {
@@ -76,18 +79,20 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // show the spinner
     this.showSpinner = true;
 
+    this.advancedFilter(this.filterObject);
+
+
     // get all data for the page using forkjoin: project, schedule, and roster
     this.advancedFilterData = await this.getAdvancedFilterData()
     .catch(err => {
       console.log(err);
     });
 
-    this.projects = this.advancedFilterData[0];
+    // this.projects = this.advancedFilterData[0];
     this.projectTypes = this.advancedFilterData[1];
     this.projectStatuses = this.advancedFilterData[2];
     this.projectPriorities = this.advancedFilterData[3];
     this.plcStatuses = this.advancedFilterData[4];
-
 
     // hide the spinner
     this.showSpinner = false;
@@ -96,8 +101,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     this.showPage = true;
 
-    this.filterCheckedArray = [];
-    this.arrID = [];
   }
 
   ngOnDestroy() {
@@ -112,7 +115,12 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  // SEARCH BAR
+  async advancedFilter(filterOptions: any) {
+    this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
+    console.log('this.advancedFilteredResults', this.advancedFilteredResults);
+  }
+
+// SEARCH BAR
   
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
@@ -124,9 +132,12 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // this.onFilterStringChange();
   }
 
-  async onCheckboxProjectTypeClick(event: any, id: string, projectFilterName: string) {
+// CHECKBOXES
+
+  onCheckboxProjectTypeClick(event: any, id: string) {
     const value = event.target.checked;
 
+    // Consolidate all filters in one array
     if (value === true) {
       // ADD ID to array
       this.arrID.splice(0, 0, id);
@@ -142,21 +153,81 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     }
     console.log('Array', this.arrID);
 
-    // Convert array to string
-    this.filterObject.ProjectTyepeIDs = String(this.arrID);
-    console.log(this.filterObject.ProjectTyepeIDs);
+    // Convert the array to string
+    this.filterObject.ProjectTypeIDs = String(this.arrID);
+    console.log(this.filterObject.ProjectTypeIDs);
 
     // Show Badge
     this.updateFilterBadge(event);
 
-    // Make db call
+    // Make the db call
     this.advancedFilter(this.filterObject);
     
-    console.log(this.advancedFilterData);
-    this.projects = this.advancedFilterData[0];
-
-
   }
+
+  onCheckboxProjectStatusClick(event: any, id: string) {
+    const value = event.target.checked;
+
+    // Consolidate all filters in one array
+    if (value === true) {
+      // ADD ID to array
+      this.arrID.splice(0, 0, id);
+    } else {
+      // find ID in array
+      for (let i = 0; i < this.arrID.length; i++) {
+        // REMOVE from array
+        if (this.arrID[i] === id) {
+          this.arrID.splice(i, 1);
+          break;
+        }
+      }
+    }
+    console.log('ProjectStatus Array', this.arrID);
+
+    // Convert the array to string
+    this.filterObject.ProjectStatusIDs = String(this.arrID);
+    console.log(this.filterObject.ProjectStatusIDs);
+
+    // Show Badge
+    this.updateFilterBadge(event);
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+    
+  }
+
+  onCheckboxProjectPriorityClick(event: any, id: string) {
+    const value = event.target.checked;
+
+    // Consolidate all filters in one array
+    if (value === true) {
+      // ADD ID to array
+      this.arrID.splice(0, 0, id);
+    } else {
+      // find ID in array
+      for (let i = 0; i < this.arrID.length; i++) {
+        // REMOVE from array
+        if (this.arrID[i] === id) {
+          this.arrID.splice(i, 1);
+          break;
+        }
+      }
+    }
+    console.log('ProjectPriorityIDs Array', this.arrID);
+
+    // Convert the array to string
+    this.filterObject.ProjectPriorityIDs = String(this.arrID);
+    console.log(this.filterObject.ProjectPriorityIDs);
+
+    // Show Badge
+    this.updateFilterBadge(event);
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+    
+  }
+
+// BADGES
 
   // show and remove badge for each applied filter
   updateFilterBadge(event: any) {
@@ -184,47 +255,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     console.log(this.filterCheckedArray);
   }
 
-  onCheckboxFilterClick(event: any, projectFilterID: number, projectFilterName: string) {
-    console.log(event, projectFilterID, projectFilterName);
-
-    const value = event.target.checked;
-    const name = event.target.name;
-    const id = event.target.id;
-    console.log('ID | Name | Value:', id, name, value);
-
-    let index = 0;
-
-    // create array with generic name so it can be used for any filter in badge
-    const projectData = {id: projectFilterID, name: projectFilterName};
-    console.log('projectData:', projectData);
-
-    // removing digit from string to bucket the ID in the right bucket
-    const option1 = id.replace(/[0-9]/g, '');
-
-
-
-
-
-
-    // For Filter Badge
-    if (value === true) {
-      // Add array with ID and name to object
-      this.filterCheckedArray.splice(0, 0, projectData);
-      this.filterObject
-    } else {
-      // Else, find array position of the checkbox ID and remove
-      for (let i = 0; i < this.filterCheckedArray.length; i++) {
-        if (this.filterCheckedArray[i] === name) {
-          index = i;
-        }
-      }
-      this.filterCheckedArray.splice(index, 1);
-    }
-
-    console.log(this.filterCheckedArray);
-
-  }
-
+  // not working yet
   onBadgeCloseClick(event: any) {
     const title = event.target.title;
 
@@ -238,6 +269,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // find the right checkbox and uncheck
     this.htmlElement = document.getElementsByName(title);
     this.htmlElement[0].checked = false;
+    console.log(this.htmlElement);
 
   }
 
@@ -271,11 +303,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  async advancedFilter(filterOptions: any) {
-    this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
-    console.log('this.advancedFilteredResults', this.advancedFilteredResults);
-  }
-
+  // TEST BUTTON
   onTestFormClick() {
     // const filterOptions = {
     //   PLCStatusIDs: '',
@@ -307,4 +335,55 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.advancedFilter(filterOptions);
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// OLD
+  onCheckboxFilterClick(event: any, projectFilterID: number, projectFilterName: string) {
+    console.log(event, projectFilterID, projectFilterName);
+
+    const value = event.target.checked;
+    const name = event.target.name;
+    const id = event.target.id;
+    console.log('ID | Name | Value:', id, name, value);
+
+    let index = 0;
+
+    // create array with generic name so it can be used for any filter in badge
+    const projectData = {id: projectFilterID, name: projectFilterName};
+    console.log('projectData:', projectData);
+
+    // removing digit from string to bucket the ID in the right bucket
+    const option1 = id.replace(/[0-9]/g, '');
+
+    // For Filter Badge
+    if (value === true) {
+      // Add array with ID and name to object
+      this.filterCheckedArray.splice(0, 0, projectData);
+      this.filterObject
+    } else {
+      // Else, find array position of the checkbox ID and remove
+      for (let i = 0; i < this.filterCheckedArray.length; i++) {
+        if (this.filterCheckedArray[i] === name) {
+          index = i;
+        }
+      }
+      this.filterCheckedArray.splice(index, 1);
+    }
+
+    console.log(this.filterCheckedArray);
+
+  }
+  
 }
