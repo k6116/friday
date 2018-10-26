@@ -16,6 +16,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
 
+  filterObject: any;
   showSpinner: boolean;
   showPage: boolean;
   showDownloadingIcon: boolean;
@@ -24,6 +25,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   filterString: string;
   filterCheckedArray: any;
+  arrID: any;
 
   subscription2: Subscription;
 
@@ -48,6 +50,21 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
       this.showDownloadingIcon = show;
     });
+
+    // declare filter option object
+    this.filterObject = {
+      PLCStatusIDs: '',       // num,num,num,..
+      PLCDateRanges: '',      // From|To
+      ProjectName: '',        // num,num,num,..
+      ProjectTypeIDs: '',
+      ProjectStatusIDs: '',
+      ProjectPriorityIDs: '',
+      ProjectOwnerEmails: '',
+      FTEMin: 'NULL',
+      FTEMax: 'NULL',
+      FTEDateFrom: 'NULL',        // 2017-01-01
+      FTEDateTo: 'NULL'           // 2017-01-01
+    };
 
   }
 
@@ -80,6 +97,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.showPage = true;
 
     this.filterCheckedArray = [];
+    this.arrID = [];
   }
 
   ngOnDestroy() {
@@ -106,15 +124,93 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // this.onFilterStringChange();
   }
 
-  onCheckboxFilterClick(event: any) {
-    console.log(event);
+  async onCheckboxProjectTypeClick(event: any, id: string, projectFilterName: string) {
     const value = event.target.checked;
-    const name = event.target.name;
-    let index = 0;
 
     if (value === true) {
-      // Add checkbox ID to array
-      this.filterCheckedArray.splice(0, 0, event.target.name);
+      // ADD ID to array
+      this.arrID.splice(0, 0, id);
+    } else {
+      // find ID in array
+      for (let i = 0; i < this.arrID.length; i++) {
+        // REMOVE from array
+        if (this.arrID[i] === id) {
+          this.arrID.splice(i, 1);
+          break;
+        }
+      }
+    }
+    console.log('Array', this.arrID);
+
+    // Convert array to string
+    this.filterObject.ProjectTyepeIDs = String(this.arrID);
+    console.log(this.filterObject.ProjectTyepeIDs);
+
+    // Show Badge
+    this.updateFilterBadge(event);
+
+    // Make db call
+    this.advancedFilter(this.filterObject);
+    
+    console.log(this.advancedFilterData);
+    this.projects = this.advancedFilterData[0];
+
+
+  }
+
+  // show and remove badge for each applied filter
+  updateFilterBadge(event: any) {
+    const value = event.target.checked;
+    const name = event.target.name;
+
+    if (value === true) {
+
+      // Add array with ID and name to array
+      this.filterCheckedArray.splice(0, 0, name);
+      
+    } else {
+
+      // Else, find array position of the checkbox ID and remove
+      for (let i = 0; i < this.filterCheckedArray.length; i++) {
+
+        if (this.filterCheckedArray[i] === name) {
+          this.filterCheckedArray.splice(i, 1);
+        }
+
+      }
+
+    }
+
+    console.log(this.filterCheckedArray);
+  }
+
+  onCheckboxFilterClick(event: any, projectFilterID: number, projectFilterName: string) {
+    console.log(event, projectFilterID, projectFilterName);
+
+    const value = event.target.checked;
+    const name = event.target.name;
+    const id = event.target.id;
+    console.log('ID | Name | Value:', id, name, value);
+
+    let index = 0;
+
+    // create array with generic name so it can be used for any filter in badge
+    const projectData = {id: projectFilterID, name: projectFilterName};
+    console.log('projectData:', projectData);
+
+    // removing digit from string to bucket the ID in the right bucket
+    const option1 = id.replace(/[0-9]/g, '');
+
+
+
+
+
+
+    // For Filter Badge
+    if (value === true) {
+      // Add array with ID and name to object
+      this.filterCheckedArray.splice(0, 0, projectData);
+      this.filterObject
     } else {
       // Else, find array position of the checkbox ID and remove
       for (let i = 0; i < this.filterCheckedArray.length; i++) {
@@ -125,7 +221,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.filterCheckedArray.splice(index, 1);
     }
 
-    // console.log(this.filterCheckedArray);
+    console.log(this.filterCheckedArray);
 
   }
 
@@ -185,7 +281,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     //   PLCStatusIDs: '',
     //   PLCDateRanges: '',
     //   ProjectName: '',
-    //   ProjecTypeIDs: '',
+    //   ProjectTypeIDs: '',
     //   ProjectStatusIDs: '',
     //   ProjectPriorityIDs: '',
     //   ProjectOwnerEmails: '',
@@ -199,7 +295,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       PLCStatusIDs: '1,2,3,4,5,6',
       PLCDateRanges: 'NULL|NULL,2017-05-01|2019-09-01,2017-05-01|2019-09-01,NULL|NULL,NULL|NULL,2017-05-01|2019-09-01',
       ProjectName: '',
-      ProjecTypeIDs: '1,2,3',
+      ProjectTypeIDs: '1,2,3',
       ProjectStatusIDs: '',
       ProjectPriorityIDs: '1',
       ProjectOwnerEmails: '',
