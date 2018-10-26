@@ -31,7 +31,7 @@
       <!-- Filter Badges -->
       <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">
         <div class="badge badge-light">
-          <i class="fa fa-times-circle filters-badge-icon" (click)="onBadgeCloseClick()"></i>  {{ checkbox }}
+          <i class="fa fa-times-circle filters-badge-icon" [attr.title]="checkbox" (click)="onBadgeCloseClick($event)"></i>  {{ checkbox }}
         </div>
       </ng-container>
 
@@ -67,7 +67,7 @@
             </div>
             <div class="filter-collapse show" id="projectTypeFilters">
               <div class="custom-control custom-checkbox" *ngFor="let projectType of projectTypes; let i = index">
-                <input type="checkbox" class="custom-control-input" [attr.name]="projectType.projectTypeName" [attr.id]="'projectType' + i" (click)="onCheckboxFilterClick($event)">
+                <input type="checkbox" class="custom-control-input" [attr.name]="projectType.projectTypeName" [attr.id]="'projectType' + i" (click)="onCheckboxProjectTypeClick($event, projectType.id, projectType.projectTypeName)">
                 <label class="custom-control-label" [attr.for]="'projectType' + i" style="padding: 3px 0px 0px 10px;">{{ projectType.projectTypeName }}</label>
               </div>
             </div>
@@ -195,12 +195,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let projects of projects | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}};">
-              <td>{{ projects.ProjectName }}</td>
-              <td>{{ projects.ProjectTypeName }}</td>
-              <td>{{ projects.PriorityName }}</td>
-              <td>{{ projects.ProjectStatusName }}</td>
-              <td>{{ projects.ProjectOwner }}</td>
+            <tr *ngFor="let project of projects | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}};">
+              <td>{{ project.ProjectName }}</td>
+              <td>{{ project.ProjectTypeName }}</td>
+              <td>{{ project.PriorityName }}</td>
+              <td>{{ project.ProjectStatusName }}</td>
+              <td>{{ project.ProjectOwner }}</td>
             </tr>
           </tbody>
         </table>

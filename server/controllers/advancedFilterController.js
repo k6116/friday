@@ -79,7 +79,7 @@ function indexAdvancedFilteredResults(req, res) {
     `
   
   sequelize.query(sql, {replacements: {PLCStatusIDs: filterOptions.PLCStatusIDs, PLCDateRanges: filterOptions.PLCDateRanges, ProjectName: filterOptions.ProjectName,
-                                      ProjecTypeIDs: filterOptions.ProjecTypeIDs, ProjectStatusIDs: filterOptions.ProjectStatusIDs, ProjectPriorityIDs: filterOptions.ProjectPriorityIDs,
+                                      ProjectTypeIDs: filterOptions.ProjectTypeIDs, ProjectStatusIDs: filterOptions.ProjectStatusIDs, ProjectPriorityIDs: filterOptions.ProjectPriorityIDs,
                                       ProjectOwnerEmails: filterOptions.ProjectOwnerEmails, FTEMin: filterOptions.FTEMin, FTEMax: filterOptions.FTEMax, FTEDateFrom: filterOptions.FTEDateFrom, FTEDateTo: filterOptions.FTEDateTo},
                         type: sequelize.QueryTypes.SELECT})
   .then(filteredRes => {    

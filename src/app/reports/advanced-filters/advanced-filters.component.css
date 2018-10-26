@@ -114,10 +114,9 @@ div.filter-collapse.show {
 
 div.projects-search-string.projects-owner {
   /* float: right; */
-  width: auto;
+  width: 100%;
   margin: 0px;
   height: auto;
-  padding-left: 3px; /* this is max to keep table on the right */
 }
 
 /* div.filter-headers.project-owner {
@@ -132,9 +131,14 @@ div.owner-label {
 
 input.projects-search-input.projects-owner {
   height: 32px !important;
-  /* width: 100%; */
+  width: 100%;
 }
 
+i.projects-search-icon-search.projects-owner {
+  position: absolute;
+  top: 6px;
+  color: grey;
+}
 /* FILTERS 2 */
 
 div.adv-filters2-cont {
