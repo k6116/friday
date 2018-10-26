@@ -1005,7 +1005,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.teamFTEs = res.nested;
     this.teamFTEsFlat = res.flat;
     this.teamFTEsFlatLive = this.teamFTEsFlat;
-console.log('res',res)
+
     this.allProjects = [];
     res.nested.forEach(proj => {
       this.allProjects.push({
