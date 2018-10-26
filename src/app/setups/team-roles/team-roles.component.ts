@@ -33,6 +33,7 @@ export class TeamRolesComponent implements OnInit {
     JobSubTitleName: ''
   };
   loginAsEmail: string;
+  loginAsID: any;
   displayAdminViewMessage: boolean;
   roleID: any;
 
@@ -250,6 +251,18 @@ export class TeamRolesComponent implements OnInit {
          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
        }
      );
+  }
+
+  async onViewAsClick(managerEmailAddress: string) {
+    this.loginAsEmail = managerEmailAddress;
+    const res2 = await this.apiDataEmployeeService.getEmployeeData(this.loginAsEmail).toPromise();
+    if (res2.length === 0) {
+      this.cacheService.raiseToast('error', `Please enter a valid manager email address`);
+    } else {
+      this.loginAsID = res2[0].EmployeeID;
+      this.initializeEmployeeData();
+      this.getJobTitleList();
+    }
   }
 
   onTestFormClick() {
