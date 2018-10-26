@@ -27,7 +27,7 @@
       <!-- <button class="btn btn-primary btn-fte-toolbar" (click)="exportXLSX()">
         <i class="fa fa-table"></i>&nbsp;&nbsp;Export
       </button> -->
-      <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
+      <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button>
       <button class="btn btn-secondary btn-fte-toolbar tutorial-part1" (click)="onSaveClick()" id="intro-save">
         <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
       </button>
@@ -158,7 +158,8 @@
                 <div class="fte-table-cell icon"> <!-- for trash icon -->
                   <i class="fa fa-trash-o" (click)="onTrashClick(i)"></i>
                 </div>
-                <div class="fte-table-cell col-project-name" data-toggle="tooltip" data-placement="top" [title]="project.projectName.length > 40 ? project.projectName : ''">{{ (project.projectName.length > 40) ? (project.projectName | slice:0:40) + '...' : (project.projectName) }}</div>
+                <div class="fte-table-cell col-project-name" [attr.data-id]="project.projectID" (mouseenter)="onProjectTextEnter(project)" (mouseleave)="onProjectTextLeave(project)" 
+                    [title]="project.projectName.length > 40 ? project.projectName : ''">{{ (project.projectName.length > 40) ? (project.projectName | slice:0:40) + '...' : (project.projectName) }}</div>
                 <!-- loop through each month's FTE allocation, "monthly" cells per project -->
                 <ng-container *ngFor="let employee of teamOrgStructure; let j = index">
                   <div class="fte-table-cell" [formGroupName]="j" [style.display]="employeeVisible[j] ? 'table-cell' : 'none'">
