@@ -18,7 +18,10 @@
     </div>
     <ng-container *ngFor="let quote of quotes">
       <div class="card">
-        <h5 class="card-header">{{quote.supplier}} - {{quote.mfgPartNum}}</h5>
+        <div class="card-header">
+          {{quote.supplier}} - {{quote.mfgPartNum}}
+          <button type="button" class="btn btn-secondary edit-button" (click)="editQuote(quote)"><i class="fa fa-pencil-square-o"></i> Edit</button>
+        </div>
         <div class="card-body">
           <table class="table table-sm">
             <thead>
@@ -41,5 +44,53 @@
         </div>
       </div>
     </ng-container>
+  </div>
+</div>
+
+<!-- bootstrap modal for add quote -->
+<div class="modal fade" id="quoteModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modify Quote:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="quoteForm" *ngIf="quoteForm">
+          <label>Supplier:</label>
+          <input type="text" class="form-control" formControlName="supplier"><br />
+          <label>Manufacturer's Part Number:</label>
+          <input type="text" class="form-control" formControlName="mfgPartNum"><br />
+          <label>Price Breaks:</label>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>MOQ:</th>
+                <th>Price:</th>
+                <th>NRE:</th>
+                <th>LT (wks):</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="breaks">
+              <tr *ngFor="let priceBreak of quoteForm.controls.breaks.controls; let i = index">
+                <ng-container formGroupName="{{i}}">
+                  <td><input class="form-control" formControlName="minOrderQty"></td>
+                  <td><input class="form-control" formControlName="price"></td>
+                  <td><input class="form-control" formControlName="nreCharge"></td>
+                  <td><input class="form-control" formControlName="leadTime"></td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-secondary" (click)="onAddClick()"><i class="fa fa-plu"></i> Add Price Break</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
