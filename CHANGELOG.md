@@ -1,3 +1,25 @@
+<a name="1.19.1"></a>
+## [1.19.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.19.0...v1.19.1) (2018-11-01)
+
+
+### Bug Fixes
+
+* **fte-entry > TeamFTE:** WORDSMITHING!!!! ([b63e1d2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/b63e1d2))
+* **Jarvis adoption graph:** changed graph to initialize with user's manager centered instead of Ron ([22741b5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/22741b5))
+* **setups > team-roles:** updated bug fix for when legacy employees exists ([f848bee](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f848bee))
+* **user FTE entry component:** fixed problem with fiscal quarter being calculated incorrectly on fir ([37d1745](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/37d1745))
+
+
+### Features
+
+* **fte-entry > team:** Added a min-width so page doesnt turn bad when screen resolution is low ([4cbbba5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/4cbbba5))
+* **fte-entry > team:** added popovers on projectnames for more attribute info ([44db3f1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/44db3f1))
+* **fte-entry > Team FTE:** Shows user deleted projects in the Sync Notice. Added a spinner during l ([3013955](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/3013955))
+* **fte-entry > teamFTE:** added a Reset button when the sync notice appears ([f820fbd](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f820fbd))
+* **setups > team-roles:** added a ViewAs feature in team-roles ([bb291de](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/bb291de))
+
+
+
 <a name="1.19.0"></a>
 # [1.19.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.18.0...v1.19.0) (2018-10-24)
 
