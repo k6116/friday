@@ -85,4 +85,8 @@ export class MatplanQuoteComponent implements OnInit {
     breakArray.push(this.addPriceBreak({}));
   }
 
+  onSaveQuote() {
+    console.log(this.quoteForm.value);
+  }
+
 }
