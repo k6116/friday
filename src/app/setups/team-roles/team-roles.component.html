@@ -15,6 +15,10 @@
           <i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save
         </button>
 
+        <button *ngIf="displayAdminViewMessage" class="btn btn-primary btn-fte-toolbar" data-toggle="modal" data-target="#viewAsModal">
+          <i class="fa fa-shield"></i>&nbsp;&nbsp;View As
+        </button>
+
         <!-- USEFUL TEST BUTTON -->
         <!-- <button class="btn btn-secondary btn-fte-toolbar" (click)="onTestFormClick()" style="width: 120px">Test Form Data</button> -->
 
@@ -55,14 +59,16 @@
 
             <!-- Each row is one role (jobTitle + JobSubtitle) -->
             <div class="teamrole-table-row" *ngFor="let jobTitle of employeesJobTitlesNested; let i = index">
-              <div class="col-role-title teamrole-table-cell">{{ jobTitle.JobTitleName }}</div>
-              <div class="col-role-subtitle teamrole-table-cell">{{ jobTitle.JobSubTitleName }}</div>
-              <div class="teamrole-table-cell" *ngFor="let employee of teamOrgStructure; let j = index">
-                <div class="custom-control custom-radio" style="margin-left: 5px">                    
-                  <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (change)="onSelectChange(i, j, jobTitle)">
-                  <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
+              <ng-container *ngIf="jobTitle.JobTitleID !== 0">
+                <div class="col-role-title teamrole-table-cell">{{ jobTitle.JobTitleName }}</div>
+                <div class="col-role-subtitle teamrole-table-cell">{{ jobTitle.JobSubTitleName }}</div>
+                <div class="teamrole-table-cell" *ngFor="let employee of teamOrgStructure; let j = index">
+                    <div class="custom-control custom-radio" style="margin-left: 5px">                    
+                      <input type="radio" class="custom-control-input" [attr.id]="'customRadio' + i + j" [attr.name]="j" [value]="jobTitle.JobTitleID" [checked]="jobTitle.JobTitleID === employee.jobTitleID && jobTitle.JobSubTitleID === employee.jobSubTitleID" (change)="onSelectChange(i, j, jobTitle)">
+                      <label class="custom-control-label" [attr.for]="'customRadio' + i + j"></label>
+                    </div>
                 </div>
-              </div>
+              </ng-container>
             </div> <!-- end of role row -->
 
             <!-- IF there's no roles added yet -->
@@ -134,3 +140,22 @@
 
   </div> 
   
+<!-- "View As" Modal -->
+<div class="modal" tabindex="-1" role="dialog" id="viewAsModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="width:150%">
+        <div class="modal-header" style="border-bottom: none; height: 2rem;">
+          <h5 class="title">ADMIN ONLY: View As Manager</h5>
+        </div>
+        <div class="modal-body">
+          <div class="input-group">
+            <input type="text" #viewAsEmailAddress class="form-control" placeholder="Email Address">&nbsp;
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="onViewAsClick(viewAsEmailAddress.value)">OK</button>&nbsp;
+              <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp;Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

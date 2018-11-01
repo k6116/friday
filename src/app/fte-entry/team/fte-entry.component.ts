@@ -78,6 +78,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   displayAdminViewMessage: boolean;
   launchDate: string;
   displaySyncNoticeButton: boolean;
+  showSpinner: boolean;
 
   // Highchart Declarations
   ftePlanningChart: any;
@@ -153,8 +154,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     private decimalPipe: DecimalPipe,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-
-
     // initialize the FTE formgroup
     this.FTEFormGroup = this.fb.group({
       FTEFormArray: this.fb.array([])
@@ -244,8 +243,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('teamFTEFlat', this.teamFTEsFlat);
     console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
     console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
-    // console.log('this.allProjects', this.allProjects)
-    // console.log('this.projects', this.projects)
+    console.log('this.allProjects', this.allProjects)
+    console.log('this.projects', this.projects)
     // console.log('this.teamOrgStructure', this.teamOrgStructure);
     // console.log('this.filterEmployees', this.filterEmployees)
     // console.log('this.employeeVisible', this.employeeVisible)
@@ -276,6 +275,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   async planLoadSequence() {
+
+    // show the waiting to render spinner
+    this.showSpinner = true;
+    this.display = false;
+
     // First, get the list of Plans for current user and get all subordinates for current user
     // Second, retrieve data for that plan
     // If plan does not exist, create one
@@ -303,6 +307,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       this.allProjects.forEach(proj => {
         this.projectVisible.push(true);
       });
+      this.showSpinner = false;
+      this.display = true;
     });
   }
 
@@ -395,7 +401,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       return value === selectedProject.ProjectID;
     });
     if (!alreadyExists) {
-      this.addNewProjectToForm(selectedProject.ProjectID, selectedProject.ProjectName);
+      this.addNewProjectToForm(selectedProject.ProjectID, selectedProject.ProjectName,
+        selectedProject.projectTypeName, selectedProject.ProjectOwner);
       this.cacheService.raiseToast('success', `Added Project ${selectedProject.ProjectName}.  Please check the bottom of the list`);
     } else {
       this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
@@ -596,6 +603,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
             this.displayNewPlanModal = true
           ]).then(next => {
             this.updateProjectFilters(false);
+            this.comparePlanToFTE();
           });
         },
         err => {
@@ -741,7 +749,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
   }
 
-  addNewProjectToForm(projectID: number, projectName: string) {
+  addNewProjectToForm(projectID: number, projectName: string, projectTypeName: string, projectOwner: string) {
     const newProject = new TeamFTEs;
     newProject.userID = this.authService.loggedInUser.id;
     newProject.projectID = projectID;
@@ -762,7 +770,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
 
     this.allProjects.push({
       projectID: projectID,
-      projectName: projectName
+      projectName: projectName,
+      projectTypeName: projectTypeName,
+      projectOwner: projectOwner
     });
 
     this.projects = this.allProjects;
@@ -917,7 +927,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       newProject.projectID = selectedProject.projectID;
       newProject.projectName = selectedProject.projectName;
 
-      this.addNewProjectToForm(selectedProject.projectID, selectedProject.projectName);
+      this.addNewProjectToForm(selectedProject.projectID, selectedProject.projectName,
+        selectedProject.projectTypeName, selectedProject.projectOwner);
 
       this.cacheService.raiseToast('success', `Added Project ${selectedProject.projectName}.  Please check the bottom of the list`);
 
@@ -969,7 +980,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     res.nested.forEach(proj => {
       this.allProjects.push({
         projectID: proj.projectID,
-        projectName: proj.projectName
+        projectName: proj.projectName,
+        projectTypeName: proj.projectTypeName,
+        projectOwner: proj.projectOwner
       });
     });
     this.projects = this.allProjects;
@@ -997,7 +1010,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     res.nested.forEach(proj => {
       this.allProjects.push({
         projectID: proj.projectID,
-        projectName: proj.projectName
+        projectName: proj.projectName,
+        projectTypeName: proj.projectTypeName,
+        projectOwner: proj.projectOwner
       });
     });
     this.projects = this.allProjects;
@@ -1054,8 +1069,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                 <div class="row">
                   <div class="col-3">${res[i].FullName}</div>
                   <div class="col-5">${res[i].ProjectName}</div>
-                  <div class="col-1">${res[i].FTE}</div>
-                  <div class="col-3">${moment(res[i].FiscalDate).utc().format('YYYY-MM-DD')}</div>
+                  <div class="col-1">${res[i].FTE === null ? '--' : res[i].FTE * 100 + '%'}</div>
+                  <div class="col-3">${moment(res[i].FiscalDate).utc().format('YYYY-MM-DD') === 'Invalid date' ? 'DELETED' :
+                                      moment(res[i].FiscalDate).utc().format('YYYY-MM-DD')}</div>
                 </div>`;
             }
             this.cacheService.confirmModalData.emit(
@@ -1063,27 +1079,54 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                 title: 'Plan Sync Notice',
                 message: `The FTEs below have been updated by the users.<br><br>
                           ${updatedFTEsList}<br><br>
-                          Please manually update the form to reflect these changes,
-                          otherwise the changes will be overwritten when launched`,
+                          Option 1)<br> Manually update the form to reflect the fte updates the employee(s) have made.
+                          If this plan is launched without updating the form,
+                          any change the employee(s) have made will be overwritten.<br><br>
+                          Option 2)<br> The Reset button will erase this plan and create a new copy with updated employee fte values.
+                          This will NOT merge updated employee fte values into the plan.`,
                 iconClass: 'fa-exclamation-triangle',
                 iconColor: 'rgb(193, 193, 27)',
                 closeButton: true,
                 allowOutsideClickDismiss: true,
                 allowEscKeyDismiss: true,
                 buttons: [
-                  // {
-                  //   text: 'Sync',
-                  //   bsClass: 'btn-success',
-                  //   emit: true
-                  // },
                   {
-                    text: 'Dismiss',
+                    text: 'Reset to updated FTEs',
+                    bsClass: 'btn-success',
+                    emit: true
+                  },
+                  {
+                    text: 'I will manually update',
                     bsClass: 'btn-secondary',
                     emit: false
                   }
                 ]
               }
             );
+            const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( modalRes => {
+              if (modalRes) {
+                // create object with delete data
+                const planData = {
+                  planName: this.currentPlan,
+                  userID: this.loginAsID
+                };
+
+                this.apiDataFteService.deletePlan(planData)
+                  .subscribe(
+                    deleteRes => {
+                      // empty arrays so it won't have objects appended
+                      this.filteredEmployees = [];
+                      this.teamEditableMembers = '';
+                      this.planLoadSequence();
+                      this.displaySyncNoticeButton = false;
+                    },
+                    err => {
+                      console.error(err);
+                    }
+                  );
+              }
+              updateModalSubscription.unsubscribe();
+            });
           } else {
             this.displaySyncNoticeButton = false;
           }
@@ -1483,6 +1526,57 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     $('button.copy-month-button-' + numOfMonths).tooltip('dispose');
   }
 
+  onProjectTextEnter(project: any) {
+
+    // console.log('project object for project info modal:');
+    // console.log(project);
+
+    // get the styles/css and html content
+    const html = `<style>
+                    .table td {
+                      border-top: none;
+                    }
+                  </style>
+                  <table class="table table-sm">
+                    <tbody>
+                      <tr>
+                        <td style="font-weight: bold">Type:</td>
+                        <td>${project.projectTypeName}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: bold">Owner:</td>
+                        <td>${project.projectOwner}</td>
+                      </tr>
+                    </tbody>
+                  </table>`;
+    const content = html;
+
+    // set the jquery element
+    const $el = $(`.fte-table-cell.col-project-name[data-id="${project.projectID}"]`);
+
+    // set the popover options
+    const options = {
+      animation: false,
+      placement: 'top',
+      html: true,
+      trigger: 'focus',
+      title: project.projectName,
+      content: content
+    };
+
+    // hide the tooltip
+    $(`.fte-table-cell.col-project-name[data-id="${project.projectID}"]`).tooltip('hide');
+
+    // show the popover
+    $el.popover(options);
+    $el.popover('show');
+  }
+
+  onProjectTextLeave(project: any) {
+    const $el = $(`.fte-table-cell.col-project-name[data-id="${project.projectID}"]`);
+    $el.popover('hide');
+
+  }
 
   onClearMonthClick() {
     const newTeamFTEsFlatLive = [];

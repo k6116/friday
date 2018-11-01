@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../_shared/services/auth.service';
-import { ApiDataJobTitleService, ApiDataOrgService, ApiDataFteService } from '../../_shared/services/api-data/_index';
+import { ApiDataJobTitleService, ApiDataOrgService, ApiDataFteService,
+          ApiDataEmployeeService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { NewRole } from './team-roles.interface';
@@ -32,19 +33,22 @@ export class TeamRolesComponent implements OnInit {
     JobSubTitleName: ''
   };
   loginAsEmail: string;
+  loginAsID: any;
   displayAdminViewMessage: boolean;
+  roleID: any;
 
   constructor(
     private authService: AuthService,
     private apiDataOrgService: ApiDataOrgService,
     private apiDataFteService: ApiDataFteService,
     private apiDataJobTitleService: ApiDataJobTitleService,
+    private apiDataEmployeeService: ApiDataEmployeeService,
     private cacheService: CacheService,
     private toolsService: ToolsService
   ) {}
 
   async ngOnInit() {
-    
+
     this.showSpinner = true;
 
     // get the token from local storage
@@ -58,8 +62,8 @@ export class TeamRolesComponent implements OnInit {
 
     if (permRes.length > 0) {
       this.loginAsEmail = this.authService.loggedInUser.managerEmailAddress;
+      // this.loginAsEmail = 'ho-fai_wong@keysight.com';
       // this.loginAsEmail = 'ethan_hunt@keysight.com';
-      // this.loginAsEmail = 'ermina_chua@keysight.com';
       this.displayAdminViewMessage = true;
     } else {
       this.loginAsEmail = this.authService.loggedInUser.email;
@@ -68,6 +72,7 @@ export class TeamRolesComponent implements OnInit {
 
     this.initializeEmployeeData();
     this.getJobTitleList();
+    this.getRoleID('Report User');
   }
 
   async initializeEmployeeData() {
@@ -79,21 +84,23 @@ export class TeamRolesComponent implements OnInit {
 
     // Get nested and flat data for jobtitles/subtitles and their employees
     const employeesJobTitles = await this.getEmployeesJobTitles(this.teamEditableMembers);
-    this.employeesJobTitlesNested = employeesJobTitles.nested;
     this.employeesJobTitlesFlat = employeesJobTitles.flat;
+    this.employeesJobTitlesNested = employeesJobTitles.nested;
 
     // add jobTitles to the teamOrgStructure object
     for (let i = 0; i < this.teamOrgStructure.length; i++) {
       const fullName = this.teamOrgStructure[i].fullName.split(' ');
       this.teamOrgStructure[i].firstName = fullName[0];
-      this.teamOrgStructure[i].lastName = fullName[1];
+      this.teamOrgStructure[i].jobTitleID = null;
+      this.teamOrgStructure[i].roleID = this.roleID[0].RoleID;
       this.teamOrgStructure[i].jobTitleID = null;
       this.teamOrgStructure[i].jobSubTitleID = null;
       this.teamOrgStructure[i].newUser = true;
       for (let j = 0; j < this.employeesJobTitlesFlat.length; j++) {
         // First if employee has job title, then add jobtitle data to teamOrgStructure
-        // Else if employee has no job title, but exists in employees table, then just update job titles
-        if (this.teamOrgStructure[i].emailAddress === this.employeesJobTitlesFlat[j]['Employees: EmailAddress']) {
+        // Else if employee has no job title, but exists in employees table, then just flip the newUser flag but nothing will be updated
+        if (this.teamOrgStructure[i].emailAddress === this.employeesJobTitlesFlat[j]['Employees: EmailAddress']
+            && this.employeesJobTitlesFlat[j].JobTitleID !== 0) {
           this.teamOrgStructure[i].jobTitleID = this.employeesJobTitlesFlat[j].JobTitleID;
           this.teamOrgStructure[i].jobSubTitleID = this.employeesJobTitlesFlat[j].JobSubTitleID;
           this.teamOrgStructure[i].newUser = false;
@@ -103,7 +110,7 @@ export class TeamRolesComponent implements OnInit {
         }
       }
     }
-    
+
     this.showSpinner = false;
   }
 
@@ -124,6 +131,15 @@ export class TeamRolesComponent implements OnInit {
     }
     this.teamEditableMembers = this.teamEditableMembers.substr(0, this.teamEditableMembers.lastIndexOf(','));
     this.teamEditableMembers = '\'\'' + this.teamEditableMembers + '\'';
+  }
+
+  getRoleID(roleName: string) {
+    // get "Report User" Role ID from the database
+    this.apiDataEmployeeService.getRoleID(roleName)
+      .subscribe(
+        res => { this.roleID = res; },
+        err => { console.log(err); }
+      );
   }
 
   onSelectChange(indexJT: number, indexEmp: number, jobTitle: any) {
@@ -237,11 +253,22 @@ export class TeamRolesComponent implements OnInit {
      );
   }
 
+  async onViewAsClick(managerEmailAddress: string) {
+    this.loginAsEmail = managerEmailAddress;
+    const res2 = await this.apiDataEmployeeService.getEmployeeData(this.loginAsEmail).toPromise();
+    if (res2.length === 0) {
+      this.cacheService.raiseToast('error', `Please enter a valid manager email address`);
+    } else {
+      this.loginAsID = res2[0].EmployeeID;
+      this.initializeEmployeeData();
+      this.getJobTitleList();
+    }
+  }
+
   onTestFormClick() {
     console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
     console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
     console.log('this.teamOrgStructure', this.teamOrgStructure);
-    console.log('teamOrgStructure', this.teamOrgStructure);
   }
 
 }

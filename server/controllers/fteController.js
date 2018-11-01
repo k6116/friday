@@ -378,6 +378,8 @@ function indexPlan(req, res) {
       PEP.PlanName as planName,
       P.ProjectID as projectID,
       P.ProjectName as projectName,
+      PT.ProjectTypeName as projectTypeName,
+			E3.FullName as projectOwner,
       PEP.ProjectEmployeesPlanningID as [allocations:recordID], -- Alias for Treeize
       PEP.LaunchDate as [allocations:launchDate],
       E.FullName as [allocations:fullName], 
@@ -389,6 +391,8 @@ function indexPlan(req, res) {
       LEFT JOIN accesscontrol.Employees E ON PEP.EmployeeID = E.EmployeeID
       LEFT JOIN projects.Projects P ON PEP.ProjectID = P.ProjectID
       LEFT JOIN accesscontrol.Employees E2 ON PEP.CreatedBy = E2.EmployeeID
+      LEFT JOIN projects.ProjectTypes PT ON P.ProjectTypeID = PT.ProjectTypeID
+			LEFT JOIN accesscontrol.Employees E3 ON P.ProjectOwner = E3.EmailAddress
     WHERE
       PEP.PlanName = '${planName}' AND E2.EmailAddress = '${emailAddress}'
     ORDER BY

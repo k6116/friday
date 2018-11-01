@@ -462,7 +462,7 @@ function updateEmployeesJobTitlesBulk(req, res) {
         email: data.emailAddress,
         jobTitleID: data.jobTitleID,
         jobSubTitleID: data.jobSubTitleID,
-        roleID: 2,
+        roleID: data.roleID,
         createdBy: userID,
         createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
         updatedBy: userID,
