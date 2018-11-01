@@ -1,0 +1,57 @@
+<div class="container-fluid">
+  <div class="row">
+    <!-- first block of header row is metadata table -->
+    <div class="col-sm-3">
+      <table *ngIf="matplan" class="table table-sm table-bordered">
+        <tr>
+          <th scope="row">Project Name:</th>
+          <td>{{matplan.ProjectName}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Build:</th>
+          <td>{{matplan.BuildStatusName}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Build Qty:</th>
+          <td>{{matplan.NeededQuantity}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Build Date:</th>
+          <td>{{matplan.NeedByDate | date}}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- second block of header row is stepper -->
+    <div class="col-sm-9 button-stepper">
+      <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+        <label class="btn btn-secondary w-100" (click)="openStep(0)">
+          <input type="radio" name="options" id="option1" checked>
+          <i class="fa fa-2x fa-info-circle"></i><br />Project Info
+        </label>
+        <label class="btn btn-secondary w-100" (click)="openStep(1)">
+          <input type="radio" name="options" id="option2">
+          <i class="fa fa-2x fa-sitemap"></i><br />Bill of Materials
+        </label>
+        <label class="btn btn-secondary w-100" (click)="openStep(2)">
+          <input type="radio" name="options" id="option3">
+          <i class="fa fa-2x fa-money"></i><br />Quote
+        </label>
+        <label class="btn btn-secondary w-100" (click)="openStep(3)">
+          <input type="radio" name="options" id="option4">
+          <i class="fa fa-2x fa-shopping-cart"></i><br />Order
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="matplan-modules">
+    <app-matplan-info *ngIf="stepsOpen[0]" [projectID]="projectID"></app-matplan-info>
+    <app-matplan-bom *ngIf="stepsOpen[1]" [projectID]="projectID"></app-matplan-bom>
+    <app-matplan-quote *ngIf="stepsOpen[2]" [projectID]="projectID"></app-matplan-quote>
+    <app-matplan-order *ngIf="stepsOpen[3]" [projectID]="projectID" [matplanID]="matplanID"></app-matplan-order>
+  </div>
+
+</div>

@@ -36,7 +36,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     }
   }
 
-  drawD3Plot(bomJson: any) {
+  async drawD3Plot(bomJson: any) {
 
     const self = this;  // hack to reach API data service and tools service from inside d3 context
 
@@ -49,7 +49,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     const width = height * aspect;
     const zoomSpeed = 1700; // some number between 400 and 2000
     // set start position/scale of drawing, and size of nodes (to set default node spacing)
-    const initialTransform = d3.zoomIdentity.translate(width / 2, 50).scale(.9);
+    let initialTransform = d3.zoomIdentity.translate(width / 2, 50).scale(.9);
 
     // HELPER FUNCTIONS //
     function collapseNode(d) {
@@ -78,6 +78,24 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
         collapseNode(d);
       } else if (d.children) {
         d.children.forEach(initialCollapse);
+      }
+    }
+
+    // recursively find user's manager's XY coords
+    function findManagerXY(d) {
+      if (d.data.isUsersManager) {
+        // found it
+        return [d.y, d.x];
+      } else if (d.children) {
+        // if we didn't find it, but the node has children, recursively look for XY coords of the children
+        let xy;
+        d.children.forEach( child => {
+          const val = findManagerXY(child);
+          if (val) {
+            xy = val;
+          }
+        });
+        return xy;
       }
     }
 
@@ -122,12 +140,6 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       .attr('viewBox', `0 0 ${width} ${height}`)
       .append('g');
 
-    // define a zoom function for the SVG, and an initial transform for the zoom
-    // if you don't set the initial transform using the defined zoom function, it will 'snap' back to the origin on first move
-    d3.select('#d3-container').select('svg')
-      .call(zoom) // adds zoom functionality
-      .call(zoom.transform, initialTransform);  // applies initial transform
-
     // declares a tree layout and assigns the size
     const treemap = d3.tree().nodeSize([nodeSize.width, nodeSize.height]);
 
@@ -140,6 +152,16 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     let i = 1;
     root.children.forEach(initialCollapse);
     update(root);
+
+    // find user's manager's xy coords so we can translate the initial view there
+    const managerXY = await findManagerXY(root);
+    initialTransform = d3.zoomIdentity.translate(managerXY[0] + width / 2, managerXY[1] + height).scale(.9);
+
+    // define a zoom function for the SVG, and an initial transform for the zoom
+    // if you don't set the initial transform using the defined zoom function, it will 'snap' back to the origin on first move
+    d3.select('#d3-container').select('svg')
+      .call(zoom) // adds zoom functionality
+      .call(zoom.transform, initialTransform);  // applies initial transform
 
     function update(source) {
 
@@ -258,6 +280,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
       .attr('y', rectYpos)
       .attr('dy', `${textHeight}px`)
       .attr('x', (d) => calcLabelWidth(d.data.name) - 24)
+      .attr('fill', (d) => colorTextByFTE(d))
       .text( (d) => {
         if (d._children) {
           return '\uf067';

@@ -1,7 +1,7 @@
 <div class="container-fluid org-viewer-cont">
   <div *ngIf="!orgJson" class="loading-spinner"></div>
   <div *ngIf="orgJson" class="org-chart-cont">
-    <div class="org-chart-header">Org Chart</div>
+    <div class="org-chart-header">Jarvis Adoption Chart</div>
     <i class="fa fa-expand chart-expand-icon" (click)="expandChartFullscreen()"></i>
     <app-org-draw-d3 [orgJson]="orgJson"></app-org-draw-d3>
   </div>
