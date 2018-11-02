@@ -58,6 +58,12 @@ export class ApiDataProjectService {
     .map((response: Response) => response.json());
   }
 
+  getTeamProjectList(emailAddress: string) {
+    return this.http.get(`/api/indexTeamProjectList/${emailAddress}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
   createProject(project: any, userID: number) {
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({ headers: headers });
@@ -241,7 +247,5 @@ export class ApiDataProjectService {
     return forkJoin([projectData, scheduleData, rosterData]);
 
   }
-
-
 
 }

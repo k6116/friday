@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CacheService } from '../../_shared/services/cache.service';
+import { BomService, CacheService } from '../../_shared/services/_index';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { ToolsService } from '../../_shared/services/tools.service';
 
@@ -10,8 +10,6 @@ import * as Highcharts from 'highcharts';
 require('highcharts/modules/xrange.js')(Highcharts);
 require('highcharts/modules/annotations.js')(Highcharts);
 import * as moment from 'moment';
-
-
 
 @Component({
   selector: 'app-display-project',
@@ -37,18 +35,31 @@ export class DisplayProjectComponent implements OnInit {
   projectTypesToDisplaySchedule: string[];
   displayScheduleChart: boolean;
   chart: any;
+  bomJson: any; // nested JSON containing BOM data
+  bomAuthorized = true;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.resizeChart();
   }
 
+  @HostListener('document:keydown', ['$event']) onKeyPress(event) {
+    if (event.code === 'Escape') {
+      // if user is in full-screen mode, pressing escape will close it
+      const currentState = $('.bom-chart-cont').attr('class');
+      if (currentState.search('bom-chart-cont-full') !== -1) {
+        this.expandBomFullscreen();
+      }
+    }
+  }
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private bomService: BomService,
     private cacheService: CacheService,
     private apiDataProjectService: ApiDataProjectService,
-    private toolsService: ToolsService
+    private toolsService: ToolsService,
   ) {
 
     // get the project id from the route params
@@ -61,6 +72,9 @@ export class DisplayProjectComponent implements OnInit {
     this.showLabels = false;
     this.animateChart = true;
 
+    // flag to navigate back button
+    // this.cacheService.fromMyProjectsFlag = false;
+
     // set project types that will show the PLC schedule chart
     this.projectTypesToDisplaySchedule = ['NPI', 'NCI', 'NPPI', 'NTI', 'Program'];
 
@@ -71,6 +85,19 @@ export class DisplayProjectComponent implements OnInit {
 
     // hide the footer until the page is ready to be rendered
     this.toolsService.hideFooter();
+
+    // get the BOM data
+    this.bomService.getBom(this.projectID, 'Project').then( res2 => {
+      // only set bomJson with the nested response if it is not empty
+      if (Object.keys(res2).length) {
+        this.bomJson = res2;
+      }
+    }).catch(err => {
+      // if the user is unauthorized to see BOMs, show the paywall
+      if (err.status === 401) {
+        this.bomAuthorized = false;
+      }
+    });
 
     // get all data for the page using forkjoin: project, schedule, and roster
     const res = await this.getData()
@@ -99,7 +126,6 @@ export class DisplayProjectComponent implements OnInit {
     this.toolsService.showFooter();
 
   }
-
 
   async getData(): Promise<any> {
 
@@ -448,10 +474,17 @@ export class DisplayProjectComponent implements OnInit {
 
   }
 
-
   onBackButtonClick() {
 
-    this.router.navigate(['main/projects/search']);
+    if (this.cacheService.fromMyProjectsFlag === false) {
+
+      this.router.navigate(['main/projects/search']);
+
+    } else {
+
+      this.router.navigate(['main/projects/my-projects']);
+
+    }
 
   }
 
@@ -522,6 +555,15 @@ export class DisplayProjectComponent implements OnInit {
     // dispose of the popover
     $el.popover('dispose');
 
+  }
+
+  expandBomFullscreen() {
+    // toggle the full-screen CSS class
+    $('.bom-chart-cont').toggleClass('bom-chart-cont-full');
+
+    // toggle the current state of the parent page scrollbar, to hide it while in full-screen mode
+    const overflowState = $('.body-custom').css('overflow');
+    $('.body-custom').css('overflow', overflowState === 'visible' ? 'hidden' : 'visible');
   }
 
 }

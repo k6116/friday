@@ -1,0 +1,46 @@
+.container-fluid.org-viewer-cont {
+  margin-bottom: 50px;
+}
+
+.org-chart-cont {
+  position: relative;
+  width: 100%;
+  min-width: 750px;
+  white-space: nowrap;
+  border: 1px solid lightgrey;
+  margin-top: 25px;
+  background-color: white;
+}
+
+.org-chart-cont-full {
+  position: fixed;
+  z-index: 1000;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  border: 1px solid lightgrey;
+  background-color: white;
+}
+
+.org-chart-header {
+  font-size: 18px;
+  color: #333333;
+  background-color: white;
+  text-align: center;
+  margin: 10px;
+}
+
+.chart-expand-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 18px;
+  z-index: 1;
+}
+
+.chart-expand-icon:hover {
+  color: red;
+  cursor: pointer;
+}

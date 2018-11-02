@@ -8,7 +8,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NouisliderModule } from 'ng2-nouislider';
 import { ClickOutsideModule } from 'ng4-click-outside';
-import { Ng2CompleterModule } from 'ng2-completer';
+import { TreeModule } from 'angular-tree-component';
+import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 
 // ANGULAR MATERIAL MODULES
 import { MatSlideToggleModule, MatButtonModule, MatCheckboxModule, MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
@@ -26,13 +27,13 @@ import { TitleCasePipe } from '@angular/common';
 import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
-import { CacheService, ClickTrackingService, CookiesService,
-  ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService} from './_shared/services/_index';
+import { BomService, CacheService, ClickTrackingService, CookiesService,
+  ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
   ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
-  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
+  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService, ApiDataMatplanService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { AuthGuardService } from './_shared/guards/auth.guard';
@@ -40,11 +41,11 @@ import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 import { BrowserGuard } from './_shared/guards/browser.guard';
 import { PermissionsGuard } from './_shared/guards/permissions.guard';
 import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
+import { FteTeamEntryGuard } from './fte-entry/team/fte-entry.guard';
 
 // CHARTS
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
-import { TreeModule } from 'ng2-tree';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -61,7 +62,7 @@ import { EmployeesReportsComponent } from './reports/employees/employees.compone
 import { ProfileModalComponent } from './modals/profile-modal/profile-modal.component';
 import { ProjectsModalComponent } from './modals/projects-modal/projects-modal.component';
 import { TestComponent } from './test/test.component';
-import { OrgDropdownComponent } from './reports/team-fte-summary/org-dropdown/org-dropdown.component';
+import { OrgDropdownComponent } from './reports/employees/org-dropdown/org-dropdown.component';
 import { ProjectsEditModalComponent } from './modals/projects-edit-modal/projects-edit-modal.component';
 import { ProjectsCreateModalComponent } from './modals/projects-create-modal/projects-create-modal.component';
 import { ChartsModule } from 'ng2-charts';
@@ -91,9 +92,19 @@ import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 import { SearchProjectsComponent } from './projects/search-projects/search-projects.component';
 import { MyProjectsComponent } from './projects/my-projects/my-projects.component';
 import { ProjectRequestsComponent } from './projects/project-requests/project-requests.component';
+import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
 import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-fte-rollup.component';
+import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
+import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
+import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
+import { MatplanInfoComponent } from './matplan/matplan-info/matplan-info.component';
+import { MatplanBomComponent } from './matplan/matplan-bom/matplan-bom.component';
+import { MatplanQuoteComponent } from './matplan/matplan-quote/matplan-quote.component';
+import { MatplanOrderComponent } from './matplan/matplan-order/matplan-order.component';
+import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
+import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
 
 
 @NgModule({
@@ -150,9 +161,19 @@ import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-
     BomViewerComponent,
     ProjectRequestsComponent,
     SearchProjectsComponent,
+    TeamRolesComponent,
     DisplayProjectComponent,
     UnitTestComponent,
     ProjectFteRollupComponent
+    MatplanSelectorComponent,
+    MatplanEditorComponent,
+    MatplanInfoComponent,
+    MatplanBomComponent,
+    MatplanQuoteComponent,
+    MatplanOrderComponent,
+    OrgViewerComponent,
+    OrgDrawD3Component,
+    TransferProjectsComponent
   ],
   imports: [
     AppRoutingModule,
@@ -169,8 +190,8 @@ import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-
     NouisliderModule,
     ClickOutsideModule,
     ChartsModule,
-    Ng2CompleterModule,
-    TreeModule
+    TreeModule.forRoot(),
+    MultiselectDropdownModule
   ],
   providers: [
     ApiDataAuthService,
@@ -189,6 +210,8 @@ import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-
     ApiDataPartService,
     ApiDataAnalyticsService,
     ApiDataBomService,
+    ApiDataMatplanService,
+    BomService,
     CacheService,
     AuthService,
     AuthGuardService,
@@ -201,6 +224,7 @@ import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-
     BrowserGuard,
     PermissionsGuard,
     FteEntryGuard,
+    FteTeamEntryGuard,
     TitleCasePipe,
     RoutingHistoryService,
     ExcelExportService

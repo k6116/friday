@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef 
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs/subject';
+import { Subject } from 'rxjs/Subject';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ToolsService } from '../../_shared/services/tools.service';
@@ -715,6 +715,9 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     this.cacheService.projectSearchTerm = this.filterString ? this.filterString : undefined;
     this.cacheService.projectSelectedFilter = this.selectedFilter;
     this.cacheService.projectSelectedValue = this.filterSelection;
+
+    // set flag for back button
+    this.cacheService.fromMyProjectsFlag = false;
 
     // navigate to the display page
     this.router.navigate([`/main/projects/display/${project.ProjectID}`]);

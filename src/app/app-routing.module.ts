@@ -10,6 +10,7 @@ import { UnsavedChangesGuard } from './_shared/guards/unsaved-changes.guard';
 import { BrowserGuard } from './_shared/guards/browser.guard';
 import { PermissionsGuard } from './_shared/guards/permissions.guard';
 import { FteEntryGuard } from './fte-entry/employee/fte-entry.guard';
+import { FteTeamEntryGuard } from './fte-entry/team/fte-entry.guard';
 
 // COMPONENTS
 // ----------
@@ -38,13 +39,19 @@ import { UserResolverService } from './_shared/services/user-resolver.service';
 import { Error403Component } from './error-pages/error-403/error-403.component';
 import { PartSetupComponent } from './setups/parts/parts.component';
 import { ProjectsSetupsComponent } from './setups/projects/projects.component';
+import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
 import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-fte-rollup.component';
+import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
+import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
+import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
+import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 
 // BOM module stuff
-import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
-import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
+// temporarily hiding until BOM editor is complete
+// import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
+// import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 
 
 const routes: Routes = [
@@ -62,19 +69,26 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
         canActivate: [FteEntryGuard], canDeactivate: [UnsavedChangesGuard] },
-      { path: 'fte-entry/team', component: FteEntryTeamComponent },
+      { path: 'fte-entry/team', component: FteEntryTeamComponent,
+        canActivate: [AuthGuardService, FteTeamEntryGuard], canDeactivate: [UnsavedChangesGuard] },
       { path: 'projects/my-projects', component: MyProjectsComponent },
       { path: 'projects/requests', component: ProjectRequestsComponent },
       { path: 'projects/search', component: SearchProjectsComponent },
       { path: 'projects/display/:id', component: DisplayProjectComponent },
+      { path: 'matplan', component: MatplanSelectorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      { path: 'matplan/edit/:id', component: MatplanEditorComponent},
+      { path: 'org/org-viewer', component: OrgViewerComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
-      { path: 'bom/bom-editor', component: BomEditorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
-      { path: 'bom/bom-viewer', component: BomViewerComponent, canActivate: [AuthGuardService] },
+      // { path: 'bom/bom-editor', component: BomEditorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      // { path: 'bom/bom-viewer', component: BomViewerComponent, canActivate: [AuthGuardService] },
+      { path: 'setups/team-roles', component: TeamRolesComponent },
+      { path: 'setups/transfer-projects', component: TransferProjectsComponent },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
       { path: 'reports/team-fte-summary', component: TeamFteSummaryComponent },
       { path: 'reports/top-projects', component: TopProjectsReportsComponent },
       { path: 'reports/top-projects-bubble', component: TopProjectsBubbleComponent },
+      { path: 'reports/jarvis-adoption', component: OrgViewerComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'reports/project-fte-rollup', component: ProjectFteRollupComponent },

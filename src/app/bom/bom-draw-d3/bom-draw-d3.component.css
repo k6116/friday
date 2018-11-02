@@ -1,8 +1,16 @@
 
 #d3-container {
   position: relative;
-  height: 90vh;
-  width: 105%;
-  margin-top: -40px;
-  margin-bottom: -150px;
+  height: 0;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 100%;
+}
+
+#d3-container > svg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
 }

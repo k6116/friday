@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { trigger, state, style, transition, animate, keyframes, group } from '@angular/animations';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { DecimalPipe } from '@angular/common';
 import { HostListener } from '@angular/core';
-import { NouisliderModule } from 'ng2-nouislider';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
@@ -15,7 +14,6 @@ import { ComponentCanDeactivate } from '../../_shared/guards/unsaved-changes.gua
 import { UserFTEs, AllocationsArray} from './fte-model';
 import { utils, write, WorkBook } from 'xlsx';
 import { saveAs } from 'file-saver';
-import { JAN } from '@angular/material';
 
 import { ProjectsCreateModalComponent } from '../../modals/projects-create-modal/projects-create-modal.component';
 
@@ -125,30 +123,18 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     }
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+
+    this.months = await this.buildMonthsArray();
     this.setSliderConfig(); // initalize slider config
 
+    this.projectList = await this.apiDataProjectService.getProjects().toPromise();
+
     this.fteComponentInit();  // initialize the FTE entry component
+    this.fteFormChangeListener();
+    this.getJobTitleList();
 
-    this.apiDataProjectService.getProjects()
-      .subscribe(
-        res => {
-          // console.log('get project data successfull:');
-          // console.log(res);
-          this.projectList = res;
-          // this.trimProjects(500);
-        },
-        err => {
-          // console.log('get project data error:');
-          // console.log(err);
-        }
-    );
-
-   this.buildMonthsArray();
-   this.fteFormChangeListener();
-   this.getJobTitleList();
-
-   $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip();
 
   }
 
@@ -248,7 +234,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   onModalClosed(selectedProject: any) {
-    // console.log('on modal closed fired');
     this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
@@ -432,8 +417,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   onTestFormClick() {
     // console.log('form object (this.form):');
     // console.log(this.FTEFormGroup);
-    // console.log('form data (this.form.value.FTEFormArray):');
-    // console.log(this.FTEFormGroup.value.FTEFormArray);
+    console.log('form data (this.form.value.FTEFormArray):');
+    console.log(this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
     // console.log(this.fteProjectVisible);
   }
@@ -456,15 +441,19 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
     // validate that no projects are empty
     const fteData = this.FTEFormGroup.value.FTEFormArray;
+    const emptyProjects = [];
     const noProjectsEmpty = fteData.every( project => {
       // check if every editable value for a given project is null
-      const isProjectEmpty = project.slice(firstEditableMonth).every( entry => {
+      const isProjectEmpty = project.every( entry => {
         return entry.fte === null;
       });
+      if (isProjectEmpty) {
+        emptyProjects.push(project[0].projectName);
+      }
       return !isProjectEmpty;
     });
 
-    // only save if all quarters are valid
+    // only save if all quarters are valid and no projects are empty
     if (currentQuarterValid && futureQuartersValid && noProjectsEmpty) {
       const t0 = performance.now();
 
@@ -512,18 +501,9 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
     } else if (!noProjectsEmpty) {
       // if the save was disallowed because there are empty projects, let the user know which ones
-      const invalidProjects = [];
-      fteData.forEach( project => {
-        const isProjectEmpty = project.slice(firstEditableMonth).every( entry => {
-          return entry.fte === null;
-        });
-        if (isProjectEmpty) {
-          invalidProjects.push(` ${project[0].projectName}`);
-        }
-      });
-      const invalidProjectsString = invalidProjects.toString();
+      // const invalidProjectsString = ;
       this.cacheService.raiseToast('error', `All projects in your table must have FTE entries.
-      Please add FTE entries for the following projects:${invalidProjectsString} and try again`);
+      Please add FTE entries for the following projects: ${emptyProjects.toString()}`);
     } else if (!currentQuarterValid || !futureQuartersValid) {
       this.cacheService.raiseToast('error', `FTE totals in each month cannot exceed 100%.`);
     } else {
@@ -538,13 +518,11 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.apiDataFteService.indexUserData()
     .subscribe(
       res => {
-        // console.log('indexUserData', res.nested);
         this.userFTEs = res.nested;
         this.userFTEsFlat = res.flat;
         this.buildFteEditableArray();
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
         this.display = true;  // ghetto way to force rendering after FTE data is fetched
-        // this.projects = this.userFTEs;
         const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
         this.projects = FTEFormArray.controls;
       },
@@ -555,15 +533,25 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   buildMonthsArray() {
-    // build an array of months that matches the slider length, based on today's date
-    const startDate = moment().utc().startOf('year').subtract(2, 'months').subtract(1, 'years');
-    const endDate = moment(startDate).add(3, 'years');
+    // build an array of months spanning 3 FYs [lastFY, thisFY, currentFY]
+    let startDate = moment().utc().startOf('month');
 
+    if ([10, 11].includes(moment(startDate).month()) ) {
+      // if current month is Nov or Dec, we only need to go back 1 calendar year
+      startDate = moment(startDate).month('Nov').subtract(1, 'year');
+    } else {
+      // otherwise, it's 2 calendar years
+      startDate = moment(startDate).month('Nov').subtract(2, 'years');
+    }
+
+    const endDate = moment(startDate).add(3, 'years');
     const numMonths = endDate.diff(startDate, 'months');
+    const monthsArray = [];
 
     for (let i = 0; i < numMonths; i++) {
-      this.months.push(moment(startDate).add(i, 'months'));
+      monthsArray.push(moment(startDate).add(i, 'months'));
     }
+    return monthsArray;
   }
 
   buildFteEditableArray() {
@@ -656,7 +644,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     const tempProj: any = projFormArray;
     tempProj.projectID = proj.projectID;
     tempProj.projectName = proj.projectName;
-    // tempProj.projectRole = proj.projectRole;
     tempProj.jobTitle = proj.jobTitle;
     tempProj.jobTitleID = proj.jobTitleID;
     tempProj.jobSubTitle = proj.jobSubTitle;
@@ -665,38 +652,32 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
   }
 
-  makeFyLabels() {
-    // generate slider labels based on current date
-    let startDate = moment().startOf('year').subtract(2, 'months'); // first day of this FY
-    startDate = moment(startDate).subtract(1, 'year');  // first day of last FY
-    const month = moment(startDate).month();
-    let firstQuarter = moment(startDate).fquarter(-3).quarter;
-    let firstYear = moment(startDate).fquarter(-3).year;
-
-    // make an array of label strings, ie - [Q4'17, Q1'18]
-    for ( let i = 0; i < 12; i++) {
-      this.fqLabelArray.push(`Q${firstQuarter} - ${firstYear.toString().slice(2)}`);
-      firstQuarter++;
-      if (firstQuarter > 4) {
-        this.fyLabelArray.push(`${firstYear.toString()}`);
-        firstYear++;
-        firstQuarter = 1;
-      }
-    }
-  }
-
   setSliderConfig() {
 
-    this.makeFyLabels();
+    this.months.forEach( month => {
+      // generate the label string for each month, ie: Q4'17
+      const quarter = moment(month).fquarter(-3).quarter;
+      const year = moment(month).fquarter(-3).year;
+      const label = `Q${quarter} - ${year.toString().slice(2)}`;
+
+      // if the label isn't in the array, add it
+      if (!this.fqLabelArray.includes(label)) {
+        this.fqLabelArray.push(label);
+      }
+
+      // if the year isn't in the array of year labels, add it
+      if (!this.fyLabelArray.includes(year.toString())) {
+        this.fyLabelArray.push(year.toString());
+      }
+    });
 
     // set slider starting range based on current date
-    const startDate = moment().startOf('month');
-    const month = moment(startDate).month();
-    if (month === 10 || month === 11 || month === 0) {
+    const thisQuarter = moment().startOf('month').fquarter(-3).quarter;
+    if (thisQuarter === 1) {
       this.sliderRange = [3, 6]; // Q1
-    } else if (month === 1 || month === 2 || month === 3) {
+    } else if (thisQuarter === 2) {
       this.sliderRange = [4, 7]; // Q2
-    } else if (month === 4 || month === 5 || month === 6) {
+    } else if (thisQuarter === 3) {
       this.sliderRange = [5, 8];
     } else {
       this.sliderRange = [6, 9];
@@ -786,68 +767,73 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   onTrashClick(index: number) {
-    // console.log('user clicked to delete project index ' + index);
-    const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
-    const deletedProject: any = FTEFormArray.controls[index];
-    // emit confirmation modal after they click delete button
-    this.cacheService.confirmModalData.emit(
-      {
-        title: 'Confirm Deletion',
-        message: `Are you sure you want to permanently delete all of your FTE values for project ${deletedProject.projectName}?`,
-        iconClass: 'fa-exclamation-triangle',
-        iconColor: 'rgb(193, 193, 27)',
-        closeButton: true,
-        allowOutsideClickDismiss: false,
-        allowEscKeyDismiss: false,
-        buttons: [
-          {
-            text: 'Yes',
-            bsClass: 'btn-success',
-            emit: true
-          },
-          {
-            text: 'Cancel',
-            bsClass: 'btn-secondary',
-            emit: false
-          }
-        ]
-      }
-    );
-
-    const deleteModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
-      if (res) {
-        // if they click ok, grab the deleted project info and exec db call to delete
-        const toBeDeleted = {
-          projectID: deletedProject.projectID,
-          projectName: deletedProject.projectName,
-          newlyAdded: deletedProject.newlyAdded
-        };
-
-        const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted.projectID).subscribe(
-          deleteResponse => {
-            // only delete from the projectemployeerole table if user is deleting a non-newlyAdded project
-            if (!toBeDeleted.newlyAdded) {
-              this.deleteProjectEmployeeRole(toBeDeleted);
+    if (!this.fteProjectDeletable[index]) {
+      // if project is not deletable, raise an error toast
+      this.cacheService.raiseToast('error', 'Projects with historic FTE values cannot be deleted.  Hide them using the slider.');
+    } else {
+      // show a confirmation modal before deleting
+      const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+      const deletedProject: any = FTEFormArray.controls[index];
+      // emit confirmation modal after they click delete button
+      this.cacheService.confirmModalData.emit(
+        {
+          title: 'Confirm Deletion',
+          message: `Are you sure you want to permanently delete all of your FTE values for project ${deletedProject.projectName}?`,
+          iconClass: 'fa-exclamation-triangle',
+          iconColor: 'rgb(193, 193, 27)',
+          closeButton: true,
+          allowOutsideClickDismiss: false,
+          allowEscKeyDismiss: false,
+          buttons: [
+            {
+              text: 'Yes',
+              bsClass: 'btn-success',
+              emit: true
+            },
+            {
+              text: 'Cancel',
+              bsClass: 'btn-secondary',
+              emit: false
             }
-            this.fteProjectVisible.splice(index, 1);
-            this.fteProjectDeletable.splice(index, 1);
-            FTEFormArray.controls.splice(index, 1);
-            this.updateMonthlyTotals();
-            this.setMonthlyTotalsBorder();
-            // console.log('stuff was updated');
-            this.cacheService.raiseToast('success', deleteResponse.message);
-            deleteActionSubscription.unsubscribe();
-          },
-          deleteErr => {
-            this.cacheService.raiseToast('warning', `${deleteErr.status}: ${deleteErr.statusText}`);
-            deleteActionSubscription.unsubscribe();
-          }
-        );
-      } else {
-        // console.log('delete aborted');
-      }
-      deleteModalSubscription.unsubscribe();
-    });
+          ]
+        }
+      );
+
+      const deleteModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
+        if (res) {
+          // if they click ok, grab the deleted project info and exec db call to delete
+          const toBeDeleted = {
+            projectID: deletedProject.projectID,
+            projectName: deletedProject.projectName,
+            newlyAdded: deletedProject.newlyAdded
+          };
+
+          const deleteActionSubscription = this.apiDataFteService.destroyUserProject(toBeDeleted.projectID).subscribe(
+            deleteResponse => {
+              // only delete from the projectemployeerole table if user is deleting a non-newlyAdded project
+              if (!toBeDeleted.newlyAdded) {
+                this.deleteProjectEmployeeRole(toBeDeleted);
+              }
+              this.fteProjectVisible.splice(index, 1);
+              this.fteProjectDeletable.splice(index, 1);
+              FTEFormArray.controls.splice(index, 1);
+              this.updateMonthlyTotals();
+              this.setMonthlyTotalsBorder();
+              // console.log('stuff was updated');
+              this.cacheService.raiseToast('success', deleteResponse.message);
+              deleteActionSubscription.unsubscribe();
+            },
+            deleteErr => {
+              this.cacheService.raiseToast('warning', `${deleteErr.status}: ${deleteErr.statusText}`);
+              deleteActionSubscription.unsubscribe();
+            }
+          );
+        } else {
+          // console.log('delete aborted');
+        }
+        deleteModalSubscription.unsubscribe();
+      });
+    }
   }
 
   onResetClick() {

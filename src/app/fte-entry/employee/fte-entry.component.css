@@ -61,6 +61,10 @@ i.fa-trash-o:hover {
   cursor: pointer;
 }
 
+i.trash-not-allowed:hover {
+  cursor: not-allowed;
+}
+
 /* TOTALS ROW */
 input.form-control.highlight-invalid {
   border-color: rgb(236, 154, 154);

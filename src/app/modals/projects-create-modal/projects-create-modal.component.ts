@@ -89,19 +89,26 @@ export class ProjectsCreateModalComponent implements OnInit {
       }
     }
 
-    project.projectOrgManager = this.managerEmailAddress;
+    // Managers will own their projects as well as any projects their subordinates create
+    if (this.authService.loggedInUser.isManager) {
+      project.projectOwner = this.userEmail;
+    } else {
+      project.projectOwner = this.managerEmailAddress;
+    }
 
     this.apiDataProjectService.createProject(project, this.userID)
     .subscribe(
       res => {
-        // console.log(res);
         project.projectID = res.newProjectID;
         this.createSuccess.emit(project);
         this.websocketService.sendNewProject(res);
         // clear the projects browse data in the cache, to force the projects search component to refresh from the database
         this.cacheService.projectsBrowseData = undefined;
+
+        this.cacheService.raiseToast('success', `Project ${project.projectName} created`);
       },
       err => {
+        this.cacheService.raiseToast('error', err);
         // console.log(err);
       }
     );

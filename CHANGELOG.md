@@ -1,3 +1,168 @@
+<a name="1.19.1"></a>
+## [1.19.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.19.0...v1.19.1) (2018-11-01)
+
+
+### Bug Fixes
+
+* **fte-entry > TeamFTE:** WORDSMITHING!!!! ([b63e1d2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/b63e1d2))
+* **Jarvis adoption graph:** changed graph to initialize with user's manager centered instead of Ron ([22741b5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/22741b5))
+* **setups > team-roles:** updated bug fix for when legacy employees exists ([f848bee](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f848bee))
+* **user FTE entry component:** fixed problem with fiscal quarter being calculated incorrectly on fir ([37d1745](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/37d1745))
+
+
+### Features
+
+* **fte-entry > team:** Added a min-width so page doesnt turn bad when screen resolution is low ([4cbbba5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/4cbbba5))
+* **fte-entry > team:** added popovers on projectnames for more attribute info ([44db3f1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/44db3f1))
+* **fte-entry > Team FTE:** Shows user deleted projects in the Sync Notice. Added a spinner during l ([3013955](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/3013955))
+* **fte-entry > teamFTE:** added a Reset button when the sync notice appears ([f820fbd](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f820fbd))
+* **setups > team-roles:** added a ViewAs feature in team-roles ([bb291de](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/bb291de))
+
+
+
+<a name="1.19.0"></a>
+# [1.19.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.18.0...v1.19.0) (2018-10-24)
+
+
+### Bug Fixes
+
+* **fte-entry > employee:** fixed timing issue if "add project" button is clicked too fast,  modal lo ([a133a48](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a133a48))
+* **Setups > Team Roles:** RoleID was hardcoded, now will look up "Report User" through the API ([3a24660](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/3a24660))
+
+
+### Features
+
+* **search-projects:** Changes the Created By and Creation Date attributes to Updated By and Update ([d358a50](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/d358a50))
+
+
+
+<a name="1.18.0"></a>
+# [1.18.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.17.0...v1.18.0) (2018-10-19)
+
+
+### Features
+
+* **Org Chart component:** added org chart d3 component with FTE-mode to see Jarvis adoption ([addb6ee](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/addb6ee))
+
+
+
+<a name="1.17.0"></a>
+# [1.17.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.16.0...v1.17.0) (2018-10-18)
+
+
+### Bug Fixes
+
+* **setups team-roles:** fix Add button on scroll ([6d44ff4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/6d44ff4))
+* **setups team-roles:** fix scroll issue on top ([d98a388](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/d98a388))
+
+
+### Features
+
+* **setups team-roles:** add footer and flag for empty roles ([9ab77be](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9ab77be))
+* **setups team-roles:** add tooltip on employee names ([f015935](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f015935))
+* **setups team-roles:** scrolling in table with fix columns ([cdfbf4e](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/cdfbf4e))
+
+
+
+<a name="1.16.0"></a>
+# [1.16.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.15.0...v1.16.0) (2018-10-17)
+
+
+### Bug Fixes
+
+* **TeamFTE:** added instructional carousel ([69bfa38](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/69bfa38))
+
+
+### Features
+
+* **fte-etnrey-team:** added copy and clear plan buttons ([a15bb89](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a15bb89))
+
+
+
+<a name="1.15.0"></a>
+# [1.15.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.3...v1.15.0) (2018-10-15)
+
+
+### Bug Fixes
+
+* **my-project:** hide div and add toast ([b44eecf](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/b44eecf))
+
+
+### Features
+
+* **my-projects:** add fuzzy search ([21532a3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/21532a3))
+* **my-projects:** Add spinner ([81131a6](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/81131a6))
+* **my-projects:** auto-size request box ([b38388c](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/b38388c))
+* **my-projects, display-project:** back button on display-project navigates back to my-projects or ([60789f4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/60789f4))
+* **projects-edit-modal:** add standard buttons and prevent click outside ([68613ca](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/68613ca))
+
+
+
+<a name="1.14.3"></a>
+## [1.14.3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.2...v1.14.3) (2018-10-08)
+
+
+### Bug Fixes
+
+* **projects-create-modal:** Disabled click-outside and ESC triggers that close the modal ([10a1fa6](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/10a1fa6))
+* **Team-Roles:** fixed employee update error ([1f45b1a](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/1f45b1a))
+
+
+
+<a name="1.14.2"></a>
+## [1.14.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.1...v1.14.2) (2018-10-04)
+
+
+### Bug Fixes
+
+* **BOM viewer:** added full-screen functionality for BOM viewer ([9302515](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9302515))
+* **toast component:** when user navigates away, dismiss the current toast (if any) ([10c6ab2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/10c6ab2))
+* **Toast component:** added X in corner of toast to encourage click-to-dismiss ([41db331](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/41db331))
+
+
+
+<a name="1.14.1"></a>
+## [1.14.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.14.0...v1.14.1) (2018-10-04)
+
+
+### Bug Fixes
+
+* **team-roles:** fixed bug that prevented managers from updating team roles ([fe8e4b1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/fe8e4b1))
+
+
+
+<a name="1.14.0"></a>
+# [1.14.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.13.0...v1.14.0) (2018-10-01)
+
+
+### Bug Fixes
+
+* **FTE entry component:** added toast for projects that cannot be deleted, and allow saving for proj ([c2f11eb](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c2f11eb))
+
+
+### Features
+
+* **Display Project page:** BOM viewer appears in project display page as its own card ([658c536](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/658c536))
+
+
+
+<a name="1.13.0"></a>
+# [1.13.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.12.1...v1.13.0) (2018-09-29)
+
+
+### Bug Fixes
+
+* **team-roles setup:** add z-index to side nav ([c05f4fe](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c05f4fe))
+* **team-roles.component:** fix scrolling behaviour ([ad0a80b](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/ad0a80b))
+
+
+### Features
+
+* **fte-entry team:** added manager edit features ([0f346e2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/0f346e2))
+* **team-roles:** add styling and insert new roles functionality ([bf1ef79](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/bf1ef79))
+
+
+
 <a name="1.12.1"></a>
 ## [1.12.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.12.0...v1.12.1) (2018-09-28)
 

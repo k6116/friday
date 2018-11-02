@@ -1,7 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ApiDataBomService } from '../../_shared/services/api-data/_index';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { BomService } from '../../_shared/services/bom.service';
 
 declare var $: any;
 declare const Bloodhound;
@@ -15,14 +14,14 @@ export class BomSelectorComponent implements OnInit {
 
   @Output() selectedBom = new EventEmitter<any>();
 
-  billListSub: Subscription;
-  bill: any;  // for storing the selected bill as flat array
-
-  constructor(private apiDataBomService: ApiDataBomService) { }
+  constructor(
+    private apiDataBomService: ApiDataBomService,
+    private bomService: BomService
+  ) { }
 
   ngOnInit() {
     // get list of bills for typeahead.js
-    this.billListSub = this.apiDataBomService.index().subscribe( res => {
+    this.apiDataBomService.index().subscribe( res => {
 
       console.log(res);
 
@@ -45,10 +44,21 @@ export class BomSelectorComponent implements OnInit {
         source: bh
       })
       .bind('typeahead:selected', (event, selection) => {
-        // once something in the typeahead isi selected, trigger this function
-        this.selectedBom.emit(selection);
+        // once something in the typeahead is selected, trigger this function
+        this.onBomSelect(selection);
       });
 
+    });
+  }
+
+  onBomSelect(selectedBom: any) {
+    // parse selected BOM info from bom-selector child component
+    const selectedEntity = selectedBom.EntityType;
+    const selectedID = selectedEntity === 'Project' ? selectedBom.ParentProjectID : selectedBom.ParentPartID;
+
+    // go get the nested BOM JSON from the bomService
+    this.bomService.getBom(selectedID, selectedEntity).then( res => {
+      this.selectedBom.emit(res);
     });
   }
 

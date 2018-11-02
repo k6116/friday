@@ -2,33 +2,7 @@
 
   <!-- block for spinner if chart is loading -->
   <!-- TO-DO ALL: standardize on spinners across pages (in common.css) -->
-  <div *ngIf="chartIsLoading" class="row row-custom">
-    Chart is loading...&nbsp;&nbsp;&nbsp;<div class="loading-spinner"></div>
-  </div>
-
-  <!-- Org Dropdown -->
-  <div *ngIf="orgDropdownViewPermissions?.indexOf(loggedInUserEmail)!=-1" class="row row-custom" [hidden]="chartIsLoading">
-    <div class="col-xs-4">
-      <div>View as:</div>
-    </div>
-    <div class="col-xs-2">
-      <div [class]="'org-dropdown-control' + (displayOrgDropDown ? ' highlight' : '')" [ngStyle]="getDropDownStyle()" (click)="onOrgDropDownClick()">
-        {{ dropDownDisplayedEmployee }}
-        <!-- dropdown caret -->
-        <i class="fa fa-caret-down org-dropdown-control-caret"></i>
-        <!-- spinner to display while waiting for data to arrive -->
-        <div class="orgdata-spinner-cont" [style.visibility]="waitingForOrgData ? 'visible' : 'hidden'">
-          <div class="orgdata-spinner"></div>
-        </div>
-      </div>
-
-      <div *ngIf="displayOrgDropDown" class="org-dropdown-cont" (scroll)="onScroll($event)" (appClickOutside)="onClickOutside($event)" [exception]="'div.org-dropdown-control'">
-        <div class="org-dropdown-cont-inner">
-          <app-org-dropdown [employees]="nestedOrgData" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)"></app-org-dropdown>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div *ngIf="chartIsLoading" class="loading-spinner"></div>
 
   <!-- block for team pareto chart -->
   <div class="row row-custom" [hidden]="chartIsLoading">

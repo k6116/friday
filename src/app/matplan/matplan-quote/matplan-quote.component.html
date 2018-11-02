@@ -1,0 +1,96 @@
+<div class="row">
+
+  <!-- first col is list-box of items in the BOM-->
+  <div class="col-sm-3">
+    <div class="list-group">
+      <button class="list-group-item list-group-item-action" *ngFor="let item of bom" (click)="showQuotes(item)" [ngClass]="selectedPartID === item.ChildID ? 'active' : ''">{{item.ChildIndentedName}}</button>
+    </div>
+  </div>
+
+  <!-- second col is quote selector and editor -->
+  <div class="col-sm-9" *ngIf="selectedPartID">
+
+    <div class="card"> <!-- card for "add new quote" -->
+      <h5 class="card-header">New Quote</h5>
+      <div class="card-body text-center">
+        <button class="btn btn-success">Add New Quote</button>
+      </div>
+    </div>
+    <ng-container *ngFor="let quote of quotes">
+      <div class="card">
+        <div class="card-header">
+          {{quote.supplier}} - {{quote.mfgPartNum}}
+          <button type="button" class="btn btn-secondary edit-button" (click)="editQuote(quote)"><i class="fa fa-pencil-square-o"></i> Edit</button>
+        </div>
+        <div class="card-body">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>MOQ:</th>
+                <th>Price:</th>
+                <th>NRE:</th>
+                <th>LT (wks):</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let break of quote.breaks">
+                <td>{{break.minOrderQty}}</td>
+                <td>{{break.price}}</td>
+                <td>{{break.nreCharge}}</td>
+                <td>{{break.leadTime}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- bootstrap modal for add quote -->
+<div class="modal fade" id="quoteModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modify Quote:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="quoteForm" *ngIf="quoteForm">
+          <label>Supplier:</label>
+          <input type="text" class="form-control" formControlName="supplier"><br />
+          <label>Manufacturer's Part Number:</label>
+          <input type="text" class="form-control" formControlName="mfgPartNum"><br />
+          <label>Price Breaks:</label>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>MOQ:</th>
+                <th>Price:</th>
+                <th>NRE:</th>
+                <th>LT (wks):</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="breaks">
+              <tr *ngFor="let priceBreak of quoteForm.controls.breaks.controls; let i = index">
+                <ng-container formGroupName="{{i}}">
+                  <td><input class="form-control" formControlName="minOrderQty"></td>
+                  <td><input class="form-control" formControlName="price"></td>
+                  <td><input class="form-control" formControlName="nreCharge"></td>
+                  <td><input class="form-control" formControlName="leadTime"></td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-secondary" (click)="onAddClick()"><i class="fa fa-plus"></i> Add Price Break</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="onSaveQuote()">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
