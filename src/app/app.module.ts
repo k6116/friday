@@ -164,7 +164,7 @@ import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.compon
     TeamRolesComponent,
     DisplayProjectComponent,
     UnitTestComponent,
-    ProjectFteRollupComponent
+    ProjectFteRollupComponent,
     MatplanSelectorComponent,
     MatplanEditorComponent,
     MatplanInfoComponent,
