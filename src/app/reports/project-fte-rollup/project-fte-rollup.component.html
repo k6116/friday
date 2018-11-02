@@ -10,9 +10,16 @@ considering topnav, sidenav, and footer -->
       <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (ngModelChange)="onFilterStringChange()" (keydown)="onFilterStringKeydown($event)" (focusout)="onFilterLostFocus()" appAutofocus>
       <i class="projects-filter-icon-search fa fa-search"></i>
       <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
+      <input type="text" #hiddenInput class="form-control hidden-input">
     </div>
 
+    <!-- <div class="hidden-input-cont">
+      <input type="text" #hiddenInput class="form-control hidden-input">
+    </div> -->
+
   </div>
+
+
 
 
 

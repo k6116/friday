@@ -100,6 +100,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.removeProfileUpdateMessage();
     });
 
+    console.log('Highcharts object:');
+    console.log(Highcharts);
+
   }
 
   ngOnDestroy() {
@@ -122,6 +125,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // get the current fiscal quarter's date range (array of two strings in the format 'MM-DD-YYYY')
     const fiscalQuarterRange = this.toolsService.fiscalQuarterRange(moment(), 'MM-DD-YYYY');
 
+    console.log('fiscal quarter range:');
+    console.log(fiscalQuarterRange);
+
     // get the dashboard data from the database
     // returns as a single response array using forkjoin:
     // [fteData, firstLogin, projectRequests]
@@ -129,8 +135,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         res => {
-          // console.log('dashboard data:');
-          // console.log(res);
+          console.log('dashboard data:');
+          console.log(res);
           this.dashboardData = res;
           this.renderDashboard();
           this.showDashboard = true;

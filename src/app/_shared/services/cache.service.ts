@@ -78,6 +78,9 @@ export class CacheService {
   // used to trigger the downloading icon (animated svg)
   showDownloadingIcon = new EventEmitter<boolean>();
 
+
+  setDrillUpFunctionAdded: boolean;
+
   constructor() { }
 
   // TO-DO BRYAN: create a toast service and move

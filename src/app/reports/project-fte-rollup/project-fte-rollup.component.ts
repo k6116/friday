@@ -1,7 +1,9 @@
-import { Component, OnInit, AfterViewInit, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { ApiDataReportService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
+import { HighchartsExtensionsService } from '../../_shared/services/highcharts-extensions.service';
+import { CacheService } from '../../_shared/services/cache.service';
 
 declare var require: any;
 declare var $: any;
@@ -20,12 +22,13 @@ require('highcharts/highcharts-more.js')(Highcharts);
   selector: 'app-project-fte-rollup',
   templateUrl: './project-fte-rollup.component.html',
   styleUrls: ['./project-fte-rollup.component.css', '../../_shared/styles/common.css'],
-  providers: [FilterPipe]
+  providers: [FilterPipe, HighchartsExtensionsService]
 })
-export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
+export class ProjectFteRollupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // @ViewChild('testButtonVC') testButtonVC: ElementRef;
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
+  @ViewChild('hiddenInput') hiddenInput: ElementRef;
 
   data: any;
   chartOptions: any;
@@ -49,10 +52,27 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   initialChartSubTitle: string;
   initialChartTitle: string;
   chartWasRendered: boolean;
+  drillupFn: any;
+  proceedWithDrillUp: boolean;
+  t0: number;
+  t1: number;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.resizeChart();
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  onClick(targetElement) {
+    // set the clicked element to a jQuery object
+    const $targetElement = $(targetElement);
+    console.log('element clicked:');
+    console.log($targetElement);
+    // if the element has the message-link class, take some action
+    if ($targetElement.closest('.highcharts-drillup-button').length) {
+    // if ($targetElement.hasClass('highcharts-drillup-button')) {
+      console.log('highcharts drillup button has been clicked');
+    }
   }
 
 
@@ -60,7 +80,9 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     private apiDataReportService: ApiDataReportService,
     private apiDataProjectService: ApiDataProjectService,
     private toolsService: ToolsService,
-    private filterPipe: FilterPipe
+    private filterPipe: FilterPipe,
+    private highchartsExtensionsService: HighchartsExtensionsService,
+    private cacheService: CacheService
   ) {
 
     this.drillLevel = 0;
@@ -69,7 +91,12 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
+
     this.getProjectsListData();
+
+
+    console.log('project fte rollup component initialized');
+    console.log(`chart was rendered: ${this.chartWasRendered}`);
 
     // this.renderTestChart();
     // this.renderLokiChart(1033);
@@ -114,12 +141,106 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     .bind('typeahead:selected', (event, selection) => {
       console.log('typeahead item has been selected:');
       console.log(selection);
+      that.hiddenInput.nativeElement.focus();
       that.renderLokiChart(selection);
     });
 
     // console.log('getFilteredProjects() test:');
     // console.log(this.getFilteredProjects());
 
+    console.log(`set drill up function added: ${this.cacheService.setDrillUpFunctionAdded}`);
+
+    // if (!this.cacheService.setDrillUpFunctionAdded) {
+      // this.highchartsExtensionsService.unsetDrillUpFunction();
+    // }
+
+
+    function test(proceed) {
+      console.log('drillup extension has been initialized');
+        console.log('BEFORE DRILLUP FUNCTION');
+
+        console.log(`end of of drillup at start of drillup: ${that.t1}`);
+
+        // console.log('H');
+        // console.log(H);
+
+        // cancel drilldown if this one start less than a half second after the previous one (automatically/redundant)
+        // if (that.t0 && that.t1) {
+        //   if (performance.now() - that.t0 >= 500) {
+        //     console.log('throwing error');
+        //     throw {error: 'dont drill up'};
+        //   }
+        // }
+
+        that.t0 = performance.now();
+        console.log(`start of drillup: ${that.t0}`);
+
+        const rootNode = this.chart.series[0].rootNode;
+        // console.log(rootNode);
+        const level = rootNode ? rootNode.split('_').length : 0;
+        console.log('level:');
+        console.log(level);
+
+        if (level === 1) {
+          for (let i = 0; i < this.data.length; i++) {
+            if (this.data[i].level === 2) {
+              this.data[i].update({
+                color: '#7cb5ec'
+              });
+            }
+          }
+          console.log('this.data after color update:');
+          console.log(this.data);
+          // that.testButtonVC.nativeElement.focus();
+        }
+
+        // update the title
+        if (that.drillDownTitles.length >= 2) {
+          this.chart.setTitle({text: that.drillDownTitles[that.drillDownTitles.length - 2]});
+        } else if (that.drillDownTitles.length) {
+          this.chart.setTitle({text: that.drillDownTitles[0]});
+        }
+
+        // remove the drilled down children from the table
+        that.removeChildItemsFromTable();
+
+        // remove the last chart title from the array
+        that.removeTitlesFromHistory();
+
+        // highlight the displayed items (next level up)
+        that.highlightDisplayedItems(undefined, level);
+
+        that.t1 = performance.now();
+        console.log(`end of drillup: ${that.t1}`);
+        console.log(`time to drillup: ${that.t1 - that.t0} milliseconds`);
+
+        proceed.apply(this);
+        console.log('AFTER DRILLUP FUNCTION');
+    }
+
+    // console.log(test());
+    // if (!this.cacheService.setDrillUpFunctionAdded) {
+    //   this.highchartsExtensionsService.setDrillUpFunction(test);
+    // }
+
+    // this.highchartsExtensionsService.setDrillUpFunction(undefined);
+
+    this.highchartsExtensionsService.setDrillUpFunction(test);
+
+    // $('#rollupChart').bind('drillUp', function(e) {
+    //   console.log('bound function to chart');
+    // });
+
+
+    Highcharts.Chart.prototype.callbacks.push(function (chart) {
+      Highcharts.addEvent(chart, 'drillup', function (e) {
+         console.log('drill up fired from add event');
+      });
+   });
+
+
+    console.log('Highcharts object:');
+    console.log(Highcharts);
 
   }
 
@@ -131,6 +252,99 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       $('div.tt-menu').css('z-index', 5);
     }, 0);
+
+    const that = this;
+
+
+    // $(function() {
+      // (function(H: any) {
+      //   console.log('JUST BEFORE DRILLUP FUNCTION');
+      //   // that.proceedWithDrillUp = true;
+      //   H.wrap(H.seriesTypes.treemap.prototype, 'drillUp', function(proceed) {
+      //     console.log('DRILLUP FUNCTION TRIGGERED');
+      //     // console.log('proceed');
+      //     // console.log(proceed);
+      //     // console.log('this:');
+      //     // console.log(this);
+      //     // console.log('H');
+      //     // console.log(H);
+      //     const rootNode = this.chart.series[0].rootNode;
+      //     // console.log(rootNode);
+      //     const level = rootNode ? rootNode.split('_').length : 0;
+      //     console.log('level:');
+      //     console.log(level);
+
+      //     if (level === 1) {
+      //       for (let i = 0; i < this.data.length; i++) {
+      //         if (this.data[i].level === 2) {
+      //           this.data[i].update({
+      //             color: '#7cb5ec'
+      //           });
+      //         }
+      //       }
+      //       console.log('this.data after color update:');
+      //       console.log(this.data);
+      //       // that.testButtonVC.nativeElement.focus();
+      //     }
+
+      //     // update the title
+      //     if (that.drillDownTitles.length >= 2) {
+      //       this.chart.setTitle({text: that.drillDownTitles[that.drillDownTitles.length - 2]});
+      //     } else if (that.drillDownTitles.length) {
+      //       this.chart.setTitle({text: that.drillDownTitles[0]});
+      //     }
+
+      //     // remove the drilled down children from the table
+      //     that.removeChildItemsFromTable();
+
+      //     // remove the last chart title from the array
+      //     that.removeTitlesFromHistory();
+
+      //     // highlight the displayed items (next level up)
+      //     that.highlightDisplayedItems(undefined, level);
+
+      //     // this.chart = Highcharts.chart('rollupChart', that.chartOptions);
+
+      //     // console.log('drill history:');
+      //     // console.log(that.drillHistory);
+      //     // console.log('data:');
+      //     // console.log(this.data);
+      //     // console.log('H:');
+      //     // console.log(H);
+      //     // H.each(this.data, function(el) {
+      //     //   console.log(el);
+      //     //   // if (el.options.level === 0) {
+      //     //   //   el.update({
+      //     //   //     color: '#7cb5ec'
+      //     //   //   });
+      //     //   // }
+      //     // });
+      //     // console.log('updated data:');
+      //     // console.log(this.data);
+      //     // if (that.proceedWithDrillUp) {
+      //     //   that.proceedWithDrillUp = false;
+      //     proceed.apply(this);
+      //     // } else {
+      //     //   console.log('cancelling further drill up');
+      //     // }
+
+      //   });
+      // })(Highcharts);
+    // });
+
+  }
+
+  ngOnDestroy() {
+
+    const H: any = Highcharts;
+
+    // H.seriesTypes.treemap.prototype.drillUp = undefined;
+
+    console.log('Project FTE Rollup On Destroy Lifecycle Hook');
+    console.log(H.seriesTypes.treemap.prototype.drillUp);
+
+    console.log('destroying treemap chart');
+    this.chart.destroy();
 
   }
 
@@ -285,6 +499,12 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // get the current fiscal quarter's date range (array of two strings in the format 'MM-DD-YYYY')
     const fiscalQuarterRange = this.toolsService.fiscalQuarterRange(moment(), 'MM-DD-YYYY');
 
+    console.log('project object:');
+    console.log(project);
+
+    console.log('fiscal quarter range:');
+    console.log(fiscalQuarterRange);
+
     // 16 = Bacon
     // 1033 = Loki
     this.apiDataReportService.getProjectFTERollupData(project.ProjectID, fiscalQuarterRange[0], fiscalQuarterRange[1])
@@ -299,8 +519,11 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
         const project = $.extend(true, {}, res[0]);
         project.Level = 0;
+        project.ChildID = project.ParentID;
         project.ParentID = 1;
+        project.ParentTree = project.ParentName;
         project.ChildName = project.ParentName;
+
 
         console.log('first project object:');
         console.log(project);
@@ -351,18 +574,18 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
         // const t4 = performance.now();
         // console.log(`rollup fte value took: ${t4 - t3} milliseconds`);
 
-        const t3 = performance.now();
+        // const t3 = performance.now();
 
         // rollup values for all chart point objects
-        this.childProjects.forEach(project => {
-          this.rollupFTEValues(project, project);
-        });
+        // this.childProjects.forEach(project => {
+        //   this.rollupFTEValues(project, project);
+        // });
 
-        const t4 = performance.now();
-        console.log(`rollup all fte values took: ${t4 - t3} milliseconds`);
+        // const t4 = performance.now();
+        // console.log(`rollup all fte values took: ${t4 - t3} milliseconds`);
 
-        console.log('chart point objects with rolled up values');
-        console.log(this.childProjects);
+        // console.log('chart point objects with rolled up values');
+        // console.log(this.childProjects);
 
         // filter chart point objects to level 1 again
         const levelOneProjects = this.childProjects.filter(project => {
@@ -385,16 +608,47 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
         console.log('chart point objects with updated parent ids');
         console.log(this.childProjects);
 
-        // filter chart point objects to only Projects with values
+        // filter chart point objects to only Projects
         this.chartData = this.childProjects.filter(project => {
-          return project.entity === 'Project' && project.value;
+          return project.entity === 'Project';
         });
 
         this.setLevelZeroColor();
 
         // this.setLevelOneColors();
 
+        this.removeDuplicates();
+
+        // this.chartData.forEach(project => {
+        //   this.rollupFTEValues(project, project);
+        // });
+
+        this.rollupFTEValuesFinal2();
+
         this.sortData();
+
+        this.chartData = this.chartData.filter(project => {
+          return project.entity === 'Project' && project.value;
+        });
+
+        // rollup fte values again with no duplicates
+        // this.chartData.forEach(project => {
+
+        //   const updatedChartData = this.chartData.filter((data, index, self) =>
+        //     index === self.findIndex((t) => (
+        //       t.level > project.level && t.name === data.name && t.type === data.type
+        //     ))
+        //   );
+        //   console.log(`updated chart data after removing duplicates, prior to rolling up fte values, for project: ${project.name}`);
+        //   console.log(updatedChartData);
+
+        //   this.rollupFTEValues2(project, project, updatedChartData);
+
+        // });
+
+        // this.sortData();
+
+        // this.rollupFTEValuesFinal();
 
         this.updateLevels2();
 
@@ -404,9 +658,20 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
         this.getHighestFTE();
 
-        this.initialChartSubTitle = 'Click a box to drill down (if pointing hand cursor); click grey box in upper right corner to drill up';
+        if (this.chartData.length) {
 
-        this.initialChartTitle = `Project FTE Rollup for ${this.chartData[0].name} ${this.chartData[0].type}`;
+          this.initialChartSubTitle = `Click a box to drill down (if pointing hand cursor); 
+            click grey box in upper right corner to drill up`;
+
+          this.initialChartTitle = `Project FTE Rollup for ${this.chartData[0].name} ${this.chartData[0].type}`;
+
+        } else {
+
+          this.clearChart();
+
+          this.initialChartTitle = `Project FTE Rollup for ${project.ProjectName} ${project.ProjectTypeName}`;
+
+        }
 
 
       } else {
@@ -459,7 +724,13 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
       const childTree = project1.ParentTree.split(' > ').splice(0, project1.ParentTree.split(' > ').length - 1).join(' > ');
 
-      if ((project1.ParentID === project.ChildID && parentTree === childTree) || project.Level === 0 && project1.Level === 1)  {
+      if ((project1.ParentID === project.ChildID && parentTree === childTree))  {
+
+        // tslint:disable-next-line:max-line-length
+        console.log(`parent project '${project.ChildName}', id: ${project.ChildID}, parent id: ${project.ParentID}, level: ${project.Level}, parent tree: ${project.ParentTree}`);
+        // tslint:disable-next-line:max-line-length
+        console.log(`found child project '${project1.ChildName}', id: ${project1.ChildID}, parent id: ${project1.ParentID}, level: ${project1.Level}, child tree: ${childTree}`);
+
         // console.log('found child project');
         // console.log(project1.ChildID + ': ' + project1.ChildName );
         // console.log('parent tree: ' + project.ParentTree);
@@ -476,6 +747,9 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
           level: project1.Level
         };
 
+        console.log('pushing in object:');
+        console.log(obj);
+
         // chartItem.value += project1.TotalFTE;
 
         // console.log(project.ChildID);
@@ -490,7 +764,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
   rollupFTEValues(projectToUpdate: any, projectToRecurse: any) {
 
-    this.childProjects.forEach(project => {
+    this.chartData.forEach(project => {
       // console.log(`project 1 parent: ${project1.parent}, project id: ${project.id}`);
       if (project.parent === projectToRecurse.id) {
         projectToUpdate.value += project.value ? project.value : 0;
@@ -499,6 +773,123 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
         this.rollupFTEValues(projectToUpdate, project);
       }
     });
+
+  }
+
+  // version without duplicates in the child projects
+  rollupFTEValues2(projectToUpdate: any, projectToRecurse: any, childProjects: any) {
+
+    childProjects.forEach(project => {
+      // console.log(`project 1 parent: ${project1.parent}, project id: ${project.id}`);
+      if (project.parent === projectToRecurse.id) {
+        projectToUpdate.value += project.value ? project.value : 0;
+        // console.log(`found child project named ${project.name}, adding ${project.value ? project.value : 0} to value`);
+        // console.log(`current total is: ${projectToUpdate.value}`);
+        this.rollupFTEValues(projectToUpdate, project);
+      }
+    });
+
+  }
+
+
+  rollupFTEValuesFinal() {
+
+    // zero out existing values
+    // this.chartData.forEach(dataPoint => {
+    //   dataPoint.value = 0;
+    // });
+
+    this.chartData.forEach(project => {
+
+      const updatedChartData = this.chartData.filter((data, index, self) =>
+        index === self.findIndex((t) => (
+          t.level >= project.level && t.name === data.name && t.type === data.type
+        ))
+      );
+
+      console.log(`updated chart data for rollup fte values for project ${project.name}:`);
+      console.log(updatedChartData);
+
+      rollupFTEValue(project, project, updatedChartData);
+
+    });
+
+
+    function rollupFTEValue(projectToUpdate: any, projectToRecurse: any, updatedChartData) {
+      updatedChartData.forEach(project => {
+        if (project.parent === projectToRecurse.id) {
+          projectToUpdate.value += project.value ? project.value : 0;
+          rollupFTEValue(projectToUpdate, project, updatedChartData);
+        }
+      });
+    }
+
+    console.log('chart data after final rollup of fte values:');
+    console.log(this.chartData);
+
+  }
+
+
+  getProjectBOM(project: any, data: any): any {
+
+    const projectBOM: any = [];
+
+    projectBOM.push(project);
+    recurseBOM(project, data);
+
+    function recurseBOM(project2, data2) {
+      data2.forEach(project3 => {
+        if (project3.parent === project2.id) {
+          projectBOM.push(project3);
+          recurseBOM(project3, data2);
+        }
+      });
+    }
+
+    return projectBOM;
+
+  }
+
+
+  rollupFTEValuesFinal2() {
+
+    // zero out existing values
+    // this.chartData.forEach(dataPoint => {
+    //   dataPoint.value = 0;
+    // });
+
+    this.chartData.forEach(project => {
+
+      const projectBOM = this.getProjectBOM(project, this.chartData);
+
+      console.log(`project BOM data for rollup fte values for project ${project.name}:`);
+      console.log(projectBOM);
+
+      const filteredBOM = projectBOM.filter((data, index, self) =>
+        index === self.findIndex((t) => (
+          t.name === data.name && t.type === data.type
+        ))
+      );
+
+      console.log(`filtered BOM data for rollup fte values for project ${project.name}:`);
+      console.log(filteredBOM);
+
+      rollupFTEValue(project, project, filteredBOM);
+
+    });
+
+
+    function rollupFTEValue(projectToUpdate: any, projectToRecurse: any, updatedChartData) {
+      updatedChartData.forEach(project => {
+        if (project.parent === projectToRecurse.id) {
+          projectToUpdate.value += project.value ? project.value : 0;
+          rollupFTEValue(projectToUpdate, project, updatedChartData);
+        }
+      });
+    }
+
+    console.log('chart data after final rollup of fte values:');
+    console.log(this.chartData);
 
   }
 
@@ -543,6 +934,19 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     levelOneProjects.forEach((levelOneProject, index) => {
       levelOneProject.color = Highcharts.getOptions().colors[index];
     });
+
+  }
+
+
+  removeDuplicates() {
+
+    this.chartData = this.chartData.filter((data, index, self) =>
+      index === self.findIndex((t) => (
+        t.level === data.level && t.name === data.name && t.parent === data.parent && t.type === data.type
+      ))
+    );
+    console.log('chart data after removing duplicates:');
+    console.log(this.chartData);
 
   }
 
@@ -730,15 +1134,19 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     console.log(tableIds);
 
     // loop through the table data in reverse order
-    for (let i = this.tableData.length - 1; i >= 0; i--) {
-      if (tableIds.includes(this.tableData[i].id)) {
-        console.log(`found table id to remove at index: ${i}`);
-        this.tableData.splice(i, 1);
+    if (tableIds) {
+      for (let i = this.tableData.length - 1; i >= 0; i--) {
+        if (tableIds.includes(this.tableData[i].id)) {
+          console.log(`found table id to remove at index: ${i}`);
+          this.tableData.splice(i, 1);
+        }
       }
     }
 
     // remove the last table ids array
-    this.drillDownIDs.pop();
+    if (this.drillDownIDs.length) {
+      this.drillDownIDs.pop();
+    }
 
     console.log('new table data with removed children:');
     console.log(this.tableData);
@@ -771,17 +1179,20 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // remove all existing highlighted rows
     this.removeAllRowHighlights();
 
-    const childItems = this.chartData.filter(data => {
-      if (level) {
-        return data.level === level;
-      } else {
-        return data.parent === parentID;
-      }
-    });
+    if (this.chartData) {
+      const childItems = this.chartData.filter(data => {
+        if (level) {
+          return data.level === level;
+        } else {
+          return data.parent === parentID;
+        }
+      });
 
-    childItems.forEach(item => {
-      item.highlight = true;
-    });
+      childItems.forEach(item => {
+        item.highlight = true;
+      });
+
+    }
 
   }
 
@@ -992,84 +1403,15 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
       this.chart.destroy();
     }
 
-    const that = this;
-
-    $(function() {
-      (function(H: any) {
-        H.wrap(H.seriesTypes.treemap.prototype, 'drillUp', function(proceed) {
-          console.log('DRILLUP FUNCTION TRIGGERED');
-          // console.log('proceed');
-          // console.log(proceed);
-          // console.log('this:');
-          // console.log(this);
-          // console.log('H');
-          // console.log(H);
-          const rootNode = this.chart.series[0].rootNode;
-          // console.log(rootNode);
-          const level = rootNode ? rootNode.split('_').length : 0;
-          console.log('level:');
-          console.log(level);
-
-          if (level === 1) {
-            for (let i = 0; i < this.data.length; i++) {
-              if (this.data[i].level === 2) {
-                this.data[i].update({
-                  color: '#7cb5ec'
-                });
-              }
-            }
-            console.log('this.data after color update:');
-            console.log(this.data);
-            // that.testButtonVC.nativeElement.focus();
-          }
-
-          // update the title
-          if (that.drillDownTitles.length >= 2) {
-            this.chart.setTitle({text: that.drillDownTitles[that.drillDownTitles.length - 2]});
-          } else if (that.drillDownTitles.length) {
-            this.chart.setTitle({text: that.drillDownTitles[0]});
-          }
-
-          // remove the drilled down children from the table
-          that.removeChildItemsFromTable();
-
-          // remove the last chart title from the array
-          that.removeTitlesFromHistory();
-
-          // highlight the displayed items (next level up)
-          that.highlightDisplayedItems(undefined, level);
-
-          // this.chart = Highcharts.chart('rollupChart', that.chartOptions);
-
-          // console.log('drill history:');
-          // console.log(that.drillHistory);
-          // console.log('data:');
-          // console.log(this.data);
-          // console.log('H:');
-          // console.log(H);
-          // H.each(this.data, function(el) {
-          //   console.log(el);
-          //   // if (el.options.level === 0) {
-          //   //   el.update({
-          //   //     color: '#7cb5ec'
-          //   //   });
-          //   // }
-          // });
-          // console.log('updated data:');
-          // console.log(this.data);
-          proceed.apply(this);
-
-        });
-      })(Highcharts);
-    });
-
-
+    console.log('BEFORE CHART RENDERING');
 
     // render the chart
     this.chart = Highcharts.chart('rollupChart', this.chartOptions);
     setTimeout(() => {
       this.chart.reflow();
     }, 0);
+
+    console.log('AFTER CHART RENDERING');
 
     this.chartWasRendered = true;
 

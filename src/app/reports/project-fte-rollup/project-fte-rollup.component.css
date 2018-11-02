@@ -32,6 +32,14 @@ input.projects-filter-input {
   padding-right: 30px;
 }
 
+input.hidden-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  z-index: -1;
+}
+
 i.projects-filter-icon-search, i.projects-filter-icon-close {
   position: absolute;
   top: 10px;
