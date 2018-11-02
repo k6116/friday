@@ -1,3 +1,13 @@
+<a name="1.19.2"></a>
+## [1.19.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.19.1...v1.19.2) (2018-11-02)
+
+
+### Bug Fixes
+
+* fix fiscal year rollover bug in tools service (fiscalQuarterRange function) ([74ba8a1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/74ba8a1))
+
+
+
 <a name="1.19.1"></a>
 ## [1.19.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.19.0...v1.19.1) (2018-11-01)
 
