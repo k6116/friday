@@ -30,7 +30,7 @@ export class BomEditorComponent implements OnInit {
             }
           },
           contextMenu: (tree, node, $event) => {
-            console.log(node);
+            // console.log(node);
             node.data.qty = 0;
             this.bomJson = this.bomJson.slice();
           }
@@ -45,14 +45,14 @@ export class BomEditorComponent implements OnInit {
   }
 
   showBomJson() {
-    console.log(this.bomJson);
+    // console.log(this.bomJson);
   }
 
   onBomSelect(selectedBom: any) {
     this.showBom = true;
     this.showDetails = false;
     this.bomJson = [selectedBom];
-    console.log('bom has been selected');
+    // console.log('bom has been selected');
   }
 
 }

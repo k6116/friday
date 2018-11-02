@@ -35,7 +35,7 @@ export class MatplanEditorComponent implements OnInit {
     this.apiDataMatplanService.show(this.matplanID).subscribe( res => {
       this.matplan = res[0];
       this.projectID = this.matplan.ProjectID;
-      console.log(this.matplan);
+      // console.log(this.matplan);
     });
   }
 
