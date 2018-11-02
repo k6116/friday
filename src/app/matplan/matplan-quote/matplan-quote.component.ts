@@ -37,7 +37,7 @@ export class MatplanQuoteComponent implements OnInit {
   }
 
   editQuote(quote: any) {
-    console.log(quote);
+    // console.log(quote);
     // initialize the quote form
     this.quoteForm = this.fb.group({
       quoteID: quote.quoteID,
@@ -52,7 +52,7 @@ export class MatplanQuoteComponent implements OnInit {
     quote.breaks.forEach( priceBreak => {
       breakArray.push(this.addPriceBreak(priceBreak));
     });
-    console.log(this.quoteForm);
+    // console.log(this.quoteForm);
 
     // this.showQuoteModal = true;
     // open the modal
@@ -86,7 +86,7 @@ export class MatplanQuoteComponent implements OnInit {
   }
 
   onSaveQuote() {
-    console.log(this.quoteForm.value);
+    // console.log(this.quoteForm.value);
   }
 
 }
