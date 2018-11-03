@@ -1,20 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../_shared/services/auth.service';
-import { HighchartsExtensionsService } from '../_shared/services/highcharts-extensions.service';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css', '../_shared/styles/common.css'],
-  providers: [HighchartsExtensionsService]
+  styleUrls: ['./main.component.css', '../_shared/styles/common.css']
 })
 export class MainComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService,
-    private highchartsExtensionsService: HighchartsExtensionsService
+    private authService: AuthService
   ) { }
 
   ngOnInit() {

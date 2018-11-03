@@ -1,9 +1,11 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { ApiDataReportService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
-import { HighchartsExtensionsService } from '../../_shared/services/highcharts-extensions.service';
 import { CacheService } from '../../_shared/services/cache.service';
+import { ProjectFteRollupDataService } from './services/project-fte-rollup-data.service';
+import { ProjectFteRollupTypeaheadService } from './services/project-fte-rollup-typeahead.service';
+import { ProjectFteRollupChartService } from './services/project-fte-rollup-chart.service';
 
 declare var require: any;
 declare var $: any;
@@ -22,9 +24,10 @@ require('highcharts/highcharts-more.js')(Highcharts);
   selector: 'app-project-fte-rollup',
   templateUrl: './project-fte-rollup.component.html',
   styleUrls: ['./project-fte-rollup.component.css', '../../_shared/styles/common.css'],
-  providers: [FilterPipe, HighchartsExtensionsService]
+  providers: [FilterPipe, ProjectFteRollupDataService,
+    ProjectFteRollupTypeaheadService, ProjectFteRollupChartService]
 })
-export class ProjectFteRollupComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
   // @ViewChild('testButtonVC') testButtonVC: ElementRef;
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
@@ -81,271 +84,63 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit, OnDestr
     private apiDataProjectService: ApiDataProjectService,
     private toolsService: ToolsService,
     private filterPipe: FilterPipe,
-    private highchartsExtensionsService: HighchartsExtensionsService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private projectFteRollupDataService: ProjectFteRollupDataService,
+    private projectFteRollupTypeaheadService: ProjectFteRollupTypeaheadService,
+    private projectFteRollupChartService: ProjectFteRollupChartService
   ) {
 
     this.drillLevel = 0;
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
 
+    // get data to populate the project selection typeahead
+    await this.getTypeaheadData();
 
-    this.getProjectsListData();
+    // initialize the typeahead functionality with the typeahead.js library (options and data source)
+    this.initTypeahead();
 
-
-    console.log('project fte rollup component initialized');
-    console.log(`chart was rendered: ${this.chartWasRendered}`);
-
-    // this.renderTestChart();
-    // this.renderLokiChart(1033);
-
-    const that = this;
-
-    // initialize typeahead using jquery
-    $('.projects-filter-input').typeahead({
-      hint: true,
-      highlight: true,
-      minLength: 1
-    },
-    {
-      name: 'projects',
-      displayKey: 'ProjectName',  // use this to select the field name in the query you want to display
-      limit: 50,
-      source: function(query, process) {
-        // if filterString is undefined, null, empty string, then override the query
-        console.log('filterString withing typeahead function:');
-        console.log(that.filterString);
-        if (!that.filterString) {
-          query = undefined;
-        }
-        console.log('query:');
-        console.log(query);
-        const filteredProjects = that.getFilteredProjects(query);
-        console.log('filtered projects within typeadhead function:');
-        console.log(filteredProjects);
-        process(filteredProjects);
-        // process([
-        //   {id: 1, ProjectName: 'Alabama'},
-        //   {id: 2, ProjectName: 'Arizona'},
-        //   {id: 3, ProjectName: 'California'},
-        //   {id: 4, ProjectName: 'Colorado'},
-        //   {id: 5, ProjectName: 'Nevada'},
-        //   {id: 6, ProjectName: 'Oklahoma'},
-        //   {id: 7, ProjectName: 'New Mexico'},
-        //   {id: 8, ProjectName: 'Idaho'}
-        // ]);
-      }
-    })
-    .bind('typeahead:selected', (event, selection) => {
-      console.log('typeahead item has been selected:');
-      console.log(selection);
-      that.hiddenInput.nativeElement.focus();
-      that.clearChartData();
-      that.renderLokiChart(selection);
-    });
-
-    // console.log('getFilteredProjects() test:');
-    // console.log(this.getFilteredProjects());
-
-    console.log(`set drill up function added: ${this.cacheService.setDrillUpFunctionAdded}`);
-
-    // if (!this.cacheService.setDrillUpFunctionAdded) {
-      // this.highchartsExtensionsService.unsetDrillUpFunction();
-    // }
-
-
-    function test(proceed) {
-      console.log('drillup extension has been initialized');
-        console.log('BEFORE DRILLUP FUNCTION');
-
-        console.log(`end of of drillup at start of drillup: ${that.t1}`);
-
-        // console.log('H');
-        // console.log(H);
-
-        // cancel drilldown if this one start less than a half second after the previous one (automatically/redundant)
-        // if (that.t0 && that.t1) {
-        //   if (performance.now() - that.t0 >= 500) {
-        //     console.log('throwing error');
-        //     throw {error: 'dont drill up'};
-        //   }
-        // }
-
-        that.t0 = performance.now();
-        console.log(`start of drillup: ${that.t0}`);
-
-        const rootNode = this.chart.series[0].rootNode;
-        // console.log(rootNode);
-        const level = rootNode ? rootNode.split('_').length : 0;
-        console.log('level:');
-        console.log(level);
-
-        if (level === 1) {
-          for (let i = 0; i < this.data.length; i++) {
-            if (this.data[i].level === 2) {
-              this.data[i].update({
-                color: '#7cb5ec'
-              });
-            }
-          }
-          console.log('this.data after color update:');
-          console.log(this.data);
-          // that.testButtonVC.nativeElement.focus();
-        }
-
-        // update the title
-        if (that.drillDownTitles.length >= 2) {
-          this.chart.setTitle({text: that.drillDownTitles[that.drillDownTitles.length - 2]});
-        } else if (that.drillDownTitles.length) {
-          this.chart.setTitle({text: that.drillDownTitles[0]});
-        }
-
-        // remove the drilled down children from the table
-        that.removeChildItemsFromTable();
-
-        // remove the last chart title from the array
-        that.removeTitlesFromHistory();
-
-        // highlight the displayed items (next level up)
-        that.highlightDisplayedItems(undefined, level);
-
-        that.t1 = performance.now();
-        console.log(`end of drillup: ${that.t1}`);
-        console.log(`time to drillup: ${that.t1 - that.t0} milliseconds`);
-
-        proceed.apply(this);
-        console.log('AFTER DRILLUP FUNCTION');
-    }
-
-    // console.log(test());
-    // if (!this.cacheService.setDrillUpFunctionAdded) {
-    //   this.highchartsExtensionsService.setDrillUpFunction(test);
-    // }
-
-    // this.highchartsExtensionsService.setDrillUpFunction(undefined);
-
-    this.highchartsExtensionsService.setDrillUpFunction(test);
-
-    // $('#rollupChart').bind('drillUp', function(e) {
-    //   console.log('bound function to chart');
-    // });
-
-
-    Highcharts.Chart.prototype.callbacks.push(function (chart) {
-      Highcharts.addEvent(chart, 'drillup', function (e) {
-         console.log('drill up fired from add event');
-      });
-   });
-
-
-    console.log('Highcharts object:');
-    console.log(Highcharts);
+    // initialize the treemap drill up function to execute on drill up click
+    this.setChartDrillUpExtension();
 
   }
 
   ngAfterViewInit() {
 
-    // $('g.highcharts-button.highcharts-drillup-button').click(function() {
-    //   console.log('drill up button clicked');
-    // });
-    setTimeout(() => {
-      $('div.tt-menu').css('z-index', 5);
-    }, 0);
-
-    const that = this;
-
-
-    // $(function() {
-      // (function(H: any) {
-      //   console.log('JUST BEFORE DRILLUP FUNCTION');
-      //   // that.proceedWithDrillUp = true;
-      //   H.wrap(H.seriesTypes.treemap.prototype, 'drillUp', function(proceed) {
-      //     console.log('DRILLUP FUNCTION TRIGGERED');
-      //     // console.log('proceed');
-      //     // console.log(proceed);
-      //     // console.log('this:');
-      //     // console.log(this);
-      //     // console.log('H');
-      //     // console.log(H);
-      //     const rootNode = this.chart.series[0].rootNode;
-      //     // console.log(rootNode);
-      //     const level = rootNode ? rootNode.split('_').length : 0;
-      //     console.log('level:');
-      //     console.log(level);
-
-      //     if (level === 1) {
-      //       for (let i = 0; i < this.data.length; i++) {
-      //         if (this.data[i].level === 2) {
-      //           this.data[i].update({
-      //             color: '#7cb5ec'
-      //           });
-      //         }
-      //       }
-      //       console.log('this.data after color update:');
-      //       console.log(this.data);
-      //       // that.testButtonVC.nativeElement.focus();
-      //     }
-
-      //     // update the title
-      //     if (that.drillDownTitles.length >= 2) {
-      //       this.chart.setTitle({text: that.drillDownTitles[that.drillDownTitles.length - 2]});
-      //     } else if (that.drillDownTitles.length) {
-      //       this.chart.setTitle({text: that.drillDownTitles[0]});
-      //     }
-
-      //     // remove the drilled down children from the table
-      //     that.removeChildItemsFromTable();
-
-      //     // remove the last chart title from the array
-      //     that.removeTitlesFromHistory();
-
-      //     // highlight the displayed items (next level up)
-      //     that.highlightDisplayedItems(undefined, level);
-
-      //     // this.chart = Highcharts.chart('rollupChart', that.chartOptions);
-
-      //     // console.log('drill history:');
-      //     // console.log(that.drillHistory);
-      //     // console.log('data:');
-      //     // console.log(this.data);
-      //     // console.log('H:');
-      //     // console.log(H);
-      //     // H.each(this.data, function(el) {
-      //     //   console.log(el);
-      //     //   // if (el.options.level === 0) {
-      //     //   //   el.update({
-      //     //   //     color: '#7cb5ec'
-      //     //   //   });
-      //     //   // }
-      //     // });
-      //     // console.log('updated data:');
-      //     // console.log(this.data);
-      //     // if (that.proceedWithDrillUp) {
-      //     //   that.proceedWithDrillUp = false;
-      //     proceed.apply(this);
-      //     // } else {
-      //     //   console.log('cancelling further drill up');
-      //     // }
-
-      //   });
-      // })(Highcharts);
-    // });
+    // update the z-index of the typeahead js dropdown container so that it will not be above the topnav
+    this.updateTypeaheadDropdownZindex();
 
   }
 
-  ngOnDestroy() {
+  // get data to populate the projects typeahead
+  async getTypeaheadData() {
 
-    const H: any = Highcharts;
+    this.projectsList = await this.projectFteRollupDataService.getTypeaheadData()
+    .catch(err => {
+      console.log(err);
+    });
 
-    // H.seriesTypes.treemap.prototype.drillUp = undefined;
+  }
 
-    console.log('Project FTE Rollup On Destroy Lifecycle Hook');
-    console.log(H.seriesTypes.treemap.prototype.drillUp);
+  // initialize the typeahead functionality with the typeahead.js library (options and data source)
+  initTypeahead() {
+    const typeahead = this.projectFteRollupTypeaheadService.initTypeahead(this, this.projectsList);
+  }
 
-    console.log('destroying treemap chart');
-    this.chart.destroy();
+  // initialize the treemap drill up function to execute on drill up click
+  setChartDrillUpExtension() {
+    this.projectFteRollupChartService.setDrillUpFunction(this);
+  }
+
+  // workaround to update the z-index of the typeahead js dropdown container so that it will not be above the topnav (10)
+  // TO-DO BILL: ask Brian why his works without having to update like this in BOM Viewer and not updating in css
+  updateTypeaheadDropdownZindex() {
+
+    setTimeout(() => {
+      $('div.tt-menu').css('z-index', 5);
+    }, 0);
 
   }
 
@@ -361,42 +156,6 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit, OnDestr
   }
 
 
-  getProjectsListData() {
-
-    this.apiDataProjectService.getProjectsList()
-    .subscribe(
-      res => {
-
-        console.log('projects list data:');
-        console.log(res);
-        this.projectsList = res;
-
-      },
-      err => {
-        console.error('attempt to get projects list data returned error:');
-        console.log(err);
-      });
-
-  }
-
-
-  onFilterStringChange() {
-    // get the array of projects objects that are displayed
-    this.filteredProjects = this.filterPipe.transform(this.projectsList, this.filterString, 'ProjectName',
-      {matchFuzzy: {on: true, threshold: 0.4}, returnAll: false});
-
-    console.log('filtered projects list:');
-    console.log(this.filteredProjects);
-
-  }
-
-
-  getFilteredProjects(query): any {
-
-    return this.filterPipe.transform(this.projectsList, query, 'ProjectName',
-      {matchFuzzy: {on: true, threshold: 0.4}, returnAll: false});
-
-  }
 
 
   // look for instances where we want to log the search for click tracking

@@ -7,7 +7,7 @@ considering topnav, sidenav, and footer -->
 
 
     <div class="projects-filter-string">
-      <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (ngModelChange)="onFilterStringChange()" (keydown)="onFilterStringKeydown($event)" (focusout)="onFilterLostFocus()" appAutofocus>
+      <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (keydown)="onFilterStringKeydown($event)" (focusout)="onFilterLostFocus()" appAutofocus>
       <i class="projects-filter-icon-search fa fa-search"></i>
       <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
       <input type="text" #hiddenInput class="form-control hidden-input">
