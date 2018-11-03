@@ -540,20 +540,20 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit, OnDestr
         this.hasChartData = true;
 
         const project = $.extend(true, {}, res[0]);
-        project.Level = 0;
-        project.ChildID = project.ParentID;
-        project.ParentID = 1;
-        project.ParentTree = project.ParentName;
-        project.ChildName = project.ParentName;
+        // project.Level = 0;
+        // project.ChildID = project.ParentID;
+        // project.ParentID = 1;
+        // project.ParentTree = project.ParentName;
+        // project.ChildName = project.ParentName;
 
 
         console.log('first project object:');
         console.log(project);
 
-        this.fteData.splice(0, 0, project);
+        // this.fteData.splice(0, 0, project);
 
-        console.log('fte data after adding first project:');
-        console.log(this.fteData);
+        // console.log('fte data after adding first project:');
+        // console.log(this.fteData);
 
         // this.setLevelOneData(res);
         // const testProject = this.levelOneData[2];
@@ -562,12 +562,12 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit, OnDestr
 
         const firstLevelItem = {
           id: project.ParentID.toString(),
-          name: project.ParentName,
-          fte: 0,
-          value: 0,
-          entity: project.ParentEntity,
-          type: project.ParentType,
-          level: 0
+          name: project.ChildName,
+          fte: project.TotalFTE ? project.TotalFTE : 0,
+          value: project.TotalFTE,
+          entity: project.ChildEntity,
+          type: project.ChildType,
+          level: project.Level
         };
 
         console.log('first level chart object');
@@ -682,7 +682,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit, OnDestr
 
         if (this.chartData.length) {
 
-          this.initialChartSubTitle = `Click a box to drill down (if pointing hand cursor); 
+          this.initialChartSubTitle = `Click a box to drill down (if pointing hand cursor);
             click grey box in upper right corner to drill up`;
 
           this.initialChartTitle = `Project FTE Rollup for ${this.chartData[0].name} ${this.chartData[0].type}`;
