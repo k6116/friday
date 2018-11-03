@@ -142,6 +142,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit, OnDestr
       console.log('typeahead item has been selected:');
       console.log(selection);
       that.hiddenInput.nativeElement.focus();
+      that.clearChartData();
       that.renderLokiChart(selection);
     });
 
@@ -457,6 +458,27 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit, OnDestr
   }
 
 
+  clearChartData() {
+
+    this.chartData = undefined;
+    this.tableData.splice(0, this.tableData.length);
+    // this.tableData = [];
+    this.levelOneData = undefined;
+    this.childProjects.splice(0, this.childProjects.length);
+    // this.childProjects = [];
+    this.drillLevel = 0;
+    this.drillHistory.splice(0, this.drillHistory.length);
+    // this.drillHistory = [];
+    this.drillDownIDs.splice(0, this.drillDownIDs.length);
+    // this.drillDownIDs = [];
+    this.drillDownTitles.splice(0, this.drillDownTitles.length);
+    // this.drillDownTitles = [];
+    this.barMultiplier = undefined;
+
+    this.hasChartData = false;
+    this.displayTable = false;
+
+  }
 
   // when the 'x' button is clicked or input is cleared (typeahead selection returns no object)
   clearChart() {
