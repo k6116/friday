@@ -1,34 +1,24 @@
-<!-- fluid bootstrap container with margins to center page content
-considering topnav, sidenav, and footer -->
+
+<!-- fluid bootstrap container with margins to center page content considering topnav, sidenav, and footer -->
 <div class="container-fluid">
 
-
+  <!-- typeahead input box -->
   <div class="projects-filters-cont">
 
-
     <div class="projects-filter-string">
-      <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (keydown)="onFilterStringKeydown($event)" (focusout)="onFilterLostFocus()" appAutofocus>
+      <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" placeholder="Search projects" appAutofocus>
       <i class="projects-filter-icon-search fa fa-search"></i>
       <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
       <input type="text" #hiddenInput class="form-control hidden-input">
     </div>
 
-    <!-- <div class="hidden-input-cont">
-      <input type="text" #hiddenInput class="form-control hidden-input">
-    </div> -->
-
   </div>
 
+  <!-- highcharts treemap chart -->
+  <div class="highchart schedule-chart" id="rollupChart">
+  </div>
 
-
-
-
-  <!-- <button (click)="onTestClick()">Test</button> -->
-  <!-- <input #testButtonVC type="text"> -->
-
-  <div class="highchart schedule-chart" id="rollupChart"></div>
-
-
+  <!-- data table -->
   <table *ngIf="displayTable" class="table table-sm rollup-table">
     <thead>
       <tr class="drilldown-table-header-row">

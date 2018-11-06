@@ -1,11 +1,14 @@
 import { Component, OnInit, AfterViewInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { ApiDataReportService, ApiDataProjectService } from '../../_shared/services/api-data/_index';
 import { ToolsService } from '../../_shared/services/tools.service';
-import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { CacheService } from '../../_shared/services/cache.service';
-import { ProjectFteRollupDataService } from './services/project-fte-rollup-data.service';
-import { ProjectFteRollupTypeaheadService } from './services/project-fte-rollup-typeahead.service';
+import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ProjectFteRollupChartService } from './services/project-fte-rollup-chart.service';
+import { ProjectFteRollupDataService } from './services/project-fte-rollup-data.service';
+import { ProjectFteRollupPrepDataService } from './services/project-fte-rollup-prep-data.service';
+import { ProjectFteRollupTableService } from './services/project-fte-rollup-table.service';
+import { ProjectFteRollupTypeaheadService } from './services/project-fte-rollup-typeahead.service';
+
 
 declare var require: any;
 declare var $: any;
@@ -24,12 +27,11 @@ require('highcharts/highcharts-more.js')(Highcharts);
   selector: 'app-project-fte-rollup',
   templateUrl: './project-fte-rollup.component.html',
   styleUrls: ['./project-fte-rollup.component.css', '../../_shared/styles/common.css'],
-  providers: [FilterPipe, ProjectFteRollupDataService,
-    ProjectFteRollupTypeaheadService, ProjectFteRollupChartService]
+  providers: [FilterPipe, ProjectFteRollupChartService, ProjectFteRollupDataService, ProjectFteRollupPrepDataService,
+    ProjectFteRollupTableService, ProjectFteRollupTypeaheadService]
 })
 export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
-  // @ViewChild('testButtonVC') testButtonVC: ElementRef;
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
   @ViewChild('hiddenInput') hiddenInput: ElementRef;
 
@@ -40,6 +42,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   levelOneData: any;
   childProjects: any = [];
   hasChartData: boolean;
+  bomData: any;
   chartData: any;
   drillLevel: number;
   drillHistory: any = [];
@@ -52,30 +55,15 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   filterString: string;
   projectsList: any;
   filteredProjects: any;
-  initialChartSubTitle: string;
-  initialChartTitle: string;
+  chartTitle: string;
+  chartSubTitle: string;
   chartWasRendered: boolean;
-  drillupFn: any;
   proceedWithDrillUp: boolean;
-  t0: number;
-  t1: number;
+
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.resizeChart();
-  }
-
-  @HostListener('document:click', ['$event.target'])
-  onClick(targetElement) {
-    // set the clicked element to a jQuery object
-    const $targetElement = $(targetElement);
-    console.log('element clicked:');
-    console.log($targetElement);
-    // if the element has the message-link class, take some action
-    if ($targetElement.closest('.highcharts-drillup-button').length) {
-    // if ($targetElement.hasClass('highcharts-drillup-button')) {
-      console.log('highcharts drillup button has been clicked');
-    }
   }
 
 
@@ -83,11 +71,12 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     private apiDataReportService: ApiDataReportService,
     private apiDataProjectService: ApiDataProjectService,
     private toolsService: ToolsService,
-    private filterPipe: FilterPipe,
     private cacheService: CacheService,
+    private projectFteRollupChartService: ProjectFteRollupChartService,
     private projectFteRollupDataService: ProjectFteRollupDataService,
-    private projectFteRollupTypeaheadService: ProjectFteRollupTypeaheadService,
-    private projectFteRollupChartService: ProjectFteRollupChartService
+    private projectFteRollupPrepDataService: ProjectFteRollupPrepDataService,
+    private projectFteRollupTableService: ProjectFteRollupTableService,
+    private projectFteRollupTypeaheadService: ProjectFteRollupTypeaheadService
   ) {
 
     this.drillLevel = 0;
@@ -144,134 +133,130 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
   }
 
-
+  // on window resize
   resizeChart() {
 
-    // reflow the charts to its container during window resize
+    // reflow the chart to its outer container
     if (this.chart) {
       this.chart.reflow();
     }
-    this.calculateBarMultipler();
+
+    // get the multiplier to apply to the chart cum. ftes colored bar, to fill the width
+    this.barMultiplier = this.projectFteRollupTableService.calculateBarMultipler($('th.col-spark-bar'), this.maxFTE);
 
   }
 
 
+  // on project selection from typeahead list, render the treemap chart and display table below if there is data
+  async displayChart(project: any) {
 
+    // get raw data from the database in the form of a bom with fte values
+    // will include parts and require significant processing to get it into the proper format for highcharts drillable treemap
+    this.bomData = await this.getBOMData(project);
 
-  // look for instances where we want to log the search for click tracking
-  onFilterStringKeydown(event) {
-    // get the key code
-    // REF: https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
-    const key = event.keyCode || event.charCode;
-    // 8 = backspace; 46 = delete
-    // if ( key === 8 || key === 46 ) {
-    if (this.filterString) {
-      // get the number of selected characters
-      const selectedIndexStart = this.filterStringVC.nativeElement.selectionStart;
-      const selectedIndexEnd = this.filterStringVC.nativeElement.selectionEnd;
-      const numSelectedCharacters = selectedIndexEnd - selectedIndexStart;
-      // if all of the text is selected, and the user either hits the backspace, delete,
-      // or any other character (starting a new search), log the search for click tracking
-      // NOTE: since this is key down event the filter string will be the previous string (no need to cache)
-      if (numSelectedCharacters === this.filterString.length) {
-        // log a record in the click tracking table
-        // this.clickTrackingService.logClickWithEvent(`page: Search Projects,
-        //   text: ${this.selectedFilter.displayName} > ${this.filterString}`);
-      }
+    console.log('BOM Data (raw data from stored procedure:');
+    console.log(this.bomData);
+
+    // if there is only one project at level zero with no ftes, there will be no chart to render so just display an empty chart
+    if (this.bomData.length === 1 && !this.bomData[0].TotalFTE) {
+      this.displayEmptyChart(project);
+      return;
     }
-  }
 
+    // console.log('continuing to build chart data');
 
-  // if there is a filter/search term entered, log it for click tracking on lose focus
-  // NOTE: clicking the x icon will also trigger this
-  onFilterLostFocus() {
-    if (this.filterString) {
-      // log a record in the click tracking table
-      // this.clickTrackingService.logClickWithEvent(`page: Search Projects, text: ${this.selectedFilter.displayName} > ${this.filterString}`);
+    // otherwise, modify the bom data into chart data for the highcharts drillable treemap
+    this.chartData = this.projectFteRollupPrepDataService.buildChartData(this.bomData);
+
+    console.log('returned chartData array from the prep data service:');
+    console.log(this.chartData);
+
+    // get the max fte value from the chart data, to use to calculate/re-calculate the bar multiplier
+    this.maxFTE = this.projectFteRollupPrepDataService.getMaxFTE(this.chartData);
+
+    // add the 'bulletColor' property to the chartData objects to display the colors in the table
+    // (bullet and bar) which should align with the colors in the treemap chart
+    this.projectFteRollupTableService.setTableColors(this.chartData);
+
+    console.log('updated chartData array after setting table colors:');
+    console.log(this.chartData);
+
+    // get the initial table data to display (single row - the first level project)
+    this.tableData = this.projectFteRollupTableService.getInitialTableData(this.chartData);
+
+    // set the chart title and chart sub-title
+    this.setChartTitle(project);
+
+    // if there is no chart data, clear the chart and stop here
+    if (!this.chartData.length) {
+      this.clearChart();
+      return;
     }
+
+    // otherwise, set the chart options and render the chart
+    this.chartOptions = this.projectFteRollupChartService.getChartOptions(this.chartData, this);
+    // this.setChartOptions();
+    this.renderChart2();
+
   }
 
 
-  // on clicking the 'x' icon at the right of the search/filter input
-  onClearSearchClick() {
-    // clear the filter string
-    console.log('search input clear clicked');
-    this.filterString = undefined;
-    // $('input.projects-filter-input').val('');
-    // this.filterStringVC.nativeElement.value = '';
-    console.log('filterString:');
-    console.log(this.filterString);
-    $('.projects-filter-input').typeahead('val', '');
-    // reset the focus on the filter input
-    this.filterStringVC.nativeElement.focus();
 
+  async getBOMData(project: any) {
 
-    this.clearChart();
+    return await this.projectFteRollupDataService.getBOMData(project.ProjectID)
+    .catch(err => {
+      console.log(err);
+    });
 
-    // $('.projects-filter-input').typeahead('close');
-    // setTimeout(() => {
-    //   $('div.tt-menu').removeClass('tt-open');
-    // }, 0);
-    // update the count display (showing x of y) by calling onFilterStringChange()
-    // this.onFilterStringChange();
   }
 
 
-  clearChartData() {
+  displayEmptyChart(project: any) {
 
+    // set the chart data to undefined so that the treemap will not render
+    // the no-data-to-display.js module will instead display text 'No data to display'
     this.chartData = undefined;
-    this.tableData.splice(0, this.tableData.length);
-    // this.tableData = [];
-    this.levelOneData = undefined;
-    this.childProjects.splice(0, this.childProjects.length);
-    // this.childProjects = [];
-    this.drillLevel = 0;
-    this.drillHistory.splice(0, this.drillHistory.length);
-    // this.drillHistory = [];
-    this.drillDownIDs.splice(0, this.drillDownIDs.length);
-    // this.drillDownIDs = [];
-    this.drillDownTitles.splice(0, this.drillDownTitles.length);
-    // this.drillDownTitles = [];
-    this.barMultiplier = undefined;
 
-    this.hasChartData = false;
-    this.displayTable = false;
+    // set the title and subtitle
+    this.chartTitle = `Project FTE Rollup for ${project.ProjectName} ${project.ProjectTypeName}`;;
+    this.chartSubTitle = undefined;
 
-  }
-
-  // when the 'x' button is clicked or input is cleared (typeahead selection returns no object)
-  clearChart() {
-
-    this.chartData = undefined;
-    this.tableData.splice(0, this.tableData.length);
-    // this.tableData = [];
-    this.levelOneData = undefined;
-    this.childProjects.splice(0, this.childProjects.length);
-    // this.childProjects = [];
-    this.drillLevel = 0;
-    this.drillHistory.splice(0, this.drillHistory.length);
-    // this.drillHistory = [];
-    this.drillDownIDs.splice(0, this.drillDownIDs.length);
-    // this.drillDownIDs = [];
-    this.drillDownTitles.splice(0, this.drillDownTitles.length);
-    // this.drillDownTitles = [];
-    this.barMultiplier = undefined;
-
-    this.hasChartData = false;
-    this.displayTable = false;
-
-    this.initialChartTitle = 'Project FTE Rollup';
-    this.initialChartSubTitle = '';
-
+    // set the chart options
     this.setChartOptions();
 
-    if (this.chartWasRendered) {
-      this.reRenderChart();
-    } else {
-      this.renderChart();
+    // render the chart
+    this.renderChart2();
+
+  }
+
+
+  setChartTitle(project: any) {
+
+    this.chartTitle = `Project FTE Rollup for ${project.ProjectName} ${project.ProjectTypeName}`;
+
+    if (this.chartData.length) {
+
+      this.chartSubTitle = `Click a box to drill down (if pointing hand cursor);
+        click the grey box in the upper right corner to drill up`;
+
     }
 
   }
+
+
+  renderChart2() {
+
+    // render the chart
+    this.chart = Highcharts.chart('rollupChart', this.chartOptions);
+
+    // reflow the chart so it fits within it's outer container
+    setTimeout(() => {
+      this.chart.reflow();
+    }, 0);
+
+  }
+
 
 
 
@@ -441,16 +426,16 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
         if (this.chartData.length) {
 
-          this.initialChartSubTitle = `Click a box to drill down (if pointing hand cursor);
+          this.chartSubTitle = `Click a box to drill down (if pointing hand cursor);
             click grey box in upper right corner to drill up`;
 
-          this.initialChartTitle = `Project FTE Rollup for ${this.chartData[0].name} ${this.chartData[0].type}`;
+          this.chartTitle = `Project FTE Rollup for ${this.chartData[0].name} ${this.chartData[0].type}`;
 
         } else {
 
           this.clearChart();
 
-          this.initialChartTitle = `Project FTE Rollup for ${project.ProjectName} ${project.ProjectTypeName}`;
+          this.chartTitle = `Project FTE Rollup for ${project.ProjectName} ${project.ProjectTypeName}`;
 
         }
 
@@ -459,7 +444,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
         this.clearChart();
 
-        this.initialChartTitle = `Project FTE Rollup for ${project.ProjectName} ${project.ProjectTypeName}`;
+        this.chartTitle = `Project FTE Rollup for ${project.ProjectName} ${project.ProjectTypeName}`;
 
       }
 
@@ -1027,7 +1012,6 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
         // height: 600,
         events: {
           load: function (e) {
-            console.log('chart is loaded');
             if (that.hasChartData) {
               that.displayTable = true;
               setTimeout(() => {
@@ -1083,7 +1067,6 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
         }],
         events: {
           click: function(e) {
-            console.log('CLICK FUNCTION TRIGGERED');
             // if (1 === 1) {
             //   throw {error: 'dont drill down'};
             // }
@@ -1168,10 +1151,10 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
         data: this.chartData
       }],
       subtitle: {
-        text: this.initialChartSubTitle
+        text: this.chartSubTitle
       },
       title: {
-        text: this.initialChartTitle  // initial title for level 1 project/program
+        text: this.chartTitle
       }
     };
 
@@ -1223,6 +1206,72 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
       }
     });
     return returnVal ? returnVal : false;
+  }
+
+
+  // on clicking the 'x' icon at the right of the search/filter input
+  onClearSearchClick() {
+    // clear the filter string
+    console.log('search input clear clicked');
+    this.filterString = undefined;
+    // $('input.projects-filter-input').val('');
+    // this.filterStringVC.nativeElement.value = '';
+    console.log('filterString:');
+    console.log(this.filterString);
+    $('.projects-filter-input').typeahead('val', '');
+    // reset the focus on the filter input
+    this.filterStringVC.nativeElement.focus();
+
+
+    this.clearChart();
+
+    // $('.projects-filter-input').typeahead('close');
+    // setTimeout(() => {
+    //   $('div.tt-menu').removeClass('tt-open');
+    // }, 0);
+    // update the count display (showing x of y) by calling onFilterStringChange()
+    // this.onFilterStringChange();
+  }
+
+
+  clearChartData() {
+
+    this.chartData = undefined;
+    this.tableData.splice(0, this.tableData.length);
+    // this.tableData = [];
+    this.levelOneData = undefined;
+    this.childProjects.splice(0, this.childProjects.length);
+    // this.childProjects = [];
+    this.drillLevel = 0;
+    this.drillHistory.splice(0, this.drillHistory.length);
+    // this.drillHistory = [];
+    this.drillDownIDs.splice(0, this.drillDownIDs.length);
+    // this.drillDownIDs = [];
+    this.drillDownTitles.splice(0, this.drillDownTitles.length);
+    // this.drillDownTitles = [];
+    this.barMultiplier = undefined;
+
+    this.hasChartData = false;
+    this.displayTable = false;
+
+  }
+
+  // when the 'x' button is clicked or input is cleared (typeahead selection returns no object)
+  clearChart() {
+
+    this.clearChartData();
+
+    this.chartTitle = 'Project FTE Rollup';
+    this.chartSubTitle = '';
+
+    this.setChartOptions();
+
+    if (this.chartWasRendered) {
+      this.reRenderChart();
+    } else {
+      this.renderChart();
+    }
+
   }
 
 

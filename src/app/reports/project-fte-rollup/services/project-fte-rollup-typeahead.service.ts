@@ -43,29 +43,23 @@ export class ProjectFteRollupTypeaheadService {
         if (!that.filterString) {
           query = undefined;
         }
-        //
         // get an array of filtered project objects using the filter pipe with fuzzy search
         const filteredProjects = that2.getFilteredProjects(query);
-        // console.log('filtered projects within typeadhead function:');
-        // console.log(filteredProjects);
         // process the array of objects to set the typeahead values
         process(filteredProjects);
       }
     })
     .bind('typeahead:selected', (event, selection) => {
-      // console.log('typeahead item has been selected:');
-      // console.log(selection);
       // set the focus on a hidden element behind the typeahead to force the typeahead input to lose focus
       that.hiddenInput.nativeElement.focus();
       // clear/reset existing chart and table data
       that.clearChartData();
       // render the chart, or blank chart if there is no data to display
-      that.renderLokiChart(selection);
+      // that.renderLokiChart(selection);
+      that.displayChart(selection);
     });
 
-
   }
-
 
   // return an array of filtered project objects using the filter pipe with fuzzy search
   getFilteredProjects(query): any {
