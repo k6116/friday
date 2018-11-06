@@ -272,8 +272,6 @@ export class ToolsService {
       }
     });
 
-    console.log(`quarter array index: ${quarterIndex}`);
-
     // get the current year as a number
     const year = moment(date).year();
 

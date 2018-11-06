@@ -21,10 +21,10 @@ export class MatplanOrderComponent implements OnInit {
   }
 
   showOrders(item: any) {
-    console.log('clicked item');
-    console.log(item);
+    // console.log('clicked item');
+    // console.log(item);
     this.apiDataMatplanService.showOrdersForPart(this.matplanID, item.ChildID).subscribe( res => {
-      console.log(res);
+      // console.log(res);
     });
   }
 

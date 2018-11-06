@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FilterPipe } from '../../../_shared/pipes/filter.pipe';
+import { ProjectFteRollupChartService } from './project-fte-rollup-chart.service';
 
 declare var $: any;
 
@@ -10,7 +11,8 @@ export class ProjectFteRollupTypeaheadService {
 
 
   constructor(
-    private filterPipe: FilterPipe
+    private filterPipe: FilterPipe,
+    private projectFteRollupChartService: ProjectFteRollupChartService
   ) { }
 
 
@@ -53,7 +55,7 @@ export class ProjectFteRollupTypeaheadService {
       // set the focus on a hidden element behind the typeahead to force the typeahead input to lose focus
       that.hiddenInput.nativeElement.focus();
       // clear/reset existing chart and table data
-      that.clearChartData();
+      that2.projectFteRollupChartService.clearChartData(that);
       // render the chart, or blank chart if there is no data to display
       // that.renderLokiChart(selection);
       that.displayChart(selection);

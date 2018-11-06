@@ -247,7 +247,7 @@ export class TeamRolesComponent implements OnInit {
          this.initNewRole();
        },
        err => {
-         console.log(err);
+        //  console.log(err);
          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
        }
      );
@@ -266,9 +266,9 @@ export class TeamRolesComponent implements OnInit {
   }
 
   onTestFormClick() {
-    console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
-    console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
-    console.log('this.teamOrgStructure', this.teamOrgStructure);
+    // console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
+    // console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
+    // console.log('this.teamOrgStructure', this.teamOrgStructure);
   }
 
 }

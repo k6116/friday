@@ -50,7 +50,6 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   filteredProjects: any;
   chartTitle: string;
   chartSubTitle: string;
-  chartWasRendered: boolean;
 
 
   @HostListener('window:resize', ['$event'])
@@ -96,7 +95,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
     this.projectsList = await this.projectFteRollupDataService.getTypeaheadData()
     .catch(err => {
-      console.log(err);
+      // console.log(err);
     });
 
   }
@@ -163,8 +162,8 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // otherwise, modify the bom data into chart data for the highcharts drillable treemap
     this.chartData = this.projectFteRollupPrepDataService.buildChartData(this.bomData);
 
-    console.log('returned chartData array from the prep data service:');
-    console.log(this.chartData);
+    // console.log('returned chartData array from the prep data service:');
+    // console.log(this.chartData);
 
     // get the max fte value from the chart data, to use to calculate/re-calculate the bar multiplier
     this.maxFTE = this.projectFteRollupPrepDataService.getMaxFTE(this.chartData);
@@ -181,7 +180,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
     // if there is no chart data, clear the chart and stop here
     if (!this.chartData.length) {
-      this.clearChart();
+      this.projectFteRollupChartService.clearChart(this);
       return;
     }
 
@@ -208,7 +207,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
     return await this.projectFteRollupDataService.getBOMData(project.ProjectID)
     .catch(err => {
-      console.log(err);
+      // console.log(err);
     });
 
   }
@@ -270,169 +269,6 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   }
 
 
-
-  pushChildItemsIntoTable(parentID) {
-
-    console.log('existing table data:');
-    console.log(`looking for data.id: ${parentID}`);
-    console.log(this.tableData);
-
-    // find the position/index of the parentID in the table
-    // so that the child items can be spliced in, in the proper location
-    let tableRow = 0;
-    this.tableData.forEach((data, index) => {
-      console.log(`data.id: ${data.id.toString()}; parentID: ${parentID.toString()}`);
-      if (data.id.toString() === parentID.toString()) {
-        tableRow = index + 1;
-        console.log(`found match at row: ${tableRow}`);
-      }
-    });
-
-    console.log('row of clicked item in table:');
-    console.log(tableRow);
-
-    // remove all existing highlighted rows
-    // this.removeAllRowHighlights();
-
-    const childItems = this.chartData.filter(data => {
-      return data.parent === parentID;
-    });
-
-    // childItems.forEach(item => {
-    //   item.highlight = true;
-    // });
-
-    console.log('child items:');
-    console.log(childItems);
-
-    // add the child items to the table, below the parent item
-    if (childItems.length) {
-      // this.tableData.push(childItems[0]);
-      this.tableData.splice(tableRow, 0, ...childItems);
-      // a1.splice(2, 0, ...a2);
-    }
-
-    console.log('new table data:');
-    console.log(this.tableData);
-
-  }
-
-
-  pushChildIDsIntoHistory(parentID) {
-
-    // filter to get child items
-    const childItems = this.chartData.filter(data => {
-      return data.parent === parentID;
-    });
-
-    const idArray: number[] = [];
-    childItems.forEach(item => {
-      idArray.push(item.id);
-    });
-    console.log('ids array:');
-    console.log(idArray);
-
-    this.drillDownIDs.push(idArray);
-
-    console.log('drill down ids array:');
-    console.log(this.drillDownIDs);
-
-  }
-
-
-  removeChildItemsFromTable() {
-
-    // get the last array of drill down ids
-    const tableIds = this.drillDownIDs[this.drillDownIDs.length - 1];
-
-    console.log('table ids to remove from table:');
-    console.log(tableIds);
-
-    // loop through the table data in reverse order
-    if (tableIds) {
-      for (let i = this.tableData.length - 1; i >= 0; i--) {
-        if (tableIds.includes(this.tableData[i].id)) {
-          console.log(`found table id to remove at index: ${i}`);
-          this.tableData.splice(i, 1);
-        }
-      }
-    }
-
-    // remove the last table ids array
-    if (this.drillDownIDs.length) {
-      this.drillDownIDs.pop();
-    }
-
-    console.log('new table data with removed children:');
-    console.log(this.tableData);
-
-  }
-
-
-  pushTitlesIntoHistory(title) {
-
-    this.drillDownTitles.push(title);
-
-    console.log('titles array after push:');
-    console.log(this.drillDownTitles);
-
-  }
-
-  removeTitlesFromHistory() {
-
-    // remove the last title from the array
-    this.drillDownTitles.pop();
-
-    console.log('titles array after pop:');
-    console.log(this.drillDownTitles);
-
-  }
-
-
-  highlightDisplayedItems(parentID, level?) {
-
-    // remove all existing highlighted rows
-    this.removeAllRowHighlights();
-
-    if (this.chartData) {
-      const childItems = this.chartData.filter(data => {
-        if (level) {
-          return data.level === level;
-        } else {
-          return data.parent === parentID;
-        }
-      });
-
-      childItems.forEach(item => {
-        item.highlight = true;
-      });
-
-    }
-
-  }
-
-
-  removeAllRowHighlights() {
-
-    this.tableData.forEach(row => {
-      row.highlight = false;
-    });
-
-
-  }
-
-
-  checkClickedItemIsInChart(id: number, tableData: any): boolean {
-    let returnVal: boolean;
-    tableData.forEach(data => {
-      if (data.id.toString() === id.toString() && data.highlight) {
-        returnVal = true;
-      }
-    });
-    return returnVal ? returnVal : false;
-  }
-
-
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
 
@@ -444,41 +280,9 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // reset the focus on the filter input
     this.filterStringVC.nativeElement.focus();
 
-    this.clearChart();
+    this.projectFteRollupChartService.clearChart(this);
 
   }
 
-
-  clearChartData() {
-
-    this.chartData = undefined;
-    this.tableData.splice(0, this.tableData.length);
-
-    this.drillLevel = 0;
-    this.drillHistory.splice(0, this.drillHistory.length);
-    this.drillDownIDs.splice(0, this.drillDownIDs.length);
-    this.drillDownTitles.splice(0, this.drillDownTitles.length);
-
-    this.barMultiplier = undefined;
-
-    this.hasChartData = false;
-    this.displayTable = false;
-
-  }
-
-
-  // when the 'x' button is clicked or input is cleared (typeahead selection returns no object)
-  clearChart() {
-
-    this.clearChartData();
-
-    this.chartTitle = 'Project FTE Rollup';
-    this.chartSubTitle = '';
-
-    this.setChartOptions();
-
-    this.renderChart();
-
-  }
 
 }

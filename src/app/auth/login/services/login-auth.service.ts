@@ -48,7 +48,6 @@ export class LoginAuthService {
       authResponse = res;
     })
     .catch(err => {
-      console.log(err);
       authResponse = err;
     });
 

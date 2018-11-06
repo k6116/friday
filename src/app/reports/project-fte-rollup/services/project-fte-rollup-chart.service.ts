@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ProjectFteRollupTableService } from './project-fte-rollup-table.service';
 
 declare var require: any;
 declare var $: any;
@@ -13,12 +14,17 @@ require('highcharts/highcharts-more.js')(Highcharts);
 @Injectable()
 export class ProjectFteRollupChartService {
 
-  constructor() { }
+  constructor(
+    private projectFteRollupTableService: ProjectFteRollupTableService
+  ) { }
 
   // set a function to be executed whenever a drillup is executed
   // NOTE: this must be done with this approach using an extension...
   // since the treemap doesn't have a drillup event like some other chart types do (it does have load, click, etc. but not drillup)
   setDrillUpFunction(that) {
+
+    // get a reference to 'this' class
+    const that2 = this;
 
     function drillup(proceed) {
 
@@ -43,13 +49,13 @@ export class ProjectFteRollupChartService {
       }
 
       // remove the drilled down children from the table
-      that.removeChildItemsFromTable();
+      that2.projectFteRollupTableService.removeChildItemsFromTable(that);
 
       // remove the last chart title from the array
-      that.removeTitlesFromHistory();
+      that2.removeTitlesFromHistory(that);
 
       // highlight the displayed items (next level up)
-      that.highlightDisplayedItems(undefined, level);
+      that2.projectFteRollupTableService.highlightDisplayedItems(undefined, that, level);
 
       // proceed, continue to drillup as it would by default with no code
       proceed.apply(this);
@@ -66,6 +72,8 @@ export class ProjectFteRollupChartService {
 
   getChartOptions(chartData: any, that): any {
 
+    // get a reference to 'this' class
+    const that2 = this;
 
     // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
     const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
@@ -107,11 +115,6 @@ export class ProjectFteRollupChartService {
           }
         }
       },
-      // tooltip: {
-      //   formatter: function () {
-      //     return 'The value for <b>sadfas</b>';
-      //   }
-      // },
       series: [{
         type: 'treemap',
         layoutAlgorithm: 'squarified',  // sliceAndDice, stripes, squarified or strip
@@ -121,17 +124,9 @@ export class ProjectFteRollupChartService {
         animationLimit: 1000,
         stickyTracking: true,
         enableMouseTracking: true,
-        // tooltip: {
-        //   followPointer: true
-        // },
         dataLabels: {
           enabled: false
         },
-        // tooltip: {
-        //   pointFormatter: function () {
-        //     return `<b>{point.name}</b>: {point.value}<br/> YES!`;
-        //   }
-        // },
         levelIsConstant: false,
         levels: [{
           level: 1,
@@ -148,84 +143,52 @@ export class ProjectFteRollupChartService {
         }],
         events: {
           click: function(e) {
-            // if (1 === 1) {
-            //   throw {error: 'dont drill down'};
-            // }
 
             const tableData = $.extend(true, [], that.tableData);
-            console.log('table data:');
-            console.log(tableData);
 
-            console.log(`clicked on ${e.point.name}; id ${e.point.id}`);
-            console.log(e.point);
+            if (that2.checkClickedItemIsInChart(e.point.id, tableData)) {
 
-            if (that.checkClickedItemIsInChart(e.point.id, tableData)) {
-              console.log('clicked item IS in the chart');
-
-            // console.log(e);
-            // console.log(e.point.level);
-            // console.log('this');
-            // console.log(this);
-            // console.log('rootNode:');
-            // const rootNode = this.chart.series[0].rootNode;
-            // console.log(rootNode);
-            // const drillDownColors = ['#7cb5ec', '#90ed7d', '#91e8e1', '#f45b5b', '#2b908f',
-            //   '#7cb5ec', '#e4d354', '#434348', '#8085e9', '#f15c80'];
-            let colorIndex = 0;
-            for (let i = 0; i < this.data.length; i++) {
-              if (this.data[i].level === 2) {
-                const pointColor = Highcharts.getOptions().colors[colorIndex];
-                this.data[i].update({
-                  // color: drillDownColors[colorIndex]
-                  color: pointColor
-                });
-                // console.log(`color for ${e.point.name} is ${pointColor}`);
-                colorIndex++;
-                that.chartData.color = pointColor;
+              // const drillDownColors = ['#7cb5ec', '#90ed7d', '#91e8e1', '#f45b5b', '#2b908f',
+              //   '#7cb5ec', '#e4d354', '#434348', '#8085e9', '#f15c80'];
+              let colorIndex = 1;
+              for (let i = 0; i < this.data.length; i++) {
+                if (this.data[i].level === 2) {
+                  const pointColor = Highcharts.getOptions().colors[colorIndex];
+                  this.data[i].update({
+                    // color: drillDownColors[colorIndex]
+                    color: pointColor
+                  });
+                  if (colorIndex === 9) {
+                    colorIndex = 0;
+                  } else {
+                    colorIndex++;
+                  }
+                  that.chartData.color = pointColor;
+                }
               }
+
+              let drilledDown = false;
+
+              if (e.point.node.children.length) {
+                drilledDown = true;
+              }
+
+              if (drilledDown) {
+
+                this.chart.setTitle({text: `Project FTE Rollup for ${e.point.name} ${e.point.type}`});
+
+                that2.projectFteRollupTableService.pushChildItemsIntoTable(e.point.id, that);
+
+                that2.pushChildIDsIntoHistory(e.point.id, that);
+
+                that2.pushTitlesIntoHistory(this.chart.title.textStr, that);
+
+                that2.projectFteRollupTableService.highlightDisplayedItems(e.point.id, that);
+
+              }
+            } else {
+              throw {error: 'dont drill down'};
             }
-
-            let drilledDown = false;
-
-            // console.log('test of that');
-            // console.log(that.chartData);
-            if (e.point.node.children.length) {
-              drilledDown = true;
-              // that.drillHistory.push({
-              //   level: e.point.level,
-              //   id: e.point.id,
-              //   name: e.point.name
-              // });
-            }
-
-            if (drilledDown) {
-
-              console.log('e.point:');
-              console.log(e.point);
-
-              this.chart.setTitle({text: `Project FTE Rollup for ${e.point.name} ${e.point.type}`});
-
-              console.log(`chart title: ${this.chart.title.textStr}`);
-
-              that.pushChildItemsIntoTable(e.point.id);
-
-              that.pushChildIDsIntoHistory(e.point.id);
-
-              that.pushTitlesIntoHistory(this.chart.title.textStr);
-
-              that.highlightDisplayedItems(e.point.id);
-
-            }
-
-            // console.log('drill history:');
-            // console.log(that.drillHistory);
-
-            // console.log('updated data');
-            // console.log(this.data);
-          } else {
-            console.log('clicked item is NOT in the chart');
-            throw {error: 'dont drill down'};
-          }
 
           }
         },
@@ -233,10 +196,52 @@ export class ProjectFteRollupChartService {
       }]
     };
 
-
     // return the chart options object
     return chartOptions;
 
+  }
+
+
+  pushChildIDsIntoHistory(parentID, that) {
+
+    // filter to get child items
+    const childItems = that.chartData.filter(data => {
+      return data.parent === parentID;
+    });
+
+    const idArray: number[] = [];
+    childItems.forEach(item => {
+      idArray.push(item.id);
+    });
+
+    that.drillDownIDs.push(idArray);
+
+  }
+
+
+  pushTitlesIntoHistory(title, that) {
+
+    that.drillDownTitles.push(title);
+
+  }
+
+
+  removeTitlesFromHistory(that) {
+
+    // remove the last title from the array
+    that.drillDownTitles.pop();
+
+  }
+
+
+  checkClickedItemIsInChart(id: number, tableData: any): boolean {
+    let returnVal: boolean;
+    tableData.forEach(data => {
+      if (data.id.toString() === id.toString() && data.highlight) {
+        returnVal = true;
+      }
+    });
+    return returnVal ? returnVal : false;
   }
 
 
@@ -245,6 +250,7 @@ export class ProjectFteRollupChartService {
     that.chartData = undefined;
     that.tableData.splice(0, that.tableData.length);
 
+    that.drillLevel = 0;
     that.drillHistory.splice(0, that.drillHistory.length);
     that.drillDownIDs.splice(0, that.drillDownIDs.length);
     that.drillDownTitles.splice(0, that.drillDownTitles.length);
@@ -253,6 +259,21 @@ export class ProjectFteRollupChartService {
 
     that.hasChartData = false;
     that.displayTable = false;
+
+  }
+
+
+  // when the 'x' button is clicked or input is cleared (typeahead selection returns no object)
+  clearChart(that) {
+
+    this.clearChartData(that);
+
+    that.chartTitle = 'Project FTE Rollup';
+    that.chartSubTitle = '';
+
+    that.setChartOptions();
+
+    that.renderChart();
 
   }
 

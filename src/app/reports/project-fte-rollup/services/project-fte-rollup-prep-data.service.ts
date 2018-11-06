@@ -34,43 +34,29 @@ export class ProjectFteRollupPrepDataService {
     // NOTE: at this point parts will still be included in the structure, and ftes will not be rolled up
     this.buildProjectStructure(firstRecord, this.firstLevelProject);
 
-    // console.log('chart data after building project structure:');
-    // console.log(this.chartData);
-
     // update the parent id's, such that the child project id's will reference their parent project id's, not part id's
     // (part levels will be phantom / ignored)
     // since this is also recursive, need to start with the first level (level zero) chart object
     this.updateParentIDs(this.chartData[0]);
 
-    // console.log('chart data after updating parent ids:');
-    // console.log(this.chartData);
-
     // filter chart objects to include only Projects
     this.removePartObjects();
-
-    // console.log('chart data after filtering out part objects:');
-    // console.log(this.chartData);
 
     // remove duplicates if there are any at each individual level
     this.removeLevelDuplicates();
 
-    // console.log('chart data after removing duplicates at each level:');
-    // console.log(this.chartData);
-
+    // rollup the fte values for each project to a cumulative value for the treemap rectangle size and tooltip value
+    // NOTE: this will only update a single property 'value'
     this.rollupFTEValues();
 
-    // console.log('chart data after rolling up fte values:');
-    // console.log(this.chartData);
-
+    // sort chart data by level, parent (for debug readability), and value (descending) for proper treemap rendering
     this.sortChartData();
 
-    // console.log('chart data after sorting:');
-    // console.log(this.chartData);
+    // remove projects with zero or null FTE values
+    this.filterProjectsWithNoFTEs();
 
+    // update the level property since we removed levels (parts) and also want to start with level 1 instead of zero
     this.updateLevels();
-
-    // console.log('chart data after updating levels:');
-    // console.log(this.chartData);
 
     // set the color for the first level (selected project) to blue (first highcharts color)
     this.setFirstLevelColor();
@@ -134,7 +120,7 @@ export class ProjectFteRollupPrepDataService {
         // recursively call this method passing the bom record and the chart object that was just pushed in
         // NOTE: need to pass the chart object because it keeps track of the id and parent id
         this.buildProjectStructure(project1, chartObj);
-        // return;
+
       }
     });
 
@@ -221,6 +207,15 @@ export class ProjectFteRollupPrepDataService {
 
   }
 
+  // remove projects with zero or null FTE values
+  filterProjectsWithNoFTEs() {
+
+    this.chartData = this.chartData.filter(project => {
+      return project.value;
+    });
+
+  }
+
 
   // used by rollupFTEValues to get a unique list of projects that are associated with (structured to) a given parent project
   getProjectBOM(project: any, data: any): any {
@@ -249,8 +244,7 @@ export class ProjectFteRollupPrepDataService {
   }
 
 
-  // sort chart data by level, parent (for debug readability),
-  // and value (descending) for proper treemap rendering
+  // sort chart data by level, parent (for debug readability), and value (descending) for proper treemap rendering
   sortChartData() {
 
     // uses the lodash orderBy method
@@ -258,7 +252,7 @@ export class ProjectFteRollupPrepDataService {
 
   }
 
-  // need to update the level property since we removed levels (parts) and also want to start with level 1 instead of zero
+  // update the level property since we removed levels (parts) and also want to start with level 1 instead of zero
   updateLevels() {
 
     // iterate through each chart object

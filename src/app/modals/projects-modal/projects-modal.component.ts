@@ -156,8 +156,8 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     // listen for websocket message for newly created projects
     this.subscription1 = this.websocketService.getNewProject().subscribe(project => {
-      console.log('websocket subscription received');
-      console.log(project);
+      // console.log('websocket subscription received');
+      // console.log(project);
       this.refreshProjectCards();
     });
 
