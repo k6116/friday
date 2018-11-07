@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
+import { ToolsService } from '../../_shared/services/tools.service';
 import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { ProjectFteRollupChartService } from './services/project-fte-rollup-chart.service';
 import { ProjectFteRollupDataService } from './services/project-fte-rollup-data.service';
@@ -9,6 +10,7 @@ import { ProjectFteRollupTypeaheadService } from './services/project-fte-rollup-
 
 
 declare var $: any;
+import * as moment from 'moment';
 import * as Highcharts from 'highcharts';
 
 
@@ -52,6 +54,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
 
   constructor(
+    private toolsService: ToolsService,
     private clickTrackingService: ClickTrackingService,
     private projectFteRollupChartService: ProjectFteRollupChartService,
     private projectFteRollupDataService: ProjectFteRollupDataService,
@@ -251,8 +254,12 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
     if (this.chartData.length) {
 
-      this.chartSubTitle = `Click a box to drill down (if pointing hand cursor);
-        click the grey box in the upper right corner to drill up`;
+      // get the fiscal quarter and months range for the subtitle
+      const fiscalQuarter = this.toolsService.fiscalQuarterString(moment());
+      const monthsRange = this.toolsService.fiscalQuarterMonthsString(moment());
+
+      this.chartSubTitle = `For current fiscal quarter ${fiscalQuarter} (${monthsRange}).
+        Click a box to drill down (if pointing hand cursor); click the grey box in the upper right corner to drill up`;
 
     }
 
