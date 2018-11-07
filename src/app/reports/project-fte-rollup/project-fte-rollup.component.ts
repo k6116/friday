@@ -147,18 +147,12 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   // on project selection from typeahead list, render the treemap chart and display table below if there is data
   async displayChart(project: any) {
 
-    // console.log('selected project object:');
-    // console.log(project);
-
     // log a record in the click tracking table
     this.logClick(project);
 
     // get raw data from the database in the form of a bom with fte values
     // will include parts and require significant processing to get it into the proper format for highcharts drillable treemap
     this.bomData = await this.getBOMData(project);
-
-    // console.log('BOM Data (raw data from stored procedure:');
-    // console.log(this.bomData);
 
     // if there is only one project at level zero with no ftes, there will be no chart to render so just display an empty chart
     if (!this.bomData) {
@@ -172,9 +166,6 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
     // otherwise, modify the bom data into chart data for the highcharts drillable treemap
     this.chartData = this.projectFteRollupPrepDataService.buildChartData(this.bomData);
-
-    // console.log('final chartData array from the prep data service:');
-    // console.log(this.chartData);
 
     // if there is no chart data, there will be no chart to render so just display an empty chart
     if (!this.chartData.length) {
