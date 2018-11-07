@@ -45,6 +45,8 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   maxFTE: number;
   barMultiplier: number;
   filterString: string;
+  chartHasBeenRendered: boolean;
+  chartHasBeenClearedWithKey: boolean;
 
   // set hostlistenr to fire on window resize, so that the cumulative fte bars in the table can be resized
   @HostListener('window:resize', ['$event'])
@@ -135,15 +137,6 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
     this.barMultiplier = this.projectFteRollupTableService.calculateBarMultipler($('th.col-spark-bar'), this.maxFTE);
 
-  }
-
-
-  // clear the chart if the input is fully cleared with the backspace or delete keys
-  onInputKeyUp(value, key) {
-
-    if (!value && (key === 'Backspace' || key === 'Delete')) {
-      this.projectFteRollupChartService.clearChart(this);
-    }
   }
 
 
@@ -283,11 +276,21 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
       this.chart.reflow();
     }, 0);
 
+    // set a flag to indicate the chart has been rendered at least once
+    // this is used to NOT render the chart if the typeahead is cleared before any chart has been rendered
+    this.chartHasBeenRendered = true;
+
   }
 
 
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
+
+    // don't do anything if there is nothing in the input, except resetting the focus
+    if (!this.filterString) {
+      this.filterStringVC.nativeElement.focus();
+      return;
+    }
 
     // clear the filter string
     this.filterString = undefined;
@@ -297,7 +300,31 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // reset the focus on the filter input
     this.filterStringVC.nativeElement.focus();
 
-    this.projectFteRollupChartService.clearChart(this);
+    // clear the existing chart data and chart if there has been one display
+    if (this.chartHasBeenRendered) {
+      this.projectFteRollupChartService.clearChart(this);
+    }
+
+  }
+
+
+  // clear the chart if the input is fully cleared with the backspace or delete keys
+  onInputKeyUp(value, key) {
+
+    // don't do anything if the user keeps hitting the backspace key repeatedly after the chart has already been cleared
+    if (!value && key === 'Backspace' && this.chartHasBeenClearedWithKey) {
+      return;
+    }
+
+    if (!value && (key === 'Backspace' || key === 'Delete')) {
+      // clear the existing chart data and chart if there has been one display
+      if (this.chartHasBeenRendered) {
+        this.projectFteRollupChartService.clearChart(this);
+        this.chartHasBeenClearedWithKey = true;
+      }
+    } else {
+      this.chartHasBeenClearedWithKey = false;
+    }
 
   }
 
