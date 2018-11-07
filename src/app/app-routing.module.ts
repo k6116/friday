@@ -55,16 +55,18 @@ import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  // { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/setups/team-roles', pathMatch: 'full' },
   { path: 'block', component: BlockAppUseComponent },
   { path: 'test', component: TestComponent, canActivate: [BrowserGuard] },
   { path: 'perf', component: PerformanceComponent, canActivate: [BrowserGuard] },
-  { path: 'login', component: LoginComponent, canActivate: [BrowserGuard] },
+  // { path: 'login', component: LoginComponent, canActivate: [BrowserGuard] },
   { path: 'error403', component: Error403Component },
   { path: 'unit-test', component: UnitTestComponent },
   {
-    path: 'main', component: MainComponent, canActivate: [BrowserGuard, AuthGuardService], resolve: { loggedInUser: UserResolverService },
-    children: [
+    // path: 'main', component: MainComponent, canActivate: [BrowserGuard, AuthGuardService], resolve: { loggedInUser: UserResolverService },
+    path: 'main', component: MainComponent, 
+        children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,

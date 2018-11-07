@@ -289,6 +289,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   async advancedFilter(filterOptions: any) {
     this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
+    // this.advancedFilteredResults = this.advancedFilteredResults.nested;
     console.log('this.advancedFilteredResults', this.advancedFilteredResults);
   }
 
@@ -307,22 +308,36 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     //   FTEDateTo: 'NULL'
     // };
     const filterOptions = {
-      PLCStatusIDs: '1,2,3,4,5,6',
-      PLCDateRanges: 'NULL|NULL,2017-05-01|2019-09-01,2017-05-01|2019-09-01,NULL|NULL,NULL|NULL,2017-05-01|2019-09-01',
+      PLCStatusIDs: '1,2,3',
+      PLCDateRanges: 'NULL|NULL,2012-05-01|2019-09-01,2012-05-01|2019-09-01',
       ProjectName: '',
       ProjectTypeIDs: '1,2,3',
       ProjectStatusIDs: '',
       ProjectPriorityIDs: '1',
       ProjectOwnerEmails: '',
-      FTEMin: '1.5',
-      FTEMax: '5.5',
+      FTEMin: '0.5',
+      FTEMax: '10.5',
       FTEDateFrom: '2017-01-01',
       FTEDateTo: '2019-01-01'
     };
+    // const filterOptions = {
+    //   PLCStatusIDs: '1',
+    //   PLCDateRanges: 'NULL|NULL',
+    //   ProjectName: '',
+    //   ProjectTypeIDs: '1,2,3',
+    //   ProjectStatusIDs: '',
+    //   ProjectPriorityIDs: '1',
+    //   ProjectOwnerEmails: '',
+    //   FTEMin: '0.5',
+    //   FTEMax: '10.5',
+    //   FTEDateFrom: '2017-01-01',
+    //   FTEDateTo: '2019-01-01'
+    // };
+
     this.advancedFilter(filterOptions);
-    this.getProjectOwnerSubordinates('henri_komrij@keysight.com');
-    this.getProjectChildren('Loki', 'Program', 'ethan_hunt@keysight.com');
-    this.getProjectParents('Arges70', 'NCI', 'ethan_hunt@keysight.com');
+    // this.getProjectOwnerSubordinates('henri_komrij@keysight.com');
+    // this.getProjectChildren('Loki', 'Program', 'ethan_hunt@keysight.com');
+    // this.getProjectParents('Arges70', 'NCI', 'ethan_hunt@keysight.com');
 
   }
 

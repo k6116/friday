@@ -1,6 +1,6 @@
 const sequelize = require('../db/sequelize').sequelize;
 const moment = require('moment');
-const treeize = require('treeize');
+const Treeize = require('treeize');
 
 function indexProjectsAdvancedFilter(req, res) {
 
@@ -74,16 +74,31 @@ function indexAdvancedFilteredResults(req, res) {
   const filterOptions = req.body;
 
   const sql = `
-    EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectTypeIDs,
-     :ProjectStatusIDs, :ProjectPriorityIDs, :ProjectOwnerEmails, :FTEMin, :FTEMax, :FTEDateFrom, :FTEDateTo
-    `
-  
-  sequelize.query(sql, {replacements: {PLCStatusIDs: filterOptions.PLCStatusIDs, PLCDateRanges: filterOptions.PLCDateRanges, ProjectName: filterOptions.ProjectName,
-                                      ProjectTypeIDs: filterOptions.ProjectTypeIDs, ProjectStatusIDs: filterOptions.ProjectStatusIDs, ProjectPriorityIDs: filterOptions.ProjectPriorityIDs,
-                                      ProjectOwnerEmails: filterOptions.ProjectOwnerEmails, FTEMin: filterOptions.FTEMin, FTEMax: filterOptions.FTEMax, FTEDateFrom: filterOptions.FTEDateFrom, FTEDateTo: filterOptions.FTEDateTo},
-                        type: sequelize.QueryTypes.SELECT})
+      EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectTypeIDs,
+     :ProjectStatusIDs, :ProjectPriorityIDs, :ProjectOwnerEmails, :FTEMin, :FTEMax, :FTEDateFrom, :FTEDateTo`
+
+  sequelize.query(sql, {replacements: {
+    PLCStatusIDs: filterOptions.PLCStatusIDs,
+    PLCDateRanges: filterOptions.PLCDateRanges,
+    ProjectName: filterOptions.ProjectName,
+    ProjectTypeIDs: filterOptions.ProjectTypeIDs,
+    ProjectStatusIDs: filterOptions.ProjectStatusIDs,
+    ProjectPriorityIDs: filterOptions.ProjectPriorityIDs,
+    ProjectOwnerEmails: filterOptions.ProjectOwnerEmails,
+    FTEMin: filterOptions.FTEMin,
+    FTEMax: filterOptions.FTEMax,
+    FTEDateFrom: filterOptions.FTEDateFrom,
+    FTEDateTo: filterOptions.FTEDateTo
+  }, type: sequelize.QueryTypes.SELECT})
   .then(filteredRes => {    
-    res.json(filteredRes);
+    const fteTree = new Treeize();
+      fteTree.grow(filteredRes);
+      res.json({
+        nested: fteTree.getData(),
+        flat: filteredRes
+      });
+    // res.json(filteredRes);
+    // console.log('filteredRes',filteredRes)
   }).catch(error => {
     res.status(400).json({
       title: 'Error (in catch)',
