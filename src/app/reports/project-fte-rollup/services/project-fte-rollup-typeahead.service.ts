@@ -37,7 +37,7 @@ export class ProjectFteRollupTypeaheadService {
     },
     {
       name: 'projects',
-      displayKey: 'ProjectName',
+      displayKey: 'ProjectNameAndType',
       limit: 50,
       source: function(query, process) {
         // NOTE: query will be whatever text is typed into the input element

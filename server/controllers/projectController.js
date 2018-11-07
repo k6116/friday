@@ -64,7 +64,8 @@ function getProjectsList(req, res) {
     SELECT 
       T1.ProjectID,
       T1.ProjectName,
-      T2.ProjectTypeName
+      T2.ProjectTypeName,
+      T1.ProjectName + ' (' + T2.ProjectTypeName + ')' as 'ProjectNameAndType'
     FROM  
       projects.Projects T1
       LEFT JOIN projects.ProjectTypes T2 ON T1.ProjectTypeID = T2.ProjectTypeID

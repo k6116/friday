@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
+import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { ProjectFteRollupChartService } from './services/project-fte-rollup-chart.service';
 import { ProjectFteRollupDataService } from './services/project-fte-rollup-data.service';
 import { ProjectFteRollupPrepDataService } from './services/project-fte-rollup-prep-data.service';
@@ -9,8 +10,6 @@ import { ProjectFteRollupTypeaheadService } from './services/project-fte-rollup-
 
 declare var require: any;
 declare var $: any;
-import * as moment from 'moment';
-import * as _ from 'lodash';
 import * as Highcharts from 'highcharts';
 require('highcharts/modules/drilldown.js')(Highcharts);
 require('highcharts/modules/heatmap.js')(Highcharts);
@@ -59,6 +58,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
 
   constructor(
+    private clickTrackingService: ClickTrackingService,
     private projectFteRollupChartService: ProjectFteRollupChartService,
     private projectFteRollupDataService: ProjectFteRollupDataService,
     private projectFteRollupPrepDataService: ProjectFteRollupPrepDataService,
@@ -143,17 +143,36 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   }
 
 
+  // clear the chart if the input is fully cleared with the backspace or delete keys
+  onInputKeyUp(value, key) {
+
+    if (!value && (key === 'Backspace' || key === 'Delete')) {
+      this.projectFteRollupChartService.clearChart(this);
+    }
+  }
+
+
   // on project selection from typeahead list, render the treemap chart and display table below if there is data
   async displayChart(project: any) {
+
+    console.log('selected project object:');
+    console.log(project);
+
+    // log a record in the click tracking table
+    this.logClick(project);
 
     // get raw data from the database in the form of a bom with fte values
     // will include parts and require significant processing to get it into the proper format for highcharts drillable treemap
     this.bomData = await this.getBOMData(project);
 
-    // console.log('BOM Data (raw data from stored procedure:');
-    // console.log(this.bomData);
+    console.log('BOM Data (raw data from stored procedure:');
+    console.log(this.bomData);
 
     // if there is only one project at level zero with no ftes, there will be no chart to render so just display an empty chart
+    if (!this.bomData) {
+      this.displayEmptyChart(project);
+      return;
+    }
     if (this.bomData.length === 1 && !this.bomData[0].TotalFTE) {
       this.displayEmptyChart(project);
       return;
@@ -162,8 +181,14 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // otherwise, modify the bom data into chart data for the highcharts drillable treemap
     this.chartData = this.projectFteRollupPrepDataService.buildChartData(this.bomData);
 
-    // console.log('returned chartData array from the prep data service:');
-    // console.log(this.chartData);
+    console.log('final chartData array from the prep data service:');
+    console.log(this.chartData);
+
+    // if there is no chart data, there will be no chart to render so just display an empty chart
+    if (!this.chartData.length) {
+      this.displayEmptyChart(project);
+      return;
+    }
 
     // get the max fte value from the chart data, to use to calculate/re-calculate the bar multiplier
     this.maxFTE = this.projectFteRollupPrepDataService.getMaxFTE(this.chartData);
@@ -177,12 +202,6 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
     // set the chart title and chart sub-title
     this.setChartTitle(project);
-
-    // if there is no chart data, clear the chart and stop here
-    if (!this.chartData.length) {
-      this.projectFteRollupChartService.clearChart(this);
-      return;
-    }
 
     // set the chart options
     this.setChartOptions();
@@ -209,6 +228,14 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     .catch(err => {
       // console.log(err);
     });
+
+  }
+
+
+  logClick(project: any) {
+
+    // log a record in the click tracking table
+    this.clickTrackingService.logClickWithEvent(`page: Project FTE Rollup, text: ${project.ProjectName}`);
 
   }
 

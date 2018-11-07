@@ -323,7 +323,7 @@ function getProjectFTERollupData(req, res) {
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
 
-  sequelize.query('EXECUTE dbo.BillsDrillDownNewFTE :projectID, :parentType, :startDate, :endDate', 
+  sequelize.query('EXECUTE resources.ProjectFTERollup :projectID, :parentType, :startDate, :endDate', 
     {replacements: {projectID: projectID, parentType: parentType, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
     .then(rollupData => {
 
