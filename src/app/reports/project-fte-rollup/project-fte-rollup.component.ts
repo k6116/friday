@@ -8,15 +8,8 @@ import { ProjectFteRollupTableService } from './services/project-fte-rollup-tabl
 import { ProjectFteRollupTypeaheadService } from './services/project-fte-rollup-typeahead.service';
 
 
-declare var require: any;
 declare var $: any;
 import * as Highcharts from 'highcharts';
-require('highcharts/modules/drilldown.js')(Highcharts);
-require('highcharts/modules/heatmap.js')(Highcharts);
-require('highcharts/modules/treemap.js')(Highcharts);
-require('highcharts/modules/data.js')(Highcharts);
-require('highcharts/modules/no-data-to-display.js')(Highcharts);
-require('highcharts/highcharts-more.js')(Highcharts);
 
 
 @Component({
@@ -31,26 +24,27 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
   @ViewChild('hiddenInput') hiddenInput: ElementRef;
 
-  chartOptions: any;
-  chart: any;
-  hasChartData: boolean;
+
+  projectsList: any;
+  filteredProjects: any;
   bomData: any;
+  chart: any;
+  chartOptions: any;
   chartData: any;
+  hasChartData: boolean;
+  chartTitle: string;
+  chartSubTitle: string;
+  tableData: any = [];
+  displayTable: boolean;
   drillLevel: number;
   drillHistory: any = [];
   drillDownIDs: any = [];
   drillDownTitles: any = [];
-  tableData: any = [];
-  displayTable: boolean;
   maxFTE: number;
   barMultiplier: number;
   filterString: string;
-  projectsList: any;
-  filteredProjects: any;
-  chartTitle: string;
-  chartSubTitle: string;
 
-
+  // set hostlistenr to fire on window resize, so that the cumulative fte bars in the table can be resized
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.resizeChart();
@@ -65,8 +59,6 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     private projectFteRollupTableService: ProjectFteRollupTableService,
     private projectFteRollupTypeaheadService: ProjectFteRollupTypeaheadService
   ) {
-
-    this.drillLevel = 0;
 
   }
 
@@ -155,8 +147,8 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
   // on project selection from typeahead list, render the treemap chart and display table below if there is data
   async displayChart(project: any) {
 
-    console.log('selected project object:');
-    console.log(project);
+    // console.log('selected project object:');
+    // console.log(project);
 
     // log a record in the click tracking table
     this.logClick(project);
@@ -165,8 +157,8 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // will include parts and require significant processing to get it into the proper format for highcharts drillable treemap
     this.bomData = await this.getBOMData(project);
 
-    console.log('BOM Data (raw data from stored procedure:');
-    console.log(this.bomData);
+    // console.log('BOM Data (raw data from stored procedure:');
+    // console.log(this.bomData);
 
     // if there is only one project at level zero with no ftes, there will be no chart to render so just display an empty chart
     if (!this.bomData) {
@@ -181,8 +173,8 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // otherwise, modify the bom data into chart data for the highcharts drillable treemap
     this.chartData = this.projectFteRollupPrepDataService.buildChartData(this.bomData);
 
-    console.log('final chartData array from the prep data service:');
-    console.log(this.chartData);
+    // console.log('final chartData array from the prep data service:');
+    // console.log(this.chartData);
 
     // if there is no chart data, there will be no chart to render so just display an empty chart
     if (!this.chartData.length) {
@@ -247,7 +239,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     this.chartData = undefined;
 
     // set the title and subtitle
-    this.chartTitle = `Project FTE Rollup for ${project.ProjectName} ${project.ProjectTypeName}`;
+    this.chartTitle = `Project FTE Rollup for ${project.ProjectName} (${project.ProjectTypeName})`;
     this.chartSubTitle = undefined;
 
     // set the chart options
@@ -264,7 +256,7 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
 
   setChartTitle(project: any) {
 
-    this.chartTitle = `Project FTE Rollup for ${project.ProjectName} ${project.ProjectTypeName}`;
+    this.chartTitle = `Project FTE Rollup for ${project.ProjectName} (${project.ProjectTypeName})`;
 
     if (this.chartData.length) {
 

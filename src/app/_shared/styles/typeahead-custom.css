@@ -39,7 +39,7 @@
   -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
       -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
           box-shadow: 0 5px 10px rgba(0,0,0,.2); */
-  max-height: 250px;
+  max-height: 236px;
   overflow-y: auto;
   overflow-x: hidden;
 }

@@ -25,7 +25,7 @@ export class ProjectFteRollupDataService {
   // get the raw chart data from the database, in a flat BOM format
   getBOMData(projectID: number): Promise<any> {
 
-    // get the current fiscal quarter range as an array of two strings
+    // get the current fiscal quarter range as an array of two strings, to pass to the api
     const fiscalQuarterRange = this.toolsService.fiscalQuarterRange(moment(), 'MM-DD-YYYY');
 
     // return the data

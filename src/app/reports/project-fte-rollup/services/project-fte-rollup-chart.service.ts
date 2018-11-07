@@ -175,7 +175,7 @@ export class ProjectFteRollupChartService {
 
               if (drilledDown) {
 
-                this.chart.setTitle({text: `Project FTE Rollup for ${e.point.name} ${e.point.type}`});
+                this.chart.setTitle({text: `Project FTE Rollup for ${e.point.name} (${e.point.type})`});
 
                 that2.projectFteRollupTableService.pushChildItemsIntoTable(e.point.id, that);
 
