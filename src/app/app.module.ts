@@ -100,6 +100,7 @@ import { MatplanComponent } from './mat-plan/matplan/matplan.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
 import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-filters.component';
+import { AdvancedDashboardComponent } from './reports/advanced-dashboard/advanced-dashboard.component';
 
 
 @NgModule({
@@ -163,7 +164,8 @@ import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-fi
     OrgViewerComponent,
     OrgDrawD3Component,
     TransferProjectsComponent,
-    AdvancedFiltersComponent
+    AdvancedFiltersComponent,
+    AdvancedDashboardComponent
   ],
   imports: [
     AppRoutingModule,

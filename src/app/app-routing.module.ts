@@ -46,6 +46,7 @@ import { TransferProjectsComponent } from './setups/transfer-projects/transfer-p
 import { MatplanComponent } from './mat-plan/matplan/matplan.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-filters.component';
+import { AdvancedDashboardComponent } from './reports/advanced-dashboard/advanced-dashboard.component';
 
 
 // BOM module stuff
@@ -55,17 +56,15 @@ import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 
 
 const routes: Routes = [
-  // { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: '', redirectTo: '/setups/team-roles', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'block', component: BlockAppUseComponent },
   { path: 'test', component: TestComponent, canActivate: [BrowserGuard] },
   { path: 'perf', component: PerformanceComponent, canActivate: [BrowserGuard] },
-  // { path: 'login', component: LoginComponent, canActivate: [BrowserGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [BrowserGuard] },
   { path: 'error403', component: Error403Component },
   { path: 'unit-test', component: UnitTestComponent },
   {
-    // path: 'main', component: MainComponent, canActivate: [BrowserGuard, AuthGuardService], resolve: { loggedInUser: UserResolverService },
-    path: 'main', component: MainComponent, 
+    path: 'main', component: MainComponent, canActivate: [BrowserGuard, AuthGuardService], resolve: { loggedInUser: UserResolverService },
         children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
@@ -93,6 +92,7 @@ const routes: Routes = [
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'reports/advanced-filters', component: AdvancedFiltersComponent },
+      { path: 'reports/advanced-dashboard', component: AdvancedDashboardComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }
     ]

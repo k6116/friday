@@ -1,0 +1,33 @@
+<div class="container-fluid">
+
+  <!-- outer container; don't show until data is ready -->
+  <div class="dashboard-cont" [hidden]="!showDashboard">
+
+    <!-- first row -->
+    <div class="row row-custom">
+
+      <!-- roles chart -->
+      <div class="col-lg-4 col-dashboard left-third">
+        <div class="highchart my-fte-pie-chart1" id="rolesChart">
+        </div>
+      </div>
+
+      <!-- priorities chart -->
+      <div class="col-lg-4 col-dashboard mid-third">
+        <!-- <div class="highchart my-fte-pie-chart2" id="donutChart">
+        </div> -->
+      </div>
+
+      <!-- statuses chart -->
+      <div class="col-lg-4 col-dashboard right-third">
+        <!-- <div class="highchart my-fte-pie-chart2" id="donutChart">
+        </div> -->
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+</div>
