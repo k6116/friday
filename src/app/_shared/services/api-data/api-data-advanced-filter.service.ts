@@ -58,4 +58,16 @@ export class ApiDataAdvancedFilterService {
       .map((response: Response) => response.json());
   }
 
+  getProjectChildren(projectName: string, projectType: string, projectOwner: string): Observable<any> {
+    return this.http.get(`api/indexProjectChildren/${projectName}/${projectType}/${projectOwner}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  getProjectParents(projectName: string, projectType: string, projectOwner: string): Observable<any> {
+    return this.http.get(`api/indexProjectParents/${projectName}/${projectType}/${projectOwner}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
 }

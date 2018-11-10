@@ -2,6 +2,7 @@
 
 div.page-cont {
   overflow-x: hidden;
+  height: 1000px;
 }
 
 /* SEARCH BAR */
@@ -87,6 +88,7 @@ div.projects-display-count {
 div.adv-filters-cont {
   /* display: inline-block; */
   width: 50%;
+  padding-right: 0px;
   /* float: left; */
   /* background: #fff; */
   /* padding: 10px; */
@@ -104,7 +106,8 @@ div.filter-headers {
 } */
 
 div.filter-collapse.show {
-  max-height: 200px;
+  min-height: 63px;
+  max-height: 168px;
   overflow: hidden auto;
 }
 
@@ -141,21 +144,47 @@ i.projects-search-icon-search.projects-owner {
 }
 /* FILTERS 2 */
 
-div.adv-filters2-cont {
-  display: inline-block;
-  margin-left: 15px;
-  width: 50%;
+/* div.adv-filters2-cont { */
+  /* display: inline-block; */
+  /* margin-left: 15px; */
+  /* width: 50%; */
   /* background: #fff; */
   /* padding: 10px; */
+/* } */
+
+/* FILTERS 3 */
+div.adv-filters3-cont {
+  margin-top: 10px;
 }
 
 label.fte {
-  margin: 0px;
+  margin-top: 10px; 
+  margin-right: 5px; 
   color: #757779;
   font-size: smaller;
 }
 
 input.fte {
+  width: 142px;
+  margin-top: 5px;
+  /* margin-right: 5px; */
+  float: right;
+  height: 27px !important;
+  padding: 2px 4px;
+}
+
+label.plc {
+  margin-top: 10px;
+  color: #757779;
+  font-size: smaller;
+}
+
+input.plc {
+  /* display: inline; */
+  width: 142px;
+  margin-top: 5px;
+  margin-right: 5px;
+  float: right;
   height: 27px !important;
   padding: 2px 4px;
 }
@@ -163,10 +192,10 @@ input.fte {
 /* RESULT TABLE */
 
 div.adv-results-cont {
-  display: inline-block;
-  padding-left: 20px;
+  display: inline-grid;
+  padding-left: 10px;
   width: calc(100% - ( 402px + 4px));
-  height: 75vh;  /* TO-DO: replace with javascipt */
+  height: 744px;
   overflow: auto auto;
 }
 
@@ -180,3 +209,10 @@ table.filter-results th {
 table.table {
   border: 1px solid #dee2e6;
 }
+
+/* .bom-selector {
+  position: absolute;
+  top: 90px;
+  left: 220px;
+  z-index: 1;
+} */

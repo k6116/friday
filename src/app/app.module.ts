@@ -22,6 +22,7 @@ import { ClickOutsideDirective } from './_shared/directives/click-outside.direct
 // PIPES
 import { SafeHtmlPipe } from './_shared/pipes/safe-html.pipe';
 import { FilterPipe } from './_shared/pipes/filter.pipe';
+import { KeysPipe } from './_shared/pipes/keys.pipe';
 import { ProjectTypePipe } from './_shared/pipes/project-type.pipe';
 import { TitleCasePipe } from '@angular/common';
 import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
@@ -100,6 +101,7 @@ import { MatplanComponent } from './mat-plan/matplan/matplan.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
 import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-filters.component';
+import { AdvancedFiltersTypeaheadComponent } from './reports/advanced-filters/advanced-filters-typeahead/advanced-filters-typeahead.component';
 
 
 @NgModule({
@@ -124,6 +126,7 @@ import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-fi
     ProfileModalComponent,
     ProjectsModalComponent,
     FilterPipe,
+    KeysPipe,
     ProjectTypePipe,
     TestComponent,
     OrgDropdownComponent,
@@ -163,7 +166,8 @@ import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-fi
     OrgViewerComponent,
     OrgDrawD3Component,
     TransferProjectsComponent,
-    AdvancedFiltersComponent
+    AdvancedFiltersComponent,
+    AdvancedFiltersTypeaheadComponent
   ],
   imports: [
     AppRoutingModule,

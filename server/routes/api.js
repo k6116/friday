@@ -83,6 +83,7 @@ router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinate
 router.get('/org/:emailAddress', controllers.org.show);
 router.get('/org/getTeamList/:emailAddress', controllers.org.getTeamList);
 router.get('/org/getEmployeeList/:emailAddress', controllers.org.getEmployeeList);
+router.get('/org/getManagementOrgStructure/:emailAddress', controllers.org.getManagementOrgStructure);
 
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
@@ -128,6 +129,8 @@ router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedul
 // ADVANCED FILTER CONTROLLER
 router.get('/indexProjectsAdvancedFilter', controllers.advancedFilter.indexProjectsAdvancedFilter);
 router.post('/indexAdvancedFilteredResults/', controllers.advancedFilter.indexAdvancedFilteredResults);
+router.get('/indexProjectChildren/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectChildren);
+router.get('/indexProjectParents/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectParents);
 
 
 // middleware to return an error if the token cannot be verified

@@ -9,9 +9,12 @@
 
   <!-- outer page container; don't show until data is ready -->
   <div class="page-cont" *ngIf="showPage">
+  <!-- <div class="page-cont"> -->
 
     <!-- Top Row -->
     <div class="projects-search-cont">
+
+      <!-- <app-advanced-filters-typeahead></app-advanced-filters-typeahead> -->
 
       <div class="projects-search-label">
         Search
@@ -56,12 +59,14 @@
     </div>
 
     <!-- Filter Column -->
-    <div class="d-inline-flex justify-content-start" style="width:402px">
+      <div style="display: inline-grid; width:402px;">
 
-      <!-- General Project Filters -->
-      <div class="adv-filters-cont">
+        <div class="row">
 
-        <!-- ProjectTypes -->
+          <!-- Filters 1 -->
+          <div class="adv-filters-cont col">
+
+            <!-- ProjectTypes -->
             <div class="filter-headers" data-toggle="collapse" data-target="#projectTypeFilters">
               <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
               Project Types
@@ -73,118 +78,156 @@
               </div>
             </div>
 
-          <div style="height:10px; background: #f5f5f5"></div>
-          
-          <!-- ProjectStatuses -->
-            <div class="filter-headers" data-toggle="collapse" data-target="#projectStatusFilters">
-              <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-              Project Status
-            </div>
-            <div class="filter-collapse show" id="projectStatusFilters">
-              <div class="custom-control custom-checkbox" *ngFor="let projectStatus of projectStatuses; let j = index">
-                <input type="checkbox" class="custom-control-input" [attr.name]="projectStatus.projectStatusName" [attr.id]="'projectStatus' + j" (click)="onCheckboxProjectStatusClick($event, projectStatus.id)">
-                <label class="custom-control-label" [attr.for]="'projectStatus' + j" style="padding: 3px 0px 0px 10px;">{{ projectStatus.projectStatusName }}</label>
-              </div>
-            </div>
+            <div style="height:10px; background: #f5f5f5"></div>
 
-          <div style="height:10px; background: #f5f5f5"></div>
-
-          <!-- projectPriorities -->
-            <div class="filter-headers" data-toggle="collapse" data-target="#projectPrioritiesFilters">
-              <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-              Project Priority
-            </div>
-            <div class="filter-collapse show" id="projectPrioritiesFilters">
-              <div class="custom-control custom-checkbox" *ngFor="let projectPriority of projectPriorities; let k = index">
-                <input type="checkbox" class="custom-control-input" [attr.name]="projectPriority.priorityName" [attr.id]="'priority' + k" (click)="onCheckboxProjectPriorityClick($event, projectPriority.id)">
-                <label class="custom-control-label" [attr.for]="'priority' + k" style="padding: 3px 0px 0px 10px;">{{ projectPriority.priorityName }}</label>
-              </div>
-            </div>
-
-          <div style="height:10px; background: #f5f5f5"></div>
-
-          <!-- projectOwner -->
-          <!-- <div style="height:45px"> -->
-            <div class="filter-headers">
+            <!-- ProjectOwner -->
+            <div class="filter-headers" data-toggle="collapse" data-target="#managerTeamFilters">
               <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
               Project Owner
             </div>
-            <div class="projects-search-string projects-owner my-1">
-              <input type="text" class="form-control projects-search-input projects-owner">      
-              <i class="projects-search-icon-search fa fa-search"></i>
-              <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
-            </div>
-
-  <!-- Children of project owner -->
-            <!-- <div class="filter-collapse show" id="projectPrioritiesFilters">
-              <div class="custom-control custom-checkbox" *ngFor="let projectPriorities of projectPriorities">
-                <input type="checkbox" class="custom-control-input" id="customCheck1">
-                <label class="custom-control-label" for="customCheck1" style="padding: 3px 0px 0px 10px;">{{ projectPriorities.priorityName }}</label>
+            <div class="filter-collapse show" id="managerTeamFilters" style="height:168px">
+              <div class="projects-search-string projects-owner my-1">
+                <input type="text" #filterStringOw name="filterStringOwner" [(ngModel)]="filterStringOwner" class="form-control projects-search-input projects-owner typeahead">      
+                <i class="projects-search-icon-search fa fa-search"></i>
+                <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearOwnerClick()"></i>
               </div>
-            </div> -->
-          <!-- </div> -->
-
-      </div>
-
-      <!-- Advanced Project Filters-->
-      <div class="adv-filters2-cont">
-
-        <!-- PLC Schedules -->
-          <div class="filter-headers" data-toggle="collapse" data-target="#projectPLCStatus">
-            <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-            PLC Schedule
-          </div>
-          <div class="filter-collapse show" id="projectPLCStatus">
-            <div class="custom-control custom-checkbox" *ngFor="let plcStatus of plcStatuses; let l = index">
-              <input type="checkbox" class="custom-control-input" [attr.name]="plcStatus.PLCStatusName" [attr.id]="'plcStatus' + l" (click)="onCheckboxFilterClick($event)">
-              <label class="custom-control-label" [attr.for]="'plcStatus' + l" style="padding: 3px 0px 0px 10px;">{{ plcStatus.PLCStatusName }}</label>
-            </div>
-          </div>
-
-          <div style="height:10px; background: #f5f5f5"></div>
-
-          <!-- FTE -->
-          <div class="filter-headers" data-toggle="collapse" data-target="#fte">
-            <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-            FTE Allocation
-          </div>
-
-          <div class="filter-collapse show" id="fte">
-            <!-- <div class="d-flex justify-content-between"> -->
-                <div class="form-group" style="margin-bottom: 4px;">
-                  <label for="fteFrom" class="fte">From</label>
-                  <input id="fteFrom" type="month" class="form-control fte">
+              <div *ngIf="managerTeam">
+                <div class="custom-control custom-checkbox" *ngFor="let managerEmployee of managerTeam; let l = index">
+                  <input type="checkbox" class="custom-control-input" [attr.name]="managerEmployee.fullName" [attr.id]="'owner' + l" [checked]="l===0" (click)="onCheckboxProjectOwnerClick($event, managerEmployee.EMAIL_ADDRESS)">
+                  <label class="custom-control-label" [attr.for]="'owner' + l" style="padding: 3px 0px 0px 10px;">
+                    <!-- <span *ngIf="l===0">Show All</span> -->
+                    <span>{{ managerEmployee.fullName }}</span>
+                  </label>
                 </div>
-                <div class="form-group" style="margin-bottom: 4px;"> 
-                  <label for="fteTo" class="fte">To</label>
-                  <input id="fteTo" type="month" class="form-control fte">
-                </div>
-            <!-- </div> -->
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="fte1">
-              <label class="custom-control-label" for="fte1" style="padding: 3px 0px 0px 10px;">0 - 25</label>
+              </div>
             </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="fte2">
-              <label class="custom-control-label" for="fte2" style="padding: 3px 0px 0px 10px;">25 - 50</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="fte3">
-              <label class="custom-control-label" for="fte3" style="padding: 3px 0px 0px 10px;">50 - 75</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="fte4">
-              <label class="custom-control-label" for="fte4" style="padding: 3px 0px 0px 10px;">75 - 100</label>
-            </div>
+
+            <div style="height:10px; background: #f5f5f5"></div>
+              
           </div>
 
-      </div>
+          <!-- Filters 2 -->
+          <div class="adv-filters2-cont col">
 
-    </div> <!-- End Filter Column -->
+            <!-- Priority -->
+              <div class="filter-headers" data-toggle="collapse" data-target="#projectPrioritiesFilters">
+                <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                Project Priority
+              </div>
+              <div class="filter-collapse show" id="projectPrioritiesFilters">
+                <div class="custom-control custom-checkbox" *ngFor="let projectPriority of projectPriorities; let k = index">
+                  <input type="checkbox" class="custom-control-input" [attr.name]="projectPriority.priorityName" [attr.id]="'priority' + k" (click)="onCheckboxProjectPriorityClick($event, projectPriority.id)">
+                  <label class="custom-control-label" [attr.for]="'priority' + k" style="padding: 3px 0px 0px 10px;">{{ projectPriority.priorityName }}</label>
+                </div>
+              </div>
+
+            <div style="height:10px; background: #f5f5f5"></div>
+
+            <!-- Status -->
+              <div class="filter-headers" data-toggle="collapse" data-target="#projectStatusFilters">
+                <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                Project Status
+              </div>
+              <div class="filter-collapse show" id="projectStatusFilters">
+                <div class="custom-control custom-checkbox" *ngFor="let projectStatus of projectStatuses; let j = index">
+                  <input type="checkbox" class="custom-control-input" [attr.name]="projectStatus.projectStatusName" [attr.id]="'projectStatus' + j" (click)="onCheckboxProjectStatusClick($event, projectStatus.id)">
+                  <label class="custom-control-label" [attr.for]="'projectStatus' + j" style="padding: 3px 0px 0px 10px;">{{ projectStatus.projectStatusName }}</label>
+                </div>
+              </div>
+
+              <div style="height:10px; background: #f5f5f5"></div>
+
+          </div>
+
+        </div>
+
+        <!-- 3rd advanced filter underneath the other 2 -->
+        <div class="row">
+
+          <div class="adv-filters3-cont col">
+
+            <!-- FTE -->
+            <div class="filter-headers" data-toggle="collapse" data-target="#fte">
+              <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+              FTE Allocation
+            </div>
+            <div class="filter-collapse show" id="fte">
+              <div class="d-flex justify-content-between">
+                  <div class="form-group" style="margin-bottom: 4px;">
+                    <label for="fteFrom" class="fte">From</label>
+                    <input id="fteFrom" type="date" class="form-control fte">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 4px;"> 
+                    <label for="fteTo" class="fte">To</label>
+                    <input id="fteTo" type="date" class="form-control fte">
+                  </div>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <div class="custom-control custom-checkbox" style="margin-right: 20px">
+                  <input type="checkbox" class="custom-control-input" id="fte1">
+                  <label class="custom-control-label" for="fte1" style="padding: 3px 0px 0px 10px;">0 - 25</label>
+                </div>
+                <div class="custom-control custom-checkbox" style="margin-right: 20px">
+                  <input type="checkbox" class="custom-control-input" id="fte2">
+                  <label class="custom-control-label" for="fte2" style="padding: 3px 0px 0px 10px;">25 - 50</label>
+                </div>
+              <!-- </div> -->
+              <!-- <div class="d-inline-flex"> -->
+                <div class="custom-control custom-checkbox" style="margin-right: 20px">
+                  <input type="checkbox" class="custom-control-input" id="fte3">
+                  <label class="custom-control-label" for="fte3" style="padding: 3px 0px 0px 10px;">50 - 75</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="fte4">
+                  <label class="custom-control-label" for="fte4" style="padding: 3px 0px 0px 10px;">75 - 100</label>
+                </div>
+              </div>
+            </div>
+
+            <div style="height:10px; background: #f5f5f5"></div>
+            
+            <!-- PLC SCHEDULE -->
+            <div class="filter-headers" data-toggle="collapse" data-target="#plc">
+              <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+              PLC Schedule
+            </div>
+
+            <div class="filter-collapse show" id="plc">
+
+              <ng-container *ngFor="let plcStatus of plcStatuses; let l = index">
+                <div class="d-flex justify-content-between" style="margin-top: 5px">
+                  <!-- plc status checkbox -->
+                  <div class="custom-control custom-checkbox" style="margin: 2px 3px 0px 3px;">
+                    <input type="checkbox" class="custom-control-input" [attr.name]="plcStatus.PLCStatusName" [attr.id]="'plcStatus' + l" [(ngModel)]="plcStatus.state" (click)="onCheckboxPLCScheduleClick(l, $event, plcStatus)">
+                    <label class="custom-control-label" [attr.for]="'plcStatus' + l">{{ plcStatus.PLCStatusName }}</label>
+                  </div>
+                  <!-- plc status dates -->
+                  <div class="d-flex justify-content-between">
+                    <input id="plcFrom" type="date" [min]="minDate" [max]="today" class="form-control fte" style="margin-top: 0px" [disabled]="!plcStatus.state" (change)="onInputPLCFromChange($event, l)">
+                    <span style="margin: 0px 5px">-</span>
+                    <input id="plcTo" type="date" [min]="minDate" [max]="today" class="form-control fte" style="margin-top: 0px" [disabled]="!plcStatus.state" (change)="onInputPLCFromChange($event, l)">
+                  </div>
+                  <!-- GO Button -->
+                  <!-- <div style="margin: 1px 0px 0px 3px;">
+                    <button type="button" class="btn btn-success btn-sm" style="font-size: 9px;padding: 4px;border: none;">
+                      GO
+                    </button>
+                  </div> -->
+                </div>
+              </ng-container>             
+
+            </div>
+
+          </div>
+        </div>
+        
+
+      </div> <!-- End Filter Column -->
+
 
     <!-- Results Table Column -->
-    <!-- <div class="d-inline-flex"> -->
-      <div class="d-inline-flex adv-results-cont">
+      <div class="adv-results-cont">
         <table class="table table-hover filter-results">
           <thead class="thead-light">
             <tr>
@@ -193,21 +236,28 @@
               <th scope="col">Priority</th>
               <th scope="col">Status</th>
               <th scope="col">Owner</th>
+              <th scope="col" *ngFor="let plc of objPLC">{{ plc.PLCStatusName }}</th>              
             </tr>
           </thead>
           <tbody>
             <!-- <tr *ngFor="let project of projects | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}};"> -->
-              <tr *ngFor="let project of advancedFilteredResults">            
+              <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}};">            
               <td>{{ project.ProjectName }}</td>
               <td>{{ project.ProjectTypeName }}</td>
               <td>{{ project.PriorityName }}</td>
               <td>{{ project.ProjectStatusName }}</td>
               <td>{{ project.ProjectOwner }}</td>
+              <td *ngFor="let schedule of project.Schedules">
+                <ng-container *ngFor="let key of schedule | keys">
+                  {{ schedule[key] }}
+                </ng-container>
+              </td>              
             </tr>
           </tbody>
         </table>
       </div>
-    <!-- </div> -->
+
+
 
   </div>
 

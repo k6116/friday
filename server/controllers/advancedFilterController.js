@@ -1,6 +1,6 @@
 const sequelize = require('../db/sequelize').sequelize;
 const moment = require('moment');
-const treeize = require('treeize');
+const Treeize = require('treeize');
 
 function indexProjectsAdvancedFilter(req, res) {
 
@@ -83,7 +83,44 @@ console.log('filterOptions:', filterOptions);
                                       ProjectOwnerEmails: filterOptions.ProjectOwnerEmails, FTEMin: filterOptions.FTEMin, FTEMax: filterOptions.FTEMax, FTEDateFrom: filterOptions.FTEDateFrom, FTEDateTo: filterOptions.FTEDateTo},
                         type: sequelize.QueryTypes.SELECT})
   .then(filteredRes => {    
-    res.json(filteredRes);
+    const fteTree = new Treeize();
+    fteTree.grow(filteredRes);
+    res.json({
+      nested: fteTree.getData(),
+      flat: filteredRes
+    });
+  }).catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
+function indexProjectChildren(req, res) {
+  const projectName = req.params.projectName;
+  const projectType = req.params.projectType;
+  const projectOwner = req.params.projectOwner;
+  const sql = `EXECUTE dbo.BillsDrillDownProjects :projectName, :projectType, :projectOwner`
+  sequelize.query(sql, {replacements: {projectName: projectName, projectType: projectType, projectOwner: projectOwner}, type: sequelize.QueryTypes.SELECT})
+  .then(children => {    
+    res.json(children);
+  }).catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
+function indexProjectParents(req, res) {
+  const projectName = req.params.projectName;
+  const projectType = req.params.projectType;
+  const projectOwner = req.params.projectOwner;
+  const sql = `EXECUTE dbo.BillsDrillUpProjects :projectName, :projectType, :projectOwner`
+  sequelize.query(sql, {replacements: {projectName: projectName, projectType: projectType, projectOwner: projectOwner}, type: sequelize.QueryTypes.SELECT})
+  .then(parents => {    
+    res.json(parents);
   }).catch(error => {
     res.status(400).json({
       title: 'Error (in catch)',
@@ -93,6 +130,8 @@ console.log('filterOptions:', filterOptions);
 }
 
 module.exports = {
-    indexProjectsAdvancedFilter: indexProjectsAdvancedFilter,
-    indexAdvancedFilteredResults: indexAdvancedFilteredResults
+  indexProjectsAdvancedFilter: indexProjectsAdvancedFilter,
+  indexAdvancedFilteredResults: indexAdvancedFilteredResults,
+  indexProjectChildren: indexProjectChildren,
+  indexProjectParents: indexProjectParents
 }
