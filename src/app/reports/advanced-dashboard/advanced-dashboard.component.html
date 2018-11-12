@@ -6,27 +6,92 @@
     <!-- first row -->
     <div class="row row-custom">
 
-      <!-- roles chart -->
-      <div class="col-lg-4 col-dashboard left-third">
-        <div class="highchart my-fte-pie-chart1" id="rolesChart">
+      <!-- top project FTEs chart -->
+      <!-- <div class="col-lg-4 col-dashboard left-third">
+
+        <div class="row row-header">
+          <div class="col title-header">
+            <h4>Top 5 FTE Projects</h4>
+          </div>
         </div>
-      </div>
+
+        <div class="row">
+          <div class="col-2"></div>
+          <div class="col-8">
+            <table class="table table-borderless table-sm">
+              <thead>
+                <tr>
+                  <th>Project</th>
+                  <th>Total FTE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let project of topFTEProjects">
+                  <td>{{ project.ProjectName }}</td>
+                  <td>{{ project.TotalProjectFTE }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-2"></div>
+        </div>
+
+      </div> -->
 
       <!-- priorities chart -->
-      <div class="col-lg-4 col-dashboard mid-third">
-        <!-- <div class="highchart my-fte-pie-chart2" id="donutChart">
-        </div> -->
+      <div class="col-lg-4 col-dashboard left-third">
+        <div class="highchart my-fte-pie-chart1" id="ownersChart">
+        </div>
       </div>
-
+      
       <!-- statuses chart -->
-      <div class="col-lg-4 col-dashboard right-third">
-        <!-- <div class="highchart my-fte-pie-chart2" id="donutChart">
-        </div> -->
+      <div class="col-lg-4 col-dashboard mid-third">
+        <div class="highchart my-fte-pie-chart1" id="priorityFTEChart">
+        </div>
       </div>
+      
+      <!-- schedules chart -->
+      <div class="col-lg-4 col-dashboard right-third">
 
+      </div>
 
     </div>
 
+    <div><hr></div>
+
+    <!-- second row -->
+    <div class="row row-custom">
+
+      <!-- schedules chart -->
+      <div class="col-lg-12 col-dashboard">
+        <div class="highchart my-fte-pie-chart1" id="schedulesChart">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- third row -->
+    <div class="row row-custom">
+
+      <!-- priorities chart -->
+      <div class="col-lg-4 col-dashboard left-third">
+          <div class="highchart my-fte-pie-chart1" id="prioritiesChart">
+          </div>
+        </div>
+  
+        <!-- statuses chart -->
+        <div class="col-lg-4 col-dashboard mid-third">
+          <div class="highchart my-fte-pie-chart2" id="statusesChart">
+          </div>
+        </div>
+  
+        <!-- project types chart -->
+        <div class="col-lg-4 col-dashboard right-third">
+          <div class="highchart my-fte-pie-chart2" id="projectTypesChart">
+          </div>
+        </div>
+
+    </div>
 
   </div>
 

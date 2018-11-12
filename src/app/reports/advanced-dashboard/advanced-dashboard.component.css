@@ -1,0 +1,9 @@
+.title-header {
+  display: flex;
+  justify-content: center
+}
+
+.row-header {
+  padding-top: 10px;
+  padding-bottom: 25px;
+}

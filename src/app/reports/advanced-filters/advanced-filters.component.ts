@@ -290,6 +290,17 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   async advancedFilter(filterOptions: any) {
     this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
     // this.advancedFilteredResults = this.advancedFilteredResults.nested;
+    this.advancedFilteredResults.nested.forEach( project => {
+      const schedules = [];
+      Object.keys(project.Schedules).forEach(function(key) {
+        schedules.push({
+          PLCStatusName: key,
+          PLCDate: project.Schedules[key]
+        });
+      });
+      console.log(schedules);
+      project.Schedules = schedules;
+    });
     console.log('this.advancedFilteredResults', this.advancedFilteredResults);
   }
 
@@ -315,7 +326,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       ProjectStatusIDs: '',
       ProjectPriorityIDs: '1',
       ProjectOwnerEmails: '',
-      FTEMin: '0.5',
+      FTEMin: '0',
       FTEMax: '10.5',
       FTEDateFrom: '2017-01-01',
       FTEDateTo: '2019-01-01'
