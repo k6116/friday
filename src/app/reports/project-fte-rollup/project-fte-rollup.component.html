@@ -1,0 +1,49 @@
+
+<!-- fluid bootstrap container with margins to center page content considering topnav, sidenav, and footer -->
+<div class="container-fluid">
+
+  <!-- typeahead input box -->
+  <div class="projects-filters-cont">
+
+    <div class="projects-filter-string">
+      <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-filter-input" (keyup)="onInputKeyUp($event.target.value, $event.key)" placeholder="Search projects">
+      <i class="projects-filter-icon-search fa fa-search"></i>
+      <i class="projects-filter-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
+      <input type="text" #hiddenInput class="form-control hidden-input">
+    </div>
+
+  </div>
+
+  <!-- highcharts treemap chart -->
+  <div class="highchart schedule-chart" id="rollupChart">
+  </div>
+
+  <!-- data table -->
+  <table *ngIf="displayTable" class="table table-sm rollup-table">
+    <thead>
+      <tr class="drilldown-table-header-row">
+        <th scope="col" class="col-level">Level</th>
+        <th scope="col" class="col-project">Project</th>
+        <th scope="col" class="col-type">Type</th>
+        <!-- <th scope="col" class="col-fte">FTEs</th> -->
+        <th scope="col" class="col-cum-fte">Cum. FTEs</th>
+        <th scope="col" class="col-spark-bar"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let tableRow of tableData" [style.background-color]="tableRow.highlight ? 'rgb(255, 255, 240)' : 'white'">
+        <td class="drilldown-table-cell cell-level">{{ tableRow.level }}</td>
+        <td class="drilldown-table-cell project-name-text" [style.padding-left]="(5 + (tableRow.level - 1) * 15) + 'px'"><i [style.color]='tableRow.bulletColor' class="fa fa-circle point-icon"></i>{{ tableRow.name }}</td>
+        <td class="drilldown-table-cell">{{ tableRow.type }}</td>
+        <!-- <td class="drilldown-table-cell">{{ tableRow.fte }}</td> -->
+        <td class="drilldown-table-cell">{{ tableRow.value }}</td>
+        <td><div class="spark-bar" [ngStyle]="{
+          'width': (tableRow.value * barMultiplier) + 'px',
+          'background-color': tableRow.bulletColor
+          }"></div></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+</div>

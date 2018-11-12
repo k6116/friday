@@ -1,22 +1,22 @@
 
 module.exports = {
   advancedFilter: require('./advancedFilterController'),
+  analytics: require('./analyticsController'),
   auth: require('./authController'),
   bom: require('./bomController'),
-  fte: require('./fteController'),
-  employee: require('./employeeController'),
-  org: require('./orgController'),
   clickTracking: require('./clickTrackingController'),
-  project: require('./projectController'),
+  dashboard: require('./dashboardController'),
   email: require('./emailController'),
-  permission: require('./permissionController'),
+  employee: require('./employeeController'),
+  export: require('./exportController'),
+  fte: require('./fteController'),
   jobTitle: require('./jobTitleController'),
+  matplan: require('./matplanController'),
+  metaData: require('./metaDataController'),
+  org: require('./orgController'),
+  parts: require('./partController'),
+  permission: require('./permissionController'),
   project: require('./projectController'),
   report: require('./reportController'),
-  metaData: require('./metaDataController'),
-  dashboard: require('./dashboardController'),
-  schedules: require('./schedulesController'),
-  parts: require('./partController'),
-  analytics: require('./analyticsController'),
-  export: require('./exportController')
+  schedules: require('./schedulesController')
 }

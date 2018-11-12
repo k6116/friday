@@ -32,7 +32,7 @@ export class BomDrawD3Component implements OnInit, OnChanges {
         // d3 drawing expects a single object, not an array of objects, so let
         this.bomJson = this.bomJson[0];
       } else {
-        console.log('ERROR: d3 BOM drawing received an unexpected data type');
+        // console.log('ERROR: d3 BOM drawing received an unexpected data type');
         return;
       }
 

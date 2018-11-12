@@ -42,8 +42,10 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
+import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-fte-rollup.component';
 import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
-import { MatplanComponent } from './mat-plan/matplan/matplan.component';
+import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
+import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-filters.component';
 
@@ -75,7 +77,8 @@ const routes: Routes = [
       { path: 'projects/requests', component: ProjectRequestsComponent },
       { path: 'projects/search', component: SearchProjectsComponent },
       { path: 'projects/display/:id', component: DisplayProjectComponent },
-      { path: 'matplan', component: MatplanComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      { path: 'matplan', component: MatplanSelectorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
+      { path: 'matplan/edit/:id', component: MatplanEditorComponent},
       { path: 'org/org-viewer', component: OrgViewerComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
@@ -91,6 +94,7 @@ const routes: Routes = [
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
       { path: 'reports/advanced-filters', component: AdvancedFiltersComponent },
+      { path: 'reports/project-fte-rollup', component: ProjectFteRollupComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }
     ]

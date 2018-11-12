@@ -33,6 +33,7 @@ export class TeamRolesComponent implements OnInit {
     JobSubTitleName: ''
   };
   loginAsEmail: string;
+  loginAsID: any;
   displayAdminViewMessage: boolean;
   roleID: any;
 
@@ -246,16 +247,28 @@ export class TeamRolesComponent implements OnInit {
          this.initNewRole();
        },
        err => {
-         console.log(err);
+         // console.log(err);
          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
        }
      );
   }
 
+  async onViewAsClick(managerEmailAddress: string) {
+    this.loginAsEmail = managerEmailAddress;
+    const res2 = await this.apiDataEmployeeService.getEmployeeData(this.loginAsEmail).toPromise();
+    if (res2.length === 0) {
+      this.cacheService.raiseToast('error', `Please enter a valid manager email address`);
+    } else {
+      this.loginAsID = res2[0].EmployeeID;
+      this.initializeEmployeeData();
+      this.getJobTitleList();
+    }
+  }
+
   onTestFormClick() {
-    console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
-    console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
-    console.log('this.teamOrgStructure', this.teamOrgStructure);
+    // console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
+    // console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
+    // console.log('this.teamOrgStructure', this.teamOrgStructure);
   }
 
 }

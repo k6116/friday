@@ -244,3 +244,8 @@ div.fte-table-row.tutorial-part3.introjs-showElement.introjs-relativePosition {
     padding-left: 10px !important;
     padding-right: 10px !important;
   }
+
+  /* prevents team FTE from looking like barf if the resolution is too small */
+  .teamFTE-cont {
+    min-width: 1280px;
+  }

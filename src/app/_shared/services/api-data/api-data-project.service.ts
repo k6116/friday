@@ -24,6 +24,14 @@ export class ApiDataProjectService {
     .map((response: Response) => response.json());
   }
 
+  getProjectsList(): Observable<any> {
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get('api/project/index/getProjectsList', options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   getProject(projectID: number): Observable<any> {
     const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});

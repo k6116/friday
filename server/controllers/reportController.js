@@ -316,6 +316,28 @@ function getQuarterlyEmployeeFTETotals(req, res) {
 }
 
 
+function getProjectFTERollupData(req, res) {
+
+  const projectID = req.params.projectID;
+  const parentType = 'Project';
+  const startDate = req.params.startDate;
+  const endDate = req.params.endDate;
+
+  sequelize.query('EXECUTE resources.ProjectFTERollup :projectID, :parentType, :startDate, :endDate', 
+    {replacements: {projectID: projectID, parentType: parentType, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
+    .then(rollupData => {
+
+      res.json(rollupData);
+
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+}
 
 
 module.exports = {
@@ -326,5 +348,6 @@ module.exports = {
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,
   getProjectEmployeeFTEList: getProjectEmployeeFTEList,
-  getQuarterlyEmployeeFTETotals: getQuarterlyEmployeeFTETotals
+  getQuarterlyEmployeeFTETotals: getQuarterlyEmployeeFTETotals,
+  getProjectFTERollupData: getProjectFTERollupData
 }

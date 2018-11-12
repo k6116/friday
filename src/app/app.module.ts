@@ -34,7 +34,7 @@ import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAdvancedFilterService, ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
   ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
-  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
+  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService, ApiDataMatplanService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { AuthGuardService } from './_shared/guards/auth.guard';
@@ -96,8 +96,14 @@ import { ProjectRequestsComponent } from './projects/project-requests/project-re
 import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
+import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-fte-rollup.component';
 import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
-import { MatplanComponent } from './mat-plan/matplan/matplan.component';
+import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
+import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
+import { MatplanInfoComponent } from './matplan/matplan-info/matplan-info.component';
+import { MatplanBomComponent } from './matplan/matplan-bom/matplan-bom.component';
+import { MatplanQuoteComponent } from './matplan/matplan-quote/matplan-quote.component';
+import { MatplanOrderComponent } from './matplan/matplan-order/matplan-order.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
 import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-filters.component';
@@ -162,7 +168,13 @@ import { AdvancedFiltersTypeaheadComponent } from './reports/advanced-filters/ad
     TeamRolesComponent,
     DisplayProjectComponent,
     UnitTestComponent,
-    MatplanComponent,
+    ProjectFteRollupComponent,
+    MatplanSelectorComponent,
+    MatplanEditorComponent,
+    MatplanInfoComponent,
+    MatplanBomComponent,
+    MatplanQuoteComponent,
+    MatplanOrderComponent,
     OrgViewerComponent,
     OrgDrawD3Component,
     TransferProjectsComponent,
@@ -205,6 +217,7 @@ import { AdvancedFiltersTypeaheadComponent } from './reports/advanced-filters/ad
     ApiDataPartService,
     ApiDataAnalyticsService,
     ApiDataBomService,
+    ApiDataMatplanService,
     BomService,
     CacheService,
     AuthService,

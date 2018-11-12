@@ -132,6 +132,13 @@ router.post('/indexAdvancedFilteredResults/', controllers.advancedFilter.indexAd
 router.get('/indexProjectChildren/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectChildren);
 router.get('/indexProjectParents/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectParents);
 
+// MATPLAN CONTROLLER
+router.get('/matplan/matplan/show/:matplanID', controllers.matplan.show)
+router.get('/matplan/matplan/indexProjects', controllers.matplan.indexProjects)
+router.get('/matplan/matplan/showMatplans/:projectID', controllers.matplan.showMatplans)
+router.get('/matplan/matplan/showMatplanBom/:projectID', controllers.matplan.showMatplanBom)
+router.get('/matplan/matplan/showQuotesForPart/:partID', controllers.matplan.showQuotesForPart)
+router.get('/matplan/matplan/showOrdersForPart/:matplanID/:partID', controllers.matplan.showOrdersForPart)
 
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
@@ -183,6 +190,7 @@ router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle
 
 // PROJECT CONTROLER
 router.get('/project/displayProject/show/getProject/:projectID', controllers.project.getProject);
+router.get('/project/index/getProjectsList', controllers.project.getProjectsList);
 
 // SCHEDULES CONTROLLER
 router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
@@ -202,6 +210,9 @@ router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 
 // EXPORT CONTROLLER
 router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
+
+// REPORT CONTROLLER
+router.get('/report/reports-project-fte-rollup/show/getProjectFTERollupData/:projectID/:startDate/:endDate', controllers.report.getProjectFTERollupData);
 
 
 

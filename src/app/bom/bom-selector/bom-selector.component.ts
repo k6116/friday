@@ -24,6 +24,8 @@ export class BomSelectorComponent implements OnInit {
     this.apiDataBomService.index().subscribe( res => {
       console.log('res:', res);
 
+      // console.log(res);
+
       // initialize bloodhound suggestion engine with data
       const bh = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('PartOrProjectName'),
