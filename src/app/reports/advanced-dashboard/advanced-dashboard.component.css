@@ -1,9 +1,46 @@
+.row-dashboard {
+  flex-wrap: nowrap;
+}
+
+.col-2-dashboard {
+  min-width: 300px;
+}
+
+.col-4-dashboard {
+  min-width: 600px;
+}
+
+.col-10-dashboard {
+  min-width: 1500px;
+}
+
 .title-header {
   display: flex;
-  justify-content: center
+  justify-content: center;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+  font-size: 18px;
 }
 
 .row-header {
   padding-top: 10px;
   padding-bottom: 25px;
 }
+
+
+.table td, .table th {
+  border: none;
+}
+
+hr {
+  border-top: 1px solid rgb(72,91,101);
+}
+
+.left-third {
+  border-right: 1px solid rgb(72,91,101);
+}
+
+.mid-third {
+  border-right: 1px solid rgb(72,91,101);
+}
+
+

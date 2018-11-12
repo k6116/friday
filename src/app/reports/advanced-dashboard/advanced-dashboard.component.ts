@@ -48,6 +48,11 @@ export class AdvancedDashboardComponent implements OnInit {
   schedulesLatestSHPDate: any;
   schedulesChartHeight: number;
 
+  ssAvgFTEAfterSHP: any;
+  ssTotalFTEAfterSHP: any;
+  ssAvgFTENoPLC: any;
+  ssTotalFTENoPLC: any;
+
   constructor(
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
     private apiDataOrgService: ApiDataOrgService,
@@ -63,8 +68,10 @@ export class AdvancedDashboardComponent implements OnInit {
     const filterOptions = {
       PLCStatusIDs: '7,6',
       PLCDateRanges: '2017-01-01|NULL,2017-01-01|NULL',
+      // PLCStatusIDs: '',
+      // PLCDateRanges: '',
       ProjectName: '',
-      ProjectTypeIDs: '0,1,2',
+      ProjectTypeIDs: '0,1,2,3,4',
       ProjectStatusIDs: '0,1,2,3,4,5',
       ProjectPriorityIDs: '0,1,3,4,5',
       ProjectOwnerEmails: '',
@@ -75,11 +82,8 @@ export class AdvancedDashboardComponent implements OnInit {
     };
 
     await this.advancedFilter(filterOptions);
-    this.renderPrioritesChart();
-    this.renderStatusesChart();
     this.renderProjectTypesChart();
     this.getTopFTEProjects();
-    this.renderOwnersChart();
     this.renderPriorityFTEChart();
     this.renderSchedulesChart();
   }
@@ -106,22 +110,7 @@ export class AdvancedDashboardComponent implements OnInit {
     this.getOwners();
     this.getPriorityFTE();
     this.getSchedules();
-  }
-
-  renderPrioritesChart() {
-    const chartOptions = this.buildPrioritiesChartOptions();
-    this.chartPriorities = Highcharts.chart('prioritiesChart', chartOptions);
-    setTimeout(() => {
-      this.chartPriorities.reflow();
-    }, 0);
-  }
-
-  renderStatusesChart() {
-    const chartOptions = this.buildStatusesChartOptions();
-    this.chartStatuses = Highcharts.chart('statusesChart', chartOptions);
-    setTimeout(() => {
-      this.chartStatuses.reflow();
-    }, 0);
+    this.getScheduleStats();
   }
 
   renderProjectTypesChart() {
@@ -129,14 +118,6 @@ export class AdvancedDashboardComponent implements OnInit {
     this.chartProjectTypes = Highcharts.chart('projectTypesChart', chartOptions);
     setTimeout(() => {
       this.chartProjectTypes.reflow();
-    }, 0);
-  }
-
-  renderOwnersChart() {
-    const chartOptions = this.buildOwnerChartOptions();
-    this.chartOwners = Highcharts.chart('ownersChart', chartOptions);
-    setTimeout(() => {
-      this.chartOwners.reflow();
     }, 0);
   }
 
@@ -154,120 +135,6 @@ export class AdvancedDashboardComponent implements OnInit {
     setTimeout(() => {
       this.chartSchedules.reflow();
     }, 0);
-  }
-
-  // take in the fte data and return the chart options for the stacked column chart
-  // for the team ftes
-  buildPrioritiesChartOptions() {
-
-    // set the chart options
-    const chartOptions = {
-      chart: {
-        type: 'column',
-        backgroundColor: null,
-        marginBottom: 100
-      },
-      title: {
-        text: 'Priorites',
-        style: {
-          color: '#000000',
-          fontSize: '24px'
-      }
-      },
-      xAxis: {
-        type: 'category'
-      },
-      yAxis: {
-        title: {
-          text: 'Number of Projects'
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      credits: {
-        enabled: false
-      },
-      exporting: {
-        enabled: false
-      },
-      plotOptions: {
-        series: {
-          borderWidth: 0,
-          dataLabels: {
-            enabled: true
-          }
-        }
-      },
-      tooltip: {
-        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> projects<br/>'
-      },
-      series: [
-        {
-          'name': 'Priorites',
-          'colorByPoint': true,
-          'data': this.prioritiesCount
-        }
-      ]
-    };
-
-    // return the chart options object
-    return chartOptions;
-  }
-
-  buildStatusesChartOptions() {
-
-    // set the chart options
-    const chartOptions = {
-      chart: {
-        type: 'column',
-        backgroundColor: null,
-        marginBottom: 100
-      },
-      title: {
-        text: 'Statuses'
-      },
-      xAxis: {
-        type: 'category'
-      },
-      yAxis: {
-        title: {
-          text: 'Number of Projects'
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      credits: {
-        enabled: false
-      },
-      exporting: {
-        enabled: false
-      },
-      plotOptions: {
-        series: {
-          borderWidth: 0,
-          dataLabels: {
-            enabled: true
-          }
-        }
-      },
-      tooltip: {
-        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> projects<br/>'
-      },
-      series: [
-        {
-          'name': 'Statuses',
-          'colorByPoint': true,
-          'data': this.statusesCount
-        }
-      ]
-    };
-
-    // return the chart options object
-    return chartOptions;
   }
 
   buildProjectTypesChartOptions() {
@@ -316,60 +183,6 @@ export class AdvancedDashboardComponent implements OnInit {
           'name': 'Project Types',
           'colorByPoint': true,
           'data': this.projectTypesCount
-        }
-      ]
-    };
-
-    // return the chart options object
-    return chartOptions;
-  }
-
-  buildOwnerChartOptions() {
-
-    // set the chart options
-    const chartOptions = {
-      chart: {
-        type: 'column',
-        backgroundColor: null,
-        marginBottom: 100
-      },
-      title: {
-        text: 'Project Owners'
-      },
-      xAxis: {
-        type: 'category'
-      },
-      yAxis: {
-        title: {
-          text: 'Number of Projects'
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      credits: {
-        enabled: false
-      },
-      exporting: {
-        enabled: false
-      },
-      plotOptions: {
-        series: {
-          borderWidth: 0,
-          dataLabels: {
-            enabled: true
-          }
-        }
-      },
-      tooltip: {
-        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> projects<br/>'
-      },
-      series: [
-        {
-          'name': 'Project Owners',
-          'colorByPoint': true,
-          'data': this.ownersCount
         }
       ]
     };
@@ -483,8 +296,10 @@ export class AdvancedDashboardComponent implements OnInit {
         // headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
         // pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> projects<br/>',
         formatter: function () {
-          return '<b>CON: </b>' + Highcharts.dateFormat('%d %b \'%y', this.point.low) + ' <b> SHP: </b>' +
-                  Highcharts.dateFormat('%d %b \'%y', this.point.high) + '</b>';
+          // return '<b>' + this.x + '</b> | <b>CON: </b>' + Highcharts.dateFormat('%b %d \'%y', this.point.low) + ' <b> SHP: </b>' +
+          //         Highcharts.dateFormat('%b %d \'%y', this.point.high) + '</b>';
+          return '<b>' + this.x + '</b> | <b>CON - SHP </b> | <b>' + Highcharts.dateFormat('%b %d \'%y', this.point.low) + ' - ' +
+                  Highcharts.dateFormat('%b %d \'%y', this.point.high) + '</b>';
       }
       },
       series: [{
@@ -507,7 +322,9 @@ export class AdvancedDashboardComponent implements OnInit {
         drilldown: key
       });
     });
-    this.prioritiesCount = dataSeries;
+
+    this.prioritiesCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
+    this.prioritiesCount = this.prioritiesCount.reverse();
   }
 
   getPriorityFTE() {
@@ -549,6 +366,10 @@ export class AdvancedDashboardComponent implements OnInit {
           }
         }
       }
+
+      // Sort by FTE totals and redistribute arrays for highchart formats
+      drillDownData.sort(function(a, b) {return a[1] > b[1] ? -1 : 1; });
+
       drillDownSeries.push({
         name: this.prioritiesList[k],
         id: this.prioritiesList[k],
@@ -556,8 +377,17 @@ export class AdvancedDashboardComponent implements OnInit {
       });
     }
 
-    // console.log('drillDownSeries', drillDownSeries)
-    this.priorityFTE = dataSeries;
+    // update the priority-less field to "No Priority" for readability in the charts
+    const noPriorityIdx1 = dataSeries.findIndex((obj => obj.name === undefined));
+    const noPriorityIdx2 = drillDownSeries.findIndex((obj => obj.name === undefined));
+
+    dataSeries[noPriorityIdx1].name = 'No Priority';
+    dataSeries[noPriorityIdx1].drilldown = 'No Priority';
+    drillDownSeries[noPriorityIdx2].name = 'No Priority';
+    drillDownSeries[noPriorityIdx2].id = 'No Priority';
+
+    this.priorityFTE = _.sortBy(dataSeries, function(pri) { return pri['y']; });
+    this.priorityFTE = this.priorityFTE.reverse();
     this.priorityFTEDrillDown = drillDownSeries;
   }
 
@@ -571,7 +401,8 @@ export class AdvancedDashboardComponent implements OnInit {
         drilldown: key
       });
     });
-    this.statusesCount = dataSeries;
+    this.statusesCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
+    this.statusesCount = this.statusesCount.reverse();
   }
 
   getProjectTypes() {
@@ -591,6 +422,7 @@ export class AdvancedDashboardComponent implements OnInit {
 
   getOwners() {
     const dataSeries = [];
+
     const ownersCountArray = _.countBy(this.advancedFilteredResults, function(project) { return project['ProjectOwnerName']; });
     Object.keys(ownersCountArray).forEach(function(key) {
       dataSeries.push({
@@ -599,7 +431,9 @@ export class AdvancedDashboardComponent implements OnInit {
         drilldown: key
       });
     });
-    this.ownersCount = dataSeries;
+
+    this.ownersCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
+    this.ownersCount = this.ownersCount.reverse();
   }
 
   getSchedules() {
@@ -651,6 +485,43 @@ export class AdvancedDashboardComponent implements OnInit {
     this.schedulesList = scheduleData;
 
   }
+
+  getScheduleStats() {
+
+    let afterSHPCount = 0;
+    let noPLCCount = 0;
+    this.ssAvgFTEAfterSHP = 0;
+    this.ssTotalFTEAfterSHP = 0;
+    this.ssAvgFTENoPLC = 0;
+    this.ssTotalFTENoPLC = 0;
+
+    // update the dataSeries object with the sum of FTEs per priority
+    for (let i = 0; i < this.advancedFilteredResults.length; i++) {
+      if ('Schedules' in this.advancedFilteredResults[i]) {
+        if (this.advancedFilteredResults[i].Schedules.some(plc => plc.PLCStatusName === 'SHP')) {
+
+          const objSHP = this.advancedFilteredResults[i].Schedules.find(plc => plc.PLCStatusName === 'SHP');
+          if (objSHP.PLCDate > moment().format('YYYY-MM-DD')) {
+            this.ssTotalFTEAfterSHP = this.ssTotalFTEAfterSHP + this.advancedFilteredResults[i].TotalProjectFTE;
+            afterSHPCount = afterSHPCount + 1;
+          }
+        }
+      } else {
+        this.ssTotalFTENoPLC = this.ssTotalFTENoPLC + this.advancedFilteredResults[i].TotalProjectFTE;
+        noPLCCount = noPLCCount + 1;
+      }
+    }
+
+    this.ssAvgFTEAfterSHP = Number(this.ssTotalFTEAfterSHP / afterSHPCount).toFixed(0);
+    this.ssTotalFTEAfterSHP = Number(this.ssTotalFTEAfterSHP).toFixed(0);
+    this.ssAvgFTENoPLC = Number(this.ssTotalFTENoPLC / noPLCCount).toFixed(0);
+    this.ssTotalFTENoPLC = Number(this.ssTotalFTENoPLC).toFixed(0);
+
+    console.log('this.ssTotalFTEAfterSHP', this.ssTotalFTEAfterSHP)
+    console.log('this.ssTotalFTENoPLC', this.ssTotalFTENoPLC)
+
+  }
+
 
   getTopFTEProjects() {
     const topFTEProjectsArray = _.sortBy(this.advancedFilteredResults, function(project) { return project['TotalProjectFTE']; });

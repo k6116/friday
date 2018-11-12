@@ -4,54 +4,84 @@
   <div class="dashboard-cont" [hidden]="!showDashboard">
 
     <!-- first row -->
-    <div class="row row-custom">
+    <div class="row row-dashboard row-custom">
 
-      <!-- top project FTEs chart -->
-      <!-- <div class="col-lg-4 col-dashboard left-third">
+      <!-- Project Stats -->
+      <div class="col-sm-4 col-4-dashboard left-third">
 
         <div class="row row-header">
           <div class="col title-header">
-            <h4>Top 5 FTE Projects</h4>
+            Project Stats
           </div>
         </div>
 
         <div class="row">
-          <div class="col-2"></div>
-          <div class="col-8">
+
+           <!-- Owners Table -->
+          <div class="col-4 left-third">
             <table class="table table-borderless table-sm">
               <thead>
                 <tr>
-                  <th>Project</th>
-                  <th>Total FTE</th>
+                  <th>Owner</th>
+                  <th>Projects</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let project of topFTEProjects">
-                  <td>{{ project.ProjectName }}</td>
-                  <td>{{ project.TotalProjectFTE }}</td>
+                <tr *ngFor="let owner of ownersCount">
+                  <td>{{ owner.name }}</td>
+                  <td>{{ owner.y }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="col-2"></div>
-        </div>
 
-      </div> -->
+          <!-- Priorities Table -->
+          <div class="col-4 mid-third">
+            <table class="table table-borderless table-sm">
+              <thead>
+                <tr>
+                  <th>Priority</th>
+                  <th>Projects</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let priority of prioritiesCount">
+                  <td>{{ priority.name }}</td>
+                  <td>{{ priority.y }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-      <!-- priorities chart -->
-      <div class="col-lg-4 col-dashboard left-third">
-        <div class="highchart my-fte-pie-chart1" id="ownersChart">
+          <!-- Statuses Table -->
+          <div class="col-4">
+            <table class="table table-borderless table-sm">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Projects</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let status of statusesCount">
+                  <td>{{ status.name }}</td>
+                  <td>{{ status.y }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
         </div>
       </div>
-      
+
       <!-- statuses chart -->
-      <div class="col-lg-4 col-dashboard mid-third">
+      <div class="col-sm-4 col-4-dashboard mid-third">
         <div class="highchart my-fte-pie-chart1" id="priorityFTEChart">
         </div>
       </div>
       
       <!-- schedules chart -->
-      <div class="col-lg-4 col-dashboard right-third">
+      <div class="col-sm-4 col-4-dashboard right-third">
 
       </div>
 
@@ -60,33 +90,70 @@
     <div><hr></div>
 
     <!-- second row -->
-    <div class="row row-custom">
+    <div class="row row-dashboard row-custom">
 
       <!-- schedules chart -->
-      <div class="col-lg-12 col-dashboard">
+      <div class="col-sm-10 col-10-dashboard left-third">
         <div class="highchart my-fte-pie-chart1" id="schedulesChart">
         </div>
       </div>
 
+      <div class="col-sm-2 col-2-dashboard">
+
+        <div class="row row-header">
+          <div class="col title-header">
+            Schedule Stats
+          </div>
+        </div>
+
+        <div class="row row-header">
+          <div class="col">
+            <table class="table table-borderless table-sm">
+              <tbody>
+                <tr>
+                  <td style="font-weight: bold">Avg FTE post-SHP</td>
+                  <td>{{ ssAvgFTEAfterSHP }}</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: bold">Total FTE post-SHP</td>
+                  <td>{{ ssTotalFTEAfterSHP }}</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: bold">Avg FTE no PLC</td>
+                  <td>{{ ssAvgFTENoPLC }}</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: bold">Total FTE no PLC</td>
+                  <td>{{ ssTotalFTENoPLC }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
+    <div><hr></div>
+
     <!-- third row -->
-    <div class="row row-custom">
+    <div class="row row-dashboard row-custom">
 
       <!-- priorities chart -->
-      <div class="col-lg-4 col-dashboard left-third">
+      <div class="col-sm-4 col-4-dashboard left-third">
           <div class="highchart my-fte-pie-chart1" id="prioritiesChart">
           </div>
         </div>
   
         <!-- statuses chart -->
-        <div class="col-lg-4 col-dashboard mid-third">
+        <div class="col-sm-4 col-4-dashboard mid-third">
           <div class="highchart my-fte-pie-chart2" id="statusesChart">
           </div>
         </div>
   
         <!-- project types chart -->
-        <div class="col-lg-4 col-dashboard right-third">
+        <div class="col-sm-4 col-4-dashboard right-third">
           <div class="highchart my-fte-pie-chart2" id="projectTypesChart">
           </div>
         </div>
