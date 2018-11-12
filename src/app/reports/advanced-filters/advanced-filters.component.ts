@@ -3,6 +3,8 @@ import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataAdvancedFilterService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 import { CacheService } from '../../_shared/services/cache.service';
+import { ProjectTypePipe } from '../../_shared/pipes/project-type.pipe';
+// import { start } from 'repl';
 
 
 declare var $: any;
@@ -42,9 +44,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   filterStringOwner: string;
   filterCheckedArray: any;
   filterInputArray: any;
-  arrTypeID: any;
-  arrStatusID: any;
-  arrPriorityID:any;
   arrPLCID:any;
   arrPLCStatus: any;
   arrPLCDate: any;
@@ -52,6 +51,14 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   plcSchedules: any;
   arrOwnerEmail: any;
 
+  // Arrays for filterObject
+  arrTypeID: any;
+  arrStatusID: any;
+  arrPriorityID: any;
+  fteMin: any;
+  fteMax: any;
+
+  // PLC information for filterObjects
   newPLC: NewPLC = {
     index: null,
     PLCStatusID: '',
@@ -73,6 +80,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   managers: any;
   managerTeam: any;
   showPLCDate: boolean;
+
+  // To default Check All
+  checkAllProjectTypes: boolean; 
+  checkAllProjectPriorities: boolean;
+  checkAllProjectStatuses: boolean;
 
   advancedFilteredResults: any;
 
@@ -110,14 +122,17 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterCheckedArray = [];
     // this.filterInputArray = [];
     this.arrTypeID = [];
-    this.arrStatusID = [];
-    this.arrPriorityID = [];
+    this.arrStatusID = [0];   // adding 0 as blank
+    this.arrPriorityID = [0];
     this.arrPLCID = [];
     this.arrPLCStatus = [];
     this.arrPLCDate = [];
     this.arrOwnerEmail = [];
     this.objPLC = [];
-    this.plcSchedules = [];
+    this.plcSchedules = []; // sava clicked plc statuses
+
+    this.fteMin = [];
+    this.fteMax = [];
 
     // set min and max date
     this.minDate = '2000-01-01';
@@ -132,9 +147,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // show the spinner
     this.showSpinner = true;
 
-    // get all projects initially without filters
-    this.advancedFilter(this.filterObject);
-
     // get all filters for the page using forkjoin
     this.advancedFilterData = await this.getAdvancedFilterData()
     .catch(err => {
@@ -147,6 +159,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.projectPriorities = this.advancedFilterData[3];
     this.plcStatuses = this.advancedFilterData[4];
 
+    // initalize Checkboxes
+    this.initCheckboxArrays()
+
     // get all managers for typeahead
     this.allManagers = this.getManagersTypeAhead('ron_nersesian@keysight.com');
 
@@ -156,8 +171,49 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // show page
     this.showPage = true;
 
+
     console.log('Advanced filter data:', this.advancedFilterData);
-    console.log('projects:', this.projects);
+  }
+
+  initCheckboxArrays() {
+    this.checkAllProjectTypes = true;
+    this.checkAllProjectPriorities = true;
+    this.checkAllProjectStatuses = true;
+
+    for (let i = 0; i < this.projectStatuses.length; i++) {
+      this.arrStatusID.push(this.projectStatuses[i].id);
+    }
+    console.log('status array:', this.arrStatusID);
+
+    for (let i = 0; i < this.projectTypes.length; i++) {
+      this.arrTypeID.push(this.projectTypes[i].id);
+    }
+    
+    for (let i = 0; i < this.projectPriorities.length; i++) {
+      this.arrPriorityID.push(this.projectPriorities[i].id);
+    }
+
+    // Leave the NULLs !
+    this.filterObject = {
+      PLCStatusIDs: '',       // num,num,num,..
+      PLCDateRanges: '',      // From|To
+      ProjectName: '',        // num,num,num,..
+      ProjectTypeIDs: String(this.arrTypeID),
+      ProjectStatusIDs: String(this.arrStatusID),
+      ProjectPriorityIDs: String(this.arrPriorityID),
+      ProjectOwnerEmails: '',
+      FTEMin: 'NULL',
+      FTEMax: 'NULL',
+      FTEDateFrom: 'NULL',        // 2017-01-01
+      FTEDateTo: 'NULL'           // 2017-01-01
+    };
+    console.log(this.filterObject);
+
+    // get all projects initially without filters
+    // Paul's advanced filter stored procedure
+    this.advancedFilter(this.filterObject);
+
+    // this.arrTypeID = this.projectTypes.projectTypeID;
   }
 
   ngOnDestroy() {
@@ -173,8 +229,24 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   // results of applied filter
   async advancedFilter(filterOptions: any) {
     this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
+    
+    this.advancedFilteredResults.nested.forEach( project => {
+      const schedules = [];
+      if ('Schedules' in project) {
+        Object.keys(project.Schedules).forEach(function(key) {
+          schedules.push({
+            PLCStatusName: key,
+            PLCDate: project.Schedules[key]
+          });
+        });
+        project.Schedules = schedules;
+      }
+    });
+
     this.advancedFilteredResults = this.advancedFilteredResults.nested;
     console.log('this.advancedFilteredResults', this.advancedFilteredResults);
+
+    
   }
 
   // Project Owner
@@ -318,14 +390,114 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
 // CHECKBOXES
 
-  onCheckboxProjectTypeClick(event: any, id: string) {
-    const value = event.target.checked;
+  // reset checkbox array to initial state
+  onCheckboxReset(chekboxID: any) {
 
-    // Consolidate all filters in one array
-    if (value === true) {
+    switch (chekboxID) {
+      case 'ProjectTypeIDs':
+        for (let i = 0; i < this.projectTypes.length; i++) {
+          this.arrTypeID.push(this.projectTypes[i].id);
+        }        
+        break;
+      case 'ProjectStatusIDs':
+        this.arrStatusID = [0]; // adding zero as blank
+        for (let i = 0; i < this.projectStatuses.length; i++) {
+          this.arrStatusID.push(this.projectStatuses[i].id);
+        }
+        break;
+      case 'ProjectPriorityIDs':
+        this.arrPriorityID = [0];  // adding zero as blank
+        for (let i = 0; i < this.projectPriorities.length; i++) {
+          this.arrPriorityID.push(this.projectPriorities[i].id);
+        } 
+        break;
+    }
+
+  }
+
+  // Checkbox "All"
+  async onCheckAllClick(event: any) {
+    const checkboxID = event.target.id;
+    const checkState = event.target.checked;
+    const objKey = Object.keys(this.filterObject);
+    
+    if (checkState === false) {
+      // loop through array of object keys and compare with the checkbox IDs
+      for (let i = 0; i < objKey.length; i++) {
+
+        if (objKey[i] === checkboxID) {
+
+          switch (objKey[i]) {
+            case 'ProjectTypeIDs':
+            this.arrTypeID = [];
+              this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
+              break;
+            case 'ProjectStatusIDs':
+              this.arrStatusID = [];
+              this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
+              break;
+            case 'ProjectPriorityIDs':
+              this.arrPriorityID = [];
+              this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
+              break;
+            case 'FTEMin':
+              this.filterObject.FTEMin = 'NULL';
+              this.filterObject.FTEMax = 'NULL';
+              break;
+          }
+          break;
+
+        }
+
+      }
+    } 
+
+    else if (checkState === true) {
+
+      // fill filterObjects with array from init or any other default values
+      for (let i = 0; i < objKey.length; i++) {
+
+        if(objKey[i] === checkboxID) {
+          switch (objKey[i]) {
+            case 'ProjectTypeIDs':
+              await this.onCheckboxReset(checkboxID);
+              this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
+              break;
+            case 'ProjectStatusIDs':
+              await this.onCheckboxReset(checkboxID);
+              this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
+              break;
+            case 'ProjectPriorityIDs':
+              await this.onCheckboxReset(checkboxID);
+              this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
+              break;
+            case 'FTEMin':
+              this.filterObject.FTEMin = '0';
+              this.filterObject.FTEMax = '100';
+              break;
+          }
+          break;
+        }
+      }
+
+    }
+    console.log('filterObject:', this.filterObject);
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+
+  }
+
+  // ProjectTypes
+  onCheckboxProjectTypeClick(event: any, id: string) {
+    const checked = event.target.checked;
+
+    if (checked === true) {
       // ADD ID to array
       this.arrTypeID.splice(0, 0, id);
-    } else {
+    } 
+
+    else if (checked === false) {
       // find ID in array
       for (let i = 0; i < this.arrTypeID.length; i++) {
         // REMOVE from array
@@ -335,28 +507,28 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log('Array', this.arrTypeID);
 
-    // Convert the array to string
+    // Convert and save array to filterObject
     this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
-    console.log(this.filterObject.ProjectTypeIDs);
-
-    // Show Badge
-    this.updateFilterBadge(event);
 
     // Make the db call
     this.advancedFilter(this.filterObject);
+
+    // Show Badge
+    // this.updateFilterBadge(event);
     
   }
 
+  // Project Status
   onCheckboxProjectStatusClick(event: any, id: string) {
-    const value = event.target.checked;
+    const checked = event.target.checked;
 
-    // Consolidate all filters in one array
-    if (value === true) {
+    if (checked === true) {
       // ADD ID to array
       this.arrStatusID.splice(0, 0, id);
-    } else {
+    } 
+    
+    else if (checked === false){
       // find ID in array
       for (let i = 0; i < this.arrStatusID.length; i++) {
         // REMOVE from array
@@ -366,28 +538,27 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log('ProjectStatus Array', this.arrStatusID);
 
-    // Convert the array to string
+    // Convert and save array to filterObject
     this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
-    console.log(this.filterObject.ProjectStatusIDs);
-
-    // Show Badge
-    this.updateFilterBadge(event);
 
     // Make the db call
     this.advancedFilter(this.filterObject);
     
+    // Show Badge
+    // this.updateFilterBadge(event);
   }
 
+  // Project Priority
   onCheckboxProjectPriorityClick(event: any, id: string) {
-    const value = event.target.checked;
+    const checked = event.target.checked;
 
-    // Consolidate all filters in one array
-    if (value === true) {
+    if (checked === true) {
       // ADD ID to array
       this.arrPriorityID.splice(0, 0, id);
-    } else {
+    } 
+    
+    else if (checked === false) {
       // find ID in array
       for (let i = 0; i < this.arrPriorityID.length; i++) {
         // REMOVE from array
@@ -397,20 +568,246 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log('ProjectPriorityIDs Array', this.arrPriorityID);
 
-    // Convert the array to string
+    // Convert and save array to filterObject
     this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
     console.log(this.filterObject.ProjectPriorityIDs);
 
-    // Show Badge
-    this.updateFilterBadge(event);
-
     // Make the db call
     this.advancedFilter(this.filterObject);
+
+    // Show Badge
+    // this.updateFilterBadge(event);  
     
   }
 
+  // FTE
+  // To-Do CHAI: 4 checkboxes are not really intuituve. Think of something else
+  onCheckboxFTEClick(event: any) {
+    const checked = event.target.checked;
+    const checkboxID = event.target.id;
+
+    // const numberFTEMin = Number(this.filterObject.FTEMin);
+    // const numberFTEMax = Number(this.filterObject.FTEMax);
+
+    if (checked === true) {
+      
+      switch (checkboxID) {
+        case 'fte1':
+          this.fteMin.push(0);
+          this.fteMax.push(25);
+
+          // No need to check, 0 is always min
+          this.filterObject.FTEMin = '0';
+          console.log(this.fteMin);
+          
+          if (this.filterObject.FTEMax === 'NULL') {
+            this.filterObject.FTEMax = '25';
+          }
+          else if (Number(this.filterObject.FTEMax) > 25) {
+            console.log('Max is larger than 25 => filterObject.FTEMax=', this.filterObject.FTEMax);
+          }
+
+          console.log('Mins:', this.fteMin);
+          console.log('Maxs:', this.fteMax);
+          break;
+
+        case 'fte2':
+          this.fteMin.push(25);
+          this.fteMax.push(50);
+
+
+          if (this.filterObject.FTEMin === 'NULL') {
+            this.filterObject.FTEMin = '25';
+          }
+          else if (Number(this.filterObject.FTEMin) === 0) {
+            console.log('Min is 0 => filterObject.FTEMin=', this.filterObject.FTEMin);
+          }
+          else if (Number(this.filterObject.FTEMin) > 25) {
+            this.filterObject.FTEMin = '25';
+          }
+          if (this.filterObject.FTEMax === 'NULL') {
+            this.filterObject.FTEMax = '50';
+          }
+          else if (Number(this.filterObject.FTEMax) === 25) {
+            this.filterObject.FTEMax = '50';
+          }
+          else if (Number(this.filterObject.FTEMax) > 50) {
+            console.log('Max is larger than 50 => filterObject.FTEMax=', this.filterObject.FTEMax);
+          }
+
+          console.log('Mins:', this.fteMin);
+          console.log('Maxs:', this.fteMax);
+          break;
+
+        case 'fte3':
+          this.fteMin.push(50);
+          this.fteMax.push(75);
+
+          if (this.filterObject.FTEMin === 'NULL') {
+            this.filterObject.FTEMin = '50';
+          }
+          else if (Number(this.filterObject.FTEMin) < 50) {
+            console.log('Min is less than 50 => filterObject.FTEMin=', this.filterObject.FTEMin);            
+          }
+          else if (Number(this.filterObject.FTEMin) === 75) {
+            this.filterObject.FTEMin = '50';
+          }
+          
+          if (this.filterObject.FTEMax === 'NULL') {
+            this.filterObject.FTEMax = '75';
+          }
+          else if (Number(this.filterObject.FTEMax) < 75) {
+            this.filterObject.FTEMax = '75';
+          }
+          else if (Number(this.filterObject.FTEMax) === 100) {
+            console.log('Max is 100 => filterObject.FTEMax=', this.filterObject.FTEMax);
+          }
+          
+          console.log('Mins:', this.fteMin);
+          console.log('Maxs:', this.fteMax);
+          break;
+
+        case 'fte4':
+          this.fteMin.push(75);
+          this.fteMax.push(100);
+
+          if (this.filterObject.FTEMin === 'NULL') {
+            this.filterObject.FTEMin = '75';
+          }
+          else if (Number(this.filterObject.FTEMin) < 75) {
+            console.log('Min is less than 75 => filterObject.FTEMin=', this.filterObject.FTEMin);            
+          }
+          
+          this.filterObject.FTEMax = '100';
+          
+          console.log('Mins:', this.fteMin);
+          console.log('Maxs:', this.fteMax);
+          break;
+      }
+
+    }
+
+    else if (checked === false) {
+
+      // sort min arrays
+      console.log('Before sort:', this.fteMin)
+      console.log('Before sort:', this.fteMax)      
+
+      this.fteMin.sort(function(a, b) {
+        return a-b
+      })
+
+      // sort max arrays
+      this.fteMax.sort(function(a, b) {
+        return a-b
+      })
+
+      console.log('After sort:', this.fteMin)
+      console.log('After sort:', this.fteMin)
+
+      switch (checkboxID) {
+        case 'fte1':
+
+          // remove 0 and 25 from array
+          this.fteMin.splice(0, 1);
+          this.fteMax.splice(0, 1);
+
+          console.log('Mins:', this.fteMin);
+          console.log('Maxs:', this.fteMax);
+          break;
+
+        case 'fte2':
+
+          // remove 25 from fteMin array
+          for (let i = 0; i < this.fteMin.length; i++) {
+            if (this.fteMin[i] === 25) {
+              this.fteMin.splice(i, 1);
+              break;
+            }
+          }
+
+          // remove 50 from fteMax array
+          for (let i = 0; i < this.fteMax.length; i++) {
+            if (this.fteMax[i] === 50) {
+              this.fteMax.splice(i, 1);
+              break;
+            }
+          }
+
+          console.log('Mins:', this.fteMin);
+          console.log('Maxs:', this.fteMax);
+          break;
+
+        case 'fte3':
+          
+          // remove 50 from fteMin array
+          for (let i = 0; i < this.fteMin.length; i++) {
+            if (this.fteMin[i] === 50) {
+              this.fteMin.splice(i, 1);
+              break;
+            }
+          }
+
+          // remove 75 from fteMax array
+          for (let i = 0; i < this.fteMax.length; i++) {
+            if (this.fteMax[i] === 75) {
+              this.fteMax.splice(i, 1);
+              break;
+            }
+          }
+
+          console.log('Mins:', this.fteMin);
+          console.log('Maxs:', this.fteMax);
+          break;
+
+        case 'fte4':
+   
+          // remove 75 from fteMin array
+          for (let i = 0; i < this.fteMin.length; i++) {
+            if (this.fteMin[i] === 75) {
+              this.fteMin.splice(i, 1);
+              break;
+            }
+          }
+
+          // remove 100 from fteMax array
+          for (let i = 0; i < this.fteMax.length; i++) {
+            if (this.fteMax[i] === 100) {
+                this.fteMax.splice(i, 1);
+                break;
+            }
+          }
+
+          console.log('Mins:', this.fteMin);
+          console.log('Maxs:', this.fteMax);
+          break;
+      }
+
+      // Save new filterObjects
+
+      if (this.fteMin.length !== 0) {
+        // new Min is first value in min array
+        this.filterObject.FTEMin = this.fteMin[0];
+
+        // new Max is last value in max array
+        this.filterObject.FTEMax = this.fteMax[this.fteMax.length - 1];
+      } 
+      // FTEMin and FTEMax require 'NULL' for stored procedure
+      else if (this.fteMin.length === 0) {
+        this.filterObject.FTEMin = 'NULL';
+        this.filterObject.FTEMax = 'NULL';
+      }
+
+    }
+
+    console.log(this.filterObject);
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+  }
+
+  // PLC Schedule
   onCheckboxPLCScheduleClick(index, event: any, plcStatus: any) {
     const checked = event.target.checked;
 
@@ -426,10 +823,19 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // add or remove to local array depending on the checkbox state
     if (checked === true) {
 
+      // // show PLC status in results table
+      // this.plcSchedules = this.newPLC;
+      // console.log('Show PLC Schedule', this.plcSchedules);
+
       // Add checked PLC Status
       this.objPLC.push(this.newPLC);
 
     } else {
+
+      // // remove PLC status from results table
+      // this.plcSchedules = false;
+      // console.log('Show PLC Schedule', this.plcSchedules);
+
 
       // find the right object to delete by comparing their index
       for (let i = 0; i < this.objPLC.length; i++) {
