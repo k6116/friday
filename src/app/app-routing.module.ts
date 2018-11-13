@@ -42,6 +42,7 @@ import { ProjectsSetupsComponent } from './setups/projects/projects.component';
 import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
+import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-fte-rollup.component';
 import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
 import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
 import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
@@ -90,6 +91,7 @@ const routes: Routes = [
       { path: 'reports/jarvis-adoption', component: OrgViewerComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
+      { path: 'reports/project-fte-rollup', component: ProjectFteRollupComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }
     ]

@@ -23,6 +23,8 @@ export class BomSelectorComponent implements OnInit {
     // get list of bills for typeahead.js
     this.apiDataBomService.index().subscribe( res => {
 
+      // console.log(res);
+
       // initialize bloodhound suggestion engine with data
       const bh = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('PartOrProjectName'),

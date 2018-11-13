@@ -5,119 +5,95 @@
   @return unquote("\"\\#{$str}\"");
 }
 
-$nc-badge-1: unicode(ea02);
-$nc-archive-check: unicode(ea03);
 $nc-small-remove: unicode(ea04);
-$nc-badge-2: unicode(ea05);
-$nc-board-29: unicode(ea06);
 $nc-calendar-add: unicode(ea07);
-$nc-a-check: unicode(ea08);
-$nc-chart-bar-33: unicode(ea09);
-$nc-dashboard-half: unicode(ea0a);
-$nc-lock: unicode(ea0b);
-$nc-chat-round-content: unicode(ea0c);
-$nc-single-05: unicode(ea0d);
-$nc-time-countdown: unicode(ea0e);
-$nc-socket: unicode(ea0f);
-$nc-gantt: unicode(ea10);
-$nc-bars-rotate: unicode(ea11);
-$nc-opening-times: unicode(ea12);
-$nc-dots-07: unicode(ea13);
-$nc-light-traffic: unicode(ea14);
-$nc-priority-high: unicode(ea15);
-$nc-microscope: unicode(ea16);
-$nc-hierarchy-53: unicode(ea17);
-$nc-book-open-2: unicode(ea18);
-$nc-ram: unicode(ea19);
-$nc-l-security: unicode(ea1a);
-$nc-keyboard-wireless: unicode(ea1b);
-$nc-code-editor: unicode(ea1c);
-$nc-lab: unicode(ea1d);
-$nc-settings-91: unicode(ea1e);
-$nc-bulb-63: unicode(ea1f);
-$nc-sign-closed: unicode(ea20);
-$nc-lock-2: unicode(ea21);
-$nc-board-28: unicode(ea22);
-$nc-privacy-policy-2: unicode(ea23);
-$nc-priority-high-2: unicode(ea24);
-$nc-socket-europe-1: unicode(ea25);
-$nc-circle-10: unicode(ea26);
-$nc-time-clock: unicode(ea27);
-$nc-a-edit: unicode(ea28);
-$nc-dots-06: unicode(ea29);
-$nc-pulse-phone: unicode(ea2a);
-$nc-keyboard: unicode(ea2b);
-$nc-microcircuit: unicode(ea2c);
-$nc-settings: unicode(ea2d);
-$nc-money-coins: unicode(ea2e);
-$nc-money-11: unicode(ea2f);
-$nc-tag-content: unicode(ea30);
-$nc-hotel: unicode(ea31);
-$nc-b-security: unicode(ea32);
-$nc-filter-organization: unicode(ea33);
-
-.nc-badge-1::before {
-  content: $nc-badge-1;
-}
-
-.nc-archive-check::before {
-  content: $nc-archive-check;
-}
+$nc-priority-high-2: unicode(ea15);
+$nc-microcircuit: unicode(ea16);
+$nc-server-rack: unicode(ea17);
+$nc-privacy-policy-2: unicode(ea18);
+$nc-event-create: unicode(ea19);
+$nc-opening-times: unicode(ea1a);
+$nc-dots-07: unicode(ea1b);
+$nc-dots-05: unicode(ea1c);
+$nc-dots-06: unicode(ea1d);
+$nc-bars-rotate: unicode(ea1e);
+$nc-rim: unicode(ea1f);
+$nc-gantt: unicode(ea20);
+$nc-lock-1: unicode(ea21);
+$nc-wifi-router: unicode(ea22);
+$nc-time-clock: unicode(ea23);
+$nc-time-countdown: unicode(ea24);
+$nc-socket: unicode(ea25);
+$nc-socket-europe-1: unicode(ea26);
+$nc-single-05: unicode(ea27);
+$nc-signal: unicode(ea28);
+$nc-sign-closed: unicode(ea29);
+$nc-settings-91: unicode(ea2a);
+$nc-ram: unicode(ea2b);
+$nc-pulse-phone: unicode(ea2c);
+$nc-newsletter: unicode(ea2e);
+$nc-money-coins: unicode(ea2f);
+$nc-money-11: unicode(ea30);
+$nc-microscope: unicode(ea31);
+$nc-meeting: unicode(ea32);
+$nc-map-big: unicode(ea33);
+$nc-list: unicode(ea34);
+$nc-light-traffic: unicode(ea35);
+$nc-lab: unicode(ea36);
+$nc-l-security: unicode(ea37);
+$nc-keyboard: unicode(ea38);
+$nc-keyboard-wireless: unicode(ea39);
+$nc-hierarchy-54: unicode(ea3a);
+$nc-hierarchy-53: unicode(ea3b);
+$nc-dashboard-half: unicode(ea3c);
+$nc-code-editor: unicode(ea3d);
+$nc-circle-10: unicode(ea3e);
+$nc-chat-round-content: unicode(ea3f);
+$nc-chart-bar-33: unicode(ea40);
+$nc-calendar-grid-61: unicode(ea41);
+$nc-calendar-check-59: unicode(ea42);
+$nc-bulb-63: unicode(ea44);
+$nc-book-open-2: unicode(ea45);
+$nc-board-29: unicode(ea46);
+$nc-board-28: unicode(ea47);
+$nc-archive-check: unicode(ea48);
+$nc-a-edit: unicode(ea49);
+$nc-a-check: unicode(ea4a);
+$nc-wifi: unicode(ea4b);
+$nc-square-download: unicode(ea4c);
+$nc-launch-47: unicode(ea4d);
+$nc-barcode: unicode(ea4e);
+$nc-tag-content: unicode(ea4f);
+$nc-b-security: unicode(ea50);
+$nc-lock: unicode(ea51);
+$nc-badge-1: unicode(ea52);
 
 .nc-small-remove::before {
   content: $nc-small-remove;
-}
-
-.nc-badge-2::before {
-  content: $nc-badge-2;
-}
-
-.nc-board-29::before {
-  content: $nc-board-29;
 }
 
 .nc-calendar-add::before {
   content: $nc-calendar-add;
 }
 
-.nc-a-check::before {
-  content: $nc-a-check;
+.nc-priority-high-2::before {
+  content: $nc-priority-high-2;
 }
 
-.nc-chart-bar-33::before {
-  content: $nc-chart-bar-33;
+.nc-microcircuit::before {
+  content: $nc-microcircuit;
 }
 
-.nc-dashboard-half::before {
-  content: $nc-dashboard-half;
+.nc-server-rack::before {
+  content: $nc-server-rack;
 }
 
-.nc-lock::before {
-  content: $nc-lock;
+.nc-privacy-policy-2::before {
+  content: $nc-privacy-policy-2;
 }
 
-.nc-chat-round-content::before {
-  content: $nc-chat-round-content;
-}
-
-.nc-single-05::before {
-  content: $nc-single-05;
-}
-
-.nc-time-countdown::before {
-  content: $nc-time-countdown;
-}
-
-.nc-socket::before {
-  content: $nc-socket;
-}
-
-.nc-gantt::before {
-  content: $nc-gantt;
-}
-
-.nc-bars-rotate::before {
-  content: $nc-bars-rotate;
+.nc-event-create::before {
+  content: $nc-event-create;
 }
 
 .nc-opening-times::before {
@@ -128,108 +104,76 @@ $nc-filter-organization: unicode(ea33);
   content: $nc-dots-07;
 }
 
-.nc-light-traffic::before {
-  content: $nc-light-traffic;
-}
-
-.nc-priority-high::before {
-  content: $nc-priority-high;
-}
-
-.nc-microscope::before {
-  content: $nc-microscope;
-}
-
-.nc-hierarchy-53::before {
-  content: $nc-hierarchy-53;
-}
-
-.nc-book-open-2::before {
-  content: $nc-book-open-2;
-}
-
-.nc-ram::before {
-  content: $nc-ram;
-}
-
-.nc-l-security::before {
-  content: $nc-l-security;
-}
-
-.nc-keyboard-wireless::before {
-  content: $nc-keyboard-wireless;
-}
-
-.nc-code-editor::before {
-  content: $nc-code-editor;
-}
-
-.nc-lab::before {
-  content: $nc-lab;
-}
-
-.nc-settings-91::before {
-  content: $nc-settings-91;
-}
-
-.nc-bulb-63::before {
-  content: $nc-bulb-63;
-}
-
-.nc-sign-closed::before {
-  content: $nc-sign-closed;
-}
-
-.nc-lock-2::before {
-  content: $nc-lock-2;
-}
-
-.nc-board-28::before {
-  content: $nc-board-28;
-}
-
-.nc-privacy-policy-2::before {
-  content: $nc-privacy-policy-2;
-}
-
-.nc-priority-high-2::before {
-  content: $nc-priority-high-2;
-}
-
-.nc-socket-europe-1::before {
-  content: $nc-socket-europe-1;
-}
-
-.nc-circle-10::before {
-  content: $nc-circle-10;
-}
-
-.nc-time-clock::before {
-  content: $nc-time-clock;
-}
-
-.nc-a-edit::before {
-  content: $nc-a-edit;
+.nc-dots-05::before {
+  content: $nc-dots-05;
 }
 
 .nc-dots-06::before {
   content: $nc-dots-06;
 }
 
+.nc-bars-rotate::before {
+  content: $nc-bars-rotate;
+}
+
+.nc-rim::before {
+  content: $nc-rim;
+}
+
+.nc-gantt::before {
+  content: $nc-gantt;
+}
+
+.nc-lock-1::before {
+  content: $nc-lock-1;
+}
+
+.nc-wifi-router::before {
+  content: $nc-wifi-router;
+}
+
+.nc-time-clock::before {
+  content: $nc-time-clock;
+}
+
+.nc-time-countdown::before {
+  content: $nc-time-countdown;
+}
+
+.nc-socket::before {
+  content: $nc-socket;
+}
+
+.nc-socket-europe-1::before {
+  content: $nc-socket-europe-1;
+}
+
+.nc-single-05::before {
+  content: $nc-single-05;
+}
+
+.nc-signal::before {
+  content: $nc-signal;
+}
+
+.nc-sign-closed::before {
+  content: $nc-sign-closed;
+}
+
+.nc-settings-91::before {
+  content: $nc-settings-91;
+}
+
+.nc-ram::before {
+  content: $nc-ram;
+}
+
 .nc-pulse-phone::before {
   content: $nc-pulse-phone;
 }
 
-.nc-keyboard::before {
-  content: $nc-keyboard;
-}
-
-.nc-microcircuit::before {
-  content: $nc-microcircuit;
-}
-
-.nc-settings::before {
-  content: $nc-settings;
+.nc-newsletter::before {
+  content: $nc-newsletter;
 }
 
 .nc-money-coins::before {
@@ -240,19 +184,135 @@ $nc-filter-organization: unicode(ea33);
   content: $nc-money-11;
 }
 
-.nc-tag-content::before {
-  content: $nc-tag-content;
+.nc-microscope::before {
+  content: $nc-microscope;
 }
 
-.nc-hotel::before {
-  content: $nc-hotel;
+.nc-meeting::before {
+  content: $nc-meeting;
+}
+
+.nc-map-big::before {
+  content: $nc-map-big;
+}
+
+.nc-list::before {
+  content: $nc-list;
+}
+
+.nc-light-traffic::before {
+  content: $nc-light-traffic;
+}
+
+.nc-lab::before {
+  content: $nc-lab;
+}
+
+.nc-l-security::before {
+  content: $nc-l-security;
+}
+
+.nc-keyboard::before {
+  content: $nc-keyboard;
+}
+
+.nc-keyboard-wireless::before {
+  content: $nc-keyboard-wireless;
+}
+
+.nc-hierarchy-54::before {
+  content: $nc-hierarchy-54;
+}
+
+.nc-hierarchy-53::before {
+  content: $nc-hierarchy-53;
+}
+
+.nc-dashboard-half::before {
+  content: $nc-dashboard-half;
+}
+
+.nc-code-editor::before {
+  content: $nc-code-editor;
+}
+
+.nc-circle-10::before {
+  content: $nc-circle-10;
+}
+
+.nc-chat-round-content::before {
+  content: $nc-chat-round-content;
+}
+
+.nc-chart-bar-33::before {
+  content: $nc-chart-bar-33;
+}
+
+.nc-calendar-grid-61::before {
+  content: $nc-calendar-grid-61;
+}
+
+.nc-calendar-check-59::before {
+  content: $nc-calendar-check-59;
+}
+
+.nc-bulb-63::before {
+  content: $nc-bulb-63;
+}
+
+.nc-book-open-2::before {
+  content: $nc-book-open-2;
+}
+
+.nc-board-29::before {
+  content: $nc-board-29;
+}
+
+.nc-board-28::before {
+  content: $nc-board-28;
+}
+
+.nc-archive-check::before {
+  content: $nc-archive-check;
+}
+
+.nc-a-edit::before {
+  content: $nc-a-edit;
+}
+
+.nc-a-check::before {
+  content: $nc-a-check;
+}
+
+.nc-wifi::before {
+  content: $nc-wifi;
+}
+
+.nc-square-download::before {
+  content: $nc-square-download;
+}
+
+.nc-launch-47::before {
+  content: $nc-launch-47;
+}
+
+.nc-barcode::before {
+  content: $nc-barcode;
+}
+
+.nc-tag-content::before {
+  content: $nc-tag-content;
 }
 
 .nc-b-security::before {
   content: $nc-b-security;
 }
 
-.nc-filter-organization::before {
-  content: $nc-filter-organization;
+.nc-lock::before {
+  content: $nc-lock;
+}
+
+.nc-badge-1::before {
+  content: $nc-badge-1;
 }
 

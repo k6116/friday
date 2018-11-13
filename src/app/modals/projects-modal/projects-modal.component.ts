@@ -156,6 +156,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
 
     // listen for websocket message for newly created projects
     this.subscription1 = this.websocketService.getNewProject().subscribe(project => {
+      // console.log('websocket subscription received');
       // console.log(project);
       this.refreshProjectCards();
     });
@@ -179,6 +180,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
       .subscribe(
         res => {
           this.projects = res;
+          this.filterProjects = this.projects;
           // Need to refresh the project permissions list when a new one is created live through websockets
           this.getProjectPermissionTeamList();
           // this.filterProjects = this.projects;

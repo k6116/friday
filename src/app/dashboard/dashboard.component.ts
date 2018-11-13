@@ -129,8 +129,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         res => {
-          // console.log('dashboard data:');
-          // console.log(res);
           this.dashboardData = res;
           this.renderDashboard();
           this.showDashboard = true;

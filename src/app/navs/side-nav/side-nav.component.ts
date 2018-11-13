@@ -154,6 +154,15 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
               hidden: false
             },
             {
+              title: 'Project FTE Rollup',
+              alias: 'reports-project-fte-rollup',
+              path: 'main/reports/project-fte-rollup',
+              parentAlias: 'reports',
+              active: false,
+              permissionProtected: false,
+              hidden: false
+            },
+            {
               title: 'Jarvis Adoption',
               alias: 'reports-jarvis-adoption',
               path: 'main/reports/jarvis-adoption',
@@ -161,7 +170,7 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
               active: false,
               permissionProtected: true,
               hidden: false
-            },
+            }
           ]
         },
         // temporarily hiding BOM from sidenav until we can complete BOM editor
@@ -208,7 +217,7 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         {
           title: 'Setups',
-          iconClass: 'nc-settings',
+          iconClass: 'nc-settings-91',
           alias: 'setups',
           expanded: false,
           active: false,

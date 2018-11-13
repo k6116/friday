@@ -1,3 +1,13 @@
+<a name="1.20.0"></a>
+# [1.20.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.19.2...v1.20.0) (2018-11-07)
+
+
+### Features
+
+* refactor 5 ([5e72dae](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/5e72dae))
+
+
+
 <a name="1.19.2"></a>
 ## [1.19.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.19.1...v1.19.2) (2018-11-02)
 

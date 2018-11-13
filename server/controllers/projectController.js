@@ -58,6 +58,34 @@ function indexProjects(req, res) {
 }
 
 
+function getProjectsList(req, res) {
+
+  const sql = `
+    SELECT 
+      T1.ProjectID,
+      T1.ProjectName,
+      T2.ProjectTypeName,
+      T1.ProjectName + ' (' + T2.ProjectTypeName + ')' as 'ProjectNameAndType'
+    FROM  
+      projects.Projects T1
+      LEFT JOIN projects.ProjectTypes T2 ON T1.ProjectTypeID = T2.ProjectTypeID
+    ORDER BY 
+      T1.ProjectName`
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+    .then(projects => {    
+    res.json(projects);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+
+}
+
+
 function getProject(req, res) {
 
   const projectID = req.params.projectID;
@@ -976,6 +1004,7 @@ function destroyProjectSetup(req, res) {
 
 module.exports = {
   indexProjects: indexProjects,
+  getProjectsList: getProjectsList,
   getProject: getProject,
   indexProjectsFilterProjectType: indexProjectsFilterProjectType,
   indexProjectRoster: indexProjectRoster,

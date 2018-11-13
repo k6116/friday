@@ -235,16 +235,16 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onTestFormClick() {
-    console.log('form object (this.form):');
-    console.log(this.FTEFormGroup);
+    // console.log('form object (this.form):');
+    // console.log(this.FTEFormGroup);
     // console.log('this.FTEFormGroup.value.FTEFormArray', this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
     // console.log('teamFTE', this.teamFTEs);
     // console.log('teamFTEFlat', this.teamFTEsFlat);
-    console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
-    console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
-    console.log('this.allProjects', this.allProjects)
-    console.log('this.projects', this.projects)
+    // console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
+    // console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
+    // console.log('this.allProjects', this.allProjects);
+    // console.log('this.projects', this.projects);
     // console.log('this.teamOrgStructure', this.teamOrgStructure);
     // console.log('this.filterEmployees', this.filterEmployees)
     // console.log('this.employeeVisible', this.employeeVisible)
@@ -268,8 +268,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         this.projectList = res;
       },
       err => {
-        console.log('get project data error:');
-        console.log(err);
+        // console.log('get project data error:');
+        // console.log(err);
       }
     );
   }
@@ -607,7 +607,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           });
         },
         err => {
-          console.log(err);
+          // console.log(err);
           this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
         }
       );
@@ -683,7 +683,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
               this.FTEFormGroup.markAsUntouched();
             },
             err => {
-              console.log(err);
+              // console.log(err);
               this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
             }
           );
@@ -1132,7 +1132,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           }
         },
         err => {
-          console.log(err);
+          // console.log(err);
         }
       );
   }
@@ -1291,7 +1291,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
           this.apiDataFteService.deletePlan(planData)
             .subscribe(
               res => {
-                console.log('plan deleted', res);
+                // console.log('plan deleted', res);
 
                 // empty arrays so it won't have objects appended
                 this.filteredEmployees = [];

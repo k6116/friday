@@ -27,7 +27,7 @@ export class TransferProjectsComponent implements OnInit {
     .subscribe(
       res => {
         this.teamProjectList = res;
-        // console.log('this.teamProjectList', this.teamProjectList)
+        // console.log('this.teamProjectList', this.teamProjectList);
       },
       err => {
         // console.log('get project data error:');
@@ -37,7 +37,7 @@ export class TransferProjectsComponent implements OnInit {
   }
 
   onCheckboxClick(project: any) {
-    // console.log('project', project)
+    // console.log('project', project);
   }
 
 }

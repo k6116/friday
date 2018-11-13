@@ -184,6 +184,7 @@ router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle
 
 // PROJECT CONTROLER
 router.get('/project/displayProject/show/getProject/:projectID', controllers.project.getProject);
+router.get('/project/index/getProjectsList', controllers.project.getProjectsList);
 
 // SCHEDULES CONTROLLER
 router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
@@ -203,6 +204,9 @@ router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 
 // EXPORT CONTROLLER
 router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
+
+// REPORT CONTROLLER
+router.get('/report/reports-project-fte-rollup/show/getProjectFTERollupData/:projectID/:startDate/:endDate', controllers.report.getProjectFTERollupData);
 
 
 
