@@ -19,7 +19,7 @@
     <ng-container *ngFor="let quote of quotes">
       <div class="card">
         <div class="card-header">
-          {{quote.supplier}} - {{quote.mfgPartNum}}
+          {{quote.supplier}} - {{quote.mfgPartNumber}}
           <button type="button" class="btn btn-secondary edit-button" (click)="editQuote(quote)"><i class="fa fa-pencil-square-o"></i> Edit</button>
         </div>
         <div class="card-body">
@@ -62,7 +62,7 @@
           <label>Supplier:</label>
           <input type="text" class="form-control" formControlName="supplier"><br />
           <label>Manufacturer's Part Number:</label>
-          <input type="text" class="form-control" formControlName="mfgPartNum"><br />
+          <input type="text" class="form-control" formControlName="mfgPartNumber"><br />
           <label>Price Breaks:</label>
           <table class="table table-sm">
             <thead>

@@ -50,6 +50,15 @@ export class ApiDataMatplanService {
       .map((response: Response) => response.json());
   }
 
+  // update quote records for a part
+  updateQuoteForPart(quoteData: any) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.put(`/api/matplan/matplan/update/updateQuoteForPart`, JSON.stringify(quoteData), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   showOrdersForPart(matplanID: number, partID: number) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});

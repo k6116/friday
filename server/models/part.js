@@ -39,6 +39,38 @@ const Part = sequelize.define('part',
   }
 );
 
+
+const Quote = sequelize.define('quote',
+  {
+    id: { type: Sequelize.INTEGER, field: 'ID', primaryKey: true, autoIncrement: true },
+    quoteID: { type: Sequelize.INTEGER, field: 'QuoteID' },
+    partID: { type: Sequelize.INTEGER, field: 'PartID' },
+    supplier: { type: Sequelize.STRING, field: 'Supplier' },
+    mfgPartNumber: { type: Sequelize.STRING, field: 'MFGPartNumber' },
+    leadTime: { type: Sequelize.INTEGER, field: 'LeadTime' },
+    minOrderQty: { type: Sequelize.INTEGER, field: 'MinOrderQty' },
+    price: { type: Sequelize.DECIMAL, field: 'Price' },
+    nreCharge: { type: Sequelize.DECIMAL, field: 'NRECharge' },
+    demandForecastMethodID: { type: Sequelize.INTEGER, field: 'DemandForecastMethodID' },
+    demandForecastMethodNumber: { type: Sequelize.STRING, field: 'DemandForecastMethodNumber' },
+    notes: { type: Sequelize.TEXT, field: 'Notes' }, 
+    createdBy: { type: Sequelize.INTEGER, field: 'CreatedBy' },
+    createdAt: { type: Sequelize.DATE, field: 'CreationDate' },
+    updatedBy: { type: Sequelize.INTEGER, field: 'LastUpdatedBy' },
+    updatedAt: { type: Sequelize.DATE, field: 'LastUpdateDate' }
+  },
+  {
+    schema: 'parts',
+    tableName: 'Quotes',
+    timestamps: false,
+    hasTrigger: true
+  }
+);
+
+// Part.hasMany(Quote, {foreignKey: 'ID'});
+// Quote.belongsTo(Part, {foreignKey: 'PartID'});
+
 module.exports = {
-  Part: Part
+  Part: Part,
+  Quote: Quote
 } 

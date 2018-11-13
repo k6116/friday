@@ -1,7 +1,9 @@
 
 const models = require('../models/_index');
 const sequelize = require('../db/sequelize').sequelize;
+const token = require('../token/token');
 const Treeize = require('treeize');
+const moment = require('moment');
 
 
 function show(req, res) {
@@ -124,20 +126,25 @@ function showMatplanBom(req, res) {
 
 function showQuotesForPart(req, res) {
   const partID = req.params.partID;
-  sequelize.query(`
-    SELECT
-      PartID AS [partID],
-      QuoteID AS [quoteID],
-      Supplier AS [supplier],
-      MFGPartNumber AS [mfgPartNum],
-      ID AS [breaks|id],
-      LeadTime AS [breaks|leadTime],
-      MinOrderQty AS [breaks|minOrderQty],
-      Price AS [breaks|price],
-      NRECharge AS [breaks|nreCharge]
-    FROM parts.Quotes
-    WHERE PartID = :partID`, {replacements: {partID: partID}, type: sequelize.QueryTypes.SELECT})
+  models.Quote.findAll({
+    attributes: [
+      'partID',
+      'quoteID',
+      'supplier',
+      'mfgPartNumber',
+      ['id', 'breaks|id'],
+      ['leadTime', 'breaks|leadTime'],
+      ['minOrderQty', 'breaks|minOrderQty'],
+      ['price', 'breaks|price'],
+      ['nreCharge', 'breaks|nreCharge']
+    ],
+    where: {
+      partID: partID
+    },
+    raw: true
+  })
   .then(quoteList => {
+    // treeize the price breaks into nested JSON
     const quoteTree = new Treeize().options({input: {delimiter: '|'}});
     quoteTree.grow(quoteList);
     res.json(quoteTree.getData());
@@ -147,6 +154,111 @@ function showQuotesForPart(req, res) {
       title: 'Error (in catch)',
       error: {message: error}
     })
+  });
+}
+
+function updateQuoteForPart(req, res) {
+  const decodedToken = token.decode(req.header('X-Token'), res);
+  const userID = decodedToken.userData.id;
+  const quoteForm = req.body;
+  const insertValues = [];
+  const updateValues = [];
+
+  quoteForm.breaks.forEach( priceBreak => {
+    if (priceBreak.id) {
+      updateValues.push({
+        id: priceBreak.id,
+        quoteID: quoteForm.quoteID,
+        partID: quoteForm.partID,
+        supplier: quoteForm.supplier,
+        mfgPartNumber: quoteForm.mfgPartNumber,
+        leadTime: priceBreak.leadTime,
+        minOrderQty: priceBreak.minOrderQty,
+        price: priceBreak.price,
+        nreCharge: priceBreak.nreCharge,
+        demandForecastMethodID: 1,
+        demandForecastMethodNumber: 'dunno',
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+      });
+    } else {
+      insertValues.push({
+        quoteID: quoteForm.quoteID,
+        partID: quoteForm.partID,
+        supplier: quoteForm.supplier,
+        mfgPartNumber: quoteForm.mfgPartNumber,
+        leadTime: Number(priceBreak.leadTime),
+        minOrderQty: Number(priceBreak.minOrderQty),
+        price: Number(priceBreak.price),
+        nreCharge: Number(priceBreak.nreCharge),
+        demandForecastMethodID: 1,
+        demandForecastMethodNumber: 'dunno',
+        createdBy: userID,
+        createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+      });
+    }
+  });
+
+  console.log('done parsing newValues');
+  console.log(insertValues);
+  console.log('done parsing updateValues');
+  console.log(updateValues);
+
+  // res.json({message: 'bla'});
+
+  return sequelize.transaction( (t) => {
+    return models.Quote.bulkCreate(
+      insertValues,
+      {transaction: t}
+    )
+    .then( (insertedRecords) => {
+      console.log(`${insertedRecords.length} quote records added`);
+
+      // make array of promises to update all quote records
+      let promises = [];
+      for (let i = 0; i < updateValues.length; i++) {
+        let newPromise = models.Quote.update(
+          {
+            id: updateValues[i].id,
+            quoteID: updateValues[i].quoteID,
+            partID: updateValues[i].partID,
+            supplier: updateValues[i].supplier,
+            mfgPartNumber: updateValues[i].mfgPartNumber,
+            leadTime: updateValues[i].leadTime,
+            minOrderQty: updateValues[i].minOrderQty,
+            price: updateValues[i].price,
+            nreCharge: updateValues[i].nreCharge,
+            demandForecastMethodID: updateValues[i].demandForecastMethodID,
+            demandForecastMethodNumber: updateValues[i].demandForecastMethodNumber,
+            updatedBy: updateValues[i].updatedBy,
+            updatedAt: updateValues[i].updatedAt
+          },
+          {
+            where: { id: updateValues[i].id },
+            transaction: t
+          }
+        );
+        promises.push(newPromise);
+      };
+      return Promise.all(promises);
+    })
+    .then( updatedRecords => {
+      console.log(`${updatedRecords.length} quote records updated`)
+    });
+  }) // end transaction
+  .then(() => {
+    res.json({
+      message: 'Quote has been saved'
+    })
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({
+      message: 'quote save failed',
+      error: error
+    });
   });
 }
 
@@ -175,5 +287,6 @@ module.exports = {
   showMatplans: showMatplans,
   showMatplanBom: showMatplanBom,
   showQuotesForPart: showQuotesForPart,
+  updateQuoteForPart: updateQuoteForPart,
   showOrdersForPart: showOrdersForPart
 }

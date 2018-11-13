@@ -43,7 +43,7 @@ export class MatplanQuoteComponent implements OnInit {
       quoteID: quote.quoteID,
       supplier: quote.supplier,
       partID: quote.partID,
-      mfgPartNum: quote.mfgPartNum,
+      mfgPartNumber: quote.mfgPartNumber,
       breaks: this.fb.array([])
     });
 
@@ -62,12 +62,13 @@ export class MatplanQuoteComponent implements OnInit {
   addPriceBreak(priceBreak: any): FormGroup {
     // helper function to return a formgroup containing the respective price breaks initialized, or an empty formgroup
     if (Object.keys(priceBreak).length === 0) {
+      // if the passed
       return this.fb.group({
-        id: '',
-        leadTime: '',
-        minOrderQty: '',
-        nreCharge: '',
-        price: ''
+        id: null,
+        leadTime: null,
+        minOrderQty: null,
+        nreCharge: null,
+        price: null
       });
     } else {
       return this.fb.group({
@@ -86,7 +87,10 @@ export class MatplanQuoteComponent implements OnInit {
   }
 
   onSaveQuote() {
-    // console.log(this.quoteForm.value);
+    console.log(this.quoteForm.value);
+    this.apiDataMatplanService.updateQuoteForPart(this.quoteForm.value).subscribe(res => {
+      console.log('yay');
+    });
   }
 
 }
