@@ -131,6 +131,7 @@ router.get('/indexProjectsAdvancedFilter', controllers.advancedFilter.indexProje
 router.post('/indexAdvancedFilteredResults/', controllers.advancedFilter.indexAdvancedFilteredResults);
 router.get('/indexProjectChildren/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectChildren);
 router.get('/indexProjectParents/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectParents);
+router.get('/indexProjectJobTitleAdvancedFilter/:projectIDs/:fromDate/:toDate', controllers.advancedFilter.indexProjectJobTitleAdvancedFilter);
 
 
 // middleware to return an error if the token cannot be verified

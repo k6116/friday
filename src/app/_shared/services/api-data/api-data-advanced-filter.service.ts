@@ -70,4 +70,10 @@ export class ApiDataAdvancedFilterService {
     .map((response: Response) => response.json());
   }
 
+  getProjectJobTitleAdvancedFilter(projectIDs: string, fromDate: string, toDate: string): Observable<any> {
+    return this.http.get(`api/indexProjectJobTitleAdvancedFilter/${projectIDs}/${fromDate}/${toDate}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
 }
