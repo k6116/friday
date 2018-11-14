@@ -1,10 +1,13 @@
 
+<!-- spinner -->
+<app-spinner *ngIf="chartIsLoading"></app-spinner>
+
 <div *ngIf="displayTopFTEProjectList" class="container-fluid">
 
     <!-- block for spinner if chart is loading -->
-    <div *ngIf="chartIsLoading" class="row row-custom">
+    <!-- <div *ngIf="chartIsLoading" class="row row-custom">
       Chart is loading...&nbsp;&nbsp;&nbsp;<div class="loading-spinner"></div>
-    </div>
+    </div> -->
   
     <!-- block for top FTE table and chart -->
     <div class="row row-custom" [hidden]="chartIsLoading">

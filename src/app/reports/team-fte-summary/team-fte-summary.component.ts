@@ -67,7 +67,10 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       });
       this.plotFteSummaryPareto(period);
       this.chartIsLoading = false;
+    }, err => {
+      this.chartIsLoading = false;
     });
+
   }
 
 

@@ -209,6 +209,9 @@ router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
 router.get('/report/reports-project-fte-rollup/show/getProjectFTERollupData/:projectID/:startDate/:endDate', controllers.report.getProjectFTERollupData);
 router.get('/report/getSubordinateProjectRoster/:period', controllers.report.getSubordinateProjectRoster);
 
+// LOG CONTROLLER
+router.post('/log/writeToLog', controllers.log.writeToLog);
+
 
 
 // middleware to protect permissions protected routes

@@ -10,6 +10,7 @@ module.exports = {
   export: require('./exportController'),
   fte: require('./fteController'),
   jobTitle: require('./jobTitleController'),
+  log: require('./logController'),
   matplan: require('./matplanController'),
   metaData: require('./metaDataController'),
   org: require('./orgController'),
