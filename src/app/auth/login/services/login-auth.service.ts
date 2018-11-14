@@ -77,7 +77,7 @@ export class LoginAuthService {
     this.updateCache(authResponse);
 
     // get and store nested org data for this user, in anticipation of use in other components (performance reasons)
-    this.getNestedOrgData(authResponse.jarvisUser.email);
+    // this.getNestedOrgData(authResponse.jarvisUser.email);
     // this.getNestedOrgData('ethan_hunt@keysight.com');
 
     // send the logged in user object to all other clients via websocket

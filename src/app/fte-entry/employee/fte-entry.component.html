@@ -1,10 +1,14 @@
 
+<!-- spinner -->
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
 <app-projects-modal *ngIf="showProjectsModal" [projects]="projectList" [fteTutorialState]="fteTutorialState" [savedProjectFilters]="savedProjectFilters"
   (selectedProject)="onModalClosed($event)" (cancel)="onModalCancelClick()" (tutorialStateEmitter)="tutorialPart3($event)"
   (addedProjects)="onAddedProjects($event)" (filterItemsEmit)="updateProjectFilters($event)"></app-projects-modal>
 <app-projects-create-modal (createSuccess)="onCreateSuccess($event)"></app-projects-create-modal>
 
-<div [hidden]="!display" class="container-fluid">
+<!-- [hidden]="!display" NOTE: 11/14/2018 causing flicker issue, changed to *ngIf directive -->
+<div *ngIf="display" class="container-fluid">
 
   <div class="row row-custom">
     <div class="col-sm col-custom">
