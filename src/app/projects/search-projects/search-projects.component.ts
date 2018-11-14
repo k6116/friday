@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
-import { ApiDataLogService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { WebsocketService } from '../../_shared/services/websocket.service';
@@ -12,6 +11,7 @@ import { ClickTrackingService } from '../../_shared/services/click-tracking.serv
 import { CacheService } from '../../_shared/services/cache.service';
 import { RoutingHistoryService } from '../../_shared/services/routing-history.service';
 import { ExcelExportService } from '../../_shared/services/excel-export.service';
+import { LoggingService } from '../../_shared/services/logging.service';
 
 declare var $: any;
 import * as _ from 'lodash';
@@ -55,7 +55,6 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private apiDataProjectService: ApiDataProjectService,
-    private apiDataLogService: ApiDataLogService,
     private filterPipe: FilterPipe,
     private toolsService: ToolsService,
     private websocketService: WebsocketService,
@@ -63,7 +62,8 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     private cacheService: CacheService,
     private changeDetectorRef: ChangeDetectorRef,
     private routingHistoryService: RoutingHistoryService,
-    private excelExportService: ExcelExportService
+    private excelExportService: ExcelExportService,
+    private loggingService: LoggingService
   ) {
 
     // set the fuzzy search threshold value
@@ -141,25 +141,6 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
 
-    // TEMP CODE: test logging
-    const log = {
-      level: 'info',
-      message: 'hello from search projects components',
-      metadata: {
-        color: 'blue'
-      }
-    };
-
-    this.apiDataLogService.writeToLog(log).subscribe(
-      res => {
-        console.log('response from log data:');
-        console.log(res);
-      },
-      err => {
-        console.log('error from log data:');
-        console.log(err);
-    });
-
     // hide the footer until the page is ready to be rendered
     this.toolsService.hideFooter();
 
@@ -173,6 +154,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
       this.projectsBrowseData = await this.getProjectsBrowseData()
       .catch(err => {
         this.displayError(err);
+        this.logError(err);
       });
 
       // hide the spinner
@@ -426,6 +408,9 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
     if (this.filterString) {
       // log a record in the click tracking table
       this.clickTrackingService.logClickWithEvent(`page: Search Projects, text: ${this.selectedFilter.displayName} > ${this.filterString}`);
+      // write to the datadog log file
+      const message = `(Projects Search Page) Projects were searched by ${this.selectedFilter.displayName}: '${this.filterString}'`;
+      this.loggingService.writeToLogFile('info', message, {color: 'green'});
     }
   }
 
@@ -776,6 +761,15 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
         ]
       }
     );
+
+  }
+
+
+  logError(err) {
+
+    const errorMessage = `${err.json().title}; ${err.json().error.message.name}; ${err.json().error.message.original.message}`;
+
+    this.loggingService.writeToLogFile('error', errorMessage, {color: 'red'});
 
   }
 
