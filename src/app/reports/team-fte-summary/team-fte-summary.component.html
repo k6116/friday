@@ -13,7 +13,7 @@
       <!-- date-switcher div -->
       <div class="chart-date-switcher form-inline">
         <label class="chart-date-switcher-label">Range:</label>
-        <select name="time-period-selector" class="form-control date-switcher-selector" (change)="componentDataInit($event.target.value)">
+        <select name="time-period-selector" class="form-control date-switcher-selector" (change)="getTeamFtePareto($event.target.value)">
           <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
         </select>
       </div>
