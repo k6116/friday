@@ -5,7 +5,7 @@ import { FormGroup, FormArray, FormControl, Validators, FormBuilder } from '@ang
 import { Subscription } from 'rxjs/Subscription';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataEmployeeService, ApiDataProjectService, ApiDataPermissionService,
-  ApiDataEmailService } from '../../_shared/services/api-data/_index';
+  ApiDataEmailService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 import { CacheService } from '../../_shared/services/cache.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { WebsocketService } from '../../_shared/services/websocket.service';
@@ -100,6 +100,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     private apiDataProjectService: ApiDataProjectService,
     private apiDataPermissionService: ApiDataPermissionService,
     private apiDataEmailService: ApiDataEmailService,
+    private apiDataOrgService: ApiDataOrgService,
     private cacheService: CacheService,
     private authService: AuthService,
     private websocketService: WebsocketService
@@ -119,7 +120,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     this.disabledRequestBtn = false;
 
     // Using promises to ensure all permissions lists are retrived before displaying the project cards
-    this.getProjectPermissionTeamList().then(res1 => {
+    this.getProjectPermissionGroupList().then(res1 => {
       this.getProjectPermissionList().then(res2 => {
 
         this.resizeProjectCardsContainer();
@@ -182,7 +183,7 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
           this.projects = res;
           this.filterProjects = this.projects;
           // Need to refresh the project permissions list when a new one is created live through websockets
-          this.getProjectPermissionTeamList();
+          this.getProjectPermissionGroupList();
           // this.filterProjects = this.projects;
           this.addedProjects.emit(this.projects);
         },
@@ -815,22 +816,35 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     );
   }
 
-  getProjectPermissionTeamList() {
-    return new Promise((p_res, p_err) => {
-      this.apiDataPermissionService.getProjectPermissionTeamList(this.userID, this.userEmail, this.managerEmailAddress)
-      .subscribe(
-        res => {
-          this.projectPermissionTeamList = Object.keys(res).map(i => res[i].id);
-          // console.log('Team List');
-          // console.log(this.projectPermissionTeamList);
-          p_res();
-        },
-        err => {
-          // console.log(err);
-          p_err();
-        }
-      );
+  async getProjectPermissionGroupList() {
+    // Get emails of all people user has default access to
+    // General rule is an employee has access to all projects created by:
+    //  1) Employee/Managers at multiple levels below user
+    //  2) Management chain up to the CEO
+    //  3) User's peers (team)
+
+    Promise.all([
+      this.getEmployeeDrillDownList(),
+      this.getManagerDrillUpList(),
+      this.getTeamList()
+    ]).then(([getEmployeeDrillDownList, getManagerDrillUpList, getTeamList]) => {
+      const drillDownList = Object.keys(getEmployeeDrillDownList).map(i => getEmployeeDrillDownList[i].EMAIL_ADDRESS);
+      const drillUpList = Object.keys(getManagerDrillUpList).map(i => getManagerDrillUpList[i].EMAIL_ADDRESS);
+      const teamList = Object.keys(getTeamList).map(i => getTeamList[i].emailAddress);
+      this.projectPermissionTeamList = drillDownList.concat(drillUpList, teamList);
+      // console.log('this.projectPermissionTeamList', this.projectPermissionTeamList);
     });
+  }
+
+  async getEmployeeDrillDownList() {
+    return await this.apiDataOrgService.getOrgStructureDrillDown(this.userEmail).toPromise();
+  }
+  async getManagerDrillUpList() {
+    return this.apiDataOrgService.getOrgStructureDrillUp(this.userEmail).toPromise();
+  }
+
+  async getTeamList() {
+    return this.apiDataOrgService.getTeamList(this.userEmail).toPromise();
   }
 
   getProjectPermissionList() {

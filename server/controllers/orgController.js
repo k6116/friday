@@ -100,11 +100,44 @@ function getTeamFteList(req, res) {
     });
 }
 
+function getOrgStructureDrillDown(req, res) {
+  // Retrieves muptiple levels of employees and managers
+  const emailAddress = req.params.emailAddress;
+  sequelize.query('EXECUTE resources.OrgStructureDrillDown :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+    .then(org => {
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+function getOrgStructureDrillUp(req, res) {
+  // Retrieves management chain above the employee
+  const emailAddress = req.params.emailAddress;
+  sequelize.query('EXECUTE resources.OrgStructureDrillUp :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+    .then(org => {
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+
 module.exports = {
   show: show,
   getSubordinatesFlat: getSubordinatesFlat,
   getTeamList: getTeamList,
   getEmployeeList: getEmployeeList,
   getOrgFtes: getOrgFtes,
-  getTeamFteList: getTeamFteList
+  getTeamFteList: getTeamFteList,
+  getOrgStructureDrillDown: getOrgStructureDrillDown,
+  getOrgStructureDrillUp: getOrgStructureDrillUp
 }
