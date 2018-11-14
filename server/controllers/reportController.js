@@ -3,6 +3,7 @@ const sequelizePLM = require('../db/sequelize').sequelizePLM;
 const models = require('../models/_index')
 const moment = require('moment');
 const Treeize = require('treeize');
+const token = require('../token/token');
 
 // TO-DO PAUL: create reports folder with separate controller files
 
@@ -53,9 +54,9 @@ function translateTimePeriods(period) {
 }
 
 function getSubordinateProjectRoster(req, res) {
-  const managerEmailAddress = req.params.managerEmailAddress;
-  const period = req.params.period;
-  const datePeriod = translateTimePeriods(period);
+  const decodedToken = token.decode(req.header('X-Token'), res);
+  const managerEmailAddress = decodedToken.userData.isManager ? decodedToken.userData.email : decodedToken.userData.managerEmailAddress;
+  const datePeriod = translateTimePeriods(req.params.period);
   const sql = `EXEC resources.getSubordinateProjectRoster '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
