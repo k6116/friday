@@ -29,8 +29,10 @@ export class ApiDataReportService {
   }
 
   // My Team Summary report
-  getSubordinateProjectRoster(managerEmailAddress: string, period: string) {
-    return this.http.get(`/api/report/getSubordinateProjectRoster/${managerEmailAddress}/${period}`)
+  getSubordinateProjectRoster(period: string) {
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/report/getSubordinateProjectRoster/${period}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

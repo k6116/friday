@@ -1,14 +1,9 @@
-import { Component, OnInit, OnDestroy, EventEmitter, HostListener } from '@angular/core';
-import { ApiDataOrgService, ApiDataReportService } from '../../_shared/services/api-data/_index';
-import { AuthService } from '../../_shared/services/auth.service';
-import { CacheService } from '../../_shared/services/cache.service';
-import { Subscription } from 'rxjs/Subscription';
-
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ApiDataReportService } from '../../_shared/services/api-data/_index';
 import * as Highcharts from 'highcharts';
 
 declare var require: any;
 declare const $: any;
-const moment = require('moment');
 require('highcharts/modules/pareto.js')(Highcharts);
 
 @Component({
@@ -18,17 +13,9 @@ require('highcharts/modules/pareto.js')(Highcharts);
 })
 export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
-  loggedInUserEmail: any;
-  orgDropdownViewPermissions: any;
-
-  userIsManager: boolean; // store if the user is a manager (has subordinates) or not
-  userIsManagerSubscription: Subscription;  // for fetching subordinate info
-  managerEmail: string;
-
   chartIsLoading = true;  // display boolean for "Loading" spinner
   paretoChart: any; // chart obj
   paretoChartOptions: any;  // chart options
-  paretoChartSubscription: Subscription;  // for subordinates roster under a given project
 
   teamSummaryData: any; // for teamwide FTE summary data
   displaySelectedProjectRoster = false;
@@ -40,78 +27,30 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     {period: 'all-time', text: 'All Time'}
   ];
 
-
-  nestedOrgData: any;
-  flatOrgData: any;
-  subscription1: Subscription;
-  waitingForOrgData: boolean;
-  displayOrgDropDown: boolean;
-  displayedEmployee: any;
-  displayResults: boolean;
-  employeeElements: any;
-  dropDownDisplayedEmployee: string;
-  quarterlyEmployeeFTETotals: any;
-  currentFiscalQuarter: number;
-  currentFiscalYear: number;
-
-
-
   constructor(
-    private apiDataOrgService: ApiDataOrgService,
-    private apiDataReportService: ApiDataReportService,
-    private authService: AuthService,
-    private cacheService: CacheService
-  ) {
-  }
+    private apiDataReportService: ApiDataReportService
+  ) {}
 
   ngOnInit() {
-
-    this.loggedInUserEmail = this.authService.loggedInUser.email;
-
-    // find out if user is a manager and store it for future display use
-    this.userIsManagerSubscription = this.apiDataOrgService.getOrgData(this.loggedInUserEmail).subscribe( res => {
-      // parse the json response. we only want the top level user, so use only the first index
-      const userOrgData = JSON.parse('[' + res[0].json + ']')[0];
-      this.userIsManager = userOrgData.numEmployees > 0 ? true : false;
-      if (this.userIsManager) {
-        this.managerEmail = this.authService.loggedInUser.email;
-      } else {
-        this.managerEmail = userOrgData.supervisorEmailAddress;
-      }
-      // then initialize the data for the report
-      this.componentDataInit('current-quarter');
-    });
-
+    // initialize report to just current quarter
+    this.getTeamFtePareto('current-quarter');
   }
 
   ngOnDestroy() {
-    // clean up the subscriptions
-    if (this.userIsManagerSubscription) {
-      this.userIsManagerSubscription.unsubscribe();
-    }
-    if (this.paretoChartSubscription) {
-      this.paretoChartSubscription.unsubscribe();
-    }
+    // destroy the highchart if it exists
     if (this.paretoChart) {
       this.paretoChart.destroy();
     }
-
   }
 
+  getTeamFtePareto(period: string) {
 
-  componentDataInit(period: string) {
-
-    this.displaySelectedProjectRoster = false;
+    // when chart is re-initialized, hide the roster and show the spinner
     this.chartIsLoading = true;
+    this.displaySelectedProjectRoster = false;
 
-    this.getTeamFtePareto(this.managerEmail, period);
-
-  }
-
-
-  getTeamFtePareto(email: string, period: string) {
     // get nested project pareto with list of team members and their FTEs underneath each project
-    this.paretoChartSubscription = this.apiDataReportService.getSubordinateProjectRoster(email, period)
+    this.apiDataReportService.getSubordinateProjectRoster(period)
     .subscribe( res => {
       this.teamSummaryData = res;
       // total up the number of FTEs contributed to each project
@@ -126,7 +65,6 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       this.teamSummaryData.forEach( project => {
         project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
       });
-      // console.log(this.teamSummaryData);
       this.plotFteSummaryPareto(period);
       this.chartIsLoading = false;
     });
