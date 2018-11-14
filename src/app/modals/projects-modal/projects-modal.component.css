@@ -170,6 +170,14 @@ p.card-text {
   font-size: 15px;
 }
 
+p.card-owner {
+  line-height: 0.4em;
+  text-align: right;
+  font-weight: 600;
+  font-size: 12px;
+  /* margin-right: -40px; */
+}
+
 p.card-text:after {
   content: "";
   text-align: right;

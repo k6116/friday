@@ -25,6 +25,7 @@ function indexProjects(req, res) {
         p.MU,
         p.IBO,
         p.ProjectOwner,
+        e.FullName as ProjectOwnerFullName,
         p.ProjectNumber,
         p.PlanOfRecordFlag,
         p.OracleItemNumber,
@@ -47,6 +48,7 @@ function indexProjects(req, res) {
         LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
         LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
         LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
+        LEFT JOIN accesscontrol.Employees e3 ON p.ProjectOwner = e3.EmailAddress
     ORDER BY 
         p.ProjectName`
     
