@@ -20,12 +20,12 @@ export class LoggingService {
 
     this.apiDataLogService.writeToLog(log).subscribe(
       res => {
-        console.log('response from log data:');
-        console.log(res);
+        // console.log('response from log data:');
+        // console.log(res);
       },
       err => {
-        console.log('error from log data:');
-        console.log(err);
+        // console.log('error from log data:');
+        // console.log(err);
     });
 
 
