@@ -7,6 +7,7 @@ export * from './api-data-email.service';
 export * from './api-data-employee.service';
 export * from './api-data-fte.service';
 export * from './api-data-job-title.service';
+export * from './api-data-log.service';
 export * from './api-data-matplan.service';
 export * from './api-data-meta-data.service';
 export * from './api-data-org.service';

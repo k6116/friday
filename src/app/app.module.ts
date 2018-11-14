@@ -31,8 +31,8 @@ import { BomService, CacheService, ClickTrackingService, CookiesService,
   ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
-  ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
+  ApiDataFteService, ApiDataJobTitleService, ApiDataLogService, ApiDataMetaDataService, ApiDataOrgService,
+  ApiDataPermissionService, ApiDataProjectService, ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
   ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService, ApiDataMatplanService} from './_shared/services/api-data/_index';
 
 // GUARDS
@@ -202,6 +202,7 @@ import { SpinnerComponent } from './_shared/components/spinner/spinner.component
     ApiDataEmployeeService,
     ApiDataFteService,
     ApiDataJobTitleService,
+    ApiDataLogService,
     ApiDataMetaDataService,
     ApiDataOrgService,
     ApiDataPermissionService,

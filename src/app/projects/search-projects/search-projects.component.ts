@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import { ApiDataProjectService } from '../../_shared/services/api-data/_index';
+import { ApiDataLogService } from '../../_shared/services/api-data/_index';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { WebsocketService } from '../../_shared/services/websocket.service';
@@ -54,6 +55,7 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private apiDataProjectService: ApiDataProjectService,
+    private apiDataLogService: ApiDataLogService,
     private filterPipe: FilterPipe,
     private toolsService: ToolsService,
     private websocketService: WebsocketService,
@@ -138,6 +140,25 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
 
   async ngOnInit() {
+
+    // TEMP CODE: test logging
+    const log = {
+      level: 'info',
+      message: 'hello from search projects components',
+      metadata: {
+        color: 'blue'
+      }
+    };
+
+    this.apiDataLogService.writeToLog(log).subscribe(
+      res => {
+        console.log('response from log data:');
+        console.log(res);
+      },
+      err => {
+        console.log('error from log data:');
+        console.log(err);
+    });
 
     // hide the footer until the page is ready to be rendered
     this.toolsService.hideFooter();

@@ -55,22 +55,8 @@ app.use(express.static('public'));
 // middleware for datadog express integration (for metrics)
 app.use(connect_datadog);
 
-
+// initialize/create an instance of a logger using Winston
 logger.createLogger();
-
-// const logger = winston.createLogger({
-//   level: 'info',
-//   format: winston.format.json(),
-//   transports: [
-//     new winston.transports.File({ filename: path.join(__dirname, '../datadog.log'), level: 'info' })
-//   ]
-// });
-
-// console.log(path.join(__dirname, '../datadog.log'));
-
-// logger.log('info', 'Hello simple log!');
-// logger.info('Hello log with metas',{color: 'blue' });
-
 
 // middleware function to send any api requests to the server/routes/api.js file
 app.use('/api', api);
