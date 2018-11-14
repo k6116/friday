@@ -43,9 +43,8 @@ export class FteTeamEntryGuard implements CanActivate {
 
     // Get Team Data - Manager and Employees
     const teamOrgStructure = await this.getTeam(this.loginAsEmail);
-    this.teamOrgStructure = JSON.parse('[' + teamOrgStructure[0].json + ']')[0];
 
-    if (!('employees' in this.teamOrgStructure)) {
+    if (teamOrgStructure.length === 0) {
       // route to the dashboard landing page, if the user tries to navigate directly to the fte team entry page via the address bar
       if (this.router.url === '/') {
         this.router.navigate(['/main/dashboard']);
@@ -71,7 +70,7 @@ export class FteTeamEntryGuard implements CanActivate {
       }
     } else {
 
-      this.allEmployees = this.teamOrgStructure.employees;
+      this.allEmployees = teamOrgStructure;
       const numOfEmployees = this.allEmployees.length;
 
       // Build email string of only employees
@@ -125,7 +124,8 @@ export class FteTeamEntryGuard implements CanActivate {
 
   async getTeam(email: string): Promise<any> {
     // get list of subordinates
-    return await this.apiDataOrgService.getOrgData(email).toPromise();
+    return await this.apiDataOrgService.getEmployeeList(email).toPromise();
+    // return await this.apiDataOrgService.getOrgData(email).toPromise();
   }
 
   async buildTeamEditableMembers(): Promise<any> {
