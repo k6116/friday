@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToolsService } from '../../../_shared/services/tools.service';
 
 declare var $: any;
 import * as _ from 'lodash';
@@ -12,7 +13,9 @@ export class ProjectFteRollupPrepDataService {
   chartData: any;
   firstLevelProject: any;
 
-  constructor() { }
+  constructor(
+    private toolsService: ToolsService
+  ) { }
 
   // take the raw bom data from the database and transform it into the proper format for the highcharts drillable treemap chart
   buildChartData(bomData: any): any {
@@ -48,6 +51,9 @@ export class ProjectFteRollupPrepDataService {
     // rollup the fte values for each project to a cumulative value for the treemap rectangle size and tooltip value
     // NOTE: this will only update a single property 'value'
     this.rollupFTEValues();
+
+    // round the fte values to two decimal places
+    this.roundFTEValues();
 
     // sort chart data by level, parent (for debug readability), and value (descending) for proper treemap rendering
     this.sortChartData();
@@ -204,6 +210,21 @@ export class ProjectFteRollupPrepDataService {
         }
       });
     }
+
+  }
+
+
+  roundFTEValues() {
+
+    // iterate through each chart object
+    this.chartData.forEach(project => {
+
+      // round the fte value to two decimal places if there is a value
+      if (project.value) {
+        project.value = this.toolsService.roundTo(project.value, 2);
+      }
+
+    });
 
   }
 

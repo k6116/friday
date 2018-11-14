@@ -66,6 +66,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   userFTEs: any;  // array to store user FTE data
   userFTEsFlat: any;  // array to store user FTE data (flattened/non-treeized version)
   display: boolean; // TODO: find a better solution to FTE display timing issue
+  showSpinner: boolean; // toggle display of the spinner while waiting for data to load
   displayFTETable = false;
   projects: any;  // for aliasing formarray
   months: string[] = [];
@@ -124,6 +125,12 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   async ngOnInit() {
+
+    // show the spinner
+    this.showSpinner = true;
+
+    // hide the footer until the page is ready to be rendered
+    this.toolsService.hideFooter();
 
     this.months = await this.buildMonthsArray();
     this.setSliderConfig(); // initalize slider config
@@ -522,12 +529,15 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
         this.userFTEsFlat = res.flat;
         this.buildFteEditableArray();
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
-        this.display = true;  // ghetto way to force rendering after FTE data is fetched
         const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
         this.projects = FTEFormArray.controls;
+        this.showSpinner = false;   // hide the spinner
+        this.display = true;  // ghetto way to force rendering after FTE data is fetched
+        this.toolsService.showFooter(); // show the footer
       },
       err => {
         console.error(err);
+        this.showSpinner = false;   // hide the spinner
       }
     );
   }

@@ -1,7 +1,10 @@
+<!-- spinner -->
+<app-spinner *ngIf="chartIsLoading"></app-spinner>
+
 <div class="container-fluid">
 
   <!-- block for spinner if chart is loading -->
-  <div *ngIf="chartIsLoading" class="loading-spinner"></div>
+  <!-- <div *ngIf="chartIsLoading" class="loading-spinner"></div> -->
 
   <!-- block for time series chart -->
   <div class="row row-custom" [hidden]="chartIsLoading">

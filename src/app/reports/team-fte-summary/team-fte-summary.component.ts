@@ -80,6 +80,10 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       }
       // then initialize the data for the report
       this.componentDataInit('current-quarter');
+    }, err => {
+      console.log('error getting org data:');
+      console.log(err);
+      this.chartIsLoading = false;
     });
 
   }
@@ -129,7 +133,10 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       // console.log(this.teamSummaryData);
       this.plotFteSummaryPareto(period);
       this.chartIsLoading = false;
+    }, err => {
+      this.chartIsLoading = false;
     });
+
   }
 
 

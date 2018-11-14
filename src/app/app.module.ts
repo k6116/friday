@@ -105,6 +105,7 @@ import { MatplanQuoteComponent } from './matplan/matplan-quote/matplan-quote.com
 import { MatplanOrderComponent } from './matplan/matplan-order/matplan-order.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
+import { SpinnerComponent } from './_shared/components/spinner/spinner.component';
 
 
 @NgModule({
@@ -173,7 +174,8 @@ import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.compon
     MatplanOrderComponent,
     OrgViewerComponent,
     OrgDrawD3Component,
-    TransferProjectsComponent
+    TransferProjectsComponent,
+    SpinnerComponent
   ],
   imports: [
     AppRoutingModule,

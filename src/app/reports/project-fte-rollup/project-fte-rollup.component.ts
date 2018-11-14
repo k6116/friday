@@ -163,6 +163,9 @@ export class ProjectFteRollupComponent implements OnInit, AfterViewInit {
     // otherwise, modify the bom data into chart data for the highcharts drillable treemap
     this.chartData = this.projectFteRollupPrepDataService.buildChartData(this.bomData);
 
+    console.log('final chart data:');
+    console.log(this.chartData);
+
     // if there is no chart data, there will be no chart to render so just display an empty chart
     if (!this.chartData.length) {
       this.displayEmptyChart(project);
