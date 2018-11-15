@@ -965,5 +965,59 @@ export class ProjectsModalComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onMoreInfoClick() {
+    // emit carousel modal after they click instructions button
+    this.cacheService.carouselModalData.emit(
+      {
+        title: `Project Card Information`,
+        iconClass: 'fa-info',
+        iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
+        allowOutsideClickDismiss: true,
+        allowEscKeyDismiss: true,
+        buttons: [
+          {
+            text: 'Close',
+            bsClass: 'btn-success',
+            emit: true
+          }
+        ],
+        slides: [
+          {
+            src: '../assets/carousel_slides/ProjectCards/carousel_cards1.png',
+            alt: 'First Cards Slide',
+            captionHeader: '',
+            captionBody: '',
+            active: true
+          },
+          {
+            src: '../assets/carousel_slides/ProjectCards/carousel_cards2.png',
+            alt: 'Second Cards Slide',
+            captionHeader: '',
+            captionBody: '',
+            active: false
+          },
+          {
+            src: '../assets/carousel_slides/ProjectCards/carousel_cards3.png',
+            alt: 'Third Card Slide',
+            captionHeader: '',
+            captionBody: '',
+            active: false
+          },
+        ]
+      }
+    );
+
+    const carouselModalSubscription = this.cacheService.carouselModalResponse.subscribe( res => {
+      if (res) {
+        // if they click ok, grab the deleted project info and exec db call to delete
+        // console.log('CAROUSEL!');
+      } else {
+        // console.log('delete confirm aborted');
+      }
+      carouselModalSubscription.unsubscribe();
+    });
+  }
+
 }
 

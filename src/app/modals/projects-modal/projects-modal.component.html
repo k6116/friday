@@ -16,6 +16,15 @@
             </div>
           <!--  -->
 
+          <div class="dropdown btn-help ">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-question"></i>&nbsp;&nbsp;Help
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" (click)="onMoreInfoClick()">More Info</a>
+            </div>
+          </div>
+
           <div class="projects-modal-close">
             <i class="nc-icon nc-small-remove projects-modal-close-button" (click)="onCancelClicked()"></i>
           </div>

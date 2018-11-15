@@ -25,7 +25,7 @@ function indexProjects(req, res) {
         p.MU,
         p.IBO,
         p.ProjectOwner,
-        e.FullName as ProjectOwnerFullName,
+        e3.FullName as ProjectOwnerFullName,
         p.ProjectNumber,
         p.PlanOfRecordFlag,
         p.OracleItemNumber,

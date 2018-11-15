@@ -62,7 +62,7 @@ div.projects-modal-close {
   color: rgb(77, 77, 77);
   position: relative;
   top: -20px;
-  right: -15px;
+  right: -100px;
 }
 
 i.projects-modal-close-button {
@@ -282,4 +282,10 @@ button.btn.btn-outline-success.project-select-button:hover {
   position: absolute;
   padding: 3px;
   margin: 5px;
+}
+
+.btn-help {
+  position: relative;
+  float: right;
+  right: 100px;
 }
