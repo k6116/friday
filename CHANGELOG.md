@@ -1,3 +1,24 @@
+<a name="1.20.2"></a>
+## [1.20.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.20.1...v1.20.2) (2018-11-14)
+
+
+### Bug Fixes
+
+* **fte-entry > team fte-entry guard:** updated the api call to the 2017 sql server ([b136db6](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/b136db6))
+* fixed decimal places in Project FTE Rollup report, common spinner, FTE Entry page flicker issue ([7a983b5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/7a983b5))
+
+
+
+<a name="1.20.1"></a>
+## [1.20.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.20.0...v1.20.1) (2018-11-14)
+
+
+### Bug Fixes
+
+* **Team FTE Summary component:** removed dependency on 2017 SQL server org JSON output ([8de92f7](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/8de92f7))
+
+
+
 <a name="1.20.0"></a>
 # [1.20.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.19.2...v1.20.0) (2018-11-07)
 

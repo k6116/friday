@@ -27,12 +27,12 @@ import { TitleCasePipe } from '@angular/common';
 import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
-import { BomService, CacheService, ClickTrackingService, CookiesService,
+import { BomService, CacheService, ClickTrackingService, CookiesService, LoggingService,
   ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
-  ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
+  ApiDataFteService, ApiDataJobTitleService, ApiDataLogService, ApiDataMetaDataService, ApiDataOrgService,
+  ApiDataPermissionService, ApiDataProjectService, ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
   ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService, ApiDataMatplanService} from './_shared/services/api-data/_index';
 
 // GUARDS
@@ -105,6 +105,7 @@ import { MatplanQuoteComponent } from './matplan/matplan-quote/matplan-quote.com
 import { MatplanOrderComponent } from './matplan/matplan-order/matplan-order.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
+import { SpinnerComponent } from './_shared/components/spinner/spinner.component';
 
 
 @NgModule({
@@ -173,7 +174,8 @@ import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.compon
     MatplanOrderComponent,
     OrgViewerComponent,
     OrgDrawD3Component,
-    TransferProjectsComponent
+    TransferProjectsComponent,
+    SpinnerComponent
   ],
   imports: [
     AppRoutingModule,
@@ -200,6 +202,7 @@ import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.compon
     ApiDataEmployeeService,
     ApiDataFteService,
     ApiDataJobTitleService,
+    ApiDataLogService,
     ApiDataMetaDataService,
     ApiDataOrgService,
     ApiDataPermissionService,
@@ -227,7 +230,8 @@ import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.compon
     FteTeamEntryGuard,
     TitleCasePipe,
     RoutingHistoryService,
-    ExcelExportService
+    ExcelExportService,
+    LoggingService
   ],
   bootstrap: [AppComponent]
 })

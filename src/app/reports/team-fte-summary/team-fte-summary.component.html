@@ -1,8 +1,11 @@
+<!-- spinner -->
+<app-spinner *ngIf="chartIsLoading"></app-spinner>
+
 <div class="container-fluid">
 
   <!-- block for spinner if chart is loading -->
   <!-- TO-DO ALL: standardize on spinners across pages (in common.css) -->
-  <div *ngIf="chartIsLoading" class="loading-spinner"></div>
+  <!-- <div *ngIf="chartIsLoading" class="loading-spinner"></div> -->
 
   <!-- block for team pareto chart -->
   <div class="row row-custom" [hidden]="chartIsLoading">
@@ -10,7 +13,7 @@
       <!-- date-switcher div -->
       <div class="chart-date-switcher form-inline">
         <label class="chart-date-switcher-label">Range:</label>
-        <select name="time-period-selector" class="form-control date-switcher-selector" (change)="componentDataInit($event.target.value)">
+        <select name="time-period-selector" class="form-control date-switcher-selector" (change)="getTeamFtePareto($event.target.value)">
           <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
         </select>
       </div>
