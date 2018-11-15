@@ -172,7 +172,7 @@ p.card-text {
 
 p.card-owner {
   line-height: 0.4em;
-  text-align: right;
+  text-align: left;
   font-weight: 600;
   font-size: 12px;
   /* margin-right: -40px; */
