@@ -236,7 +236,7 @@ function indexUserProjectList(req, res) {
         LEFT JOIN accesscontrol.Employees E1 ON P1.CreatedBy = E1.EmployeeID
         LEFT JOIN accesscontrol.Employees E2 ON P1.LastUpdatedBy = E2.EmployeeID
       WHERE
-        P1.CreatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
+        P1.LastUpdatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
