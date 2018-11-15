@@ -99,6 +99,10 @@ considering topnav, sidenav, and footer -->
               <div class="project-description" [attr.data-id]="project.ProjectID" (mouseenter)="onDescriptionMouseEnter(project)" (mouseleave)="onDescriptionMouseLeave(project.ProjectID)">
                 {{ project.Description }}
               </div>
+
+              <div class="project-id" [attr.data-id]="project.ProjectID">
+                JarvisID {{ project.ProjectID }}
+              </div>
               
             </div>
   
@@ -149,6 +153,17 @@ considering topnav, sidenav, and footer -->
             <div class="project-creation-cont" [attr.data-id]="project.ProjectID">
   
               <div class="project-attributes-table">
+                <div class="project-attributes-row">
+                  <div class="project-attributes-cell creation icon-cell">
+                    <i class="nc-icon nc-single-05"></i>
+                  </div>
+                  <div class="project-attributes-cell creation label-cell">
+                    Project Owner
+                  </div>
+                  <div class="project-attributes-cell creation value-cell">
+                    {{ project.ProjectOwnerFullName ? project.ProjectOwnerFullName : '--' }}
+                  </div>
+                </div>
                 <div class="project-attributes-row">
                   <div class="project-attributes-cell creation icon-cell">
                     <i class="nc-icon nc-a-edit"></i>

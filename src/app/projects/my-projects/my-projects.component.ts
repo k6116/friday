@@ -109,11 +109,8 @@ export class MyProjectsComponent implements OnInit {
 
         // hide request box if there are no submitted requests
         if (this.submittedRequests.length === 0) {
-
           this.requestResponseFlag = false;
-
         } else {
-          
           this.requestResponseFlag = true;
         }
 

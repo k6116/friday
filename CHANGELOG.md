@@ -1,3 +1,22 @@
+<a name="1.21.0"></a>
+# [1.21.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.20.2...v1.21.0) (2018-11-15)
+
+
+### Bug Fixes
+
+* **tools-service:** updated the icon mapping for "individual" project types ([359a5d5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/359a5d5))
+
+
+### Features
+
+* **projects > my-projects:** Project list is now based on LastUpdatedBy instead of CreatedBy ([aec4505](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/aec4505))
+* **projects-modal:** Added a "Help" button that gives more info around cards, types, owners ([71a04b3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/71a04b3))
+* **projects-modal:** added project owner label to project cards ([a4b5bb4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a4b5bb4))
+* **projects-modal:** Updated default project permissions by broadening permissions to user's  manag ([d1475ae](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/d1475ae))
+* **search and display projects:** added JarvisID to project search and display pages ([0acbe66](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/0acbe66))
+
+
+
 <a name="1.20.2"></a>
 ## [1.20.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.20.1...v1.20.2) (2018-11-14)
 
