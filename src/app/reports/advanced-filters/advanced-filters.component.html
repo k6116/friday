@@ -92,9 +92,9 @@
                 <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
                 Project Owner
               </div>
-              <div *ngIf="managerTeam" class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="projectOwnerAll">
-                <label class="custom-control-label" for="projectOwnerAll"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+              <div *ngIf="filterStringOw.value!=''" class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="ProjectOwnerEmails" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectOwners">
+                <label class="custom-control-label" for="ProjectOwnerEmails"><small style="margin: 0px 5px 0px -7px;">All</small></label>
               </div>
             </div>
 
@@ -104,12 +104,11 @@
                 <i class="projects-search-icon-search fa fa-search"></i>
                 <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearOwnerClick()"></i>
               </div>
-              <div *ngIf="managerTeam">
+              <div *ngIf="filterStringOw.value!=''">
                 <ng-container *ngFor="let managerEmployee of managerTeam; let l = index">
                   <div class="custom-control custom-checkbox" style="margin-left: 8px" [class.manager]="l==0">
-                    <input type="checkbox" checked class="custom-control-input" [attr.name]="managerEmployee.fullName" [attr.id]="'owner' + l" [checked]="l===0" (click)="onCheckboxProjectOwnerClick($event, managerEmployee.EMAIL_ADDRESS)">
+                    <input type="checkbox" class="custom-control-input" [attr.name]="managerEmployee.fullName" [attr.id]="'owner' + l" [checked]="l===0 || checkAllProjectOwners" (click)="onCheckboxProjectOwnerClick($event, managerEmployee.EMAIL_ADDRESS)">
                     <label class="custom-control-label" [attr.for]="'owner' + l" style="padding: 1px 0px 0px 10px;">
-                      <!-- <span *ngIf="l===0">Show All</span> -->
                       <span>{{ managerEmployee.fullName }}</span>
                     </label>
                   </div>
@@ -184,8 +183,8 @@
                 FTE Allocation
               </div>
               <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="FTEMin" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllFTE">
-                <label class="custom-control-label" for="FTEMin"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+                <input type="checkbox" class="custom-control-input" id="FTEMin" (click)="onCheckAllClick($event); inputFTEFrom.value=''; inputFTETo.value=''" [(ngModel)]="checkAllFTE">
+                <label class="custom-control-label" for="FTEMin">All</label>
               </div>
             </div>
 
@@ -193,31 +192,69 @@
               <div class="d-flex justify-content-between">
                   <div class="form-group" style="margin-bottom: 4px;">
                     <label for="fteFrom" class="fte">From</label>
-                    <input id="fteFrom" type="date" class="form-control fte">
+                    <input #inputFTEFrom
+                        class="form-control fte"
+                        [class.plc-input-invalid]="inputFTEFrom.validity.valid===false"
+                        id="fteFrom" 
+                        type="date"
+                        [min]="minDate" 
+                        [max]="today" 
+                        (change)="onInputFTEChange($event, l)">
                   </div>
                   <div class="form-group" style="margin-bottom: 4px;"> 
                     <label for="fteTo" class="fte">To</label>
-                    <input id="fteTo" type="date" class="form-control fte">
+                    <input #inputFTETo
+                        class="form-control fte"
+                        [class.plc-input-invalid]="inputFTETo.validity.valid===false"
+                        id="fteTo" 
+                        type="date" 
+                        [min]="minDate" 
+                        [max]="today"
+                        (change)="onInputFTEChange($event, l)">
                   </div>
               </div>
 
               <div class="d-flex justify-content-between">
                 <div class="custom-control custom-checkbox adv-filter-cb" style="margin-right: 20px">
-                  <input type="checkbox" [checked]="checkAllFTE" class="custom-control-input" id="fte1" (click)="onCheckboxFTEClick($event)">
+                  <input 
+                      class="custom-control-input" 
+                      id="fte1" 
+                      type="checkbox" 
+                      [disabled]="inputFTEFrom.validity.valid===false || inputFTETo.validity.valid===false" 
+                      [checked]="checkAllFTE" 
+                      (click)="onCheckboxFTEClick($event)">
                   <label class="custom-control-label" for="fte1" style="padding: 1px 0px 0px 10px;">0 - 25</label>
                 </div>
                 <div class="custom-control custom-checkbox adv-filter-cb" style="margin-right: 20px">
-                  <input type="checkbox" [checked]="checkAllFTE" class="custom-control-input" id="fte2" (click)="onCheckboxFTEClick($event)">
+                  <input 
+                      class="custom-control-input" 
+                      type="checkbox" 
+                      id="fte2" 
+                      [disabled]="inputFTEFrom.validity.valid===false || inputFTETo.validity.valid===false"
+                      [checked]="checkAllFTE" 
+                      (click)="onCheckboxFTEClick($event)">
                   <label class="custom-control-label" for="fte2" style="padding: 1px 0px 0px 10px;">25 - 50</label>
                 </div>
               <!-- </div> -->
               <!-- <div class="d-inline-flex"> -->
                 <div class="custom-control custom-checkbox adv-filter-cb" style="margin-right: 20px">
-                  <input type="checkbox" [checked]="checkAllFTE" class="custom-control-input" id="fte3" (click)="onCheckboxFTEClick($event)">
+                  <input 
+                      class="custom-control-input" 
+                      id="fte3" 
+                      type="checkbox" 
+                      [disabled]="inputFTEFrom.validity.valid===false || inputFTETo.validity.valid===false"
+                      [checked]="checkAllFTE" 
+                      (click)="onCheckboxFTEClick($event)">
                   <label class="custom-control-label" for="fte3" style="padding: 1px 0px 0px 10px;">50 - 75</label>
                 </div>
                 <div class="custom-control custom-checkbox adv-filter-cb">
-                  <input type="checkbox" [checked]="checkAllFTE" class="custom-control-input" id="fte4" (click)="onCheckboxFTEClick($event)">
+                  <input 
+                      class="custom-control-input" 
+                      id="fte4" 
+                      type="checkbox" 
+                      [disabled]="inputFTEFrom.validity.valid===false || inputFTETo.validity.valid===false"
+                      [checked]="checkAllFTE" 
+                      (click)="onCheckboxFTEClick($event)">
                   <label class="custom-control-label" for="fte4" style="padding: 1px 0px 0px 10px;">75 - 100</label>
                 </div>
               </div>
@@ -226,9 +263,18 @@
             <div style="height:10px; background: #f5f5f5"></div>
             
             <!-- PLC SCHEDULE -->
-            <div class="filter-headers" data-toggle="collapse" data-target="#plc">
-              <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-              PLC Schedule
+            <div class="filter-headers d-flex justify-content-between">
+              <div data-toggle="collapse" data-target="#plc">                
+                <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                PLC Schedule
+              </div>
+              <div class="custom-control custom-checkbox" style="display: none;">
+                <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllPLC">
+                <label class="custom-control-label" for="PLCStatusIDs">
+                  <small *ngIf="checkAllPLC" style="margin: 0px 5px 0px -7px;">Clear</small>
+                  <small *ngIf="!checkAllPLC" style="margin: 0px 5px 0px -7px;">All</small>
+                </label>
+              </div>
             </div>
 
             <div class="filter-collapse show" id="plc">
@@ -237,14 +283,30 @@
                 <div class="d-flex justify-content-between" style="margin-top: 5px">
                   <!-- plc status checkbox -->
                   <div class="custom-control custom-checkbox adv-filter-cb" style="margin: 2px 3px 0px 3px;">
-                    <input type="checkbox" class="custom-control-input" [attr.name]="plcStatus.PLCStatusName" [attr.id]="'plcStatus' + l" [(ngModel)]="plcStatus.state" (click)="onCheckboxPLCScheduleClick(l, $event, plcStatus)">
+                    <input type="checkbox" [checked]="checkAllPLC" class="custom-control-input" [attr.name]="plcStatus.PLCStatusName" [attr.id]="'plcStatus' + l" [(ngModel)]="plcStatus.state" (click)="onCheckboxPLCScheduleClick(l, $event, plcStatus)">
                     <label class="custom-control-label" [attr.for]="'plcStatus' + l" style="margin-left: 8px">{{ plcStatus.PLCStatusName }}</label>
                   </div>
                   <!-- plc status dates -->
                   <div class="d-flex justify-content-between">
-                    <input id="plcFrom" type="date" [min]="minDate" [max]="today" class="form-control fte" style="margin-top: 0px" [disabled]="!plcStatus.state" (change)="onInputPLCChange($event, l)">
+                    <input #inputPLCFrom 
+                        class="form-control fte" 
+                        [class.plc-input-invalid]="inputPLCFrom.validity.valid===false" 
+                        id="plcFrom" 
+                        type="date" 
+                        [min]="minDate"  
+                        style="margin-top: 0px" 
+                        [disabled]="!plcStatus.state" 
+                        (change)="onInputPLCChange($event, l)">
                     <span style="margin: 0px 5px">-</span>
-                    <input id="plcTo" type="date" [min]="minDate" [max]="today" class="form-control fte" style="margin-top: 0px" [disabled]="!plcStatus.state" (change)="onInputPLCChange($event, l)">
+                    <input #inputPLCTo 
+                        class="form-control fte" 
+                        [class.plc-input-invalid]="inputPLCTo.validity.valid===false" 
+                        id="plcTo" 
+                        type="date" 
+                        [min]="minDate" 
+                        style="margin-top: 0px" 
+                        [disabled]="!plcStatus.state" 
+                        (change)="onInputPLCChange($event, l)">
                   </div>
                 </div>
               </ng-container>             
@@ -269,14 +331,14 @@
               <th scope="col">Status</th>
               <th scope="col">Owner</th>
               <th scope="col" *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL'">FTE</th>
-              <ng-container *ngFor="let plc of objPLC">
-                <th scope="col">{{ objPLC.PLCStatusName }}</th>              
-              </ng-container>
+              <!-- <ng-container *ngFor="let project of advancedFilteredResults"> -->
+              <th scope="col" *ngFor="let name of plcSchedules">{{ name.PLCStatusName }}</th>              
+              <!-- </ng-container> -->
             </tr>
           </thead>
           <tbody>
             <!-- <tr *ngFor="let project of projects | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}};"> -->
-              <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}};">            
+              <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count">            
               <td>{{ project.ProjectName }}</td>
               <td>{{ project.ProjectTypeName }}</td>
               <td>{{ project.PriorityName }}</td>

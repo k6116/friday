@@ -221,6 +221,14 @@ input.plc {
   padding: 2px 4px;
 }
 
+input.plc-input-invalid {
+  border-color: red;
+}
+
+input.form-control:focus.plc-input-invalid {
+  border-color: red !important;
+}
+
 /* RESULT TABLE */
 
 div.adv-results-cont {
