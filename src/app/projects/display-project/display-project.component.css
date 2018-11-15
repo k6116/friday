@@ -95,7 +95,6 @@ div.project-description:after {
   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
-
 /* project details outer container */
 
 div.project-details-row {
@@ -117,7 +116,7 @@ div.project-details-left-cont {
 
 div.project-details-cont-1 {
   position: relative;
-  min-height: 375px;
+  min-height: 421px;
   padding: 20px 30px 50px 30px;
   background-color: white;
   border: 1px solid lightgrey;

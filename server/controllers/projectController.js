@@ -111,6 +111,7 @@ function getProject(req, res) {
       eo.EntityOwnerName,
       p.NPIHWProjectManager,
       p.ProjectOwner,
+      e3.FullName as ProjectOwnerFullName,
       e.FullName as 'CreatedBy',
       p.CreationDate,
       e2.FullName as 'LastUpdatedBy',
@@ -125,6 +126,7 @@ function getProject(req, res) {
       LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
       LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
       LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
+      LEFT JOIN accesscontrol.Employees e3 ON p.ProjectOwner = e3.EmailAddress
     WHERE 
       p.ProjectID = ${projectID}`
   
