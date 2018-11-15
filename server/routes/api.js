@@ -83,6 +83,8 @@ router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinate
 router.get('/org/:emailAddress', controllers.org.show);
 router.get('/org/getTeamList/:emailAddress', controllers.org.getTeamList);
 router.get('/org/getEmployeeList/:emailAddress', controllers.org.getEmployeeList);
+router.get('/org/getOrgStructureDrillUp/:emailAddress', controllers.org.getOrgStructureDrillUp);
+router.get('/org/getOrgStructureDrillDown/:emailAddress', controllers.org.getOrgStructureDrillDown);
 
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
