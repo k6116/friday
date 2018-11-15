@@ -27,12 +27,12 @@ import { TitleCasePipe } from '@angular/common';
 import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
-import { BomService, CacheService, ClickTrackingService, CookiesService,
+import { BomService, CacheService, ClickTrackingService, CookiesService, LoggingService,
   ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAdvancedFilterService, ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
-  ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
+  ApiDataFteService, ApiDataJobTitleService, ApiDataLogService, ApiDataMetaDataService, ApiDataOrgService,
+  ApiDataPermissionService, ApiDataProjectService, ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
   ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService, ApiDataMatplanService} from './_shared/services/api-data/_index';
 
 // GUARDS
@@ -106,6 +106,8 @@ import { MatplanOrderComponent } from './matplan/matplan-order/matplan-order.com
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
 import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-filters.component';
+import { SpinnerComponent } from './_shared/components/spinner/spinner.component';
+
 
 @NgModule({
   declarations: [
@@ -175,6 +177,7 @@ import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-fi
     OrgDrawD3Component,
     TransferProjectsComponent,
     AdvancedFiltersComponent,
+    SpinnerComponent
   ],
   imports: [
     AppRoutingModule,
@@ -202,6 +205,7 @@ import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-fi
     ApiDataEmployeeService,
     ApiDataFteService,
     ApiDataJobTitleService,
+    ApiDataLogService,
     ApiDataMetaDataService,
     ApiDataOrgService,
     ApiDataPermissionService,
@@ -229,7 +233,8 @@ import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-fi
     FteTeamEntryGuard,
     TitleCasePipe,
     RoutingHistoryService,
-    ExcelExportService
+    ExcelExportService,
+    LoggingService
   ],
   bootstrap: [AppComponent]
 })

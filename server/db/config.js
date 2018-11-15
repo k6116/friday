@@ -16,10 +16,10 @@ const configPLM = {
 };
 
 const config2017 = {
-  dbname: "JarvisResources",
-  host: 'WCOSOFW2.COS.IS.KEYSIGHT.COM',
+  dbname: "Jarvis",
+  host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',
   username: 'JarvisRTUser',
-  password: process.env.WCOSOFW2_DB_PASSWORD,
+  password: process.env.SPYGLASS_DB_PASSWORD,
   dialect: 'mssql'
 };
 
