@@ -47,7 +47,7 @@ import { TransferProjectsComponent } from './setups/transfer-projects/transfer-p
 import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
 import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
-import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-filters.component';
+import { AdvancedFiltersComponent } from './projects/advanced-filters/advanced-filters.component';
 
 
 // BOM module stuff

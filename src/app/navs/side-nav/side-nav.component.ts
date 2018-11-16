@@ -104,6 +104,15 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
               active: false,
               permissionProtected: false,
               hidden: false
+            },
+            {
+              title: 'Advanced Search',
+              alias: 'reports-advanced-filters',
+              path: 'main/reports/advanced-filters',
+              parentAlias: 'reports',
+              active: false,
+              permissionProtected: false,
+              hidden: false
             }
           ]
         },
@@ -169,15 +178,6 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
               parentAlias: 'reports',
               active: false,
               permissionProtected: true,
-              hidden: false
-            },
-            {
-              title: 'Advanced Filters',
-              alias: 'reports-advanced-filters',
-              path: 'main/reports/advanced-filters',
-              parentAlias: 'reports',
-              active: false,
-              permissionProtected: false,
               hidden: false
             }
           ]
