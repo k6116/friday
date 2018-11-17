@@ -47,4 +47,12 @@ export class ApiDataOrgService {
       .map((response: Response) => response.json());
   }
 
+  getManagementOrgStructure(emailAddress: string): Observable<any> {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/org/getManagementOrgStructure/${emailAddress}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 }

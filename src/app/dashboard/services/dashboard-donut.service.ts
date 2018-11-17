@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToolsService } from '../_shared/services/tools.service';
+import { ToolsService } from '../../_shared/services/tools.service';
 
 import * as Highcharts from 'highcharts';
 import * as moment from 'moment';

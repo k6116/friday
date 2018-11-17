@@ -100,11 +100,26 @@ function getTeamFteList(req, res) {
     });
 }
 
+function getManagementOrgStructure(req, res) {
+  const emailAddress = req.params.emailAddress;
+  sequelize.query(`EXECUTE resources.ManagementOrgStructure :emailAddress`, {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+    .then(org => {
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
 module.exports = {
   show: show,
   getSubordinatesFlat: getSubordinatesFlat,
   getTeamList: getTeamList,
   getEmployeeList: getEmployeeList,
   getOrgFtes: getOrgFtes,
-  getTeamFteList: getTeamFteList
+  getTeamFteList: getTeamFteList,
+  getManagementOrgStructure: getManagementOrgStructure
 }

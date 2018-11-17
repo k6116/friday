@@ -8,13 +8,13 @@ import { ApiDataFteService } from '../_shared/services/api-data/api-data-fte.ser
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
 import { CacheService } from '../_shared/services/cache.service';
-import { DashboardDonutService } from './dashboard-donut.service';
-import { DashboardGaugeService } from './dashboard-gauge.service';
-import { DashboardMessagesService } from './dashboard-messages.service';
-import { DashboardParetoService } from './dashboard-pareto.service';
-import { DashboardPieService } from './dashboard-pie.service';
-import { DashboardStackedColumnService } from './dashboard-stacked-column.service';
-
+import { DashboardDonutService } from './services/dashboard-donut.service';
+import { DashboardGaugeService } from './services/dashboard-gauge.service';
+import { DashboardMessagesService } from './services/dashboard-messages.service';
+import { DashboardParetoService } from './services/dashboard-pareto.service';
+import { DashboardPieService } from './services/dashboard-pie.service';
+import { DashboardStackedColumnService } from './services/dashboard-stacked-column.service';
+import { DashboardTeamSelectService } from './services/dashboard-team-select.service';
 
 
 declare var $: any;
@@ -33,7 +33,7 @@ import * as moment from 'moment';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css', '../_shared/styles/common.css'],
   providers: [DashboardDonutService, DashboardGaugeService, DashboardMessagesService, DashboardParetoService,
-    DashboardPieService, DashboardStackedColumnService]
+    DashboardPieService, DashboardStackedColumnService, DashboardTeamSelectService]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
@@ -75,6 +75,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   constructor(
+    private router: Router,
     private apiDataDashboardService: ApiDataDashboardService,
     private apiDataFteService: ApiDataFteService,
     private authService: AuthService,
@@ -86,7 +87,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private dashboardParetoService: DashboardParetoService,
     private dashboardPieService: DashboardPieService,
     private dashboardStackedColumnService: DashboardStackedColumnService,
-    private router: Router
+    private dashboardTeamSelectService: DashboardTeamSelectService
   ) { }
 
   ngOnInit() {
@@ -99,6 +100,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       (profileHasBeenUpdated: boolean) => {
         this.removeProfileUpdateMessage();
     });
+
+    // get management org structure for the manager select dropdown
+    this.dashboardTeamSelectService.getManagementOrgStructure();
 
   }
 

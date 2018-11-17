@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ToolsService } from '../_shared/services/_index';
+import { ToolsService } from '../../_shared/services/_index';
 
 import * as Highcharts from 'highcharts';
 import * as _ from 'lodash';

@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { ToolsService } from '../_shared/services/tools.service';
-import { AuthService } from '../_shared/services/auth.service';
+import { ToolsService } from '../../_shared/services/tools.service';
+import { AuthService } from '../../_shared/services/auth.service';
 
-import * as Highcharts from 'highcharts';
+import * as highcharts from 'highcharts';
 import * as _ from 'lodash';
-import * as moment from 'moment';
-
 
 @Injectable()
-export class DashboardPieService {
+export class DashboardParetoService {
 
   constructor(
     private toolsService: ToolsService,
@@ -17,7 +15,6 @@ export class DashboardPieService {
   ) { }
 
   buildChartOptions(dashboardFTEData: any): any {
-
 
     // initialize arrays to hold chart data
     let seriesData = [];
@@ -51,7 +48,7 @@ export class DashboardPieService {
           });
           seriesData.push({
             name: project.projectName,
-            y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 0),
+            y: this.toolsService.roundTo((projectFTETotal / fteTotal) * 100, 1),
             drilldown: project.projectName
           });
         }
@@ -63,83 +60,67 @@ export class DashboardPieService {
       seriesData = _.reverse(_.sortBy(seriesData, ['y']));
     }
 
-    // show the first data point as sliced and selected
-    if (seriesData.length > 1) {
-      seriesData[0].sliced = true;
-      seriesData[0].selected = true;
-    }
-
     // build the drilldown data
     if (fteData[0].hasOwnProperty('projects')) {
-
-      // iterate through each project
       fteData[0].projects.forEach(project => {
 
         // build an array of unique team member names for this project
         let teamMembers = [];
         let projectFTESum = 0;
-        project.ftes.forEach(month => {
-          month.teamMembers.forEach(teamMember => {
-            teamMembers.push(teamMember.fullName);
-            projectFTESum += teamMember.fte;
-          });
-        });
-        teamMembers = _.uniq(teamMembers);
-
-        // get the fte total and percent for each team member
-        const drillDownData = [];
-        teamMembers.forEach(teamMemberName => {
-          let teamMemberFTETotal = 0;
+        if (project.hasOwnProperty('ftes')) {
           project.ftes.forEach(month => {
             month.teamMembers.forEach(teamMember => {
-              if (teamMember.fullName === teamMemberName) {
-                teamMemberFTETotal += teamMember.fte;
-              }
+              teamMembers.push(teamMember.fullName);
+              projectFTESum += teamMember.fte;
             });
           });
-          drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 0)]);
-        });
+          teamMembers = _.uniq(teamMembers);
 
-        // TO-DO: push into an array of object first, then use _.sortBy to sort by fte percent descending
-        // then push into the arrays with just the values with no keys
+          // get the fte total and percent for each team member
+          const drillDownData = [];
+          teamMembers.forEach(teamMemberName => {
+            let teamMemberFTETotal = 0;
+            project.ftes.forEach(month => {
+              month.teamMembers.forEach(teamMember => {
+                if (teamMember.fullName === teamMemberName) {
+                  teamMemberFTETotal += teamMember.fte;
+                }
+              });
+            });
+            drillDownData.push([teamMemberName, this.toolsService.roundTo((teamMemberFTETotal / projectFTESum) * 100, 1)]);
+          });
 
-        // push in an object for each project/slice
-        drilldownSeries.push({
-          name: project.projectName,
-          id: project.projectName,
-          data: drillDownData
-        });
+          // TO-DO: push into an array of object first, then use _.sortBy to sort by fte percent descending
+          // then push into the arrays with just the values with no keys
+
+          // push in an object for each project/slice
+          drilldownSeries.push({
+            name: project.projectName,
+            id: project.projectName,
+            data: drillDownData
+          });
+
+        }
 
       });
-
     }
 
 
     // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
-    const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
+    const highchartsButtons = highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
 
-    // get the fiscal quarter and months range for the subtitle
-    const fiscalQuarter = this.toolsService.fiscalQuarterString(moment());
-    const monthsRange = this.toolsService.fiscalQuarterMonthsString(moment());
 
-    // set the chart options
     const chartOptions = {
       chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
+        type: 'column',
         height: 450
       },
       title: {
         text: `Your FTEs by Project`
       },
       subtitle: {
-        text: `For current fiscal quarter ${fiscalQuarter} (${monthsRange}).  Click a slice to view project team members.`
-        // style: {
-        //   color: '#FF00FF',
-        //   fontWeight: 'bold'
-        // }
+        text: `${this.authService.loggedInUser.fullName};
+          For current fiscal quarter.  Click a column to view project team members.`
       },
       credits: {
         text: 'jarvis.is.keysight.com',
@@ -152,29 +133,34 @@ export class DashboardPieService {
           }
         }
       },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.0f}%</b>'
+      xAxis: {
+        type: 'category'
+      },
+      yAxis: {
+        title: {
+          text: 'Full Time Equivalent (FTE) Percent'
+        }
+      },
+      legend: {
+        enabled: false
       },
       plotOptions: {
         series: {
+          borderWidth: 0,
           dataLabels: {
             enabled: true,
-            format: '{point.name}: {point.y:.0f}%'
+            format: '{point.y:.1f}%'
           }
         }
+      },
+      tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
       },
       series: [{
         name: 'FTE %',
         colorByPoint: true,
-        data: seriesData,
-        point: {
-          events: {
-            click: function(e) {
-              const p = e.point;
-              // console.log(p);
-            }.bind(this)
-          }
-        }
+          data: seriesData
       }],
       drilldown: {
         series: drilldownSeries

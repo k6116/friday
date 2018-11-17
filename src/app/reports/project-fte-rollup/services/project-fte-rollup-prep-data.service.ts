@@ -32,10 +32,16 @@ export class ProjectFteRollupPrepDataService {
     // build the first level project (chart object)
     this.buildFirstLevelProject(firstRecord);
 
+    console.log('chart data after building first level project');
+    console.log(this.chartData);
+
     // starting with the first object, build the rest of the chart data structure with recursive method
     // to associate ids with parent ids to enable drilldown
     // NOTE: at this point parts will still be included in the structure, and ftes will not be rolled up
     this.buildProjectStructure(firstRecord, this.firstLevelProject);
+
+    console.log('chart data after building project structure');
+    console.log(this.chartData);
 
     // update the parent id's, such that the child project id's will reference their parent project id's, not part id's
     // (part levels will be phantom / ignored)
@@ -60,6 +66,9 @@ export class ProjectFteRollupPrepDataService {
 
     // remove projects with zero or null FTE values
     this.filterProjectsWithNoFTEs();
+
+    console.log('chart data after removing projects with zero or null fte values');
+    console.log(this.chartData);
 
     // update the level property since we removed levels (parts) and also want to start with level 1 instead of zero
     this.updateLevels();

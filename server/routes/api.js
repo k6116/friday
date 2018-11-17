@@ -210,6 +210,8 @@ router.get('/report/getSubordinateProjectRoster/:period', controllers.report.get
 // LOG CONTROLLER
 router.post('/log/writeToLog', controllers.log.writeToLog);
 
+// ORG CONTROLLER
+router.get('/org/getManagementOrgStructure/:emailAddress', controllers.org.getManagementOrgStructure);
 
 
 // middleware to protect permissions protected routes
