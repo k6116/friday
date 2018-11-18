@@ -1,0 +1,12 @@
+
+div.modal-dialog.team-select-modal-dialog {
+  max-width: 400px;
+}
+
+div.modal-body.team-select-modal-body {
+  min-height: 400px;
+}
+
+i.fa.select-icon, i.fa.cancel-icon {
+  margin-right: 5px;
+}

@@ -296,4 +296,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 
+  onEdiTeamClick(chart: string) {
+    console.log(`edit team button clicked for chart: ${chart}`);
+
+    // display the modal
+    $('#teamSelectModal').modal({
+      backdrop: true,
+      keyboard: true
+    });
+
+  }
+
+
 }

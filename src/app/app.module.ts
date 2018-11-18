@@ -106,6 +106,7 @@ import { MatplanOrderComponent } from './matplan/matplan-order/matplan-order.com
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
 import { SpinnerComponent } from './_shared/components/spinner/spinner.component';
+import { TeamSelectModalComponent } from './dashboard/modal/team-select-modal/team-select-modal.component';
 
 
 @NgModule({
@@ -175,7 +176,8 @@ import { SpinnerComponent } from './_shared/components/spinner/spinner.component
     OrgViewerComponent,
     OrgDrawD3Component,
     TransferProjectsComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    TeamSelectModalComponent
   ],
   imports: [
     AppRoutingModule,

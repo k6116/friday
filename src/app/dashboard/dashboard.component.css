@@ -26,6 +26,27 @@ text.highcharts-title {
   font-weight: 500;
 }
 
+div.edit-button-cont {
+  display: inline-block;
+  position: absolute;
+  top: 8px;
+  left: 45px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+div.edit-button-cont.stacked-column {
+  left: 25px;
+}
+
+i.edit-icon {
+  padding-right: 2px;
+}
+
+div.edit-button-cont:hover {
+  color: rgb(72, 72, 196);
+}
+
 /* .highcharts-title {
   fill: #434348;
   font-weight: bold;
