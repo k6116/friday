@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolsService } from '../../_shared/services/tools.service';
-import { ApiDataAdvancedFilterService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import { ApiDataAdvancedFilterService, ApiDataOrgService, ApiDataSchedulesService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthService } from '../../_shared/services/auth.service';
 import { CacheService } from '../../_shared/services/cache.service';
@@ -27,6 +27,7 @@ export class AdvancedDashboardComponent implements OnInit {
   showDashboard: boolean;
   showSpinner: boolean;
   advancedFilteredResults: any;
+  PLCList: any;
 
   chartPriorities: any;
   chartStatuses: any;
@@ -61,6 +62,7 @@ export class AdvancedDashboardComponent implements OnInit {
   constructor(
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
     private apiDataOrgService: ApiDataOrgService,
+    private apiDataSchedulesService: ApiDataSchedulesService,
     private authService: AuthService,
     private toolsService: ToolsService,
     private cacheService: CacheService
@@ -71,23 +73,24 @@ export class AdvancedDashboardComponent implements OnInit {
     this.showDashboard = true;
 
     const filterOptions = {
-      PLCStatusIDs: '7,6',
-      PLCDateRanges: '2017-01-01|NULL,2017-01-01|NULL',
-      // PLCStatusIDs: '1,2,3,4,5,6,7',
-      // PLCDateRanges: 'NULL|NULL,NULL|NULL,NULL|NULL,NULL|NULL,NULL|NULL,NULL|NULL,NULL|NULL',
+      // PLCStatusIDs: '7,6',
+      // PLCDateRanges: '2017-01-01|NULL,2017-01-01|NULL',
+      PLCStatusIDs: '1,2,6,7',
+      PLCDateRanges: 'NULL|NULL,NULL|NULL,NULL|NULL,NULL|NULL',
       // PLCStatusIDs: '',
       // PLCDateRanges: '',
-      ProjectName: '',
-      ProjectTypeIDs: '0,1,2,3,4',
+      ProjectName: '00 Test Project 1,26-42 GHz 1st Mixer,BrixSG,Viking 1.5,Armstrong,Bugs Bunny',
+      ProjectTypeIDs: '0,1,2,3,4,14',
       ProjectStatusIDs: '0,1,2,3,4,5',
       ProjectPriorityIDs: '0,1,3,4,5',
       ProjectOwnerEmails: '',
-      FTEMin: '0',
+      FTEMin: 'NULL',
       FTEMax: 'NULL',
       FTEDateFrom: 'NULL',
       FTEDateTo: 'NULL'
     };
 
+    this.getPLCList();
     await this.advancedFilter(filterOptions);
   }
 
@@ -115,6 +118,11 @@ export class AdvancedDashboardComponent implements OnInit {
     this.getSchedules();
     this.getScheduleStats();
     this.getJobTitleData();
+  }
+
+  async getPLCList() {
+    this.PLCList = await this.apiDataSchedulesService.getPLCList().toPromise();
+    console.log('this.PLCList', this.PLCList)
   }
 
   renderProjectTypesChart() {
@@ -334,7 +342,10 @@ export class AdvancedDashboardComponent implements OnInit {
         text: 'PLC Schedules'
       },
       subtitle: {
-        text: 'Displaying projects with CON and SHP dates defined'
+        text: `- Projects only display PLC schedules selected in the filter<br>
+              - PLC duration starts from the end of the previous PLC checkpoint<br>
+              - CONs do not have a "CON Start" at the moment, so schedules start at the completion of CON<br>
+              - If PLCs have the same checkpoint date (e.g. CON and INV), they are "padded" just for display purposes in the chart.`
       },
       xAxis: {
         categories: this.schedulesProjectsList
@@ -346,7 +357,7 @@ export class AdvancedDashboardComponent implements OnInit {
         minTickInterval: 28 * 24 * 3600 * 1000
       },
       legend: {
-        enabled: false
+        enabled: true
       },
       credits: {
         enabled: false
@@ -358,23 +369,22 @@ export class AdvancedDashboardComponent implements OnInit {
         series: {
           borderWidth: 0,
           dataLabels: {
-            enabled: true,
+            enabled: false,
             formatter: function () {
-              return Highcharts.dateFormat('%b', this.y);
+              return this.point.plcDate;
+            }
           }
-          }
+        },
+        columnrange: {
+          grouping: false
         }
       },
       tooltip: {
         formatter: function () {
-          return '<b>' + this.x + '</b> | <b>CON - SHP </b> | <b>' + Highcharts.dateFormat('%b %d \'%y', this.point.low) + ' - ' +
-                  Highcharts.dateFormat('%b %d \'%y', this.point.high) + '</b>';
+          return '<b>' + this.x + '</b> | <b>' + this.series.name + ' </b> | <b>' + this.point.plcDate + '</b>';
       }
       },
-      series: [{
-        name: 'Dates',
-        data: this.schedulesList
-        }]
+      series: this.schedulesList
     };
 
     // return the chart options object
@@ -513,49 +523,109 @@ export class AdvancedDashboardComponent implements OnInit {
     const projectList = [];
     const projectScheduleData = [];
     const scheduleData = [];
+    const PLCSeries = [];
+
+    // generate the y axis project list
+    this.advancedFilteredResults.forEach(proj => {
+      projectList.push(proj.ProjectName + ' - ' + proj.ProjectTypeName);
+    });
 
     // update the dataSeries object with the sum of FTEs per priority
-    for (let i = 0; i < this.advancedFilteredResults.length; i++) {
-      if ('Schedules' in this.advancedFilteredResults[i]) {
-        if (this.advancedFilteredResults[i].Schedules.some(plc => plc.PLCStatusName === 'CON') &&
-            this.advancedFilteredResults[i].Schedules.some(plc => plc.PLCStatusName === 'SHP')) {
+    this.PLCList.forEach(plc => {
+      const PLCDataSeries = [];
+      for (let i = 0; i < this.advancedFilteredResults.length; i++) {
+        // if ('Schedules' in this.advancedFilteredResults[i]) {
+          // Loop through each PLC and if it exists, add to the data set
+          const projPLC = this.advancedFilteredResults[i].Schedules.find(o1 => o1.PLCStatusName === plc.PLCStatusName);
+          // skip if this project does not have this plc
+          if (projPLC !== undefined) {
+            if (projPLC.PLCDate !== '') {
+              PLCDataSeries.push({
+                projectName: this.advancedFilteredResults[i].ProjectName + ' - ' + this.advancedFilteredResults[i].ProjectTypeName,
+                plcDate: projPLC.PLCDate
+              });
+            }
+          }
+        // }
+      }
+      if ( PLCDataSeries.length ) {
+        PLCSeries.push({
+          name: plc.PLCStatusName,
+          stack: 'Schedule',
+          data: PLCDataSeries
+        });
+      }
+    });
 
-            const objCON = this.advancedFilteredResults[i].Schedules.find(plc => plc.PLCStatusName === 'CON');
-            const objSHP = this.advancedFilteredResults[i].Schedules.find(plc => plc.PLCStatusName === 'SHP');
-
-            projectScheduleData.push([
-              this.advancedFilteredResults[i].ProjectName,
-              moment.utc(objCON.PLCDate).valueOf(),
-              moment.utc(objSHP.PLCDate).valueOf()
-            ]);
+    // Need to do some data maniuplation to reformat arrays for Highcharts
+    for (let i = 0; i < PLCSeries.length; i++) {
+      for (let j = 0; j < PLCSeries[i].data.length; j++) {
+        if (i === 0) {
+          // For now, padding the start to 5 days in length just for chart display purposes
+          const paddedDate1 = moment(PLCSeries[i].data[j].plcDate).add(7, 'days').format('MM/DD/YYYY');
+          PLCSeries[i].data[j].low = moment.utc(PLCSeries[i].data[j].plcDate).valueOf();
+          PLCSeries[i].data[j].high = moment.utc(paddedDate1).valueOf();
+          PLCSeries[i].data[j].dateFrom = moment(PLCSeries[i].data[j].plcDate).format('MM/DD/YYYY');
+          PLCSeries[i].data[j].dateTo = moment(paddedDate1).format('MM/DD/YYYY');
+        } else {
+          for (let k = i - 1; k >= 0; k--) {
+            if (PLCSeries[k].data.some(p => p.projectName === PLCSeries[i].data[j].projectName)) {
+              const prevPLC = PLCSeries[k].data.find(p => p.projectName === PLCSeries[i].data[j].projectName);
+              // if the current PLC date is equal to the previous PLC date, add some padding for visual purposes
+              if (PLCSeries[i].data[j].plcDate === prevPLC.plcDate) {
+                const paddedDate2 = moment(prevPLC.high).add(7, 'days').format('MM/DD/YYYY');
+                PLCSeries[i].data[j].low = moment.utc(prevPLC.high).valueOf();
+                PLCSeries[i].data[j].high = moment.utc(paddedDate2).valueOf();
+                PLCSeries[i].data[j].dateFrom = moment(prevPLC.high).format('MM/DD/YYYY');
+                PLCSeries[i].data[j].dateTo = moment(paddedDate2).format('MM/DD/YYYY');
+              } else {
+                PLCSeries[i].data[j].low = moment.utc(prevPLC.high).valueOf();
+                PLCSeries[i].data[j].high = moment.utc(PLCSeries[i].data[j].plcDate).valueOf();
+                PLCSeries[i].data[j].dateFrom = moment(prevPLC.high).format('MM/DD/YYYY');
+                PLCSeries[i].data[j].dateTo = moment(PLCSeries[i].data[j].plcDate).format('MM/DD/YYYY');
+              }
+              break;
+            }
+          }
         }
+        PLCSeries[i].data[j].x = projectList.indexOf(PLCSeries[i].data[j].projectName);
       }
     }
 
     // Sort by SHP dates and redistribute arrays for highchart formats
-    projectScheduleData.sort(function(a, b) {return a[2] > b[2] ? 1 : -1; });
+    // projectScheduleData.sort(function(a, b) {return a[2] > b[2] ? 1 : -1; });
 
-    let minCON = 10000000000000;
-    let maxSHP = 0;
-    for (let j = 0; j < projectScheduleData.length; j++) {
+    let minPLC = 10000000000000;
+    let maxPLC = 0;
+    for (let i = 0; i < PLCSeries[0].data.length; i++) {
       // get min and max CON and SHP values
-      if (projectScheduleData[j][1] < minCON) {
-        minCON = projectScheduleData[j][1];
+      if (PLCSeries[0].data[i].low < minPLC) {
+        minPLC = PLCSeries[0].data[i].low;
       }
-      if (projectScheduleData[j][2] > maxSHP) {
-        maxSHP = projectScheduleData[j][2];
+    }
+
+    for (let i = 0; i < PLCSeries[PLCSeries.length - 1].data.length; i++) {
+      // get min and max CON and SHP values
+      if (PLCSeries[PLCSeries.length - 1].data[i].high > maxPLC) {
+        maxPLC = PLCSeries[PLCSeries.length - 1].data[i].high;
       }
-      projectList.push(projectScheduleData[j][0]);
-      scheduleData.push([projectScheduleData[j][1], projectScheduleData[j][2]]);
     }
 
     // dynamically adjust the height of the chart by scaling with the number of projects returned
-    this.schedulesChartHeight = projectList.length / 12;
+    if (projectList.length >= 8) {
+      this.schedulesChartHeight = projectList.length / 8;
+    } else {
+      this.schedulesChartHeight = 1;
+    }
 
-    this.schedulesEarliestCONDate = moment.utc(minCON).toISOString();
-    this.schedulesLatestSHPDate = moment.utc(maxSHP).toISOString();
+    this.schedulesEarliestCONDate = moment.utc(minPLC).toISOString();
+    this.schedulesLatestSHPDate = moment.utc(maxPLC).toISOString();
     this.schedulesProjectsList = projectList;
-    this.schedulesList = scheduleData;
+    this.schedulesList = PLCSeries;
+    // console.log('minPLC', minPLC)
+    // console.log('maxPLC', maxPLC)
+    console.log('this.schedulesProjectsList', this.schedulesProjectsList)
+    console.log('this.schedulesList', this.schedulesList)
 
     this.renderSchedulesChart();
   }

@@ -125,6 +125,7 @@ router.post('/updateSchedule/:userID', controllers.schedules.updateSchedule);
 router.post('/destroySchedule/:userID', controllers.schedules.destroySchedule);
 router.post('/insertScheduleDetailBulk/:userID', controllers.schedules.insertScheduleDetailBulk);
 router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedules.updateScheduleDetailBulk);
+router.get('/getPLCList', controllers.schedules.getPLCList);
 
 // ADVANCED FILTER CONTROLLER
 router.get('/indexProjectsAdvancedFilter', controllers.advancedFilter.indexProjectsAdvancedFilter);
