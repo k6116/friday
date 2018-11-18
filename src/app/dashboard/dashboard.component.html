@@ -4,7 +4,7 @@
 <app-spinner *ngIf="showSpinner"></app-spinner>
 
 <!-- team select modal -->
-<app-team-select-modal></app-team-select-modal>
+<app-team-select-modal *ngIf="showTeamSelectModal" [nestedManagerData]="nestedManagerData" (close)="onModalClose()"></app-team-select-modal>
 
 <!-- main page container -->
 <div class="container-fluid">

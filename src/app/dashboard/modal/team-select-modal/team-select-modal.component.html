@@ -12,17 +12,19 @@
 
       <div class="modal-body team-select-modal-body">
         <p>Select a manager from the dropdown to view that team's FTE distribution by Project Type and Project.</p>
+        <p>{{ nestedManagerData[0].fullName }}</p>
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-fte-toolbar" data-dismiss="modal" (click)="createProject()">
+        <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="closeModal()">   
           <i class="fa fa-check select-icon"></i>Select
         </button>
-        <button type="button" class="btn btn-secondary btn-fte-toolbar" data-dismiss="modal">
+        <button type="button" class="btn btn-secondary btn-fte-toolbar" (click)="closeModal()">
           <i class="fa fa-ban cancel-icon" aria-hidden="true"></i>Cancel
         </button>
       </div>
 
+      <!-- data-dismiss="modal" -->
     </div>
   </div>
 

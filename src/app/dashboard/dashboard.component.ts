@@ -53,6 +53,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   chartDonut: any;
   chartStackedColumn: any;
   chartGauge: any;
+  nestedManagerData: any = [];
+  showTeamSelectModal: boolean;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -90,7 +92,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private dashboardTeamSelectService: DashboardTeamSelectService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     // get dashboard data, then render dashboard
     this.getDashboardData();
@@ -102,7 +104,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
 
     // get management org structure for the manager select dropdown
-    this.dashboardTeamSelectService.getManagementOrgStructure();
+    const nestedManagerData = await this.dashboardTeamSelectService.getNestedManagerStructure()
+    .catch(err => {
+      console.error(err);
+    });
+    this.nestedManagerData.push(nestedManagerData);
+
+    console.log('nested manager data in dashboard component:');
+    console.log(this.nestedManagerData);
 
   }
 
@@ -297,13 +306,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   onEdiTeamClick(chart: string) {
+
     console.log(`edit team button clicked for chart: ${chart}`);
 
+    this.showTeamSelectModal = true;
+
     // display the modal
-    $('#teamSelectModal').modal({
-      backdrop: true,
-      keyboard: true
-    });
+    setTimeout(() => {
+      $('#teamSelectModal').modal({
+        backdrop: true,
+        keyboard: true
+      });
+    }, 0);
+
+  }
+
+  onModalClose() {
+
+    console.log('modal close event fired');
+    $('#teamSelectModal').modal('hide');
+    setTimeout(() => {
+      $('#teamSelectModal').modal('dispose');
+    }, 500);
 
   }
 
