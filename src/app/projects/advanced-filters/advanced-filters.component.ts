@@ -2,11 +2,13 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Outp
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataAdvancedFilterService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ExcelExportService } from '../../_shared/services/excel-export.service';
 
 // import { start } from 'repl';
-
+const moment = require('moment');
+declare const require: any;
 
 declare var $: any;
 declare const Bloodhound;
@@ -25,7 +27,7 @@ export interface NewPLC {
   styleUrls: ['./advanced-filters.component.css', '../../_shared/styles/common.css']
 })
 
-export class AdvancedFiltersComponent implements OnInit {
+export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
   @ViewChild('filterStringOw') filterStringOw: ElementRef;
@@ -73,14 +75,22 @@ export class AdvancedFiltersComponent implements OnInit {
   advancedFilteredResultsFlat: any; // for excel download
   
   // etc
+  ngUnsubscribe = new Subject();
+  subscription2: Subscription; // for excel download
   showSpinner: boolean;
   showPage: boolean;
+  showResults: boolean;
   showDownloadingIcon: boolean;
   htmlElement: any;
   minDate: string;
   fteMin: any; // for fte checkbox logic
   fteMax: any; // for fte checkbox logic
   
+  // month
+  currentMonth: number;
+  firstMonthOfQtr: number;
+  currentYear: number;
+
   constructor(
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
     private apiDataOrgService: ApiDataOrgService,
@@ -93,7 +103,7 @@ export class AdvancedFiltersComponent implements OnInit {
     this.filterObject = {
       PLCStatusIDs: '',       // num1,num2,num3,..
       PLCDateRanges: '',      // From1|To1, From2|To2, From3|To3,... 
-      ProjectName: '',        // num,num,num,..
+      ProjectName: '',        // name, name, name,..
       ProjectTypeIDs: '',     // num,num,num,..
       ProjectStatusIDs: '',   // num,num,num,..
       ProjectPriorityIDs: '', // num,num,num,..
@@ -114,6 +124,12 @@ export class AdvancedFiltersComponent implements OnInit {
     this.fteMin = [];
     this.fteMax = [];
     this.minDate = '1900-01-01';
+
+    // For Excel Download
+    this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
+      this.showDownloadingIcon = show;
+    });
+
 
   }
 
@@ -149,8 +165,26 @@ export class AdvancedFiltersComponent implements OnInit {
     // show page
     this.showPage = true;
 
+    // hide layover
+    this.showResults = true
+
+    // show the footer
+    this.toolsService.showFooter();
+
 
     console.log('Advanced filter data:', this.advancedFilterData);
+
+    this.setCurrentMonthYear();
+  }
+
+  ngOnDestroy() {
+
+    // this.ngUnsubscribe.next();
+    // this.ngUnsubscribe.complete();
+
+    // for excel download
+    this.subscription2.unsubscribe();
+
   }
 
   initCheckboxArrays() {
@@ -197,6 +231,13 @@ export class AdvancedFiltersComponent implements OnInit {
 
   // Applied filter results
   async advancedFilter(filterOptions: any) {
+
+        // show page
+        // this.showPage = false;
+        // show the spinner
+        this.showSpinner = true;
+        this.showResults = false;
+
     this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
     
     this.advancedFilteredResults.nested.forEach( project => {
@@ -212,8 +253,8 @@ export class AdvancedFiltersComponent implements OnInit {
         project.Schedules = schedules;
       }
     });
-    this.advancedFilteredResults = this.advancedFilteredResults.nested;
     this.advancedFilteredResultsFlat = this.advancedFilteredResults.flat; // for excel download
+    this.advancedFilteredResults = this.advancedFilteredResults.nested;
     console.log('this.advancedFilteredResults', this.advancedFilteredResults);
 
     // For PLC status headers:
@@ -223,6 +264,12 @@ export class AdvancedFiltersComponent implements OnInit {
     } else {
       this.plcSchedules = [];
     }
+
+            // show page
+            // this.showPage = true;
+            // show the spinner
+            this.showSpinner = false;
+            this.showResults = true;
     
   }
 
@@ -537,226 +584,67 @@ export class AdvancedFiltersComponent implements OnInit {
 
 // FTE
 
-  // To-Do CHAI: 4 checkboxes are not really intuituve. Think of something else
-  onCheckboxFTEClick(event: any) {
-    const checked = event.target.checked;
-    const checkboxID = event.target.id;
+  onFTEToggleSelected(event: any) {
 
-    // const numberFTEMin = Number(this.filterObject.FTEMin);
-    // const numberFTEMax = Number(this.filterObject.FTEMax);
+    const id = event.target.id;
+    this.filterObject.FTEDateFrom = '09/01/2018';
+    this.filterObject.FTEDateTo = 'NULL';
 
-    if (checked === true) {
+    switch (id) {
+      case 'all':
+        this.filterObject.FTEDateFrom = String(this.currentMonth);
+        this.filterObject.FTEDateTo = 'NULL';
+        break;
+
+      case 'month':
+        this.filterObject.FTEDateFrom = 'NULL';
+        this.filterObject.FTEDateTo = 'NULL';
+        break;
       
-      switch (checkboxID) {
-        case 'fte1':
-          this.fteMin.push(0);
-          this.fteMax.push(25);
+      case 'qtr':
+        this.filterObject.FTEDateFrom = 'NULL';
+        this.filterObject.FTEDateTo = 'NULL';
+        break;
+    
+      case 'year':
+        const yearRange0 = '01/01/' + this.currentYear;
+        const yearRange1 = '12/31/' + this.currentYear;
+        console.log('Year Range:', yearRange0, yearRange1);
+        this.filterObject.FTEDateFrom = 'NULL';
+        this.filterObject.FTEDateTo = 'NULL';
+        break;
 
-          // No need to check, 0 is always min
-          this.filterObject.FTEMin = '0';
-          console.log(this.fteMin);
-          
-          if (this.filterObject.FTEMax === 'NULL') {
-            this.filterObject.FTEMax = '25';
-          }
-          else if (Number(this.filterObject.FTEMax) > 25) {
-            console.log('Max is larger than 25 => filterObject.FTEMax=', this.filterObject.FTEMax);
-          }
-
-          console.log('Mins:', this.fteMin);
-          console.log('Maxs:', this.fteMax);
-          break;
-
-        case 'fte2':
-          this.fteMin.push(25);
-          this.fteMax.push(50);
-
-
-          if (this.filterObject.FTEMin === 'NULL') {
-            this.filterObject.FTEMin = '25';
-          }
-          else if (Number(this.filterObject.FTEMin) === 0) {
-            console.log('Min is 0 => filterObject.FTEMin=', this.filterObject.FTEMin);
-          }
-          else if (Number(this.filterObject.FTEMin) > 25) {
-            this.filterObject.FTEMin = '25';
-          }
-          if (this.filterObject.FTEMax === 'NULL') {
-            this.filterObject.FTEMax = '50';
-          }
-          else if (Number(this.filterObject.FTEMax) === 25) {
-            this.filterObject.FTEMax = '50';
-          }
-          else if (Number(this.filterObject.FTEMax) > 50) {
-            console.log('Max is larger than 50 => filterObject.FTEMax=', this.filterObject.FTEMax);
-          }
-
-          console.log('Mins:', this.fteMin);
-          console.log('Maxs:', this.fteMax);
-          break;
-
-        case 'fte3':
-          this.fteMin.push(50);
-          this.fteMax.push(75);
-
-          if (this.filterObject.FTEMin === 'NULL') {
-            this.filterObject.FTEMin = '50';
-          }
-          else if (Number(this.filterObject.FTEMin) < 50) {
-            console.log('Min is less than 50 => filterObject.FTEMin=', this.filterObject.FTEMin);            
-          }
-          else if (Number(this.filterObject.FTEMin) === 75) {
-            this.filterObject.FTEMin = '50';
-          }
-          
-          if (this.filterObject.FTEMax === 'NULL') {
-            this.filterObject.FTEMax = '75';
-          }
-          else if (Number(this.filterObject.FTEMax) < 75) {
-            this.filterObject.FTEMax = '75';
-          }
-          else if (Number(this.filterObject.FTEMax) === 100) {
-            console.log('Max is 100 => filterObject.FTEMax=', this.filterObject.FTEMax);
-          }
-          
-          console.log('Mins:', this.fteMin);
-          console.log('Maxs:', this.fteMax);
-          break;
-
-        case 'fte4':
-          this.fteMin.push(75);
-          this.fteMax.push(100);
-
-          if (this.filterObject.FTEMin === 'NULL') {
-            this.filterObject.FTEMin = '75';
-          }
-          else if (Number(this.filterObject.FTEMin) < 75) {
-            console.log('Min is less than 75 => filterObject.FTEMin=', this.filterObject.FTEMin);            
-          }
-          
-          this.filterObject.FTEMax = '100';
-          
-          console.log('Mins:', this.fteMin);
-          console.log('Maxs:', this.fteMax);
-          break;
-      }
-
+      default:
+        break;
     }
 
-    else if (checked === false) {
+    console.log('Toggle Clicked', event);
+    console.log('filterObject', this.filterObject);
 
-      // sort min arrays
-      console.log('Before sort:', this.fteMin)
-      console.log('Before sort:', this.fteMax)      
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+  }
 
-      this.fteMin.sort(function(a, b) {
-        return a-b
-      })
+  onInputFTETotalClick() {
 
-      // sort max arrays
-      this.fteMax.sort(function(a, b) {
-        return a-b
-      })
+    const minValue = '';
+    const maxValue = '';
 
-      console.log('After sort:', this.fteMin)
-      console.log('After sort:', this.fteMin)
+    this.filterObject.FTEMin = String(minValue);
+    this.filterObject.FTEMax = String(maxValue);
+  }
 
-      switch (checkboxID) {
-        case 'fte1':
+  onInputFTEMinChange(event: any) {
+    const value = event.target.value;
+    this.filterObject.FTEMin = String(value);
 
-          // remove 0 and 25 from array
-          this.fteMin.splice(0, 1);
-          this.fteMax.splice(0, 1);
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+  }
 
-          console.log('Mins:', this.fteMin);
-          console.log('Maxs:', this.fteMax);
-          break;
-
-        case 'fte2':
-
-          // remove 25 from fteMin array
-          for (let i = 0; i < this.fteMin.length; i++) {
-            if (this.fteMin[i] === 25) {
-              this.fteMin.splice(i, 1);
-              break;
-            }
-          }
-
-          // remove 50 from fteMax array
-          for (let i = 0; i < this.fteMax.length; i++) {
-            if (this.fteMax[i] === 50) {
-              this.fteMax.splice(i, 1);
-              break;
-            }
-          }
-
-          console.log('Mins:', this.fteMin);
-          console.log('Maxs:', this.fteMax);
-          break;
-
-        case 'fte3':
-          
-          // remove 50 from fteMin array
-          for (let i = 0; i < this.fteMin.length; i++) {
-            if (this.fteMin[i] === 50) {
-              this.fteMin.splice(i, 1);
-              break;
-            }
-          }
-
-          // remove 75 from fteMax array
-          for (let i = 0; i < this.fteMax.length; i++) {
-            if (this.fteMax[i] === 75) {
-              this.fteMax.splice(i, 1);
-              break;
-            }
-          }
-
-          console.log('Mins:', this.fteMin);
-          console.log('Maxs:', this.fteMax);
-          break;
-
-        case 'fte4':
-  
-          // remove 75 from fteMin array
-          for (let i = 0; i < this.fteMin.length; i++) {
-            if (this.fteMin[i] === 75) {
-              this.fteMin.splice(i, 1);
-              break;
-            }
-          }
-
-          // remove 100 from fteMax array
-          for (let i = 0; i < this.fteMax.length; i++) {
-            if (this.fteMax[i] === 100) {
-                this.fteMax.splice(i, 1);
-                break;
-            }
-          }
-
-          console.log('Mins:', this.fteMin);
-          console.log('Maxs:', this.fteMax);
-          break;
-      }
-
-      // Save new filterObjects
-
-      if (this.fteMin.length !== 0) {
-        // new Min is first value in min array
-        this.filterObject.FTEMin = this.fteMin[0];
-
-        // new Max is last value in max array
-        this.filterObject.FTEMax = this.fteMax[this.fteMax.length - 1];
-      } 
-      // FTEMin and FTEMax require 'NULL' for stored procedure
-      else if (this.fteMin.length === 0) {
-        this.filterObject.FTEMin = 'NULL';
-        this.filterObject.FTEMax = 'NULL';
-      }
-
-    }
-
-    console.log(this.filterObject);
+  onInputFTEMaxChange(event: any) {
+    const value = event.target.value;
+    this.filterObject.FTEMax = String(value);
 
     // Make the db call
     this.advancedFilter(this.filterObject);
@@ -786,6 +674,37 @@ export class AdvancedFiltersComponent implements OnInit {
       // Make the db call
       this.advancedFilter(this.filterObject);
      }   
+  }
+
+  setCurrentMonthYear() {
+    // Initialize to current quarter's month/year
+    // currentMonth is the "real" month
+    // setMonth is the month the user is viewing
+    const thisMonth = Number(moment().format('M')); // 1 === Jan, 2 === Feb
+    if (thisMonth === 11 || thisMonth === 12 || thisMonth === 1) {
+      this.currentMonth = moment(1, 'DD').month(10); // When setting the month number: 0 === Jan, 1 === Feb
+    } else if (thisMonth === 2 || thisMonth === 3 || thisMonth === 4) {
+      this.currentMonth = moment(1, 'DD').month(1);
+    } else if (thisMonth === 5 || thisMonth === 6 || thisMonth === 7) {
+      this.currentMonth = moment(1, 'DD').month(4);
+    } else if (thisMonth === 8 || thisMonth === 9 || thisMonth === 10) {
+      this.currentMonth = moment(1, 'DD').month(7);
+    }
+
+    // Current Month
+    this.currentMonth = Number(moment().format('M'));
+    console.log('Current Month:', this.currentMonth);
+
+    // Current Qtr
+    this.firstMonthOfQtr = Number(moment(this.currentMonth).format('MMMM'));
+    console.log('Current Qtr:', this.firstMonthOfQtr);
+
+    // Current Year
+    this.currentYear = moment().year();
+    console.log('Current Year:', this.currentYear);
+
+    console.log('Test:', moment().toISOString());
+    console.log('Test with month:', moment(this.currentMonth).toISOString())
   }
 
 
@@ -956,10 +875,6 @@ export class AdvancedFiltersComponent implements OnInit {
 
     // hide the tooltip
     $('button.export-button').tooltip('dispose');
-
-    // if (this.objPLC.length > 0 ) {
-    //   console.log('works');
-    // }
 
     // set an array of objects representing the selected columns to export
     // NOTE: if this is null or undefined it will export all columns

@@ -2,7 +2,18 @@
 
 div.page-cont {
   overflow-x: hidden;
-  height: 1000px;
+  /* height: 1000px; */
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color:#000;
+  opacity: .75;
+  z-index: 9999999;
 }
 
 /* SEARCH BAR */
@@ -60,7 +71,7 @@ div.float-right-cont {
 }
 
 button.btn-standard.export-button {
-  margin-right: 30px;
+  /* margin-right: 30px; */
   position: relative;
   top: 1px;
   width: 125px;
@@ -189,6 +200,32 @@ div.adv-filters3-cont {
   margin-top: 10px;
 }
 
+button.clear-fte {
+  height: 20px;
+  font-size: 10px;
+  padding: 0px 4px;
+  border-color: #485b65;
+}
+
+button.clear-fte:hover {
+  background-color: #485b65
+}
+
+.fte-toggle {
+  padding: 4px 6px 0px 6px;
+  font-size: 13px;
+  height: 30px;
+  margin-top: 5px;
+  width: 28%;
+}
+
+button.go-btn {
+  font-size: 11px;
+  padding: 0px 7px;
+  margin: 5px 0px 7px 0px;
+  border-color: lightgray;
+}
+
 label.fte {
   margin-top: 10px; 
   margin-right: 5px; 
@@ -232,7 +269,7 @@ input.form-control:focus.plc-input-invalid {
 /* RESULT TABLE */
 
 div.adv-results-cont {
-  display: inline-grid;
+  /* display: inline-grid; */
   padding-left: 10px;
   width: calc(100% - ( 402px + 4px));
   height: 744px;
