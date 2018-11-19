@@ -129,7 +129,6 @@ function showQuotesForPart(req, res) {
   models.Quote.findAll({
     attributes: [
       'partID',
-      'quoteID',
       'supplier',
       'mfgPartNumber',
       ['id', 'breaks|id'],
@@ -163,12 +162,15 @@ function updateQuoteForPart(req, res) {
   const quoteForm = req.body;
   const insertValues = [];
   const updateValues = [];
+  const deleteIDs = [];
 
   quoteForm.breaks.forEach( priceBreak => {
-    if (priceBreak.id) {
+    if (priceBreak.toBeDeleted) {
+      deleteIDs.push(priceBreak.id);
+    }
+    else if (priceBreak.id) {
       updateValues.push({
         id: priceBreak.id,
-        quoteID: quoteForm.quoteID,
         partID: quoteForm.partID,
         supplier: quoteForm.supplier,
         mfgPartNumber: quoteForm.mfgPartNumber,
@@ -183,7 +185,6 @@ function updateQuoteForPart(req, res) {
       });
     } else {
       insertValues.push({
-        quoteID: quoteForm.quoteID,
         partID: quoteForm.partID,
         supplier: quoteForm.supplier,
         mfgPartNumber: quoteForm.mfgPartNumber,
@@ -201,6 +202,8 @@ function updateQuoteForPart(req, res) {
     }
   });
 
+  console.log('done parsing delete values');
+  console.log(deleteIDs);
   console.log('done parsing newValues');
   console.log(insertValues);
   console.log('done parsing updateValues');
@@ -209,43 +212,50 @@ function updateQuoteForPart(req, res) {
   // res.json({message: 'bla'});
 
   return sequelize.transaction( (t) => {
-    return models.Quote.bulkCreate(
-      insertValues,
-      {transaction: t}
-    )
-    .then( (insertedRecords) => {
-      console.log(`${insertedRecords.length} quote records added`);
-
-      // make array of promises to update all quote records
-      let promises = [];
-      for (let i = 0; i < updateValues.length; i++) {
-        let newPromise = models.Quote.update(
-          {
-            id: updateValues[i].id,
-            quoteID: updateValues[i].quoteID,
-            partID: updateValues[i].partID,
-            supplier: updateValues[i].supplier,
-            mfgPartNumber: updateValues[i].mfgPartNumber,
-            leadTime: updateValues[i].leadTime,
-            minOrderQty: updateValues[i].minOrderQty,
-            price: updateValues[i].price,
-            nreCharge: updateValues[i].nreCharge,
-            demandForecastMethodID: updateValues[i].demandForecastMethodID,
-            demandForecastMethodNumber: updateValues[i].demandForecastMethodNumber,
-            updatedBy: updateValues[i].updatedBy,
-            updatedAt: updateValues[i].updatedAt
-          },
-          {
-            where: { id: updateValues[i].id },
-            transaction: t
-          }
-        );
-        promises.push(newPromise);
-      };
-      return Promise.all(promises);
+    return models.Quote.destroy({
+      where: {id: deleteIDs},
+      transaction: t
     })
-    .then( updatedRecords => {
-      console.log(`${updatedRecords.length} quote records updated`)
+    .then( (deletedRecords) => {
+      console.log(`${deletedRecords} quote records deleted`);
+    
+      return models.Quote.bulkCreate(
+        insertValues,
+        {transaction: t}
+      )
+      .then( (insertedRecords) => {
+        console.log(`${insertedRecords.length} quote records added`);
+
+        // make array of promises to update all quote records
+        let promises = [];
+        for (let i = 0; i < updateValues.length; i++) {
+          let newPromise = models.Quote.update(
+            {
+              id: updateValues[i].id,
+              partID: updateValues[i].partID,
+              supplier: updateValues[i].supplier,
+              mfgPartNumber: updateValues[i].mfgPartNumber,
+              leadTime: updateValues[i].leadTime,
+              minOrderQty: updateValues[i].minOrderQty,
+              price: updateValues[i].price,
+              nreCharge: updateValues[i].nreCharge,
+              demandForecastMethodID: updateValues[i].demandForecastMethodID,
+              demandForecastMethodNumber: updateValues[i].demandForecastMethodNumber,
+              updatedBy: updateValues[i].updatedBy,
+              updatedAt: updateValues[i].updatedAt
+            },
+            {
+              where: { id: updateValues[i].id },
+              transaction: t
+            }
+          );
+          promises.push(newPromise);
+        };
+        return Promise.all(promises);
+      })
+      .then( updatedRecords => {
+        console.log(`${updatedRecords.length} quote records updated`)
+      });
     });
   }) // end transaction
   .then(() => {

@@ -3,17 +3,17 @@
   <!-- first col is list-box of items in the BOM-->
   <div class="col-sm-3">
     <div class="list-group">
-      <button class="list-group-item list-group-item-action" *ngFor="let item of bom" (click)="showQuotes(item)" [ngClass]="selectedPartID === item.ChildID ? 'active' : ''">{{item.ChildIndentedName}}</button>
+      <button class="list-group-item list-group-item-action" *ngFor="let item of bom" (click)="showQuotes(item)" [ngClass]="selectedPart.ChildID === item.ChildID ? 'active' : ''">{{item.ChildIndentedName}}</button>
     </div>
   </div>
 
   <!-- second col is quote selector and editor -->
-  <div class="col-sm-9" *ngIf="selectedPartID">
+  <div class="col-sm-9 card-cont" *ngIf="(selectedPart | json) !== '{}'">
 
     <div class="card"> <!-- card for "add new quote" -->
-      <h5 class="card-header">New Quote</h5>
+      <div class="card-header">New Quote</div>
       <div class="card-body text-center">
-        <button class="btn btn-success">Add New Quote</button>
+        <button class="btn btn-success" (click)="editQuote()">Add New Quote</button>
       </div>
     </div>
     <ng-container *ngFor="let quote of quotes">
@@ -67,6 +67,7 @@
           <table class="table table-sm">
             <thead>
               <tr>
+                <th>&nbsp;</th>
                 <th>MOQ:</th>
                 <th>Price:</th>
                 <th>NRE:</th>
@@ -75,7 +76,8 @@
             </thead>
             <tbody formArrayName="breaks">
               <tr *ngFor="let priceBreak of quoteForm.controls.breaks.controls; let i = index">
-                <ng-container formGroupName="{{i}}">
+                <ng-container *ngIf="!priceBreak.controls.toBeDeleted.value" formGroupName="{{i}}">
+                  <td class="delete-row"><i class="fa fa-trash-o" (click)="onRowDelete(priceBreak)"></i></td>
                   <td><input class="form-control" formControlName="minOrderQty"></td>
                   <td><input class="form-control" formControlName="price"></td>
                   <td><input class="form-control" formControlName="nreCharge"></td>
@@ -88,6 +90,7 @@
         </form>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="testForm()">test</button>
         <button type="button" class="btn btn-primary" (click)="onSaveQuote()">Save changes</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>

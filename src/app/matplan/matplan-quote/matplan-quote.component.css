@@ -1,11 +1,32 @@
-.card {
-  width: 350px;
-  height: 200px;
-  display: inline-flex;
+div.card-cont {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
 }
 
-.card-header {
-  font-size: 20px;
+div.card {
+  display: inline-block;
+  width: 350px;
+  min-height: 210px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+div.card-header {
+  font-size: 18px;
+}
+
+td.delete-row {
+  vertical-align: middle;
+}
+
+.fa-trash-o {
+  font-size: 15px;
+}
+
+.fa-trash-o:hover {
+  color: red;
+  cursor: pointer;
 }
 
 .edit-button {
