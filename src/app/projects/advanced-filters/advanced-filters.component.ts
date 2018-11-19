@@ -7,7 +7,12 @@ import { CacheService } from '../../_shared/services/cache.service';
 import { ExcelExportService } from '../../_shared/services/excel-export.service';
 
 // import { start } from 'repl';
-const moment = require('moment');
+// const moment = require('moment');
+const Moment = require('moment');
+const MomentRange = require('moment-range');
+
+const moment = MomentRange.extendMoment(Moment);
+
 declare const require: any;
 
 declare var $: any;
@@ -88,8 +93,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   
   // month
   currentMonth: number;
-  firstMonthOfQtr: number;
-  currentYear: number;
+  fteDateFrom: any; //for FTE date range input - format yyyy-MM-dd required
+  fteDateTo: any; //for FTE date range input - format yyyy-MM-dd required
 
   constructor(
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
@@ -171,10 +176,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // show the footer
     this.toolsService.showFooter();
 
-
     console.log('Advanced filter data:', this.advancedFilterData);
 
-    this.setCurrentMonthYear();
   }
 
   ngOnDestroy() {
@@ -584,54 +587,115 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
 // FTE
 
+  onFTEClearClick() {
+
+    this.filterObject.FTEDateFrom = 'NULL';
+    this.filterObject.FTEDateTo = 'NULL';
+    this.filterObject.FTEMin = 'NULL';
+    this.filterObject.FTEMax = 'NULL';
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+
+    // Clear values of date ranges input
+    this.fteDateFrom = '';
+    this.fteDateTo = '';
+
+    // unselect all toggle buttons
+    $(".fte-toggle").removeClass("active");
+
+  }
+
   onFTEToggleSelected(event: any) {
 
     const id = event.target.id;
-    this.filterObject.FTEDateFrom = '09/01/2018';
-    this.filterObject.FTEDateTo = 'NULL';
+    this.currentMonth = Number(moment().format('M'));
+
+    let fiscalYear0         // Beginning of fiscal year; 11/01/YYYY
+    let fiscalYear1         // End of fiscal Year; 11/01/YYYY + 1year
+    
 
     switch (id) {
       case 'all':
-        this.filterObject.FTEDateFrom = String(this.currentMonth);
+        this.filterObject.FTEDateFrom = '01/01/2018';
         this.filterObject.FTEDateTo = 'NULL';
         break;
 
       case 'month':
-        this.filterObject.FTEDateFrom = 'NULL';
-        this.filterObject.FTEDateTo = 'NULL';
+        const firstDayOfMonth0 = moment().format('MM/01/YYYY');   // First day of current month
+        const firstDayOfMonth1 = moment(firstDayOfMonth0).add(1, 'month').format('MM/01/YYYY');   // First day of following month
+        
+        this.filterObject.FTEDateFrom = String(firstDayOfMonth0);
+        this.filterObject.FTEDateTo = String(firstDayOfMonth1);
         break;
       
       case 'qtr':
-        this.filterObject.FTEDateFrom = 'NULL';
-        this.filterObject.FTEDateTo = 'NULL';
+        let qtr0; // Beginning of CURRENT quarter
+        let qtr1; // Begiining of FOLLOWING quarter
+
+        // Determining beginning of the quarter
+        if (this.currentMonth === 11 || this.currentMonth === 12 || this.currentMonth === 1) {
+          qtr0 = moment().format('11/01/YYYY');
+        }
+        else if (this.currentMonth === 2 || this.currentMonth === 3 || this.currentMonth === 4) {
+          qtr0 = moment().format('01/01/YYYY');
+        }
+        else if (this.currentMonth === 5 || this.currentMonth === 6 || this.currentMonth === 7) {
+          qtr0 = moment().format('05/01/YYYY');
+        }
+        else if (this.currentMonth === 8 || this.currentMonth === 9 || this.currentMonth === 10) {
+          qtr0 = moment().format('08/01/YYYY');
+        }
+
+        qtr1 = moment(qtr0).add(3, 'month').format('MM/01/YYYY');
+
+        console.log('Beginning of this quarter:', qtr0);
+        console.log('Beginning of next quarter:', qtr1);
+
+        this.filterObject.FTEDateFrom = String(qtr0);
+        this.filterObject.FTEDateTo = String(qtr1);
+
         break;
     
       case 'year':
-        const yearRange0 = '01/01/' + this.currentYear;
-        const yearRange1 = '12/31/' + this.currentYear;
-        console.log('Year Range:', yearRange0, yearRange1);
-        this.filterObject.FTEDateFrom = 'NULL';
-        this.filterObject.FTEDateTo = 'NULL';
+
+        if (this.currentMonth === 11 || this.currentMonth === 12) {
+          
+          fiscalYear0 = moment().format('11/01/YYYY'); // first day of CURRENT fiscal year
+          fiscalYear1 = moment(fiscalYear0).add(1, 'year').format('11/01/YYYY'); // first day of FOLLOWING fiscal year
+
+        } else {
+          
+          fiscalYear1 = moment().format('11/01/YYYY');  // first day of FOLLOWING fiscal year
+          fiscalYear0 = moment(fiscalYear1).subtract(1, 'year').format('01/01/YYYY'); // first day of CURRENT fiscal year
+
+        }
+
+        this.filterObject.FTEDateFrom = String(fiscalYear0);
+        this.filterObject.FTEDateTo = String(fiscalYear1);
+        console.log(fiscalYear0 + '-' + fiscalYear1);
+        console.log('WTF:', this.filterObject);
         break;
 
       default:
         break;
     }
 
-    console.log('Toggle Clicked', event);
     console.log('filterObject', this.filterObject);
+    this.fteDateFrom = moment(this.filterObject.FTEDateFrom).format('YYYY-MM-DD');
+    this.fteDateTo = moment(this.filterObject.FTEDateTo).format('YYYY-MM-DD');
 
     // Make the db call
     this.advancedFilter(this.filterObject);
   }
 
-  onInputFTETotalClick() {
-
-    const minValue = '';
-    const maxValue = '';
+  onFTETotalGoClick(minValue: number, maxValue: number) {
 
     this.filterObject.FTEMin = String(minValue);
     this.filterObject.FTEMax = String(maxValue);
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
   }
 
   onInputFTEMinChange(event: any) {
@@ -675,38 +739,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.advancedFilter(this.filterObject);
      }   
   }
-
-  setCurrentMonthYear() {
-    // Initialize to current quarter's month/year
-    // currentMonth is the "real" month
-    // setMonth is the month the user is viewing
-    const thisMonth = Number(moment().format('M')); // 1 === Jan, 2 === Feb
-    if (thisMonth === 11 || thisMonth === 12 || thisMonth === 1) {
-      this.currentMonth = moment(1, 'DD').month(10); // When setting the month number: 0 === Jan, 1 === Feb
-    } else if (thisMonth === 2 || thisMonth === 3 || thisMonth === 4) {
-      this.currentMonth = moment(1, 'DD').month(1);
-    } else if (thisMonth === 5 || thisMonth === 6 || thisMonth === 7) {
-      this.currentMonth = moment(1, 'DD').month(4);
-    } else if (thisMonth === 8 || thisMonth === 9 || thisMonth === 10) {
-      this.currentMonth = moment(1, 'DD').month(7);
-    }
-
-    // Current Month
-    this.currentMonth = Number(moment().format('M'));
-    console.log('Current Month:', this.currentMonth);
-
-    // Current Qtr
-    this.firstMonthOfQtr = Number(moment(this.currentMonth).format('MMMM'));
-    console.log('Current Qtr:', this.firstMonthOfQtr);
-
-    // Current Year
-    this.currentYear = moment().year();
-    console.log('Current Year:', this.currentYear);
-
-    console.log('Test:', moment().toISOString());
-    console.log('Test with month:', moment(this.currentMonth).toISOString())
-  }
-
 
 // PLC SCHEDULES
 

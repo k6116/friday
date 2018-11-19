@@ -179,7 +179,10 @@
               FTE Allocation
             </div>
 
-            <button type="button" class="btn btn-outline-dark clear-fte" id="FTEMin" (click)="inputFTEFrom.value=''; inputFTETo.value=''; inputFTEMin.value=''; inputFTEMax.value='';">Clear</button>
+            <button type="button" class="btn btn-outline-dark clear-fte" id="FTEMin" 
+                    (click)="onFTEClearClick(); 
+                             inputFTEFrom.value=''; inputFTETo.value=''; inputFTEMin.value=''; inputFTEMax.value='';">Clear
+            </button>
 
           </div>
 
@@ -187,16 +190,16 @@
 
             <!-- Toggle Buttons -->
             <div class="btn-group btn-group-toggle" data-toggle="buttons" style="width: 100%">
-              <label class="btn btn-outline-secondary active fte-toggle" id="all" style="width: 17%" (click)="onFTEToggleSelected($event)">
-                <input type="radio" name="options" id="option1" autocomplete="off" checked> All
+              <label class="btn btn-outline-secondary fte-toggle" id="all" style="width: 17%" (click)="onFTEToggleSelected($event); inputFTEFrom.value=''; inputFTETo.value=fteDateTo">
+                <input type="radio" name="options" id="option1" autocomplete="off"> All
               </label>
-              <label class="btn btn-outline-secondary fte-toggle" id="month">
-                <input type="radio" name="options" id="option2" autocomplete="off"> Current Month
+              <label class="btn btn-outline-secondary fte-toggle" id="month" (click)="onFTEToggleSelected($event); inputFTEFrom.value=fteDateFrom; inputFTETo.value=fteDateTo">
+                <input type="radio" name="options" id="option2" autocomplete="off" > Current Month
               </label>
-              <label class="btn btn-outline-secondary fte-toggle" id="qtr">
+              <label class="btn btn-outline-secondary fte-toggle" id="qtr" (click)="onFTEToggleSelected($event); inputFTEFrom.value=fteDateFrom; inputFTETo.value=fteDateTo">
                 <input type="radio" name="options" id="option3" autocomplete="off"> Current Quarter
               </label>
-              <label class="btn btn-outline-secondary fte-toggle" id="year">
+              <label class="btn btn-outline-secondary fte-toggle" id="year" (click)="onFTEToggleSelected($event); inputFTEFrom.value=fteDateFrom; inputFTETo.value=fteDateTo">
                 <input type="radio" name="options" id="option3" autocomplete="off"> Current Year
               </label>
             </div>
@@ -210,7 +213,6 @@
                       [class.plc-input-invalid]="inputFTEFrom.validity.valid===false"
                       id="fteFrom" 
                       type="date"
-                      [min]="minDate" 
                       (change)="onInputFTEChange($event, l)">
                 </div>
 
@@ -247,10 +249,10 @@
                       class="form-control fte"
                       style="text-align: end"
                       id="fteMax" 
-                      type="number" 
-                      (change)="onInputFTEMaxChange($event)">
+                      type="number"> 
+                      <!-- (change)="onInputFTEMaxChange($event)"> -->
                 </div>
-                <button type="button" class="btn btn-outline-dark go-btn" (click)="onInputFTETotalClick($event)">Go</button>
+                <button type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)">Go</button>
             </div>
 
           </div>
