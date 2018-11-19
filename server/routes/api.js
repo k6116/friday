@@ -35,6 +35,7 @@ router.get('/fte/checkTeamJobTitle/:emailAddress', controllers.fte.checkTeamJobT
 router.get('/fte/launchPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.launchPlan);
 router.get('/fte/checkTeamFTEAdminPermission/:userID/', controllers.fte.checkTeamFTEAdminPermission);
 router.get('/fte/compareFTEToPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.compareFTEToPlan);
+router.get('/fte/indexProjectJobTitleFTE/:projectIDs/:startDate/:endDate', controllers.fte.indexProjectJobTitleFTE);
 
 // TEMP JOB TITLE API FOR MANAGER EDIT
 router.get('/indexEmployeesJobTitles/:emailAddress', controllers.jobTitle.indexEmployeesJobTitles);

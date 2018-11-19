@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolsService } from '../../_shared/services/tools.service';
-import { ApiDataAdvancedFilterService, ApiDataOrgService, ApiDataSchedulesService } from '../../_shared/services/api-data/_index';
+import { ApiDataAdvancedFilterService, ApiDataOrgService, ApiDataSchedulesService,
+      ApiDataFteService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthService } from '../../_shared/services/auth.service';
 import { CacheService } from '../../_shared/services/cache.service';
@@ -63,6 +64,7 @@ export class AdvancedDashboardComponent implements OnInit {
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
     private apiDataOrgService: ApiDataOrgService,
     private apiDataSchedulesService: ApiDataSchedulesService,
+    private apiDataFteService: ApiDataFteService,
     private authService: AuthService,
     private toolsService: ToolsService,
     private cacheService: CacheService
@@ -84,7 +86,7 @@ export class AdvancedDashboardComponent implements OnInit {
       ProjectStatusIDs: '0,1,2,3,4,5',
       ProjectPriorityIDs: '0,1,3,4,5',
       ProjectOwnerEmails: '',
-      FTEMin: 'NULL',
+      FTEMin: '0',
       FTEMax: 'NULL',
       FTEDateFrom: 'NULL',
       FTEDateTo: 'NULL'
@@ -122,7 +124,6 @@ export class AdvancedDashboardComponent implements OnInit {
 
   async getPLCList() {
     this.PLCList = await this.apiDataSchedulesService.getPLCList().toPromise();
-    console.log('this.PLCList', this.PLCList)
   }
 
   renderProjectTypesChart() {
@@ -221,7 +222,7 @@ export class AdvancedDashboardComponent implements OnInit {
         marginBottom: 100
       },
       title: {
-        text: 'Priorities vs FTEs'
+        text: 'Priorities > Projects > JobTitles > JobSubTitles vs FTEs'
       },
       subtitle: {
         text: 'Click bar to drilldown'
@@ -256,7 +257,7 @@ export class AdvancedDashboardComponent implements OnInit {
         pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> FTEs<br/>'
       },
       series: [{
-        'name': 'Priority',
+        'name': 'Priority List',
         'colorByPoint': true,
         'data': this.priorityFTE
       }],
@@ -406,13 +407,18 @@ export class AdvancedDashboardComponent implements OnInit {
     this.prioritiesCount = this.prioritiesCount.reverse();
   }
 
-  getPriorityFTE() {
+  async getPriorityFTE() {
     const dataSeries = [];
-    const drillDownSeries = [];
+    const drillDownObj = [];
 
     // get list of priorities in an array
     const prioritiesListArray = _.uniq(_.pluck(this.advancedFilteredResults, 'PriorityName'));
+    const projectIDListArray = _.uniq(_.pluck(this.advancedFilteredResults, 'ProjectID'));
     this.prioritiesList = prioritiesListArray;
+
+    let projectJobTitles = await this.apiDataFteService
+      .indexProjectJobTitleFTE(projectIDListArray.toString(), 'NULL', 'NULL').toPromise();
+    projectJobTitles = projectJobTitles.nested;
 
     // initialize the dataSeries object with the priorities
     for (let pri = 0; pri < this.prioritiesList.length; pri++) {
@@ -432,45 +438,74 @@ export class AdvancedDashboardComponent implements OnInit {
       }
     }
 
-    // populate the drilldown object to get the project and totalFTE for each priority
-    for (let k = 0; k < this.prioritiesList.length; k++) {
-      const drillDownData = [];
-      for (let l = 0; l < this.advancedFilteredResults.length; l++) {
-        if (this.prioritiesList[k] === this.advancedFilteredResults[l].PriorityName) {
-          if (this.advancedFilteredResults[l].TotalProjectFTE !== 0) {
-            drillDownData.push([
-              this.advancedFilteredResults[l].ProjectName,
-              this.advancedFilteredResults[l].TotalProjectFTE
-            ]);
-          }
-        }
-      }
-
-      // Sort by FTE totals and redistribute arrays for highchart formats
-      drillDownData.sort(function(a, b) {return a[1] > b[1] ? -1 : 1; });
-
-      drillDownSeries.push({
-        name: this.prioritiesList[k],
-        id: this.prioritiesList[k],
-        data: drillDownData
-      });
-    }
-
     // update the priority-less field to "No Priority" for readability in the charts
     const noPriorityIdx1 = dataSeries.findIndex((obj => obj.name === undefined));
-    const noPriorityIdx2 = drillDownSeries.findIndex((obj => obj.name === undefined));
-
     dataSeries[noPriorityIdx1].name = 'No Priority';
     dataSeries[noPriorityIdx1].drilldown = 'No Priority';
-    drillDownSeries[noPriorityIdx2].name = 'No Priority';
-    drillDownSeries[noPriorityIdx2].id = 'No Priority';
+
+    // I'm sorry for this :(
+    // Blame Highcharts
+    for (let pri = 0; pri < projectJobTitles.length; pri++) {
+      const drillDownProjData = [];
+      for (let proj = 0; proj < projectJobTitles[pri].projects.length; proj++) {
+        const drillDownJTData = [];
+        let projFTESum = 0;
+        if ('jobTitles' in projectJobTitles[pri].projects[proj]) {
+          for (let jt = 0; jt < projectJobTitles[pri].projects[proj].jobTitles.length; jt++) {
+            const drillDownJSTData = [];
+            let jtFTESum = 0;
+            for (let jst = 0; jst < projectJobTitles[pri].projects[proj].jobTitles[jt].jobSubTitles.length; jst++) {
+              const jstObj = projectJobTitles[pri].projects[proj].jobTitles[jt].jobSubTitles[jst];
+              jtFTESum = jtFTESum + jstObj.fte;
+              drillDownJSTData.push({
+                name: jstObj.jobSubTitleName,
+                y: jstObj.fte
+                // drilldown: projectJobTitles[pri].projects[proj].projectName + '-' +
+                //   projectJobTitles[pri].projects[proj].jobTitles[jt].jobTitleID + '-' +
+                //   projectJobTitles[pri].projects[proj].jobTitles[jt].jobSubTitles[jst].jobSubTitleID
+              });
+            }
+            drillDownObj.push({
+              id: projectJobTitles[pri].projects[proj].projectName + ' - ' + projectJobTitles[pri].projects[proj].jobTitles[jt].jobTitleID,
+              data: drillDownJSTData
+            });
+            const jtObj = projectJobTitles[pri].projects[proj].jobTitles[jt];
+            projFTESum = projFTESum + jtFTESum;
+            drillDownJTData.push({
+              name: jtObj.jobTitleName,
+              y: jtFTESum,
+              drilldown: projectJobTitles[pri].projects[proj].projectName + ' - ' +
+                          projectJobTitles[pri].projects[proj].jobTitles[jt].jobTitleID
+            });
+          }
+          drillDownObj.push({
+            id: projectJobTitles[pri].projects[proj].projectName,
+            name: projectJobTitles[pri].projects[proj].projectName + ' Job Titles',
+            data: drillDownJTData
+          });
+          drillDownProjData.push({
+            name: projectJobTitles[pri].projects[proj].projectName,
+            y: projFTESum,
+            drilldown: projectJobTitles[pri].projects[proj].projectName
+          });
+        }
+      }
+      drillDownObj.push({
+        id: projectJobTitles[pri].priorityName,
+        name: projectJobTitles[pri].priorityName + ' Projects',
+        data: drillDownProjData
+      });
+    }
 
     this.priorityFTE = _.sortBy(dataSeries, function(pri) { return pri['y']; });
     this.priorityFTE = this.priorityFTE.reverse();
     // round the decimal values to 2 places
     this.priorityFTE.forEach(pr => {pr.y = Math.round( pr.y * 1e2 ) / 1e2; });
-    this.priorityFTEDrillDown = drillDownSeries;
 
+    this.priorityFTEDrillDown = drillDownObj;
+
+// console.log('this.priorityFTEDrillDown', this.priorityFTEDrillDown)
+// console.log('this.priorityFTE', this.priorityFTE)
     this.renderPriorityFTEChart();
   }
 
@@ -624,8 +659,8 @@ export class AdvancedDashboardComponent implements OnInit {
     this.schedulesList = PLCSeries;
     // console.log('minPLC', minPLC)
     // console.log('maxPLC', maxPLC)
-    console.log('this.schedulesProjectsList', this.schedulesProjectsList)
-    console.log('this.schedulesList', this.schedulesList)
+    // console.log('this.schedulesProjectsList', this.schedulesProjectsList)
+    // console.log('this.schedulesList', this.schedulesList)
 
     this.renderSchedulesChart();
   }
@@ -661,14 +696,14 @@ export class AdvancedDashboardComponent implements OnInit {
     this.ssAvgFTENoPLC = Number(this.ssTotalFTENoPLC / noPLCCount).toFixed(0);
     this.ssTotalFTENoPLC = Number(this.ssTotalFTENoPLC).toFixed(0);
 
-    console.log('this.ssTotalFTEAfterSHP', this.ssTotalFTEAfterSHP)
-    console.log('this.ssTotalFTENoPLC', this.ssTotalFTENoPLC)
+    // console.log('this.ssTotalFTEAfterSHP', this.ssTotalFTEAfterSHP)
+    // console.log('this.ssTotalFTENoPLC', this.ssTotalFTENoPLC)
 
   }
 
   async getJobTitleData() {
     const dataSeries = [];
-    const drillDownSeries = [];
+    const drillDownObj = [];
     const projectListArray = _.uniq(_.pluck(this.advancedFilteredResults, 'ProjectID'));
     const projectIDString = projectListArray.toString();
     const fromDate = '2018-01-01';
@@ -701,7 +736,7 @@ export class AdvancedDashboardComponent implements OnInit {
     // populate the drilldown object to get the project and totalFTE for each priority
     // first loop through each job title
     this.jobTitlesList.forEach(jt => {
-      const drillDownData = [];
+      const drillDownData1 = [];
       for (let k = 0; k < projectJobTitles.nested.length; k++) {
         if (jt === projectJobTitles.nested[k]['jobTitle']) {
 
@@ -715,18 +750,18 @@ export class AdvancedDashboardComponent implements OnInit {
                 jobSubTitleFTETotal = jobSubTitleFTETotal + projectJobTitles.nested[k].allocations[l]['fte'];
               }
             }
-            drillDownData.push([jst,  Math.round( jobSubTitleFTETotal * 1e2 ) / 1e2 ]) ;
+            drillDownData1.push([jst,  Math.round( jobSubTitleFTETotal * 1e2 ) / 1e2 ]) ;
           });
         }
       }
 
       // Sort by FTE totals and redistribute arrays for highchart formats
-      drillDownData.sort(function(a, b) {return a[1] > b[1] ? -1 : 1; });
+      drillDownData1.sort(function(a, b) {return a[1] > b[1] ? -1 : 1; });
 
-      drillDownSeries.push({
+      drillDownObj.push({
         name: jt,
         id: jt,
-        data: drillDownData
+        data: drillDownData1
       });
     });
 
@@ -734,11 +769,10 @@ export class AdvancedDashboardComponent implements OnInit {
     this.jobTitleFTE = this.jobTitleFTE.reverse();
     // round the decimal values to 2 places
     this.jobTitleFTE.forEach(jt => {jt.y = Math.round( jt.y * 1e2 ) / 1e2; });
-    this.jobTitleFTEDrillDown = drillDownSeries;
+    this.jobTitleFTEDrillDown = drillDownObj;
 
     this.renderJobTitleFTEChart();
   }
-
 
   getTopFTEProjects() {
     const topFTEProjectsArray = _.sortBy(this.advancedFilteredResults, function(project) { return project['TotalProjectFTE']; });

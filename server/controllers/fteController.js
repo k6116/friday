@@ -581,6 +581,31 @@ function compareFTEToPlan(req, res) {
         error: {message: error}
       })
     });
+}
+
+function indexProjectJobTitleFTE(req, res) {
+
+  //This query will return a list of projects with their jobtitles/subtitles and summed FTE
+  const projectIDs = req.params.projectIDs;
+  const startDate = req.params.startDate;
+  const endDate = req.params.endDate;
+
+  sequelize.query('EXECUTE resources.DisplayProjectsFTE :projectIDs, :startDate, :endDate', 
+    {replacements: {projectIDs: projectIDs, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
+    .then(results => {
+      const fteTree = new Treeize();
+      fteTree.grow(results);
+      res.json({
+        nested: fteTree.getData(),
+        flat: results
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
 
 }
 
@@ -598,5 +623,6 @@ module.exports = {
   launchPlan: launchPlan,
   checkTeamJobTitle: checkTeamJobTitle,
   checkTeamFTEAdminPermission: checkTeamFTEAdminPermission,
-  compareFTEToPlan: compareFTEToPlan
+  compareFTEToPlan: compareFTEToPlan,
+  indexProjectJobTitleFTE: indexProjectJobTitleFTE
 }
