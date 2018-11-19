@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { takeUntil } from 'rxjs/operators';
@@ -15,9 +15,10 @@ import { DashboardParetoService } from './services/dashboard-pareto.service';
 import { DashboardPieService } from './services/dashboard-pie.service';
 import { DashboardStackedColumnService } from './services/dashboard-stacked-column.service';
 import { DashboardTeamSelectService } from './services/dashboard-team-select.service';
+import { TeamSelectModalComponent } from './modal/team-select-modal/team-select-modal.component';
 
 
-declare var $: any;
+declare var $: any
 declare var require: any;
 import * as Highcharts from 'highcharts';
 require('highcharts/modules/data.js')(Highcharts);
@@ -36,6 +37,9 @@ import * as moment from 'moment';
     DashboardPieService, DashboardStackedColumnService, DashboardTeamSelectService]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+
+  @ViewChild(TeamSelectModalComponent)
+  private teamSelectModalComponent: TeamSelectModalComponent;
 
   messages: any[] = [];
   dashboardData: any;
@@ -56,6 +60,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   nestedManagerData: any = [];
   displayEditTeamButton: boolean;
   showTeamSelectModal: boolean;
+
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -327,6 +332,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
         keyboard: true
       });
     }, 0);
+
+    setTimeout(() => {
+      this.teamSelectModalComponent.testViewChild();
+      this.teamSelectModalComponent.setInitialDropDownEmployee(this.nestedManagerData[0]);
+    }, 0);
+
 
   }
 

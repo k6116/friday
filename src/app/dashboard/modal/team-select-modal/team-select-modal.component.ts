@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+// import { Subscription } from 'rxjs/Subscription';
 
 declare var $: any;
 
@@ -17,27 +17,27 @@ export class TeamSelectModalComponent implements OnInit, OnDestroy {
 
   // nestedOrgData2: any;
   // nestedOrgData: any;
-  flatOrgData: any;
-  subscription1: Subscription;
+  // flatOrgData: any;
+  // subscription1: Subscription;
   waitingForOrgData: boolean;
   displayOrgDropDown: boolean;
   displayedEmployee: any;
   displayResults: boolean;
   employeeElements: any;
   dropDownDisplayedEmployee: string;
-  quarterlyEmployeeFTETotals: any;
-  currentFiscalQuarter: number;
-  currentFiscalYear: number;
+  // quarterlyEmployeeFTETotals: any;
+  // currentFiscalQuarter: number;
+  // currentFiscalYear: number;
 
   selectedEmployee: any;
 
   // temp properties for testing
-  manager: any;
-  managerString: string;
-  employees: any;
-  employeesString: string;
-  teamMembers: any;
-  teamMembersString: string;
+  // manager: any;
+  // managerString: string;
+  // employees: any;
+  // employeesString: string;
+  // teamMembers: any;
+  // teamMembersString: string;
 
 
   @HostListener('scroll', ['$event'])
@@ -53,11 +53,24 @@ export class TeamSelectModalComponent implements OnInit, OnDestroy {
     console.log(this.nestedOrgData);
 
     this.waitingForOrgData = false;
-    this.setInitialDropDownEmployee();
+    // this.setInitialDropDownEmployee();
   }
 
   ngOnDestroy() {
     console.log('team select modal component destroyed');
+  }
+
+  testViewChild() {
+    console.log('hello! view child works!');
+  }
+
+  setInitialDropDownEmployee(employee: any) {
+    // this.dropDownDisplayedEmployee = this.nestedOrgData[0].fullName;
+    // this.displayedEmployee = this.nestedOrgData[0];
+    // this.selectedEmployee = this.nestedOrgData[0];
+    this.dropDownDisplayedEmployee = employee.fullName;
+    this.displayedEmployee = employee;
+    this.selectedEmployee = employee;
   }
 
   onCancelClick() {
@@ -75,12 +88,6 @@ export class TeamSelectModalComponent implements OnInit, OnDestroy {
     } else {
       return {'background-color': 'rgb(255, 255, 255)'};
     }
-  }
-
-  setInitialDropDownEmployee() {
-    this.dropDownDisplayedEmployee = this.nestedOrgData[0].fullName;
-    this.displayedEmployee = this.nestedOrgData[0];
-    this.selectedEmployee = this.nestedOrgData[0];
   }
 
   onOrgDropDownClick() {

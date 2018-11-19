@@ -11,13 +11,13 @@
       </div>
 
       <div class="modal-body team-select-modal-body">
-        <p>Select a manager from the dropdown to view that team's FTE distribution by Project Type and Project.</p>
+        <p>Select a manager from the dropdown to view that team's FTE allocation percentages by Project Type and Project.</p>
         <!-- <p>{{ nestedManagerData[0].fullName }}</p> -->
 
         <!-- 'dropdown' container to select employee from nested org structure -->
         <div class="form-group form-group-custom">
 
-          <label class="label-custom">View As:</label>
+          <!-- <label class="label-custom">View As:</label> -->
           <div [class]="'org-dropdown-control' + (displayOrgDropDown ? ' highlight' : '')" [ngStyle]="getDropDownStyle()" (click)="onOrgDropDownClick()">
             {{ dropDownDisplayedEmployee }}
             <!-- dropdown caret -->
