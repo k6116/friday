@@ -30,13 +30,13 @@ div.edit-button-cont {
   display: inline-block;
   position: absolute;
   top: 8px;
-  left: 45px;
+  left: 25px;
   z-index: 1;
   cursor: pointer;
 }
 
-div.edit-button-cont.stacked-column {
-  left: 25px;
+div.edit-button-cont.donut {
+  margin-left: 20px;
 }
 
 i.edit-icon {

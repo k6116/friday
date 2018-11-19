@@ -107,6 +107,7 @@ import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.componen
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
 import { SpinnerComponent } from './_shared/components/spinner/spinner.component';
 import { TeamSelectModalComponent } from './dashboard/modal/team-select-modal/team-select-modal.component';
+import { TeamSelectDropdownComponent } from './dashboard/modal/team-select-dropdown/team-select-dropdown.component';
 
 
 @NgModule({
@@ -177,7 +178,8 @@ import { TeamSelectModalComponent } from './dashboard/modal/team-select-modal/te
     OrgDrawD3Component,
     TransferProjectsComponent,
     SpinnerComponent,
-    TeamSelectModalComponent
+    TeamSelectModalComponent,
+    TeamSelectDropdownComponent
   ],
   imports: [
     AppRoutingModule,

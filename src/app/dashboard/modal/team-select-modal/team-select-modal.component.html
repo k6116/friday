@@ -12,14 +12,39 @@
 
       <div class="modal-body team-select-modal-body">
         <p>Select a manager from the dropdown to view that team's FTE distribution by Project Type and Project.</p>
-        <p>{{ nestedManagerData[0].fullName }}</p>
+        <!-- <p>{{ nestedManagerData[0].fullName }}</p> -->
+
+        <!-- 'dropdown' container to select employee from nested org structure -->
+        <div class="form-group form-group-custom">
+
+          <label class="label-custom">View As:</label>
+          <div [class]="'org-dropdown-control' + (displayOrgDropDown ? ' highlight' : '')" [ngStyle]="getDropDownStyle()" (click)="onOrgDropDownClick()">
+            {{ dropDownDisplayedEmployee }}
+            <!-- dropdown caret -->
+            <i class="fa fa-caret-down org-dropdown-control-caret"></i>
+            <!-- spinner to display while waiting for data to arrive -->
+            <!-- <div class="orgdata-spinner-cont" [style.visibility]="waitingForOrgData ? 'visible' : 'hidden'">
+              <div class="orgdata-spinner"></div>
+            </div> -->
+          </div>
+  
+          <div *ngIf="displayOrgDropDown" class="org-dropdown-cont" (scroll)="onScroll($event)" (appClickOutside)="onClickOutside($event)" [exception]="'div.org-dropdown-control'">
+            <div class="org-dropdown-cont-inner">
+              <app-team-select-dropdown [employees]="nestedOrgData" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)"></app-team-select-dropdown>
+            </div>
+          </div>
+  
+        </div>
+
       </div>
 
+      
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="closeModal()">   
+        <button type="button" class="btn btn-primary btn-fte-toolbar" (click)="onSelectClick()">   
           <i class="fa fa-check select-icon"></i>Select
         </button>
-        <button type="button" class="btn btn-secondary btn-fte-toolbar" (click)="closeModal()">
+        <button type="button" class="btn btn-secondary btn-fte-toolbar" (click)="onCancelClick()">
           <i class="fa fa-ban cancel-icon" aria-hidden="true"></i>Cancel
         </button>
       </div>

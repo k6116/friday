@@ -54,6 +54,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   chartStackedColumn: any;
   chartGauge: any;
   nestedManagerData: any = [];
+  displayEditTeamButton: boolean;
   showTeamSelectModal: boolean;
 
   @HostListener('window:resize', ['$event'])
@@ -112,6 +113,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     console.log('nested manager data in dashboard component:');
     console.log(this.nestedManagerData);
+
+    console.log('logged in user:');
+    console.log(this.authService.loggedInUser);
+
+    // determine if the edit team button/icon should be displayed
+    if (this.authService.loggedInUser.isManager || this.authService.loggedInUser.roleName === 'Admin') {
+      this.displayEditTeamButton = true;
+    }
 
   }
 
@@ -321,13 +330,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   }
 
-  onModalClose() {
+  onModalClose(selectedManager?: any) {
 
     console.log('modal close event fired');
     $('#teamSelectModal').modal('hide');
     setTimeout(() => {
       $('#teamSelectModal').modal('dispose');
     }, 500);
+
+    console.log('selected manager:');
+    console.log(selectedManager);
 
   }
 

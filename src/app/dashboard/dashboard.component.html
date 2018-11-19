@@ -4,7 +4,7 @@
 <app-spinner *ngIf="showSpinner"></app-spinner>
 
 <!-- team select modal -->
-<app-team-select-modal *ngIf="showTeamSelectModal" [nestedManagerData]="nestedManagerData" (close)="onModalClose()"></app-team-select-modal>
+<app-team-select-modal *ngIf="showTeamSelectModal" [nestedOrgData]="nestedManagerData" (close)="onModalClose()" (selectedManager)="onModalClose($event)"></app-team-select-modal>
 
 <!-- main page container -->
 <div class="container-fluid">
@@ -53,7 +53,7 @@
 
       <!-- donut chart -->
       <div class="col-lg-6 col-dashboard right-half">
-        <div class="edit-button-cont" (click)="onEdiTeamClick('donutChart')">
+        <div *ngIf="displayEditTeamButton" class="edit-button-cont donut" (click)="onEdiTeamClick('donutChart')">
           <i class="fa fa-pencil edit-icon" aria-hidden="true"></i>
           Edit Team
         </div>
@@ -74,7 +74,7 @@
       
       <!-- stacked column chart -->
       <div class="col-lg-12 col-dashboard">
-        <div class="edit-button-cont stacked-column" (click)="onEdiTeamClick('stackedColumnChart')">
+        <div *ngIf="displayEditTeamButton" class="edit-button-cont stacked-column" (click)="onEdiTeamClick('stackedColumnChart')">
           <i class="fa fa-pencil edit-icon" aria-hidden="true"></i>
           Edit Team
         </div>

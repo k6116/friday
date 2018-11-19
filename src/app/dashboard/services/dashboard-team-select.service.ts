@@ -40,38 +40,16 @@ export class DashboardTeamSelectService {
   // get raw data from the stored procedure with the management org hierarchy
   getManagementOrgStructureData(): Promise<any> {
 
-    return this.apiDataOrgService.getManagementOrgStructure('soon-chai_gooi@keysight.com').toPromise();
+    return this.apiDataOrgService.getManagementOrgStructure('ron_nersesian@keysight.com').toPromise();
+
+    // ron_nersesian@keysight.com
+    // soon-chai_gooi@keysight.com
+    // shidah_ahmad@keysight.com
+    // henri_komrij@keysight.com
+    // trevor_buehl@keysight.com
 
   }
 
-
-
-
-  // getManagementOrgStructure() {
-
-  //   this.apiDataOrgService.getManagementOrgStructure('soon-chai_gooi@keysight.com')
-  //     .subscribe(
-  //       res => {
-  //         console.log('response from get management org structure:');
-  //         console.log(res);
-
-  //         const t0 = performance.now();
-  //         this.copyIntoNewArray(res);
-  //         const t1 = performance.now();
-  //         console.log(`copy into new array took ${t1 - t0} milliseconds`);
-
-  //         const t2 = performance.now();
-  //         this.buildNestedManagerData();
-  //         const t3 = performance.now();
-  //         console.log(`build nested manager data took ${t3 - t2} milliseconds`);
-
-  //       },
-  //       err => {
-  //         console.error(err);
-  //       }
-  //     );
-
-  // }
 
   // copy the raw response from the stored procedure into a new array of objects
   // with select properties with the proper names
@@ -100,8 +78,8 @@ export class DashboardTeamSelectService {
 
     });
 
-    // console.log('new manager data array:');
-    // console.log(managerData);
+    console.log('new manager data array:');
+    console.log(managerData);
 
     return managerData;
 
