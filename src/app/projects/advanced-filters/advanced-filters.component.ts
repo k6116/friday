@@ -7,11 +7,7 @@ import { CacheService } from '../../_shared/services/cache.service';
 import { ExcelExportService } from '../../_shared/services/excel-export.service';
 
 // import { start } from 'repl';
-// const moment = require('moment');
-const Moment = require('moment');
-const MomentRange = require('moment-range');
-
-const moment = MomentRange.extendMoment(Moment);
+const moment = require('moment');
 
 declare const require: any;
 
@@ -49,6 +45,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   filterString: string;     // string for top search bar
   filterStringOwner: string; // string for owner search bar
   filterCheckedArray: any; // array to clear out owners
+  numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
+  filteredProjectsCount: number;  // number of project currently displayed, if there is a filter set
+  totalProjectsCount: number;  // total number of projects
 
   // Arrays for filterObject
   arrTypeID: any;
@@ -84,7 +83,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   subscription2: Subscription; // for excel download
   showSpinner: boolean;
   showPage: boolean;
-  showResults: boolean;
+  // showResults: boolean;
   showDownloadingIcon: boolean;
   htmlElement: any;
   minDate: string;
@@ -135,7 +134,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.showDownloadingIcon = show;
     });
 
-
   }
 
   async ngOnInit() {
@@ -171,7 +169,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.showPage = true;
 
     // hide layover
-    this.showResults = true
+    // this.showResults = true
 
     // show the footer
     this.toolsService.showFooter();
@@ -182,15 +180,12 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
 
-    // this.ngUnsubscribe.next();
-    // this.ngUnsubscribe.complete();
-
     // for excel download
     this.subscription2.unsubscribe();
 
   }
 
-  initCheckboxArrays() {
+  async initCheckboxArrays() {
 
     this.checkAllProjectTypes = true;
     this.checkAllProjectPriorities = true;
@@ -224,7 +219,12 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     };
 
     // send to db
-    this.advancedFilter(this.filterObject);
+    await this.advancedFilter(this.filterObject);
+
+    // store the number of projects, to display in the page 'showing x of y projects'
+    this.totalProjectsCount = this.advancedFilteredResults.length;
+
+    this.setNumProjectsDisplayString();
 
   }
 
@@ -235,11 +235,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   // Applied filter results
   async advancedFilter(filterOptions: any) {
 
-        // show page
-        // this.showPage = false;
-        // show the spinner
-        this.showSpinner = true;
-        this.showResults = false;
+    this.showSpinner = true;
+    // this.showResults = false;
 
     this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
     
@@ -268,12 +265,30 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.plcSchedules = [];
     }
 
-            // show page
-            // this.showPage = true;
-            // show the spinner
-            this.showSpinner = false;
-            this.showResults = true;
+    this.showSpinner = false;
+    // this.showResults = true;
+
+    // store the number of projects, to display in the page 'showing x of y projects'
+    this.filteredProjectsCount = this.advancedFilteredResults.length;
+
+    this.setNumProjectsDisplayString();
     
+  }
+
+  // set/update the record count string (Showing X of Y Projects)
+  setNumProjectsDisplayString() {
+
+    // no projects are displayed
+    if (this.filteredProjectsCount === 0) {
+      this.numProjectsDisplayString = `Showing 0 of ${this.totalProjectsCount} Projects`;
+    // all projects are displayed
+    } else if (this.filteredProjectsCount === this.totalProjectsCount) {
+      this.numProjectsDisplayString = `Showing All ${this.totalProjectsCount} Projects`;
+    // some projects are displayed (there is a filter)
+    } else {
+      this.numProjectsDisplayString = `Showing ${this.filteredProjectsCount} of ${this.totalProjectsCount} Projects`;
+    }
+
   }
 
   async getProjectChildren(projectName: string, projectType: string, projectOwner: string) {
@@ -533,7 +548,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     if (checked === true) {
       // ADD ID to array
-      this.arrStatusID.splice(0, 0, id);
+      this.arrStatusID.push(id);
     } 
     
     else if (checked === false){
@@ -561,10 +576,12 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     if (checked === true) {
       // ADD ID to array
-      this.arrPriorityID.splice(0, 0, id);
+      // this.arrPriorityID.splice(0, 0, id);
+      this.arrPriorityID.push(id);
     } 
     
     else if (checked === false) {
+      console.log('checked is false.')
       // find ID in array
       for (let i = 0; i < this.arrPriorityID.length; i++) {
         // REMOVE from array
@@ -577,7 +594,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // Convert and save array to filterObject
     this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
-    console.log(this.filterObject.ProjectPriorityIDs);
 
     // Make the db call
     this.advancedFilter(this.filterObject);
@@ -609,11 +625,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   onFTEToggleSelected(event: any) {
 
     const id = event.target.id;
-    this.currentMonth = Number(moment().format('M'));
-
-    let fiscalYear0         // Beginning of fiscal year; 11/01/YYYY
-    let fiscalYear1         // End of fiscal Year; 11/01/YYYY + 1year
-    
+    this.currentMonth = Number(moment().format('M'));   
 
     switch (id) {
       case 'all':
@@ -649,15 +661,14 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
         qtr1 = moment(qtr0).add(3, 'month').format('MM/01/YYYY');
 
-        console.log('Beginning of this quarter:', qtr0);
-        console.log('Beginning of next quarter:', qtr1);
-
         this.filterObject.FTEDateFrom = String(qtr0);
         this.filterObject.FTEDateTo = String(qtr1);
 
         break;
     
       case 'year':
+        let fiscalYear0         // Beginning of fiscal year; 11/01/YYYY
+        let fiscalYear1         // End of fiscal Year; 11/01/YYYY + 1year
 
         if (this.currentMonth === 11 || this.currentMonth === 12) {
           
@@ -673,15 +684,10 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
         this.filterObject.FTEDateFrom = String(fiscalYear0);
         this.filterObject.FTEDateTo = String(fiscalYear1);
-        console.log(fiscalYear0 + '-' + fiscalYear1);
-        console.log('WTF:', this.filterObject);
-        break;
 
-      default:
         break;
     }
 
-    console.log('filterObject', this.filterObject);
     this.fteDateFrom = moment(this.filterObject.FTEDateFrom).format('YYYY-MM-DD');
     this.fteDateTo = moment(this.filterObject.FTEDateTo).format('YYYY-MM-DD');
 
@@ -693,22 +699,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     this.filterObject.FTEMin = String(minValue);
     this.filterObject.FTEMax = String(maxValue);
-
-    // Make the db call
-    this.advancedFilter(this.filterObject);
-  }
-
-  onInputFTEMinChange(event: any) {
-    const value = event.target.value;
-    this.filterObject.FTEMin = String(value);
-
-    // Make the db call
-    this.advancedFilter(this.filterObject);
-  }
-
-  onInputFTEMaxChange(event: any) {
-    const value = event.target.value;
-    this.filterObject.FTEMax = String(value);
 
     // Make the db call
     this.advancedFilter(this.filterObject);

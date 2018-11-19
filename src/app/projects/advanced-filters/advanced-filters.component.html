@@ -17,8 +17,13 @@
     
       <!-- Search Input -->
       <div class="projects-search-string">
-        <!-- <input type="text" #filterStringVC [(ngModel)]="filterString" class="form-control projects-search-input" (ngModelChange)="onFilterStringChange()" (keydown)="onFilterStringKeydown($event)" (focusout)="onFilterLostFocus()" appAutofocus> -->
-        <input type="text" #filterStringVC class="form-control projects-search-input" name="filterString" [(ngModel)]="filterString" placeholder="Project Name" appAutofocus>      
+        <input #filterStringVC
+            type="text"  
+            class="form-control projects-search-input" 
+            name="filterString" 
+            [(ngModel)]="filterString" 
+            placeholder="Project Name" 
+            appAutofocus>      
         <i class="projects-search-icon-search fa fa-search"></i>
         <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
       </div>
@@ -45,9 +50,9 @@
           </span>
         </button>
 
-        <!-- <div class="projects-display-count">
+        <div class="projects-display-count">
           {{ numProjectsDisplayString }}
-        </div> -->
+        </div>
 
       </div>
 
@@ -250,7 +255,6 @@
                       style="text-align: end"
                       id="fteMax" 
                       type="number"> 
-                      <!-- (change)="onInputFTEMaxChange($event)"> -->
                 </div>
                 <button type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)">Go</button>
             </div>
@@ -313,7 +317,6 @@
         </div>
       </div>
       
-
     </div> <!-- End Filter Column -->
 
     <!-- Results Table Column -->
@@ -327,19 +330,16 @@
             <th scope="col">Status</th>
             <th scope="col">Owner</th>
             <th scope="col" *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">Total FTE</th>
-            <!-- <ng-container *ngFor="let project of advancedFilteredResults"> -->
             <th scope="col" *ngFor="let name of plcSchedules">{{ name.PLCStatusName }}</th>              
-            <!-- </ng-container> -->
           </tr>
         </thead>
         <tbody>
-          <!-- <tr *ngFor="let project of projects | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}};"> -->
-            <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count">            
+          <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count">            
             <td>{{ project.ProjectName }}</td>
             <td>{{ project.ProjectTypeName }}</td>
             <td>{{ project.PriorityName }}</td>
             <td>{{ project.ProjectStatusName }}</td>
-            <td>{{ project.ProjectOwner }}</td>
+            <td>{{ project.ProjectOwnerName }}</td>
             <td *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">{{ project.TotalProjectFTE }}</td>
             <ng-container *ngFor="let schedule of project.Schedules">
               <td>{{ schedule.PLCDate }}</td>
