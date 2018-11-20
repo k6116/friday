@@ -36,7 +36,6 @@ export class AdvancedDashboardComponent implements OnInit {
   chartOwners: any;
   chartPriorityFTE: any;
   chartSchedules: any;
-  chartJobTitleFTE: any;
 
   prioritiesCount: any;
   prioritiesList: any;
@@ -51,9 +50,6 @@ export class AdvancedDashboardComponent implements OnInit {
   schedulesEarliestCONDate: any;
   schedulesLatestSHPDate: any;
   schedulesChartHeight: number;
-  jobTitlesList: any;
-  jobTitleFTE: any;
-  jobTitleFTEDrillDown: any;
 
   ssAvgFTEAfterSHP: any;
   ssTotalFTEAfterSHP: any;
@@ -119,7 +115,6 @@ export class AdvancedDashboardComponent implements OnInit {
     this.getPriorityFTE();
     this.getSchedules();
     this.getScheduleStats();
-    this.getJobTitleData();
   }
 
   async getPLCList() {
@@ -139,14 +134,6 @@ export class AdvancedDashboardComponent implements OnInit {
     this.chartPriorityFTE = Highcharts.chart('priorityFTEChart', chartOptions);
     setTimeout(() => {
       this.chartPriorityFTE.reflow();
-    }, 0);
-  }
-
-  renderJobTitleFTEChart() {
-    const chartOptions = this.buildJobTitleFTEChartOptions();
-    this.chartJobTitleFTE = Highcharts.chart('jobTitleFTEChart', chartOptions);
-    setTimeout(() => {
-      this.chartJobTitleFTE.reflow();
     }, 0);
   }
 
@@ -270,64 +257,6 @@ export class AdvancedDashboardComponent implements OnInit {
     return chartOptions;
   }
 
-  buildJobTitleFTEChartOptions() {
-
-    // set the chart options
-    const chartOptions = {
-      chart: {
-        type: 'column',
-        backgroundColor: null,
-        marginBottom: 100
-      },
-      title: {
-        text: 'JobTitles vs FTEs'
-      },
-      subtitle: {
-        text: 'Click bar to drilldown'
-      },
-      xAxis: {
-        type: 'category'
-      },
-      yAxis: {
-        title: {
-            text: 'Total FTEs'
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      credits: {
-        enabled: false
-      },
-      exporting: {
-        enabled: false
-      },
-      plotOptions: {
-        series: {
-          borderWidth: 0,
-          dataLabels: {
-            enabled: true
-          }
-        }
-      },
-      tooltip: {
-        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> FTEs<br/>'
-      },
-      series: [{
-        'name': 'JobTitle',
-        'colorByPoint': true,
-        'data': this.jobTitleFTE
-      }],
-      drilldown: {
-        series: this.jobTitleFTEDrillDown
-      }
-    };
-
-    // return the chart options object
-    return chartOptions;
-  }
-
   buildSchedulesChartOptions() {
 
     // set the chart options
@@ -402,6 +331,11 @@ export class AdvancedDashboardComponent implements OnInit {
         drilldown: key
       });
     });
+
+    // update the priority-less field to "No Priority" for readability in the charts
+    const noPriorityIdx = dataSeries.findIndex((obj => obj.name === 'undefined'));
+    dataSeries[noPriorityIdx].name = 'No Priority';
+    dataSeries[noPriorityIdx].drilldown = 'No Priority';
 
     this.prioritiesCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
     this.prioritiesCount = this.prioritiesCount.reverse();
@@ -519,6 +453,12 @@ export class AdvancedDashboardComponent implements OnInit {
         drilldown: key
       });
     });
+
+    // update the priority-less field to "No Priority" for readability in the charts
+    const noPriorityIdx = dataSeries.findIndex((obj => obj.name === 'undefined'));
+    dataSeries[noPriorityIdx].name = 'No Priority';
+    dataSeries[noPriorityIdx].drilldown = 'No Priority';
+    
     this.statusesCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
     this.statusesCount = this.statusesCount.reverse();
   }
@@ -699,79 +639,6 @@ export class AdvancedDashboardComponent implements OnInit {
     // console.log('this.ssTotalFTEAfterSHP', this.ssTotalFTEAfterSHP)
     // console.log('this.ssTotalFTENoPLC', this.ssTotalFTENoPLC)
 
-  }
-
-  async getJobTitleData() {
-    const dataSeries = [];
-    const drillDownObj = [];
-    const projectListArray = _.uniq(_.pluck(this.advancedFilteredResults, 'ProjectID'));
-    const projectIDString = projectListArray.toString();
-    const fromDate = '2018-01-01';
-    const toDate = '2019-01-01';
-
-    const projectJobTitles = await this.apiDataAdvancedFilterService
-      .getProjectJobTitleAdvancedFilter(projectIDString, fromDate, toDate).toPromise();
-
-    const jobTitles = _.uniq(_.pluck(projectJobTitles.flat, 'jobTitle'));
-    this.jobTitlesList = jobTitles;
-
-    // initialize the dataSeries object with the jobtitles
-    for (let jt = 0; jt < this.jobTitlesList.length; jt++) {
-      dataSeries.push({
-        name: this.jobTitlesList[jt],
-        y: 0,
-        drilldown: this.jobTitlesList[jt]
-      });
-    }
-
-    // update the dataSeries object with the sum of FTEs per jobtitle
-    for (let i = 0; i < dataSeries.length; i++) {
-      for (let j = 0; j < projectJobTitles.flat.length; j++) {
-        if (dataSeries[i].name === projectJobTitles.flat[j]['jobTitle']) {
-          dataSeries[i].y = dataSeries[i].y + projectJobTitles.flat[j]['allocations:fte'];
-        }
-      }
-    }
-
-    // populate the drilldown object to get the project and totalFTE for each priority
-    // first loop through each job title
-    this.jobTitlesList.forEach(jt => {
-      const drillDownData1 = [];
-      for (let k = 0; k < projectJobTitles.nested.length; k++) {
-        if (jt === projectJobTitles.nested[k]['jobTitle']) {
-
-          const jobSubTitles = _.uniq(_.pluck(projectJobTitles.nested[k].allocations, 'jobSubTitle'));
-
-          // second loop through each job sub title per job title and sum the total fte for that job sub title
-          jobSubTitles.forEach(jst => {
-            let jobSubTitleFTETotal = 0;
-            for (let l = 0; l < projectJobTitles.nested[k].allocations.length; l++) {
-              if (jst === projectJobTitles.nested[k].allocations[l]['jobSubTitle']) {
-                jobSubTitleFTETotal = jobSubTitleFTETotal + projectJobTitles.nested[k].allocations[l]['fte'];
-              }
-            }
-            drillDownData1.push([jst,  Math.round( jobSubTitleFTETotal * 1e2 ) / 1e2 ]) ;
-          });
-        }
-      }
-
-      // Sort by FTE totals and redistribute arrays for highchart formats
-      drillDownData1.sort(function(a, b) {return a[1] > b[1] ? -1 : 1; });
-
-      drillDownObj.push({
-        name: jt,
-        id: jt,
-        data: drillDownData1
-      });
-    });
-
-    this.jobTitleFTE = _.sortBy(dataSeries, function(jt) { return jt['y']; });
-    this.jobTitleFTE = this.jobTitleFTE.reverse();
-    // round the decimal values to 2 places
-    this.jobTitleFTE.forEach(jt => {jt.y = Math.round( jt.y * 1e2 ) / 1e2; });
-    this.jobTitleFTEDrillDown = drillDownObj;
-
-    this.renderJobTitleFTEChart();
   }
 
   getTopFTEProjects() {
