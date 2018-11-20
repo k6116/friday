@@ -27,12 +27,12 @@ export class DashboardTeamSelectService {
     const t0 = performance.now();
     this.managerData = this.copyIntoNewArray(res);
     const t1 = performance.now();
-    console.log(`copy into new array took ${t1 - t0} milliseconds`);
+    // console.log(`copy into new array took ${t1 - t0} milliseconds`);
 
     const t2 = performance.now();
     this.buildNestedManagerData();
     const t3 = performance.now();
-    console.log(`build nested manager data took ${t3 - t2} milliseconds`);
+    // console.log(`build nested manager data took ${t3 - t2} milliseconds`);
 
     // return the nested manager data structure
     return this.nestedManagerData;
@@ -48,6 +48,9 @@ export class DashboardTeamSelectService {
     } else if (this.authService.loggedInUser.isManager) {
       emailAddress = this.authService.loggedInUser.email;
     }
+
+    // TEMP CODE: spoof logged in user as Ethan Hunt for testing
+    // emailAddress = 'ethan_hunt@keysight.com';
 
     return this.apiDataOrgService.getManagementOrgStructure(emailAddress).toPromise();
 
@@ -87,8 +90,8 @@ export class DashboardTeamSelectService {
 
     });
 
-    console.log('new manager data array:');
-    console.log(managerData);
+    // console.log('new manager data array:');
+    // console.log(managerData);
 
     return managerData;
 

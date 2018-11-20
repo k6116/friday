@@ -48,20 +48,20 @@ export class TeamSelectModalComponent implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit() {
-    console.log('team select modal component initialized');
-    console.log('nested org data structure in modal:');
-    console.log(this.nestedOrgData);
+    // console.log('team select modal component initialized');
+    // console.log('nested org data structure in modal:');
+    // console.log(this.nestedOrgData);
 
     this.waitingForOrgData = false;
     // this.setInitialDropDownEmployee();
   }
 
   ngOnDestroy() {
-    console.log('team select modal component destroyed');
+    // console.log('team select modal component destroyed');
   }
 
   testViewChild() {
-    console.log('hello! view child works!');
+    // console.log('hello! view child works!');
   }
 
   setInitialDropDownEmployee(employee: any) {
@@ -116,8 +116,8 @@ export class TeamSelectModalComponent implements OnInit, OnDestroy {
     this.displayOrgDropDown = false;
     this.displayedEmployee = employee;
     this.selectedEmployee = employee;
-    console.log('selected employee');
-    console.log(this.selectedEmployee);
+    // console.log('selected employee');
+    // console.log(this.selectedEmployee);
 
     this.dropDownDisplayedEmployee = employee.fullName;
     this.collapseOrg(this.nestedOrgData);

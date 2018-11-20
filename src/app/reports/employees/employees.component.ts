@@ -4437,8 +4437,8 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    console.log('sample nested org data (hard-coded)');
-    console.log(this.nestedOrgData2);
+    // console.log('sample nested org data (hard-coded)');
+    // console.log(this.nestedOrgData2);
 
 
     if (this.cacheService.$nestedOrgData) {
@@ -4507,13 +4507,13 @@ export class EmployeesReportsComponent implements OnInit, OnDestroy {
         // console.log(this.flatOrgData);
       },
       err => {
-        console.error('error getting nested org data');
+        // console.error('error getting nested org data');
         // this.nestedOrgData = JSON.parse('[' + this.nestedOrgData2.json + ']');
         this.nestedOrgData = this.nestedOrgData2;
-        console.log('nested org data:');
-        console.log(this.nestedOrgData);
-        console.log('first object');
-        console.log(this.nestedOrgData[0]);
+        // console.log('nested org data:');
+        // console.log(this.nestedOrgData);
+        // console.log('first object');
+        // console.log(this.nestedOrgData[0]);
         this.waitingForOrgData = false;
         this.setInitialDropDownEmployee();
         this.flatOrgData = this.flattenNestedOrgData($.extend(true, {}, this.nestedOrgData));

@@ -14,7 +14,7 @@ i.fa.select-icon, i.fa.cancel-icon {
 div.org-dropdown-control {
   position: relative;
   display: inline-block;
-  width: 217px;
+  width: 250px;
   height: 34px;
   padding: 6px 12px;
   font-size: 14px;
@@ -46,9 +46,9 @@ div.org-dropdown-cont {
   max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
-  width: 217px;
+  width: 250px;
   border: 1px solid lightgrey;
-  background-color: rgb(250, 250, 250);
+  background-color: rgb(255, 255, 255);
 }
 
 div.org-dropdown-cont-inner {

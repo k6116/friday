@@ -22,11 +22,11 @@ export class DashboardStackedColumnService {
 
     // if the selected manager is passed in, filter that object out from the fte data
     // TO-DO BILL: check with the team to see if this is desired behavior
-    if (selectedManager) {
-      dashboardFTEData = dashboardFTEData.filter(fteData => {
-        return fteData.emailAddress !== selectedManager.emailAddress;
-      });
-    }
+    // if (selectedManager) {
+    //   dashboardFTEData = dashboardFTEData.filter(fteData => {
+    //     return fteData.emailAddress !== selectedManager.emailAddress;
+    //   });
+    // }
 
     // iterate through the data and build an array of object with name, projectName, and fte
     let employeeProjectFTEs = [];

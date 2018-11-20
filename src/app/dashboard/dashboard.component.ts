@@ -407,7 +407,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   async updatedStackedColumnChart(selectedManager: any) {
 
     // if the selected manager is the same that is currently displayed, stop here (return early)
-    if (selectedManager.emailAddress === this.selectedManagerForPieChart) {
+    if (selectedManager.emailAddress === this.selectedManagerForStackedColumnChart) {
       console.log('update stacked aborted, same manager/team selected');
       return;
     }
