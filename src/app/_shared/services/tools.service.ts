@@ -12,6 +12,11 @@ import * as _ from 'lodash';
 @Injectable()
 export class ToolsService {
 
+  regexWholePositiveNumbers = /^(0|[1-9]\d*)$/;
+  regexDecimalPositiveNumbers = /^([0-9]*[0-9][0-9]*(\.[0-9]+)?|[0]*\.[0-9]*[1-9][0-9]*)$/;
+  regexTypicalText = /^[a-zA-Z0-9 \-\.\(\)\&\,]+$/;  // allows alphanumeric, plus space and ,.-()&
+  regexAlphanumericDash = /^[a-zA-Z0-9\-]+$/; // only alphanumeric plus dash
+
   constructor(
     private cacheService: CacheService
   ) { }

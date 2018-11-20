@@ -120,7 +120,6 @@ import { SpinnerComponent } from './_shared/components/spinner/spinner.component
     ProjectsFilterPipe,
     FteInputRestrictDirective,
     FteEntryEmployeeComponent,
-    FteInputRestrictDirective,
     TopNavComponent,
     SideNavComponent,
     TopProjectsReportsComponent,

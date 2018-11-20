@@ -57,12 +57,12 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <form [formGroup]="quoteForm" *ngIf="quoteForm">
+      <div class="modal-body" *ngIf="quoteForm">
+        <form [formGroup]="quoteForm">
           <label>Supplier:</label>
-          <input type="text" class="form-control" formControlName="supplier"><br />
+          <input type="text" class="form-control" formControlName="supplier" [ngClass]="quoteForm.controls.supplier.valid ? '' : 'highlight-invalid'" [attr.title]="quoteForm.controls.supplier.valid ? '' : supplierTitle"><br />
           <label>Manufacturer's Part Number:</label>
-          <input type="text" class="form-control" formControlName="mfgPartNumber"><br />
+          <input type="text" class="form-control" formControlName="mfgPartNumber" [ngClass]="quoteForm.controls.mfgPartNumber.valid ? '' : 'highlight-invalid'" [attr.title]="quoteForm.controls.mfgPartNumber.valid ? '' : mpnTitle"><br />
           <label>Price Breaks:</label>
           <table class="table table-sm">
             <thead>
@@ -78,10 +78,10 @@
               <tr *ngFor="let priceBreak of quoteForm.controls.breaks.controls; let i = index">
                 <ng-container *ngIf="!priceBreak.controls.toBeDeleted.value" formGroupName="{{i}}">
                   <td class="delete-row"><i class="fa fa-trash-o" (click)="onRowDelete(priceBreak)"></i></td>
-                  <td><input class="form-control" formControlName="minOrderQty"></td>
-                  <td><input class="form-control" formControlName="price"></td>
-                  <td><input class="form-control" formControlName="nreCharge"></td>
-                  <td><input class="form-control" formControlName="leadTime"></td>
+                  <td><input class="form-control" formControlName="minOrderQty" [ngClass]="priceBreak.controls.minOrderQty.valid ? '' : 'highlight-invalid'" [attr.title]="priceBreak.controls.minOrderQty.valid ? null : moqTitle"></td>
+                  <td><input class="form-control" formControlName="price" [ngClass]="priceBreak.controls.price.valid ? '' : 'highlight-invalid'" [attr.title]="priceBreak.controls.price.valid ? null : priceTitle"></td>
+                  <td><input class="form-control" formControlName="nreCharge" [ngClass]="priceBreak.controls.nreCharge.valid ? '' : 'highlight-invalid'" [attr.title]="priceBreak.controls.nreCharge.valid ? null : nreTitle"></td>
+                  <td><input class="form-control" formControlName="leadTime" [ngClass]="priceBreak.controls.leadTime.valid ? '' : 'highlight-invalid'" [attr.title]="priceBreak.controls.leadTime.valid ? null : ltTitle"></td>
                 </ng-container>
               </tr>
             </tbody>
@@ -89,9 +89,9 @@
           <button class="btn btn-secondary" (click)="onAddClick()"><i class="fa fa-plus"></i> Add Price Break</button>
         </form>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" *ngIf="quoteForm">
         <button type="button" class="btn btn-primary" (click)="testForm()">test</button>
-        <button type="button" class="btn btn-primary" (click)="onSaveQuote()">Save changes</button>
+        <button type="button" class="btn btn-primary" (click)="onSaveQuote()" [disabled]="!quoteForm.valid">Save changes</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
