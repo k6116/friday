@@ -93,6 +93,14 @@ div.projects-display-count {
   text-align: right;
 }
 
+/* FILTER CONTENT */
+div.filter-content {
+  display: flex;
+  /* height: 113vh; */
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 /* Checkboxes */
 div.adv-filter-cb {
   padding-left: 12px;
@@ -124,7 +132,8 @@ div.filter-headers {
 div.filter-collapse.show {
   min-height: 63px;
   max-height: 168px;
-  overflow: hidden auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* div.filter-collapse { CAUSES BAD COLLAPSE
@@ -272,8 +281,9 @@ div.adv-results-cont {
   /* display: inline-grid; */
   padding-left: 10px;
   width: calc(100% - ( 402px + 4px));
-  height: 744px;
-  overflow: auto auto;
+  height: 784px;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 table.filter-results th {

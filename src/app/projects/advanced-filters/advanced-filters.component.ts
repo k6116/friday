@@ -58,7 +58,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   plcSchedules: any; // contains PLC status name headers
   allManagers:any;
   managers: any;
-  managerTeam: any;
+  managerTeam: any[];
 
   // PLC information for filterObjects
   newPLC: NewPLC = {
@@ -79,7 +79,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   advancedFilteredResultsFlat: any; // for excel download
   
   // etc
-  ngUnsubscribe = new Subject();
   subscription2: Subscription; // for excel download
   showSpinner: boolean;
   showPage: boolean;
@@ -160,8 +159,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.initCheckboxArrays()
 
     // get all managers for typeahead
-    this.allManagers = this.getManagersTypeAhead('ron_nersesian@keysight.com');
-
+    this.allManagers = this.getManagers('ron_nersesian@keysight.com');
     // hide the spinner
     this.showSpinner = false;
 
@@ -303,7 +301,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
 // PROJECT OWNERS
 
-  async getManagersTypeAhead(managerEmailAddress: string) {
+  async getManagers(managerEmailAddress: string) {
     this.managers = await this.apiDataOrgService.getManagementOrgStructure(managerEmailAddress).toPromise();
     this.getTypeahead(this.managers);
   }
@@ -356,7 +354,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.advancedFilter(this.filterObject);
 
     // Show div with subordinates
-    this.managerTeam = this.getProjectOwnerSubordinates(email);
+    this.getProjectOwnerSubordinates(email);
     
   }
 
@@ -695,16 +693,25 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.advancedFilter(this.filterObject);
   }
 
-  onFTETotalGoClick(minValue: number, maxValue: number) {
+  onFTETotalGoClick(minValue: any, maxValue: any) {
 
-    this.filterObject.FTEMin = String(minValue);
-    this.filterObject.FTEMax = String(maxValue);
+    if (minValue === '') {
+      this.filterObject.FTEMin = String('NULL');  
+    } else {
+      this.filterObject.FTEMin = String(minValue);
+    }
+
+    if (maxValue === '') {
+    this.filterObject.FTEMax = String('NULL');
+    } else {
+      this.filterObject.FTEMax = String(maxValue);
+    }
 
     // Make the db call
     this.advancedFilter(this.filterObject);
   }
 
-  onInputFTEChange(event: any, index) {
+  onInputFTEChange(event: any) {
     const date = event.target.value; // input date
     const id = event.target.id; // either fteFrom or fteTo
     const valid = event.target.validity.valid;
