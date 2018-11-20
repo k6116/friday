@@ -110,7 +110,6 @@ export class AdvancedDashboardComponent implements OnInit {
     console.log('this.advancedFilteredResults', this.advancedFilteredResults);
     this.getPriorities();
     this.getStatuses();
-    this.getProjectTypes();
     this.getOwners();
     this.getPriorityFTE();
     this.getSchedules();
@@ -119,14 +118,6 @@ export class AdvancedDashboardComponent implements OnInit {
 
   async getPLCList() {
     this.PLCList = await this.apiDataSchedulesService.getPLCList().toPromise();
-  }
-
-  renderProjectTypesChart() {
-    const chartOptions = this.buildProjectTypesChartOptions();
-    this.chartProjectTypes = Highcharts.chart('projectTypesChart', chartOptions);
-    setTimeout(() => {
-      this.chartProjectTypes.reflow();
-    }, 0);
   }
 
   renderPriorityFTEChart() {
@@ -143,60 +134,6 @@ export class AdvancedDashboardComponent implements OnInit {
     setTimeout(() => {
       this.chartSchedules.reflow();
     }, 0);
-  }
-
-  buildProjectTypesChartOptions() {
-
-    // set the chart options
-    const chartOptions = {
-      chart: {
-        type: 'column',
-        backgroundColor: null,
-        marginBottom: 100
-      },
-      title: {
-        text: 'Project Types'
-      },
-      xAxis: {
-        type: 'category'
-      },
-      yAxis: {
-        title: {
-          text: 'Number of Projects'
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      credits: {
-        enabled: false
-      },
-      exporting: {
-        enabled: false
-      },
-      plotOptions: {
-        series: {
-          borderWidth: 0,
-          dataLabels: {
-            enabled: true
-          }
-        }
-      },
-      tooltip: {
-        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> projects<br/>'
-      },
-      series: [
-        {
-          'name': 'Project Types',
-          'colorByPoint': true,
-          'data': this.projectTypesCount
-        }
-      ]
-    };
-
-    // return the chart options object
-    return chartOptions;
   }
 
   buildPriorityFTEChartOptions() {
@@ -458,24 +395,9 @@ export class AdvancedDashboardComponent implements OnInit {
     const noPriorityIdx = dataSeries.findIndex((obj => obj.name === 'undefined'));
     dataSeries[noPriorityIdx].name = 'No Priority';
     dataSeries[noPriorityIdx].drilldown = 'No Priority';
-    
+
     this.statusesCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
     this.statusesCount = this.statusesCount.reverse();
-  }
-
-  getProjectTypes() {
-    const dataSeries = [];
-    const projectTypesCountArray = _.countBy(this.advancedFilteredResults, function(project) { return project['ProjectTypeName']; });
-    Object.keys(projectTypesCountArray).forEach(function(key) {
-      // console.log(key, projectTypesCountArray[key]);
-      dataSeries.push({
-        name: key,
-        y: projectTypesCountArray[key],
-        drilldown: key
-      });
-    });
-    this.projectTypesCount = dataSeries;
-    this.renderProjectTypesChart();
   }
 
   getOwners() {
