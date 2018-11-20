@@ -156,10 +156,37 @@ function showQuotesForPart(req, res) {
   });
 }
 
+function destroyQuoteForPart(req, res) {
+  const quoteForm = req.body;
+  const quoteName = quoteForm.supplier;
+  const deleteIDs = [];
+
+  quoteForm.breaks.forEach( priceBreak => {
+    deleteIDs.push(priceBreak.id);
+  });
+
+  console.log('finished parsing IDs to delete');
+
+  return models.Quote.destroy({where: {id: deleteIDs}})
+  .then(() => {
+    res.json({
+      message: `${quoteName} quote deleted!`
+    })
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({
+      message: 'quote delete failed',
+      error: error
+    });
+  });
+}
+
 function updateQuoteForPart(req, res) {
   const decodedToken = token.decode(req.header('X-Token'), res);
   const userID = decodedToken.userData.id;
   const quoteForm = req.body;
+  const quoteName = quoteForm.supplier;
   const insertValues = [];
   const updateValues = [];
   const deleteIDs = [];
@@ -208,8 +235,6 @@ function updateQuoteForPart(req, res) {
   console.log(insertValues);
   console.log('done parsing updateValues');
   console.log(updateValues);
-
-  // res.json({message: 'bla'});
 
   return sequelize.transaction( (t) => {
     return models.Quote.destroy({
@@ -260,7 +285,7 @@ function updateQuoteForPart(req, res) {
   }) // end transaction
   .then(() => {
     res.json({
-      message: 'Quote has been saved'
+      message: `${quoteName} quote saved!`
     })
   })
   .catch(error => {
@@ -297,6 +322,7 @@ module.exports = {
   showMatplans: showMatplans,
   showMatplanBom: showMatplanBom,
   showQuotesForPart: showQuotesForPart,
+  destroyQuoteForPart: destroyQuoteForPart,
   updateQuoteForPart: updateQuoteForPart,
   showOrdersForPart: showOrdersForPart
 }

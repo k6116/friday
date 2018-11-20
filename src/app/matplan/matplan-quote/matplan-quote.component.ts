@@ -117,7 +117,7 @@ export class MatplanQuoteComponent implements OnInit {
     this.apiDataMatplanService.updateQuoteForPart(this.quoteForm.value).subscribe(res => {
       // if successful, refresh the quote screen and raise toast
       this.showQuotes(this.selectedPart);
-      this.cacheService.raiseToast('success', 'Quote Saved!');
+      this.cacheService.raiseToast('success', `${res.message}`);
     },
     err => {
       this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
@@ -130,6 +130,51 @@ export class MatplanQuoteComponent implements OnInit {
   onRowDelete(row: any) {
     // when user clicks the trash can, mark a row as to be deleted
     row.controls.toBeDeleted.patchValue(true);
+  }
+
+  deleteQuote(quote: any) {
+
+    this.cacheService.confirmModalData.emit(
+      {
+        title: 'Confirm Deletion',
+        message: `Are you sure you want to permanently delete the quote from ${quote.supplier}?`,
+        iconClass: 'fa-exclamation-triangle',
+        iconColor: 'rgb(193, 193, 27)',
+        closeButton: true,
+        allowOutsideClickDismiss: false,
+        allowEscKeyDismiss: false,
+        buttons: [
+          {
+            text: 'Yes',
+            bsClass: 'btn-success',
+            emit: true
+          },
+          {
+            text: 'Cancel',
+            bsClass: 'btn-secondary',
+            emit: false
+          }
+        ]
+      }
+    );
+
+    const deleteModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
+
+      if (res) {
+        // user confirmed delete
+        this.apiDataMatplanService.destroyQuoteForPart(quote).subscribe( res2 => {
+          // if successful, refresh the quote screen and raise toast
+          this.showQuotes(this.selectedPart);
+          this.cacheService.raiseToast('success', `${res2.message}`);
+        },
+        err => {
+          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
+        });
+      }
+
+      // unsubscribe to not get any rogue confirms
+      deleteModalSubscription.unsubscribe();
+    });
   }
 
   testForm() {

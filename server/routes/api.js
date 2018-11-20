@@ -130,6 +130,7 @@ router.get('/matplan/matplan/indexProjects', controllers.matplan.indexProjects);
 router.get('/matplan/matplan/showMatplans/:projectID', controllers.matplan.showMatplans);
 router.get('/matplan/matplan/showMatplanBom/:projectID', controllers.matplan.showMatplanBom);
 router.get('/matplan/matplan/showQuotesForPart/:partID', controllers.matplan.showQuotesForPart);
+router.put('/matplan/matplan/destroy/destroyQuoteForPart', controllers.matplan.destroyQuoteForPart);
 router.put('/matplan/matplan/update/updateQuoteForPart', controllers.matplan.updateQuoteForPart);
 router.get('/matplan/matplan/showOrdersForPart/:matplanID/:partID', controllers.matplan.showOrdersForPart);
 

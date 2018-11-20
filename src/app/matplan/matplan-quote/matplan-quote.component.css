@@ -6,14 +6,15 @@ div.card-cont {
 
 div.card {
   display: inline-block;
-  width: 350px;
+  width: 360px;
   min-height: 210px;
   margin-right: 10px;
   margin-bottom: 10px;
 }
 
 div.card-header {
-  font-size: 18px;
+  font-size: 19px;
+  padding: 15px;
 }
 
 td.delete-row {
@@ -36,6 +37,6 @@ input.form-control.highlight-invalid {
   cursor: pointer;
 }
 
-.edit-button {
+.card-header-buttons {
   float: right;
 }
