@@ -711,6 +711,35 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.advancedFilter(this.filterObject);
   }
 
+  onFTETotalGoChange(value: any) {
+    console.log('FTE change detected', value);
+    // $(".go-btn").css('border-color', 'red');
+  }
+
+  onFTEMaxChange(value: string) {
+
+    if (value === '') {
+    this.filterObject.FTEMax = 'NULL';
+    } else {
+    this.filterObject.FTEMax = value;
+    }
+    
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+  }
+
+  onFTEMinChange(value: string) {
+
+    if (value === '') {
+    this.filterObject.FTEMin = 'NULL';
+    } else {
+    this.filterObject.FTEMin = value;
+    }
+    
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+  }
+
   onInputFTEChange(event: any) {
     const date = event.target.value; // input date
     const id = event.target.id; // either fteFrom or fteTo

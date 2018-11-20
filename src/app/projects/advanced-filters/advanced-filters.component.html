@@ -237,7 +237,7 @@
                       (change)="onInputFTEChange($event)">
                 </div>
                 <!-- Placeholder -->
-                <div class="form-group" style="margin-bottom: 4px; width: 31px"></div>
+                <div class="form-group" style="margin-bottom: 4px; width: 31px" hidden></div>
 
               </div>
 
@@ -250,7 +250,8 @@
                       style="text-align: end; margin-left: 3px"
                       id="fteMin" 
                       type="number"
-                      placeholder="Min">
+                      placeholder="Min"
+                      (change)="onFTEMinChange($event.target.value)">
                 </div>
 
                 <span style="margin-top: 7px">-</span>
@@ -261,9 +262,10 @@
                       style="text-align: end"
                       id="fteMax" 
                       type="number"
-                      placeholder="Max"> 
+                      placeholder="Max"
+                      (change)="onFTEMaxChange($event.target.value)"> 
                 </div>
-                <button type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)">Go</button>
+                <button #goButton type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)" hidden>Go</button>
 
               </div>
 
@@ -331,6 +333,7 @@
               </ng-container>             
 
             </div>
+            <!-- END PLC SCHEDULE -->
 
           </div>
         </div>
@@ -342,17 +345,19 @@
         <table class="table table-hover filter-results">
           <thead class="thead-light">
             <tr>
+              <th scope="col">ID</th>    
               <th scope="col">Project Name</th>
               <th scope="col">Type</th>
               <th scope="col">Priority</th>
               <th scope="col">Status</th>
               <th scope="col">Owner</th>
               <th scope="col" *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">Total FTE</th>
-              <th scope="col" *ngFor="let name of plcSchedules">{{ name.PLCStatusName }}</th>              
+              <th scope="col" *ngFor="let name of plcSchedules">{{ name.PLCStatusName }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count">            
+            <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count">
+              <td>{{ project.ProjectID }}</td>
               <td>{{ project.ProjectName }}</td>
               <td>{{ project.ProjectTypeName }}</td>
               <td>{{ project.PriorityName }}</td>
@@ -361,7 +366,7 @@
               <td *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">{{ project.TotalProjectFTE }}</td>
               <ng-container *ngFor="let schedule of project.Schedules">
                 <td>{{ schedule.PLCDate }}</td>
-              </ng-container>              
+              </ng-container>
             </tr>
           </tbody>
         </table>
