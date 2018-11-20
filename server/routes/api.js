@@ -85,6 +85,8 @@ router.get('/org/:emailAddress', controllers.org.show);
 router.get('/org/getTeamList/:emailAddress', controllers.org.getTeamList);
 router.get('/org/getEmployeeList/:emailAddress', controllers.org.getEmployeeList);
 router.get('/org/getManagementOrgStructure/:emailAddress', controllers.org.getManagementOrgStructure);
+router.get('/org/getOrgStructureDrillUp/:emailAddress', controllers.org.getOrgStructureDrillUp);
+router.get('/org/getOrgStructureDrillDown/:emailAddress', controllers.org.getOrgStructureDrillDown);
 
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
@@ -101,7 +103,6 @@ router.post('/updateProjectPermissionResponse/:userID/:reply/:replyComment', con
 router.post('/updateProjectPermissionRequest/:userID', controllers.permission.updateProjectPermissionRequest);
 
 // REPORTS PROJECT CONTROLLER
-router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
 router.get('/report/getSubordinateFtes/:managerEmailAddress/:period', controllers.report.getSubordinateFtes);
 router.get('/report/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
 router.get('/report/getProjectFTEHistory/:projectID', controllers.report.getProjectFTEHistory);
@@ -135,6 +136,13 @@ router.get('/indexProjectChildren/:projectName/:projectType/:projectOwner', cont
 router.get('/indexProjectParents/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectParents);
 router.get('/indexProjectJobTitleAdvancedFilter/:projectIDs/:fromDate/:toDate', controllers.advancedFilter.indexProjectJobTitleAdvancedFilter);
 
+// MATPLAN CONTROLLER
+router.get('/matplan/matplan/show/:matplanID', controllers.matplan.show)
+router.get('/matplan/matplan/indexProjects', controllers.matplan.indexProjects)
+router.get('/matplan/matplan/showMatplans/:projectID', controllers.matplan.showMatplans)
+router.get('/matplan/matplan/showMatplanBom/:projectID', controllers.matplan.showMatplanBom)
+router.get('/matplan/matplan/showQuotesForPart/:partID', controllers.matplan.showQuotesForPart)
+router.get('/matplan/matplan/showOrdersForPart/:matplanID/:partID', controllers.matplan.showOrdersForPart)
 
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
@@ -186,6 +194,7 @@ router.put('/jobTitle/admin/update/updateEmployeeJobTitle', controllers.jobTitle
 
 // PROJECT CONTROLER
 router.get('/project/displayProject/show/getProject/:projectID', controllers.project.getProject);
+router.get('/project/index/getProjectsList', controllers.project.getProjectsList);
 
 // SCHEDULES CONTROLLER
 router.get('/getProjectSchedule/:projectID', controllers.schedules.indexProjectSchedule);
@@ -205,6 +214,13 @@ router.delete('/deletePart/:partID/:scheduleID', controllers.parts.deletePart);
 
 // EXPORT CONTROLLER
 router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
+
+// REPORT CONTROLLER
+router.get('/report/reports-project-fte-rollup/show/getProjectFTERollupData/:projectID/:startDate/:endDate', controllers.report.getProjectFTERollupData);
+router.get('/report/getSubordinateProjectRoster/:period', controllers.report.getSubordinateProjectRoster);
+
+// LOG CONTROLLER
+router.post('/log/writeToLog', controllers.log.writeToLog);
 
 
 

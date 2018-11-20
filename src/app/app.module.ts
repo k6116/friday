@@ -27,13 +27,13 @@ import { TitleCasePipe } from '@angular/common';
 import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 
 // SERVICES
-import { BomService, CacheService, ClickTrackingService, CookiesService,
+import { BomService, CacheService, ClickTrackingService, CookiesService, LoggingService,
   ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
 import { ApiDataAdvancedFilterService, ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
-  ApiDataFteService, ApiDataJobTitleService, ApiDataMetaDataService, ApiDataOrgService, ApiDataPermissionService, ApiDataProjectService,
-  ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
-  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService} from './_shared/services/api-data/_index';
+  ApiDataFteService, ApiDataJobTitleService, ApiDataLogService, ApiDataMetaDataService, ApiDataOrgService,
+  ApiDataPermissionService, ApiDataProjectService, ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
+  ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService, ApiDataMatplanService} from './_shared/services/api-data/_index';
 
 // GUARDS
 import { AuthGuardService } from './_shared/guards/auth.guard';
@@ -95,12 +95,19 @@ import { ProjectRequestsComponent } from './projects/project-requests/project-re
 import { TeamRolesComponent } from './setups/team-roles/team-roles.component';
 import { DisplayProjectComponent } from './projects/display-project/display-project.component';
 import { UnitTestComponent } from './unit-test/unit-test.component';
+import { ProjectFteRollupComponent } from './reports/project-fte-rollup/project-fte-rollup.component';
 import { TransferProjectsComponent } from './setups/transfer-projects/transfer-projects.component';
-import { MatplanComponent } from './mat-plan/matplan/matplan.component';
+import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
+import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
+import { MatplanInfoComponent } from './matplan/matplan-info/matplan-info.component';
+import { MatplanBomComponent } from './matplan/matplan-bom/matplan-bom.component';
+import { MatplanQuoteComponent } from './matplan/matplan-quote/matplan-quote.component';
+import { MatplanOrderComponent } from './matplan/matplan-order/matplan-order.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
-import { AdvancedFiltersComponent } from './reports/advanced-filters/advanced-filters.component';
 import { AdvancedDashboardComponent } from './reports/advanced-dashboard/advanced-dashboard.component';
+import { AdvancedFiltersComponent } from './projects/advanced-filters/advanced-filters.component';
+import { SpinnerComponent } from './_shared/components/spinner/spinner.component';
 
 
 @NgModule({
@@ -160,12 +167,19 @@ import { AdvancedDashboardComponent } from './reports/advanced-dashboard/advance
     TeamRolesComponent,
     DisplayProjectComponent,
     UnitTestComponent,
-    MatplanComponent,
+    ProjectFteRollupComponent,
+    MatplanSelectorComponent,
+    MatplanEditorComponent,
+    MatplanInfoComponent,
+    MatplanBomComponent,
+    MatplanQuoteComponent,
+    MatplanOrderComponent,
     OrgViewerComponent,
     OrgDrawD3Component,
     TransferProjectsComponent,
     AdvancedFiltersComponent,
-    AdvancedDashboardComponent
+    AdvancedDashboardComponent,
+    SpinnerComponent
   ],
   imports: [
     AppRoutingModule,
@@ -193,6 +207,7 @@ import { AdvancedDashboardComponent } from './reports/advanced-dashboard/advance
     ApiDataEmployeeService,
     ApiDataFteService,
     ApiDataJobTitleService,
+    ApiDataLogService,
     ApiDataMetaDataService,
     ApiDataOrgService,
     ApiDataPermissionService,
@@ -203,6 +218,7 @@ import { AdvancedDashboardComponent } from './reports/advanced-dashboard/advance
     ApiDataPartService,
     ApiDataAnalyticsService,
     ApiDataBomService,
+    ApiDataMatplanService,
     BomService,
     CacheService,
     AuthService,
@@ -219,7 +235,8 @@ import { AdvancedDashboardComponent } from './reports/advanced-dashboard/advance
     FteTeamEntryGuard,
     TitleCasePipe,
     RoutingHistoryService,
-    ExcelExportService
+    ExcelExportService,
+    LoggingService
   ],
   bootstrap: [AppComponent]
 })

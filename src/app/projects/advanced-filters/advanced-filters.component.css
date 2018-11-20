@@ -2,6 +2,18 @@
 
 div.page-cont {
   overflow-x: hidden;
+  /* height: 1000px; */
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color:#000;
+  opacity: .75;
+  z-index: 9999999;
 }
 
 /* SEARCH BAR */
@@ -59,7 +71,7 @@ div.float-right-cont {
 }
 
 button.btn-standard.export-button {
-  margin-right: 30px;
+  /* margin-right: 30px; */
   position: relative;
   top: 1px;
   width: 125px;
@@ -81,12 +93,26 @@ div.projects-display-count {
   text-align: right;
 }
 
+/* FILTER CONTENT */
+div.filter-content {
+  display: flex;
+  /* height: 113vh; */
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+/* Checkboxes */
+div.adv-filter-cb {
+  padding-left: 12px;
+  margin-left: 3px;
+}
 
 /* FILTERS 1*/
 
 div.adv-filters-cont {
   /* display: inline-block; */
   width: 50%;
+  padding-right: 0px;
   /* float: left; */
   /* background: #fff; */
   /* padding: 10px; */
@@ -96,7 +122,7 @@ div.filter-headers {
   padding: 4px 0.25rem;
   background-color: #e9ecef;
   border-bottom: 1px solid rgba(0,0,0,.125);
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 /* .custom-control-label::before {
@@ -104,8 +130,10 @@ div.filter-headers {
 } */
 
 div.filter-collapse.show {
-  max-height: 200px;
-  overflow: hidden auto;
+  min-height: 63px;
+  max-height: 168px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* div.filter-collapse { CAUSES BAD COLLAPSE
@@ -129,6 +157,10 @@ div.owner-label {
   /* margin-right: 10px; */
 }
 
+div.custom-checkbox.manager {
+  margin-left: 0px !important;
+}
+
 input.projects-search-input.projects-owner {
   height: 32px !important;
   width: 100%;
@@ -139,35 +171,119 @@ i.projects-search-icon-search.projects-owner {
   top: 6px;
   color: grey;
 }
+
+/* "ALL" CHECKBOX */
+.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+  background-color: #485b65;
+}
+.custom-control-label::before {
+  top: 6px;
+  left: 2px;
+  width: 11px;
+  height: 11px;
+}
+
+.custom-checkbox .custom-control-input:checked~.custom-control-label::after {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
+  height: 14px !important;
+  width: 14px !important;
+  cursor: pointer;
+}
+
+.custom-control-label::after {
+  cursor: pointer;
+}
+
 /* FILTERS 2 */
 
-div.adv-filters2-cont {
-  display: inline-block;
-  margin-left: 15px;
-  width: 50%;
+/* div.adv-filters2-cont { */
+  /* display: inline-block; */
+  /* margin-left: 15px; */
+  /* width: 50%; */
   /* background: #fff; */
   /* padding: 10px; */
+/* } */
+
+/* FILTERS 3 */
+div.adv-filters3-cont {
+  margin-top: 10px;
+}
+
+button.clear-fte {
+  height: 20px;
+  font-size: 10px;
+  padding: 0px 4px;
+  border-color: #485b65;
+}
+
+button.clear-fte:hover {
+  background-color: #485b65
+}
+
+.fte-toggle {
+  padding: 4px 6px 0px 6px;
+  font-size: 13px;
+  height: 30px;
+  margin-top: 5px;
+  width: 28%;
+}
+
+button.go-btn {
+  font-size: 11px;
+  padding: 0px 7px;
+  margin: 5px 3px 7px 0px;
+  border-color: lightgray;
 }
 
 label.fte {
-  margin: 0px;
+  margin-top: 10px; 
+  margin-right: 5px; 
   color: #757779;
   font-size: smaller;
 }
 
 input.fte {
+  width: 142px;
+  margin-top: 5px;
+  /* margin-right: 5px; */
+  float: right;
   height: 27px !important;
   padding: 2px 4px;
+}
+
+label.plc {
+  margin-top: 10px;
+  color: #757779;
+  font-size: smaller;
+}
+
+input.plc {
+  /* display: inline; */
+  width: 142px;
+  margin-top: 5px;
+  margin-right: 5px;
+  float: right;
+  height: 27px !important;
+  padding: 2px 4px;
+}
+
+input.plc-input-invalid {
+  border-color: red;
+}
+
+input.form-control:focus.plc-input-invalid {
+  border-color: red !important;
 }
 
 /* RESULT TABLE */
 
 div.adv-results-cont {
-  display: inline-block;
-  padding-left: 20px;
+  /* display: inline-grid; */
+  padding-left: 10px;
   width: calc(100% - ( 402px + 4px));
-  height: 75vh;  /* TO-DO: replace with javascipt */
-  overflow: auto auto;
+  height: 784px;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 table.filter-results th {
@@ -180,3 +296,10 @@ table.filter-results th {
 table.table {
   border: 1px solid #dee2e6;
 }
+
+/* .bom-selector {
+  position: absolute;
+  top: 90px;
+  left: 220px;
+  z-index: 1;
+} */

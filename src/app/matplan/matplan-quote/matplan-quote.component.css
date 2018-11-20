@@ -1,0 +1,13 @@
+.card {
+  width: 350px;
+  height: 200px;
+  display: inline-flex;
+}
+
+.card-header {
+  font-size: 20px;
+}
+
+.edit-button {
+  float: right;
+}

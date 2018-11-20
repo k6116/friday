@@ -72,7 +72,7 @@ function indexAdvancedFilteredResults(req, res) {
   */
 
   const filterOptions = req.body;
-
+console.log('filterOptions:', filterOptions);
   const sql = `
       EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectTypeIDs,
      :ProjectStatusIDs, :ProjectPriorityIDs, :ProjectOwnerEmails, :FTEMin, :FTEMax, :FTEDateFrom, :FTEDateTo`
@@ -91,14 +91,12 @@ function indexAdvancedFilteredResults(req, res) {
     FTEDateTo: filterOptions.FTEDateTo
   }, type: sequelize.QueryTypes.SELECT})
   .then(filteredRes => {    
-    const fteTree = new Treeize();
-      fteTree.grow(filteredRes);
-      res.json({
-        nested: fteTree.getData(),
-        flat: filteredRes
-      });
-    // res.json(filteredRes);
-    // console.log('filteredRes',filteredRes)
+    const filterTree = new Treeize();
+    filterTree.grow(filteredRes);
+    res.json({
+      nested: filterTree.getData(),
+      flat: filteredRes
+    });
   }).catch(error => {
     res.status(400).json({
       title: 'Error (in catch)',

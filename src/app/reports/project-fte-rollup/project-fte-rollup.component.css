@@ -1,0 +1,133 @@
+
+/* search bar */
+
+div.projects-filters-cont {
+  margin-bottom: 40px;
+  min-width: 900px;
+  width: 100%;
+  white-space: nowrap;
+}
+
+div.projects-filter-label {
+  display: inline-block;
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+div.projects-filter-string {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+/* .tt-menu {
+  max-height: 150px;
+  overflow-y: scroll;
+  z-index: 10;
+} */
+
+input.projects-filter-input {
+  width: 300px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+input.hidden-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  z-index: -1;
+}
+
+i.projects-filter-icon-search, i.projects-filter-icon-close {
+  position: absolute;
+  top: 10px;
+  color: grey;
+}
+
+i.projects-filter-icon-search {
+  left: 10px;
+}
+
+i.projects-filter-icon-close {
+  right: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* END - search bar */
+
+
+
+
+table.rollup-table {
+  margin-top: 25px;
+  background-color: white;
+  /* width: unset; */
+}
+
+td.drilldown-table-cell {
+  font-weight: 500;
+}
+
+tr.drilldown-table-header-row {
+  height: 45px;
+  padding-bottom: 5px;
+  /* background-color: rgb(232, 232, 232); */
+}
+
+td.project-name-text {
+  font-weight: 500;
+}
+
+.fa.point-icon {
+  font-size: 10px;
+  margin-right: 10px;
+  position: relative;
+  top: -1px;
+}
+
+th.col-level {
+  width: 100px;
+}
+
+td.cell-level {
+  font-weight: 500;
+  padding-left: 15px;
+}
+
+th.col-project {
+  width: 450px;
+}
+
+th.col-type {
+  width: 150px;
+}
+
+/* th.col-fte {
+  width: 100px;
+} */
+
+th.col-cum-fte {
+  width: 100px;
+}
+
+th.col-spark-bar {
+  width: calc(100% - (100px + 450px + 150px + 100px));
+  /* width: 20%; */
+}
+
+div.spark-bar {
+  height: 5px;
+  width: 10px;
+  border: 1px solid lightgrey;
+}
+
+div.spark-bar {
+  height: 15px;
+  /* width: calc(96px * 3); */
+  border: 1px solid lightgrey;
+  margin-top: 3px;
+  /* background-color: #7cb5ec; */
+}

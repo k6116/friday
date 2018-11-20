@@ -34,6 +34,7 @@ export class OrgViewerService {
       teamFtes: this.org[0].TotalTeamFTE / this.monthsBetween, // avg FTEs/month over the number of months in range
       teamCount: this.org[0].TotalEmployeeCount,
       defaultCollapsed: false,
+      isUsersManager: this.org[0].PERSON_ID === this.managerChain[this.managerChain.length - 1] ? true : false,
       children: {}
     };
     this.org = this.org.slice(1); // remove the first row, since we don't need it anymore
@@ -80,7 +81,8 @@ export class OrgViewerService {
           email: this.org[i].EMAIL_ADDRESS,
           teamFtes: this.org[i].TotalTeamFTE / this.monthsBetween,
           teamCount: this.org[i].TotalEmployeeCount,
-          defaultCollapsed: this.managerChain.find(managerID => managerID === this.org[i].PERSON_ID) ? false : true
+          defaultCollapsed: this.managerChain.find(managerID => managerID === this.org[i].PERSON_ID) ? false : true,
+          isUsersManager: this.org[i].PERSON_ID === this.managerChain[this.managerChain.length - 1] ? true : false,
         };
         children.push(newNode);
         i++;

@@ -49,6 +49,18 @@ export class ApiDataOrgService {
 
   getManagementOrgStructure(emailAddress: string): Observable<any> {
     return this.http.get(`/api/org/getManagementOrgStructure/${emailAddress}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  getOrgStructureDrillDown(emailAddress: string): Observable<any> {
+    return this.http.get(`/api/org/getOrgStructureDrillDown/${emailAddress}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  getOrgStructureDrillUp(emailAddress: string): Observable<any> {
+    return this.http.get(`/api/org/getOrgStructureDrillUp/${emailAddress}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

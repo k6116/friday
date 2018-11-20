@@ -1,3 +1,106 @@
+<a name="1.22.0"></a>
+# [1.22.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.21.0...v1.22.0) (2018-11-20)
+
+
+### Bug Fixes
+
+* **advanced-filter:** css for microsoft edge ([6ddb908](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/6ddb908))
+
+
+### Features
+
+* **advanced filters:** Add click All for project owners ([e28b0f2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/e28b0f2))
+* **advanced-filter:** add plc schedules and fte allocation ([c79ede1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c79ede1))
+* **advanced-filter:** Add project count ([dfc0295](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/dfc0295))
+* **advanced-filters:** add filter badges ([c6689d3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c6689d3))
+* **advanced-filters:** add fte date range toggles ([0aaa543](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/0aaa543))
+* **advanced-filters:** completed PLC schedules ([08adcf4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/08adcf4))
+* **complete filter badge functionality:** badge with applied filter appears on top and can be used ([7abf88d](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/7abf88d))
+
+
+
+<a name="1.21.0"></a>
+# [1.21.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.20.2...v1.21.0) (2018-11-15)
+
+
+### Bug Fixes
+
+* **tools-service:** updated the icon mapping for "individual" project types ([359a5d5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/359a5d5))
+
+
+### Features
+
+* **projects > my-projects:** Project list is now based on LastUpdatedBy instead of CreatedBy ([aec4505](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/aec4505))
+* **projects-modal:** Added a "Help" button that gives more info around cards, types, owners ([71a04b3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/71a04b3))
+* **projects-modal:** added project owner label to project cards ([a4b5bb4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a4b5bb4))
+* **projects-modal:** Updated default project permissions by broadening permissions to user's  manag ([d1475ae](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/d1475ae))
+* **search and display projects:** added JarvisID to project search and display pages ([0acbe66](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/0acbe66))
+
+
+
+<a name="1.20.2"></a>
+## [1.20.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.20.1...v1.20.2) (2018-11-14)
+
+
+### Bug Fixes
+
+* **fte-entry > team fte-entry guard:** updated the api call to the 2017 sql server ([b136db6](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/b136db6))
+* fixed decimal places in Project FTE Rollup report, common spinner, FTE Entry page flicker issue ([7a983b5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/7a983b5))
+
+
+
+<a name="1.20.1"></a>
+## [1.20.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.20.0...v1.20.1) (2018-11-14)
+
+
+### Bug Fixes
+
+* **Team FTE Summary component:** removed dependency on 2017 SQL server org JSON output ([8de92f7](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/8de92f7))
+
+
+
+<a name="1.20.0"></a>
+# [1.20.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.19.2...v1.20.0) (2018-11-07)
+
+
+### Features
+
+* refactor 5 ([5e72dae](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/5e72dae))
+
+
+
+<a name="1.19.2"></a>
+## [1.19.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.19.1...v1.19.2) (2018-11-02)
+
+
+### Bug Fixes
+
+* fix fiscal year rollover bug in tools service (fiscalQuarterRange function) ([74ba8a1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/74ba8a1))
+
+
+
+<a name="1.19.1"></a>
+## [1.19.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.19.0...v1.19.1) (2018-11-01)
+
+
+### Bug Fixes
+
+* **fte-entry > TeamFTE:** WORDSMITHING!!!! ([b63e1d2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/b63e1d2))
+* **Jarvis adoption graph:** changed graph to initialize with user's manager centered instead of Ron ([22741b5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/22741b5))
+* **setups > team-roles:** updated bug fix for when legacy employees exists ([f848bee](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f848bee))
+* **user FTE entry component:** fixed problem with fiscal quarter being calculated incorrectly on fir ([37d1745](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/37d1745))
+
+
+### Features
+
+* **fte-entry > team:** Added a min-width so page doesnt turn bad when screen resolution is low ([4cbbba5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/4cbbba5))
+* **fte-entry > team:** added popovers on projectnames for more attribute info ([44db3f1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/44db3f1))
+* **fte-entry > Team FTE:** Shows user deleted projects in the Sync Notice. Added a spinner during l ([3013955](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/3013955))
+* **fte-entry > teamFTE:** added a Reset button when the sync notice appears ([f820fbd](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f820fbd))
+* **setups > team-roles:** added a ViewAs feature in team-roles ([bb291de](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/bb291de))
+
+
+
 <a name="1.19.0"></a>
 # [1.19.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.18.0...v1.19.0) (2018-10-24)
 

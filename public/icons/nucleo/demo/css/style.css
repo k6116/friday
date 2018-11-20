@@ -146,203 +146,251 @@ icons
   font icons
 -------------------------*/
 
-.nc-badge-1::before {
-    content: "\ea02";
-}
-
-.nc-archive-check::before {
-    content: "\ea03";
-}
-
 .nc-small-remove::before {
     content: "\ea04";
-}
-
-.nc-badge-2::before {
-    content: "\ea05";
-}
-
-.nc-board-29::before {
-    content: "\ea06";
 }
 
 .nc-calendar-add::before {
     content: "\ea07";
 }
 
-.nc-a-check::before {
-    content: "\ea08";
-}
-
-.nc-chart-bar-33::before {
-    content: "\ea09";
-}
-
-.nc-dashboard-half::before {
-    content: "\ea0a";
-}
-
-.nc-lock::before {
-    content: "\ea0b";
-}
-
-.nc-chat-round-content::before {
-    content: "\ea0c";
-}
-
-.nc-single-05::before {
-    content: "\ea0d";
-}
-
-.nc-time-countdown::before {
-    content: "\ea0e";
-}
-
-.nc-socket::before {
-    content: "\ea0f";
-}
-
-.nc-gantt::before {
-    content: "\ea10";
-}
-
-.nc-bars-rotate::before {
-    content: "\ea11";
-}
-
-.nc-opening-times::before {
-    content: "\ea12";
-}
-
-.nc-dots-07::before {
-    content: "\ea13";
-}
-
-.nc-light-traffic::before {
-    content: "\ea14";
-}
-
-.nc-priority-high::before {
+.nc-priority-high-2::before {
     content: "\ea15";
 }
 
-.nc-microscope::before {
+.nc-microcircuit::before {
     content: "\ea16";
 }
 
-.nc-hierarchy-53::before {
+.nc-server-rack::before {
     content: "\ea17";
 }
 
-.nc-book-open-2::before {
+.nc-privacy-policy-2::before {
     content: "\ea18";
 }
 
-.nc-ram::before {
+.nc-event-create::before {
     content: "\ea19";
 }
 
-.nc-l-security::before {
+.nc-opening-times::before {
     content: "\ea1a";
 }
 
-.nc-keyboard-wireless::before {
+.nc-dots-07::before {
     content: "\ea1b";
 }
 
-.nc-code-editor::before {
+.nc-dots-05::before {
     content: "\ea1c";
 }
 
-.nc-lab::before {
+.nc-dots-06::before {
     content: "\ea1d";
 }
 
-.nc-settings-91::before {
+.nc-bars-rotate::before {
     content: "\ea1e";
 }
 
-.nc-bulb-63::before {
+.nc-rim::before {
     content: "\ea1f";
 }
 
-.nc-sign-closed::before {
+.nc-gantt::before {
     content: "\ea20";
 }
 
-.nc-lock-2::before {
+.nc-lock-1::before {
     content: "\ea21";
 }
 
-.nc-board-28::before {
+.nc-wifi-router::before {
     content: "\ea22";
 }
 
-.nc-privacy-policy-2::before {
+.nc-time-clock::before {
     content: "\ea23";
 }
 
-.nc-priority-high-2::before {
+.nc-time-countdown::before {
     content: "\ea24";
 }
 
-.nc-socket-europe-1::before {
+.nc-socket::before {
     content: "\ea25";
 }
 
-.nc-circle-10::before {
+.nc-socket-europe-1::before {
     content: "\ea26";
 }
 
-.nc-time-clock::before {
+.nc-single-05::before {
     content: "\ea27";
 }
 
-.nc-a-edit::before {
+.nc-signal::before {
     content: "\ea28";
 }
 
-.nc-dots-06::before {
+.nc-sign-closed::before {
     content: "\ea29";
 }
 
-.nc-pulse-phone::before {
+.nc-settings-91::before {
     content: "\ea2a";
 }
 
-.nc-keyboard::before {
+.nc-ram::before {
     content: "\ea2b";
 }
 
-.nc-microcircuit::before {
+.nc-pulse-phone::before {
     content: "\ea2c";
 }
 
-.nc-settings::before {
-    content: "\ea2d";
-}
-
-.nc-money-coins::before {
+.nc-newsletter::before {
     content: "\ea2e";
 }
 
-.nc-money-11::before {
+.nc-money-coins::before {
     content: "\ea2f";
 }
 
-.nc-tag-content::before {
+.nc-money-11::before {
     content: "\ea30";
 }
 
-.nc-hotel::before {
+.nc-microscope::before {
     content: "\ea31";
 }
 
-.nc-b-security::before {
+.nc-meeting::before {
     content: "\ea32";
 }
 
-.nc-filter-organization::before {
+.nc-map-big::before {
     content: "\ea33";
+}
+
+.nc-list::before {
+    content: "\ea34";
+}
+
+.nc-light-traffic::before {
+    content: "\ea35";
+}
+
+.nc-lab::before {
+    content: "\ea36";
+}
+
+.nc-l-security::before {
+    content: "\ea37";
+}
+
+.nc-keyboard::before {
+    content: "\ea38";
+}
+
+.nc-keyboard-wireless::before {
+    content: "\ea39";
+}
+
+.nc-hierarchy-54::before {
+    content: "\ea3a";
+}
+
+.nc-hierarchy-53::before {
+    content: "\ea3b";
+}
+
+.nc-dashboard-half::before {
+    content: "\ea3c";
+}
+
+.nc-code-editor::before {
+    content: "\ea3d";
+}
+
+.nc-circle-10::before {
+    content: "\ea3e";
+}
+
+.nc-chat-round-content::before {
+    content: "\ea3f";
+}
+
+.nc-chart-bar-33::before {
+    content: "\ea40";
+}
+
+.nc-calendar-grid-61::before {
+    content: "\ea41";
+}
+
+.nc-calendar-check-59::before {
+    content: "\ea42";
+}
+
+.nc-bulb-63::before {
+    content: "\ea44";
+}
+
+.nc-book-open-2::before {
+    content: "\ea45";
+}
+
+.nc-board-29::before {
+    content: "\ea46";
+}
+
+.nc-board-28::before {
+    content: "\ea47";
+}
+
+.nc-archive-check::before {
+    content: "\ea48";
+}
+
+.nc-a-edit::before {
+    content: "\ea49";
+}
+
+.nc-a-check::before {
+    content: "\ea4a";
+}
+
+.nc-wifi::before {
+    content: "\ea4b";
+}
+
+.nc-square-download::before {
+    content: "\ea4c";
+}
+
+.nc-launch-47::before {
+    content: "\ea4d";
+}
+
+.nc-barcode::before {
+    content: "\ea4e";
+}
+
+.nc-tag-content::before {
+    content: "\ea4f";
+}
+
+.nc-b-security::before {
+    content: "\ea50";
+}
+
+.nc-lock::before {
+    content: "\ea51";
+}
+
+.nc-badge-1::before {
+    content: "\ea52";
 }
 

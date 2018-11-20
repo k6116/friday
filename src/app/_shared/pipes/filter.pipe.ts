@@ -29,7 +29,15 @@ export class FilterPipe implements PipeTransform {
     // return all (or nothing) if no objects or no filter given
     if (!objects || !hasFilter) {
       // console.log('no filter provided, returning all objects');
-      return objects;
+      if (options.hasOwnProperty('returnAll')) {
+        if (options.returnAll) {
+          return objects;
+        } else {
+          return [];
+        }
+      } else {
+        return objects;
+      }
     }
 
     // no string filter, but has the pagination filter turned on

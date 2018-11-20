@@ -267,7 +267,7 @@ export class ToolsService {
     let quarterArr;
     fiscalQuarters.forEach((fiscalQuarter, index) => {
       if (fiscalQuarter.includes(month)) {
-        quarterIndex = index + 1;
+        quarterIndex = index;
         quarterArr = fiscalQuarter;
       }
     });
@@ -278,7 +278,7 @@ export class ToolsService {
     // get the start and end of the quarter in the proper string format
     // NOTE: subtracting 1 from the month here since months are zero indexed in moment
     const startOfQuarter = moment({year: year, month: quarterArr[0] - 1}).format(format);
-    const endOfQuarter = moment({year: year, month: quarterArr[2] - 1}).add(1, 'months').format(format);
+    const endOfQuarter = moment({year: year + (quarterIndex === 0 ? 1 : 0), month: quarterArr[2] - 1}).add(1, 'months').format(format);
 
     // initialize the empty string array to return
     const range: string[] = [];
@@ -402,7 +402,8 @@ export class ToolsService {
       'nc-board-28': projectTypeName === 'Initiative',
       'nc-bulb-63': projectTypeName === 'TOF Engaged',
       'nc-sign-closed': projectTypeName === 'Completed',
-      'nc-gantt': projectTypeName === 'General'
+      'nc-gantt': projectTypeName === 'Individual'
+      // 'nc-personal-trainer': projectTypeName === 'Individual'
     };
     return classes;
   }

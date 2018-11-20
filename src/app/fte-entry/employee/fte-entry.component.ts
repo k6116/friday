@@ -66,6 +66,7 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   userFTEs: any;  // array to store user FTE data
   userFTEsFlat: any;  // array to store user FTE data (flattened/non-treeized version)
   display: boolean; // TODO: find a better solution to FTE display timing issue
+  showSpinner: boolean; // toggle display of the spinner while waiting for data to load
   displayFTETable = false;
   projects: any;  // for aliasing formarray
   months: string[] = [];
@@ -125,13 +126,18 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
 
   async ngOnInit() {
 
+    // show the spinner
+    this.showSpinner = true;
+
+    // hide the footer until the page is ready to be rendered
+    this.toolsService.hideFooter();
+
+    this.months = await this.buildMonthsArray();
     this.setSliderConfig(); // initalize slider config
 
     this.projectList = await this.apiDataProjectService.getProjects().toPromise();
 
     this.fteComponentInit();  // initialize the FTE entry component
-
-    this.buildMonthsArray();
     this.fteFormChangeListener();
     this.getJobTitleList();
 
@@ -235,7 +241,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   }
 
   onModalClosed(selectedProject: any) {
-    // console.log('on modal closed fired');
     this.display = true;  // make sure FTE entry form is visible
     setTimeout(() => {
       this.showProjectsModal = false;
@@ -419,8 +424,8 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
   onTestFormClick() {
     // console.log('form object (this.form):');
     // console.log(this.FTEFormGroup);
-    console.log('form data (this.form.value.FTEFormArray):');
-    console.log(this.FTEFormGroup.value.FTEFormArray);
+    // console.log('form data (this.form.value.FTEFormArray):');
+    // console.log(this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
     // console.log(this.fteProjectVisible);
   }
@@ -520,32 +525,43 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     this.apiDataFteService.indexUserData()
     .subscribe(
       res => {
-        // console.log('indexUserData', res.nested);
         this.userFTEs = res.nested;
         this.userFTEsFlat = res.flat;
         this.buildFteEditableArray();
         this.buildFteEntryForm(); // initialize the FTE Entry form, which is dependent on FTE data being retrieved
-        this.display = true;  // ghetto way to force rendering after FTE data is fetched
-        // this.projects = this.userFTEs;
         const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
         this.projects = FTEFormArray.controls;
+        this.showSpinner = false;   // hide the spinner
+        this.display = true;  // ghetto way to force rendering after FTE data is fetched
+        this.toolsService.showFooter(); // show the footer
       },
       err => {
         console.error(err);
+        this.showSpinner = false;   // hide the spinner
       }
     );
   }
 
   buildMonthsArray() {
-    // build an array of months that matches the slider length, based on today's date
-    const startDate = moment().utc().startOf('year').subtract(2, 'months').subtract(1, 'years');
-    const endDate = moment(startDate).add(3, 'years');
+    // build an array of months spanning 3 FYs [lastFY, thisFY, currentFY]
+    let startDate = moment().utc().startOf('month');
 
+    if ([10, 11].includes(moment(startDate).month()) ) {
+      // if current month is Nov or Dec, we only need to go back 1 calendar year
+      startDate = moment(startDate).month('Nov').subtract(1, 'year');
+    } else {
+      // otherwise, it's 2 calendar years
+      startDate = moment(startDate).month('Nov').subtract(2, 'years');
+    }
+
+    const endDate = moment(startDate).add(3, 'years');
     const numMonths = endDate.diff(startDate, 'months');
+    const monthsArray = [];
 
     for (let i = 0; i < numMonths; i++) {
-      this.months.push(moment(startDate).add(i, 'months'));
+      monthsArray.push(moment(startDate).add(i, 'months'));
     }
+    return monthsArray;
   }
 
   buildFteEditableArray() {
@@ -638,7 +654,6 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     const tempProj: any = projFormArray;
     tempProj.projectID = proj.projectID;
     tempProj.projectName = proj.projectName;
-    // tempProj.projectRole = proj.projectRole;
     tempProj.jobTitle = proj.jobTitle;
     tempProj.jobTitleID = proj.jobTitleID;
     tempProj.jobSubTitle = proj.jobSubTitle;
@@ -647,38 +662,32 @@ export class FteEntryEmployeeComponent implements OnInit, OnDestroy, ComponentCa
     FTEFormArray.push(tempProj);  // push the temp formarray as 1 object in the Project formarray
   }
 
-  makeFyLabels() {
-    // generate slider labels based on current date
-    let startDate = moment().startOf('year').subtract(2, 'months'); // first day of this FY
-    startDate = moment(startDate).subtract(1, 'year');  // first day of last FY
-    const month = moment(startDate).month();
-    let firstQuarter = moment(startDate).fquarter(-3).quarter;
-    let firstYear = moment(startDate).fquarter(-3).year;
-
-    // make an array of label strings, ie - [Q4'17, Q1'18]
-    for ( let i = 0; i < 12; i++) {
-      this.fqLabelArray.push(`Q${firstQuarter} - ${firstYear.toString().slice(2)}`);
-      firstQuarter++;
-      if (firstQuarter > 4) {
-        this.fyLabelArray.push(`${firstYear.toString()}`);
-        firstYear++;
-        firstQuarter = 1;
-      }
-    }
-  }
-
   setSliderConfig() {
 
-    this.makeFyLabels();
+    this.months.forEach( month => {
+      // generate the label string for each month, ie: Q4'17
+      const quarter = moment(month).fquarter(-3).quarter;
+      const year = moment(month).fquarter(-3).year;
+      const label = `Q${quarter} - ${year.toString().slice(2)}`;
+
+      // if the label isn't in the array, add it
+      if (!this.fqLabelArray.includes(label)) {
+        this.fqLabelArray.push(label);
+      }
+
+      // if the year isn't in the array of year labels, add it
+      if (!this.fyLabelArray.includes(year.toString())) {
+        this.fyLabelArray.push(year.toString());
+      }
+    });
 
     // set slider starting range based on current date
-    const startDate = moment().startOf('month');
-    const month = moment(startDate).month();
-    if (month === 10 || month === 11 || month === 0) {
+    const thisQuarter = moment().startOf('month').fquarter(-3).quarter;
+    if (thisQuarter === 1) {
       this.sliderRange = [3, 6]; // Q1
-    } else if (month === 1 || month === 2 || month === 3) {
+    } else if (thisQuarter === 2) {
       this.sliderRange = [4, 7]; // Q2
-    } else if (month === 4 || month === 5 || month === 6) {
+    } else if (thisQuarter === 3) {
       this.sliderRange = [5, 8];
     } else {
       this.sliderRange = [6, 9];
