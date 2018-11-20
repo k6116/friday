@@ -18,7 +18,7 @@ import { DashboardTeamSelectService } from './services/dashboard-team-select.ser
 import { TeamSelectModalComponent } from './modal/team-select-modal/team-select-modal.component';
 
 
-declare var $: any
+declare var $: any;
 declare var require: any;
 import * as Highcharts from 'highcharts';
 require('highcharts/modules/data.js')(Highcharts);
@@ -60,6 +60,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   nestedManagerData: any = [];
   displayEditTeamButton: boolean;
   showTeamSelectModal: boolean;
+  selectedChartForEdit: string;
+  selectedManagerForPieChart: string; // email address of team manager for pie chart
+  selectedManagerForStackedColumnChart: string; // email address of team manager for stacked column chart
 
 
   @HostListener('window:resize', ['$event'])
@@ -122,7 +125,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     console.log('logged in user:');
     console.log(this.authService.loggedInUser);
 
-    // determine if the edit team button/icon should be displayed
+    // display the edit team butons for the donut and stacked column chart
+    // if the user is a manager or is an Admin
     if (this.authService.loggedInUser.isManager || this.authService.loggedInUser.roleName === 'Admin') {
       this.displayEditTeamButton = true;
     }
@@ -157,6 +161,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.dashboardData = res;
+          console.log('dashboard data (using forkjoin):');
+          console.log(this.dashboardData);
           this.renderDashboard();
           this.showDashboard = true;
           this.showSpinner = false;
@@ -184,10 +190,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   renderDashboard() {
     this.displayMessages();
-    this.renderPieChart();
+    this.renderPieChart(this.dashboardData[0]);
     // // this.renderParetoChart();
-    this.renderDonutChart();
-    this.renderStackedColumnChart();
+    this.renderDonutChart(this.dashboardData[0], `Your Team's FTEs by Project Type`);
+    this.renderStackedColumnChart(this.dashboardData[0], `Your Team's FTEs by Project Type`);
     if (this.authService.loggedInUser.isManager) {
       this.displayProgressGauge = true;
       this.renderProgressGauge();
@@ -195,30 +201,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.displayProgressGauge = false;
     }
     this.chartsRendered = true;
+
+    // store the team manager's email address for the pie chart and stacked column chart
+    this.selectedManagerForPieChart = this.authService.loggedInUser.managerEmailAddress;
+    this.selectedManagerForStackedColumnChart = this.authService.loggedInUser.managerEmailAddress;
+
   }
 
   displayMessages() {
     this.messages = this.dashboardMessagesService.displayMessages(this.dashboardData);
   }
 
-  renderPieChart() {
-    const chartOptions = this.dashboardPieService.buildChartOptions(this.dashboardData[0]);
+  renderPieChart(fteData: any) {
+    const chartOptions = this.dashboardPieService.buildChartOptions(fteData);
     this.chartPie = Highcharts.chart('pieChart', chartOptions);
     setTimeout(() => {
       this.chartPie.reflow();
     }, 0);
   }
 
-  renderDonutChart() {
-    const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardData[0]);
+  renderDonutChart(fteData: any, title: string, selectedManager?: any) {
+    const chartOptions = this.dashboardDonutService.buildChartOptions(fteData, title, selectedManager);
     this.chartDonut = Highcharts.chart('donutChart', chartOptions);
     setTimeout(() => {
       this.chartDonut.reflow();
     }, 0);
   }
 
-  renderStackedColumnChart() {
-    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
+  renderStackedColumnChart(fteData: any, title: string, selectedManager?: any) {
+    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(fteData, title, selectedManager);
     this.chartStackedColumn = Highcharts.chart('stackedColumnChart', chartOptions);
     setTimeout(() => {
       this.chartStackedColumn.reflow();
@@ -323,6 +334,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     console.log(`edit team button clicked for chart: ${chart}`);
 
+    this.selectedChartForEdit = chart;
+
     this.showTeamSelectModal = true;
 
     // display the modal
@@ -351,6 +364,82 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     console.log('selected manager:');
     console.log(selectedManager);
+
+    if (selectedManager && this.selectedChartForEdit === 'donutChart') {
+      this.updateDonutChart(selectedManager);
+    } else if (selectedManager && this.selectedChartForEdit === 'stackedColumnChart') {
+      this.updatedStackedColumnChart(selectedManager);
+    }
+
+  }
+
+  async updateDonutChart(selectedManager: any) {
+
+    // if the selected manager is the same that is currently displayed, stop here (return early)
+    if (selectedManager.emailAddress === this.selectedManagerForPieChart) {
+      console.log('update donut chart aborted, same manager/team selected');
+      return;
+    }
+
+    const fteData = await this.getFTEData(selectedManager)
+    .catch(err => {
+      console.error(err);
+    });
+
+    console.log('response from get fte data for selected manager:');
+    console.log(fteData);
+
+    // set the chart title
+    let title;
+    if (selectedManager.emailAddress === this.authService.loggedInUser.managerEmailAddress) {
+      title = `Your Team's FTEs by Project Type`;
+    } else {
+      title = `${selectedManager.fullName}'s Team's FTEs by Project Type`;
+    }
+
+    this.renderDonutChart(fteData, title, selectedManager);
+
+    this.selectedManagerForPieChart = selectedManager.emailAddress;
+
+  }
+
+
+  async updatedStackedColumnChart(selectedManager: any) {
+
+    // if the selected manager is the same that is currently displayed, stop here (return early)
+    if (selectedManager.emailAddress === this.selectedManagerForPieChart) {
+      console.log('update stacked aborted, same manager/team selected');
+      return;
+    }
+
+    const fteData = await this.getFTEData(selectedManager)
+    .catch(err => {
+      console.error(err);
+    });
+
+    console.log('response from get fte data for selected manager:');
+    console.log(fteData);
+
+    // set the chart title
+    let title;
+    if (selectedManager.emailAddress === this.authService.loggedInUser.managerEmailAddress) {
+      title = `Your Team's FTEs by Project`;
+    } else {
+      title = `${selectedManager.fullName}'s Team's FTEs by Project`;
+    }
+
+    this.renderStackedColumnChart(fteData, title, selectedManager);
+
+    this.selectedManagerForStackedColumnChart = selectedManager.emailAddress;
+
+  }
+
+
+  getFTEData(selectedManager): Promise<any> {
+
+    const fiscalQuarterRange = this.toolsService.fiscalQuarterRange(moment(), 'MM-DD-YYYY');
+
+    return this.apiDataDashboardService.getFTEData(fiscalQuarterRange[0], fiscalQuarterRange[1], selectedManager.emailAddress).toPromise();
 
   }
 

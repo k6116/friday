@@ -4,7 +4,7 @@ div.modal-dialog.team-select-modal-dialog {
 }
 
 div.modal-body.team-select-modal-body {
-  min-height: 400px;
+  min-height: 450px;
 }
 
 i.fa.select-icon, i.fa.cancel-icon {
@@ -14,7 +14,7 @@ i.fa.select-icon, i.fa.cancel-icon {
 div.org-dropdown-control {
   position: relative;
   display: inline-block;
-  width: 200px;
+  width: 217px;
   height: 34px;
   padding: 6px 12px;
   font-size: 14px;
@@ -43,7 +43,7 @@ app-team-select-dropdown {
 div.org-dropdown-cont {
   position: absolute;
   z-index: 1;
-  max-height: 250px;
+  max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
   width: 217px;

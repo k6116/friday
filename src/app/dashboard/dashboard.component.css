@@ -33,6 +33,8 @@ div.edit-button-cont {
   left: 25px;
   z-index: 1;
   cursor: pointer;
+  background-color: white;
+  padding-right: 10px;
 }
 
 div.edit-button-cont.donut {
@@ -165,4 +167,11 @@ div.dashboard-stacked-column-cont {
   width: 100%;
   min-width: 750px;
   white-space: nowrap;
+}
+
+
+.tev{
+  display: block;
+  background-color: #fff;
+  padding: 20px;
 }

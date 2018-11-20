@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
+import { AuthService } from '../../_shared/services/auth.service';
 
 declare var $: any;
 
@@ -11,7 +12,8 @@ export class DashboardTeamSelectService {
   nestedManagerData: any;
 
   constructor(
-    private apiDataOrgService: ApiDataOrgService
+    private apiDataOrgService: ApiDataOrgService,
+    private authService: AuthService
   ) { }
 
 
@@ -40,7 +42,14 @@ export class DashboardTeamSelectService {
   // get raw data from the stored procedure with the management org hierarchy
   getManagementOrgStructureData(): Promise<any> {
 
-    return this.apiDataOrgService.getManagementOrgStructure('ron_nersesian@keysight.com').toPromise();
+    let emailAddress: string;
+    if (!this.authService.loggedInUser.isManager && this.authService.loggedInUser.roleName === 'Admin') {
+      emailAddress = 'ron_nersesian@keysight.com';
+    } else if (this.authService.loggedInUser.isManager) {
+      emailAddress = this.authService.loggedInUser.email;
+    }
+
+    return this.apiDataOrgService.getManagementOrgStructure(emailAddress).toPromise();
 
     // ron_nersesian@keysight.com
     // soon-chai_gooi@keysight.com

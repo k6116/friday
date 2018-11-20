@@ -12,8 +12,15 @@ export class DashboardDonutService {
     private toolsService: ToolsService
   ) { }
 
-  buildChartOptions(dashboardFTEData: any): any {
+  buildChartOptions(dashboardFTEData: any, title: string, selectedManager?: any): any {
 
+    // if the selected manager is passed in, filter that object out from the fte data
+    // TO-DO BILL: check with the team to see if this is desired behavior
+    if (selectedManager) {
+      dashboardFTEData = dashboardFTEData.filter(fteData => {
+        return fteData.emailAddress !== selectedManager.emailAddress;
+      });
+    }
 
     // get highcharts colors
     const colors = Highcharts.getOptions().colors;
@@ -139,7 +146,7 @@ export class DashboardDonutService {
         height: 450
       },
       title: {
-          text: `Your Team's FTEs by Project Type`
+          text: title
       },
       subtitle: {
         text: `For current fiscal quarter ${fiscalQuarter} (${monthsRange}).`

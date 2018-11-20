@@ -18,7 +18,15 @@ export class DashboardStackedColumnService {
 
   // take in the fte data and return the chart options for the stacked column chart
   // for the team ftes
-  buildChartOptions(dashboardFTEData: any): any {
+  buildChartOptions(dashboardFTEData: any, title: string, selectedManager?: any): any {
+
+    // if the selected manager is passed in, filter that object out from the fte data
+    // TO-DO BILL: check with the team to see if this is desired behavior
+    if (selectedManager) {
+      dashboardFTEData = dashboardFTEData.filter(fteData => {
+        return fteData.emailAddress !== selectedManager.emailAddress;
+      });
+    }
 
     // iterate through the data and build an array of object with name, projectName, and fte
     let employeeProjectFTEs = [];
@@ -146,10 +154,12 @@ export class DashboardStackedColumnService {
     const chartOptions = {
       chart: {
         type: 'column',
-        height: 450
+        height: 450,
+        marginTop: 100,
+        spacingTop: 10
       },
       title: {
-        text: `Your Team's FTEs by Project`
+        text: title
       },
       subtitle: {
         text: `For current fiscal quarter ${fiscalQuarter} (${monthsRange}).`
@@ -190,8 +200,18 @@ export class DashboardStackedColumnService {
         enabled: false
       },
       tooltip: {
-        headerFormat: '<b>{point.x}</b><br/>',
-        pointFormat: '{series.name}: {point.y:.0f}%<br/>Total: {point.stackTotal:.0f}%'
+        // headerFormat: '<b>{point.x}</b><br/>',
+        // pointFormat: '{series.name}: {point.y:.0f}%<br/>Total: {point.stackTotal:.0f}%',
+        useHTML: true,
+        padding: 0,
+        formatter: function() {
+          console.log(this);
+          return `
+          <div class="tev" style="padding: 7px; z-index: 10">
+            <span style="font-size: 10px">` + this.key + `</span><br/>
+            <span style="color:` + this.point.color + `">\u25CF</span> ` + this.series.name + `: <b>` + this.point.y + `</b><br/>
+          </div>`;
+        }
       },
       plotOptions: {
         column: {
