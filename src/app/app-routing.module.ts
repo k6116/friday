@@ -47,6 +47,8 @@ import { TransferProjectsComponent } from './setups/transfer-projects/transfer-p
 import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
 import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
+import { AdvancedFiltersComponent } from './projects/advanced-filters/advanced-filters.component';
+
 
 // BOM module stuff
 // temporarily hiding until BOM editor is complete
@@ -91,6 +93,7 @@ const routes: Routes = [
       { path: 'reports/jarvis-adoption', component: OrgViewerComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
+      { path: 'reports/advanced-filters', component: AdvancedFiltersComponent },
       { path: 'reports/project-fte-rollup', component: ProjectFteRollupComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }

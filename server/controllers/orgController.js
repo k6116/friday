@@ -100,6 +100,20 @@ function getTeamFteList(req, res) {
     });
 }
 
+function getManagementOrgStructure(req, res) {
+  const emailAddress = req.params.emailAddress;
+  sequelize.query(`EXECUTE resources.ManagementOrgStructure :emailAddress`, {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+  .then(org => {
+    res.json(org);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
 function getOrgStructureDrillDown(req, res) {
   // Retrieves muptiple levels of employees and managers
   const emailAddress = req.params.emailAddress;
@@ -138,6 +152,7 @@ module.exports = {
   getEmployeeList: getEmployeeList,
   getOrgFtes: getOrgFtes,
   getTeamFteList: getTeamFteList,
+  getManagementOrgStructure: getManagementOrgStructure,
   getOrgStructureDrillDown: getOrgStructureDrillDown,
   getOrgStructureDrillUp: getOrgStructureDrillUp
 }

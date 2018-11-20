@@ -83,6 +83,7 @@ router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinate
 router.get('/org/:emailAddress', controllers.org.show);
 router.get('/org/getTeamList/:emailAddress', controllers.org.getTeamList);
 router.get('/org/getEmployeeList/:emailAddress', controllers.org.getEmployeeList);
+router.get('/org/getManagementOrgStructure/:emailAddress', controllers.org.getManagementOrgStructure);
 router.get('/org/getOrgStructureDrillUp/:emailAddress', controllers.org.getOrgStructureDrillUp);
 router.get('/org/getOrgStructureDrillDown/:emailAddress', controllers.org.getOrgStructureDrillDown);
 
@@ -125,6 +126,12 @@ router.post('/updateSchedule/:userID', controllers.schedules.updateSchedule);
 router.post('/destroySchedule/:userID', controllers.schedules.destroySchedule);
 router.post('/insertScheduleDetailBulk/:userID', controllers.schedules.insertScheduleDetailBulk);
 router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedules.updateScheduleDetailBulk);
+
+// ADVANCED FILTER CONTROLLER
+router.get('/indexProjectsAdvancedFilter', controllers.advancedFilter.indexProjectsAdvancedFilter);
+router.post('/indexAdvancedFilteredResults/', controllers.advancedFilter.indexAdvancedFilteredResults);
+router.get('/indexProjectChildren/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectChildren);
+router.get('/indexProjectParents/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectParents);
 
 // MATPLAN CONTROLLER
 router.get('/matplan/matplan/show/:matplanID', controllers.matplan.show)

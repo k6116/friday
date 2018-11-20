@@ -772,7 +772,7 @@ function indexPLCStatus(req, res) {
   FROM  
       projects.PLCStatus
   ORDER BY
-      PLCStatusName`
+      PLCSequence`
   
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
   .then(p => {    
