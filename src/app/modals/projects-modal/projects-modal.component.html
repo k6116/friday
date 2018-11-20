@@ -16,6 +16,15 @@
             </div>
           <!--  -->
 
+          <div class="dropdown btn-help ">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-question"></i>&nbsp;&nbsp;Help
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" (click)="onMoreInfoClick()">More Info</a>
+            </div>
+          </div>
+
           <div class="projects-modal-close">
             <i class="nc-icon nc-small-remove projects-modal-close-button" (click)="onCancelClicked()"></i>
           </div>
@@ -38,6 +47,7 @@
               <div class="card-body">
                 <h5 class="card-title">{{ project.ProjectTypeName }}</h5>
                 <p class="card-text">{{ project.Description }}</p>
+                <p class="card-owner">Owner: {{ project.ProjectOwnerFullName }}</p>
               </div>
               <div class="card-buttons-underlay"></div>
               <div class="card-buttons">
@@ -52,13 +62,13 @@
                 </a> -->
               </div>
               <div class="card-footer">
-                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectPermissionApprovedList?.indexOf(project.ProjectID)!=-1 || projectPermissionTeamList?.indexOf(project.ProjectID)!=-1"
+                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)!=-1 || projectPermissionApprovedList?.indexOf(project.ProjectID)!=-1 || projectPermissionTeamList?.indexOf(project.ProjectOwner)!=-1"
                     class="btn btn-outline-success project-select-button" (click)="onSelectedProject(project)">Select</button>
-                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)===-1 && projectPermissionApprovedList?.indexOf(project.ProjectID)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)===-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
+                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)===-1 && projectPermissionApprovedList?.indexOf(project.ProjectID)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)===-1 && projectPermissionTeamList?.indexOf(project.ProjectOwner)===-1"
                     class="btn btn-outline-warning project-select-button" [disabled]="disabledRequestBtn"  (click)="onProjectPermissionClick(project, 'Request')">Request Access</button>
-                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1"
+                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionSubmittedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectOwner)===-1"
                     class="btn btn-outline-info" [disabled]="disabledRequestBtn"  (click)="onProjectPermissionClick(project, 'Submitted')">Cancel Request</button>
-                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectID)===-1" 
+                  <button type="button" *ngIf="publicProjectTypes?.indexOf(project.ProjectTypeName)===-1 && projectPermissionDeniedList?.indexOf(project.ProjectID)!=-1 && projectPermissionTeamList?.indexOf(project.ProjectOwner)===-1" 
                     class="btn btn-outline-danger" [disabled]="disabledRequestBtn" (click)="onProjectPermissionClick(project, 'Denied')">Re-Request Access</button>
               </div>
             </div>

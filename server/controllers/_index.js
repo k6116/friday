@@ -1,5 +1,6 @@
 
 module.exports = {
+  advancedFilter: require('./advancedFilterController'),
   analytics: require('./analyticsController'),
   auth: require('./authController'),
   bom: require('./bomController'),

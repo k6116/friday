@@ -109,7 +109,23 @@ function getManagementOrgStructure(req, res) {
   console.log(decodedToken);
 
   const emailAddress = req.params.emailAddress;
+  
   sequelize.query(`EXECUTE resources.ManagementOrgStructure :emailAddress`, {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+  .then(org => {
+    res.json(org);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
+function getOrgStructureDrillDown(req, res) {
+  // Retrieves muptiple levels of employees and managers
+  const emailAddress = req.params.emailAddress;
+  sequelize.query('EXECUTE resources.OrgStructureDrillDown :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
     .then(org => {
       res.json(org);
     })
@@ -121,6 +137,22 @@ function getManagementOrgStructure(req, res) {
     });
 }
 
+function getOrgStructureDrillUp(req, res) {
+  // Retrieves management chain above the employee
+  const emailAddress = req.params.emailAddress;
+  sequelize.query('EXECUTE resources.OrgStructureDrillUp :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+    .then(org => {
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+
 module.exports = {
   show: show,
   getSubordinatesFlat: getSubordinatesFlat,
@@ -128,5 +160,7 @@ module.exports = {
   getEmployeeList: getEmployeeList,
   getOrgFtes: getOrgFtes,
   getTeamFteList: getTeamFteList,
-  getManagementOrgStructure: getManagementOrgStructure
+  getManagementOrgStructure: getManagementOrgStructure,
+  getOrgStructureDrillDown: getOrgStructureDrillDown,
+  getOrgStructureDrillUp: getOrgStructureDrillUp
 }

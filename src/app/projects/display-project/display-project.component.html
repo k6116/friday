@@ -52,7 +52,7 @@ considering topnav, sidenav, and footer -->
           <div class="project-description">
             {{ project.Description }}
           </div>
-          
+
         </div>
 
 
@@ -71,6 +71,11 @@ considering topnav, sidenav, and footer -->
             <div class="record-history-cont">
               <i class="nc-icon nc-time-clock"></i>
               <div class="record-history-text" (mouseenter)="onRecordHistoryMouseEnter()" (mouseleave)="onRecordHistorMouseLeave()">Record History</div>
+            </div>
+
+            <div data-field="owner" class="project-attribute-cont">
+              <div class="project-attribute-label">Project Owner</div>
+              <div class="project-attribute-value owner">{{ project.ProjectOwnerFullName ? project.ProjectOwnerFullName : '--' }}</div>
             </div>
 
             <div data-field="notes" class="project-attribute-cont">
@@ -108,6 +113,16 @@ considering topnav, sidenav, and footer -->
         <div class="project-details-right-cont">
 
           <ul class="project-attributes-list">
+
+              <li data-field="id" class="project-attributes-list-item">
+                <span class="project-attributes-label">
+                  <span class="nc-icon nc-badge-1"></span>
+                  JarvisID
+                </span>
+                <span class="project-attributes-value">
+                  {{ project.ProjectID }}
+                </span>
+              </li>
 
             <li data-field="status" class="project-attributes-list-item">
               <span class="project-attributes-label">

@@ -119,11 +119,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     this.nestedManagerData.push(nestedManagerData);
 
-    console.log('nested manager data in dashboard component:');
-    console.log(this.nestedManagerData);
+    // console.log('nested manager data in dashboard component:');
+    // console.log(this.nestedManagerData);
 
-    console.log('logged in user:');
-    console.log(this.authService.loggedInUser);
+    // console.log('logged in user:');
+    // console.log(this.authService.loggedInUser);
 
     // display the edit team butons for the donut and stacked column chart
     // if the user is a manager or is an Admin
@@ -161,8 +161,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.dashboardData = res;
-          console.log('dashboard data (using forkjoin):');
-          console.log(this.dashboardData);
+          // console.log('dashboard data (using forkjoin):');
+          // console.log(this.dashboardData);
           this.renderDashboard();
           this.showDashboard = true;
           this.showSpinner = false;
@@ -332,7 +332,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onEdiTeamClick(chart: string) {
 
-    console.log(`edit team button clicked for chart: ${chart}`);
+    // console.log(`edit team button clicked for chart: ${chart}`);
 
     this.selectedChartForEdit = chart;
 
@@ -356,14 +356,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onModalClose(selectedManager?: any) {
 
-    console.log('modal close event fired');
+    // console.log('modal close event fired');
     $('#teamSelectModal').modal('hide');
     setTimeout(() => {
       $('#teamSelectModal').modal('dispose');
     }, 500);
 
-    console.log('selected manager:');
-    console.log(selectedManager);
+    // console.log('selected manager:');
+    // console.log(selectedManager);
 
     if (selectedManager && this.selectedChartForEdit === 'donutChart') {
       this.updateDonutChart(selectedManager);
@@ -377,7 +377,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // if the selected manager is the same that is currently displayed, stop here (return early)
     if (selectedManager.emailAddress === this.selectedManagerForPieChart) {
-      console.log('update donut chart aborted, same manager/team selected');
+      // console.log('update donut chart aborted, same manager/team selected');
       return;
     }
 
@@ -386,8 +386,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       console.error(err);
     });
 
-    console.log('response from get fte data for selected manager:');
-    console.log(fteData);
+    // console.log('response from get fte data for selected manager:');
+    // console.log(fteData);
 
     // set the chart title
     let title;
@@ -408,7 +408,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // if the selected manager is the same that is currently displayed, stop here (return early)
     if (selectedManager.emailAddress === this.selectedManagerForStackedColumnChart) {
-      console.log('update stacked aborted, same manager/team selected');
+      // console.log('update stacked aborted, same manager/team selected');
       return;
     }
 
@@ -417,8 +417,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       console.error(err);
     });
 
-    console.log('response from get fte data for selected manager:');
-    console.log(fteData);
+    // console.log('response from get fte data for selected manager:');
+    // console.log(fteData);
 
     // set the chart title
     let title;

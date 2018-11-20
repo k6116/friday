@@ -217,6 +217,17 @@ div.project-description:after {
   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
+div.project-id {
+  position: relative;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgb(132, 132, 132);
+  height: 1.4em;
+  line-height: 1.4em;
+  overflow: hidden;
+  float: right;
+}
+
 
 
 
