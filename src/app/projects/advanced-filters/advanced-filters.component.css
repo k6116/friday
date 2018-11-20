@@ -290,16 +290,10 @@ table.filter-results th {
   position: sticky;
   top: -1px;
   line-height: 6px !important;
+  white-space: nowrap;
   /* background: white; */
 }
 
 table.table {
   border: 1px solid #dee2e6;
 }
-
-/* .bom-selector {
-  position: absolute;
-  top: 90px;
-  left: 220px;
-  z-index: 1;
-} */

@@ -214,54 +214,57 @@
 
               <!-- Date Range -->
               <div class="d-flex justify-content-between">
-                  <div class="form-group" style="margin-bottom: 4px;">
-                    <label for="fteFrom" class="fte">Date Range</label>
-                    <input #inputFTEFrom
-                        class="form-control fte"
-                        [class.plc-input-invalid]="inputFTEFrom.validity.valid===false"
-                        id="fteFrom" 
-                        type="date"
-                        (change)="onInputFTEChange($event)">
-                  </div>
 
-                  <span style="margin-top: 7px">-</span>
+                <div class="form-group" style="margin-bottom: 4px;">
+                  <label for="fteFrom" class="fte">Date Range</label>
+                  <input #inputFTEFrom
+                      class="form-control fte"
+                      [class.plc-input-invalid]="inputFTEFrom.validity.valid===false"
+                      id="fteFrom" 
+                      type="date"
+                      (change)="onInputFTEChange($event)">
+                </div>
 
-                  <div class="form-group" style="margin-bottom: 4px;"> 
-                    <input #inputFTETo
-                        class="form-control fte"
-                        [class.plc-input-invalid]="inputFTETo.validity.valid===false"
-                        id="fteTo" 
-                        type="date" 
-                        [min]="minDate" 
-                        (change)="onInputFTEChange($event)">
-                  </div>
-                  <!-- Placeholder -->
-                  <div class="form-group" style="margin-bottom: 4px; width: 31px"></div>
+                <span style="margin-top: 7px">-</span>
+
+                <div class="form-group" style="margin-bottom: 4px;"> 
+                  <input #inputFTETo
+                      class="form-control fte"
+                      [class.plc-input-invalid]="inputFTETo.validity.valid===false"
+                      id="fteTo" 
+                      type="date" 
+                      [min]="minDate" 
+                      (change)="onInputFTEChange($event)">
+                </div>
+                <!-- Placeholder -->
+                <div class="form-group" style="margin-bottom: 4px; width: 31px"></div>
+
               </div>
 
               <!-- Total FTEs Min and Max  -->
               <div class="d-flex justify-content-between">
-                  <div class="form-group" style="margin-bottom: 4px;">
-                    <label for="fteFrom" class="fte"># Total FTE</label>
-                    <input #inputFTEMin
-                        class="form-control fte"
-                        style="text-align: end; margin-left: 3px"
-                        id="fteMin" 
-                        type="number"
-                        placeholder="Min">
-                  </div>
+                <div class="form-group" style="margin-bottom: 4px;">
+                  <label for="fteFrom" class="fte"># Total FTE</label>
+                  <input #inputFTEMin
+                      class="form-control fte"
+                      style="text-align: end; margin-left: 3px"
+                      id="fteMin" 
+                      type="number"
+                      placeholder="Min">
+                </div>
 
-                  <span style="margin-top: 7px">-</span>
+                <span style="margin-top: 7px">-</span>
 
-                  <div class="form-group" style="margin-bottom: 4px;"> 
-                    <input #inputFTEMax
-                        class="form-control fte"
-                        style="text-align: end"
-                        id="fteMax" 
-                        type="number"
-                        placeholder="Max"> 
-                  </div>
-                  <button type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)">Go</button>
+                <div class="form-group" style="margin-bottom: 4px;"> 
+                  <input #inputFTEMax
+                      class="form-control fte"
+                      style="text-align: end"
+                      id="fteMax" 
+                      type="number"
+                      placeholder="Max"> 
+                </div>
+                <button type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)">Go</button>
+
               </div>
 
             </div>
@@ -287,11 +290,20 @@
 
               <ng-container *ngFor="let plcStatus of plcStatuses; let l = index">
                 <div class="d-flex justify-content-between" style="margin-top: 5px">
+                  
                   <!-- plc status checkbox -->
                   <div class="custom-control custom-checkbox adv-filter-cb" style="margin: 2px 3px 0px 3px;">
-                    <input type="checkbox" [checked]="checkAllPLC" class="custom-control-input" [attr.name]="plcStatus.PLCStatusName" [attr.id]="'plcStatus' + l" [(ngModel)]="plcStatus.state" (click)="onCheckboxPLCScheduleClick(l, $event, plcStatus)">
+                    <input 
+                        class="custom-control-input"
+                        type="checkbox" 
+                        [checked]="checkAllPLC"  
+                        [attr.name]="plcStatus.PLCStatusName" 
+                        [attr.id]="'plcStatus' + l" 
+                        [(ngModel)]="plcStatus.state"
+                        (click)="onCheckboxPLCScheduleClick(l, $event, plcStatus); inputPLCFrom.value=''; inputPLCTo.value=''">
                     <label class="custom-control-label" [attr.for]="'plcStatus' + l" style="margin-left: 8px">{{ plcStatus.PLCStatusName }}</label>
                   </div>
+
                   <!-- plc status dates -->
                   <div class="d-flex justify-content-between">
                     <input #inputPLCFrom 
@@ -314,6 +326,7 @@
                         [disabled]="!plcStatus.state" 
                         (change)="onInputPLCChange($event, l)">
                   </div>
+
                 </div>
               </ng-container>             
 
