@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { takeUntil } from 'rxjs/operators';
@@ -8,13 +8,14 @@ import { ApiDataFteService } from '../_shared/services/api-data/api-data-fte.ser
 import { AuthService } from '../_shared/services/auth.service';
 import { ToolsService } from '../_shared/services/tools.service';
 import { CacheService } from '../_shared/services/cache.service';
-import { DashboardDonutService } from './dashboard-donut.service';
-import { DashboardGaugeService } from './dashboard-gauge.service';
-import { DashboardMessagesService } from './dashboard-messages.service';
-import { DashboardParetoService } from './dashboard-pareto.service';
-import { DashboardPieService } from './dashboard-pie.service';
-import { DashboardStackedColumnService } from './dashboard-stacked-column.service';
-
+import { DashboardDonutService } from './services/dashboard-donut.service';
+import { DashboardGaugeService } from './services/dashboard-gauge.service';
+import { DashboardMessagesService } from './services/dashboard-messages.service';
+import { DashboardParetoService } from './services/dashboard-pareto.service';
+import { DashboardPieService } from './services/dashboard-pie.service';
+import { DashboardStackedColumnService } from './services/dashboard-stacked-column.service';
+import { DashboardTeamSelectService } from './services/dashboard-team-select.service';
+import { TeamSelectModalComponent } from './modal/team-select-modal/team-select-modal.component';
 
 
 declare var $: any;
@@ -33,9 +34,12 @@ import * as moment from 'moment';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css', '../_shared/styles/common.css'],
   providers: [DashboardDonutService, DashboardGaugeService, DashboardMessagesService, DashboardParetoService,
-    DashboardPieService, DashboardStackedColumnService]
+    DashboardPieService, DashboardStackedColumnService, DashboardTeamSelectService]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+
+  @ViewChild(TeamSelectModalComponent)
+  private teamSelectModalComponent: TeamSelectModalComponent;
 
   messages: any[] = [];
   dashboardData: any;
@@ -53,6 +57,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   chartDonut: any;
   chartStackedColumn: any;
   chartGauge: any;
+  nestedManagerData: any = [];
+  displayEditTeamButton: boolean;
+  showTeamSelectModal: boolean;
+  selectedChartForEdit: string;
+  selectedManagerForPieChart: string; // email address of team manager for pie chart
+  selectedManagerForStackedColumnChart: string; // email address of team manager for stacked column chart
+
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -75,6 +86,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   constructor(
+    private router: Router,
     private apiDataDashboardService: ApiDataDashboardService,
     private apiDataFteService: ApiDataFteService,
     private authService: AuthService,
@@ -86,10 +98,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private dashboardParetoService: DashboardParetoService,
     private dashboardPieService: DashboardPieService,
     private dashboardStackedColumnService: DashboardStackedColumnService,
-    private router: Router
+    private dashboardTeamSelectService: DashboardTeamSelectService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     // get dashboard data, then render dashboard
     this.getDashboardData();
@@ -99,6 +111,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
       (profileHasBeenUpdated: boolean) => {
         this.removeProfileUpdateMessage();
     });
+
+    // get management org structure for the manager select dropdown
+    const nestedManagerData = await this.dashboardTeamSelectService.getNestedManagerStructure()
+    .catch(err => {
+      console.error(err);
+    });
+    this.nestedManagerData.push(nestedManagerData);
+
+    // console.log('nested manager data in dashboard component:');
+    // console.log(this.nestedManagerData);
+
+    // console.log('logged in user:');
+    // console.log(this.authService.loggedInUser);
+
+    // display the edit team butons for the donut and stacked column chart
+    // if the user is a manager or is an Admin
+    if (this.authService.loggedInUser.isManager || this.authService.loggedInUser.roleName === 'Admin') {
+      this.displayEditTeamButton = true;
+    }
 
   }
 
@@ -130,6 +161,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.dashboardData = res;
+          // console.log('dashboard data (using forkjoin):');
+          // console.log(this.dashboardData);
           this.renderDashboard();
           this.showDashboard = true;
           this.showSpinner = false;
@@ -157,10 +190,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   renderDashboard() {
     this.displayMessages();
-    this.renderPieChart();
+    this.renderPieChart(this.dashboardData[0]);
     // // this.renderParetoChart();
-    this.renderDonutChart();
-    this.renderStackedColumnChart();
+    this.renderDonutChart(this.dashboardData[0], `Your Team's FTEs by Project Type`);
+    this.renderStackedColumnChart(this.dashboardData[0], `Your Team's FTEs by Project Type`);
     if (this.authService.loggedInUser.isManager) {
       this.displayProgressGauge = true;
       this.renderProgressGauge();
@@ -168,30 +201,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.displayProgressGauge = false;
     }
     this.chartsRendered = true;
+
+    // store the team manager's email address for the pie chart and stacked column chart
+    this.selectedManagerForPieChart = this.authService.loggedInUser.managerEmailAddress;
+    this.selectedManagerForStackedColumnChart = this.authService.loggedInUser.managerEmailAddress;
+
   }
 
   displayMessages() {
     this.messages = this.dashboardMessagesService.displayMessages(this.dashboardData);
   }
 
-  renderPieChart() {
-    const chartOptions = this.dashboardPieService.buildChartOptions(this.dashboardData[0]);
+  renderPieChart(fteData: any) {
+    const chartOptions = this.dashboardPieService.buildChartOptions(fteData);
     this.chartPie = Highcharts.chart('pieChart', chartOptions);
     setTimeout(() => {
       this.chartPie.reflow();
     }, 0);
   }
 
-  renderDonutChart() {
-    const chartOptions = this.dashboardDonutService.buildChartOptions(this.dashboardData[0]);
+  renderDonutChart(fteData: any, title: string, selectedManager?: any) {
+    const chartOptions = this.dashboardDonutService.buildChartOptions(fteData, title, selectedManager);
     this.chartDonut = Highcharts.chart('donutChart', chartOptions);
     setTimeout(() => {
       this.chartDonut.reflow();
     }, 0);
   }
 
-  renderStackedColumnChart() {
-    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(this.dashboardData[0]);
+  renderStackedColumnChart(fteData: any, title: string, selectedManager?: any) {
+    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(fteData, title, selectedManager);
     this.chartStackedColumn = Highcharts.chart('stackedColumnChart', chartOptions);
     setTimeout(() => {
       this.chartStackedColumn.reflow();
@@ -288,6 +326,120 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.chartGauge) {
       this.chartGauge.reflow();
     }
+
+  }
+
+
+  onEdiTeamClick(chart: string) {
+
+    // console.log(`edit team button clicked for chart: ${chart}`);
+
+    this.selectedChartForEdit = chart;
+
+    this.showTeamSelectModal = true;
+
+    // display the modal
+    setTimeout(() => {
+      $('#teamSelectModal').modal({
+        backdrop: true,
+        keyboard: true
+      });
+    }, 0);
+
+    setTimeout(() => {
+      this.teamSelectModalComponent.testViewChild();
+      this.teamSelectModalComponent.setInitialDropDownEmployee(this.nestedManagerData[0]);
+    }, 0);
+
+
+  }
+
+  onModalClose(selectedManager?: any) {
+
+    // console.log('modal close event fired');
+    $('#teamSelectModal').modal('hide');
+    setTimeout(() => {
+      $('#teamSelectModal').modal('dispose');
+    }, 500);
+
+    // console.log('selected manager:');
+    // console.log(selectedManager);
+
+    if (selectedManager && this.selectedChartForEdit === 'donutChart') {
+      this.updateDonutChart(selectedManager);
+    } else if (selectedManager && this.selectedChartForEdit === 'stackedColumnChart') {
+      this.updatedStackedColumnChart(selectedManager);
+    }
+
+  }
+
+  async updateDonutChart(selectedManager: any) {
+
+    // if the selected manager is the same that is currently displayed, stop here (return early)
+    if (selectedManager.emailAddress === this.selectedManagerForPieChart) {
+      // console.log('update donut chart aborted, same manager/team selected');
+      return;
+    }
+
+    const fteData = await this.getFTEData(selectedManager)
+    .catch(err => {
+      console.error(err);
+    });
+
+    // console.log('response from get fte data for selected manager:');
+    // console.log(fteData);
+
+    // set the chart title
+    let title;
+    if (selectedManager.emailAddress === this.authService.loggedInUser.managerEmailAddress) {
+      title = `Your Team's FTEs by Project Type`;
+    } else {
+      title = `${selectedManager.fullName}'s Team's FTEs by Project Type`;
+    }
+
+    this.renderDonutChart(fteData, title, selectedManager);
+
+    this.selectedManagerForPieChart = selectedManager.emailAddress;
+
+  }
+
+
+  async updatedStackedColumnChart(selectedManager: any) {
+
+    // if the selected manager is the same that is currently displayed, stop here (return early)
+    if (selectedManager.emailAddress === this.selectedManagerForStackedColumnChart) {
+      // console.log('update stacked aborted, same manager/team selected');
+      return;
+    }
+
+    const fteData = await this.getFTEData(selectedManager)
+    .catch(err => {
+      console.error(err);
+    });
+
+    // console.log('response from get fte data for selected manager:');
+    // console.log(fteData);
+
+    // set the chart title
+    let title;
+    if (selectedManager.emailAddress === this.authService.loggedInUser.managerEmailAddress) {
+      title = `Your Team's FTEs by Project`;
+    } else {
+      title = `${selectedManager.fullName}'s Team's FTEs by Project`;
+    }
+
+    this.renderStackedColumnChart(fteData, title, selectedManager);
+
+    this.selectedManagerForStackedColumnChart = selectedManager.emailAddress;
+
+  }
+
+
+  getFTEData(selectedManager): Promise<any> {
+
+    const fiscalQuarterRange = this.toolsService.fiscalQuarterRange(moment(), 'MM-DD-YYYY');
+
+    return this.apiDataDashboardService.getFTEData(fiscalQuarterRange[0], fiscalQuarterRange[1], selectedManager.emailAddress).toPromise();
 
   }
 

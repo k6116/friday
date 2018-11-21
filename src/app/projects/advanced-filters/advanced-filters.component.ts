@@ -146,7 +146,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // get all filters for the page using forkjoin
     this.advancedFilterData = await this.getAdvancedFilterData()
     .catch(err => {
-      console.log(err);
+      // console.log(err);
     });
 
     // seperate out for html
@@ -172,7 +172,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // show the footer
     this.toolsService.showFooter();
 
-    console.log('Advanced filter data:', this.advancedFilterData);
+    // console.log('Advanced filter data:', this.advancedFilterData);
 
   }
 
@@ -253,7 +253,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     });
     this.advancedFilteredResultsFlat = this.advancedFilteredResults.flat; // for excel download
     this.advancedFilteredResults = this.advancedFilteredResults.nested;
-    console.log('this.advancedFilteredResults', this.advancedFilteredResults);
+    // console.log('this.advancedFilteredResults', this.advancedFilteredResults);
 
     // For PLC status headers:
     if (this.advancedFilteredResults.length !== 0) {
@@ -291,12 +291,12 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   async getProjectChildren(projectName: string, projectType: string, projectOwner: string) {
     const children = await this.apiDataAdvancedFilterService.getProjectChildren(projectName, projectType, projectOwner).toPromise();
-    console.log('children', children);
+    // console.log('children', children);
   }
 
   async getProjectParents(projectName: string, projectType: string, projectOwner: string) {
     const parents = await this.apiDataAdvancedFilterService.getProjectParents(projectName, projectType, projectOwner).toPromise();
-    console.log('parents', parents);
+    // console.log('parents', parents);
   }
 
 // PROJECT OWNERS
@@ -505,7 +505,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       }
 
     }
-    console.log('filterObject:', this.filterObject);
+    // console.log('filterObject:', this.filterObject);
 
     // Make the db call
     this.advancedFilter(this.filterObject);
@@ -565,7 +565,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // Make the db call
     this.advancedFilter(this.filterObject);
-    
+
   }
 
   // Project Priority
@@ -576,10 +576,10 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       // ADD ID to array
       // this.arrPriorityID.splice(0, 0, id);
       this.arrPriorityID.push(id);
-    } 
-    
+    }
+
     else if (checked === false) {
-      console.log('checked is false.')
+      // console.log('checked is false.')
       // find ID in array
       for (let i = 0; i < this.arrPriorityID.length; i++) {
         // REMOVE from array
@@ -595,7 +595,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // Make the db call
     this.advancedFilter(this.filterObject);
-    
+
   }
 
 
@@ -715,7 +715,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     const date = event.target.value; // input date
     const id = event.target.id; // either fteFrom or fteTo
     const valid = event.target.validity.valid;
-    console.log(valid)
+    // console.log(valid);
 
      // Only allow dates from 2000 to current date
      if (valid === true ) {
@@ -730,7 +730,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
        this.filterObject.FTEMin = String(0);
        this.filterObject.FTEMax = String(100);
-      console.log(this.filterObject);
+      // console.log(this.filterObject);
 
       // Make the db call
       this.advancedFilter(this.filterObject);
@@ -855,11 +855,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log('Project Owners Array', this.arrOwnerEmail);
+    // console.log('Project Owners Array', this.arrOwnerEmail);
 
     // Convert the array to string
     this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
-    console.log('PROJECT OWNER STRING:', this.filterObject.ProjectOwnerEmails);
+    // console.log('PROJECT OWNER STRING:', this.filterObject.ProjectOwnerEmails);
 
     // Make the db call
     this.advancedFilter(this.filterObject);
@@ -867,7 +867,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   }
 
 // SEARCH BAR
-  
+
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
 
