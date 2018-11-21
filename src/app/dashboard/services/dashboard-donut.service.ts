@@ -143,7 +143,9 @@ export class DashboardDonutService {
     const chartOptions = {
       chart: {
         type: 'pie',
-        height: 450
+        height: 450,
+        marginTop: 80,
+        spacingTop: 10
       },
       title: {
           text: title

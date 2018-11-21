@@ -129,7 +129,9 @@ export class DashboardPieService {
         plotBorderWidth: null,
         plotShadow: false,
         type: 'pie',
-        height: 450
+        height: 450,
+        marginTop: 80,
+        spacingTop: 10
       },
       title: {
         text: `Your FTEs by Project`

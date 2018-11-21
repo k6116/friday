@@ -200,18 +200,18 @@ export class DashboardStackedColumnService {
         enabled: false
       },
       tooltip: {
-        // headerFormat: '<b>{point.x}</b><br/>',
-        // pointFormat: '{series.name}: {point.y:.0f}%<br/>Total: {point.stackTotal:.0f}%',
-        useHTML: true,
-        padding: 0,
-        formatter: function() {
-          console.log(this);
-          return `
-          <div class="tev" style="padding: 7px; z-index: 10">
-            <span style="font-size: 10px">` + this.key + `</span><br/>
-            <span style="color:` + this.point.color + `">\u25CF</span> ` + this.series.name + `: <b>` + this.point.y + `</b><br/>
-          </div>`;
-        }
+        headerFormat: '<b>{point.x}</b><br/>',
+        pointFormat: '{series.name}: {point.y:.0f}%<br/>Total: {point.stackTotal:.0f}%',
+        // useHTML: true,
+        // padding: 0,
+        // formatter: function() {
+        //   console.log(this);
+        //   return `
+        //   <div class="tev" style="padding: 7px; z-index: 10">
+        //     <span style="font-size: 10px">` + this.key + `</span><br/>
+        //     <span style="color:` + this.point.color + `">\u25CF</span> ` + this.series.name + `: <b>` + this.point.y + `</b><br/>
+        //   </div>`;
+        // }
       },
       plotOptions: {
         column: {
