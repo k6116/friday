@@ -145,7 +145,7 @@ function showQuotesForPart(req, res) {
       'supplierID',
       'supplier.supplierName',
       'mfgPartNumber',
-      ['id', 'breaks|id'],
+      ['quoteID', 'breaks|quoteID'],
       ['leadTime', 'breaks|leadTime'],
       ['minOrderQty', 'breaks|minOrderQty'],
       ['price', 'breaks|price'],
@@ -181,12 +181,12 @@ function destroyQuoteForPart(req, res) {
   const deleteIDs = [];
 
   quoteForm.breaks.forEach( priceBreak => {
-    deleteIDs.push(priceBreak.id);
+    deleteIDs.push(priceBreak.quoteID);
   });
 
   console.log('finished parsing IDs to delete');
 
-  return models.Quote.destroy({where: {id: deleteIDs}})
+  return models.Quote.destroy({where: {quoteID: deleteIDs}})
   .then(() => {
     res.json({
       message: `${quoteName} quote deleted!`
@@ -220,11 +220,11 @@ function updateQuoteForPart(req, res) {
   // parse the form to separate out quote records to be deleted/inserted/updated, and suppliers to be inserted
   quoteForm.breaks.forEach( priceBreak => {
     if (priceBreak.toBeDeleted) {
-      deleteIDs.push(priceBreak.id);
+      deleteIDs.push(priceBreak.quoteID);
     }
-    else if (priceBreak.id) {
+    else if (priceBreak.quoteID) {
       updateQuotes.push({
-        id: priceBreak.id,
+        quoteID: priceBreak.quoteID,
         partID: quoteForm.partID,
         supplierID: quoteForm.supplierID,
         mfgPartNumber: quoteForm.mfgPartNumber,
@@ -268,7 +268,7 @@ function updateQuoteForPart(req, res) {
   return sequelize.transaction( (t) => {
     // first, destroy the quote records that the user requested to delete
     return models.Quote.destroy({
-      where: {id: deleteIDs},
+      where: {quoteID: deleteIDs},
       transaction: t
     })
     .then( deletedQuotes => {
@@ -308,7 +308,7 @@ function updateQuoteForPart(req, res) {
             for (let i = 0; i < updateQuotes.length; i++) {
               let newPromise = models.Quote.update(
                 {
-                  id: updateQuotes[i].id,
+                  quoteID: updateQuotes[i].quoteID,
                   partID: updateQuotes[i].partID,
                   supplierID: updateQuotes[i].supplierID,
                   mfgPartNumber: updateQuotes[i].mfgPartNumber,
@@ -322,7 +322,7 @@ function updateQuoteForPart(req, res) {
                   updatedAt: updateQuotes[i].updatedAt
                 },
                 {
-                  where: { id: updateQuotes[i].id },
+                  where: { quoteID: updateQuotes[i].quoteID },
                   transaction: t
                 }
               );

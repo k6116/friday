@@ -42,7 +42,7 @@ const Part = sequelize.define('part',
 
 const Quote = sequelize.define('quote',
   {
-    id: { type: Sequelize.INTEGER, field: 'ID', primaryKey: true, autoIncrement: true },
+    quoteID: { type: Sequelize.INTEGER, field: 'QuoteID', primaryKey: true, autoIncrement: true },
     partID: { type: Sequelize.INTEGER, field: 'PartID' },
     supplierID: { type: Sequelize.INTEGER, field: 'SupplierID' },
     mfgPartNumber: { type: Sequelize.STRING, field: 'MFGPartNumber' },

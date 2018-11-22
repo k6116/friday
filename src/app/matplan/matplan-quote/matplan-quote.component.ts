@@ -156,7 +156,7 @@ export class MatplanQuoteComponent implements OnInit {
     if (Object.keys(priceBreak).length === 0) {
       // if we weren't passed any arguments, initialize an empty formgroup
       return this.fb.group({
-        id: null,
+        quoteID: null,
         leadTime: [null, [Validators.required, Validators.pattern(wholePositiveNumbers)]],
         minOrderQty: [null, [Validators.required, Validators.pattern(wholePositiveNumbers)]],
         nreCharge: [null, [Validators.required, Validators.pattern(decimalPositiveNumbers)]],
@@ -166,7 +166,7 @@ export class MatplanQuoteComponent implements OnInit {
     } else {
       // initialize a formgroup with values from the database
       return this.fb.group({
-        id: priceBreak.id,
+        quoteID: priceBreak.quoteID,
         leadTime: [priceBreak.leadTime, [Validators.required, Validators.pattern(wholePositiveNumbers)]],
         minOrderQty: [priceBreak.minOrderQty, [Validators.required, Validators.pattern(wholePositiveNumbers)]],
         nreCharge: [priceBreak.nreCharge, [Validators.required, Validators.pattern(decimalPositiveNumbers)]],
