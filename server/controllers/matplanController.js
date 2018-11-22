@@ -42,6 +42,19 @@ function show(req, res) {
   });
 }
 
+function indexSuppliers(req, res) {
+  models.Supplier.findAll()
+  .then(supplierList => {
+    res.json(supplierList);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
 function indexProjects(req, res) {
   sequelize.query(
     // select NPIs and NMIs
@@ -129,7 +142,8 @@ function showQuotesForPart(req, res) {
   models.Quote.findAll({
     attributes: [
       'partID',
-      'supplier',
+      'supplierID',
+      'supplier.supplierName',
       'mfgPartNumber',
       ['id', 'breaks|id'],
       ['leadTime', 'breaks|leadTime'],
@@ -137,12 +151,17 @@ function showQuotesForPart(req, res) {
       ['price', 'breaks|price'],
       ['nreCharge', 'breaks|nreCharge']
     ],
-    where: {
-      partID: partID
-    },
+    where: {partID: partID},
+    include: [{
+      model: models.Supplier,
+      attributes: []
+      // empty attributes trick to prevent having a fully-qualified property name (ie, field = suppliers.supplierName instead of supplierName)
+      // see https://github.com/sequelize/sequelize/issues/7605
+    }],
     raw: true
   })
   .then(quoteList => {
+    console.log(quoteList);
     // treeize the price breaks into nested JSON
     const quoteTree = new Treeize().options({input: {delimiter: '|'}});
     quoteTree.grow(quoteList);
@@ -158,7 +177,7 @@ function showQuotesForPart(req, res) {
 
 function destroyQuoteForPart(req, res) {
   const quoteForm = req.body;
-  const quoteName = quoteForm.supplier;
+  const quoteName = quoteForm.supplierName;
   const deleteIDs = [];
 
   quoteForm.breaks.forEach( priceBreak => {
@@ -186,20 +205,28 @@ function updateQuoteForPart(req, res) {
   const decodedToken = token.decode(req.header('X-Token'), res);
   const userID = decodedToken.userData.id;
   const quoteForm = req.body;
-  const quoteName = quoteForm.supplier;
-  const insertValues = [];
-  const updateValues = [];
+  const quoteName = quoteForm.supplierName;
+  const insertSuppliers = [];
+  const insertQuotes = [];
+  const updateQuotes = [];
   const deleteIDs = [];
 
+  // parse the form to see if supplier is a new one to be inserted (is missing supplierID)
+  if (!quoteForm.supplierID) {
+    insertSuppliers.push({
+      supplierName: quoteForm.supplierName
+    });
+  }
+  // parse the form to separate out quote records to be deleted/inserted/updated, and suppliers to be inserted
   quoteForm.breaks.forEach( priceBreak => {
     if (priceBreak.toBeDeleted) {
       deleteIDs.push(priceBreak.id);
     }
     else if (priceBreak.id) {
-      updateValues.push({
+      updateQuotes.push({
         id: priceBreak.id,
         partID: quoteForm.partID,
-        supplier: quoteForm.supplier,
+        supplierID: quoteForm.supplierID,
         mfgPartNumber: quoteForm.mfgPartNumber,
         leadTime: priceBreak.leadTime,
         minOrderQty: priceBreak.minOrderQty,
@@ -211,9 +238,9 @@ function updateQuoteForPart(req, res) {
         updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
       });
     } else {
-      insertValues.push({
+      insertQuotes.push({
         partID: quoteForm.partID,
-        supplier: quoteForm.supplier,
+        supplierID: quoteForm.supplierID,
         mfgPartNumber: quoteForm.mfgPartNumber,
         leadTime: Number(priceBreak.leadTime),
         minOrderQty: Number(priceBreak.minOrderQty),
@@ -231,55 +258,83 @@ function updateQuoteForPart(req, res) {
 
   console.log('done parsing delete values');
   console.log(deleteIDs);
-  console.log('done parsing newValues');
-  console.log(insertValues);
-  console.log('done parsing updateValues');
-  console.log(updateValues);
+  console.log('done parsing insertQuotes');
+  console.log(insertQuotes);
+  console.log('done parsing updateQuotes');
+  console.log(updateQuotes);
+  console.log('done parsing insert suppliers');
+  console.log(insertSuppliers);
 
   return sequelize.transaction( (t) => {
+    // first, destroy the quote records that the user requested to delete
     return models.Quote.destroy({
       where: {id: deleteIDs},
       transaction: t
     })
-    .then( (deletedRecords) => {
-      console.log(`${deletedRecords} quote records deleted`);
-    
-      return models.Quote.bulkCreate(
-        insertValues,
+    .then( deletedQuotes => {
+      console.log(`${deletedQuotes} quote records deleted`);
+
+      // next, add any new suppliers, if the user created any
+      return models.Supplier.bulkCreate(
+        insertSuppliers,
         {transaction: t}
       )
-      .then( (insertedRecords) => {
-        console.log(`${insertedRecords.length} quote records added`);
-
-        // make array of promises to update all quote records
-        let promises = [];
-        for (let i = 0; i < updateValues.length; i++) {
-          let newPromise = models.Quote.update(
-            {
-              id: updateValues[i].id,
-              partID: updateValues[i].partID,
-              supplier: updateValues[i].supplier,
-              mfgPartNumber: updateValues[i].mfgPartNumber,
-              leadTime: updateValues[i].leadTime,
-              minOrderQty: updateValues[i].minOrderQty,
-              price: updateValues[i].price,
-              nreCharge: updateValues[i].nreCharge,
-              demandForecastMethodID: updateValues[i].demandForecastMethodID,
-              demandForecastMethodNumber: updateValues[i].demandForecastMethodNumber,
-              updatedBy: updateValues[i].updatedBy,
-              updatedAt: updateValues[i].updatedAt
-            },
-            {
-              where: { id: updateValues[i].id },
-              transaction: t
+      .then( () => {
+        // then, get the newly created supplierIDs of those suppliers
+        return models.Supplier.findAll({
+          transaction: t,
+          raw: true
+        })
+        .then( supplierTable => {
+          // if we had a new supplier, add the new supplierID to the new Quotes for insert
+          if (insertSuppliers.length > 0) {
+            const newSupplier = supplierTable.find( entry => entry.supplierName === insertSuppliers[0].supplierName);
+            if (newSupplier !== undefined) {
+              insertQuotes.forEach( quote => {
+                quote.supplierID = newSupplier.supplierID;
+              })
             }
-          );
-          promises.push(newPromise);
-        };
-        return Promise.all(promises);
-      })
-      .then( updatedRecords => {
-        console.log(`${updatedRecords.length} quote records updated`)
+          }
+          // then, bulkcreate the new quote records
+          return models.Quote.bulkCreate(
+            insertQuotes,
+            {transaction: t}
+          )
+          .then( (insertedRecords) => {
+            console.log(`${insertedRecords.length} quote records added`);
+    
+            // make array of promises to perform a bulkUpdate of quote records
+            let promises = [];
+            for (let i = 0; i < updateQuotes.length; i++) {
+              let newPromise = models.Quote.update(
+                {
+                  id: updateQuotes[i].id,
+                  partID: updateQuotes[i].partID,
+                  supplierID: updateQuotes[i].supplierID,
+                  mfgPartNumber: updateQuotes[i].mfgPartNumber,
+                  leadTime: updateQuotes[i].leadTime,
+                  minOrderQty: updateQuotes[i].minOrderQty,
+                  price: updateQuotes[i].price,
+                  nreCharge: updateQuotes[i].nreCharge,
+                  demandForecastMethodID: updateQuotes[i].demandForecastMethodID,
+                  demandForecastMethodNumber: updateQuotes[i].demandForecastMethodNumber,
+                  updatedBy: updateQuotes[i].updatedBy,
+                  updatedAt: updateQuotes[i].updatedAt
+                },
+                {
+                  where: { id: updateQuotes[i].id },
+                  transaction: t
+                }
+              );
+              promises.push(newPromise);
+            };
+            // then execute all the promises to update the quote records
+            return Promise.all(promises);
+          })
+          .then( updatedRecords => {
+            console.log(`${updatedRecords.length} quote records updated`)
+          });
+        });
       });
     });
   }) // end transaction
@@ -297,13 +352,12 @@ function updateQuoteForPart(req, res) {
   });
 }
 
-function showOrdersForPart(req, res) {
+function showMatplanOrders(req, res) {
+  const projectID = req.params.projectID;
   const matplanID = req.params.matplanID;
-  const partID = req.params.partID;
-  sequelize.query(`
-    SELECT *
-    FROM supply.MaterialOrder
-    WHERE MaterialPlanID = :matplanID AND PartID = :partID`, {replacements: {matplanID: matplanID, partID: partID}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`EXECUTE resources.GetMatOrder :projectID, :matplanID`,
+    {replacements: {projectID: projectID, matplanID: matplanID}, type: sequelize.QueryTypes.SELECT}
+  )
   .then(orderList => {
     res.json(orderList);
   })
@@ -318,11 +372,12 @@ function showOrdersForPart(req, res) {
 
 module.exports = {
   show: show,
+  indexSuppliers: indexSuppliers,
   indexProjects: indexProjects,
   showMatplans: showMatplans,
   showMatplanBom: showMatplanBom,
   showQuotesForPart: showQuotesForPart,
   destroyQuoteForPart: destroyQuoteForPart,
   updateQuoteForPart: updateQuoteForPart,
-  showOrdersForPart: showOrdersForPart
+  showMatplanOrders: showMatplanOrders
 }

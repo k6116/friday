@@ -3,6 +3,7 @@ module.exports = {
   User: require('./user.js'),
   Part: require('./part.js').Part,
   Quote: require('./part.js').Quote,
+  Supplier: require('./part.js').Supplier,
   ProjectEmployee: require('./projectEmployee.js').ProjectEmployee,
   ProjectEmployeePlanning: require('./projectEmployee.js').ProjectEmployeePlanning,
   ProjectEmployeeRoles: require('./projectEmployee.js').ProjectEmployeeRoles,

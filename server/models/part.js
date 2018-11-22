@@ -44,7 +44,7 @@ const Quote = sequelize.define('quote',
   {
     id: { type: Sequelize.INTEGER, field: 'ID', primaryKey: true, autoIncrement: true },
     partID: { type: Sequelize.INTEGER, field: 'PartID' },
-    supplier: { type: Sequelize.STRING, field: 'Supplier' },
+    supplierID: { type: Sequelize.INTEGER, field: 'SupplierID' },
     mfgPartNumber: { type: Sequelize.STRING, field: 'MFGPartNumber' },
     leadTime: { type: Sequelize.INTEGER, field: 'LeadTime' },
     minOrderQty: { type: Sequelize.INTEGER, field: 'MinOrderQty' },
@@ -66,10 +66,26 @@ const Quote = sequelize.define('quote',
   }
 );
 
+const Supplier = sequelize.define('supplier',
+  {
+    supplierID: { type: Sequelize.INTEGER, field: 'SupplierID', primaryKey: true, autoIncrement: true },
+    supplierName: { type: Sequelize.STRING, field: 'SupplierName' }
+  },
+  {
+    schema: 'parts',
+    tableName: 'Suppliers',
+    timestamps: false,
+    hasTrigger: true
+  }
+)
+
 // Part.hasMany(Quote, {foreignKey: 'ID'});
 // Quote.belongsTo(Part, {foreignKey: 'PartID'});
 
+Quote.belongsTo(Supplier, {foreignKey: 'supplierID', targetKey: 'supplierID'});
+
 module.exports = {
   Part: Part,
-  Quote: Quote
+  Quote: Quote,
+  Supplier: Supplier
 } 

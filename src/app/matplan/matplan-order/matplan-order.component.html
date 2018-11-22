@@ -1,19 +1,21 @@
 <div class="row">
 
   <!-- first col is list-box of items in the BOM-->
-  <div class="col-sm-3">
+  <!-- <div class="col-sm-3">
     <div class="list-group">
       <button class="list-group-item list-group-item-action" *ngFor="let item of bom" (click)="showOrders(item)" [ngClass]="selectedPartID === item.ChildID ? 'active' : ''">{{item.ChildIndentedName}}</button>
     </div>
-  </div>
+  </div> -->
 
-  <div class="col-sm-9">
+  <div class="col-sm">
     <table class="table table-sm">
       <thead>
         <tr>
-          <th>Quote:</th>
+          <th>Level:</th>
+          <th>Name:</th>
+          <th>Description:</th>
           <th>Supplier:</th>
-          <th>LT (wks):</th>
+          <!-- <th>LT (wks):</th>
           <th>MOQ:</th>
           <th>Price:</th>
           <th>NRE:</th>
@@ -24,9 +26,28 @@
           <th>ETA:</th>
           <th>Receive Date:</th>
           <th>Receive Qty:</th>
-          <th>Deliver To:</th>
+          <th>Deliver To:</th> -->
         </tr>
       </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td>{{order.Level}}</td>
+          <td>{{order.ChildName}}</td>
+          <td>{{order.ChildDescription}}</td>
+          <td>{{order.Supplier}}</td>
+          <!-- <td>{{order.level}}</td>
+          <td>{{order.level}}</td>
+          <td>{{order.level}}</td>
+          <td>{{order.level}}</td>
+          <td>{{order.level}}</td>
+          <td>{{order.level}}</td>
+          <td>{{order.level}}</td>
+          <td>{{order.level}}</td>
+          <td>{{order.level}}</td>
+          <td>{{order.level}}</td>
+          <td>{{order.level}}</td> -->
+        </tr>
+      </tbody>
     </table>
   </div>
 

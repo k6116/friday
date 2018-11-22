@@ -10,21 +10,14 @@ export class MatplanOrderComponent implements OnInit {
 
   @Input() projectID: number;
   @Input() matplanID: number;
-  bom: any;
+  orders: any;
 
   constructor(private apiDataMatplanService: ApiDataMatplanService) { }
 
   ngOnInit() {
-    this.apiDataMatplanService.showMatplanBom(this.projectID).subscribe( res => {
-      this.bom = res;
-    });
-  }
-
-  showOrders(item: any) {
-    // console.log('clicked item');
-    // console.log(item);
-    this.apiDataMatplanService.showOrdersForPart(this.matplanID, item.ChildID).subscribe( res => {
-      // console.log(res);
+    this.apiDataMatplanService.showMatplanOrders(this.projectID, this.matplanID).subscribe( res => {
+      console.log(res);
+      this.orders = res;
     });
   }
 
