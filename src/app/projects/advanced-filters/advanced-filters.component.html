@@ -7,7 +7,7 @@
   <div class="page-cont" *ngIf="showPage" [hidden]="showSpinner">
 
     <!-- Top Row -->
-    <div class="projects-search-cont">
+    <div class="projects-search-cont align-top">
 
       <!-- <app-advanced-filters-typeahead></app-advanced-filters-typeahead> -->
 
@@ -27,17 +27,40 @@
         <i class="projects-search-icon-search fa fa-search"></i>
         <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
       </div>
+
+      <!-- Saved Search -->
+      <div class="btn-inline-toolbar" role="toolbar" aria-label="Toolbar with button groups" hidden>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons" role="group" aria-label="First group">
+          <label class="btn btn-outline-secondary btn-sm">
+            <input type="radio" name="options" id="option2" autocomplete="off"> Top8
+          </label>
+          <label class="btn btn-outline-secondary btn-sm">
+            <input type="radio" name="options" id="option3" autocomplete="off"> DaveD's Group
+          </label>
+          <label class="btn btn-outline-secondary btn-sm">
+            <input type="radio" name="options" id="option3" autocomplete="off"> NPIs
+          </label>
+          <label class="btn btn-outline-secondary btn-sm">
+            <input type="radio" name="options" id="option3" autocomplete="off"><i class="fa fa-heart-o button-icon"></i>
+          </label>
+        </div>
+
+        <!-- <div class="btn-group" role="group" aria-label="Second group">
+          <button class="btn-standard icon-text-only hover-green">
+            <i class="fa fa-floppy-o button-icon"></i>Save Search
+          </button>
+        </div> -->
+      </div>
       
       <!-- Test Button -->
       <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
 
-      <!-- Filter Badges -->
-      <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">
+      <!-- Filter Badges NOT USED RIGHT NOW -->
+      <!-- <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">
         <div class="badge badge-light">
-          <!-- <i class="fa fa-times-circle filters-badge-icon" [attr.title]="checkbox" (click)="onBadgeCloseClick($event)"></i>   -->
           {{ checkbox }}
         </div>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Export Button -->
       <div class="float-right-cont">
@@ -57,6 +80,7 @@
       </div>
 
     </div>
+    
 
     <!-- Filter Content -->
     <div class="filter-content" style="display: flex">

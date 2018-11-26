@@ -301,3 +301,8 @@ table.filter-results th {
 table.table {
   border: 1px solid #dee2e6;
 }
+
+/* SAVED SEARCH */
+.btn-inline-toolbar {
+  display: inline-flex;
+}

@@ -172,8 +172,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // show the footer
     this.toolsService.showFooter();
 
-    console.log('Advanced filter data:', this.advancedFilterData);
-
   }
 
   ngOnDestroy() {
@@ -505,7 +503,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       }
 
     }
-    console.log('filterObject:', this.filterObject);
+    // console.log('filterObject:', this.filterObject);
 
     // Make the db call
     this.advancedFilter(this.filterObject);
@@ -579,7 +577,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     } 
     
     else if (checked === false) {
-      console.log('checked is false.')
       // find ID in array
       for (let i = 0; i < this.arrPriorityID.length; i++) {
         // REMOVE from array
@@ -711,11 +708,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.advancedFilter(this.filterObject);
   }
 
-  onFTETotalGoChange(value: any) {
-    console.log('FTE change detected', value);
-    // $(".go-btn").css('border-color', 'red');
-  }
-
   onFTEMaxChange(value: string) {
 
     if (value === '') {
@@ -744,7 +736,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     const date = event.target.value; // input date
     const id = event.target.id; // either fteFrom or fteTo
     const valid = event.target.validity.valid;
-    console.log(valid)
 
      // Only allow dates from 2000 to current date
      if (valid === true ) {
@@ -759,7 +750,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
        this.filterObject.FTEMin = String(0);
        this.filterObject.FTEMax = String(100);
-      console.log(this.filterObject);
+      // console.log(this.filterObject);
 
       // Make the db call
       this.advancedFilter(this.filterObject);
@@ -884,11 +875,10 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log('Project Owners Array', this.arrOwnerEmail);
+    // console.log('Project Owners Array', this.arrOwnerEmail);
 
-    // Convert the array to string
+    // Convert the array to string and save to filterObject
     this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
-    console.log('PROJECT OWNER STRING:', this.filterObject.ProjectOwnerEmails);
 
     // Make the db call
     this.advancedFilter(this.filterObject);
