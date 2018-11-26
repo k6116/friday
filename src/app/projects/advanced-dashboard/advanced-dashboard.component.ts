@@ -114,6 +114,8 @@ export class AdvancedDashboardComponent implements OnInit {
     this.getPriorityFTE();
     this.getSchedules();
     this.getScheduleStats();
+    this.getTopFTEProjects();
+
   }
 
   async getPLCList() {
@@ -566,8 +568,7 @@ export class AdvancedDashboardComponent implements OnInit {
   getTopFTEProjects() {
     const topFTEProjectsArray = _.sortBy(this.advancedFilteredResults, function(project) { return project['TotalProjectFTE']; });
     this.topFTEProjects = topFTEProjectsArray.reverse().slice(0, 5);
-    // console.log('this.topFTEProjects', this.topFTEProjects)
-    this.getTopFTEProjects();
+    console.log('this.topFTEProjects', this.topFTEProjects)
   }
 
 }

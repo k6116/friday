@@ -47,7 +47,7 @@ import { TransferProjectsComponent } from './setups/transfer-projects/transfer-p
 import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
 import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
-import { AdvancedDashboardComponent } from './reports/advanced-dashboard/advanced-dashboard.component';
+import { AdvancedDashboardComponent } from './projects/advanced-dashboard/advanced-dashboard.component';
 import { AdvancedFiltersComponent } from './projects/advanced-filters/advanced-filters.component';
 
 
@@ -79,6 +79,7 @@ const routes: Routes = [
       { path: 'projects/search', component: SearchProjectsComponent },
       { path: 'projects/display/:id', component: DisplayProjectComponent },
       { path: 'projects/advanced-filters', component: AdvancedFiltersComponent },
+      { path: 'projects/advanced-dashboard', component: AdvancedDashboardComponent },
       { path: 'matplan', component: MatplanSelectorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'matplan/edit/:id', component: MatplanEditorComponent},
       { path: 'org/org-viewer', component: OrgViewerComponent },
@@ -95,7 +96,6 @@ const routes: Routes = [
       { path: 'reports/jarvis-adoption', component: OrgViewerComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
-      { path: 'reports/advanced-dashboard', component: AdvancedDashboardComponent },
       { path: 'reports/project-fte-rollup', component: ProjectFteRollupComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }

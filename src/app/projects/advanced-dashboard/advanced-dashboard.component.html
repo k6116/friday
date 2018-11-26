@@ -139,10 +139,26 @@
     <!-- third row -->
     <div class="row row-dashboard row-custom">
 
-       <!-- fte trends chart -->
-       <div class="col-sm-10 col-10-dashboard left-third">
-        <!-- <div class="highchart my-fte-pie-chart1" id="fteTrendsChart">
-        </div> -->
+       <!-- fte top projects chart -->
+      <div class="col-sm-4 col-4-dashboard left-third">
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th width="30%" scope="col">Project Name</th>
+              <th width="10%" scope="col">Project Type</th>
+              <th width="10%" scope="col">Priority</th>
+              <th width="10%" scope="col">Total FTE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let project of topFTEProjects; let i = index" (click)="onProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
+              <td>{{ project.ProjectName }}</td>
+              <td>{{ project.ProjectTypeName }}</td>
+              <td>{{ project.PriorityName }}</td>
+              <td>{{ project.TotalProjectFTE }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div class="col-sm-2 col-2-dashboard">
