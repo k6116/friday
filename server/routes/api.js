@@ -174,6 +174,7 @@ router.get('/auth/verifyRoutePermissions', controllers.auth.verifyRoutePermissio
 
 // DASHBOARD CONTROLLER
 router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate', controllers.dashboard.getFTEData);
+router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate/:emailAddress', controllers.dashboard.getFTEData);
 router.get('/dashboard/checkFirstLogin', controllers.dashboard.checkFirstLogin);
 router.get('/dashboard/checkJobTitle', controllers.dashboard.checkJobTitle);
 router.get('/dashboard/checkProjectRequests', controllers.dashboard.checkProjectRequests);
@@ -222,6 +223,8 @@ router.get('/report/getSubordinateProjectRoster/:period', controllers.report.get
 // LOG CONTROLLER
 router.post('/log/writeToLog', controllers.log.writeToLog);
 
+// ORG CONTROLLER
+router.get('/org/getManagementOrgStructure/:emailAddress', controllers.org.getManagementOrgStructure);
 
 
 // middleware to protect permissions protected routes

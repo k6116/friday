@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ToolsService } from '../_shared/services/tools.service';
-import { AuthService } from '../_shared/services/auth.service';
+import { ToolsService } from '../../_shared/services/tools.service';
+import { AuthService } from '../../_shared/services/auth.service';
 import { DashboardMessage } from './dashboard-message-model';
 
 import * as _ from 'lodash';

@@ -16,9 +16,9 @@ export class ApiDataDashboardService {
   ) { }
 
 
+  // get all dashboard data at at once in parallel with forkjoin, for the current user (will pull the user's email from the token)
   getDashboardData(startDate: string, endDate: string): Observable<any> {
 
-    // NOTE: email is passed here instead of id as the key since it gets data from the plm databridge as well as jarvis
     const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
 
@@ -39,6 +39,18 @@ export class ApiDataDashboardService {
       .map((response: Response) => response.json());
 
     return forkJoin([fteData, firstLogin, projectRequests, jobTitle]);
+
+  }
+
+  // get FTE data only, for a specific user (if a different team/manager is selected)
+  getFTEData(startDate: string, endDate: string, emailAddress: string): Observable<any> {
+
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+
+    return this.http.get(`/api/dashboard/dashboard/show/getFTEData/${startDate}/${endDate}/${emailAddress}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
 
   }
 

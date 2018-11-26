@@ -1,3 +1,13 @@
+<a name="1.23.0"></a>
+# [1.23.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.22.0...v1.23.0) (2018-11-21)
+
+
+### Features
+
+* add change team feature to dashboard for managers and admins ([36c9efe](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/36c9efe))
+
+
+
 <a name="1.22.0"></a>
 # [1.22.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.21.0...v1.22.0) (2018-11-20)
 
