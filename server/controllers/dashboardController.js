@@ -13,10 +13,18 @@ function getFTEData(req, res) {
 
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
-  const decodedToken = token.decode(req.header('X-Token'), res);
+  let emailAddress = req.params.emailAddress;
+  if (!emailAddress) {
+    const decodedToken = token.decode(req.header('X-Token'), res);
+    emailAddress = decodedToken.userData.email;
+  }
+
+  console.log('email address in getFTEData function:');
+  console.log(emailAddress);
+  
 
   sequelize.query('EXECUTE resources.DashboardFTEData :emailAddress, :startDate, :endDate', 
-    {replacements: {emailAddress: decodedToken.userData.email, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
+    {replacements: {emailAddress: emailAddress, startDate: startDate, endDate: endDate}, type: sequelize.QueryTypes.SELECT})
     .then(dashboardData => {
 
       const dashboardDataTree = new Treeize();

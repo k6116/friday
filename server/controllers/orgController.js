@@ -6,6 +6,7 @@ const sequelize = require('../db/sequelize').sequelize;
 const token = require('../token/token');
 
 
+
 // right now, this function doesn't seem to fetch all subordinates.  Example - George Nacouzi doesn't show up under Ethan
 function show(req, res) {
   const emailAddress = req.params.emailAddress;
@@ -101,7 +102,14 @@ function getTeamFteList(req, res) {
 }
 
 function getManagementOrgStructure(req, res) {
+
+  const decodedToken = token.decode(req.header('X-Token'), res);
+
+  console.log('decoded token for get management org structure:');
+  console.log(decodedToken);
+
   const emailAddress = req.params.emailAddress;
+  
   sequelize.query(`EXECUTE resources.ManagementOrgStructure :emailAddress`, {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
   .then(org => {
     res.json(org);

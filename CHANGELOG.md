@@ -1,3 +1,34 @@
+<a name="1.23.0"></a>
+# [1.23.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.22.0...v1.23.0) (2018-11-21)
+
+
+### Features
+
+* add change team feature to dashboard for managers and admins ([36c9efe](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/36c9efe))
+
+
+
+<a name="1.22.0"></a>
+# [1.22.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.21.0...v1.22.0) (2018-11-20)
+
+
+### Bug Fixes
+
+* **advanced-filter:** css for microsoft edge ([6ddb908](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/6ddb908))
+
+
+### Features
+
+* **advanced filters:** Add click All for project owners ([e28b0f2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/e28b0f2))
+* **advanced-filter:** add plc schedules and fte allocation ([c79ede1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c79ede1))
+* **advanced-filter:** Add project count ([dfc0295](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/dfc0295))
+* **advanced-filters:** add filter badges ([c6689d3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c6689d3))
+* **advanced-filters:** add fte date range toggles ([0aaa543](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/0aaa543))
+* **advanced-filters:** completed PLC schedules ([08adcf4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/08adcf4))
+* **complete filter badge functionality:** badge with applied filter appears on top and can be used ([7abf88d](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/7abf88d))
+
+
+
 <a name="1.21.0"></a>
 # [1.21.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.20.2...v1.21.0) (2018-11-15)
 
