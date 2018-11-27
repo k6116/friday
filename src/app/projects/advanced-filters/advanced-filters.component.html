@@ -7,7 +7,7 @@
   <div class="page-cont" *ngIf="showPage" [hidden]="showSpinner">
 
     <!-- Top Row -->
-    <div class="projects-search-cont">
+    <div class="projects-search-cont align-top">
 
       <!-- <app-advanced-filters-typeahead></app-advanced-filters-typeahead> -->
 
@@ -27,17 +27,40 @@
         <i class="projects-search-icon-search fa fa-search"></i>
         <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
       </div>
+
+      <!-- Saved Search -->
+      <div class="btn-inline-toolbar" role="toolbar" aria-label="Toolbar with button groups" hidden>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons" role="group" aria-label="First group">
+          <label class="btn btn-outline-secondary btn-sm">
+            <input type="radio" name="options" id="option2" autocomplete="off"> Top8
+          </label>
+          <label class="btn btn-outline-secondary btn-sm">
+            <input type="radio" name="options" id="option3" autocomplete="off"> DaveD's Group
+          </label>
+          <label class="btn btn-outline-secondary btn-sm">
+            <input type="radio" name="options" id="option3" autocomplete="off"> NPIs
+          </label>
+          <label class="btn btn-outline-secondary btn-sm">
+            <input type="radio" name="options" id="option3" autocomplete="off"><i class="fa fa-heart-o button-icon"></i>
+          </label>
+        </div>
+
+        <!-- <div class="btn-group" role="group" aria-label="Second group">
+          <button class="btn-standard icon-text-only hover-green">
+            <i class="fa fa-floppy-o button-icon"></i>Save Search
+          </button>
+        </div> -->
+      </div>
       
       <!-- Test Button -->
       <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
 
-      <!-- Filter Badges -->
-      <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">
+      <!-- Filter Badges NOT USED RIGHT NOW -->
+      <!-- <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">
         <div class="badge badge-light">
-          <!-- <i class="fa fa-times-circle filters-badge-icon" [attr.title]="checkbox" (click)="onBadgeCloseClick($event)"></i>   -->
           {{ checkbox }}
         </div>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Export Button -->
       <div class="float-right-cont">
@@ -57,6 +80,7 @@
       </div>
 
     </div>
+    
 
     <!-- Filter Content -->
     <div class="filter-content" style="display: flex">
@@ -214,54 +238,62 @@
 
               <!-- Date Range -->
               <div class="d-flex justify-content-between">
-                  <div class="form-group" style="margin-bottom: 4px;">
-                    <label for="fteFrom" class="fte">Date Range</label>
-                    <input #inputFTEFrom
-                        class="form-control fte"
-                        [class.plc-input-invalid]="inputFTEFrom.validity.valid===false"
-                        id="fteFrom" 
-                        type="date"
-                        (change)="onInputFTEChange($event)">
-                  </div>
 
-                  <span style="margin-top: 7px">-</span>
+                <div class="form-group" style="margin-bottom: 4px;">
+                  <label for="fteFrom" class="fte">Date Range</label>
+                  <input #inputFTEFrom
+                      class="form-control fte"
+                      [class.plc-input-invalid]="inputFTEFrom.validity.valid===false"
+                      id="fteFrom" 
+                      type="date"
+                      [min]="minDate"
+                      [max]="maxDate" 
+                      (change)="onInputFTEChange($event)">
+                </div>
 
-                  <div class="form-group" style="margin-bottom: 4px;"> 
-                    <input #inputFTETo
-                        class="form-control fte"
-                        [class.plc-input-invalid]="inputFTETo.validity.valid===false"
-                        id="fteTo" 
-                        type="date" 
-                        [min]="minDate" 
-                        (change)="onInputFTEChange($event)">
-                  </div>
-                  <!-- Placeholder -->
-                  <div class="form-group" style="margin-bottom: 4px; width: 31px"></div>
+                <span style="margin-top: 7px">-</span>
+
+                <div class="form-group" style="margin-bottom: 4px;"> 
+                  <input #inputFTETo
+                      class="form-control fte"
+                      [class.plc-input-invalid]="inputFTETo.validity.valid===false"
+                      id="fteTo" 
+                      type="date" 
+                      [min]="minDate"
+                      [max]="maxDate" 
+                      (change)="onInputFTEChange($event)">
+                </div>
+                <!-- Placeholder -->
+                <div class="form-group" style="margin-bottom: 4px; width: 31px" hidden></div>
+
               </div>
 
               <!-- Total FTEs Min and Max  -->
               <div class="d-flex justify-content-between">
-                  <div class="form-group" style="margin-bottom: 4px;">
-                    <label for="fteFrom" class="fte"># Total FTE</label>
-                    <input #inputFTEMin
-                        class="form-control fte"
-                        style="text-align: end; margin-left: 3px"
-                        id="fteMin" 
-                        type="number"
-                        placeholder="Min">
-                  </div>
+                <div class="form-group" style="margin-bottom: 4px;">
+                  <label for="fteFrom" class="fte"># Total FTE</label>
+                  <input #inputFTEMin
+                      class="form-control fte"
+                      style="text-align: end; margin-left: 3px"
+                      id="fteMin" 
+                      type="number"
+                      placeholder="Min"
+                      (change)="onFTEMinChange($event.target.value)">
+                </div>
 
-                  <span style="margin-top: 7px">-</span>
+                <span style="margin-top: 7px">-</span>
 
-                  <div class="form-group" style="margin-bottom: 4px;"> 
-                    <input #inputFTEMax
-                        class="form-control fte"
-                        style="text-align: end"
-                        id="fteMax" 
-                        type="number"
-                        placeholder="Max"> 
-                  </div>
-                  <button type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)">Go</button>
+                <div class="form-group" style="margin-bottom: 4px;"> 
+                  <input #inputFTEMax
+                      class="form-control fte"
+                      style="text-align: end"
+                      id="fteMax" 
+                      type="number"
+                      placeholder="Max"
+                      (change)="onFTEMaxChange($event.target.value)"> 
+                </div>
+                <button #goButton type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)" hidden>Go</button>
+
               </div>
 
             </div>
@@ -287,11 +319,20 @@
 
               <ng-container *ngFor="let plcStatus of plcStatuses; let l = index">
                 <div class="d-flex justify-content-between" style="margin-top: 5px">
+                  
                   <!-- plc status checkbox -->
                   <div class="custom-control custom-checkbox adv-filter-cb" style="margin: 2px 3px 0px 3px;">
-                    <input type="checkbox" [checked]="checkAllPLC" class="custom-control-input" [attr.name]="plcStatus.PLCStatusName" [attr.id]="'plcStatus' + l" [(ngModel)]="plcStatus.state" (click)="onCheckboxPLCScheduleClick(l, $event, plcStatus)">
+                    <input 
+                        class="custom-control-input"
+                        type="checkbox" 
+                        [checked]="checkAllPLC"  
+                        [attr.name]="plcStatus.PLCStatusName" 
+                        [attr.id]="'plcStatus' + l" 
+                        [(ngModel)]="plcStatus.state"
+                        (click)="onCheckboxPLCScheduleClick(l, $event, plcStatus); inputPLCFrom.value=''; inputPLCTo.value=''">
                     <label class="custom-control-label" [attr.for]="'plcStatus' + l" style="margin-left: 8px">{{ plcStatus.PLCStatusName }}</label>
                   </div>
+
                   <!-- plc status dates -->
                   <div class="d-flex justify-content-between">
                     <input #inputPLCFrom 
@@ -300,6 +341,7 @@
                         id="plcFrom" 
                         type="date" 
                         [min]="minDate"  
+                        [max]="maxDate" 
                         style="margin-top: 0px" 
                         [disabled]="!plcStatus.state" 
                         (change)="onInputPLCChange($event, l)">
@@ -310,14 +352,17 @@
                         id="plcTo" 
                         type="date" 
                         [min]="minDate" 
+                        [max]="maxDate" 
                         style="margin-top: 0px" 
                         [disabled]="!plcStatus.state" 
                         (change)="onInputPLCChange($event, l)">
                   </div>
+
                 </div>
               </ng-container>             
 
             </div>
+            <!-- END PLC SCHEDULE -->
 
           </div>
         </div>
@@ -329,17 +374,19 @@
         <table class="table table-hover filter-results">
           <thead class="thead-light">
             <tr>
+              <th scope="col">ID</th>    
               <th scope="col">Project Name</th>
               <th scope="col">Type</th>
               <th scope="col">Priority</th>
               <th scope="col">Status</th>
               <th scope="col">Owner</th>
               <th scope="col" *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">Total FTE</th>
-              <th scope="col" *ngFor="let name of plcSchedules">{{ name.PLCStatusName }}</th>              
+              <th scope="col" *ngFor="let name of plcSchedules">{{ name.PLCStatusName }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count">            
+            <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count">
+              <td>{{ project.ProjectID }}</td>
               <td>{{ project.ProjectName }}</td>
               <td>{{ project.ProjectTypeName }}</td>
               <td>{{ project.PriorityName }}</td>
@@ -348,7 +395,7 @@
               <td *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">{{ project.TotalProjectFTE }}</td>
               <ng-container *ngFor="let schedule of project.Schedules">
                 <td>{{ schedule.PLCDate }}</td>
-              </ng-container>              
+              </ng-container>
             </tr>
           </tbody>
         </table>
