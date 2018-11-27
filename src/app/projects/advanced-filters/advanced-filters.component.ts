@@ -127,8 +127,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.plcSchedules = []; // save clicked plc statuses
     this.fteMin = [];
     this.fteMax = [];
-    this.minDate = moment('1900-01-01', 'YYYY-MM-DD');
-    this.maxDate = moment('2900-01-01', 'YYYY-MM-DD');
+    this.minDate = '1900-01-01';
+    this.maxDate = '2900-01-01';
 
     // For Excel Download
     this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
