@@ -86,6 +86,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   showDownloadingIcon: boolean;
   htmlElement: any;
   minDate: string;
+  maxDate: string;
   fteMin: any; // for fte checkbox logic
   fteMax: any; // for fte checkbox logic
   
@@ -126,7 +127,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.plcSchedules = []; // save clicked plc statuses
     this.fteMin = [];
     this.fteMax = [];
-    this.minDate = '1900-01-01';
+    this.minDate = moment('1900-01-01', 'YYYY-MM-DD');
+    this.maxDate = moment('2900-01-01', 'YYYY-MM-DD');
 
     // For Excel Download
     this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
@@ -212,8 +214,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       ProjectOwnerEmails: '',
       FTEMin: 'NULL',
       FTEMax: 'NULL',
-      FTEDateFrom: 'NULL',        // 2017-01-01
-      FTEDateTo: 'NULL'           // 2017-01-01
+      FTEDateFrom: 'NULL',        // 2017/01/01
+      FTEDateTo: 'NULL'           // 2017/01/01
     };
 
     // send to db
@@ -627,7 +629,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     switch (id) {
       case 'all':
-        this.filterObject.FTEDateFrom = '01/01/2018';
+        this.filterObject.FTEDateFrom = 'NULL'
         this.filterObject.FTEDateTo = 'NULL';
         break;
 
