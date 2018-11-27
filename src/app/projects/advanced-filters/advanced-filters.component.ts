@@ -86,6 +86,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   showDownloadingIcon: boolean;
   htmlElement: any;
   minDate: string;
+  maxDate: string;
   fteMin: any; // for fte checkbox logic
   fteMax: any; // for fte checkbox logic
   
@@ -127,6 +128,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.fteMin = [];
     this.fteMax = [];
     this.minDate = '1900-01-01';
+    this.maxDate = '2900-01-01';
 
     // For Excel Download
     this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
@@ -212,8 +214,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       ProjectOwnerEmails: '',
       FTEMin: 'NULL',
       FTEMax: 'NULL',
-      FTEDateFrom: 'NULL',        // 2017-01-01
-      FTEDateTo: 'NULL'           // 2017-01-01
+      FTEDateFrom: 'NULL',        // 2017/01/01
+      FTEDateTo: 'NULL'           // 2017/01/01
     };
 
     // send to db
@@ -615,7 +617,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.fteDateFrom = '';
     this.fteDateTo = '';
 
-    // unselect all toggle buttons
+    // unselect all toggle buttons -> removes PLC from reults table
     $(".fte-toggle").removeClass("active");
 
   }
@@ -627,7 +629,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     switch (id) {
       case 'all':
-        this.filterObject.FTEDateFrom = '01/01/2018';
+        this.filterObject.FTEDateFrom = 'NULL'
         this.filterObject.FTEDateTo = 'NULL';
         break;
 
@@ -707,6 +709,30 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.filterObject.FTEMax = String(maxValue);
     }
 
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+  }
+
+  onFTEMaxChange(value: string) {
+
+    if (value === '') {
+    this.filterObject.FTEMax = 'NULL';
+    } else {
+    this.filterObject.FTEMax = value;
+    }
+    
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+  }
+
+  onFTEMinChange(value: string) {
+
+    if (value === '') {
+    this.filterObject.FTEMin = 'NULL';
+    } else {
+    this.filterObject.FTEMin = value;
+    }
+    
     // Make the db call
     this.advancedFilter(this.filterObject);
   }
@@ -857,7 +883,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     }
     // console.log('Project Owners Array', this.arrOwnerEmail);
 
-    // Convert the array to string
+    // Convert the array to string and save to filterObject
     this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
     // console.log('PROJECT OWNER STRING:', this.filterObject.ProjectOwnerEmails);
 
