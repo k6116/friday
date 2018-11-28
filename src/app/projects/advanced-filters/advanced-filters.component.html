@@ -110,7 +110,7 @@
               </div>
               <div class="filter-collapse show" id="parentProjects">
                 <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let parent of parents; let i = index">
-                  <input type="checkbox" class="custom-control-input" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i">
+                  <input type="checkbox" class="custom-control-input" [checked]="checkAllParentProjects" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i">
                   <label class="custom-control-label" [attr.for]="'parentProject' + i" style="padding: 1px 0px 0px 10px;">{{ parent.ProjectName }}</label>
                 </div>
               </div>
@@ -196,7 +196,7 @@
               </div>
               <div class="filter-collapse show" id="childProjects">
                 <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let child of children; let i = index">
-                  <input type="checkbox" class="custom-control-input" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i">
+                  <input type="checkbox" class="custom-control-input" [checked]="checkAllChildProjects" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i">
                   <label class="custom-control-label" [attr.for]="'childProject' + i" style="padding: 1px 0px 0px 10px;">{{ child.ProjectName }}</label>
                 </div>
               </div>
@@ -443,7 +443,9 @@
           </thead>
           <tbody>
             <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count" 
-                (click)="getProjectParents(project.ProjectName, project.ProjectTypeName, project.ProjectOwner); getProjectChildren(project.ProjectName, project.ProjectTypeName, project.ProjectOwner); showParentChild = true">
+                (click)="getProjectParents(project.ProjectName, project.ProjectTypeName, project.ProjectOwner); 
+                        getProjectChildren(project.ProjectName, project.ProjectTypeName, project.ProjectOwner); 
+                        showParentChild = true">
               <td>{{ project.ProjectID }}</td>
               <td>{{ project.ProjectName }}</td>
               <td>{{ project.ProjectTypeName }}</td>
