@@ -94,11 +94,16 @@ div.projects-display-count {
 }
 
 /* FILTER CONTENT */
-div.filter-content {
+div.adv-search-content {
   display: flex;
   /* height: 113vh; */
   overflow-x: hidden;
   overflow-y: hidden;
+}
+
+div.filter-column {
+  float: left;
+  width: 402px;
 }
 
 /* Checkboxes */
@@ -113,6 +118,7 @@ div.adv-filters-cont {
   /* display: inline-block; */
   width: 50%;
   padding-right: 0px;
+  height: fit-content;
   /* float: left; */
   /* background: #fff; */
   /* padding: 10px; */
@@ -132,8 +138,10 @@ div.filter-headers {
 div.filter-collapse.show {
   min-height: 63px;
   max-height: 168px;
+  /* height: 168px; */
   overflow-x: hidden;
   overflow-y: auto;
+  /* height: 201px; */
 }
 
 /* div.filter-collapse { CAUSES BAD COLLAPSE
@@ -196,13 +204,14 @@ i.projects-search-icon-search.projects-owner {
 
 /* FILTERS 2 */
 
-/* div.adv-filters2-cont { */
+div.adv-filters2-cont {
+  height: fit-content;
   /* display: inline-block; */
   /* margin-left: 15px; */
   /* width: 50%; */
   /* background: #fff; */
   /* padding: 10px; */
-/* } */
+}
 
 /* FILTERS 3 */
 div.adv-filters3-cont {
@@ -306,3 +315,20 @@ table.table {
 .btn-inline-toolbar {
   display: inline-flex;
 }
+
+
+
+
+
+
+/* Parent - Child */
+/* div.filter-box {
+  width: 50%;
+  display: inline;
+} */
+/* 
+div.filter-box-left {
+  width: 48%;
+  float: left;
+  margin-right: 16px;
+} */

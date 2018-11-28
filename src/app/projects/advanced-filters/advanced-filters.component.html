@@ -28,7 +28,7 @@
         <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
       </div>
 
-      <!-- Saved Search -->
+      <!-- Saved Search HIDDEN -->
       <div class="btn-inline-toolbar" role="toolbar" aria-label="Toolbar with button groups" hidden>
         <div class="btn-group btn-group-toggle" data-toggle="buttons" role="group" aria-label="First group">
           <label class="btn btn-outline-secondary btn-sm">
@@ -80,18 +80,44 @@
       </div>
 
     </div>
+    <!-- End Top Row -->
     
 
-    <!-- Filter Content -->
-    <div class="filter-content" style="display: flex">
+    <!-- Advanced Search Content -->
+    <div class="adv-search-content">
+
 
       <!-- Filter Column -->
-      <div style="float: left; width:402px;">
+      <div class="filter-column">      
 
+        <!-- UPPER FILTERS -->
         <div class="row">
 
-          <!-- Filters 1 -->
+          <!-- Filters Column 1 -->
           <div class="adv-filters-cont col">
+
+            <ng-container *ngIf="showParentChild">
+              <!-- ParentProjects -->
+              <div class="filter-headers d-flex justify-content-between">
+                <div data-toggle="collapse" data-target="#parentProjects" style="cursor: pointer">
+                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                  Parent Projects
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" checked class="custom-control-input" id="parentProjectIDs" [(ngModel)]="checkAllParentProjects">
+                  <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+                </div>
+              </div>
+              <div class="filter-collapse show" id="parentProjects">
+                <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let parent of parents; let i = index">
+                  <input type="checkbox" class="custom-control-input" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i">
+                  <label class="custom-control-label" [attr.for]="'parentProject' + i" style="padding: 1px 0px 0px 10px;">{{ parent.ProjectName }}</label>
+                </div>
+              </div>
+              <!-- End ParentProjects -->
+
+              <div style="height:10px; background: #f5f5f5"></div>
+            </ng-container>
 
             <!-- ProjectTypes -->
             <div class="filter-headers d-flex justify-content-between">
@@ -110,6 +136,7 @@
                 <label class="custom-control-label" [attr.for]="'projectType' + i" style="padding: 1px 0px 0px 10px;">{{ projectType.projectTypeName }}</label>
               </div>
             </div>
+            <!-- End ProjectTypes -->
 
             <div style="height:10px; background: #f5f5f5"></div>
 
@@ -124,10 +151,14 @@
                 <label class="custom-control-label" for="ProjectOwnerEmails"><small style="margin: 0px 5px 0px -7px;">All</small></label>
               </div>
             </div>
-
             <div class="filter-collapse show" id="managerTeamFilters" style="height:168px">
               <div class="projects-search-string projects-owner my-1">
-                <input type="text" #filterStringOw name="filterStringOwner" [(ngModel)]="filterStringOwner" class="form-control projects-search-input projects-owner typeahead" placeholder="Manager Name">      
+                <input #filterStringOw
+                    class="form-control projects-search-input projects-owner typeahead" 
+                    type="text"  
+                    name="filterStringOwner" 
+                    [(ngModel)]="filterStringOwner" 
+                    placeholder="Manager Name">      
                 <i class="projects-search-icon-search fa fa-search"></i>
                 <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearOwnerClick()"></i>
               </div>
@@ -142,13 +173,37 @@
                 </ng-container>
               </div>
             </div>
+            <!-- End ProjectOwner -->
 
             <div style="height:10px; background: #f5f5f5"></div>
               
           </div>
 
-          <!-- Filters 2 -->
+          <!-- Filters Column 2 -->
           <div class="adv-filters2-cont col">
+
+            <ng-container *ngIf=showParentChild>
+              <!-- ChildProjects -->
+              <div class="filter-headers d-flex justify-content-between">
+                <div data-toggle="collapse" data-target="#childProjects" style="cursor: pointer">
+                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                  Children Projects
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" [(ngModel)]="checkAllChildProjects">
+                  <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+                </div>
+              </div>
+              <div class="filter-collapse show" id="childProjects">
+                <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let child of children; let i = index">
+                  <input type="checkbox" class="custom-control-input" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i">
+                  <label class="custom-control-label" [attr.for]="'childProject' + i" style="padding: 1px 0px 0px 10px;">{{ child.ProjectName }}</label>
+                </div>
+              </div>
+              <!-- End ChildProjects -->
+
+              <div style="height:10px; background: #f5f5f5"></div>
+            </ng-container>
 
             <!-- Priority -->
               <div class="filter-headers d-flex justify-content-between">
@@ -198,7 +253,7 @@
 
         </div>
 
-        <!-- 3rd advanced filter underneath the other 2 -->
+        <!-- LOWER FILTERS -->
         <div class="row">
 
           <div class="adv-filters3-cont col">
@@ -367,7 +422,9 @@
           </div>
         </div>
         
-      </div> <!-- End Filter Column -->
+      </div> 
+      <!-- End Filter Column -->
+
 
       <!-- Results Table Column -->
       <div class="adv-results-cont">
@@ -385,7 +442,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count">
+            <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count" 
+                (click)="getProjectParents(project.ProjectName, project.ProjectTypeName, project.ProjectOwner); getProjectChildren(project.ProjectName, project.ProjectTypeName, project.ProjectOwner); showParentChild = true">
               <td>{{ project.ProjectID }}</td>
               <td>{{ project.ProjectName }}</td>
               <td>{{ project.ProjectTypeName }}</td>
@@ -400,8 +458,11 @@
           </tbody>
         </table>
       </div>
+      <!-- End Results Table Column -->
+
 
     </div>
+    <!-- End Advanced Search Content -->
 
   </div>
 

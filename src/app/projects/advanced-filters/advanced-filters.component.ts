@@ -41,6 +41,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   projectStatuses: any;
   projectPriorities: any;
   plcStatuses: any;
+  parents: any;
+  children: any;
 
   filterString: string;     // string for top search bar
   filterStringOwner: string; // string for owner search bar
@@ -82,6 +84,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   subscription2: Subscription; // for excel download
   showSpinner: boolean;
   showPage: boolean;
+  showParentChild: boolean // only show parent child filter boxes if clicked on a project from results table 
   // showResults: boolean;
   showDownloadingIcon: boolean;
   htmlElement: any;
@@ -167,6 +170,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // show page
     this.showPage = true;
+
+    // don't show parent-child filter boxes
+    this.showParentChild = false;
 
     // hide layover
     // this.showResults = true
@@ -292,27 +298,30 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   }
 
   async getProjectChildren(projectName: string, projectType: string, projectOwner: string) {
-    const children = await this.apiDataAdvancedFilterService.getProjectChildren(projectName, projectType, projectOwner).toPromise();
-    // console.log('children', children);
+    console.log(projectName, projectType, projectOwner);
+    this.children = await this.apiDataAdvancedFilterService.getProjectChildren(projectName, projectType, projectOwner).toPromise();
+    console.log('children', this.children);
   }
 
   async getProjectParents(projectName: string, projectType: string, projectOwner: string) {
-    const parents = await this.apiDataAdvancedFilterService.getProjectParents(projectName, projectType, projectOwner).toPromise();
-    // console.log('parents', parents);
+    console.log(projectName, projectType, projectOwner);
+    this.parents = await this.apiDataAdvancedFilterService.getProjectParents(projectName, projectType, projectOwner).toPromise();
+    // this.showParentChild==!showParentChild"
+    console.log('parents', this.parents);
   }
 
 // PROJECT OWNERS
 
   async getManagers(managerEmailAddress: string) {
     this.managers = await this.apiDataOrgService.getManagementOrgStructure(managerEmailAddress).toPromise();
-    this.getTypeahead(this.managers);
+    this.getManagerTypeahead(this.managers);
   }
 
   async getProjectOwnerSubordinates(managerEmailAddress: string) {
     this.managerTeam = await this.apiDataOrgService.getManagementOrgStructure(managerEmailAddress).toPromise();
   }
 
-  getTypeahead(managers: any) {
+  getManagerTypeahead(managers: any) {
 
     // initialize bloodhound suggestion engine with data
     const bh = new Bloodhound({
