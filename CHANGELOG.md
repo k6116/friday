@@ -1,3 +1,13 @@
+<a name="1.23.2"></a>
+## [1.23.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.23.1...v1.23.2) (2018-11-28)
+
+
+### Bug Fixes
+
+* **team-FTE:** projects-visible flag was not updating properly ([dda5b3f](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/dda5b3f))
+
+
+
 <a name="1.23.1"></a>
 ## [1.23.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.23.0...v1.23.1) (2018-11-27)
 
