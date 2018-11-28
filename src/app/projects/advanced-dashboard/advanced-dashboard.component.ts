@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataAdvancedFilterService, ApiDataOrgService, ApiDataSchedulesService,
-      ApiDataFteService } from '../../_shared/services/api-data/_index';
+      ApiDataFteService, ApiDataReportService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthService } from '../../_shared/services/auth.service';
 import { CacheService } from '../../_shared/services/cache.service';
@@ -56,11 +56,20 @@ export class AdvancedDashboardComponent implements OnInit {
   ssAvgFTENoPLC: any;
   ssTotalFTENoPLC: any;
 
+  historicFteData = []; // for populating historic FTE data to plot in chart
+  lineChart: any;
+  isProjectSelected: any; // for toggling projects when clicking the top FTE table
+  projectEmployeeData: any; // for rendering project roster (TO BE OBSOLETED)
+  selectedProject: any; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
+  selectedFiscalDate: string; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
+  displayProjectEmployeeList: boolean;
+
   constructor(
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
     private apiDataOrgService: ApiDataOrgService,
     private apiDataSchedulesService: ApiDataSchedulesService,
     private apiDataFteService: ApiDataFteService,
+    private apiDataReportService: ApiDataReportService,
     private authService: AuthService,
     private toolsService: ToolsService,
     private cacheService: CacheService
@@ -568,7 +577,111 @@ export class AdvancedDashboardComponent implements OnInit {
   getTopFTEProjects() {
     const topFTEProjectsArray = _.sortBy(this.advancedFilteredResults, function(project) { return project['TotalProjectFTE']; });
     this.topFTEProjects = topFTEProjectsArray.reverse().slice(0, 5);
-    console.log('this.topFTEProjects', this.topFTEProjects)
+    this.isProjectSelected = new Array(this.topFTEProjects.length).fill(false);
+    // console.log('this.topFTEProjects', this.topFTEProjects)
+  }
+
+  async onTopFTEProjectClick(project: any, index: number) {
+
+    this.displayProjectEmployeeList = false;
+    this.selectedProject = project;
+
+    // if project is being deselected, deselect the row, remove the project data, and re-render the chart
+    if (this.isProjectSelected[index]) {
+      this.isProjectSelected[index] = false;
+      // remove the project data
+      this.historicFteData.forEach( proj => {
+        if (proj.projectIndex === index) {
+          this.historicFteData.splice(this.historicFteData.indexOf(proj), 1);
+        }
+      });
+      this.plotFteHistoryChart();
+    } else {
+      // Retrieve historical FTE data for a given project
+      const res = await this.apiDataReportService.getProjectFTEHistory(this.selectedProject.ProjectID).toPromise();
+
+      // highlight selected row
+      this.isProjectSelected[index] = true;
+      // Convert table to array for HighChart data series format
+      // also, convert fiscal date from js datetime to unix (ms) timestamp for proper plotting in highcharts
+      const fiscalDate = Object.keys(res)
+      .map(i => new Array(moment(res[i].fiscalDate).valueOf(), res[i].totalMonthlyFTE));
+
+      this.historicFteData.push({
+        projectIndex: index,
+        projectName: project.ProjectName,
+        data: fiscalDate
+      });
+      // console.log('fiscalDate', fiscalDate);
+      // console.log(this.historicFteData);
+      this.plotFteHistoryChart();
+
+    }
+  }
+
+  plotFteHistoryChart() {
+    // if chart already exists, destroy it before re-drawing
+    if (this.lineChart) {
+      this.lineChart.destroy();
+    }
+    const chartOptions = {
+      chart: {
+        type: 'line',
+        backgroundColor: null,
+        marginBottom: 100,
+      },
+      title: {text: `Project FTE Trends`},
+      subtitle: { text: 'Time Period: All historic data'},
+      xAxis: {
+        type: 'datetime'
+      },
+      yAxis:  {
+        title: {text: 'FTEs'}
+      },
+      legend: {
+        enabled: true
+      },
+      tooltip: {
+        crosshairs: true,
+        shared: true
+      },
+      plotOptions: {
+        series: {
+          turboThreshold: 3000,
+          cursor: 'pointer',
+          point: {
+            events: { // TODO: change click event to show project-time event statistics instead of roster
+              click: function(e) {
+                const p = e.point;
+                this.selectedFiscalDate = moment(p.x).toISOString();
+                this.getProjectEmployeeFTEList(this.selectedProject.ProjectID, this.selectedFiscalDate);
+                console.log(p.x)
+                console.log(moment(p.x).toISOString())
+              }.bind(this)
+            }
+          }
+        }
+      }
+    };
+    this.lineChart = Highcharts.chart('FTEHistory', chartOptions);
+    // loop through the historic FTE data object and plot each object as an independent series
+    this.historicFteData.forEach( p => {
+      this.lineChart.addSeries({
+        name: p.projectName,
+        data: p.data
+      });
+    });
+  }
+
+  // function for getting the project roster onClick in the plot.  (TO BE OBSOLETED)
+  async getProjectEmployeeFTEList(projectID: number, fiscalDate: string) {
+    this.displayProjectEmployeeList = true;
+    // Retrieve all employee FTE logs for a given project
+    const projectFTEList = await this.apiDataReportService.getProjectEmployeeFTEList(projectID, fiscalDate).toPromise();
+    projectFTEList.forEach(emp => {
+      emp.fte = emp.fte * 100;
+    });
+    this.projectEmployeeData = projectFTEList;
   }
 
 }

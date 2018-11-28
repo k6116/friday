@@ -6,8 +6,16 @@
   min-width: 300px;
 }
 
+.col-3-dashboard {
+  min-width: 450px;
+}
+
 .col-4-dashboard {
   min-width: 600px;
+}
+
+.col-6-dashboard {
+  min-width: 900px;
 }
 
 .col-10-dashboard {
