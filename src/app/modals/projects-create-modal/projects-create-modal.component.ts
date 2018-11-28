@@ -78,8 +78,8 @@ export class ProjectsCreateModalComponent implements OnInit {
 
     // set the form data that will be sent in the body of the request
     const project = this.form.getRawValue();
-    // for project that are not org level and created by Individual Cont/Managers, projectType will always be "General"
-    project.projectTypeName = 'General';
+    // for project that are not org level and created by Individual Cont/Managers, projectType will always be "Individual"
+    project.projectTypeName = 'Individual';
 
     // Find the project type ID
     for (let i = 0; i < this.projectTypesList.length; i++ ) {
