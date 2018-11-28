@@ -148,7 +148,13 @@
           </div>
         </div>
 
-        <table class="table table-sm table-hover">
+        <div class="row">
+          <div class="col subtitle-header">
+            Select a project to display the FTE trend chart
+          </div>
+        </div>
+
+        <table class="table table-borderless table-sm table-hover">
           <thead>
             <tr>
               <th width="30%" scope="col">Project Name</th>
@@ -169,37 +175,55 @@
       </div>
 
       <div class="col-sm-6 col-6-dashboard mid-third">
+
+        <div *ngIf="!displayProjectFTETrendChart">
+          <div class="row row-middle">
+            <div class="col title-header">
+              Select a project from the list on the left to display the FTE trend chart
+            </div>
+          </div>
+        </div>
+
         <div class="highchart my-fte-pie-chart1" id="FTEHistory">
         </div>
+
       </div>
 
       <div class="col-sm-3 col-3-dashboard">
+
+        <div *ngIf="!displayProjectEmployeeList && displayProjectFTETrendChart">
+          <div class="row row-middle">
+            <div class="col title-header">
+              Click a point in FTE trend chart
+            </div>
+          </div>
+        </div>
+
         <div *ngIf="displayProjectEmployeeList">
 
           <div class="row row-header">
             <div class="col title-header">
-                {{ selectedProject.ProjectName }} Roster | {{ selectedFiscalDate | date:'MMM-yyyy' }}
+                {{ selectedProject.ProjectName }} Roster | {{ selectedFiscalDateMonth }}-{{ selectedFiscalDateYear }}
             </div>
           </div>
-          
-          <div class="table-container">
-            <table class="table table-sm table-hover">
-              <thead>
-                <tr>
-                  <th width="20%" scope="col">Employee Name</th>
-                  <th width="40%" scope="col">JobTitle</th>
-                  <th width="10%" scope="col">FTE</th>
-                </tr>
-              </thead>
-              <tbody *ngFor="let employee of projectEmployeeData">
-                <tr>
-                  <td>{{ employee.fullName }}</td>
-                  <td>{{ employee.jobTitleName }} - {{ employee.jobSubTitleName }}</td>
-                  <td>{{ employee.fte }}%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+
+          <table class="table table-borderless table-sm">
+            <thead>
+              <tr>
+                <th width="20%" scope="col">Employee Name</th>
+                <th width="40%" scope="col">JobTitle</th>
+                <th width="10%" scope="col">FTE</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let employee of projectEmployeeData">
+              <tr>
+                <td>{{ employee.fullName }}</td>
+                <td>{{ employee.jobTitleName }} - {{ employee.jobSubTitleName }}</td>
+                <td>{{ employee.fte }}%</td>
+              </tr>
+            </tbody>
+          </table>
+
         </div>
       </div>
 

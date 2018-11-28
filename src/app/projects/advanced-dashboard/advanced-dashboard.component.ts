@@ -62,7 +62,10 @@ export class AdvancedDashboardComponent implements OnInit {
   projectEmployeeData: any; // for rendering project roster (TO BE OBSOLETED)
   selectedProject: any; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
   selectedFiscalDate: string; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
+  selectedFiscalDateMonth: string; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
+  selectedFiscalDateYear: string; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
   displayProjectEmployeeList: boolean;
+  displayProjectFTETrendChart: boolean;
 
   constructor(
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
@@ -614,6 +617,7 @@ export class AdvancedDashboardComponent implements OnInit {
       });
       // console.log('fiscalDate', fiscalDate);
       // console.log(this.historicFteData);
+      this.displayProjectFTETrendChart = true;
       this.plotFteHistoryChart();
 
     }
@@ -653,10 +657,12 @@ export class AdvancedDashboardComponent implements OnInit {
             events: { // TODO: change click event to show project-time event statistics instead of roster
               click: function(e) {
                 const p = e.point;
-                this.selectedFiscalDate = moment(p.x).toISOString();
+                this.selectedFiscalDate = moment(p.x).utc().toISOString();
+                this.selectedFiscalDateMonth = moment(p.x).utc().format('MMM');
+                this.selectedFiscalDateYear = moment(p.x).utc().year();
                 this.getProjectEmployeeFTEList(this.selectedProject.ProjectID, this.selectedFiscalDate);
                 console.log(p.x)
-                console.log(moment(p.x).toISOString())
+                console.log(moment(p.x).utc().format('MM-DD-YYYY'))
               }.bind(this)
             }
           }

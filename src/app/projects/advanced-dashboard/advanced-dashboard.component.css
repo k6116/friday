@@ -29,11 +29,25 @@
   font-size: 18px;
 }
 
+.subtitle-header {
+  display: flex;
+  justify-content: center;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  margin-top: -20px;
+  padding-bottom: 25px;
+}
+
 .row-header {
   padding-top: 10px;
   padding-bottom: 25px;
 }
 
+.row-middle {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+}
 
 .table td, .table th {
   border: none;
