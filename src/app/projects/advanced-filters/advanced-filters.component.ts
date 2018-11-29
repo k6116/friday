@@ -19,7 +19,7 @@ export interface NewPLC {
   PLCStatusID: string;
   PLCStatusName: string;
   PLCDateFrom: string;
-  PLCDateTo: string
+  PLCDateTo: string;
 }
 
 @Component({
@@ -58,7 +58,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   arrPriorityID: any;
   objPLC: any; // object containing all PLC info (newPLC) that's needed for filterObject
   plcSchedules: any; // contains PLC status name headers
-  allManagers:any;
+  allManagers: any;
   managers: any;
   managerTeam: any[];
 
@@ -72,19 +72,19 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   };
 
   // For default Check All
-  checkAllProjectTypes: boolean; 
+  checkAllProjectTypes: boolean;
   checkAllProjectPriorities: boolean;
   checkAllProjectStatuses: boolean;
 
   // Filter Results
   advancedFilteredResults: any;
   advancedFilteredResultsFlat: any; // for excel download
-  
+
   // etc
   subscription2: Subscription; // for excel download
   showSpinner: boolean;
   showPage: boolean;
-  showParentChild: boolean // only show parent child filter boxes if clicked on a project from results table 
+  showParentChild: boolean; // only show parent child filter boxes if clicked on a project from results table
   // showResults: boolean;
   showDownloadingIcon: boolean;
   lastClickedProjectName: string; // store which project was clicked last
@@ -93,11 +93,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   maxDate: string;
   fteMin: any; // for fte checkbox logic
   fteMax: any; // for fte checkbox logic
-  
+
   // month
   currentMonth: number;
-  fteDateFrom: any; //for FTE date range input - format yyyy-MM-dd required
-  fteDateTo: any; //for FTE date range input - format yyyy-MM-dd required
+  fteDateFrom: any; // for FTE date range input - format yyyy-MM-dd required
+  fteDateTo: any; // for FTE date range input - format yyyy-MM-dd required
 
   constructor(
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
@@ -110,7 +110,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // declare filter option object; NULLs ar REQUIRED
     this.filterObject = {
       PLCStatusIDs: '',       // num1,num2,num3,..
-      PLCDateRanges: '',      // From1|To1, From2|To2, From3|To3,... 
+      PLCDateRanges: '',      // From1|To1, From2|To2, From3|To3,...
       ProjectName: '',        // name, name, name,..
       ProjectTypeIDs: '',     // num,num,num,..
       ProjectStatusIDs: '',   // num,num,num,..
@@ -162,7 +162,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.plcStatuses = this.advancedFilterData[4];
 
     // initalize Checkboxes
-    this.initCheckboxArrays()
+    this.initCheckboxArrays();
 
     // get all managers for typeahead
     this.allManagers = this.getManagers('ron_nersesian@keysight.com');
@@ -205,7 +205,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.projectTypes.length; i++) {
       this.arrTypeID.push(this.projectTypes[i].id);
     }
-    
+
     for (let i = 0; i < this.projectPriorities.length; i++) {
       this.arrPriorityID.push(this.projectPriorities[i].id);
     }
@@ -246,7 +246,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // this.showResults = false;
 
     this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
-    
+
     this.advancedFilteredResults.nested.forEach( project => {
       const schedules = [];
       if ('Schedules' in project) {
@@ -279,7 +279,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filteredProjectsCount = this.advancedFilteredResults.length;
 
     this.setNumProjectsDisplayString();
-    
+
   }
 
   // set/update the record count string (Showing X of Y Projects)
@@ -327,11 +327,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // create new array to store project names
     const parentProjects = Array(this.filterObject.ProjectName);
 
-    if (parentProjects[0] === "") {
+    if (parentProjects[0] === '') {
       parentProjects[0] = this.lastClickedProjectName;
     }
-    
-    parentProjects.push(projectName)      
+
+    parentProjects.push(projectName);
 
     this.filterObject.ProjectName = String(parentProjects);
 
@@ -347,11 +347,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // create new array to store project names
     const childProjects = Array(this.filterObject.ProjectName);
 
-    if (childProjects[0] === "") {
+    if (childProjects[0] === '') {
       childProjects[0] = this.lastClickedProjectName;
     }
-    
-    childProjects.push(projectName)      
+
+    childProjects.push(projectName);
 
     this.filterObject.ProjectName = String(childProjects);
 
@@ -405,7 +405,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   // Selecting a name from the typeahead list
   async onSelect(selection) {
 
-    const email = selection.EMAIL_ADDRESS
+    const email = selection.EMAIL_ADDRESS;
 
     // Save email string to filterObject
     this.filterObject.ProjectOwnerEmails = String(email);
@@ -418,7 +418,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // Show div with subordinates
     this.getProjectOwnerSubordinates(email);
-    
+
   }
 
   onClearOwnerClick() {
@@ -448,7 +448,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       case 'ProjectTypeIDs':
         for (let i = 0; i < this.projectTypes.length; i++) {
           this.arrTypeID.push(this.projectTypes[i].id);
-        }        
+        }
         break;
       case 'ProjectStatusIDs':
         this.arrStatusID = [0]; // adding zero as blank
@@ -460,7 +460,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         this.arrPriorityID = [0];  // adding zero as blank
         for (let i = 0; i < this.projectPriorities.length; i++) {
           this.arrPriorityID.push(this.projectPriorities[i].id);
-        } 
+        }
         break;
       case 'PLCStatusIDs':
         for (let i = 0; i < this.plcStatuses.length; i++) {
@@ -470,7 +470,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
             PLCStatusName: this.plcStatuses[i].PLCStatusName,
             PLCDateFrom: 'NULL',
             PLCDateTo: 'NULL'
-          }
+          };
           this.objPLC.push(this.newPLC);
         }
         break;
@@ -483,7 +483,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     const checkboxID = event.target.id;
     const checkState = event.target.checked;
     const objKey = Object.keys(this.filterObject);
-    
+
     if (checkState === false) {
       // loop through array of object keys and compare with the checkbox IDs
       for (let i = 0; i < objKey.length; i++) {
@@ -514,29 +514,27 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
             case 'PLCStatusIDs':
               this.objPLC = [];
               this.filterObject.PLCStatusIDs = String(this.objPLC);
-              break
+              break;
           }
           break;
 
         }
 
       }
-    } 
-
-    else if (checkState === true) {
+    } else if (checkState === true) {
 
       // fill filterObjects with array from init or any other default values
       for (let i = 0; i < objKey.length; i++) {
 
-        if(objKey[i] === checkboxID) {
+        if (objKey[i] === checkboxID) {
           switch (objKey[i]) {
             case 'ProjectTypeIDs':
               await this.onCheckboxReset(checkboxID);
               this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
               break;
             case 'ProjectOwnerEmails':
-              for (let i = 0; i < this.managerTeam.length; i++) {
-              this.arrOwnerEmail.push(this.managerTeam[i].EMAIL_ADDRESS);
+              for (let j = 0; i < this.managerTeam.length; j++) {
+              this.arrOwnerEmail.push(this.managerTeam[j].EMAIL_ADDRESS);
               }
               this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
               break;
@@ -554,11 +552,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
               break;
             case 'PLCStatusIDs':
               // objPLC contains newPLC array because it also needs to save dates
-              // selecting all means newPLC has to be created for each PLC status 
+              // selecting all means newPLC has to be created for each PLC status
               await this.onCheckboxReset(checkboxID);
-              let arr = [];
-              for (let i = 0; i < this.objPLC.length; i++) {
-                arr.push(this.objPLC[i].PLCStatusID)
+              const arr = [];
+              for (let j = 0; i < this.objPLC.length; j++) {
+                arr.push(this.objPLC[j].PLCStatusID);
               }
               this.filterObject.PLCStatusIDs = String(arr);
               break;
@@ -582,9 +580,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     if (checked === true) {
       // ADD ID to array
       this.arrTypeID.splice(0, 0, id);
-    } 
-
-    else if (checked === false) {
+    } else if (checked === false) {
       // find ID in array
       for (let i = 0; i < this.arrTypeID.length; i++) {
         // REMOVE from array
@@ -600,7 +596,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // Make the db call
     this.advancedFilter(this.filterObject);
-    
+
   }
 
   // Project Status
@@ -610,9 +606,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     if (checked === true) {
       // ADD ID to array
       this.arrStatusID.push(id);
-    } 
-    
-    else if (checked === false){
+    } else if (checked === false) {
       // find ID in array
       for (let i = 0; i < this.arrStatusID.length; i++) {
         // REMOVE from array
@@ -639,9 +633,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       // ADD ID to array
       // this.arrPriorityID.splice(0, 0, id);
       this.arrPriorityID.push(id);
-    }
-
-    else if (checked === false) {
+    } else if (checked === false) {
       // console.log('checked is false.')
       // find ID in array
       for (let i = 0; i < this.arrPriorityID.length; i++) {
@@ -679,29 +671,29 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.fteDateTo = '';
 
     // unselect all toggle buttons -> removes PLC from reults table
-    $(".fte-toggle").removeClass("active");
+    $('.fte-toggle').removeClass('active');
 
   }
 
   onFTEToggleSelected(event: any) {
 
     const id = event.target.id;
-    this.currentMonth = Number(moment().format('M'));   
+    this.currentMonth = Number(moment().format('M'));
 
     switch (id) {
       case 'all':
-        this.filterObject.FTEDateFrom = 'NULL'
+        this.filterObject.FTEDateFrom = 'NULL';
         this.filterObject.FTEDateTo = 'NULL';
         break;
 
       case 'month':
         const firstDayOfMonth0 = moment().format('MM/01/YYYY');   // First day of current month
         const firstDayOfMonth1 = moment(firstDayOfMonth0).add(1, 'month').format('MM/01/YYYY');   // First day of following month
-        
+
         this.filterObject.FTEDateFrom = String(firstDayOfMonth0);
         this.filterObject.FTEDateTo = String(firstDayOfMonth1);
         break;
-      
+
       case 'qtr':
         let qtr0; // Beginning of CURRENT quarter
         let qtr1; // Begiining of FOLLOWING quarter
@@ -709,14 +701,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         // Determining beginning of the quarter
         if (this.currentMonth === 11 || this.currentMonth === 12 || this.currentMonth === 1) {
           qtr0 = moment().format('11/01/YYYY');
-        }
-        else if (this.currentMonth === 2 || this.currentMonth === 3 || this.currentMonth === 4) {
+        } else if (this.currentMonth === 2 || this.currentMonth === 3 || this.currentMonth === 4) {
           qtr0 = moment().format('01/01/YYYY');
-        }
-        else if (this.currentMonth === 5 || this.currentMonth === 6 || this.currentMonth === 7) {
+        } else if (this.currentMonth === 5 || this.currentMonth === 6 || this.currentMonth === 7) {
           qtr0 = moment().format('05/01/YYYY');
-        }
-        else if (this.currentMonth === 8 || this.currentMonth === 9 || this.currentMonth === 10) {
+        } else if (this.currentMonth === 8 || this.currentMonth === 9 || this.currentMonth === 10) {
           qtr0 = moment().format('08/01/YYYY');
         }
 
@@ -726,18 +715,18 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         this.filterObject.FTEDateTo = String(qtr1);
 
         break;
-    
+
       case 'year':
-        let fiscalYear0         // Beginning of fiscal year; 11/01/YYYY
-        let fiscalYear1         // End of fiscal Year; 11/01/YYYY + 1year
+        let fiscalYear0;         // Beginning of fiscal year; 11/01/YYYY
+        let fiscalYear1;         // End of fiscal Year; 11/01/YYYY + 1year
 
         if (this.currentMonth === 11 || this.currentMonth === 12) {
-          
+
           fiscalYear0 = moment().format('11/01/YYYY'); // first day of CURRENT fiscal year
           fiscalYear1 = moment(fiscalYear0).add(1, 'year').format('11/01/YYYY'); // first day of FOLLOWING fiscal year
 
         } else {
-          
+
           fiscalYear1 = moment().format('11/01/YYYY');  // first day of FOLLOWING fiscal year
           fiscalYear0 = moment(fiscalYear1).subtract(1, 'year').format('01/01/YYYY'); // first day of CURRENT fiscal year
 
@@ -759,7 +748,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   onFTETotalGoClick(minValue: any, maxValue: any) {
 
     if (minValue === '') {
-      this.filterObject.FTEMin = String('NULL');  
+      this.filterObject.FTEMin = String('NULL');
     } else {
       this.filterObject.FTEMin = String(minValue);
     }
@@ -781,7 +770,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     } else {
     this.filterObject.FTEMax = value;
     }
-    
+
     // Make the db call
     this.advancedFilter(this.filterObject);
   }
@@ -793,7 +782,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     } else {
     this.filterObject.FTEMin = value;
     }
-    
+
     // Make the db call
     this.advancedFilter(this.filterObject);
   }
@@ -821,7 +810,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
       // Make the db call
       this.advancedFilter(this.filterObject);
-     }   
+     }
   }
 
 // PLC SCHEDULES
@@ -836,7 +825,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       PLCStatusName: plcStatus.PLCStatusName,
       PLCDateFrom: 'NULL',
       PLCDateTo: 'NULL'
-    }
+    };
 
     // add or remove to local array depending on the checkbox state
     if (checked === true) {
@@ -879,26 +868,24 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
           if (date !== '') {
             this.objPLC[i].PLCDateFrom = date;
-          } 
-          else { // on clear input click
+          } else { // on clear input click
             this.objPLC[i].PLCDateFrom = 'NULL';
           }
 
         }
-        
+
         if (this.objPLC[i].index === index && id === 'plcTo') {
 
           if (date !== '') {
             this.objPLC[i].PLCDateTo = date;
-          }
-          else { // on clear input click
+          } else { // on clear input click
             this.objPLC[i].PLCDateTo = 'NULL';
           }
-          
-        } 
+
+        }
 
       }
-  
+
       // string manipulation
       this.filterPLCSchedule();
 
@@ -1037,7 +1024,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
             name: 'LastUpdateDate'
           }
         ];
-    
+
     // get the array of projects objects that are displayed
     // const projects = this.filterPipe.transform(this.projects, this.filterString, this.selectedFilter.columnName,
     //   {matchFuzzy: {on: this.selectedFilter.matchFuzzy, threshold: this.fuzzySearchThreshold},
