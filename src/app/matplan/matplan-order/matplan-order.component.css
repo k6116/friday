@@ -1,0 +1,19 @@
+.table-sm td, .table-sm th {
+  vertical-align: middle;
+}
+
+div.card-header {
+  font-size: 19px;
+  padding: 15px;
+}
+
+.choose-supplier-button {
+  float: right;
+}
+
+.form-control.highlight-invalid {
+  border-color: rgb(236, 154, 154);
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
+}

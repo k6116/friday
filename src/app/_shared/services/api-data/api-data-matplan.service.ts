@@ -58,6 +58,14 @@ export class ApiDataMatplanService {
       .map((response: Response) => response.json());
   }
 
+  showSpecificQuote(partID: number, supplierID: number) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/matplan/matplan/showSpecificQuote/${partID}/${supplierID}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   destroyQuoteForPart(quoteData: any) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});

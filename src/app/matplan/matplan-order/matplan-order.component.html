@@ -1,3 +1,4 @@
+<button class="btn btn-secondary" (click)="testForm()">test</button>
 <div class="row">
 
   <!-- first col is list-box of items in the BOM-->
@@ -8,47 +9,101 @@
   </div> -->
 
   <div class="col-sm">
-    <table class="table table-sm">
-      <thead>
-        <tr>
-          <th>Level:</th>
-          <th>Name:</th>
-          <th>Description:</th>
-          <th>Supplier:</th>
-          <!-- <th>LT (wks):</th>
-          <th>MOQ:</th>
-          <th>Price:</th>
-          <th>NRE:</th>
-          <th>Order Qty:</th>
-          <th>Total Cost:</th>
-          <th>PO:</th>
-          <th>Order Date:</th>
-          <th>ETA:</th>
-          <th>Receive Date:</th>
-          <th>Receive Qty:</th>
-          <th>Deliver To:</th> -->
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let order of orders">
-          <td>{{order.Level}}</td>
-          <td>{{order.ChildName}}</td>
-          <td>{{order.ChildDescription}}</td>
-          <td>{{order.Supplier}}</td>
-          <!-- <td>{{order.level}}</td>
-          <td>{{order.level}}</td>
-          <td>{{order.level}}</td>
-          <td>{{order.level}}</td>
-          <td>{{order.level}}</td>
-          <td>{{order.level}}</td>
-          <td>{{order.level}}</td>
-          <td>{{order.level}}</td>
-          <td>{{order.level}}</td>
-          <td>{{order.level}}</td>
-          <td>{{order.level}}</td> -->
-        </tr>
-      </tbody>
-    </table>
+    <form [formGroup]="orderForm">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Level:</th>
+            <th>Name:</th>
+            <th>Supplier:</th>
+            <th>MFG PN:</th>
+            <th>MOQ:</th>
+            <th>Price:</th>
+            <th>NRE:</th>
+            <th>LT (wks):</th>
+            <th>Qty Per:</th>
+            <th>Order Qty:</th>
+            <th>Total Cost:</th>
+            <th>PO:</th>
+            <th>Order Date:</th>
+            <th>Due Date:</th>
+            <th>Receive Date:</th>
+            <th>Receive Qty:</th>
+            <th>Deliver To:</th>
+          </tr>
+        </thead>
+        <tbody formArrayName="orderFormArray">
+          <tr *ngFor="let order of orderForm.get('orderFormArray').controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td>{{order.get('level').value}}</td>
+              <td [title]="order.get('partDescription').value">{{order.get('partName').value}}</td>
+              <td><button class="btn" [ngClass]="order.get('supplierName').value ? 'btn-outline-success' : 'btn-outline-secondary'" (click)="editSupplier(order)">{{order.get('supplierName').value ? order.get('supplierName').value : 'Choose'}}</button></td>
+              <td>{{order.get('mfgPartNumber').value}}</td>
+              <td>{{order.get('minOrderQty').value}}</td>              
+              <td>{{order.get('price').value | currency}}</td>
+              <td>{{order.get('nreCharge').value | currency}}</td>
+              <td>{{order.get('leadTime').value}}</td>
+              <td>{{order.get('qtyPer').value}}</td>
+              <td><input class="form-control" [ngClass]="highlightSmallOrder(order)" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="orderQty" (blur)="calculatePrice(order)"></td>
+              <td>{{order.get('totalCost').value | currency}}</td>
+              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="purchaseOrderNumber"></td>
+              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="orderDate"></td>
+              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="dueDate"></td>
+              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="dateReceived"></td>
+              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="qtyReceived"></td>
+              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="deliverTo"></td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </form>
   </div>
 
+</div>
+
+
+
+
+<!-- bootstrap modal for select supplier -->
+<div class="modal fade" id="supplierModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Supplier:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngFor="let quote of quotes">
+          <div class="card">
+            <div class="card-header">
+              {{quote.supplierName}} - {{quote.mfgPartNumber}}
+              <button class="btn btn-outline-secondary choose-supplier-button" (click)="chooseSupplier(quote)">Select</button>
+            </div>
+            <div class="card-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>MOQ:</th>
+                    <th>Price:</th>
+                    <th>NRE:</th>
+                    <th>LT (wks):</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let break of quote.breaks">
+                    <td>{{break.minOrderQty}}</td>
+                    <td>{{break.price}}</td>
+                    <td>{{break.nreCharge}}</td>
+                    <td>{{break.leadTime}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
 </div>

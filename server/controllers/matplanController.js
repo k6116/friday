@@ -175,6 +175,47 @@ function showQuotesForPart(req, res) {
   });
 }
 
+function showSpecificQuote(req, res) {
+  const partID = req.params.partID;
+  const supplierID = req.params.supplierID;
+  models.Quote.findAll({
+    attributes: [
+      'partID',
+      'supplierID',
+      'supplier.supplierName',
+      'mfgPartNumber',
+      'quoteID',
+      'leadTime',
+      'minOrderQty',
+      'price',
+      'nreCharge'
+    ],
+    where: {
+      partID: partID,
+      supplierID: supplierID
+    },
+    order: [
+      ['minOrderQty', 'ASC']
+    ],
+    include: [{
+      model: models.Supplier,
+      // attributes: []
+      // // empty attributes trick to prevent having a fully-qualified property name (ie, field = suppliers.supplierName instead of supplierName)
+      // // see https://github.com/sequelize/sequelize/issues/7605
+    }],
+    raw: true
+  })
+  .then(quoteList => {
+    res.json(quoteList);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
 function destroyQuoteForPart(req, res) {
   const quoteForm = req.body;
   const quoteName = quoteForm.supplierName;
@@ -359,7 +400,12 @@ function showMatplanOrders(req, res) {
     {replacements: {projectID: projectID, matplanID: matplanID}, type: sequelize.QueryTypes.SELECT}
   )
   .then(orderList => {
-    res.json(orderList);
+    console.log(orderList);
+    // treeize the price breaks into nested JSON
+    const orderTree = new Treeize();
+    orderTree.grow(orderList);
+    res.json(orderTree.getData());
+    // res.json(orderList);
   })
   .catch(error => {
     res.status(400).json({
@@ -377,6 +423,7 @@ module.exports = {
   showMatplans: showMatplans,
   showMatplanBom: showMatplanBom,
   showQuotesForPart: showQuotesForPart,
+  showSpecificQuote: showSpecificQuote,
   destroyQuoteForPart: destroyQuoteForPart,
   updateQuoteForPart: updateQuoteForPart,
   showMatplanOrders: showMatplanOrders
