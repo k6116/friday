@@ -87,6 +87,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   showParentChild: boolean // only show parent child filter boxes if clicked on a project from results table 
   // showResults: boolean;
   showDownloadingIcon: boolean;
+  lastClickedProjectName: string; // store which project was clicked last
   htmlElement: any;
   minDate: string;
   maxDate: string;
@@ -261,7 +262,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     });
     this.advancedFilteredResultsFlat = this.advancedFilteredResults.flat; // for excel download
     this.advancedFilteredResults = this.advancedFilteredResults.nested;
-    // console.log('this.advancedFilteredResults', this.advancedFilteredResults);
+    console.log('this.advancedFilteredResults', this.advancedFilteredResults);
 
     // For PLC status headers:
     if (this.advancedFilteredResults.length !== 0) {
@@ -297,17 +298,68 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
+  // PARENT-CHILD-PROJECTS
+
+  onProjectClick(projectName: string, projectType: string, projectOwner: string) {
+
+    this.lastClickedProjectName = projectName;
+    console.log(this.lastClickedProjectName);
+    this.getProjectParents(projectName, projectType, projectOwner);
+    this.getProjectChildren(projectName, projectType, projectOwner);
+
+  }
+
   async getProjectChildren(projectName: string, projectType: string, projectOwner: string) {
-    console.log(projectName, projectType, projectOwner);
+    // console.log(projectName, projectType, projectOwner);
     this.children = await this.apiDataAdvancedFilterService.getProjectChildren(projectName, projectType, projectOwner).toPromise();
     console.log('children', this.children);
   }
 
   async getProjectParents(projectName: string, projectType: string, projectOwner: string) {
-    console.log(projectName, projectType, projectOwner);
+    // console.log(projectName, projectType, projectOwner);
     this.parents = await this.apiDataAdvancedFilterService.getProjectParents(projectName, projectType, projectOwner).toPromise();
     // this.showParentChild==!showParentChild"
     console.log('parents', this.parents);
+  }
+
+  onParentCheckboxClick(projectName: String) {
+
+    // create new array to store project names
+    const parentProjects = Array(this.filterObject.ProjectName);
+
+    if (parentProjects[0] === "") {
+      parentProjects[0] = this.lastClickedProjectName;
+    }
+    
+    parentProjects.push(projectName)      
+
+    this.filterObject.ProjectName = String(parentProjects);
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+
+    // clear the filter string
+    this.filterString = undefined;
+  }
+
+  onChildCheckboxClick(projectName: String) {
+
+    // create new array to store project names
+    const childProjects = Array(this.filterObject.ProjectName);
+
+    if (childProjects[0] === "") {
+      childProjects[0] = this.lastClickedProjectName;
+    }
+    
+    childProjects.push(projectName)      
+
+    this.filterObject.ProjectName = String(childProjects);
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+
+    // clear the filter string
+    this.filterString = undefined;
   }
 
 // PROJECT OWNERS
