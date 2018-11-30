@@ -3,8 +3,10 @@ import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataAdvancedFilterService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
+import { AuthService } from '../../_shared/services/auth.service';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ExcelExportService } from '../../_shared/services/excel-export.service';
+import { Router, NavigationEnd } from '@angular/router';
 
 // import { start } from 'repl';
 const moment = require('moment');
@@ -95,13 +97,26 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   fteDateFrom: any; //for FTE date range input - format yyyy-MM-dd required
   fteDateTo: any; //for FTE date range input - format yyyy-MM-dd required
 
+  // TO-DO PAUL: REMOVE TEMP CODE
+  showDashboardButton: boolean;
+
   constructor(
+    private router: Router,
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
     private apiDataOrgService: ApiDataOrgService,
+    private authService: AuthService,
     private cacheService: CacheService,
     private excelExportService: ExcelExportService,
     private toolsService: ToolsService
   ) {
+
+    // TO-DO PAUL: REMOVE TEMP CODE
+    if (this.authService.loggedInUser.email === 'paul_sung@keysight.com' ||
+        this.authService.loggedInUser.email === 'tawanchai.schmitz@keysight.com' ||
+        this.authService.loggedInUser.email === 'bill_schuetzle@keysight.com' ||
+        this.authService.loggedInUser.email === 'bryan.cheung@keysight.com') {
+          this.showDashboardButton = true;
+        }
 
     // declare filter option object; NULLs ar REQUIRED
     this.filterObject = {
@@ -239,6 +254,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // this.showResults = false;
 
     this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
+
+    this.cacheService.advancedSearchFilterOption = filterOptions;
     
     this.advancedFilteredResults.nested.forEach( project => {
       const schedules = [];
@@ -986,6 +1003,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.excelExportService.exportServer('Jarvis Projects Export', 'Projects', this.advancedFilteredResultsFlat);
     }, 1000);
+  }
+
+  onDashboardClick() {
+    // navigate to the display page
+    this.router.navigate([`/main/projects/advanced-dashboard/`]);
   }
 
   // TEST BUTTON

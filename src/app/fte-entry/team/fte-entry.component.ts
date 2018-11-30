@@ -239,7 +239,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log(this.FTEFormGroup);
     // console.log('this.FTEFormGroup.value.FTEFormArray', this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
-    // console.log('teamFTE', this.teamFTEs);
+    console.log('teamFTE', this.teamFTEs);
     // console.log('teamFTEFlat', this.teamFTEsFlat);
     console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
     console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
