@@ -235,6 +235,10 @@ button.go-btn {
   border-color: lightgray;
 }
 
+/* .go-btn-active {
+
+} */
+
 label.fte {
   margin-top: 10px; 
   margin-right: 5px; 
@@ -290,6 +294,7 @@ table.filter-results th {
   position: sticky;
   top: -1px;
   line-height: 6px !important;
+  white-space: nowrap;
   /* background: white; */
 }
 
@@ -297,9 +302,7 @@ table.table {
   border: 1px solid #dee2e6;
 }
 
-/* .bom-selector {
-  position: absolute;
-  top: 90px;
-  left: 220px;
-  z-index: 1;
-} */
+/* SAVED SEARCH */
+.btn-inline-toolbar {
+  display: inline-flex;
+}
