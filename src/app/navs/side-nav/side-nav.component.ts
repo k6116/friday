@@ -108,7 +108,7 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
             {
               title: 'Advanced Search',
               alias: 'advanced-search',
-              path: 'main/projects/advanced-search',
+              path: 'main/projects/advanced-filters',
               parentAlias: 'advSearch',
               active: false,
               permissionProtected: true,
