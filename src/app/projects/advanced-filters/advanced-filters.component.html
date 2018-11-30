@@ -30,6 +30,7 @@
       
       <!-- Test Button -->
       <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
+      <button *ngIf="showDashboardButton" class="btn btn-primary" (click)="onDashboardClick()">Dashboard</button>
 
       <!-- Filter Badges -->
       <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">

@@ -4,23 +4,32 @@
 
 .col-2-dashboard {
   min-width: 300px;
+  min-height: 400px;
 }
 
 .col-3-dashboard {
   min-width: 450px;
+  min-height: 400px;
 }
 
 .col-4-dashboard {
   min-width: 600px;
+  min-height: 400px;
 }
 
 .col-6-dashboard {
   min-width: 900px;
+  min-height: 400px;
 }
 
 .col-10-dashboard {
   min-width: 1500px;
+  min-height: 400px;
 }
+
+/* .col-4-square {
+  max-height: 350px;
+} */
 
 .title-header {
   display: flex;
@@ -47,6 +56,11 @@
   position: absolute;
   width: 100%;
   top: 50%;
+}
+
+.table tbody {
+  overflow-y: auto;
+  height: 300px;
 }
 
 .table td, .table th {

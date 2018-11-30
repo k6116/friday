@@ -9,75 +9,99 @@
       <!-- Project Stats -->
       <div class="col-sm-4 col-4-dashboard left-third">
 
-        <div class="row row-header">
-          <div class="col title-header">
-            Project Stats
+        <div [hidden]="displayProjectStats">
+          <div class="row row-middle">
+            <div class="col title-header">
+              Project Stats not available for this data set
+            </div>
           </div>
         </div>
 
-        <div class="row">
+        <div [hidden]="!displayProjectStats">
 
-           <!-- Owners Table -->
-          <div class="col-4 left-third">
-            <table class="table table-borderless table-sm">
-              <thead>
-                <tr>
-                  <th>Owner</th>
-                  <th>Projects</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let owner of ownersCount">
-                  <td>{{ owner.name }}</td>
-                  <td>{{ owner.y }}</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="row row-header">
+            <div class="col title-header">
+              Project Stats
+            </div>
           </div>
 
-          <!-- Priorities Table -->
-          <div class="col-4 mid-third">
-            <table class="table table-borderless table-sm">
-              <thead>
-                <tr>
-                  <th>Priority</th>
-                  <th>Projects</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let priority of prioritiesCount">
-                  <td>{{ priority.name }}</td>
-                  <td>{{ priority.y }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="row">
 
-          <!-- Statuses Table -->
-          <div class="col-4">
-            <table class="table table-borderless table-sm">
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Projects</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let status of statusesCount">
-                  <td>{{ status.name }}</td>
-                  <td>{{ status.y }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+            <!-- Owners Table -->
+            <div class="col-4 col-4-square left-third">
+              <table class="table table-borderless table-sm">
+                <thead>
+                  <tr>
+                    <th>Owner</th>
+                    <th>Projects</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let owner of ownersCount">
+                    <td>{{ owner.name }}</td>
+                    <td>{{ owner.y }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
+            <!-- Priorities Table -->
+            <div class="col-4 col-4-square mid-third">
+              <table class="table table-borderless table-sm">
+                <thead>
+                  <tr>
+                    <th>Priority</th>
+                    <th>Projects</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let priority of prioritiesCount">
+                    <td>{{ priority.name }}</td>
+                    <td>{{ priority.y }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Statuses Table -->
+            <div class="col-4 col-4-square">
+              <table class="table table-borderless table-sm">
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Projects</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let status of statusesCount">
+                    <td>{{ status.name }}</td>
+                    <td>{{ status.y }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
         </div>
       </div>
 
-      <!-- statuses chart -->
+      <!-- Priority FTE chart -->
       <div class="col-sm-4 col-4-dashboard mid-third">
-        <div class="highchart my-fte-pie-chart1" id="priorityFTEChart">
+
+        <div [hidden]="displayPriorityFTEChart">
+          <div class="row row-middle">
+            <div class="col title-header">
+              Priority/JobTitle/FTE chart not available for this data set <br><br>
+              Please select a date range in the FTE filter to enable this chart
+            </div>
+          </div>
         </div>
+
+        <div [hidden]="!displayPriorityFTEChart">
+          <div class="highchart my-fte-pie-chart1" id="priorityFTEChart">
+          </div>
+        </div>
+
       </div>
       
       <!-- job title chart -->
@@ -93,41 +117,66 @@
 
       <!-- schedules chart -->
       <div class="col-sm-10 col-10-dashboard left-third">
-        <div class="highchart my-fte-pie-chart1" id="schedulesChart">
+
+        <div [hidden]="displaySchedulesChart">
+          <div class="row row-middle">
+            <div class="col title-header">
+              PLC Schedules chart not available<br><br>
+              Projects in this data set do not have PLC Schedules defined
+            </div>
+          </div>
         </div>
+
+        <div [hidden]="!displaySchedulesChart">
+          <div class="highchart my-fte-pie-chart1" id="schedulesChart">
+          </div>
+        </div>
+
       </div>
 
       <div class="col-sm-2 col-2-dashboard">
 
-        <div class="row row-header">
-          <div class="col title-header">
-            Schedule Stats
+        <div [hidden]="displayScheduleStats">
+          <div class="row row-middle">
+            <div class="col title-header">
+              Schedule Stats not available for this data set
+            </div>
           </div>
         </div>
 
-        <div class="row row-header">
-          <div class="col">
-            <table class="table table-borderless table-sm">
-              <tbody>
-                <tr>
-                  <td style="font-weight: bold">Avg FTE post-SHP</td>
-                  <td>{{ ssAvgFTEAfterSHP }}</td>
-                </tr>
-                <tr>
-                  <td style="font-weight: bold">Total FTE post-SHP</td>
-                  <td>{{ ssTotalFTEAfterSHP }}</td>
-                </tr>
-                <tr>
-                  <td style="font-weight: bold">Avg FTE no PLC</td>
-                  <td>{{ ssAvgFTENoPLC }}</td>
-                </tr>
-                <tr>
-                  <td style="font-weight: bold">Total FTE no PLC</td>
-                  <td>{{ ssTotalFTENoPLC }}</td>
-                </tr>
-              </tbody>
-            </table>
+        <div [hidden]="!displayScheduleStats">
+
+          <div class="row row-header">
+            <div class="col title-header">
+              Schedule Stats
+            </div>
           </div>
+
+          <div class="row row-header">
+            <div class="col">
+              <table class="table table-borderless table-sm">
+                <tbody>
+                  <tr>
+                    <td style="font-weight: bold">Avg FTE post-SHP</td>
+                    <td>{{ ssAvgFTEAfterSHP }}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: bold">Total FTE post-SHP</td>
+                    <td>{{ ssTotalFTEAfterSHP }}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: bold">Avg FTE no PLC</td>
+                    <td>{{ ssAvgFTENoPLC }}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: bold">Total FTE no PLC</td>
+                    <td>{{ ssTotalFTENoPLC }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -142,41 +191,61 @@
        <!-- fte top projects chart -->
       <div class="col-sm-3 col-3-dashboard left-third">
 
-        <div class="row row-header">
-          <div class="col title-header">
-            Top FTE Projects
+        <div [hidden]="displayTopFTEProjects">
+          <div class="row row-middle">
+            <div class="col title-header">
+              Top FTE Project list is not available for this dataset
+            </div>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col subtitle-header">
-            Select a project to display the FTE trend chart
-          </div>
-        </div>
+        <div [hidden]="!displayTopFTEProjects">
 
-        <table class="table table-borderless table-sm table-hover">
-          <thead>
-            <tr>
-              <th width="30%" scope="col">Project Name</th>
-              <th width="15%" scope="col">Project Type</th>
-              <th width="10%" scope="col">Priority</th>
-              <th width="10%" scope="col">Total FTE</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let project of topFTEProjects; let i = index" (click)="onTopFTEProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
-              <td>{{ project.ProjectName }}</td>
-              <td>{{ project.ProjectTypeName }}</td>
-              <td>{{ project.PriorityName }}</td>
-              <td>{{ project.TotalProjectFTE }}</td>
-            </tr>
-          </tbody>
-        </table>
+          <div class="row row-header">
+            <div class="col title-header">
+              Top FTE Projects
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col subtitle-header">
+              Select a project to display the FTE trend chart
+            </div>
+          </div>
+
+          <table class="table table-borderless table-sm table-hover">
+            <thead>
+              <tr>
+                <th width="30%" scope="col">Project Name</th>
+                <th width="15%" scope="col">Project Type</th>
+                <th width="10%" scope="col">Priority</th>
+                <th width="10%" scope="col">Total FTE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let project of topFTEProjects; let i = index" (click)="onTopFTEProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
+                <td>{{ project.ProjectName }}</td>
+                <td>{{ project.ProjectTypeName }}</td>
+                <td>{{ project.PriorityName }}</td>
+                <td>{{ project.TotalProjectFTE }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
       </div>
 
       <div class="col-sm-6 col-6-dashboard mid-third">
 
-        <div *ngIf="!displayProjectFTETrendChart">
+        <div [hidden]="displayTopFTEProjects">
+          <div class="row row-middle">
+            <div class="col title-header">
+              The FTE Trend chart will display only if projects exists in the Top FTE Projects
+            </div>
+          </div>
+        </div>
+
+        <div [hidden]="(!displayTopFTEProjects && !displayProjectFTETrendChart) || (displayTopFTEProjects && displayProjectFTETrendChart)">
           <div class="row row-middle">
             <div class="col title-header">
               Select a project from the list on the left to display the FTE trend chart
@@ -184,14 +253,16 @@
           </div>
         </div>
 
-        <div class="highchart my-fte-pie-chart1" id="FTEHistory">
+        <div [hidden]="!displayTopFTEProjects && !displayProjectFTETrendChart">
+          <div class="highchart my-fte-pie-chart1" id="FTEHistory">
+          </div>
         </div>
 
       </div>
 
       <div class="col-sm-3 col-3-dashboard">
 
-        <div *ngIf="!displayProjectEmployeeList && displayProjectFTETrendChart">
+        <div [hidden]="displayProjectFTETrendChart && displayProjectEmployeeList">
           <div class="row row-middle">
             <div class="col title-header">
               Click a point in FTE trend chart
@@ -199,11 +270,11 @@
           </div>
         </div>
 
-        <div *ngIf="displayProjectEmployeeList">
+        <div [hidden]="!displayProjectEmployeeList">
 
           <div class="row row-header">
             <div class="col title-header">
-                {{ selectedProject.ProjectName }} Roster | {{ selectedFiscalDateMonth }}-{{ selectedFiscalDateYear }}
+                {{ selectedProject ? selectedProject.ProjectName : '--'}} Roster | {{ selectedFiscalDateMonth ? selectedFiscalDateMonth : '--' }}-{{ selectedFiscalDateYear ? selectedFiscalDateYear : '--' }}
             </div>
           </div>
 

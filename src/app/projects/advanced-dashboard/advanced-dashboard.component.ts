@@ -25,6 +25,8 @@ import * as _ from 'underscore';
 })
 export class AdvancedDashboardComponent implements OnInit {
 
+  filterOptions: any;
+
   showDashboard: boolean;
   showSpinner: boolean;
   advancedFilteredResults: any;
@@ -64,8 +66,17 @@ export class AdvancedDashboardComponent implements OnInit {
   selectedFiscalDate: string; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
   selectedFiscalDateMonth: string; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
   selectedFiscalDateYear: string; // old method for displaying project roster onClick in chart (TO BE OBSOLETED)
+
+  displayProjectStats: boolean;
+  displayPriorityFTEChart: boolean;
+  displaySchedulesChart: boolean;
+  displayScheduleStats: boolean;
+  displayTopFTEProjects: boolean;
   displayProjectEmployeeList: boolean;
   displayProjectFTETrendChart: boolean;
+
+  FTEDateFromFormatted: any;
+  FTEDateToFormatted: any;
 
   constructor(
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
@@ -82,30 +93,39 @@ export class AdvancedDashboardComponent implements OnInit {
 
     this.showDashboard = true;
 
-    const filterOptions = {
-      // PLCStatusIDs: '7,6',
-      // PLCDateRanges: '2017-01-01|NULL,2017-01-01|NULL',
-      PLCStatusIDs: '1,2,6,7',
-      PLCDateRanges: 'NULL|NULL,NULL|NULL,NULL|NULL,NULL|NULL',
-      // PLCStatusIDs: '',
-      // PLCDateRanges: '',
-      ProjectName: '00 Test Project 1,26-42 GHz 1st Mixer,BrixSG,Viking 1.5,Armstrong,Bugs Bunny',
-      ProjectTypeIDs: '0,1,2,3,4,14',
-      ProjectStatusIDs: '0,1,2,3,4,5',
-      ProjectPriorityIDs: '0,1,3,4,5',
-      ProjectOwnerEmails: '',
-      FTEMin: '0',
-      FTEMax: 'NULL',
-      FTEDateFrom: 'NULL',
-      FTEDateTo: 'NULL'
-    };
+    // this.filterOptions = {
+    //   // PLCStatusIDs: '7,6',
+    //   // PLCDateRanges: '2017-01-01|NULL,2017-01-01|NULL',
+    //   PLCStatusIDs: '1,2,6,7',
+    //   PLCDateRanges: 'NULL|NULL,NULL|NULL,NULL|NULL,NULL|NULL',
+    //   // PLCStatusIDs: '',
+    //   // PLCDateRanges: '',
+    //   ProjectName: '00 Test Project 1,26-42 GHz 1st Mixer,BrixSG,Viking 1.5,Armstrong,Bugs Bunny',
+    //   ProjectTypeIDs: '0,1,2,3,4,14',
+    //   ProjectStatusIDs: '0,1,2,3,4,5',
+    //   ProjectPriorityIDs: '0,1,3,4,5',
+    //   ProjectOwnerEmails: '',
+    //   FTEMin: '0',
+    //   FTEMax: 'NULL',
+    //   FTEDateFrom: 'NULL',
+    //   FTEDateTo: 'NULL'
+    //   // FTEDateFrom: '2018-08-01',
+    //   // FTEDateTo: '2019-02-01'
+    // };
+
+    this.filterOptions = this.cacheService.advancedSearchFilterOption;
+
+    this.FTEDateFromFormatted = this.filterOptions.FTEDateFrom === 'NULL' ? 'NULL' : moment(this.filterOptions.FTEDateFrom).format('YYYY-MM-DD');
+    this.FTEDateToFormatted = this.filterOptions.FTEDateTo === 'NULL' ? 'NULL' : moment(this.filterOptions.FTEDateTo).format('YYYY-MM-DD');
 
     this.getPLCList();
-    await this.advancedFilter(filterOptions);
+    await this.advancedFilter();
   }
 
-  async advancedFilter(filterOptions: any) {
-    this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
+  async advancedFilter() {
+    this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(
+      this.filterOptions).toPromise();
+
     this.advancedFilteredResults.nested.forEach( project => {
       const schedules = [];
       if ('Schedules' in project) {
@@ -120,9 +140,7 @@ export class AdvancedDashboardComponent implements OnInit {
     });
     this.advancedFilteredResults = this.advancedFilteredResults.nested;
     console.log('this.advancedFilteredResults', this.advancedFilteredResults);
-    this.getPriorities();
-    this.getStatuses();
-    this.getOwners();
+    this.getProjectStats();
     this.getPriorityFTE();
     this.getSchedules();
     this.getScheduleStats();
@@ -143,6 +161,7 @@ export class AdvancedDashboardComponent implements OnInit {
   }
 
   renderSchedulesChart() {
+    console.log('renderSchedulesChart')
     const chartOptions = this.buildSchedulesChartOptions();
     this.chartSchedules = Highcharts.chart('schedulesChart', chartOptions);
     setTimeout(() => {
@@ -272,6 +291,35 @@ export class AdvancedDashboardComponent implements OnInit {
     return chartOptions;
   }
 
+  getProjectStats() {
+    // run the 3 functions for the Project Stats and display if any of the lists are populated
+    Promise.all([
+      this.getPriorities(),
+      this.getStatuses(),
+      this.getOwners()
+    ]).then(res => {
+      if (this.ownersCount.length > 0 || this.prioritiesCount.length > 0 || this.statusesCount.length > 0) {
+        this.displayProjectStats = true;
+      }
+    });
+  }
+
+  getOwners() {
+    const dataSeries = [];
+
+    const ownersCountArray = _.countBy(this.advancedFilteredResults, function(project) { return project['ProjectOwnerName']; });
+    Object.keys(ownersCountArray).forEach(function(key) {
+      dataSeries.push({
+        name: key,
+        y: ownersCountArray[key],
+        drilldown: key
+      });
+    });
+
+    this.ownersCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
+    this.ownersCount = this.ownersCount.reverse();
+  }
+
   getPriorities() {
     const dataSeries = [];
     const prioritiesCountArray = _.countBy(this.advancedFilteredResults, function(project) { return project['PriorityName']; });
@@ -285,25 +333,67 @@ export class AdvancedDashboardComponent implements OnInit {
 
     // update the priority-less field to "No Priority" for readability in the charts
     const noPriorityIdx = dataSeries.findIndex((obj => obj.name === 'undefined'));
-    dataSeries[noPriorityIdx].name = 'No Priority';
-    dataSeries[noPriorityIdx].drilldown = 'No Priority';
+    if (noPriorityIdx !== -1) {
+      dataSeries[noPriorityIdx].name = 'No Priority';
+      dataSeries[noPriorityIdx].drilldown = 'No Priority';
+    }
 
     this.prioritiesCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
     this.prioritiesCount = this.prioritiesCount.reverse();
   }
 
+  getStatuses() {
+    const dataSeries = [];
+    const statusesCountArray = _.countBy(this.advancedFilteredResults, function(project) { return project['ProjectStatusName']; });
+    Object.keys(statusesCountArray).forEach(function(key) {
+      dataSeries.push({
+        name: key,
+        y: statusesCountArray[key],
+        drilldown: key
+      });
+    });
+
+    // update the priority-less field to "No Priority" for readability in the charts
+    const noPriorityIdx = dataSeries.findIndex((obj => obj.name === 'undefined'));
+    if (noPriorityIdx !== -1) {
+      dataSeries[noPriorityIdx].name = 'No Priority';
+      dataSeries[noPriorityIdx].drilldown = 'No Priority';
+    }
+
+    this.statusesCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
+    this.statusesCount = this.statusesCount.reverse();
+  }
+
   async getPriorityFTE() {
+
+    if (this.filterOptions.FTEDateFrom === 'NULL' && this.filterOptions.FTEDateTo === 'NULL') {
+      return;
+    }
+
     const dataSeries = [];
     const drillDownObj = [];
 
+    this.displayPriorityFTEChart = true;
+
     // get list of priorities in an array
     const prioritiesListArray = _.uniq(_.pluck(this.advancedFilteredResults, 'PriorityName'));
-    const projectIDListArray = _.uniq(_.pluck(this.advancedFilteredResults, 'ProjectID'));
     this.prioritiesList = prioritiesListArray;
 
+    const projectIDListArray = _.uniq(_.pluck(this.advancedFilteredResults, 'ProjectID'));
+    const projectIDListArrayString = '' + projectIDListArray.toString() + '';
+
     let projectJobTitles = await this.apiDataFteService
-      .indexProjectJobTitleFTE(projectIDListArray.toString(), 'NULL', 'NULL').toPromise();
+      .indexProjectJobTitleFTE(projectIDListArrayString, this.FTEDateFromFormatted, this.FTEDateToFormatted).toPromise();
+
     projectJobTitles = projectJobTitles.nested;
+
+    // cleanup the array by removing any objects that do not contain the priorityName field
+    // ** this should not be an issue if all users have jobtitles and jobsubtitles
+    for (let i = projectJobTitles.length - 1; i >= 0; i--) {
+      if (!('priorityName' in projectJobTitles[i])) {
+        projectJobTitles.splice(i, 1);
+      }
+    }
 
     // initialize the dataSeries object with the priorities
     for (let pri = 0; pri < this.prioritiesList.length; pri++) {
@@ -318,15 +408,19 @@ export class AdvancedDashboardComponent implements OnInit {
     for (let i = 0; i < dataSeries.length; i++) {
       for (let j = 0; j < this.advancedFilteredResults.length; j++) {
         if (dataSeries[i].name === this.advancedFilteredResults[j].PriorityName) {
-          dataSeries[i].y = dataSeries[i].y + this.advancedFilteredResults[j].TotalProjectFTE;
+          if ('TotalProjectFTE' in this.advancedFilteredResults[j]) {
+            dataSeries[i].y = dataSeries[i].y + this.advancedFilteredResults[j].TotalProjectFTE;
+          }
         }
       }
     }
 
     // update the priority-less field to "No Priority" for readability in the charts
-    const noPriorityIdx1 = dataSeries.findIndex((obj => obj.name === undefined));
-    dataSeries[noPriorityIdx1].name = 'No Priority';
-    dataSeries[noPriorityIdx1].drilldown = 'No Priority';
+    const noPriorityIdx = dataSeries.findIndex((obj => obj.name === undefined));
+    if (noPriorityIdx !== -1) {
+      dataSeries[noPriorityIdx].name = 'No Priority';
+      dataSeries[noPriorityIdx].drilldown = 'No Priority';
+    }
 
     // I'm sorry for this :(
     // Blame Highcharts
@@ -394,46 +488,8 @@ export class AdvancedDashboardComponent implements OnInit {
     this.renderPriorityFTEChart();
   }
 
-  getStatuses() {
-    const dataSeries = [];
-    const statusesCountArray = _.countBy(this.advancedFilteredResults, function(project) { return project['ProjectStatusName']; });
-    Object.keys(statusesCountArray).forEach(function(key) {
-      dataSeries.push({
-        name: key,
-        y: statusesCountArray[key],
-        drilldown: key
-      });
-    });
-
-    // update the priority-less field to "No Priority" for readability in the charts
-    const noPriorityIdx = dataSeries.findIndex((obj => obj.name === 'undefined'));
-    dataSeries[noPriorityIdx].name = 'No Priority';
-    dataSeries[noPriorityIdx].drilldown = 'No Priority';
-
-    this.statusesCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
-    this.statusesCount = this.statusesCount.reverse();
-  }
-
-  getOwners() {
-    const dataSeries = [];
-
-    const ownersCountArray = _.countBy(this.advancedFilteredResults, function(project) { return project['ProjectOwnerName']; });
-    Object.keys(ownersCountArray).forEach(function(key) {
-      dataSeries.push({
-        name: key,
-        y: ownersCountArray[key],
-        drilldown: key
-      });
-    });
-
-    this.ownersCount = _.sortBy(dataSeries, function(pri) { return pri['y']; });
-    this.ownersCount = this.ownersCount.reverse();
-  }
-
-  getSchedules() {
+  async getSchedules() {
     const projectList = [];
-    const projectScheduleData = [];
-    const scheduleData = [];
     const PLCSeries = [];
 
     // generate the y axis project list
@@ -445,7 +501,7 @@ export class AdvancedDashboardComponent implements OnInit {
     this.PLCList.forEach(plc => {
       const PLCDataSeries = [];
       for (let i = 0; i < this.advancedFilteredResults.length; i++) {
-        // if ('Schedules' in this.advancedFilteredResults[i]) {
+        if ('Schedules' in this.advancedFilteredResults[i]) {
           // Loop through each PLC and if it exists, add to the data set
           const projPLC = this.advancedFilteredResults[i].Schedules.find(o1 => o1.PLCStatusName === plc.PLCStatusName);
           // skip if this project does not have this plc
@@ -457,7 +513,7 @@ export class AdvancedDashboardComponent implements OnInit {
               });
             }
           }
-        // }
+        }
       }
       if ( PLCDataSeries.length ) {
         PLCSeries.push({
@@ -467,6 +523,15 @@ export class AdvancedDashboardComponent implements OnInit {
         });
       }
     });
+
+    if (PLCSeries.length === 0) {
+      return;
+    } else {
+      this.displaySchedulesChart = true;
+    console.log('displaySchedulesChart', this.displaySchedulesChart)
+
+    }
+    console.log('PLCDataSeries', PLCSeries)
 
     // Need to do some data maniuplation to reformat arrays for Highcharts
     for (let i = 0; i < PLCSeries.length; i++) {
@@ -578,15 +643,19 @@ export class AdvancedDashboardComponent implements OnInit {
   }
 
   getTopFTEProjects() {
+    if (this.filterOptions.FTEDateFrom === 'NULL') {
+      return;
+    }
     const topFTEProjectsArray = _.sortBy(this.advancedFilteredResults, function(project) { return project['TotalProjectFTE']; });
     this.topFTEProjects = topFTEProjectsArray.reverse().slice(0, 5);
     this.isProjectSelected = new Array(this.topFTEProjects.length).fill(false);
+    this.displayTopFTEProjects = true;
     // console.log('this.topFTEProjects', this.topFTEProjects)
   }
 
   async onTopFTEProjectClick(project: any, index: number) {
 
-    this.displayProjectEmployeeList = false;
+    this.displayProjectFTETrendChart = true;
     this.selectedProject = project;
 
     // if project is being deselected, deselect the row, remove the project data, and re-render the chart
@@ -601,7 +670,8 @@ export class AdvancedDashboardComponent implements OnInit {
       this.plotFteHistoryChart();
     } else {
       // Retrieve historical FTE data for a given project
-      const res = await this.apiDataReportService.getProjectFTEHistory(this.selectedProject.ProjectID).toPromise();
+      const res = await this.apiDataReportService.getProjectFTEHistory(
+        this.selectedProject.ProjectID, this.FTEDateFromFormatted, this.FTEDateToFormatted).toPromise();
 
       // highlight selected row
       this.isProjectSelected[index] = true;
@@ -612,18 +682,21 @@ export class AdvancedDashboardComponent implements OnInit {
 
       this.historicFteData.push({
         projectIndex: index,
+        projectID: project.ProjectID,
         projectName: project.ProjectName,
+        projectTypeName: project.ProjectTypeName,
         data: fiscalDate
       });
       // console.log('fiscalDate', fiscalDate);
       // console.log(this.historicFteData);
-      this.displayProjectFTETrendChart = true;
+
       this.plotFteHistoryChart();
 
     }
   }
 
   plotFteHistoryChart() {
+
     // if chart already exists, destroy it before re-drawing
     if (this.lineChart) {
       this.lineChart.destroy();
@@ -635,7 +708,6 @@ export class AdvancedDashboardComponent implements OnInit {
         marginBottom: 100,
       },
       title: {text: `Project FTE Trends`},
-      subtitle: { text: 'Time Period: All historic data'},
       xAxis: {
         type: 'datetime'
       },
@@ -649,6 +721,7 @@ export class AdvancedDashboardComponent implements OnInit {
         crosshairs: true,
         shared: true
       },
+      colorCount: 0,
       plotOptions: {
         series: {
           turboThreshold: 3000,
@@ -661,8 +734,8 @@ export class AdvancedDashboardComponent implements OnInit {
                 this.selectedFiscalDateMonth = moment(p.x).utc().format('MMM');
                 this.selectedFiscalDateYear = moment(p.x).utc().year();
                 this.getProjectEmployeeFTEList(this.selectedProject.ProjectID, this.selectedFiscalDate);
-                console.log(p.x)
-                console.log(moment(p.x).utc().format('MM-DD-YYYY'))
+                this.displayProjectEmployeeList = true;
+                console.log('series', p.series.name)
               }.bind(this)
             }
           }
@@ -673,7 +746,8 @@ export class AdvancedDashboardComponent implements OnInit {
     // loop through the historic FTE data object and plot each object as an independent series
     this.historicFteData.forEach( p => {
       this.lineChart.addSeries({
-        name: p.projectName,
+        projectID: p.projectID,
+        name: p.projectName + ' - ' + p.projectTypeName,
         data: p.data
       });
     });

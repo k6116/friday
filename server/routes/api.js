@@ -105,7 +105,7 @@ router.post('/updateProjectPermissionRequest/:userID', controllers.permission.up
 // REPORTS PROJECT CONTROLLER
 router.get('/report/getSubordinateFtes/:managerEmailAddress/:period', controllers.report.getSubordinateFtes);
 router.get('/report/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
-router.get('/report/getProjectFTEHistory/:projectID', controllers.report.getProjectFTEHistory);
+router.get('/report/getProjectFTEHistory/:projectID/:dateFrom/:dateTo', controllers.report.getProjectFTEHistory);
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
