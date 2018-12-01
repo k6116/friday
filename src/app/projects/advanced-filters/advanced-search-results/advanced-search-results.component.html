@@ -1,5 +1,5 @@
 <!-- Results Table Column -->
-<ng-container *ngIf="advancedFilteredResults">
+<ng-container *ngIf="!noResults">
   <div class="adv-results-cont">
     <table class="table table-hover filter-results">
       <thead class="thead-light">
@@ -33,3 +33,17 @@
   </div>
 </ng-container>
 <!-- End Results Table Column -->
+
+<ng-container *ngIf="noResults">
+  <div class="adv-results-cont">
+    <table class="table filter-results">
+      <thead class="thead-light noResults">
+        <tr>0 results</tr>
+      </thead>
+      <tbody>
+        <tr class="noResults">There are no projects matching your filter.</tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>
+
