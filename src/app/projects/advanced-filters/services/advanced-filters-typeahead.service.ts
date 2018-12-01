@@ -13,7 +13,6 @@ export class AdvancedFiltersTypeaheadService {
 
 
   getManagerTypeahead(that: any, managers: any): any {
-    console.log('In getManagerTypeahead in service', managers);
 
     // initialize bloodhound suggestion engine with data
     const bh = new Bloodhound({
@@ -33,7 +32,7 @@ export class AdvancedFiltersTypeaheadService {
       displayKey: 'fullName',  // use this to select the field name in the query you want to display
       source: bh
     })
-    .bind('typeahead2:selected', (event, selection) => {
+    .bind('typeahead:selected', (event, selection) => {
       // once something in the typeahead is selected, trigger this function
       that.onSelect(selection);
     });

@@ -419,8 +419,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.getProjectChildren(name, type, owner);
   }
 
-  async onSelect(selection) {
-
+  onSelect(selection) {
+    console.log('selected project owner');
     const email = selection.EMAIL_ADDRESS;
 
     // Save email string to filterObject
