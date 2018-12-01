@@ -18,3 +18,7 @@ div.adv-results-cont {
   table.table {
     border: 1px solid #dee2e6;
   }
+
+  .table .thead-light th {
+    border: none;
+}

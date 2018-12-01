@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Outp
 import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataAdvancedFilterService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ExcelExportService } from '../../_shared/services/excel-export.service';
 import { AdvancedFiltersTypeaheadService } from './services/advanced-filters-typeahead.service';
@@ -28,7 +27,7 @@ export interface NewPLC {
   selector: 'app-advanced-filters',
   templateUrl: './advanced-filters.component.html',
   styleUrls: ['./advanced-filters.component.css', '../../_shared/styles/common.css'],
-  providers: [AdvancedFiltersTypeaheadService, FilterPipe]
+  providers: [AdvancedFiltersTypeaheadService]
 })
 
 export class AdvancedFiltersComponent implements OnInit, OnDestroy {
@@ -110,7 +109,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     private excelExportService: ExcelExportService,
     private toolsService: ToolsService,
     private advancedFiltersTypeaheadService: AdvancedFiltersTypeaheadService,
-    private filterPipe: FilterPipe
   ) {
 
     // declare filter option object; NULLs ar REQUIRED
@@ -957,6 +955,19 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   }
 
 // SEARCH BAR
+
+  onSearchClick(filterString: string) {
+
+    // NOTE: use wildcard search to get any project containing the searchterm
+    // or type in projectNames seperated by commas to get all projects with those names
+
+    // save search term into filterObject
+    this.filterObject.ProjectName = String(filterString);
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+
+  }
 
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {

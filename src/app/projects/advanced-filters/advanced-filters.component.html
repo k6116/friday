@@ -11,9 +11,9 @@
 
       <!-- <app-advanced-filters-typeahead></app-advanced-filters-typeahead> -->
 
-      <div class="projects-search-label">
+      <!-- <div class="projects-search-label">
         Search
-      </div>
+      </div> -->
     
       <!-- Search Input -->
       <div class="projects-search-string">
@@ -23,6 +23,7 @@
             name="filterString" 
             [(ngModel)]="filterString" 
             placeholder="Project Name" 
+            (keyup.enter)="onSearchClick(filterString)"
             appAutofocus>      
         <i class="projects-search-icon-search fa fa-search"></i>
         <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearSearchClick()"></i>
@@ -109,7 +110,7 @@
               </div>
               <div class="custom-control custom-checkbox">
                 <input type="checkbox" checked class="custom-control-input" id="ProjectTypeIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectTypes">
-                <label class="custom-control-label" for="ProjectTypeIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+                <label class="custom-control-label" for="ProjectTypeIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
               </div>
             </div>
             <div class="filter-collapse show" id="projectTypeFilters">
@@ -130,7 +131,7 @@
               </div>
               <div *ngIf="filterStringOw.value!=''" class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" id="ProjectOwnerEmails" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectOwners">
-                <label class="custom-control-label" for="ProjectOwnerEmails"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+                <label class="custom-control-label" for="ProjectOwnerEmails"><small style="margin: 0px 5px 0px -4px;">All</small></label>
               </div>
             </div>
             <div class="filter-collapse show" id="managerTeamFilters" style="height:168px">
@@ -167,7 +168,7 @@
               </div>
               <div class="custom-control custom-checkbox">
                 <input type="checkbox" checked class="custom-control-input" id="parentProjectIDs" [(ngModel)]="checkAllParentProjects">
-                <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+                <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
               </div>
             </div>
             <div class="filter-collapse" [class.show]="showParentChild" id="parentProjects">
@@ -194,7 +195,7 @@
                 </div>
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" checked class="custom-control-input" id="ProjectPriorityIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectPriorities">
-                  <label class="custom-control-label" for="ProjectPriorityIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+                  <label class="custom-control-label" for="ProjectPriorityIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                 </div>
 
               </div>
@@ -216,7 +217,7 @@
                 </div>
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" checked class="custom-control-input" id="ProjectStatusIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectStatuses">
-                  <label class="custom-control-label" for="ProjectStatusIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+                  <label class="custom-control-label" for="ProjectStatusIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                 </div>
               </div>
 
@@ -237,7 +238,7 @@
                 </div>
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" [(ngModel)]="checkAllChildProjects">
-                  <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+                  <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                 </div>
               </div>
               <div class="filter-collapse" [class.show]="showParentChild" id="childProjects">
@@ -365,8 +366,8 @@
               <div class="custom-control custom-checkbox" style="display: none;">
                 <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllPLC">
                 <label class="custom-control-label" for="PLCStatusIDs">
-                  <small *ngIf="checkAllPLC" style="margin: 0px 5px 0px -7px;">Clear</small>
-                  <small *ngIf="!checkAllPLC" style="margin: 0px 5px 0px -7px;">All</small>
+                  <small *ngIf="checkAllPLC" style="margin: 0px 5px 0px -4px;">Clear</small>
+                  <small *ngIf="!checkAllPLC" style="margin: 0px 5px 0px -4px;">All</small>
                 </label>
               </div>
             </div>
@@ -429,40 +430,8 @@
 
       <!-- Results Table Column -->
       <ng-container *ngIf="!showSpinner">
-          <app-advanced-search-results [advancedFilteredResults]="advancedFilteredResults" [filterObject]="filterObject" [plcSchedules]="plcSchedules"></app-advanced-search-results>
+          <app-advanced-search-results [advancedFilteredResults]="advancedFilteredResults" [filterObject]="filterObject" [plcSchedules]="plcSchedules" style="width:100%"></app-advanced-search-results>
       </ng-container>
-
-      <!-- <div class="adv-results-cont">
-        <table class="table table-hover filter-results">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col">ID</th>    
-              <th scope="col">Project Name</th>
-              <th scope="col">Type</th>
-              <th scope="col">Priority</th>
-              <th scope="col">Status</th>
-              <th scope="col">Owner</th>
-              <th scope="col" *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">Total FTE</th>
-              <th scope="col" *ngFor="let name of plcSchedules">{{ name.PLCStatusName }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count" 
-                (click)="onProjectClick(project.ProjectName, project.ProjectTypeName, project.ProjectOwner); showParentChild = true">
-              <td>{{ project.ProjectID }}</td>
-              <td>{{ project.ProjectName }}</td>
-              <td>{{ project.ProjectTypeName }}</td>
-              <td>{{ project.PriorityName }}</td>
-              <td>{{ project.ProjectStatusName }}</td>
-              <td>{{ project.ProjectOwnerName }}</td>
-              <td *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">{{ project.TotalProjectFTE }}</td>
-              <ng-container *ngFor="let schedule of project.Schedules">
-                <td>{{ schedule.PLCDate }}</td>
-              </ng-container>
-            </tr>
-          </tbody>
-        </table>
-      </div> -->
       <!-- End Results Table Column -->
 
 
