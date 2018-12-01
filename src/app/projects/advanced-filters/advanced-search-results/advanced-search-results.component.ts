@@ -11,12 +11,19 @@ export class AdvancedSearchResultsComponent implements OnChanges {
   @Input() filterObject: any;
   @Input() plcSchedules: any;
 
-  changeLog: string[] = [];
+  noResults: boolean;
 
   constructor() { }
 
-  ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
+  ngOnChanges() {
+
     console.log('In Results Component:', this.advancedFilteredResults);
+
+    if (this.advancedFilteredResults.length === 0) {
+      this.noResults = true;
+    } else {
+      this.noResults = false;
+    }
   }
 
 }

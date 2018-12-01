@@ -978,6 +978,12 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // reset the focus on the filter input
     this.filterStringVC.nativeElement.focus();
 
+    // save search term into filterObject
+    this.filterObject.ProjectName = '';
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+
   }
 
   // CLEAR SEARCH
