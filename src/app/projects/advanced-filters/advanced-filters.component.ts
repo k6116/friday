@@ -696,7 +696,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     switch (id) {
       case 'all':
-        this.filterObject.FTEDateFrom = 'NULL';
+        this.filterObject.FTEDateFrom = '01/01/1900';
         this.filterObject.FTEDateTo = 'NULL';
         break;
 
