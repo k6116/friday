@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 import { CacheService } from '../../_shared/services/cache.service';
 import { ExcelExportService } from '../../_shared/services/excel-export.service';
+import { AdvancedFiltersTypeaheadService } from './services/advanced-filters-typeahead.service';
+import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 
 // import { start } from 'repl';
 const moment = require('moment');
@@ -25,7 +27,8 @@ export interface NewPLC {
 @Component({
   selector: 'app-advanced-filters',
   templateUrl: './advanced-filters.component.html',
-  styleUrls: ['./advanced-filters.component.css', '../../_shared/styles/common.css']
+  styleUrls: ['./advanced-filters.component.css', '../../_shared/styles/common.css'],
+  providers: [AdvancedFiltersTypeaheadService, FilterPipe]
 })
 
 export class AdvancedFiltersComponent implements OnInit, OnDestroy {
@@ -37,6 +40,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   filterObject: any;      // main Object containing strings that's being send to the db
   advancedFilterData: any; // All projects on init using forkjoin
+  projects: any;
   projectTypes: any;
   projectStatuses: any;
   projectPriorities: any;
@@ -104,7 +108,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     private apiDataOrgService: ApiDataOrgService,
     private cacheService: CacheService,
     private excelExportService: ExcelExportService,
-    private toolsService: ToolsService
+    private toolsService: ToolsService,
+    private advancedFiltersTypeaheadService: AdvancedFiltersTypeaheadService,
+    private filterPipe: FilterPipe
   ) {
 
     // declare filter option object; NULLs ar REQUIRED
@@ -149,23 +155,14 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // show the spinner
     this.showSpinner = true;
 
-    // get all filters for the page using forkjoin
-    this.advancedFilterData = await this.getAdvancedFilterData()
-    .catch(err => {
-      // console.log(err);
-    });
+    await this.getCheckboxData();
 
-    // seperate out for html
-    this.projectTypes = this.advancedFilterData[1];
-    this.projectStatuses = this.advancedFilterData[2];
-    this.projectPriorities = this.advancedFilterData[3];
-    this.plcStatuses = this.advancedFilterData[4];
-
-    // initalize Checkboxes
-    this.initCheckboxArrays();
-
-    // get all managers for typeahead
     this.allManagers = this.getManagers('ron_nersesian@keysight.com');
+
+    await this.initCheckboxArrays();
+
+    // await this.initTypeahead();
+
     // hide the spinner
     this.showSpinner = false;
 
@@ -175,13 +172,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // don't show parent-child filter boxes
     this.showParentChild = false;
 
-    // hide layover
-    // this.showResults = true
-
     // show the footer
     this.toolsService.showFooter();
-
-    // console.log('Advanced filter data:', this.advancedFilterData);
 
   }
 
@@ -192,12 +184,33 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
+  async getCheckboxData() {
+
+    // get ALL FILTERS for the page using forkjoin
+    this.advancedFilterData = await this.getAdvancedFilterData()
+    .catch(err => {
+      // console.log(err);
+    });
+    // seperate out for html
+    // TO-DO CHAI: Remove [0] since that's been called seperatly
+    this.projects = this.advancedFilterData[0];
+    this.projectTypes = this.advancedFilterData[1];
+    this.projectStatuses = this.advancedFilterData[2];
+    this.projectPriorities = this.advancedFilterData[3];
+    this.plcStatuses = this.advancedFilterData[4];
+
+    // this.advancedFiltersTypeaheadService.getProjectsTypeahead(this, this.projects);
+
+  }
+
   async initCheckboxArrays() {
 
+    // set flag for "All" to true
     this.checkAllProjectTypes = true;
     this.checkAllProjectPriorities = true;
     this.checkAllProjectStatuses = true;
 
+    // loop through filter groups and push them to array so they can be added to the filterObject
     for (let i = 0; i < this.projectStatuses.length; i++) {
       this.arrStatusID.push(this.projectStatuses[i].id);
     }
@@ -210,6 +223,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.arrPriorityID.push(this.projectPriorities[i].id);
     }
 
+    // Update filterObject with all the added values so results table shows filtered results
     // Leave the NULLs !
     this.filterObject = {
       PLCStatusIDs: '',       // num,num,num,..
@@ -228,9 +242,12 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // send to db
     await this.advancedFilter(this.filterObject);
 
+    // this.advancedFiltersTypeaheadService.getProjectsTypeahead(this, this.filterObject);
+
     // store the number of projects, to display in the page 'showing x of y projects'
     this.totalProjectsCount = this.advancedFilteredResults.length;
 
+    // set/update the record count string (Showing X of Y Projects)
     this.setNumProjectsDisplayString();
 
   }
@@ -239,15 +256,15 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     return await this.apiDataAdvancedFilterService.getAdvancedFilterData().toPromise();
   }
 
-  // Applied filter results
+  // DATABASE CALL
   async advancedFilter(filterOptions: any) {
 
     this.showSpinner = true;
-    // this.showResults = false;
 
-    this.advancedFilteredResults = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
+    // get search results object containing flat and nested filter result objects
+    const advancedFilteredResultsObj = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
 
-    this.advancedFilteredResults.nested.forEach( project => {
+    advancedFilteredResultsObj.nested.forEach( project => {
       const schedules = [];
       if ('Schedules' in project) {
 
@@ -260,9 +277,10 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         project.Schedules = schedules;
       }
     });
-    this.advancedFilteredResultsFlat = this.advancedFilteredResults.flat; // for excel download
-    this.advancedFilteredResults = this.advancedFilteredResults.nested;
-    console.log('this.advancedFilteredResults', this.advancedFilteredResults);
+
+    this.advancedFilteredResultsFlat = advancedFilteredResultsObj.flat;       // Flat file is needed for excel download
+    this.advancedFilteredResults = advancedFilteredResultsObj.nested;         // Nested files is the MAIN RESULTS files
+    // const typeahead = this.advancedFiltersTypeaheadService.getProjectsTypeahead(this, this.advancedFilteredResults);
 
     // For PLC status headers:
     if (this.advancedFilteredResults.length !== 0) {
@@ -272,12 +290,15 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.plcSchedules = [];
     }
 
+
+
     this.showSpinner = false;
     // this.showResults = true;
 
     // store the number of projects, to display in the page 'showing x of y projects'
     this.filteredProjectsCount = this.advancedFilteredResults.length;
 
+    // set/update the record count string (Showing X of Y Projects) -> happening in advanced filter?
     this.setNumProjectsDisplayString();
 
   }
@@ -366,43 +387,38 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   async getManagers(managerEmailAddress: string) {
     this.managers = await this.apiDataOrgService.getManagementOrgStructure(managerEmailAddress).toPromise();
-    this.getManagerTypeahead(this.managers);
+    const typeahead = this.advancedFiltersTypeaheadService.getManagerTypeahead(this, this.managers);
+    // this.getManagerTypeahead(this.managers);
   }
 
   async getProjectOwnerSubordinates(managerEmailAddress: string) {
     this.managerTeam = await this.apiDataOrgService.getManagementOrgStructure(managerEmailAddress).toPromise();
   }
 
-  getManagerTypeahead(managers: any) {
+  // Selecting a name from the typeahead list
+  onProjectSelect(selection) {
+    console.log(selection);
+    // const email = selection.EMAIL_ADDRESS;
+    const name = selection.ProjectName;
+    const type = selection.ProjectType;
+    const owner = selection.ProjectOwner;
 
-    // initialize bloodhound suggestion engine with data
-    const bh = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('fullName'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      local: managers  // flat array of managers from api data service
-    });
+    // Save email string to filterObject
+    // this.filterObject.ProjectOwnerEmails = String(email);
+    this.filterObject.ProjectName = String(name);
 
-    // initialize typeahead using jquery
-    $('.typeahead').typeahead({
-      hint: true,
-      highlight: true,
-      minLength: 1,
-    },
-    {
-      name: 'first-names',
-      displayKey: 'fullName',  // use this to select the field name in the query you want to display
-      source: bh
-    })
-    .bind('typeahead:selected', (event, selection) => {
-      // once something in the typeahead is selected, trigger this function
-      this.onSelect(selection);
-    });
+    // Add to checkbox array
+    // this.arrOwnerEmail.splice(0, 0, email);
 
-    $('div.tt-menu').css('border-color', '#e9ecef');
+    // Make the db call
+    this.advancedFilter(this.filterObject);
 
+    // Show div with subordinates
+    // this.getProjectOwnerSubordinates(email);
+    this.getProjectParents(name, type, owner);
+    this.getProjectChildren(name, type, owner);
   }
 
-  // Selecting a name from the typeahead list
   async onSelect(selection) {
 
     const email = selection.EMAIL_ADDRESS;
@@ -952,6 +968,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterStringVC.nativeElement.focus();
 
   }
+
+  // CLEAR SEARCH
+  // clearAllFilters() {
+  //   // this.ngOnInit();
+  // }
 
 // EXPORT FUNCTION
 

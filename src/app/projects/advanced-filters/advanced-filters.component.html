@@ -19,7 +19,7 @@
       <div class="projects-search-string">
         <input #filterStringVC
             type="text"  
-            class="form-control projects-search-input" 
+            class="form-control projects-search-input projects-filter-input typeahead" 
             name="filterString" 
             [(ngModel)]="filterString" 
             placeholder="Project Name" 
@@ -65,6 +65,11 @@
       <!-- Export Button -->
       <div class="float-right-cont">
 
+        <!-- <button class="btn-standard icon-text-only hover-green export-button" (click)="clearAllFilters()">
+          <i class="fa fa-times" aria-hidden="true"></i>
+          Clear
+        </button> -->
+
         <button class="btn-standard icon-text-only hover-green export-button" (mouseenter)="onExportButtonMouseEnter()" (mouseleave)="onExportButtonMouseLeave()" (click)="onExportClick()">
           <i class="fa fa-download button-icon"></i>
           Export
@@ -95,29 +100,6 @@
 
           <!-- Filters Column 1 -->
           <div class="adv-filters-cont col">
-
-            <ng-container *ngIf="showParentChild">
-              <!-- ParentProjects -->
-              <div class="filter-headers d-flex justify-content-between">
-                <div data-toggle="collapse" data-target="#parentProjects" style="cursor: pointer">
-                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                  Parent Projects
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" checked class="custom-control-input" id="parentProjectIDs" [(ngModel)]="checkAllParentProjects">
-                  <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
-                </div>
-              </div>
-              <div class="filter-collapse show" id="parentProjects">
-                <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let parent of parents; let i = index">
-                  <input type="checkbox" class="custom-control-input" [checked]="checkAllParentProjects" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i" (click)="onParentCheckboxClick(parent.ProjectName)">
-                  <label class="custom-control-label" [attr.for]="'parentProject' + i" style="padding: 1px 0px 0px 10px;">{{ parent.ProjectName }}</label>
-                </div>
-              </div>
-              <!-- End ParentProjects -->
-
-              <div style="height:10px; background: #f5f5f5"></div>
-            </ng-container>
 
             <!-- ProjectTypes -->
             <div class="filter-headers d-flex justify-content-between">
@@ -154,7 +136,7 @@
             <div class="filter-collapse show" id="managerTeamFilters" style="height:168px">
               <div class="projects-search-string projects-owner my-1">
                 <input #filterStringOw
-                    class="form-control projects-search-input projects-owner typeahead" 
+                    class="form-control projects-search-input projects-owner typeahead2" 
                     type="text"  
                     name="filterStringOwner" 
                     [(ngModel)]="filterStringOwner" 
@@ -176,34 +158,32 @@
             <!-- End ProjectOwner -->
 
             <div style="height:10px; background: #f5f5f5"></div>
+
+            <!-- ParentProjects -->
+            <div class="filter-headers d-flex justify-content-between">
+              <div data-toggle="collapse" data-target="#parentProjects" style="cursor: pointer">
+                <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                Parent Projects
+              </div>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" checked class="custom-control-input" id="parentProjectIDs" [(ngModel)]="checkAllParentProjects">
+                <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+              </div>
+            </div>
+            <div class="filter-collapse" [class.show]="showParentChild" id="parentProjects">
+              <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let parent of parents; let i = index">
+                <input type="checkbox" class="custom-control-input" [checked]="checkAllParentProjects" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i" (click)="onParentCheckboxClick(parent.ProjectName)">
+                <label class="custom-control-label" [attr.for]="'parentProject' + i" style="padding: 1px 0px 0px 10px;">{{ parent.ProjectName }}</label>
+              </div>
+            </div>
+            <!-- End ParentProjects -->
+
+            <div style="height:10px; background: #f5f5f5"></div>
               
           </div>
 
           <!-- Filters Column 2 -->
           <div class="adv-filters2-cont col">
-
-            <ng-container *ngIf=showParentChild>
-              <!-- ChildProjects -->
-              <div class="filter-headers d-flex justify-content-between">
-                <div data-toggle="collapse" data-target="#childProjects" style="cursor: pointer">
-                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                  Children Projects
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" [(ngModel)]="checkAllChildProjects">
-                  <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
-                </div>
-              </div>
-              <div class="filter-collapse show" id="childProjects">
-                <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let child of children; let i = index">
-                  <input type="checkbox" class="custom-control-input" [checked]="checkAllChildProjects" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i" (click)="onChildCheckboxClick(child.ProjectName)">
-                  <label class="custom-control-label" [attr.for]="'childProject' + i" style="padding: 1px 0px 0px 10px;">{{ child.ProjectName }}</label>
-                </div>
-              </div>
-              <!-- End ChildProjects -->
-
-              <div style="height:10px; background: #f5f5f5"></div>
-            </ng-container>
 
             <!-- Priority -->
               <div class="filter-headers d-flex justify-content-between">
@@ -246,6 +226,27 @@
                   <label class="custom-control-label" [attr.for]="'projectStatus' + j" style="padding: 1px 0px 0px 10px;">{{ projectStatus.projectStatusName }}</label>
                 </div>
               </div>
+
+              <div style="height:10px; background: #f5f5f5"></div>
+
+              <!-- ChildProjects -->
+              <div class="filter-headers d-flex justify-content-between">
+                <div data-toggle="collapse" data-target="#childProjects" style="cursor: pointer">
+                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                  Children Projects
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" [(ngModel)]="checkAllChildProjects">
+                  <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -7px;">All</small></label>
+                </div>
+              </div>
+              <div class="filter-collapse" [class.show]="showParentChild" id="childProjects">
+                <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let child of children; let i = index">
+                  <input type="checkbox" class="custom-control-input" [checked]="checkAllChildProjects" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i" (click)="onChildCheckboxClick(child.ProjectName)">
+                  <label class="custom-control-label" [attr.for]="'childProject' + i" style="padding: 1px 0px 0px 10px;">{{ child.ProjectName }}</label>
+                </div>
+              </div>
+              <!-- End ChildProjects -->
 
               <div style="height:10px; background: #f5f5f5"></div>
 
@@ -427,7 +428,11 @@
 
 
       <!-- Results Table Column -->
-      <div class="adv-results-cont">
+      <ng-container *ngIf="!showSpinner">
+          <app-advanced-search-results [advancedFilteredResults]="advancedFilteredResults" [filterObject]="filterObject" [plcSchedules]="plcSchedules"></app-advanced-search-results>
+      </ng-container>
+
+      <!-- <div class="adv-results-cont">
         <table class="table table-hover filter-results">
           <thead class="thead-light">
             <tr>
@@ -457,7 +462,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> -->
       <!-- End Results Table Column -->
 
 

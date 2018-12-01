@@ -1,0 +1,35 @@
+<!-- Results Table Column -->
+<!-- <ng-container *ngIf="advancedFilteredResults"> -->
+  <div class="adv-results-cont">
+    <table class="table table-hover filter-results">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">ID</th>    
+          <th scope="col">Project Name</th>
+          <th scope="col">Type</th>
+          <th scope="col">Priority</th>
+          <th scope="col">Status</th>
+          <th scope="col">Owner</th>
+          <th scope="col" *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">Total FTE</th>
+          <th scope="col" *ngFor="let name of plcSchedules">{{ name.PLCStatusName }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count" 
+            (click)="onProjectClick(project.ProjectName, project.ProjectTypeName, project.ProjectOwner); showParentChild = true">
+          <td>{{ project.ProjectID }}</td>
+          <td>{{ project.ProjectName }}</td>
+          <td>{{ project.ProjectTypeName }}</td>
+          <td>{{ project.PriorityName }}</td>
+          <td>{{ project.ProjectStatusName }}</td>
+          <td>{{ project.ProjectOwnerName }}</td>
+          <td *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">{{ project.TotalProjectFTE }}</td>
+          <ng-container *ngFor="let schedule of project.Schedules">
+            <td>{{ schedule.PLCDate }}</td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<!-- </ng-container> -->
+<!-- End Results Table Column -->
