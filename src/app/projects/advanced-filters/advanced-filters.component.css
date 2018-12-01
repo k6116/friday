@@ -181,22 +181,23 @@ i.projects-search-icon-search.projects-owner {
 }
 
 /* "ALL" CHECKBOX */
+
 .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
   background-color: #485b65;
 }
 .custom-control-label::before {
   top: 6px;
-  left: 2px;
+  left: 3px;
   width: 11px;
   height: 11px;
 }
 
-.custom-checkbox .custom-control-input:checked~.custom-control-label::after {
+/* .custom-checkbox .custom-control-input:checked~.custom-control-label::after {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
   height: 14px !important;
   width: 14px !important;
   cursor: pointer;
-}
+} */
 
 .custom-control-label::after {
   cursor: pointer;
