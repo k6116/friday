@@ -74,19 +74,27 @@ function indexAdvancedFilteredResults(req, res) {
   const filterOptions = req.body;
 console.log('filterOptions:', filterOptions);
   const sql = `
-    EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectTypeIDs,
-     :ProjectStatusIDs, :ProjectPriorityIDs, :ProjectOwnerEmails, :FTEMin, :FTEMax, :FTEDateFrom, :FTEDateTo
-    `
-  
-  sequelize.query(sql, {replacements: {PLCStatusIDs: filterOptions.PLCStatusIDs, PLCDateRanges: filterOptions.PLCDateRanges, ProjectName: filterOptions.ProjectName,
-                                      ProjectTypeIDs: filterOptions.ProjectTypeIDs, ProjectStatusIDs: filterOptions.ProjectStatusIDs, ProjectPriorityIDs: filterOptions.ProjectPriorityIDs,
-                                      ProjectOwnerEmails: filterOptions.ProjectOwnerEmails, FTEMin: filterOptions.FTEMin, FTEMax: filterOptions.FTEMax, FTEDateFrom: filterOptions.FTEDateFrom, FTEDateTo: filterOptions.FTEDateTo},
-                        type: sequelize.QueryTypes.SELECT})
+      EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectTypeIDs,
+     :ProjectStatusIDs, :ProjectPriorityIDs, :ProjectOwnerEmails, :FTEMin, :FTEMax, :FTEDateFrom, :FTEDateTo`
+
+  sequelize.query(sql, {replacements: {
+    PLCStatusIDs: filterOptions.PLCStatusIDs,
+    PLCDateRanges: filterOptions.PLCDateRanges,
+    ProjectName: filterOptions.ProjectName,
+    ProjectTypeIDs: filterOptions.ProjectTypeIDs,
+    ProjectStatusIDs: filterOptions.ProjectStatusIDs,
+    ProjectPriorityIDs: filterOptions.ProjectPriorityIDs,
+    ProjectOwnerEmails: filterOptions.ProjectOwnerEmails,
+    FTEMin: filterOptions.FTEMin,
+    FTEMax: filterOptions.FTEMax,
+    FTEDateFrom: filterOptions.FTEDateFrom,
+    FTEDateTo: filterOptions.FTEDateTo
+  }, type: sequelize.QueryTypes.SELECT})
   .then(filteredRes => {    
-    const fteTree = new Treeize();
-    fteTree.grow(filteredRes);
+    const filterTree = new Treeize();
+    filterTree.grow(filteredRes);
     res.json({
-      nested: fteTree.getData(),
+      nested: filterTree.getData(),
       flat: filteredRes
     });
   }).catch(error => {
@@ -129,9 +137,53 @@ function indexProjectParents(req, res) {
   });
 }
 
+function indexProjectJobTitleAdvancedFilter(req, res) {
+
+  const projectIDs = req.params.projectIDs;
+  const fromDate = req.params.fromDate;
+  const toDate = req.params.toDate;
+
+  const sql = `
+    SELECT
+      JT.JobTitleName as jobTitle,
+      E.FullName as  [allocations:fullName],
+      JST.JobSubTitleName as [allocations:jobSubTitle],
+      P.ProjectID as [allocations:projectID],
+      P.ProjectName as [allocations:projectName],
+      PT.ProjectTypeName as [allocations:projectTypeName],
+      E2.FullName as [allocations:projectOwner],
+      PE.ProjectEmployeeID as [allocations:recordID], -- Alias for Treeize
+      PE.FiscalDate as [allocations:fiscalDate],
+      PE.FTE as [allocations:fte]
+    FROM
+      resources.JobTitle JT
+      LEFT JOIN accesscontrol.Employees E ON JT.JobTitleID= E.JobTitleID
+      LEFT JOIN resources.JobSubTitle JST ON E.JobSubTitleID = JST.JobSubTitleID
+      LEFT JOIN resources.ProjectEmployees PE ON E.EmployeeID = PE.EmployeeID
+      LEFT JOIN projects.Projects P ON PE.ProjectID = P.ProjectID
+      LEFT JOIN projects.ProjectTypes PT ON P.ProjectTypeID = PT.ProjectTypeID
+      LEFT JOIN accesscontrol.Employees E2 ON P.ProjectOwner = E2.EmailAddress
+    WHERE
+      P.ProjectID IN (${projectIDs})
+      AND PE.FiscalDate >= '${fromDate}' AND PE.FiscalDate <= '${toDate}'
+    `
+  
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
+  .then(data => {
+    const dataTree = new Treeize();
+    dataTree.grow(data);
+    res.json({
+      nested: dataTree.getData(),
+      flat: data
+    });    
+  })
+
+}
+
 module.exports = {
   indexProjectsAdvancedFilter: indexProjectsAdvancedFilter,
   indexAdvancedFilteredResults: indexAdvancedFilteredResults,
   indexProjectChildren: indexProjectChildren,
-  indexProjectParents: indexProjectParents
+  indexProjectParents: indexProjectParents,
+  indexProjectJobTitleAdvancedFilter: indexProjectJobTitleAdvancedFilter
 }

@@ -70,4 +70,18 @@ export class ApiDataAdvancedFilterService {
     .map((response: Response) => response.json());
   }
 
+  getProjectJobTitleAdvancedFilter(projectIDs: string, fromDate: string, toDate: string): Observable<any> {
+    return this.http.get(`api/indexProjectJobTitleAdvancedFilter/${projectIDs}/${fromDate}/${toDate}`)
+    .timeout(this.cacheService.apiDataTimeout)
+    .map((response: Response) => response.json());
+  }
+
+  showSingleBom(parentID: number, parentEntity: string) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/bom/bom/show/showSingleBom/${parentID}/${parentEntity}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 }

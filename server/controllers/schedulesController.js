@@ -633,6 +633,22 @@ function getProjectSchedule(req, res) {
 		})
 }
 
+function getPLCList(req, res) {
+
+	const sql =
+		`SELECT
+			*
+		FROM
+			projects.PLCStatus
+		ORDER BY
+			PLCSequence`
+
+	sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+		.then(schedule => {		
+			res.json(schedule);
+		})
+}
+
   
 module.exports = {
 	indexProjectSchedule: indexProjectSchedule,
@@ -645,5 +661,6 @@ module.exports = {
   destroySchedule: destroySchedule,
 	insertScheduleDetailBulk: insertScheduleDetailBulk,
 	updateScheduleDetailBulk: updateScheduleDetailBulk,
-	getProjectSchedule: getProjectSchedule
+	getProjectSchedule: getProjectSchedule,
+	getPLCList: getPLCList
 }

@@ -1,3 +1,17 @@
+<a name="1.24.0"></a>
+# [1.24.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.23.2...v1.24.0) (2018-11-30)
+
+
+### Features
+
+* **Advanced Dashboard:** Added error handling for different type of datasets ([e126c76](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/e126c76))
+* **Advanced Search:** Add permission protection in side nav ([9e4b634](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9e4b634))
+* **advanced-dashboard:** added stacked bars in the Schedules chart ([a5b5e19](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a5b5e19))
+* **advanced-dashboard:** massive drilldown for priority > projects > jobtitles vs FTE ([4061edf](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/4061edf))
+* **Advanced-Dashboard:** added Top FTE Projects charts ([34c902b](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/34c902b))
+
+
+
 <a name="1.23.2"></a>
 ## [1.23.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.23.1...v1.23.2) (2018-11-28)
 

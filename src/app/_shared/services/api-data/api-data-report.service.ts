@@ -52,8 +52,8 @@ export class ApiDataReportService {
       .map((response: Response) => response.json());
   }
 
-  getProjectFTEHistory(projectID: number) {
-    return this.http.get(`/api/report/getProjectFTEHistory/${projectID}`)
+  getProjectFTEHistory(projectID: number, dateFrom: string, dateTo: string) {
+    return this.http.get(`/api/report/getProjectFTEHistory/${projectID}/${dateFrom}/${dateTo}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

@@ -105,6 +105,7 @@ import { MatplanQuoteComponent } from './matplan/matplan-quote/matplan-quote.com
 import { MatplanOrderComponent } from './matplan/matplan-order/matplan-order.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
+import { AdvancedDashboardComponent } from './projects/advanced-dashboard/advanced-dashboard.component';
 import { AdvancedFiltersComponent } from './projects/advanced-filters/advanced-filters.component';
 import { SpinnerComponent } from './_shared/components/spinner/spinner.component';
 import { TeamSelectModalComponent } from './dashboard/modal/team-select-modal/team-select-modal.component';
@@ -181,6 +182,7 @@ import { TeamSelectDropdownComponent } from './dashboard/modal/team-select-dropd
     TeamSelectModalComponent,
     TeamSelectDropdownComponent,
     AdvancedFiltersComponent,
+    AdvancedDashboardComponent,
     SpinnerComponent
   ],
   imports: [

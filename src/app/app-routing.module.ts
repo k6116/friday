@@ -47,13 +47,14 @@ import { TransferProjectsComponent } from './setups/transfer-projects/transfer-p
 import { MatplanSelectorComponent } from './matplan/matplan-selector/matplan-selector.component';
 import { MatplanEditorComponent } from './matplan/matplan-editor/matplan-editor.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
+import { AdvancedDashboardComponent } from './projects/advanced-dashboard/advanced-dashboard.component';
 import { AdvancedFiltersComponent } from './projects/advanced-filters/advanced-filters.component';
 
 
 // BOM module stuff
 // temporarily hiding until BOM editor is complete
 // import { BomEditorComponent } from './bom/bom-editor/bom-editor.component';
-// import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
+import { BomViewerComponent } from './bom/bom-viewer/bom-viewer.component';
 
 
 const routes: Routes = [
@@ -66,7 +67,7 @@ const routes: Routes = [
   { path: 'unit-test', component: UnitTestComponent },
   {
     path: 'main', component: MainComponent, canActivate: [BrowserGuard, AuthGuardService], resolve: { loggedInUser: UserResolverService },
-    children: [
+        children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'fte-entry/employee', component: FteEntryEmployeeComponent,
@@ -77,13 +78,15 @@ const routes: Routes = [
       { path: 'projects/requests', component: ProjectRequestsComponent },
       { path: 'projects/search', component: SearchProjectsComponent },
       { path: 'projects/display/:id', component: DisplayProjectComponent },
+      { path: 'projects/advanced-filters', component: AdvancedFiltersComponent },
+      { path: 'projects/advanced-dashboard', component: AdvancedDashboardComponent },
       { path: 'matplan', component: MatplanSelectorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'matplan/edit/:id', component: MatplanEditorComponent},
       { path: 'org/org-viewer', component: OrgViewerComponent },
       { path: 'setups/projects', component: ProjectsSetupsComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'setups/parts', component: PartSetupComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       // { path: 'bom/bom-editor', component: BomEditorComponent, canActivate: [AuthGuardService, PermissionsGuard] },
-      // { path: 'bom/bom-viewer', component: BomViewerComponent, canActivate: [AuthGuardService] },
+      { path: 'bom/bom-viewer', component: BomViewerComponent, canActivate: [AuthGuardService] },
       { path: 'setups/team-roles', component: TeamRolesComponent },
       { path: 'setups/transfer-projects', component: TransferProjectsComponent },
       { path: 'reports/my-fte-summary', component: MyFteSummaryComponent },
@@ -93,7 +96,6 @@ const routes: Routes = [
       { path: 'reports/jarvis-adoption', component: OrgViewerComponent, canActivate: [AuthGuardService, PermissionsGuard] },
       { path: 'reports/employees', component: EmployeesReportsComponent },
       { path: 'reports/supply-demand', component: SupplyDemandComponent },
-      { path: 'reports/advanced-filters', component: AdvancedFiltersComponent },
       { path: 'reports/project-fte-rollup', component: ProjectFteRollupComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'admin', component: AdminComponent, canActivate: [AuthGuardService, PermissionsGuard] }

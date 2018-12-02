@@ -144,4 +144,11 @@ export class ApiDataFteService {
       .map((response: Response) => response.json());
   }
 
+  // get a list of projects with their summed FTEs for their jobtitles and jobsubtitles
+  indexProjectJobTitleFTE(projectIDs: string, startDate: string, endDate: string) {
+    return this.http.get(`/api/fte/indexProjectJobTitleFTE/${projectIDs}/${startDate}/${endDate}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
 }

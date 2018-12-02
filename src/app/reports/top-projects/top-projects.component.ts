@@ -91,7 +91,7 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
       this.plotFteHistoryChart();
     } else {
       // Retrieve historical FTE data for a given project
-      this.historicFteSubscription = this.apiDataReportService.getProjectFTEHistory(this.selectedProject.projectID)
+      this.historicFteSubscription = this.apiDataReportService.getProjectFTEHistory(this.selectedProject.projectID, 'null', 'null' )
       .subscribe(
         res => {
           // highlight selected row
