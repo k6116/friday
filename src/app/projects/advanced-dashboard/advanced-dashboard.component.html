@@ -6,216 +6,249 @@
     <!-- Projects General -->
     <div class="card-deck" style="margin-left:10px;">
 
-      <!-- Projects Stats-->
-      <div class="card border-light" style="margin:0px 5px 10px 0px">
-        <div class="card-header-light">
-          <h5 class="card-title">Project Stats</h5>
-        </div>
-        <div class="card-body">
+        <!-- Projects Stats-->
+        <div class="card border-light" style="margin:0px 5px 10px 0px">
+          <div class="card-header bg-light">
+            <h5 class="card-title">Project Stats</h5>
+          </div>
+          <div class="card-body" *ngIf="displayProjectStats">
 
-          <!-- Owners Table -->
-          <!-- <div class="col-4 col-4-square"> -->
-              <table class="table table-sm inline-tables" style="display: inline">
-                <thead>
-                  <tr>
-                    <th>Owner</th>
-                    <th>Projects</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let owner of ownersCount">
-                    <td>{{ owner.name }}</td>
-                    <td>{{ owner.y }}</td>
-                  </tr>
-                </tbody>
-              </table>
-          <!-- </div> -->
-
-            <!-- Priorities Table -->
-            <!-- <div class="col-4 col-4-square mid-third"> -->
-              <table class="table table-sm inline-tables" style="display: inline">
-                <thead>
-                  <tr>
-                    <th>Priority</th>
-                    <th>Projects</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let priority of prioritiesCount">
-                    <td>{{ priority.name }}</td>
-                    <td>{{ priority.y }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            <!-- </div> -->
-
-            <!-- Statuses Table -->
+            <!-- Owners Table -->
             <!-- <div class="col-4 col-4-square"> -->
-              <table class="table table-sm inline-tables" style="display: inline">
-                <thead>
-                  <tr>
-                    <th>Status</th>
-                    <th>Projects</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let status of statusesCount">
-                    <td>{{ status.name }}</td>
-                    <td>{{ status.y }}</td>
-                  </tr>
-                </tbody>
-              </table>
+                <table class="table table-sm inline-tables" style="display: inline">
+                  <thead style="background-color: darkseagreen;">
+                    <tr>
+                      <th>Owner</th>
+                      <th>Projects</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let owner of ownersCount">
+                      <td>{{ owner.name }}</td>
+                      <td>{{ owner.y }}</td>
+                    </tr>
+                  </tbody>
+                </table>
             <!-- </div> -->
 
-        </div>
+              <!-- Priorities Table -->
+              <!-- <div class="col-4 col-4-square mid-third"> -->
+                <table class="table table-sm inline-tables" style="display: inline">
+                  <thead style="background-color:darksalmon">
+                    <tr>
+                      <th>Priority</th>
+                      <th>Projects</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let priority of prioritiesCount">
+                      <td>{{ priority.name }}</td>
+                      <td>{{ priority.y }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              <!-- </div> -->
 
-      </div>
-      <!-- End Projects Stats-->
+              <!-- Statuses Table -->
+              <!-- <div class="col-4 col-4-square"> -->
+                <table class="table table-sm inline-tables" style="display: inline">
+                  <thead style="background-color:gold">
+                    <tr>
+                      <th>Status</th>
+                      <th>Projects</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let status of statusesCount">
+                      <td>{{ status.name }}</td>
+                      <td>{{ status.y }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              <!-- </div> -->
 
-      <!-- Project Charts -->
-      <div class="card border-light" style="margin:0px 0px 10px 5px">
-        <div class="card-header-light">
-          <h5 class="card-title">Project Highcharts</h5>
+          </div>
+
+          <div class="card-body" *ngIf="!displayProjectStats">
+            <h6>Project Stats not available for this data set</h6>
+          </div>
         </div>
-        <div class="card-body">
-          <div class="highchart my-fte-pie-chart1" id="priorityFTEChart"></div>
-          <!-- <div class="col-sm-4 col-4-dashboard right-third"></div> -->
+        <!-- End Projects Stats-->
+
+        <!-- Project Charts -->
+        <div class="card border-light" style="margin:0px 0px 10px 5px">
+          <div class="card-header bg-light">
+            <h5 class="card-title">Project Highcharts</h5>
+          </div>
+          <div class="card-body" *ngIf="displayPriorityFTEChart">
+            <div class="highchart my-fte-pie-chart1" id="priorityFTEChart"></div>
+            <!-- <div class="col-sm-4 col-4-dashboard right-third"></div> -->
+          </div>
+          <div class="card-body" *ngIf="!displayPriorityFTEChart">
+            <h6>Priority/JobTitle/FTE chart not available for this data set</h6>
+            <h6>Please select a date range in the FTE filter to enable this chart</h6>
+          </div>
         </div>
-      </div>
-      <!-- End Project Charts -->
+        <!-- End Project Charts -->
+
     </div>
     <!-- End Projects General -->
 
-    <!-- Schedules Deck-->
-    <!-- <div class="card-deck" style="margin-left:10px;"> -->
-
-      <!-- Schedules -->
-      <div class="card border-light" style="margin:0px 0px 10px 10px">
+    <!-- Schedules -->
+    <div class="card border-light" style="margin:0px 0px 10px 10px">
+     
         <!-- <div class="card-header-light">
           <h5 class="card-title">PLC Schedules</h5>
         </div> -->
-        <div class="card-body">
+        <div class="card-body" >
           <div class="highchart my-fte-pie-chart1" id="schedulesChart"></div>
         </div>
-      </div>
-      <!-- End Schedules -->
 
-      <!-- Schedule Stats -->
-      <div class="card border-light" style="margin:0px 0px 10px 9px">
-        <div class="card-header-light">
-          <h5 class="card-title">PLC Schedules Stats</h5>
-        </div>
-        <div class="card-body">
-          <table class="table table-borderless table-sm">
-            <tbody>
-              <tr>
-                <td style="font-weight: bold">Avg FTE post-SHP</td>
-                <td>{{ ssAvgFTEAfterSHP }}</td>
-              </tr>
-              <tr>
-                <td style="font-weight: bold">Total FTE post-SHP</td>
-                <td>{{ ssTotalFTEAfterSHP }}</td>
-              </tr>
-              <tr>
-                <td style="font-weight: bold">Avg FTE no PLC</td>
-                <td>{{ ssAvgFTENoPLC }}</td>
-              </tr>
-              <tr>
-                <td style="font-weight: bold">Total FTE no PLC</td>
-                <td>{{ ssTotalFTENoPLC }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <!-- End Schedule Stats -->
+        <!-- <div class="card-body" *ngIf="!displaySchedulesChart">
+          <h6>PLC Schedules chart not available</h6>
+          <h6>Projects in this data set do not have PLC Schedules defined</h6>
+        </div> -->
 
-    <!-- </div> -->
-    <!-- End Schedules Deck -->
+    </div>
+    <!-- End Schedules -->
+
+    <!-- Schedule Stats NOT USED RIGHT NOW-->
+    <div class="card border-light" style="margin:0px 0px 10px 9px" hidden>
+
+      <div class="card-header bg-light">
+        <h5 class="card-title">PLC Schedules Stats</h5>
+      </div>
+
+      <div class="card-body" *ngIf="displayScheduleStats">
+        <table class="table table-borderless table-sm">
+          <tbody>
+            <tr>
+              <td style="font-weight: bold">Avg FTE post-SHP</td>
+              <td>{{ ssAvgFTEAfterSHP }}</td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold">Total FTE post-SHP</td>
+              <td>{{ ssTotalFTEAfterSHP }}</td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold">Avg FTE no PLC</td>
+              <td>{{ ssAvgFTENoPLC }}</td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold">Total FTE no PLC</td>
+              <td>{{ ssTotalFTENoPLC }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-body" *ngIf="!displayScheduleStats">
+        <h6>Schedule Stats not available for this data set</h6>
+      </div>
+
+    </div>
+    <!-- End Schedule Stats -->
     
-    <!-- Top FTEs -->
+    <!-- Top FTEs Paul's 3rd row-->
 
-    <!-- Projects Table -->
-    <div class="card">
+    <!-- <div class="card-column"> -->
+      <!-- Projects Table -->
+      <div class="card">
 
-      <div class="card-header-light">
-        <h5 class="card-title">Top FTE Projects</h5>
-        <h6 class="card-title">Select a project to display the FTE trend chart</h6>
-      </div>
-      
-      <div class="card-body">
+        <div class="card-header bg-light">
+          <h5 class="card-title">Top FTE Projects</h5>
+          <h6 class="card-title">Select a project to display the FTE trend chart</h6>
+        </div>
+        
+        <div class="card-body" *ngIf="displayTopFTEProjects">
 
-          <table class="table table-borderless table-sm table-hover">
-            <thead>
-              <tr>
-                <th width="30%" scope="col">Project Name</th>
-                <th width="15%" scope="col">Project Type</th>
-                <th width="10%" scope="col">Priority</th>
-                <th width="10%" scope="col">Total FTE</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let project of topFTEProjects; let i = index" (click)="onTopFTEProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
-                <td>{{ project.ProjectName }}</td>
-                <td>{{ project.ProjectTypeName }}</td>
-                <td>{{ project.PriorityName }}</td>
-                <td>{{ project.TotalProjectFTE }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-      </div>
-    </div>
-    <!-- End Project Table -->
-
-    <!-- Project Graph -->
-    <div class="card">
-
-      <div class="card-header-light">
-        <h5 class="card-title">Project FTE Trends</h5>
-      </div> 
-      
-      <div class="card-body">
-        <div class="highchart my-fte-pie-chart1" id="FTEHistory"></div>
-      </div>
-
-    </div>
-    <!-- End Project Graph -->
-
-    <!-- FTE Roster Table -->
-    <div class="card">
-
-      <div class="card-header-light">
-        <h5 class="card-title">
-          {{ selectedProject ? selectedProject.ProjectName : '--'}} Roster | {{ selectedFiscalDateMonth ? selectedFiscalDateMonth : '--' }}-{{ selectedFiscalDateYear ? selectedFiscalDateYear : '--' }}
-        </h5>
-      </div> 
-      
-      <div class="card-body">
-
-          <table class="table table-borderless table-sm">
+            <table class="table table-borderless table-sm table-hover">
               <thead>
                 <tr>
-                  <th width="20%" scope="col">Employee Name</th>
-                  <th width="40%" scope="col">JobTitle</th>
-                  <th width="10%" scope="col">FTE</th>
+                  <th width="30%" scope="col">Project Name</th>
+                  <th width="15%" scope="col">Project Type</th>
+                  <th width="10%" scope="col">Priority</th>
+                  <th width="10%" scope="col">Total FTE</th>
                 </tr>
               </thead>
-              <tbody *ngFor="let employee of projectEmployeeData">
-                <tr>
-                  <td>{{ employee.fullName }}</td>
-                  <td>{{ employee.jobTitleName }} - {{ employee.jobSubTitleName }}</td>
-                  <td>{{ employee.fte }}%</td>
+              <tbody>
+                <tr *ngFor="let project of topFTEProjects; let i = index" (click)="onTopFTEProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
+                  <td>{{ project.ProjectName }}</td>
+                  <td>{{ project.ProjectTypeName }}</td>
+                  <td>{{ project.PriorityName }}</td>
+                  <td>{{ project.TotalProjectFTE }}</td>
                 </tr>
               </tbody>
             </table>
-            
+
+        </div>
+
+        <div class="card-body" *ngIf="!displayTopFTEProjects">
+          <h6>Top FTE Project list is not available for this dataset</h6>
+        </div>
+
       </div>
+      <!-- End Project Table -->
 
-    </div>
-    <!-- End FTE Roster Table -->
+      <div class="card-deck">
+        <!-- Project Chart -->
+        <div class="card">
 
-    <!-- End FTEs -->
+          <div class="card-header bg-light">
+            <h5 class="card-title">Project FTE Trends</h5>
+          </div>
+          
+          <div class="card-body" *ngIf="displayTopFTEProjects && displayProjectFTETrendChart">
+            <div class="highchart my-fte-pie-chart1" id="FTEHistory"></div>
+          </div>
+
+          <!-- <div class="card-body" *ngIf="!displayTopFTEProjects">
+            <h6>The FTE Trend chart will display only if projects exists in the Top FTE Projects</h6>
+          </div>
+
+          <div class="card-body" *ngIf="(displayTopFTEProjects || displayProjectFTETrendChart) && (!displayTopFTEProjects || !displayProjectFTETrendChart)">
+            <h6>Select a project from the list on the left to display the FTE trend chart</h6>
+          </div> -->
+
+        </div>
+        <!-- End Project Chart -->
+      <!-- </div> -->
+
+        <!-- FTE Roster Table -->
+        <div class="card">
+
+          <div class="card-header-light">
+            <h5 class="card-title">
+              {{ selectedProject ? selectedProject.ProjectName : '--'}} Roster | {{ selectedFiscalDateMonth ? selectedFiscalDateMonth : '--' }}-{{ selectedFiscalDateYear ? selectedFiscalDateYear : '--' }}
+            </h5>
+          </div> 
+          
+          <div class="card-body" *ngIf="displayProjectEmployeeList">
+              <table class="table table-borderless table-sm">
+                  <thead>
+                    <tr>
+                      <th width="20%" scope="col">Employee Name</th>
+                      <th width="40%" scope="col">JobTitle</th>
+                      <th width="10%" scope="col">FTE</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let employee of projectEmployeeData">
+                    <tr>
+                      <td>{{ employee.fullName }}</td>
+                      <td>{{ employee.jobTitleName }} - {{ employee.jobSubTitleName }}</td>
+                      <td>{{ employee.fte }}%</td>
+                    </tr>
+                  </tbody>
+              </table>
+          </div>
+          
+          <div class="card-body" *ngIf="displayProjectFTETrendChart && displayProjectEmployeeList">
+            <h6>Click a point in FTE trend chart</h6>
+          </div>
+
+        </div>
+        <!-- End FTE Roster Table -->
+      </div>
 
   </div>
 

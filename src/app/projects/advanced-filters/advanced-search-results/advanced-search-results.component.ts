@@ -17,7 +17,7 @@ export class AdvancedSearchResultsComponent implements OnChanges {
 
   ngOnChanges() {
 
-    console.log('In Results Component:', this.advancedFilteredResults);
+    // console.log('In Results Component:', this.advancedFilteredResults);
 
     if (this.advancedFilteredResults.length === 0) {
       this.noResults = true;

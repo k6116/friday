@@ -25,6 +25,10 @@ div.projects-search-cont {
   white-space: nowrap;
 }
 
+.tt-menu {
+  width: 223px;
+}
+
 div.projects-search-label {
   display: inline-block;
   margin-right: 10px;

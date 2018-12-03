@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FilterPipe } from '../../../_shared/pipes/filter.pipe';
 
 declare var $: any;
 declare const Bloodhound;
@@ -9,7 +10,9 @@ export class AdvancedFiltersTypeaheadService {
 
   projectsList: any;
 
-  constructor() { }
+  constructor(
+    private filterPipe: FilterPipe,
+  ) { }
 
 
   getManagerTypeahead(that: any, managers: any): any {
@@ -22,7 +25,7 @@ export class AdvancedFiltersTypeaheadService {
     });
 
     // initialize typeahead using jquery
-    $('.typeahead2').typeahead({
+    $('.typeahead').typeahead({
       hint: true,
       highlight: true,
       minLength: 1,
@@ -41,30 +44,89 @@ export class AdvancedFiltersTypeaheadService {
 
   }
 
-  getProjectsTypeahead(that: any, projectList: any) {
-    console.log('In get projectTypeahead service; projects:', projectList);
+  // getProjectsTypeahead(that: any, projectList: any) {
+  //   console.log('In get projectTypeahead service; projects:', projectList);
 
-    // initialize bloodhound suggestion engine with data
-    const bh = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('ProjectName'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      local: projectList  // flat array of managers from api data service
-    });
+  //   // initialize bloodhound suggestion engine with data
+  //   const bh = new Bloodhound({
+  //     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('ProjectName'),
+  //     queryTokenizer: Bloodhound.tokenizers.whitespace,
+  //     local: projectList  // flat array of managers from api data service
+  //   });
 
-    // initialize typeahead using jquery
-    $('typeahead').typeahead({
+  //   // initialize typeahead using jquery
+  //   $('typeahead').typeahead({
+  //     hint: true,
+  //     highlight: true,
+  //     minLength: 1
+  //   },
+  //   {
+  //     name: 'project-name',
+  //     displayKey: 'ProjectName',
+  //     source: bh
+  //   })
+  //   .bind('typeahead:selected', (event, selection) => {
+  //     that.onSelect(selection);
+  //   });
+  // }
+
+  // initialize the typeahead functionality:  jQuery.typeahead(options, [*datasets])
+
+  initProjectTypeahead(that: any, projectsList: any): any {
+    console.log('projectList in typeahead service:', projectsList);
+
+    // set 'this' in order to access the methods within this service within the typeahead source or bind functions
+    // (this will lose/change its scope to the function)
+    const that2 = this;
+
+    // set the projects list locally so the typeahead can filter the list using the pipe
+    this.projectsList = projectsList;
+
+    // note: 'that' is referring to the project fte rollup component
+    // note: 'that2' is referring to this service: project fte rollup typeahead
+
+    // initialize the typeahead input with the options and dataset
+    return $('.projects-filter-input').typeahead({
       hint: true,
       highlight: true,
       minLength: 1
     },
     {
-      name: 'project-name',
+      name: 'projects',
       displayKey: 'ProjectName',
-      source: bh
+      limit: 50,
+      source: function(query, process) {
+        console.log('query:', query);
+        // NOTE: query will be whatever text is typed into the input element
+        // if the filterString is undefined, null, or an empty string, then override the query to avoid ?
+        if (!that.filterString) {
+          query = undefined;
+        }
+        // get an array of filtered project objects using the filter pipe with fuzzy search
+        const filteredProjects = that2.getFilteredProjects(query);
+        // process the array of objects to set the typeahead values
+        process(filteredProjects);
+      }
     })
     .bind('typeahead:selected', (event, selection) => {
-      that.onSelect(selection);
+      // set the focus on a hidden element behind the typeahead to force the typeahead input to lose focus
+      // that.hiddenInput.nativeElement.focus();
+      // clear/reset existing chart and table data
+      // that2.projectFteRollupChartService.clearChartData(that);
+      // render the chart, or blank chart if there is no data to display
+      // that.renderLokiChart(selection);
+      // that.displayChart(selection);
+      console.log(selection);
     });
+
+  }
+
+  // return an array of filtered project objects using the filter pipe with fuzzy search
+  getFilteredProjects(query): any {
+
+    return this.filterPipe.transform(this.projectsList, query, 'ProjectName',
+      {matchFuzzy: {on: true, threshold: 0.4}, returnAll: false});
+
   }
 
 

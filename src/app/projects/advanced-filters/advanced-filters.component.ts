@@ -7,6 +7,8 @@ import { AdvancedFiltersTypeaheadService } from './services/advanced-filters-typ
 import { AuthService } from '../../_shared/services/auth.service';
 import { CacheService } from '../../_shared/services/cache.service';
 import { Router, NavigationEnd } from '@angular/router';
+import { FilterPipe } from '../../_shared/pipes/filter.pipe';
+
 
 // import { start } from 'repl';
 const moment = require('moment');
@@ -28,7 +30,7 @@ export interface NewPLC {
   selector: 'app-advanced-filters',
   templateUrl: './advanced-filters.component.html',
   styleUrls: ['./advanced-filters.component.css', '../../_shared/styles/common.css'],
-  providers: [AdvancedFiltersTypeaheadService]
+  providers: [AdvancedFiltersTypeaheadService, FilterPipe]
 })
 
 export class AdvancedFiltersComponent implements OnInit, OnDestroy {
@@ -176,13 +178,14 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // show filter column
     this.showFilterCol = true;
 
+    // get data for all checkboxes
     await this.getCheckboxData();
 
-    this.allManagers = this.getManagers('ron_nersesian@keysight.com');
+    await this.getAllProjects();
 
-    await this.initCheckboxArrays();
+    this.initTypeahead();
 
-    // await this.initTypeahead();
+    // const typeahead = this.advancedFiltersTypeaheadService.initProjectTypeahead(this, this.advancedFilteredResults);
 
     // hide the spinner
     this.showSpinner = false;
@@ -224,27 +227,15 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  async initCheckboxArrays() {
+  async getAllProjects() {
 
-    // set flag for "All" to true
-    this.checkAllProjectTypes = true;
-    this.checkAllProjectPriorities = true;
-    this.checkAllProjectStatuses = true;
+    // Initial results table should show all projects.
+    // Therefore the filterObject should have ProjectTypeIDs, ProjectStatusIDs and ProjectPriorityIDs prefilled.
 
-    // loop through filter groups and push them to array so they can be added to the filterObject
-    for (let i = 0; i < this.projectStatuses.length; i++) {
-      this.arrStatusID.push(this.projectStatuses[i].id);
-    }
+    // Set default checkbox values
+    await this.initCheckboxValues();
 
-    for (let i = 0; i < this.projectTypes.length; i++) {
-      this.arrTypeID.push(this.projectTypes[i].id);
-    }
-
-    for (let i = 0; i < this.projectPriorities.length; i++) {
-      this.arrPriorityID.push(this.projectPriorities[i].id);
-    }
-
-    // Update filterObject with all the added values so results table shows filtered results
+    // Update filterObject with filtered checkbox values.
     // Leave the NULLs !
     this.filterObject = {
       PLCStatusIDs: '',       // num,num,num,..
@@ -271,6 +262,41 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // set/update the record count string (Showing X of Y Projects)
     this.setNumProjectsDisplayString();
+
+  }
+
+  initCheckboxValues() {
+
+    // set "ALL" flags to true
+    this.checkAllProjectTypes = true;
+    this.checkAllProjectPriorities = true;
+    this.checkAllProjectStatuses = true;
+
+    // loop through filter groups and push them to array so they can be added to the filterObject
+    for (let i = 0; i < this.projectStatuses.length; i++) {
+      this.arrStatusID.push(this.projectStatuses[i].id);
+    }
+
+    for (let i = 0; i < this.projectTypes.length; i++) {
+      this.arrTypeID.push(this.projectTypes[i].id);
+    }
+
+    for (let i = 0; i < this.projectPriorities.length; i++) {
+      this.arrPriorityID.push(this.projectPriorities[i].id);
+    }
+
+  }
+
+  initTypeahead() {
+
+    // Project Name Input
+    // Need timeout because DOM only shows after all data has been retrieved and spinner is hidden
+    setTimeout(() => {
+      const typeahead = this.advancedFiltersTypeaheadService.initProjectTypeahead(this, this.advancedFilteredResults);
+    }, 0);
+
+    // Manager Name Input
+    this.allManagers = this.getManagers('ron_nersesian@keysight.com');
 
   }
 
@@ -328,6 +354,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   // set/update the record count string (Showing X of Y Projects)
   setNumProjectsDisplayString() {
+
+    // store the number of projects, to display in the page 'showing x of y projects'
+    // this.totalProjectsCount = this.advancedFilteredResults.length;
 
     // no projects are displayed
     if (this.filteredProjectsCount === 0) {
