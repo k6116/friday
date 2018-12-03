@@ -55,7 +55,11 @@
       
       <!-- Test Button -->
       <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
-      <button *ngIf="showDashboardButton" class="btn btn-primary" (click)="onDashboardClick()">Dashboard</button>
+      <button *ngIf="showDashboardButton" class="btn btn-primary" (click)="onDashboardClick(); showDashboard=!showDashboard">Dashboard</button>
+
+      <!-- Hide Filter -->
+      <!-- <button class="btn btn-primary" (click)="showFilterCol=!showFilterCol">Hide Filters</button> -->
+      <button class="btn btn-primary" id="sidebarCollapse" (click)="onShowFilterToggleClick()">Filters Toggle</button>
 
       <!-- Filter Badges NOT USED RIGHT NOW -->
       <!-- <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">
@@ -94,347 +98,359 @@
     <div class="adv-search-content">
 
 
-      <!-- Filter Column -->
-      <div class="filter-column">      
+      <!-- Collapsible to the side -->
+      <div class="wrapper">
 
-        <!-- UPPER FILTERS -->
-        <div class="row">
+        <!-- Filter Column -->
+        <!-- <div class="filter-column" id="sidebar" [hidden]=!showFilterCol>       -->
+        <div class="filter-column" id="sidebar">      
 
-          <!-- Filters Column 1 -->
-          <div class="adv-filters-cont col">
+          <!-- UPPER FILTERS -->
+          <div class="row">
 
-            <!-- ProjectTypes -->
-            <div class="filter-headers d-flex justify-content-between">
-              <div data-toggle="collapse" data-target="#projectTypeFilters" style="cursor: pointer">
-                <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                Project Types
+            <!-- Filters Column 1 -->
+            <div class="adv-filters-cont col">
+
+              <!-- ProjectTypes -->
+              <div class="filter-headers d-flex justify-content-between">
+                <div data-toggle="collapse" data-target="#projectTypeFilters" style="cursor: pointer">
+                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                  Project Types
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" checked class="custom-control-input" id="ProjectTypeIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectTypes">
+                  <label class="custom-control-label" for="ProjectTypeIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
+                </div>
               </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" checked class="custom-control-input" id="ProjectTypeIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectTypes">
-                <label class="custom-control-label" for="ProjectTypeIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
+              <div class="filter-collapse show" id="projectTypeFilters">
+                <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let projectType of projectTypes; let i = index">
+                  <input type="checkbox" [checked]="checkAllProjectTypes" class="custom-control-input" [attr.name]="projectType.projectTypeName" [attr.id]="'projectType' + i" (click)="onCheckboxProjectTypeClick($event, projectType.id)">
+                  <label class="custom-control-label" [attr.for]="'projectType' + i" style="padding: 1px 0px 0px 10px;">{{ projectType.projectTypeName }}</label>
+                </div>
               </div>
+              <!-- End ProjectTypes -->
+
+              <div style="height:10px; background: #f5f5f5"></div>
+
+              <!-- ProjectOwner -->
+              <div class="filter-headers d-flex justify-content-between">
+                <div data-toggle="collapse" data-target="#managerTeamFilters" style="cursor: pointer">
+                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                  Project Owner
+                </div>
+                <div *ngIf="filterStringOw.value!=''" class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="ProjectOwnerEmails" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectOwners">
+                  <label class="custom-control-label" for="ProjectOwnerEmails"><small style="margin: 0px 5px 0px -4px;">All</small></label>
+                </div>
+              </div>
+              <div class="filter-collapse show" id="managerTeamFilters" style="height:168px">
+                <div class="projects-search-string projects-owner my-1">
+                  <input #filterStringOw
+                      class="form-control projects-search-input projects-owner typeahead2" 
+                      type="text"  
+                      name="filterStringOwner" 
+                      [(ngModel)]="filterStringOwner" 
+                      placeholder="Manager Name">      
+                  <i class="projects-search-icon-search fa fa-search"></i>
+                  <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearOwnerClick()"></i>
+                </div>
+                <div *ngIf="filterStringOw.value!=''">
+                  <ng-container *ngFor="let managerEmployee of managerTeam; let l = index">
+                    <div class="custom-control custom-checkbox" style="margin-left: 8px" [class.manager]="l==0">
+                      <input type="checkbox" class="custom-control-input" [attr.name]="managerEmployee.fullName" [attr.id]="'owner' + l" [checked]="l===0 || checkAllProjectOwners" (click)="onCheckboxProjectOwnerClick($event, managerEmployee.EMAIL_ADDRESS)">
+                      <label class="custom-control-label" [attr.for]="'owner' + l" style="padding: 1px 0px 0px 10px;">
+                        <span>{{ managerEmployee.fullName }}</span>
+                      </label>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <!-- End ProjectOwner -->
+
+              <div style="height:10px; background: #f5f5f5"></div>
+
+              <!-- ParentProjects -->
+              <div class="filter-headers d-flex justify-content-between">
+                <div data-toggle="collapse" data-target="#parentProjects" style="cursor: pointer">
+                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                  Parent Projects
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" checked class="custom-control-input" id="parentProjectIDs" [(ngModel)]="checkAllParentProjects">
+                  <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
+                </div>
+              </div>
+              <div class="filter-collapse" [class.show]="showParentChild" id="parentProjects">
+                <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let parent of parents; let i = index">
+                  <input type="checkbox" class="custom-control-input" [checked]="checkAllParentProjects" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i" (click)="onParentCheckboxClick(parent.ProjectName)">
+                  <label class="custom-control-label" [attr.for]="'parentProject' + i" style="padding: 1px 0px 0px 10px;">{{ parent.ProjectName }}</label>
+                </div>
+              </div>
+              <!-- End ParentProjects -->
+
+              <div style="height:10px; background: #f5f5f5"></div>
+                
             </div>
-            <div class="filter-collapse show" id="projectTypeFilters">
-              <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let projectType of projectTypes; let i = index">
-                <input type="checkbox" [checked]="checkAllProjectTypes" class="custom-control-input" [attr.name]="projectType.projectTypeName" [attr.id]="'projectType' + i" (click)="onCheckboxProjectTypeClick($event, projectType.id)">
-                <label class="custom-control-label" [attr.for]="'projectType' + i" style="padding: 1px 0px 0px 10px;">{{ projectType.projectTypeName }}</label>
-              </div>
-            </div>
-            <!-- End ProjectTypes -->
 
-            <div style="height:10px; background: #f5f5f5"></div>
+            <!-- Filters Column 2 -->
+            <div class="adv-filters2-cont col">
 
-            <!-- ProjectOwner -->
-            <div class="filter-headers d-flex justify-content-between">
-              <div data-toggle="collapse" data-target="#managerTeamFilters" style="cursor: pointer">
-                <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                Project Owner
-              </div>
-              <div *ngIf="filterStringOw.value!=''" class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="ProjectOwnerEmails" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectOwners">
-                <label class="custom-control-label" for="ProjectOwnerEmails"><small style="margin: 0px 5px 0px -4px;">All</small></label>
-              </div>
-            </div>
-            <div class="filter-collapse show" id="managerTeamFilters" style="height:168px">
-              <div class="projects-search-string projects-owner my-1">
-                <input #filterStringOw
-                    class="form-control projects-search-input projects-owner typeahead2" 
-                    type="text"  
-                    name="filterStringOwner" 
-                    [(ngModel)]="filterStringOwner" 
-                    placeholder="Manager Name">      
-                <i class="projects-search-icon-search fa fa-search"></i>
-                <i class="projects-search-icon-close fa fa-times-circle" (click)="onClearOwnerClick()"></i>
-              </div>
-              <div *ngIf="filterStringOw.value!=''">
-                <ng-container *ngFor="let managerEmployee of managerTeam; let l = index">
-                  <div class="custom-control custom-checkbox" style="margin-left: 8px" [class.manager]="l==0">
-                    <input type="checkbox" class="custom-control-input" [attr.name]="managerEmployee.fullName" [attr.id]="'owner' + l" [checked]="l===0 || checkAllProjectOwners" (click)="onCheckboxProjectOwnerClick($event, managerEmployee.EMAIL_ADDRESS)">
-                    <label class="custom-control-label" [attr.for]="'owner' + l" style="padding: 1px 0px 0px 10px;">
-                      <span>{{ managerEmployee.fullName }}</span>
-                    </label>
+              <!-- Priority -->
+                <div class="filter-headers d-flex justify-content-between">
+
+                  <div data-toggle="collapse" data-target="#projectPrioritiesFilters">
+                    <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                    Project Priority
                   </div>
-                </ng-container>
-              </div>
-            </div>
-            <!-- End ProjectOwner -->
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" checked class="custom-control-input" id="ProjectPriorityIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectPriorities">
+                    <label class="custom-control-label" for="ProjectPriorityIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
+                  </div>
 
-            <div style="height:10px; background: #f5f5f5"></div>
+                </div>
 
-            <!-- ParentProjects -->
-            <div class="filter-headers d-flex justify-content-between">
-              <div data-toggle="collapse" data-target="#parentProjects" style="cursor: pointer">
-                <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                Parent Projects
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" checked class="custom-control-input" id="parentProjectIDs" [(ngModel)]="checkAllParentProjects">
-                <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
-              </div>
-            </div>
-            <div class="filter-collapse" [class.show]="showParentChild" id="parentProjects">
-              <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let parent of parents; let i = index">
-                <input type="checkbox" class="custom-control-input" [checked]="checkAllParentProjects" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i" (click)="onParentCheckboxClick(parent.ProjectName)">
-                <label class="custom-control-label" [attr.for]="'parentProject' + i" style="padding: 1px 0px 0px 10px;">{{ parent.ProjectName }}</label>
-              </div>
-            </div>
-            <!-- End ParentProjects -->
+                <div class="filter-collapse show" id="projectPrioritiesFilters">
+                  <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let projectPriority of projectPriorities; let k = index">
+                    <input type="checkbox" [checked]="checkAllProjectPriorities" class="custom-control-input" [attr.name]="projectPriority.priorityName" [attr.id]="'priority' + k" (click)="onCheckboxProjectPriorityClick($event, projectPriority.id)">
+                    <label class="custom-control-label" [attr.for]="'priority' + k" style="padding: 1px 0px 0px 10px;">{{ projectPriority.priorityName }}</label>
+                  </div>
+                </div>
 
-            <div style="height:10px; background: #f5f5f5"></div>
+              <div style="height:10px; background: #f5f5f5"></div>
+
+              <!-- Status -->
+                <div class="filter-headers d-flex justify-content-between">
+                  <div data-toggle="collapse" data-target="#projectStatusFilters">
+                    <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                    Project Status
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" checked class="custom-control-input" id="ProjectStatusIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectStatuses">
+                    <label class="custom-control-label" for="ProjectStatusIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
+                  </div>
+                </div>
+
+                <div class="filter-collapse show" id="projectStatusFilters">
+                  <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let projectStatus of projectStatuses; let j = index">
+                    <input type="checkbox" [checked]="checkAllProjectStatuses" class="custom-control-input" [attr.name]="projectStatus.projectStatusName" [attr.id]="'projectStatus' + j" (click)="onCheckboxProjectStatusClick($event, projectStatus.id)">
+                    <label class="custom-control-label" [attr.for]="'projectStatus' + j" style="padding: 1px 0px 0px 10px;">{{ projectStatus.projectStatusName }}</label>
+                  </div>
+                </div>
+
+                <div style="height:10px; background: #f5f5f5"></div>
+
+                <!-- ChildProjects -->
+                <div class="filter-headers d-flex justify-content-between">
+                  <div data-toggle="collapse" data-target="#childProjects" style="cursor: pointer">
+                    <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                    Children Projects
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" [(ngModel)]="checkAllChildProjects">
+                    <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
+                  </div>
+                </div>
+                <div class="filter-collapse" [class.show]="showParentChild" id="childProjects">
+                  <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let child of children; let i = index">
+                    <input type="checkbox" class="custom-control-input" [checked]="checkAllChildProjects" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i" (click)="onChildCheckboxClick(child.ProjectName)">
+                    <label class="custom-control-label" [attr.for]="'childProject' + i" style="padding: 1px 0px 0px 10px;">{{ child.ProjectName }}</label>
+                  </div>
+                </div>
+                <!-- End ChildProjects -->
+
+                <div style="height:10px; background: #f5f5f5"></div>
+
+            </div>
+
+          </div>
+
+          <!-- LOWER FILTERS that span 2 columns-->
+          <div class="row">
+
+            <div class="adv-filters3-cont col">
+
+              <!-- FTE -->
+              <div class="filter-headers d-flex justify-content-between">
+
+                <div data-toggle="collapse" data-target="#fte">
+                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+                  FTE Allocation
+                </div>
+
+                <button type="button" class="btn btn-outline-dark clear-fte" id="FTEMin" 
+                        (click)="onFTEClearClick(); 
+                                inputFTEFrom.value=''; inputFTETo.value=''; inputFTEMin.value=''; inputFTEMax.value='';">Clear
+                </button>
+
+              </div>
+
+              <div class="filter-collapse show" id="fte">
+
+                <!-- Toggle Buttons -->
+                <div class="btn-group btn-group-toggle" data-toggle="buttons" style="width: 100%">
+                  <label class="btn btn-outline-secondary fte-toggle" id="all" style="width: 17%" (click)="onFTEToggleSelected($event); inputFTEFrom.value=''; inputFTETo.value=fteDateTo">
+                    <input type="radio" name="options" id="option1" autocomplete="off"> All
+                  </label>
+                  <label class="btn btn-outline-secondary fte-toggle" id="month" (click)="onFTEToggleSelected($event); inputFTEFrom.value=fteDateFrom; inputFTETo.value=fteDateTo">
+                    <input type="radio" name="options" id="option2" autocomplete="off" > Current Month
+                  </label>
+                  <label class="btn btn-outline-secondary fte-toggle" id="qtr" (click)="onFTEToggleSelected($event); inputFTEFrom.value=fteDateFrom; inputFTETo.value=fteDateTo">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> Current Quarter
+                  </label>
+                  <label class="btn btn-outline-secondary fte-toggle" id="year" (click)="onFTEToggleSelected($event); inputFTEFrom.value=fteDateFrom; inputFTETo.value=fteDateTo">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> Current Year
+                  </label>
+                </div>
+
+                <!-- Date Range -->
+                <div class="d-flex justify-content-between">
+
+                  <div class="form-group" style="margin-bottom: 4px;">
+                    <label for="fteFrom" class="fte">Date Range</label>
+                    <input #inputFTEFrom
+                        class="form-control fte"
+                        [class.plc-input-invalid]="inputFTEFrom.validity.valid===false"
+                        id="fteFrom" 
+                        type="date"
+                        [min]="minDate"
+                        [max]="maxDate" 
+                        (change)="onInputFTEChange($event)">
+                  </div>
+
+                  <span style="margin-top: 7px">-</span>
+
+                  <div class="form-group" style="margin-bottom: 4px;"> 
+                    <input #inputFTETo
+                        class="form-control fte"
+                        [class.plc-input-invalid]="inputFTETo.validity.valid===false"
+                        id="fteTo" 
+                        type="date" 
+                        [min]="minDate"
+                        [max]="maxDate" 
+                        (change)="onInputFTEChange($event)">
+                  </div>
+                  <!-- Placeholder -->
+                  <div class="form-group" style="margin-bottom: 4px; width: 31px" hidden></div>
+
+                </div>
+
+                <!-- Total FTEs Min and Max  -->
+                <div class="d-flex justify-content-between">
+                  <div class="form-group" style="margin-bottom: 4px;">
+                    <label for="fteFrom" class="fte"># Total FTE</label>
+                    <input #inputFTEMin
+                        class="form-control fte"
+                        style="text-align: end; margin-left: 3px"
+                        id="fteMin" 
+                        type="number"
+                        placeholder="Min"
+                        (change)="onFTEMinChange($event.target.value)">
+                  </div>
+
+                  <span style="margin-top: 7px">-</span>
+
+                  <div class="form-group" style="margin-bottom: 4px;"> 
+                    <input #inputFTEMax
+                        class="form-control fte"
+                        style="text-align: end"
+                        id="fteMax" 
+                        type="number"
+                        placeholder="Max"
+                        (change)="onFTEMaxChange($event.target.value)"> 
+                  </div>
+                  <button #goButton type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)" hidden>Go</button>
+
+                </div>
+
+              </div>
+
+              <div style="height:10px; background: #f5f5f5"></div>
               
-          </div>
-
-          <!-- Filters Column 2 -->
-          <div class="adv-filters2-cont col">
-
-            <!-- Priority -->
+              <!-- PLC SCHEDULE -->
               <div class="filter-headers d-flex justify-content-between">
-
-                <div data-toggle="collapse" data-target="#projectPrioritiesFilters">
+                <div data-toggle="collapse" data-target="#plc">                
                   <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                  Project Priority
+                  PLC Schedule
                 </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" checked class="custom-control-input" id="ProjectPriorityIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectPriorities">
-                  <label class="custom-control-label" for="ProjectPriorityIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
-                </div>
-
-              </div>
-
-              <div class="filter-collapse show" id="projectPrioritiesFilters">
-                <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let projectPriority of projectPriorities; let k = index">
-                  <input type="checkbox" [checked]="checkAllProjectPriorities" class="custom-control-input" [attr.name]="projectPriority.priorityName" [attr.id]="'priority' + k" (click)="onCheckboxProjectPriorityClick($event, projectPriority.id)">
-                  <label class="custom-control-label" [attr.for]="'priority' + k" style="padding: 1px 0px 0px 10px;">{{ projectPriority.priorityName }}</label>
+                <div class="custom-control custom-checkbox" style="display: none;">
+                  <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllPLC">
+                  <label class="custom-control-label" for="PLCStatusIDs">
+                    <small *ngIf="checkAllPLC" style="margin: 0px 5px 0px -4px;">Clear</small>
+                    <small *ngIf="!checkAllPLC" style="margin: 0px 5px 0px -4px;">All</small>
+                  </label>
                 </div>
               </div>
 
-            <div style="height:10px; background: #f5f5f5"></div>
+              <div class="filter-collapse show" id="plc">
 
-            <!-- Status -->
-              <div class="filter-headers d-flex justify-content-between">
-                <div data-toggle="collapse" data-target="#projectStatusFilters">
-                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                  Project Status
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" checked class="custom-control-input" id="ProjectStatusIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectStatuses">
-                  <label class="custom-control-label" for="ProjectStatusIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
-                </div>
-              </div>
+                <ng-container *ngFor="let plcStatus of plcStatuses; let l = index">
+                  <div class="d-flex justify-content-between" style="margin-top: 5px">
+                    
+                    <!-- plc status checkbox -->
+                    <div class="custom-control custom-checkbox adv-filter-cb" style="margin: 2px 3px 0px 3px;">
+                      <input 
+                          class="custom-control-input"
+                          type="checkbox" 
+                          [checked]="checkAllPLC"  
+                          [attr.name]="plcStatus.PLCStatusName" 
+                          [attr.id]="'plcStatus' + l" 
+                          [(ngModel)]="plcStatus.state"
+                          (click)="onCheckboxPLCScheduleClick(l, $event, plcStatus); inputPLCFrom.value=''; inputPLCTo.value=''">
+                      <label class="custom-control-label" [attr.for]="'plcStatus' + l" style="margin-left: 8px">{{ plcStatus.PLCStatusName }}</label>
+                    </div>
 
-              <div class="filter-collapse show" id="projectStatusFilters">
-                <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let projectStatus of projectStatuses; let j = index">
-                  <input type="checkbox" [checked]="checkAllProjectStatuses" class="custom-control-input" [attr.name]="projectStatus.projectStatusName" [attr.id]="'projectStatus' + j" (click)="onCheckboxProjectStatusClick($event, projectStatus.id)">
-                  <label class="custom-control-label" [attr.for]="'projectStatus' + j" style="padding: 1px 0px 0px 10px;">{{ projectStatus.projectStatusName }}</label>
-                </div>
-              </div>
+                    <!-- plc status dates -->
+                    <div class="d-flex justify-content-between">
+                      <input #inputPLCFrom 
+                          class="form-control fte" 
+                          [class.plc-input-invalid]="inputPLCFrom.validity.valid===false" 
+                          id="plcFrom" 
+                          type="date" 
+                          [min]="minDate"  
+                          [max]="maxDate" 
+                          style="margin-top: 0px" 
+                          [disabled]="!plcStatus.state" 
+                          (change)="onInputPLCChange($event, l)">
+                      <span style="margin: 0px 5px">-</span>
+                      <input #inputPLCTo 
+                          class="form-control fte" 
+                          [class.plc-input-invalid]="inputPLCTo.validity.valid===false" 
+                          id="plcTo" 
+                          type="date" 
+                          [min]="minDate" 
+                          [max]="maxDate" 
+                          style="margin-top: 0px" 
+                          [disabled]="!plcStatus.state" 
+                          (change)="onInputPLCChange($event, l)">
+                    </div>
 
-              <div style="height:10px; background: #f5f5f5"></div>
-
-              <!-- ChildProjects -->
-              <div class="filter-headers d-flex justify-content-between">
-                <div data-toggle="collapse" data-target="#childProjects" style="cursor: pointer">
-                  <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                  Children Projects
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" [(ngModel)]="checkAllChildProjects">
-                  <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
-                </div>
-              </div>
-              <div class="filter-collapse" [class.show]="showParentChild" id="childProjects">
-                <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let child of children; let i = index">
-                  <input type="checkbox" class="custom-control-input" [checked]="checkAllChildProjects" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i" (click)="onChildCheckboxClick(child.ProjectName)">
-                  <label class="custom-control-label" [attr.for]="'childProject' + i" style="padding: 1px 0px 0px 10px;">{{ child.ProjectName }}</label>
-                </div>
-              </div>
-              <!-- End ChildProjects -->
-
-              <div style="height:10px; background: #f5f5f5"></div>
-
-          </div>
-
-        </div>
-
-        <!-- LOWER FILTERS that span 2 columns-->
-        <div class="row">
-
-          <div class="adv-filters3-cont col">
-
-            <!-- FTE -->
-            <div class="filter-headers d-flex justify-content-between">
-
-              <div data-toggle="collapse" data-target="#fte">
-                <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                FTE Allocation
-              </div>
-
-              <button type="button" class="btn btn-outline-dark clear-fte" id="FTEMin" 
-                      (click)="onFTEClearClick(); 
-                              inputFTEFrom.value=''; inputFTETo.value=''; inputFTEMin.value=''; inputFTEMax.value='';">Clear
-              </button>
-
-            </div>
-
-            <div class="filter-collapse show" id="fte">
-
-              <!-- Toggle Buttons -->
-              <div class="btn-group btn-group-toggle" data-toggle="buttons" style="width: 100%">
-                <label class="btn btn-outline-secondary fte-toggle" id="all" style="width: 17%" (click)="onFTEToggleSelected($event); inputFTEFrom.value=''; inputFTETo.value=fteDateTo">
-                  <input type="radio" name="options" id="option1" autocomplete="off"> All
-                </label>
-                <label class="btn btn-outline-secondary fte-toggle" id="month" (click)="onFTEToggleSelected($event); inputFTEFrom.value=fteDateFrom; inputFTETo.value=fteDateTo">
-                  <input type="radio" name="options" id="option2" autocomplete="off" > Current Month
-                </label>
-                <label class="btn btn-outline-secondary fte-toggle" id="qtr" (click)="onFTEToggleSelected($event); inputFTEFrom.value=fteDateFrom; inputFTETo.value=fteDateTo">
-                  <input type="radio" name="options" id="option3" autocomplete="off"> Current Quarter
-                </label>
-                <label class="btn btn-outline-secondary fte-toggle" id="year" (click)="onFTEToggleSelected($event); inputFTEFrom.value=fteDateFrom; inputFTETo.value=fteDateTo">
-                  <input type="radio" name="options" id="option3" autocomplete="off"> Current Year
-                </label>
-              </div>
-
-              <!-- Date Range -->
-              <div class="d-flex justify-content-between">
-
-                <div class="form-group" style="margin-bottom: 4px;">
-                  <label for="fteFrom" class="fte">Date Range</label>
-                  <input #inputFTEFrom
-                      class="form-control fte"
-                      [class.plc-input-invalid]="inputFTEFrom.validity.valid===false"
-                      id="fteFrom" 
-                      type="date"
-                      [min]="minDate"
-                      [max]="maxDate" 
-                      (change)="onInputFTEChange($event)">
-                </div>
-
-                <span style="margin-top: 7px">-</span>
-
-                <div class="form-group" style="margin-bottom: 4px;"> 
-                  <input #inputFTETo
-                      class="form-control fte"
-                      [class.plc-input-invalid]="inputFTETo.validity.valid===false"
-                      id="fteTo" 
-                      type="date" 
-                      [min]="minDate"
-                      [max]="maxDate" 
-                      (change)="onInputFTEChange($event)">
-                </div>
-                <!-- Placeholder -->
-                <div class="form-group" style="margin-bottom: 4px; width: 31px" hidden></div>
-
-              </div>
-
-              <!-- Total FTEs Min and Max  -->
-              <div class="d-flex justify-content-between">
-                <div class="form-group" style="margin-bottom: 4px;">
-                  <label for="fteFrom" class="fte"># Total FTE</label>
-                  <input #inputFTEMin
-                      class="form-control fte"
-                      style="text-align: end; margin-left: 3px"
-                      id="fteMin" 
-                      type="number"
-                      placeholder="Min"
-                      (change)="onFTEMinChange($event.target.value)">
-                </div>
-
-                <span style="margin-top: 7px">-</span>
-
-                <div class="form-group" style="margin-bottom: 4px;"> 
-                  <input #inputFTEMax
-                      class="form-control fte"
-                      style="text-align: end"
-                      id="fteMax" 
-                      type="number"
-                      placeholder="Max"
-                      (change)="onFTEMaxChange($event.target.value)"> 
-                </div>
-                <button #goButton type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)" hidden>Go</button>
-
-              </div>
-
-            </div>
-
-            <div style="height:10px; background: #f5f5f5"></div>
-            
-            <!-- PLC SCHEDULE -->
-            <div class="filter-headers d-flex justify-content-between">
-              <div data-toggle="collapse" data-target="#plc">                
-                <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                PLC Schedule
-              </div>
-              <div class="custom-control custom-checkbox" style="display: none;">
-                <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllPLC">
-                <label class="custom-control-label" for="PLCStatusIDs">
-                  <small *ngIf="checkAllPLC" style="margin: 0px 5px 0px -4px;">Clear</small>
-                  <small *ngIf="!checkAllPLC" style="margin: 0px 5px 0px -4px;">All</small>
-                </label>
-              </div>
-            </div>
-
-            <div class="filter-collapse show" id="plc">
-
-              <ng-container *ngFor="let plcStatus of plcStatuses; let l = index">
-                <div class="d-flex justify-content-between" style="margin-top: 5px">
-                  
-                  <!-- plc status checkbox -->
-                  <div class="custom-control custom-checkbox adv-filter-cb" style="margin: 2px 3px 0px 3px;">
-                    <input 
-                        class="custom-control-input"
-                        type="checkbox" 
-                        [checked]="checkAllPLC"  
-                        [attr.name]="plcStatus.PLCStatusName" 
-                        [attr.id]="'plcStatus' + l" 
-                        [(ngModel)]="plcStatus.state"
-                        (click)="onCheckboxPLCScheduleClick(l, $event, plcStatus); inputPLCFrom.value=''; inputPLCTo.value=''">
-                    <label class="custom-control-label" [attr.for]="'plcStatus' + l" style="margin-left: 8px">{{ plcStatus.PLCStatusName }}</label>
                   </div>
+                </ng-container>             
 
-                  <!-- plc status dates -->
-                  <div class="d-flex justify-content-between">
-                    <input #inputPLCFrom 
-                        class="form-control fte" 
-                        [class.plc-input-invalid]="inputPLCFrom.validity.valid===false" 
-                        id="plcFrom" 
-                        type="date" 
-                        [min]="minDate"  
-                        [max]="maxDate" 
-                        style="margin-top: 0px" 
-                        [disabled]="!plcStatus.state" 
-                        (change)="onInputPLCChange($event, l)">
-                    <span style="margin: 0px 5px">-</span>
-                    <input #inputPLCTo 
-                        class="form-control fte" 
-                        [class.plc-input-invalid]="inputPLCTo.validity.valid===false" 
-                        id="plcTo" 
-                        type="date" 
-                        [min]="minDate" 
-                        [max]="maxDate" 
-                        style="margin-top: 0px" 
-                        [disabled]="!plcStatus.state" 
-                        (change)="onInputPLCChange($event, l)">
-                  </div>
-
-                </div>
-              </ng-container>             
+              </div>
+              <!-- END PLC SCHEDULE -->
 
             </div>
-            <!-- END PLC SCHEDULE -->
-
           </div>
-        </div>
-        
-      </div> 
-      <!-- End Filter Column -->
+          
+        </div> 
+        <!-- End Filter Column -->
 
 
-      <!-- Results Table Column -->
-      <ng-container *ngIf="!showSpinner">
-          <app-advanced-search-results [advancedFilteredResults]="advancedFilteredResults" [filterObject]="filterObject" [plcSchedules]="plcSchedules" style="width:100%"></app-advanced-search-results>
-      </ng-container>
-      <!-- End Results Table Column -->
+        <!-- Results Table Column -->
+        <ng-container *ngIf="!showSpinner && !showDashboard">
+            <app-advanced-search-results [advancedFilteredResults]="advancedFilteredResults" [filterObject]="filterObject" [plcSchedules]="plcSchedules" style="width:100%"></app-advanced-search-results>
+        </ng-container>
+        <!-- End Results Table Column -->
 
+        <!-- Results Dashboar -->
+        <ng-container *ngIf="showDashboard">
+          <app-advanced-dashboard style="width:100%"></app-advanced-dashboard>
+        </ng-container>
+        <!-- End Results Dashboard -->
+
+      </div>
+      <!-- End Wrapper -->
 
     </div>
     <!-- End Advanced Search Content -->

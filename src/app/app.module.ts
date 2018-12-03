@@ -107,6 +107,7 @@ import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.componen
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
 import { AdvancedDashboardComponent } from './projects/advanced-dashboard/advanced-dashboard.component';
 import { AdvancedFiltersComponent } from './projects/advanced-filters/advanced-filters.component';
+import { AdvancedSearchResultsComponent } from './projects/advanced-filters/advanced-search-results/advanced-search-results.component';
 import { SpinnerComponent } from './_shared/components/spinner/spinner.component';
 import { TeamSelectModalComponent } from './dashboard/modal/team-select-modal/team-select-modal.component';
 import { TeamSelectDropdownComponent } from './dashboard/modal/team-select-dropdown/team-select-dropdown.component';
@@ -182,6 +183,7 @@ import { TeamSelectDropdownComponent } from './dashboard/modal/team-select-dropd
     TeamSelectModalComponent,
     TeamSelectDropdownComponent,
     AdvancedFiltersComponent,
+    AdvancedSearchResultsComponent,
     AdvancedDashboardComponent,
     SpinnerComponent
   ],

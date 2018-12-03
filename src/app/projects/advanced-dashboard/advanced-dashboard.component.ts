@@ -115,7 +115,8 @@ export class AdvancedDashboardComponent implements OnInit {
 
     this.filterOptions = this.cacheService.advancedSearchFilterOption;
 
-    this.FTEDateFromFormatted = this.filterOptions.FTEDateFrom === 'NULL' ? 'NULL' : moment(this.filterOptions.FTEDateFrom).format('YYYY-MM-DD');
+    this.FTEDateFromFormatted = this.filterOptions.FTEDateFrom === 'NULL' ? 'NULL' :
+      moment(this.filterOptions.FTEDateFrom).format('YYYY-MM-DD');
     this.FTEDateToFormatted = this.filterOptions.FTEDateTo === 'NULL' ? 'NULL' : moment(this.filterOptions.FTEDateTo).format('YYYY-MM-DD');
 
     this.getPLCList();
@@ -161,7 +162,7 @@ export class AdvancedDashboardComponent implements OnInit {
   }
 
   renderSchedulesChart() {
-    console.log('renderSchedulesChart')
+    console.log('renderSchedulesChart');
     const chartOptions = this.buildSchedulesChartOptions();
     this.chartSchedules = Highcharts.chart('schedulesChart', chartOptions);
     setTimeout(() => {
@@ -528,10 +529,10 @@ export class AdvancedDashboardComponent implements OnInit {
       return;
     } else {
       this.displaySchedulesChart = true;
-    console.log('displaySchedulesChart', this.displaySchedulesChart)
+    console.log('displaySchedulesChart', this.displaySchedulesChart);
 
     }
-    console.log('PLCDataSeries', PLCSeries)
+    console.log('PLCDataSeries', PLCSeries);
 
     // Need to do some data maniuplation to reformat arrays for Highcharts
     for (let i = 0; i < PLCSeries.length; i++) {
@@ -735,7 +736,7 @@ export class AdvancedDashboardComponent implements OnInit {
                 this.selectedFiscalDateYear = moment(p.x).utc().year();
                 this.getProjectEmployeeFTEList(this.selectedProject.ProjectID, this.selectedFiscalDate);
                 this.displayProjectEmployeeList = true;
-                console.log('series', p.series.name)
+                console.log('series', p.series.name);
               }.bind(this)
             }
           }

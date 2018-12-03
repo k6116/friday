@@ -89,7 +89,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   showSpinner: boolean;
   showPage: boolean;
   showParentChild: boolean; // only show parent child filter boxes if clicked on a project from results table
-  // showResults: boolean;
+  showDashboard: boolean;
+  showFilterCol: boolean;
   showDownloadingIcon: boolean;
   lastClickedProjectName: string; // store which project was clicked last
   htmlElement: any;
@@ -105,6 +106,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   // TO-DO PAUL: REMOVE TEMP CODE
   showDashboardButton: boolean;
+
 
   constructor(
     private router: Router,
@@ -166,6 +168,12 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // show the spinner
     this.showSpinner = true;
+
+    // show results table, not dashboard
+    this.showDashboard = false;
+
+    // show filter column
+    this.showFilterCol = true;
 
     await this.getCheckboxData();
 
@@ -1006,6 +1014,14 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   //   // this.ngOnInit();
   // }
 
+  // SHOW FILTER TOGGLE
+  onShowFilterToggleClick() {
+    // $('#sidebarCollapse').on('click', function () {
+      $('#sidebar').toggleClass('active');
+  // });
+    console.log('It should toggle!');
+  }
+
 // EXPORT FUNCTION
 
   onExportButtonMouseEnter() {
@@ -1091,7 +1107,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   onDashboardClick() {
     // navigate to the display page
-    this.router.navigate([`/main/projects/advanced-dashboard/`]);
+    // this.router.navigate([`/main/projects/advanced-dashboard/`]);
+
+    // this.showDashboard = true;
   }
 
   // TEST BUTTON

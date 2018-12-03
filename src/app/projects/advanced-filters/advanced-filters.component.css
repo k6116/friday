@@ -93,6 +93,33 @@ div.projects-display-count {
   text-align: right;
 }
 
+/* Collapsible Filter Bar */
+.wrapper {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}
+
+#sidebar {
+  min-width: 402px;
+  max-width: 402px;
+  min-height: 100vh;
+  transition: all 0.3s;
+}
+
+#sidebar.active {
+  margin-left: -402px;
+}
+
+@media (max-width: 768px) {
+  #sidebar {
+      margin-left: -402px;
+  }
+  #sidebar.active {
+      margin-left: 0;
+  }
+}
+
 /* FILTER CONTENT */
 div.adv-search-content {
   display: flex;
