@@ -288,7 +288,7 @@
 
                 <!-- Toggle Buttons -->
                 <div class="btn-group btn-group-toggle" data-toggle="buttons" style="width: 100%">
-                  <label class="btn btn-outline-secondary fte-toggle" id="all" style="width: 17%" (click)="onFTEToggleSelected($event); inputFTEFrom.value=''; inputFTETo.value=fteDateTo">
+                  <label selected class="btn btn-outline-secondary fte-toggle" id="all" style="width: 17%" (click)="onFTEToggleSelected($event); inputFTEFrom.value=''; inputFTETo.value=fteDateTo">
                     <input type="radio" name="options" id="option1" autocomplete="off"> All
                   </label>
                   <label class="btn btn-outline-secondary fte-toggle" id="month" (click)="onFTEToggleSelected($event); inputFTEFrom.value=fteDateFrom; inputFTETo.value=fteDateTo">

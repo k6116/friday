@@ -72,15 +72,16 @@ function indexAdvancedFilteredResults(req, res) {
   */
 
   const filterOptions = req.body;
-console.log('filterOptions:', filterOptions);
+// console.log('filterOptions:', filterOptions);
   const sql = `
-      EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectTypeIDs,
+      EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectID, :ProjectTypeIDs,
      :ProjectStatusIDs, :ProjectPriorityIDs, :ProjectOwnerEmails, :FTEMin, :FTEMax, :FTEDateFrom, :FTEDateTo`
 
   sequelize.query(sql, {replacements: {
     PLCStatusIDs: filterOptions.PLCStatusIDs,
     PLCDateRanges: filterOptions.PLCDateRanges,
     ProjectName: filterOptions.ProjectName,
+    ProjectID: filterOptions.ProjectID,
     ProjectTypeIDs: filterOptions.ProjectTypeIDs,
     ProjectStatusIDs: filterOptions.ProjectStatusIDs,
     ProjectPriorityIDs: filterOptions.ProjectPriorityIDs,

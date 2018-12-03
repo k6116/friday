@@ -10,7 +10,8 @@
           <th scope="col">Priority</th>
           <th scope="col">Status</th>
           <th scope="col">Owner</th>
-          <th scope="col" *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">Total FTE</th>
+          <!-- <th scope="col" *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">Total FTE</th> -->
+          <th scope="col">Total FTE</th>          
           <th scope="col" *ngFor="let name of plcSchedules">{{ name.PLCStatusName }}</th>
         </tr>
       </thead>
@@ -23,7 +24,8 @@
           <td>{{ project.PriorityName }}</td>
           <td>{{ project.ProjectStatusName }}</td>
           <td>{{ project.ProjectOwnerName }}</td>
-          <td *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">{{ project.TotalProjectFTE }}</td>
+          <!-- <td *ngIf="this.filterObject.FTEMin != 'NULL' || this.filterObject.FTEMax != 'NULL' || this.filterObject.FTEDateFrom != 'NULL' || this.filterObject.FTEDateTo != 'NULL'">{{ project.TotalProjectFTE }}</td> -->
+          <td>{{ project.TotalProjectFTE }}</td>          
           <ng-container *ngFor="let schedule of project.Schedules">
             <td>{{ schedule.PLCDate }}</td>
           </ng-container>

@@ -132,6 +132,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       PLCStatusIDs: '',       // num1,num2,num3,..
       PLCDateRanges: '',      // From1|To1, From2|To2, From3|To3,...
       ProjectName: '',        // name, name, name,..
+      ProjectID: '',          // num,num,num
       ProjectTypeIDs: '',     // num,num,num,..
       ProjectStatusIDs: '',   // num,num,num,..
       ProjectPriorityIDs: '', // num,num,num,..
@@ -248,7 +249,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterObject = {
       PLCStatusIDs: '',       // num,num,num,..
       PLCDateRanges: '',      // From|To
-      ProjectName: '',        // num,num,num,..
+      ProjectName: '',        // name,name,name...
+      ProjectID: '',          // num,num,num,..
       ProjectTypeIDs: String(this.arrTypeID),
       ProjectStatusIDs: String(this.arrStatusID),
       ProjectPriorityIDs: String(this.arrPriorityID),
@@ -719,7 +721,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     switch (id) {
       case 'all':
-        this.filterObject.FTEDateFrom = '01/01/1900';
+        // this.filterObject.FTEDateFrom = '01/01/1900';
+        this.filterObject.FTEDateFrom = 'NULL';
         this.filterObject.FTEDateTo = 'NULL';
         break;
 
@@ -1118,6 +1121,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     //   PLCStatusIDs: '',
     //   PLCDateRanges: '',
     //   ProjectName: '',
+    //   ProjectID: '',
     //   ProjectTypeIDs: '',
     //   ProjectStatusIDs: '',
     //   ProjectPriorityIDs: '',
@@ -1131,6 +1135,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       PLCStatusIDs: '1,2,3,4,5,6',
       PLCDateRanges: 'NULL|NULL,2017-05-01|2019-09-01,2017-05-01|2019-09-01,NULL|NULL,NULL|NULL,2017-05-01|2019-09-01',
       ProjectName: '',
+      ProjectID: '',
       ProjectTypeIDs: '1,2,3',
       ProjectStatusIDs: '',
       ProjectPriorityIDs: '1',

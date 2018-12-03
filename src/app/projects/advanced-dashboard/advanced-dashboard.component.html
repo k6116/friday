@@ -133,17 +133,88 @@
     <!-- </div> -->
     <!-- End Schedules Deck -->
     
-    <!-- FTEs -->
+    <!-- Top FTEs -->
+
+    <!-- Projects Table -->
     <div class="card">
-      <img class="card-img-top" src="..." alt="Card image cap">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+
+      <div class="card-header-light">
+        <h5 class="card-title">Top FTE Projects</h5>
+        <h6 class="card-title">Select a project to display the FTE trend chart</h6>
       </div>
-      <div class="card-footer">
-        <small class="text-muted">Last updated 3 mins ago</small>
+      
+      <div class="card-body">
+
+          <table class="table table-borderless table-sm table-hover">
+            <thead>
+              <tr>
+                <th width="30%" scope="col">Project Name</th>
+                <th width="15%" scope="col">Project Type</th>
+                <th width="10%" scope="col">Priority</th>
+                <th width="10%" scope="col">Total FTE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let project of topFTEProjects; let i = index" (click)="onTopFTEProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
+                <td>{{ project.ProjectName }}</td>
+                <td>{{ project.ProjectTypeName }}</td>
+                <td>{{ project.PriorityName }}</td>
+                <td>{{ project.TotalProjectFTE }}</td>
+              </tr>
+            </tbody>
+          </table>
+
       </div>
     </div>
+    <!-- End Project Table -->
+
+    <!-- Project Graph -->
+    <div class="card">
+
+      <div class="card-header-light">
+        <h5 class="card-title">Project FTE Trends</h5>
+      </div> 
+      
+      <div class="card-body">
+        <div class="highchart my-fte-pie-chart1" id="FTEHistory"></div>
+      </div>
+
+    </div>
+    <!-- End Project Graph -->
+
+    <!-- FTE Roster Table -->
+    <div class="card">
+
+      <div class="card-header-light">
+        <h5 class="card-title">
+          {{ selectedProject ? selectedProject.ProjectName : '--'}} Roster | {{ selectedFiscalDateMonth ? selectedFiscalDateMonth : '--' }}-{{ selectedFiscalDateYear ? selectedFiscalDateYear : '--' }}
+        </h5>
+      </div> 
+      
+      <div class="card-body">
+
+          <table class="table table-borderless table-sm">
+              <thead>
+                <tr>
+                  <th width="20%" scope="col">Employee Name</th>
+                  <th width="40%" scope="col">JobTitle</th>
+                  <th width="10%" scope="col">FTE</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let employee of projectEmployeeData">
+                <tr>
+                  <td>{{ employee.fullName }}</td>
+                  <td>{{ employee.jobTitleName }} - {{ employee.jobSubTitleName }}</td>
+                  <td>{{ employee.fte }}%</td>
+                </tr>
+              </tbody>
+            </table>
+            
+      </div>
+
+    </div>
+    <!-- End FTE Roster Table -->
+
     <!-- End FTEs -->
 
   </div>
