@@ -5,11 +5,11 @@ declare var $: any;
 
 
 @Component({
-  selector: 'app-team-select-modal',
-  templateUrl: './team-select-modal.component.html',
-  styleUrls: ['./team-select-modal.component.css', '../../../_shared/styles/common.css']
+  selector: 'app-team-fte-summary-team-select-modal',
+  templateUrl: './team-fte-summary-team-select-modal.component.html',
+  styleUrls: ['./team-fte-summary-team-select-modal.component.css', '../../../../_shared/styles/common.css']
 })
-export class TeamSelectModalComponent implements OnInit, OnDestroy {
+export class TeamFteSummaryTeamSelectModalComponent implements OnInit, OnDestroy {
 
   @Input() nestedOrgData: any;
   @Output() close = new EventEmitter<boolean>();

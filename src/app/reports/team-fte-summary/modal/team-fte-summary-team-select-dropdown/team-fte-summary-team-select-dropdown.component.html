@@ -12,7 +12,7 @@
         </div>
       </div>
       <div [class]="'team-cont ' + employeee.uid">
-        <app-team-select-dropdown [employees]="employeee.employees" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)" *ngIf="employeee.employees && employeee.showEmployees" [class]="'emp-cont ' + employeee.uid"></app-team-select-dropdown>
+        <app-team-fte-summary-team-select-dropdown [employees]="employeee.employees" (clickedEmployeeIcon)="onclickedEmployeeIcon($event)" (clickedEmployee)="onclickedEmployee($event)" *ngIf="employeee.employees && employeee.showEmployees" [class]="'emp-cont ' + employeee.uid"></app-team-fte-summary-team-select-dropdown>
       </div>
     </li>
   </ul>

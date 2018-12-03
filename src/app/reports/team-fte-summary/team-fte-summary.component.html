@@ -1,7 +1,7 @@
 <!-- spinner -->
 <app-spinner *ngIf="chartIsLoading"></app-spinner>
 <!-- team select modal -->
-<app-team-select-modal *ngIf="showTeamSelectModal" [nestedOrgData]="nestedManagerData" (close)="onModalClose()" (selectedManager)="onModalClose($event)"></app-team-select-modal>
+<app-team-fte-summary-team-select-modal *ngIf="showTeamSelectModal" [nestedOrgData]="nestedManagerData" (close)="onModalClose()" (selectedManager)="onModalClose($event)"></app-team-fte-summary-team-select-modal>
 
 <div class="container-fluid">
 
@@ -13,7 +13,7 @@
   <div class="row row-custom" [hidden]="chartIsLoading">
     <div class="col-sm">
 
-      <div *ngIf="displayEditTeamButton" class="edit-button-cont donut" (click)="onEdiTeamClick('donutChart')">
+      <div *ngIf="displayEditTeamButton" class="edit-button-cont donut" (click)="onEditTeamClick('donutChart')">
         <i class="fa fa-sitemap edit-icon" aria-hidden="true"></i>
         Change Team
       </div>
@@ -26,7 +26,7 @@
         </select>
       </div>
       <!-- highcharts div -->
-      <div id="pareto"></div>
+      <div id="columnChart"></div>
     </div>
   </div>
 

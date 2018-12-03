@@ -3,11 +3,11 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 declare var $: any;
 
 @Component({
-  selector: 'app-team-select-dropdown',
-  templateUrl: './team-select-dropdown.component.html',
-  styleUrls: ['./team-select-dropdown.component.css']
+  selector: 'app-team-fte-summary-team-select-dropdown',
+  templateUrl: './team-fte-summary-team-select-dropdown.component.html',
+  styleUrls: ['./team-fte-summary-team-select-dropdown.component.css']
 })
-export class TeamSelectDropdownComponent implements OnInit {
+export class TeamFteSummaryTeamSelectDropdownComponent implements OnInit {
 
   @Input() employees: any;
   @Output() clickedEmployeeIcon = new EventEmitter<any>();

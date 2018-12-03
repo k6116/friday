@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ApiDataOrgService } from '../../_shared/services/api-data/_index';
-import { AuthService } from '../../_shared/services/auth.service';
+import { ApiDataOrgService } from '../../../_shared/services/api-data/_index';
+import { AuthService } from '../../../_shared/services/auth.service';
 
 declare var $: any;
 
 @Injectable()
-export class DashboardTeamSelectService {
+export class TeamFteSummaryTeamSelectService {
 
   rawData: any;
   managerData: any;
