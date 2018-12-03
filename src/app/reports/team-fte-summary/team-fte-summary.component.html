@@ -1,5 +1,7 @@
 <!-- spinner -->
 <app-spinner *ngIf="chartIsLoading"></app-spinner>
+<!-- team select modal -->
+<app-team-select-modal *ngIf="showTeamSelectModal" [nestedOrgData]="nestedManagerData" (close)="onModalClose()" (selectedManager)="onModalClose($event)"></app-team-select-modal>
 
 <div class="container-fluid">
 
@@ -10,6 +12,12 @@
   <!-- block for team pareto chart -->
   <div class="row row-custom" [hidden]="chartIsLoading">
     <div class="col-sm">
+
+      <div *ngIf="displayEditTeamButton" class="edit-button-cont donut" (click)="onEdiTeamClick('donutChart')">
+        <i class="fa fa-sitemap edit-icon" aria-hidden="true"></i>
+        Change Team
+      </div>
+
       <!-- date-switcher div -->
       <div class="chart-date-switcher form-inline">
         <label class="chart-date-switcher-label">Range:</label>

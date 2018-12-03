@@ -73,7 +73,8 @@ const env = process.env.ENVIRONMENT;
 var server;
 
 // start development server
-if (env === 'dev') {
+// if (env === 'dev') {
+if (env === 'prodtest') {
 
   const port1 = 3000;
   server = http.createServer(app)

@@ -1,5 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ApiDataReportService } from '../../_shared/services/api-data/_index';
+import { DashboardTeamSelectService } from './services/dashboard-team-select.service';
+import { TeamSelectModalComponent } from './modal/team-select-modal/team-select-modal.component';
+import { AuthService } from '../_shared/services/auth.service';
 import * as Highcharts from 'highcharts';
 
 declare var require: any;
@@ -13,9 +16,15 @@ require('highcharts/modules/pareto.js')(Highcharts);
 })
 export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
+  @ViewChild(TeamSelectModalComponent)
+  private teamSelectModalComponent: TeamSelectModalComponent;
+
   chartIsLoading = true;  // display boolean for "Loading" spinner
   paretoChart: any; // chart obj
   paretoChartOptions: any;  // chart options
+
+  displayEditTeamButton: boolean;
+  showTeamSelectModal: boolean;
 
   teamSummaryData: any; // for teamwide FTE summary data
   displaySelectedProjectRoster = false;
@@ -28,10 +37,17 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private apiDataReportService: ApiDataReportService
-  ) {}
+    private apiDataReportService: ApiDataReportService,
+    private authService: AuthService,
+    ) {}
 
   ngOnInit() {
+
+    if (this.authService.loggedInUser.isManager || this.authService.loggedInUser.roleName === 'Admin') {
+      this.displayEditTeamButton = true;
+    }
+
+
     // initialize report to just current quarter
     this.getTeamFtePareto('current-quarter');
   }
@@ -73,6 +89,13 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
   }
 
+  renderStackedColumnChart(fteData: any, title: string, selectedManager?: any) {
+    const chartOptions = this.dashboardStackedColumnService.buildChartOptions(fteData, title, selectedManager);
+    this.chartStackedColumn = Highcharts.chart('stackedColumnChart', chartOptions);
+    setTimeout(() => {
+      this.chartStackedColumn.reflow();
+    }, 0);
+  }
 
   plotFteSummaryPareto(period: string) {
     // get the requested time period string's index
@@ -173,6 +196,72 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       }
     });
     this.displaySelectedProjectRoster = true;
+  }
+
+  onEdiTeamClick(chart: string) {
+
+    // console.log(`edit team button clicked for chart: ${chart}`);
+
+    this.showTeamSelectModal = true;
+
+    // display the modal
+    setTimeout(() => {
+      $('#teamSelectModal').modal({
+        backdrop: true,
+        keyboard: true
+      });
+    }, 0);
+
+    setTimeout(() => {
+      this.teamSelectModalComponent.testViewChild();
+      this.teamSelectModalComponent.setInitialDropDownEmployee(this.nestedManagerData[0]);
+    }, 0);
+
+  }
+
+  onModalClose(selectedManager?: any) {
+
+    // console.log('modal close event fired');
+    $('#teamSelectModal').modal('hide');
+    setTimeout(() => {
+      $('#teamSelectModal').modal('dispose');
+    }, 500);
+
+    // console.log('selected manager:');
+    // console.log(selectedManager);
+
+    this.updatedStackedColumnChart(selectedManager);
+
+  }
+
+  async updatedStackedColumnChart(selectedManager: any) {
+
+    // if the selected manager is the same that is currently displayed, stop here (return early)
+    if (selectedManager.emailAddress === this.selectedManagerForStackedColumnChart) {
+      // console.log('update stacked aborted, same manager/team selected');
+      return;
+    }
+
+    const fteData = await this.getFTEData(selectedManager)
+    .catch(err => {
+      console.error(err);
+    });
+
+    // console.log('response from get fte data for selected manager:');
+    // console.log(fteData);
+
+    // set the chart title
+    let title;
+    if (selectedManager.emailAddress === this.authService.loggedInUser.managerEmailAddress) {
+      title = `Your Team's FTEs by Project`;
+    } else {
+      title = `${selectedManager.fullName}'s Team's FTEs by Project`;
+    }
+
+    this.renderStackedColumnChart(fteData, title, selectedManager);
+
+    this.selectedManagerForStackedColumnChart = selectedManager.emailAddress;
+
   }
 
 }
