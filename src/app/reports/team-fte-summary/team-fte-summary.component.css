@@ -38,3 +38,27 @@ thead {
   table.table-employee-details {
     margin-bottom: 0;
   }
+
+  
+div.edit-button-cont {
+  display: inline-block;
+  /* position: absolute; */
+  top: 8px;
+  left: 25px;
+  z-index: 1;
+  cursor: pointer;
+  background-color: white;
+  padding-right: 10px;
+}
+
+div.edit-button-cont.donut {
+  margin-left: 20px;
+}
+
+i.edit-icon {
+  padding-right: 2px;
+}
+
+div.edit-button-cont:hover {
+  color: rgb(72, 72, 196);
+}

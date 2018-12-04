@@ -16,7 +16,7 @@
       <div class="chart-date-switcher form-inline">
 
         <!-- change team div -->
-        <div *ngIf="displayEditTeamButton" class="edit-button-cont donut" (click)="onEditTeamClick('donutChart')">
+        <div *ngIf="displayEditTeamButton" class="edit-button-cont" (click)="onEditTeamClick()">
           <i class="fa fa-sitemap edit-icon" aria-hidden="true"></i>
           Change Team
         </div>
@@ -27,6 +27,19 @@
           <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
         </select>
 
+        <!-- Toggle Buttons -->
+        <div class="btn-group btn-group-toggle" data-toggle="buttons" style="width: 100%">
+          <label class="btn btn-outline-secondary fte-toggle" id="top10" style="width: 17%" (click)="onTopProjectsSelected($event)">
+            <input type="radio" name="options" id="option1" autocomplete="off"> Top 10%
+          </label>
+          <label class="btn btn-outline-secondary fte-toggle" id="top50" (click)="onTopProjectsSelected($event)">
+            <input type="radio" name="options" id="option2" autocomplete="off" > Top 50%
+          </label>
+          <label class="btn btn-outline-secondary fte-toggle" id="all" (click)="onTopProjectsSelected($event)">
+            <input type="radio" name="options" id="option3" autocomplete="off"> Show All
+          </label>
+        </div>
+
       </div>
       <!-- highcharts div -->
       <div id="columnChart"></div>
@@ -35,7 +48,7 @@
 
   <div class="row row-custom" *ngIf="displaySelectedProjectRoster">
     <!-- team-specific FTE roster if user clicks a project -->
-    <div class="col-sm-5">
+    <div class="col-7">
       <h3>My Team Members on {{selectedProject}}:</h3>
       <table class="table table-bordered table-sm">
         <thead>

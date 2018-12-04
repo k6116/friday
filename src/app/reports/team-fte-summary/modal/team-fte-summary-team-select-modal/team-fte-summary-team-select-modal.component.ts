@@ -82,7 +82,7 @@ export class TeamFteSummaryTeamSelectModalComponent implements OnInit, OnDestroy
   }
 
   onSelectClick() {
-    this.selectedEmployee.checkAllTeams = this.checkAggregateAllTeams;
+    this.selectedEmployee.checkAllTeams = this.checkAggregateAllTeams ? true : false;
     this.selectedManager.emit(this.selectedEmployee);
     // this.close.emit(true);
   }
