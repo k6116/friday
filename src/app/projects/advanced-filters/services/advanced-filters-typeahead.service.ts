@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FilterPipe } from '../../../_shared/pipes/filter.pipe';
+import { AdvancedFiltersDataService } from '../services/advanced-filters-data.service';
 
 declare var $: any;
 declare const Bloodhound;
@@ -12,9 +13,10 @@ export class AdvancedFiltersTypeaheadService {
 
   constructor(
     private filterPipe: FilterPipe,
+    private advancedFiltersDataService: AdvancedFiltersDataService
   ) { }
 
-
+    // TO-DO CHAI: Convert from bloodhound to fuse to be consistent
   getManagerTypeahead(that: any, managers: any): any {
 
     // initialize bloodhound suggestion engine with data
@@ -117,13 +119,10 @@ export class AdvancedFiltersTypeaheadService {
 
       // Make db call
       that.advancedFilter(that.filterObject);
+      // console.log(selection);
 
-      // clear/reset existing chart and table data
-      // that2.projectFteRollupChartService.clearChartData(that);
-      // render the chart, or blank chart if there is no data to display
-      // that.renderLokiChart(selection);
-      // that.displayChart(selection);
-      console.log(selection);
+      // that.advancedFiltersDataService.getProjectChildren(that, id);
+      this.onProjectClick(that, id);
     });
 
   }
@@ -136,5 +135,17 @@ export class AdvancedFiltersTypeaheadService {
 
   }
 
+  async onProjectClick(that: any, projectID: string) {
+
+    // this.lastClickedProjectName = projectName;
+    // console.log(this.lastClickedProjectName);
+
+    that.children = await this.advancedFiltersDataService.getProjectChildren(projectID);
+    that.parents = await this.advancedFiltersDataService.getProjectParents(projectID);
+
+    console.log('children', that.children);
+    console.log('parents', that.parents);
+
+  }
 
 }

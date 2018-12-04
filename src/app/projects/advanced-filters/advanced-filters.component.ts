@@ -378,27 +378,18 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   // PARENT-CHILD-PROJECTS
 
-  onProjectClick(projectName: string, projectType: string, projectOwner: string) {
+  // async onProjectClick(projectID: string) {
 
-    this.lastClickedProjectName = projectName;
-    console.log(this.lastClickedProjectName);
-    this.getProjectParents(projectName, projectType, projectOwner);
-    this.getProjectChildren(projectName, projectType, projectOwner);
+  //   // this.lastClickedProjectName = projectName;
+  //   // console.log(this.lastClickedProjectName);
 
-  }
+  //   this.children = await this.advancedFiltersDataService.getProjectChildren(projectID);
+  //   this.parents = await this.advancedFiltersDataService.getProjectParents(projectID);
 
-  async getProjectChildren(projectName: string, projectType: string, projectOwner: string) {
-    // console.log(projectName, projectType, projectOwner);
-    this.children = await this.apiDataAdvancedFilterService.getProjectChildren(projectName, projectType, projectOwner).toPromise();
-    console.log('children', this.children);
-  }
+  //   console.log('children', this.children);
+  //   console.log('parents', this.parents);
 
-  async getProjectParents(projectName: string, projectType: string, projectOwner: string) {
-    // console.log(projectName, projectType, projectOwner);
-    this.parents = await this.apiDataAdvancedFilterService.getProjectParents(projectName, projectType, projectOwner).toPromise();
-    // this.showParentChild==!showParentChild"
-    console.log('parents', this.parents);
-  }
+  // }
 
   onParentCheckboxClick(projectName: String) {
 
@@ -452,6 +443,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.managerTeam = await this.apiDataOrgService.getManagementOrgStructure(managerEmailAddress).toPromise();
   }
 
+  // TO-DO: Still using this???
   // Selecting a name from the typeahead list
   onProjectSelect(selection) {
     console.log(selection);
@@ -472,8 +464,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // Show div with subordinates
     // this.getProjectOwnerSubordinates(email);
-    this.getProjectParents(name, type, owner);
-    this.getProjectChildren(name, type, owner);
+    // this.getProjectParents(name, type, owner);
+    // this.getProjectChildren(name, type, owner);
   }
 
   onSelect(selection) {
@@ -1042,23 +1034,18 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // save search term into filterObject
     this.filterObject.ProjectName = '';
+    this.filterObject.ProjectID = '';
 
     // Make the db call
     this.advancedFilter(this.filterObject);
 
   }
 
-  // CLEAR SEARCH
-  // clearAllFilters() {
-  //   // this.ngOnInit();
-  // }
-
   // SHOW FILTER TOGGLE
   onShowFilterToggleClick() {
-    // $('#sidebarCollapse').on('click', function () {
-      $('#sidebar').toggleClass('active');
-  // });
-    console.log('It should toggle!');
+
+    $('#sidebar').toggleClass('active');
+
   }
 
 // EXPORT FUNCTION

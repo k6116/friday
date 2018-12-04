@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ApiDataProjectService } from '../../../_shared/services/api-data/_index';
+import { ApiDataAdvancedFilterService } from '../../../_shared/services/api-data/_index';
+
 
 @Injectable()
 export class AdvancedFiltersDataService {
 
   constructor(
-    private apiDataProjectService: ApiDataProjectService
+    private apiDataProjectService: ApiDataProjectService,
+    private apiDataAdvancedFilterService: ApiDataAdvancedFilterService
   ) { }
 
 
@@ -13,6 +16,18 @@ export class AdvancedFiltersDataService {
   getTypeaheadData(): Promise<any> {
 
     return this.apiDataProjectService.getProjectsList().toPromise();
+
+  }
+
+  getProjectChildren(projectID: string): Promise<any> {
+    // const children = await that.apiDataAdvancedFilterService.getProjectChildren(projectID).toPromise();
+    return this.apiDataAdvancedFilterService.getProjectChildren(projectID).toPromise();
+
+  }
+
+  getProjectParents(projectID: string): Promise<any> {
+
+    return this.apiDataAdvancedFilterService.getProjectParents(projectID).toPromise();
 
   }
 
