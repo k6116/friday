@@ -1082,6 +1082,51 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
+  async onClearAllClick() {
+
+    // Clear inputs
+    this.filterString = '';
+    this.filterStringOwner = '';
+
+    // Clear out all local changes
+    this.filterCheckedArray = [];
+    this.arrTypeID = [];
+    this.arrStatusID = [0];   // adding 0 as blank
+    this.arrPriorityID = [0];
+    this.arrOwnerEmail = [];
+    this.arrChildren = [];
+    this.arrParents = [];
+    this.objPLC = [];
+    this.plcSchedules = []; // save clicked plc statuses
+    this.fteMin = [];
+    this.fteMax = [];
+    this.minDate = '1900-01-01';
+    this.maxDate = '2900-01-01';
+
+    // Reset to default values
+    await this.initCheckboxValues();
+
+    // Update filterObject with filtered checkbox values.
+    // Leave the NULLs !
+    this.filterObject = {
+      PLCStatusIDs: '',       // num,num,num,..
+      PLCDateRanges: '',      // From|To
+      ProjectName: '',        // name,name,name...
+      ProjectID: '',          // num,num,num,..
+      ProjectTypeIDs: String(this.arrTypeID),
+      ProjectStatusIDs: String(this.arrStatusID),
+      ProjectPriorityIDs: String(this.arrPriorityID),
+      ProjectOwnerEmails: '',
+      FTEMin: 'NULL',
+      FTEMax: 'NULL',
+      FTEDateFrom: 'NULL',        // 2017/01/01
+      FTEDateTo: 'NULL'           // 2017/01/01
+    };
+
+    // Make the db call
+    this.advancedFilter(this.filterObject);
+  }
+
   // SHOW FILTER TOGGLE
   onShowFilterToggleClick() {
 

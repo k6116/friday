@@ -81,9 +81,12 @@
           <i class="fa fa-times" aria-hidden="true"></i>
           Clear
         </button> -->
+        <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="onClearAllClick()">
+          <i class="fa fa-trash button-icon" aria-hidden="true" style="margin-right:5px"></i>Clear All
+        </button>
 
         <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="onDashboardClick(); showDashboard=!showDashboard">
-          <i class="fa fa-bar-chart" aria-hidden="true" style="margin-right:5px"></i>Dashboard
+          <i class="fa fa-bar-chart button-icon" aria-hidden="true" style="margin-right:5px"></i>Dashboard
         </button>
 
         <button class="btn-standard icon-text-only hover-green export-button" (mouseenter)="onExportButtonMouseEnter()" (mouseleave)="onExportButtonMouseLeave()" (click)="onExportClick()">
