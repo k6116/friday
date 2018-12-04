@@ -27,8 +27,7 @@ const config2017 = {
 // using .env file to switch between production and test databases
 let config;
 
-// if (env === 'prod') {
-if (env === 'prodtest') {
+if (env === 'prod') {
   config = {
     dbname: "Jarvis",
     host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',
