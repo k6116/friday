@@ -26,16 +26,17 @@
         <select name="time-period-selector" class="form-control date-switcher-selector" (change)="onDateRangeChange($event.target.value)">
           <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
         </select>
+        <span style="width: 20px"></span>
 
         <!-- Toggle Buttons -->
-        <div class="btn-group btn-group-toggle" data-toggle="buttons" style="width: 100%">
-          <label class="btn btn-outline-secondary fte-toggle" id="top10" style="width: 17%" (click)="onTopProjectsSelected($event)">
+        <div class="btn-group btn-group-toggle" style="height: 32px" data-toggle="buttons">
+          <label class="btn btn-outline-secondary highchart-toggle" id="top10" (click)="onTopProjectsSelected($event)">
             <input type="radio" name="options" id="option1" autocomplete="off"> Top 10%
           </label>
-          <label class="btn btn-outline-secondary fte-toggle" id="top50" (click)="onTopProjectsSelected($event)">
+          <label class="btn btn-outline-secondary highchart-toggle" id="top50" (click)="onTopProjectsSelected($event)">
             <input type="radio" name="options" id="option2" autocomplete="off" > Top 50%
           </label>
-          <label class="btn btn-outline-secondary fte-toggle" id="all" (click)="onTopProjectsSelected($event)">
+          <label class="btn btn-outline-secondary highchart-toggle" id="all" (click)="onTopProjectsSelected($event)">
             <input type="radio" name="options" id="option3" autocomplete="off"> Show All
           </label>
         </div>

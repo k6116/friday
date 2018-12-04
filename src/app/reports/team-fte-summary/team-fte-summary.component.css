@@ -62,3 +62,11 @@ i.edit-icon {
 div.edit-button-cont:hover {
   color: rgb(72, 72, 196);
 }
+
+label.highchart-toggle {
+  border-color: #ced4da;
+}
+
+div.row-custom {
+  min-width: 1400px;
+}
