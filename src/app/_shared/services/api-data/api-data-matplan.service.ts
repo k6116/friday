@@ -26,6 +26,14 @@ export class ApiDataMatplanService {
       .map((response: Response) => response.json());
   }
 
+  indexPurchaseMethod() {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/matplan/matplan/indexPurchaseMethod`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   indexProjects() {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
@@ -79,6 +87,14 @@ export class ApiDataMatplanService {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
     return this.http.put(`/api/matplan/matplan/update/updateQuoteForPart`, JSON.stringify(quoteData), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  updateMaterialOrder(matOrderData: any) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.put(`/api/matplan/matplan/update/updateMaterialOrder`, JSON.stringify(matOrderData), options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

@@ -55,6 +55,19 @@ function indexSuppliers(req, res) {
   });
 }
 
+function indexPurchaseMethod(req, res) {
+  models.PurchaseMethod.findAll()
+  .then(pmList => {
+    res.json(pmList);
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
 function indexProjects(req, res) {
   sequelize.query(
     // select NPIs and NMIs
@@ -393,6 +406,121 @@ function updateQuoteForPart(req, res) {
   });
 }
 
+function updateMaterialOrder(req, res) {
+  const decodedToken = token.decode(req.header('X-Token'), res);
+  const userID = decodedToken.userData.id;
+  const matOrderForm = req.body.matplan;
+  const matplanID = req.body.matplanID;
+  const insertOrders = [];
+  const updateOrders = [];
+
+  // if order is missing matOrderID, then it is new.  Otherwise, it is an update (because the frontend has already parsed out the no-changes records)
+  matOrderForm.forEach( order => {
+    if (order.materialOrderID === null) {
+      insertOrders.push({
+        materialPlanID: matplanID,  // new records won't have a matplanID, so we need to get the one sent from the frontend
+        partID: order.partID,
+        supplierID: order.supplierID,
+        purchaseMethodID: (order.purchaseMethodID === '') ? null : order.purchaseMethodID,
+        purchaseOrderNumber: (order.purchaseOrderNumber === '') ? null : order.purchaseOrderNumber,
+        orderQty: (order.orderQty === '') ? null : order.orderQty,
+        orderDate: (order.orderDate === '') ? null : order.orderDate,
+        dueDate: (order.dueDate === '') ? null : order.dueDate,
+        qtyReceived: (order.qtyReceived === '') ? null : order.qtyReceived,
+        dateReceived: (order.dateReceived === '') ? null : order.dateReceived,
+        deliverTo: (order.deliverTo === '') ? null : order.deliverTo,
+        notes: (order.notes === '') ? null : order.notes,
+        createdBy: userID,
+        createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+      });
+    } else {
+      updateOrders.push({
+        materialOrderID: order.materialOrderID,
+        materialPlanID: order.materialPlanID,
+        partID: order.partID,
+        supplierID: order.supplierID,
+        purchaseMethodID: (order.purchaseMethodID === '') ? null : order.purchaseMethodID,
+        purchaseOrderNumber: (order.purchaseOrderNumber === '') ? null : order.purchaseOrderNumber,
+        orderQty: (order.orderQty === '') ? null : order.orderQty,
+        orderDate: (order.orderDate === '') ? null : order.orderDate,
+        dueDate: (order.dueDate === '') ? null : order.dueDate,
+        qtyReceived: (order.qtyReceived === '') ? null : order.qtyReceived,
+        dateReceived: (order.dateReceived === '') ? null : order.dateReceived,
+        deliverTo: (order.deliverTo === '') ? null : order.deliverTo,
+        notes: (order.notes === '') ? null : order.notes,
+        createdBy: userID,
+        createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+      });
+    }
+  });
+
+  console.log('done parsing insertOrders');
+  console.log(insertOrders);
+  console.log('done parsing updateOrders');
+  console.log(updateOrders);
+
+  return sequelize.transaction( (t) => {
+    // first, destroy the quote records that the user requested to delete
+    return models.MaterialOrder.bulkCreate(
+      insertOrders,
+      {transaction: t}
+    )
+    .then( insertedRecords => {
+      console.log(`${insertedRecords.length} matOrder records inserted`);
+
+      // make array of promises to perform a bulkUpdate of quote records
+      let promises = [];
+      for (let i = 0; i < updateOrders.length; i++) {
+        let newPromise = models.MaterialOrder.update(
+        {
+          materialPlanID: updateOrders[i].materialPlanID,
+          partID: updateOrders[i].partID,
+          supplierID: updateOrders[i].supplierID,
+          purchaseMethodID: updateOrders[i].purchaseMethodID,
+          purchaseOrderNumber: updateOrders[i].purchaseOrderNumber,
+          orderQty: updateOrders[i].orderQty,
+          orderDate: updateOrders[i].orderDate,
+          dueDate: updateOrders[i].dueDate,
+          qtyReceived: updateOrders[i].qtyReceived,
+          dateReceived: updateOrders[i].dateReceived,
+          deliverTo: updateOrders[i].deliverTo,
+          notes: updateOrders[i].notes,
+          createdBy: updateOrders[i].createdBy,
+          createdAt: updateOrders[i].createdAt,
+          updatedBy: updateOrders[i].updatedBy,
+          updatedAt: updateOrders[i].updatedAt
+        },
+        {
+          where: { materialOrderID: updateOrders[i].materialOrderID },
+          transaction: t
+        });
+        promises.push(newPromise);
+      };
+      // then execute all the promises to update the quote records
+      return Promise.all(promises);
+    })
+    .then( updatedRecords => {
+      console.log(`${updatedRecords.length} matOrder records updated`)
+    });
+  }) // end transaction
+  .then(() => {
+    res.json({
+      message: `Matplan saved!`
+    })
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({
+      message: 'quote save failed',
+      error: error
+    });
+  });
+}
+
 function showMatplanOrders(req, res) {
   const projectID = req.params.projectID;
   const matplanID = req.params.matplanID;
@@ -419,6 +547,7 @@ function showMatplanOrders(req, res) {
 module.exports = {
   show: show,
   indexSuppliers: indexSuppliers,
+  indexPurchaseMethod: indexPurchaseMethod,
   indexProjects: indexProjects,
   showMatplans: showMatplans,
   showMatplanBom: showMatplanBom,
@@ -426,5 +555,6 @@ module.exports = {
   showSpecificQuote: showSpecificQuote,
   destroyQuoteForPart: destroyQuoteForPart,
   updateQuoteForPart: updateQuoteForPart,
+  updateMaterialOrder: updateMaterialOrder,
   showMatplanOrders: showMatplanOrders
 }

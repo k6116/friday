@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ApiDataMatplanService } from '../../_shared/services/api-data/_index';
+import { CacheService } from '../../_shared/services/cache.service';
 
 declare var $: any;
 @Component({
@@ -16,11 +17,13 @@ export class MatplanOrderComponent implements OnInit {
 
   quotes: any;
   orderForm: FormGroup;
+  purchaseMethods: any; // for temporarily storing the array of purchase methods for frontend
   selectedOrder: FormGroup; // to temporarily store a selected row for patching values
 
   constructor(
     private fb: FormBuilder,
-    private apiDataMatplanService: ApiDataMatplanService
+    private apiDataMatplanService: ApiDataMatplanService,
+    private cacheService: CacheService
   ) { }
 
   async ngOnInit() {
@@ -29,14 +32,22 @@ export class MatplanOrderComponent implements OnInit {
       orderFormArray: this.fb.array([])
     });
 
+    this.apiDataMatplanService.indexPurchaseMethod().subscribe( res => {
+      this.purchaseMethods = res;
+    });
+
     // get the MatOrder data to populate into the form
     const orderList = await this.apiDataMatplanService.showMatplanOrders(this.projectID, this.matplanID).toPromise();
+    console.log(orderList);
 
     // populate the form with data
     const bla = await this.initMatOrderForm(orderList);
 
     // compute the prices in the form
-    this.initMatOrderPrices(<FormArray>this.orderForm.get('orderFormArray'));
+    const orderFormArray = <FormArray>this.orderForm.get('orderFormArray');
+    for (const order of orderFormArray.controls) {
+      this.calculatePrice(<FormGroup>order);
+    }
   }
 
   initMatOrderForm(orderList: any) {
@@ -46,37 +57,66 @@ export class MatplanOrderComponent implements OnInit {
     // loop through all the records from the MatOrder table to fill in the form
     for (let i = 0; i < orderList.length; i++) {
       const newForm = this.fb.group({
+        materialOrderID: orderList[i].materialOrderID,
+        materialPlanID: orderList[i].materialPlanID,
         level: orderList[i].level,
         partID: orderList[i].partID,
         partName: orderList[i].partName,
         partDescription: orderList[i].partDescription,
-        supplierID: orderList[i].supplierID ? orderList[i].supplierID : null,
-        supplierName: orderList[i].supplierName ? orderList[i].supplierName : null,
-        mfgPartNumber: orderList[i].mfgPartNumber ? orderList[i].mfgPartNumber : null,
+        supplierID: orderList[i].supplierID,
+        supplierName: orderList[i].supplierName,
+        mfgPartNumber: orderList[i].mfgPartNumber,
         minOrderQty: null,
         price: null,
         nreCharge: null,
         leadTime: null,
         qtyPer: orderList[i].qtyPer,
-        orderQty: orderList[i].orderQty ? orderList[i].orderQty : (orderList[i].qtyPer * this.buildQty),
+        qtyNeeded: (orderList[i].qtyPer * this.buildQty),
+        orderQty: orderList[i].orderQty,
         totalCost: null,
-        purchaseMethodID: orderList[i].purchaseMethodID ? orderList[i].purchaseMethodID : null,
-        purchaseOrderNumber: orderList[i].purchaseOrderNumber ? orderList[i].purchaseOrderNumber : null,
-        orderDate: orderList[i].orderDate ? orderList[i].orderDate : null,
-        dueDate: orderList[i].dueDate ? orderList[i].dueDate : null,
-        dateReceived: orderList[i].dateReceived ? orderList[i].dateReceived : null,
-        qtyReceived: orderList[i].qtyReceived ? orderList[i].qtyReceived : null,
-        deliverTo: orderList[i].deliverTo ? orderList[i].deliverTo : null
+        purchaseMethodID: orderList[i].purchaseMethodID,
+        purchaseOrderNumber: orderList[i].purchaseOrderNumber,
+        orderDate: orderList[i].orderDate,
+        dueDate: orderList[i].dueDate,
+        dateReceived: orderList[i].dateReceived,
+        qtyReceived: orderList[i].qtyReceived,
+        deliverTo: orderList[i].deliverTo
       });
       orderFormArray.push(newForm);
     }
     return null;  // doesn't matter what we return, just need something for async/await
   }
 
-  initMatOrderPrices(orders: FormArray) {
-    for (const order of orders.controls) {
-      this.calculatePrice(<FormGroup>order);
+  onMatplanSave() {
+    // get pointer to parent formarray
+    const orderFormArray = <FormArray>this.orderForm.get('orderFormArray');
+
+    // get flattened formarray records
+    const orderFormFlat = this.orderForm.value.orderFormArray;
+
+    // parse the FormGroup and collect the records that have changed
+    const changedValues = [];
+    for (let i = 0; i < orderFormArray.controls.length; i++) {
+      if (orderFormArray.controls[i].dirty) {
+        // if control has been altered, then we need to submit it for changes
+        changedValues.push(orderFormFlat[i]);
+      }
     }
+
+    // build object to send to database
+    const toBeSaved = {
+      matplan: changedValues,
+      matplanID: this.matplanID
+    };
+
+    console.log(toBeSaved);
+
+    this.apiDataMatplanService.updateMaterialOrder(toBeSaved).subscribe( res => {
+      this.cacheService.raiseToast('success', `${res.message}`);
+    },
+    err => {
+      this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
+    });
   }
 
   testForm() {
@@ -88,21 +128,21 @@ export class MatplanOrderComponent implements OnInit {
   }
 
   editSupplier(order: any) {
-    console.log(order);
+    // when user clicks button to change suppliers, pull the available quotes and display in modal
     this.selectedOrder = order;
     const selectedPartID = order.get('partID').value;
     this.apiDataMatplanService.showQuotesForPart(selectedPartID).subscribe( res => {
-      console.log('got quotes');
-      console.log(res);
       this.quotes = res;
       $('#supplierModal').modal('show');
     });
   }
 
   chooseSupplier(quote: any) {
-    console.log(quote);
+    // when user selects one of the supplier options from the modal, patch the form and close the modal
     this.selectedOrder.get('supplierID').patchValue(quote.supplierID);
     this.selectedOrder.get('supplierName').patchValue(quote.supplierName);
+    this.selectedOrder.markAsDirty();
+    this.calculatePrice(this.selectedOrder);
     $('#supplierModal').modal('hide');
   }
 
@@ -114,10 +154,11 @@ export class MatplanOrderComponent implements OnInit {
       const selectedPartID = order.get('partID').value;
       const orderQty = order.get('orderQty').value;
       const quotes = await this.apiDataMatplanService.showSpecificQuote(selectedPartID, selectedSupplierID).toPromise();
-      console.log(quotes);
+
       quotes.forEach( quote => {
         if (orderQty >= quote.minOrderQty) {
           // patch values from selected quote into form
+          order.get('mfgPartNumber').patchValue(quote.mfgPartNumber);
           order.get('minOrderQty').patchValue(quote.minOrderQty);
           order.get('price').patchValue(quote.price);
           order.get('nreCharge').patchValue(quote.nreCharge);
@@ -125,15 +166,6 @@ export class MatplanOrderComponent implements OnInit {
           order.get('totalCost').patchValue((orderQty * quote.price) + quote.nreCharge);
         }
       });
-    }
-  }
-
-  highlightSmallOrder(order: FormGroup) {
-    const orderQty = order.get('orderQty').value;
-    const qtyPer = order.get('qtyPer').value;
-
-    if (orderQty < qtyPer * this.buildQty) {
-      return 'highlight-invalid';
     }
   }
 

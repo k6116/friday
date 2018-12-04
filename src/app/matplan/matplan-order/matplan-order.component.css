@@ -1,5 +1,30 @@
+.button-toolbar {
+  margin-left: 5px;
+  margin-bottom: 30px;
+}
+
 .table-sm td, .table-sm th {
   vertical-align: middle;
+}
+
+th.qty {
+  width: 40px;
+}
+
+th.money {
+  width: 90px;
+}
+
+th.short-text {
+  width: 70px;
+}
+
+th.med-text {
+  width: 130px;
+}
+
+th.date {
+  width: 120px;
 }
 
 div.card-header {
@@ -9,11 +34,4 @@ div.card-header {
 
 .choose-supplier-button {
   float: right;
-}
-
-.form-control.highlight-invalid {
-  border-color: rgb(236, 154, 154);
-  outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
-          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
 }

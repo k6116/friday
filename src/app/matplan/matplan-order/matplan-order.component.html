@@ -1,34 +1,33 @@
-<button class="btn btn-secondary" (click)="testForm()">test</button>
+<div class="row button-toolbar">
+  <button class="btn btn-success" (click)="onMatplanSave()">Save</button>
+  <button class="btn btn-secondary" (click)="testForm()">test</button>
+</div>
+
 <div class="row">
-
-  <!-- first col is list-box of items in the BOM-->
-  <!-- <div class="col-sm-3">
-    <div class="list-group">
-      <button class="list-group-item list-group-item-action" *ngFor="let item of bom" (click)="showOrders(item)" [ngClass]="selectedPartID === item.ChildID ? 'active' : ''">{{item.ChildIndentedName}}</button>
-    </div>
-  </div> -->
-
   <div class="col-sm">
     <form [formGroup]="orderForm">
       <table class="table table-sm">
         <thead>
           <tr>
-            <th>Level:</th>
+            <th class="qty">Level:</th>
             <th>Name:</th>
+            <th>Description:</th>
             <th>Supplier:</th>
-            <th>MFG PN:</th>
-            <th>MOQ:</th>
-            <th>Price:</th>
-            <th>NRE:</th>
-            <th>LT (wks):</th>
-            <th>Qty Per:</th>
-            <th>Order Qty:</th>
-            <th>Total Cost:</th>
-            <th>PO:</th>
-            <th>Order Date:</th>
-            <th>Due Date:</th>
-            <th>Receive Date:</th>
-            <th>Receive Qty:</th>
+            <th class="short-text">MFG PN:</th>
+            <th class="qty">MOQ:</th>
+            <th class="money">Price:</th>
+            <th class="money">NRE:</th>
+            <th class="qty">LT (wks):</th>
+            <th class="qty">Qty Per:</th>
+            <th class="qty">Qty Needed</th>
+            <th class="qty">Qty Ordered:</th>
+            <th class="money">Total Cost:</th>
+            <th>Purchase Method:</th>
+            <th class="med-text">PO:</th>
+            <th class="date">Order Date:</th>
+            <th class="date">Due Date:</th>
+            <th class="date">Receive Date:</th>
+            <th class="qty">Receive Qty:</th>
             <th>Deliver To:</th>
           </tr>
         </thead>
@@ -36,7 +35,8 @@
           <tr *ngFor="let order of orderForm.get('orderFormArray').controls; let i = index;">
             <ng-container [formGroupName]="i">
               <td>{{order.get('level').value}}</td>
-              <td [title]="order.get('partDescription').value">{{order.get('partName').value}}</td>
+              <td>{{order.get('partName').value}}</td>
+              <td>{{order.get('partDescription').value}}</td>
               <td><button class="btn" [ngClass]="order.get('supplierName').value ? 'btn-outline-success' : 'btn-outline-secondary'" (click)="editSupplier(order)">{{order.get('supplierName').value ? order.get('supplierName').value : 'Choose'}}</button></td>
               <td>{{order.get('mfgPartNumber').value}}</td>
               <td>{{order.get('minOrderQty').value}}</td>              
@@ -44,8 +44,14 @@
               <td>{{order.get('nreCharge').value | currency}}</td>
               <td>{{order.get('leadTime').value}}</td>
               <td>{{order.get('qtyPer').value}}</td>
-              <td><input class="form-control" [ngClass]="highlightSmallOrder(order)" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="orderQty" (blur)="calculatePrice(order)"></td>
+              <td>{{order.get('qtyNeeded').value}}</td>
+              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="orderQty" (blur)="calculatePrice(order)"></td>
               <td>{{order.get('totalCost').value | currency}}</td>
+              <td>
+                <select class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" formControlName="purchaseMethodID">
+                  <option *ngFor="let pm of purchaseMethods" [ngValue]="pm.purchaseMethodID">{{pm.purchaseMethodName}}</option>
+                </select>
+              </td>
               <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="purchaseOrderNumber"></td>
               <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="orderDate"></td>
               <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="dueDate"></td>

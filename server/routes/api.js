@@ -127,6 +127,7 @@ router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedul
 // MATPLAN CONTROLLER
 router.get('/matplan/matplan/show/:matplanID', controllers.matplan.show);
 router.get('/matplan/matplan/indexSuppliers', controllers.matplan.indexSuppliers);
+router.get('/matplan/matplan/indexPurchaseMethod', controllers.matplan.indexPurchaseMethod);
 router.get('/matplan/matplan/indexProjects', controllers.matplan.indexProjects);
 router.get('/matplan/matplan/showMatplans/:projectID', controllers.matplan.showMatplans);
 router.get('/matplan/matplan/showMatplanBom/:projectID', controllers.matplan.showMatplanBom);
@@ -134,6 +135,7 @@ router.get('/matplan/matplan/showQuotesForPart/:partID', controllers.matplan.sho
 router.get('/matplan/matplan/showSpecificQuote/:partID/:supplierID', controllers.matplan.showSpecificQuote);
 router.put('/matplan/matplan/destroy/destroyQuoteForPart', controllers.matplan.destroyQuoteForPart);
 router.put('/matplan/matplan/update/updateQuoteForPart', controllers.matplan.updateQuoteForPart);
+router.put('/matplan/matplan/update/updateMaterialOrder', controllers.matplan.updateMaterialOrder);
 router.get('/matplan/matplan/showMatplanOrders/:projectID/:matplanID', controllers.matplan.showMatplanOrders);
 
 // middleware to return an error if the token cannot be verified
