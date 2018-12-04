@@ -75,7 +75,6 @@ export class AdvancedFiltersTypeaheadService {
   // initialize the typeahead functionality:  jQuery.typeahead(options, [*datasets])
 
   initProjectTypeahead(that: any, projectsList: any): any {
-    console.log('projectList in typeahead service:', projectsList);
 
     // set 'this' in order to access the methods within this service within the typeahead source or bind functions
     // (this will lose/change its scope to the function)
@@ -117,6 +116,9 @@ export class AdvancedFiltersTypeaheadService {
       const id = selection.ProjectID;
       that.filterObject.ProjectID = String(id);
 
+      // save selected projectID for parent-child checkboxes
+      that.selectedProjectID = id;
+
       // Make db call
       that.advancedFilter(that.filterObject);
       // console.log(selection);
@@ -137,8 +139,7 @@ export class AdvancedFiltersTypeaheadService {
 
   async onProjectSelect(that: any, projectID: string) {
 
-    // this.lastClickedProjectName = projectName;
-    // console.log(this.lastClickedProjectName);
+    // console.log(this.selectedProjectID);
 
     that.children = await this.advancedFiltersDataService.getProjectChildren(projectID);
     that.parents = await this.advancedFiltersDataService.getProjectParents(projectID);

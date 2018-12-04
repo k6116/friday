@@ -30,6 +30,16 @@
         <input type="text" #hiddenInput class="form-control hidden-input">
       </div>
 
+      <!-- Toggle Filterbar -->
+      <button class="btn-standard icon-text-only hover-green filter-toggle" id="sidebarCollapse" (click)="onShowFilterToggleClick(); showFilterCol=!showFilterCol">
+        <ng-container *ngIf="showFilterCol">
+          <i class="fa fa-angle-double-left" style="margin-right:5px" aria-hidden="true"></i>Hide Filterbar
+        </ng-container>
+          <ng-container *ngIf="!showFilterCol">
+          <i class="fa fa-angle-double-right" style="margin-right:5px" aria-hidden="true"></i>Show Filterbar
+        </ng-container>
+      </button>
+
       <!-- Saved Search HIDDEN -->
       <div class="btn-inline-toolbar" role="toolbar" aria-label="Toolbar with button groups" hidden>
         <div class="btn-group btn-group-toggle" data-toggle="buttons" role="group" aria-label="First group">
@@ -46,7 +56,6 @@
             <input type="radio" name="options" id="option3" autocomplete="off"><i class="fa fa-heart-o button-icon"></i>
           </label>
         </div>
-
         <!-- <div class="btn-group" role="group" aria-label="Second group">
           <button class="btn-standard icon-text-only hover-green">
             <i class="fa fa-floppy-o button-icon"></i>Save Search
@@ -56,11 +65,7 @@
       
       <!-- Test Button -->
       <!-- <button class="btn btn-primary" (click)="onTestFormClick()">Test Form Data</button> -->
-      <button *ngIf="showDashboardButton" class="btn btn-primary" (click)="onDashboardClick(); showDashboard=!showDashboard">Dashboard</button>
-
-      <!-- Hide Filter -->
-      <!-- <button class="btn btn-primary" (click)="showFilterCol=!showFilterCol">Hide Filters</button> -->
-      <button class="btn btn-primary" id="sidebarCollapse" (click)="onShowFilterToggleClick()">Filters Toggle</button>
+      <!-- <button *ngIf="showDashboardButton" class="btn btn-primary" (click)="onDashboardClick(); showDashboard=!showDashboard">Dashboard</button> -->
 
       <!-- Filter Badges NOT USED RIGHT NOW -->
       <!-- <ng-container *ngFor="let checkbox of filterCheckedArray; let a = index">
@@ -76,6 +81,10 @@
           <i class="fa fa-times" aria-hidden="true"></i>
           Clear
         </button> -->
+
+        <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="onDashboardClick(); showDashboard=!showDashboard">
+          <i class="fa fa-bar-chart" aria-hidden="true" style="margin-right:5px"></i>Dashboard
+        </button>
 
         <button class="btn-standard icon-text-only hover-green export-button" (mouseenter)="onExportButtonMouseEnter()" (mouseleave)="onExportButtonMouseLeave()" (click)="onExportClick()">
           <i class="fa fa-download button-icon"></i>
@@ -94,6 +103,7 @@
     </div>
     <!-- End Top Row -->
     
+
 
     <!-- Advanced Search Content -->
     <div class="adv-search-content">
@@ -139,8 +149,8 @@
                   <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
                   Project Owner
                 </div>
-                <div *ngIf="filterStringOw.value!=''" class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="ProjectOwnerEmails" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectOwners">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="ProjectOwnerEmails" (click)="onCheckAllClick($event)" disabled="filterStringOw.value==''" [(ngModel)]="checkAllProjectOwners">
                   <label class="custom-control-label" for="ProjectOwnerEmails"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                 </div>
               </div>
@@ -183,7 +193,7 @@
               </div>
               <div class="filter-collapse" id="parentProjects">
                 <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let parent of parents; let i = index">
-                  <input type="checkbox" class="custom-control-input" [checked]="checkAllParentProjects" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i" (click)="onParentCheckboxClick(parent.ProjectName)">
+                  <input type="checkbox" class="custom-control-input" [checked]="checkAllParentProjects" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i" (click)="onParentCheckboxClick($event, parent.ProjectID)">
                   <label class="custom-control-label" [attr.for]="'parentProject' + i" style="padding: 1px 0px 0px 10px;">{{ parent.ProjectName }}</label>
                 </div>
               </div>
@@ -253,7 +263,7 @@
                 </div>
                 <div class="filter-collapse" id="childProjects">
                   <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let child of children; let i = index">
-                    <input type="checkbox" class="custom-control-input" [checked]="checkAllChildProjects" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i" (click)="onChildCheckboxClick(child.ProjectName)">
+                    <input type="checkbox" class="custom-control-input" [checked]="checkAllChildProjects" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i" (click)="onChildCheckboxClick($event, child.ProjectID)">
                     <label class="custom-control-label" [attr.for]="'childProject' + i" style="padding: 1px 0px 0px 10px;">{{ child.ProjectName }}</label>
                   </div>
                 </div>

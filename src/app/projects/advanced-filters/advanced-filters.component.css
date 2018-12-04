@@ -19,7 +19,7 @@ div.page-cont {
 /* SEARCH BAR */
 
 div.projects-search-cont {
-  margin-bottom: 40px;
+  margin-bottom: 15px;
   min-width: 900px;
   width: 100%;
   white-space: nowrap;
@@ -76,6 +76,14 @@ i.projects-search-icon-close {
   right: 10px;
   font-size: 16px;
   cursor: pointer;
+}
+
+/* Filterbar toggle */
+button.filter-toggle {
+  font-size: small !important;
+  border: 1px solid lightgray !important;
+  border-radius: 0px !important;
+  margin-bottom: 5px;
 }
 
 /* Filter Badge */
@@ -251,6 +259,11 @@ i.projects-search-icon-search.projects-owner {
 
 .custom-checkbox .custom-control-label::before {
   border-radius: 0rem;
+}
+
+/* when checkbox is disabled  */
+.custom-control-input:disabled~.custom-control-label::before {
+  background-color: #c1c1c1;
 }
 
 /* FILTERS 2 */
