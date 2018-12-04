@@ -30,14 +30,14 @@
 
         <!-- Toggle Buttons -->
         <div class="btn-group btn-group-toggle" style="height: 32px" data-toggle="buttons">
+          <label class="btn btn-outline-secondary highchart-toggle active" id="all" (click)="onTopProjectsSelected($event)">
+            <input type="radio" name="options" id="option3" autocomplete="off"> All Projects
+          </label>
           <label class="btn btn-outline-secondary highchart-toggle" id="top10" (click)="onTopProjectsSelected($event)">
             <input type="radio" name="options" id="option1" autocomplete="off"> Top 10%
           </label>
           <label class="btn btn-outline-secondary highchart-toggle" id="top50" (click)="onTopProjectsSelected($event)">
-            <input type="radio" name="options" id="option2" autocomplete="off" > Top 50%
-          </label>
-          <label class="btn btn-outline-secondary highchart-toggle" id="all" (click)="onTopProjectsSelected($event)">
-            <input type="radio" name="options" id="option3" autocomplete="off"> Show All
+            <input type="radio" name="options" id="option2" autocomplete="off"> Top 50%
           </label>
         </div>
 

@@ -124,14 +124,15 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   buildChartOptions(period: string, title: string): any {
 
     let teamwideTotal = 0;
-    this.teamSummaryData.forEach( project => {
+    this.teamSummaryDataAll.forEach( project => {
       project.teamMembers.forEach( employee => {
+        project.totalFtes = 0;
         project.totalFtes += employee.fte;
         teamwideTotal += employee.fte;
       });
     });
     // convert each project's total FTEs to a percentage of the teamwide FTEs
-    this.teamSummaryData.forEach( project => {
+    this.teamSummaryDataAll.forEach( project => {
       project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
     });
 
@@ -142,7 +143,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     });
 
     // sort the projects by highest total team FTEs
-    this.teamSummaryData.sort( (a, b) => {
+    this.teamSummaryDataAll.sort( (a, b) => {
       return b.totalFtes - a.totalFtes;
     });
 
@@ -223,6 +224,8 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         }
       ]
     };
+
+    console.log('teamwidePercents', teamwidePercents)
     // return the chart options object
     return chartOptions;
 
@@ -343,6 +346,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       title = `${this.selectedManager.fullName}'s Team's Projects ` + toggleText;
     }
 
+    // console.log('this.teamSummaryData', this.teamSummaryData)
     this.renderColumnChart(title);
   }
 

@@ -11,7 +11,7 @@
       </div>
 
       <div class="modal-body team-select-modal-body">
-        <p>Select a manager from the dropdown to view that team's FTE allocation percentages.</p>
+        <p>Select a manager from the dropdown to view that team's FTE allocation by project.</p>
         <!-- <p>{{ nestedManagerData[0].fullName }}</p> -->
 
         <!-- 'dropdown' container to select employee from nested org structure -->
@@ -38,7 +38,7 @@
 
         <div class="custom-control custom-checkbox">
           <input type="checkbox" checked class="custom-control-input" id="checkAllTeams" (click)="onCheckAggregateAllTeams($event)" [(ngModel)]="checkAggregateAllTeams">
-          <label class="custom-control-label" for="checkAllTeams">Aggregate all teams</label>
+          <label class="custom-control-label" for="checkAllTeams">Aggregate FTE allocations for this org</label>
         </div>
 
       </div>
