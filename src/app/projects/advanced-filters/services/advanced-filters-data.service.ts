@@ -20,7 +20,7 @@ export class AdvancedFiltersDataService {
   }
 
   getProjectChildren(projectID: string): Promise<any> {
-    // const children = await that.apiDataAdvancedFilterService.getProjectChildren(projectID).toPromise();
+
     return this.apiDataAdvancedFilterService.getProjectChildren(projectID).toPromise();
 
   }

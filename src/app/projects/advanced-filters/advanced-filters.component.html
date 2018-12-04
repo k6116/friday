@@ -181,7 +181,7 @@
                   <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                 </div>
               </div>
-              <div class="filter-collapse" [class.show]="showParentChild" id="parentProjects">
+              <div class="filter-collapse" id="parentProjects">
                 <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let parent of parents; let i = index">
                   <input type="checkbox" class="custom-control-input" [checked]="checkAllParentProjects" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i" (click)="onParentCheckboxClick(parent.ProjectName)">
                   <label class="custom-control-label" [attr.for]="'parentProject' + i" style="padding: 1px 0px 0px 10px;">{{ parent.ProjectName }}</label>
@@ -251,7 +251,7 @@
                     <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                   </div>
                 </div>
-                <div class="filter-collapse" [class.show]="showParentChild" id="childProjects">
+                <div class="filter-collapse" id="childProjects">
                   <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let child of children; let i = index">
                     <input type="checkbox" class="custom-control-input" [checked]="checkAllChildProjects" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i" (click)="onChildCheckboxClick(child.ProjectName)">
                     <label class="custom-control-label" [attr.for]="'childProject' + i" style="padding: 1px 0px 0px 10px;">{{ child.ProjectName }}</label>

@@ -113,6 +113,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
+    // To-DO Chai: move all these call to the data service
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
     private apiDataOrgService: ApiDataOrgService,
     private authService: AuthService,

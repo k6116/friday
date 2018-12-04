@@ -122,7 +122,7 @@ export class AdvancedFiltersTypeaheadService {
       // console.log(selection);
 
       // that.advancedFiltersDataService.getProjectChildren(that, id);
-      this.onProjectClick(that, id);
+      this.onProjectSelect(that, id);
     });
 
   }
@@ -135,13 +135,16 @@ export class AdvancedFiltersTypeaheadService {
 
   }
 
-  async onProjectClick(that: any, projectID: string) {
+  async onProjectSelect(that: any, projectID: string) {
 
     // this.lastClickedProjectName = projectName;
     // console.log(this.lastClickedProjectName);
 
     that.children = await this.advancedFiltersDataService.getProjectChildren(projectID);
     that.parents = await this.advancedFiltersDataService.getProjectParents(projectID);
+
+    $('#childProjects').toggleClass('show');
+    $('#parentProjects').toggleClass('show');
 
     console.log('children', that.children);
     console.log('parents', that.parents);
