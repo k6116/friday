@@ -14,6 +14,7 @@ export class TeamFteSummaryTeamSelectModalComponent implements OnInit, OnDestroy
   @Input() nestedOrgData: any;
   @Output() close = new EventEmitter<boolean>();
   @Output() selectedManager = new EventEmitter<any>();
+  @Output() checkAllTeams = new EventEmitter<any>();
 
   // nestedOrgData2: any;
   // nestedOrgData: any;
@@ -31,6 +32,7 @@ export class TeamFteSummaryTeamSelectModalComponent implements OnInit, OnDestroy
 
   selectedEmployee: any;
 
+  checkAggregateAllTeams: boolean;
   // temp properties for testing
   // manager: any;
   // managerString: string;
@@ -54,6 +56,8 @@ export class TeamFteSummaryTeamSelectModalComponent implements OnInit, OnDestroy
 
     this.waitingForOrgData = false;
     // this.setInitialDropDownEmployee();
+    
+    this.checkAggregateAllTeams = false;
   }
 
   ngOnDestroy() {
@@ -78,6 +82,7 @@ export class TeamFteSummaryTeamSelectModalComponent implements OnInit, OnDestroy
   }
 
   onSelectClick() {
+    this.selectedEmployee.checkAllTeams = this.checkAggregateAllTeams;
     this.selectedManager.emit(this.selectedEmployee);
     // this.close.emit(true);
   }
@@ -263,4 +268,7 @@ export class TeamFteSummaryTeamSelectModalComponent implements OnInit, OnDestroy
     this.displayOrgDropDown = false;
   }
 
+  onCheckAggregateAllTeams(event: any) {
+    this.checkAggregateAllTeams = event.target.checked;
+  }
 }

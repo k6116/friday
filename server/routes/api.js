@@ -104,6 +104,7 @@ router.post('/updateProjectPermissionRequest/:userID', controllers.permission.up
 
 // REPORTS PROJECT CONTROLLER
 router.get('/report/getSubordinateFtes/:managerEmailAddress/:period', controllers.report.getSubordinateFtes);
+router.get('/report/getSubordinateDrillDownFtes/:managerEmailAddress/:period', controllers.report.getSubordinateDrillDownFtes);
 router.get('/report/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
 router.get('/report/getProjectFTEHistory/:projectID/:dateFrom/:dateTo', controllers.report.getProjectFTEHistory);
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
@@ -218,7 +219,8 @@ router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
 
 // REPORT CONTROLLER
 router.get('/report/reports-project-fte-rollup/show/getProjectFTERollupData/:projectID/:startDate/:endDate', controllers.report.getProjectFTERollupData);
-router.get('/report/getSubordinateProjectRoster/:period', controllers.report.getSubordinateProjectRoster);
+router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
+router.get('/report/getSubordinateDrillDownProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateDrillDownProjectRoster);
 
 // LOG CONTROLLER
 router.post('/log/writeToLog', controllers.log.writeToLog);

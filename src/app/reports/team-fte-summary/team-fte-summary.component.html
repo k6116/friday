@@ -1,7 +1,7 @@
 <!-- spinner -->
 <app-spinner *ngIf="chartIsLoading"></app-spinner>
 <!-- team select modal -->
-<app-team-fte-summary-team-select-modal *ngIf="showTeamSelectModal" [nestedOrgData]="nestedManagerData" (close)="onModalClose()" (selectedManager)="onModalClose($event)"></app-team-fte-summary-team-select-modal>
+<app-team-fte-summary-team-select-modal *ngIf="showTeamFteSummaryTeamSelectModal" [nestedOrgData]="nestedManagerData" (close)="onModalClose()" (selectedManager)="onModalClose($event)"></app-team-fte-summary-team-select-modal>
 
 <div class="container-fluid">
 
@@ -13,17 +13,20 @@
   <div class="row row-custom" [hidden]="chartIsLoading">
     <div class="col-sm">
 
-      <div *ngIf="displayEditTeamButton" class="edit-button-cont donut" (click)="onEditTeamClick('donutChart')">
-        <i class="fa fa-sitemap edit-icon" aria-hidden="true"></i>
-        Change Team
-      </div>
-
-      <!-- date-switcher div -->
       <div class="chart-date-switcher form-inline">
-        <label class="chart-date-switcher-label">Range:</label>
-        <select name="time-period-selector" class="form-control date-switcher-selector" (change)="getTeamFtePareto($event.target.value)">
+
+        <!-- change team div -->
+        <div *ngIf="displayEditTeamButton" class="edit-button-cont donut" (click)="onEditTeamClick('donutChart')">
+          <i class="fa fa-sitemap edit-icon" aria-hidden="true"></i>
+          Change Team
+        </div>
+        <span style="width: 10px"></span>
+        <!-- date-switcher div -->
+        <!-- <label class="chart-date-switcher-label">Range:</label> -->
+        <select name="time-period-selector" class="form-control date-switcher-selector" (change)="onDateRangeChange($event.target.value)">
           <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
         </select>
+
       </div>
       <!-- highcharts div -->
       <div id="columnChart"></div>

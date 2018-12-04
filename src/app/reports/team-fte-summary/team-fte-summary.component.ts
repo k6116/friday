@@ -19,14 +19,14 @@ require('highcharts/modules/pareto.js')(Highcharts);
 export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
   @ViewChild(TeamFteSummaryTeamSelectModalComponent)
-  private teamSelectModalComponent: TeamFteSummaryTeamSelectModalComponent;
+  private teamFteSummaryTeamSelectModalComponent: TeamFteSummaryTeamSelectModalComponent;
 
   chartIsLoading = true;  // display boolean for "Loading" spinner
   paretoChart: any; // chart obj
   paretoChartOptions: any;  // chart options
 
   displayEditTeamButton: boolean;
-  showTeamSelectModal: boolean;
+  showTeamFteSummaryTeamSelectModal: boolean;
   chartColumn: any;
   nestedManagerData: any = [];
 
@@ -34,6 +34,9 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   teamSummaryData: any; // for teamwide FTE summary data
   selectedProject: string;
   selectedProjectRoster: any;
+  selectedManager: any;
+  selectedManagerEmailAddress: any;
+  selectedPeriod: string;
 
   timePeriods = [
     {period: 'current-quarter', text: 'Current Quarter'},
@@ -49,7 +52,8 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
 
-    const period = 'current-quarter';
+    this.selectedPeriod = 'current-quarter';
+    this.selectedManagerEmailAddress = this.authService.loggedInUser.managerEmailAddress;
 
     if (this.authService.loggedInUser.isManager || this.authService.loggedInUser.roleName === 'Admin') {
       this.displayEditTeamButton = true;
@@ -63,9 +67,9 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.nestedManagerData.push(nestedManagerData);
 
     // get nested project pareto with list of team members and their FTEs underneath each project
-    this.teamSummaryData = await this.apiDataReportService.getSubordinateProjectRoster(period).toPromise();
-  console.log('this.teamSummaryData', this.teamSummaryData)
-    this.renderColumnChart(this.teamSummaryData, period);
+    this.teamSummaryData = await this.apiDataReportService
+      .getSubordinateProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
+    this.renderColumnChart(`My Team's Projects`);
   }
 
   ngOnDestroy() {
@@ -75,8 +79,8 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     }
   }
 
-  renderColumnChart(teamSummaryData: any, period: string, selectedManager?: any) {
-    const chartOptions = this.buildChartOptions(teamSummaryData, period);
+  renderColumnChart(title: string, selectedManager?: any) {
+    const chartOptions = this.buildChartOptions(this.selectedPeriod, title);
     this.chartColumn = Highcharts.chart('columnChart', chartOptions);
     setTimeout(() => {
       this.chartColumn.reflow();
@@ -84,19 +88,41 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.chartIsLoading = false;
   }
 
+  async onDateRangeChange(period: string) {
+    let title;
+    this.selectedPeriod = period;
+    if (this.selectedManager.checkAllTeams === true) {
+      this.teamSummaryData = await this.apiDataReportService
+        .getSubordinateDrillDownProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
+    } else {
+      this.teamSummaryData = await this.apiDataReportService
+        .getSubordinateProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
+    }
+
+    if (this.selectedManagerEmailAddress === this.authService.loggedInUser.managerEmailAddress) {
+      title = `My Team's Projects`;
+    } else if (this.selectedManager.checkAllTeams === false) {
+      title = `${this.selectedManager.fullName}'s Team's Projects`;
+    } else if (this.selectedManager.checkAllTeams === true) {
+      title = `${this.selectedManager.fullName}'s Aggregated Team's Projects`;
+    }
+
+    this.renderColumnChart(title);
+  }
+
   // take in the fte data and return the chart options for the stacked column chart
   // for the team ftes
-  buildChartOptions(teamSummaryData: any, period: string): any {
+  buildChartOptions(period: string, title: string): any {
 
     let teamwideTotal = 0;
-    teamSummaryData.forEach( project => {
+    this.teamSummaryData.forEach( project => {
       project.teamMembers.forEach( employee => {
         project.totalFtes += employee.fte;
         teamwideTotal += employee.fte;
       });
     });
     // convert each project's total FTEs to a percentage of the teamwide FTEs
-    teamSummaryData.forEach( project => {
+    this.teamSummaryData.forEach( project => {
       project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
     });
 
@@ -107,7 +133,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     });
 
     // sort the projects by highest total team FTEs
-    teamSummaryData.sort( (a, b) => {
+    this.teamSummaryData.sort( (a, b) => {
       return b.totalFtes - a.totalFtes;
     });
 
@@ -115,7 +141,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     const projectNames = [];
     const projectFTEs = [];
     const teamwidePercents = [];
-    teamSummaryData.forEach( project => {
+    this.teamSummaryData.forEach( project => {
       projectFTEs.push({
         name: project.projectName,
         projectID: project.projectID,
@@ -135,7 +161,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         height: 500
       },
       title: {
-        text: `My Team's Projects`
+        text: title
       },
       subtitle: {
         text: `Time Period: ${timePeriod.text}`
@@ -171,7 +197,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
               click: function(e) {  // function if user clicks a point to display team members on selected project
                 const p = e.point;
                 this.displaySelectedProjectRoster = false;
-                this.showSubordinateTeamRoster(teamSummaryData, p.projectID);
+                this.showSubordinateTeamRoster(p.projectID);
               }.bind(this)
             }
           }
@@ -193,8 +219,8 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
     }
 
-    showSubordinateTeamRoster(teamSummaryData: any, projectID: number) {
-      teamSummaryData.forEach( project => {
+    showSubordinateTeamRoster(projectID: number) {
+      this.teamSummaryData.forEach( project => {
         // find the project that was clicked and store into selectedProject vars for display
         if (project.projectID === projectID) {
           this.selectedProject = project.projectName;
@@ -208,19 +234,19 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
     // console.log(`edit team button clicked for chart: ${chart}`);
 
-    this.showTeamSelectModal = true;
+    this.showTeamFteSummaryTeamSelectModal = true;
 
     // display the modal
     setTimeout(() => {
-      $('#teamSelectModal').modal({
+      $('#teamFteSummaryTeamSelectModal').modal({
         backdrop: true,
         keyboard: true
       });
     }, 0);
 
     setTimeout(() => {
-      this.teamSelectModalComponent.testViewChild();
-      this.teamSelectModalComponent.setInitialDropDownEmployee(this.nestedManagerData[0]);
+      this.teamFteSummaryTeamSelectModalComponent.testViewChild();
+      this.teamFteSummaryTeamSelectModalComponent.setInitialDropDownEmployee(this.nestedManagerData[0]);
     }, 0);
 
   }
@@ -228,46 +254,52 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   onModalClose(selectedManager?: any) {
 
     // console.log('modal close event fired');
-    $('#teamSelectModal').modal('hide');
+    $('#teamFteSummaryTeamSelectModal').modal('hide');
     setTimeout(() => {
-      $('#teamSelectModal').modal('dispose');
+      $('#teamFteSummaryTeamSelectModal').modal('dispose');
     }, 500);
 
-    // console.log('selected manager:');
-    // console.log(selectedManager);
+    // console.log('selected manager:', selectedManager);
 
-    // this.updateColumnChart(selectedManager);
+    this.updateColumnChart(selectedManager);
 
   }
 
-  // async updateColumnChart(selectedManager: any) {
+  async updateColumnChart(selectedManager: any) {
 
-  //   // if the selected manager is the same that is currently displayed, stop here (return early)
-  //   if (selectedManager.emailAddress === this.selectedManagerForStackedColumnChart) {
-  //     // console.log('update stacked aborted, same manager/team selected');
-  //     return;
-  //   }
+    // if the selected manager is the same that is currently displayed, stop here (return early)
+    if (selectedManager.emailAddress === this.selectedManagerEmailAddress
+        && selectedManager.checkAllTeams === this.selectedManager.checkAllTeams) {
+      // console.log('update stacked aborted, same manager/team selected');
+      return;
+    }
 
-  //   const fteData = await this.getFTEData(selectedManager)
-  //   .catch(err => {
-  //     console.error(err);
-  //   });
+    if (selectedManager.checkAllTeams === true) {
+      this.teamSummaryData = await this.apiDataReportService
+        .getSubordinateDrillDownProjectRoster(selectedManager.emailAddress, this.selectedPeriod).toPromise();
+    } else {
+      this.teamSummaryData = await this.apiDataReportService
+        .getSubordinateProjectRoster(selectedManager.emailAddress, this.selectedPeriod).toPromise();
+    }
 
-  //   // console.log('response from get fte data for selected manager:');
-  //   // console.log(fteData);
+    // console.log('selectedManager', selectedManager);
+    // console.log('this.teamSummaryData', this.teamSummaryData);
 
-  //   // set the chart title
-  //   let title;
-  //   if (selectedManager.emailAddress === this.authService.loggedInUser.managerEmailAddress) {
-  //     title = `Your Team's FTEs by Project`;
-  //   } else {
-  //     title = `${selectedManager.fullName}'s Team's FTEs by Project`;
-  //   }
+    // set the chart title
+    let title;
+    if (selectedManager.emailAddress === this.authService.loggedInUser.managerEmailAddress) {
+      title = `My Team's Projects`;
+    } else if (selectedManager.checkAllTeams === true) {
+      title = `${selectedManager.fullName}'s Aggregated Team's Projects`;
+    } else if (selectedManager.checkAllTeams === false) {
+      title = `${selectedManager.fullName}'s Team's Projects`;
+    }
 
-  //   this.renderColumnChart(period, selectedManager);
+    this.renderColumnChart(title);
 
-  //   this.selectedManagerForStackedColumnChart = selectedManager.emailAddress;
+    this.selectedManager = selectedManager;
+    this.selectedManagerEmailAddress = selectedManager.emailAddress;
 
-  // }
+  }
 
 }
