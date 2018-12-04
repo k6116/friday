@@ -295,7 +295,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.teamSummaryDataAll = this.teamSummaryData;
 
     // console.log('selectedManager', selectedManager);
-    console.log('this.teamSummaryData', this.teamSummaryData);
+    // console.log('this.teamSummaryData', this.teamSummaryData);
 
     // set the chart title
     let title;
@@ -342,7 +342,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     } else if (this.selectedManager.checkAllTeams === false) {
       title = `${this.selectedManager.fullName}'s Team's Projects ` + toggleText;
     }
-console.log('this.teamSummaryData', this.teamSummaryData)
+
     this.renderColumnChart(title);
   }
 
