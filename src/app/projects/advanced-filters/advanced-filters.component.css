@@ -25,8 +25,23 @@ div.projects-search-cont {
   white-space: nowrap;
 }
 
+input.projects-filter-input {
+  width: 300px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
 .tt-menu {
-  width: 223px;
+  width: 223px !important;
+}
+
+/* force typeahead to lose focus by focusing on hidden input */
+input.hidden-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  z-index: -1;
 }
 
 div.projects-search-label {

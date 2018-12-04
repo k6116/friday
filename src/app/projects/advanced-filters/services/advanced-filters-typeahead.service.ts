@@ -93,10 +93,9 @@ export class AdvancedFiltersTypeaheadService {
     },
     {
       name: 'projects',
-      displayKey: 'ProjectName',
+      displayKey: 'ProjectNameAndType',
       limit: 50,
       source: function(query, process) {
-        console.log('query:', query);
         // NOTE: query will be whatever text is typed into the input element
         // if the filterString is undefined, null, or an empty string, then override the query to avoid ?
         if (!that.filterString) {
@@ -110,7 +109,15 @@ export class AdvancedFiltersTypeaheadService {
     })
     .bind('typeahead:selected', (event, selection) => {
       // set the focus on a hidden element behind the typeahead to force the typeahead input to lose focus
-      // that.hiddenInput.nativeElement.focus();
+      that.hiddenInput.nativeElement.focus();
+
+      // grab projectID and save in filterObject for db call
+      const id = selection.ProjectID;
+      that.filterObject.ProjectID = String(id);
+
+      // Make db call
+      that.advancedFilter(that.filterObject);
+
       // clear/reset existing chart and table data
       // that2.projectFteRollupChartService.clearChartData(that);
       // render the chart, or blank chart if there is no data to display

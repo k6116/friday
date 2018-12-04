@@ -3,12 +3,12 @@ import { ToolsService } from '../../_shared/services/tools.service';
 import { ApiDataAdvancedFilterService, ApiDataOrgService } from '../../_shared/services/api-data/_index';
 import { Subscription } from 'rxjs/Subscription';
 import { ExcelExportService } from '../../_shared/services/excel-export.service';
-import { AdvancedFiltersTypeaheadService } from './services/advanced-filters-typeahead.service';
 import { AuthService } from '../../_shared/services/auth.service';
 import { CacheService } from '../../_shared/services/cache.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
-
+import { AdvancedFiltersTypeaheadService } from './services/advanced-filters-typeahead.service';
+import { AdvancedFiltersDataService } from './services/advanced-filters-data.service';
 
 // import { start } from 'repl';
 const moment = require('moment');
@@ -30,13 +30,14 @@ export interface NewPLC {
   selector: 'app-advanced-filters',
   templateUrl: './advanced-filters.component.html',
   styleUrls: ['./advanced-filters.component.css', '../../_shared/styles/common.css'],
-  providers: [AdvancedFiltersTypeaheadService, FilterPipe]
+  providers: [AdvancedFiltersDataService, AdvancedFiltersTypeaheadService, FilterPipe]
 })
 
 export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   @ViewChild('filterStringVC') filterStringVC: ElementRef;
   @ViewChild('filterStringOw') filterStringOw: ElementRef;
+  @ViewChild('hiddenInput') hiddenInput: ElementRef;
 
   @Output() selectedBom = new EventEmitter<any>();
 
@@ -119,6 +120,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     private excelExportService: ExcelExportService,
     private toolsService: ToolsService,
     private advancedFiltersTypeaheadService: AdvancedFiltersTypeaheadService,
+    private advancedFiltersDataService: AdvancedFiltersDataService
   ) {
 
     // TO-DO PAUL: REMOVE TEMP CODE
@@ -184,8 +186,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     await this.getAllProjects();
 
     this.initTypeahead();
-
-    // const typeahead = this.advancedFiltersTypeaheadService.initProjectTypeahead(this, this.advancedFilteredResults);
 
     // hide the spinner
     this.showSpinner = false;
@@ -287,12 +287,17 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  initTypeahead() {
+  async initTypeahead() {
+
+    const initProjectList = await this.advancedFiltersDataService.getTypeaheadData()
+    .catch(err => {
+      // console.log(err);
+    });
 
     // Project Name Input
     // Need timeout because DOM only shows after all data has been retrieved and spinner is hidden
     setTimeout(() => {
-      const typeahead = this.advancedFiltersTypeaheadService.initProjectTypeahead(this, this.advancedFilteredResults);
+      const typeahead = this.advancedFiltersTypeaheadService.initProjectTypeahead(this, initProjectList);
     }, 0);
 
     // Manager Name Input
@@ -1029,6 +1034,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // clear the filter string
     this.filterString = undefined;
+
+    $('.projects-filter-input').typeahead('val', '');
 
     // reset the focus on the filter input
     this.filterStringVC.nativeElement.focus();
