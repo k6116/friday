@@ -1,9 +1,27 @@
 <div class="row">
   <!-- first col is list-box of items in the BOM-->
   <div class="col-sm-3">
-    <div class="list-group">
+    <table class="table table-sm table-hover">
+      <thead>
+        <tr>
+          <th>Level:</th>
+          <th>Name:</th>
+          <th>Description:</th>
+          <th>Quotes:</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of bom" (click)="showQuotes(item)" [ngClass]="selectedPart.ChildID === item.ChildID ? 'table-active' : ''">
+          <td>{{item.Level}}</td>
+          <td>{{item.ChildIndentedName}}</td>
+          <td>{{item.ChildDescription}}</td>
+          <td>{{item.ChildQuotes}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <div class="list-group">
       <button class="list-group-item list-group-item-action" *ngFor="let item of bom" (click)="showQuotes(item)" [ngClass]="selectedPart.ChildID === item.ChildID ? 'active' : ''">{{item.ChildIndentedName}}</button>
-    </div>
+    </div> -->
   </div>
 
   <!-- second col is quote selector and editor -->

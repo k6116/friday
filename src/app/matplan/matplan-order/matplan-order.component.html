@@ -11,7 +11,7 @@
           <tr>
             <th class="qty">Level:</th>
             <th>Name:</th>
-            <th>Description:</th>
+            <!-- <th>Description:</th> -->
             <th>Supplier:</th>
             <th class="short-text">MFG PN:</th>
             <th class="qty">MOQ:</th>
@@ -23,7 +23,7 @@
             <th class="qty">Qty Ordered:</th>
             <th class="money">Total Cost:</th>
             <th>Purchase Method:</th>
-            <th class="med-text">PO:</th>
+            <th class="med-text">Order Number:</th>
             <th class="date">Order Date:</th>
             <th class="date">Due Date:</th>
             <th class="date">Receive Date:</th>
@@ -36,7 +36,7 @@
             <ng-container [formGroupName]="i">
               <td>{{order.get('level').value}}</td>
               <td>{{order.get('partName').value}}</td>
-              <td>{{order.get('partDescription').value}}</td>
+              <!-- <td>{{order.get('partDescription').value}}</td> -->
               <td><button class="btn" [ngClass]="order.get('supplierName').value ? 'btn-outline-success' : 'btn-outline-secondary'" (click)="editSupplier(order)">{{order.get('supplierName').value ? order.get('supplierName').value : 'Choose'}}</button></td>
               <td>{{order.get('mfgPartNumber').value}}</td>
               <td>{{order.get('minOrderQty').value}}</td>              
@@ -53,9 +53,9 @@
                 </select>
               </td>
               <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="purchaseOrderNumber"></td>
-              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="orderDate"></td>
-              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="dueDate"></td>
-              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="dateReceived"></td>
+              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="date" formControlName="orderDate"></td>
+              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="date" formControlName="dueDate"></td>
+              <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="date" formControlName="dateReceived"></td>
               <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="qtyReceived"></td>
               <td><input class="form-control" [attr.disabled]="order.get('supplierID').value === null ? 'disabled' : null" type="text" formControlName="deliverTo"></td>
             </ng-container>

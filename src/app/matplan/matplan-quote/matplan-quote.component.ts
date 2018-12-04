@@ -41,9 +41,7 @@ export class MatplanQuoteComponent implements OnInit {
 
   ngOnInit() {
     // get BOM
-    this.apiDataMatplanService.showMatplanBom(this.projectID).subscribe( res => {
-      this.bom = res;
-    });
+    this.getMatplanBom(this.projectID);
 
     // get supplier list for typeahead
     this.getSupplierList();
@@ -54,6 +52,12 @@ export class MatplanQuoteComponent implements OnInit {
 
       // also clear out typeahead query value to prevent "automatic population" next time it's invoked
       $('.supplier-typeahead').typeahead('val', '');
+    });
+  }
+
+  getMatplanBom(projectID: number) {
+    this.apiDataMatplanService.showMatplanBom(projectID).subscribe( res => {
+      this.bom = res;
     });
   }
 
@@ -202,6 +206,7 @@ export class MatplanQuoteComponent implements OnInit {
       // if successful, refresh the quote screen and raise toast
       this.showQuotes(this.selectedPart);
       this.getSupplierList();
+      this.getMatplanBom(this.projectID); // refresh the BOM list
       this.cacheService.raiseToast('success', `${res.message}`);
     },
     err => {
@@ -251,6 +256,7 @@ export class MatplanQuoteComponent implements OnInit {
           // if successful, refresh the quote screen and raise toast
           this.showQuotes(this.selectedPart);
           this.cacheService.raiseToast('success', `${res2.message}`);
+          this.getMatplanBom(this.projectID); // refresh the BOM list
         },
         err => {
           this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);

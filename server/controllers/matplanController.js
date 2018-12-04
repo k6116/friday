@@ -132,6 +132,7 @@ function showMatplanBom(req, res) {
   sequelize.query(`EXECUTE dbo.billsDrillDownDetails :projectID, 'Project'`,{replacements: {projectID: projectID}, type: sequelize.QueryTypes.SELECT}
   )
   .then(bom => {
+    // add some indention dashes to make the BOM easier to read
     bom.forEach( item => {
       if (item.Level > 1) {
         const indentedName = new Array(item.Level - 1).concat(item.ChildName);

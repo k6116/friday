@@ -54,7 +54,7 @@ export class MatplanOrderComponent implements OnInit {
     // grab pointer to the parent formarray
     const orderFormArray = <FormArray>this.orderForm.get('orderFormArray');
 
-    // loop through all the records from the MatOrder table to fill in the form
+    // loop through all the MatOrder records to fill in the form
     for (let i = 0; i < orderList.length; i++) {
       const newForm = this.fb.group({
         materialOrderID: orderList[i].materialOrderID,
@@ -109,10 +109,10 @@ export class MatplanOrderComponent implements OnInit {
       matplanID: this.matplanID
     };
 
-    console.log(toBeSaved);
-
+    // send to db
     this.apiDataMatplanService.updateMaterialOrder(toBeSaved).subscribe( res => {
       this.cacheService.raiseToast('success', `${res.message}`);
+      this.ngOnInit();  // refresh the form to get new UIDs
     },
     err => {
       this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
