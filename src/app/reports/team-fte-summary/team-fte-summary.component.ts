@@ -111,7 +111,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     if (this.selectedManagerEmailAddress === this.authService.loggedInUser.managerEmailAddress) {
       title = `My Team's Projects`;
     } else if (typeof this.selectedManager !== 'undefined' && this.selectedManager.checkAllTeams === true) {
-      title = `${this.selectedManager.fullName}'s Aggregated Team's Projects`;
+      title = `${this.selectedManager.fullName}'s Projects (Aggregated)`;
     } else if (this.selectedManager.checkAllTeams === false) {
       title = `${this.selectedManager.fullName}'s Team's Projects`;
     }
@@ -225,7 +225,6 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       ]
     };
 
-    console.log('teamwidePercents', teamwidePercents)
     // return the chart options object
     return chartOptions;
 
@@ -305,7 +304,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     if (selectedManager.emailAddress === this.authService.loggedInUser.managerEmailAddress) {
       title = `My Team's Projects`;
     } else if (selectedManager.checkAllTeams === true) {
-      title = `${selectedManager.fullName}'s Aggregated Team's Projects`;
+      title = `${selectedManager.fullName}'s Projects (Aggregated)`;
     } else if (selectedManager.checkAllTeams === false) {
       title = `${selectedManager.fullName}'s Team's Projects`;
     }
@@ -341,7 +340,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     if (this.selectedManagerEmailAddress === this.authService.loggedInUser.managerEmailAddress) {
       title = `My Team's Projects ` + toggleText;
     } else if (typeof this.selectedManager !== 'undefined' && this.selectedManager.checkAllTeams === true) {
-      title = `${this.selectedManager.fullName}'s Aggregated Team's Projects ` + toggleText;
+      title = `${this.selectedManager.fullName}'s Projects (Aggregated) ` + toggleText;
     } else if (this.selectedManager.checkAllTeams === false) {
       title = `${this.selectedManager.fullName}'s Team's Projects ` + toggleText;
     }
