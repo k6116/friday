@@ -35,6 +35,7 @@ router.get('/fte/checkTeamJobTitle/:emailAddress', controllers.fte.checkTeamJobT
 router.get('/fte/launchPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.launchPlan);
 router.get('/fte/checkTeamFTEAdminPermission/:userID/', controllers.fte.checkTeamFTEAdminPermission);
 router.get('/fte/compareFTEToPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.compareFTEToPlan);
+router.get('/fte/indexProjectJobTitleFTE/:projectIDs/:startDate/:endDate', controllers.fte.indexProjectJobTitleFTE);
 
 // TEMP JOB TITLE API FOR MANAGER EDIT
 router.get('/indexEmployeesJobTitles/:emailAddress', controllers.jobTitle.indexEmployeesJobTitles);
@@ -83,6 +84,9 @@ router.get('/org/subordinatesFlat/:emailAddress', controllers.org.getSubordinate
 router.get('/org/:emailAddress', controllers.org.show);
 router.get('/org/getTeamList/:emailAddress', controllers.org.getTeamList);
 router.get('/org/getEmployeeList/:emailAddress', controllers.org.getEmployeeList);
+router.get('/org/getManagementOrgStructure/:emailAddress', controllers.org.getManagementOrgStructure);
+router.get('/org/getOrgStructureDrillUp/:emailAddress', controllers.org.getOrgStructureDrillUp);
+router.get('/org/getOrgStructureDrillDown/:emailAddress', controllers.org.getOrgStructureDrillDown);
 
 // EMAIL CONTROLLER
 router.post('/sendFTEReminder', controllers.email.sendFTEReminder);
@@ -101,7 +105,7 @@ router.post('/updateProjectPermissionRequest/:userID', controllers.permission.up
 // REPORTS PROJECT CONTROLLER
 router.get('/report/getSubordinateFtes/:managerEmailAddress/:period', controllers.report.getSubordinateFtes);
 router.get('/report/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
-router.get('/report/getProjectFTEHistory/:projectID', controllers.report.getProjectFTEHistory);
+router.get('/report/getProjectFTEHistory/:projectID/:dateFrom/:dateTo', controllers.report.getProjectFTEHistory);
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
 router.get('/getQuarterlyEmployeeFTETotals/:employeeID/:fiscalQuarter/:fiscalYear', controllers.report.getQuarterlyEmployeeFTETotals);
 
@@ -123,6 +127,14 @@ router.post('/updateSchedule/:userID', controllers.schedules.updateSchedule);
 router.post('/destroySchedule/:userID', controllers.schedules.destroySchedule);
 router.post('/insertScheduleDetailBulk/:userID', controllers.schedules.insertScheduleDetailBulk);
 router.post('/updateScheduleDetailBulk/:userID/:scheduleID', controllers.schedules.updateScheduleDetailBulk);
+router.get('/getPLCList', controllers.schedules.getPLCList);
+
+// ADVANCED FILTER CONTROLLER
+router.get('/indexProjectsAdvancedFilter', controllers.advancedFilter.indexProjectsAdvancedFilter);
+router.post('/indexAdvancedFilteredResults/', controllers.advancedFilter.indexAdvancedFilteredResults);
+router.get('/indexProjectChildren/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectChildren);
+router.get('/indexProjectParents/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectParents);
+router.get('/indexProjectJobTitleAdvancedFilter/:projectIDs/:fromDate/:toDate', controllers.advancedFilter.indexProjectJobTitleAdvancedFilter);
 
 // MATPLAN CONTROLLER
 router.get('/matplan/matplan/show/:matplanID', controllers.matplan.show);
@@ -168,6 +180,7 @@ router.get('/auth/verifyRoutePermissions', controllers.auth.verifyRoutePermissio
 
 // DASHBOARD CONTROLLER
 router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate', controllers.dashboard.getFTEData);
+router.get('/dashboard/dashboard/show/getFTEData/:startDate/:endDate/:emailAddress', controllers.dashboard.getFTEData);
 router.get('/dashboard/checkFirstLogin', controllers.dashboard.checkFirstLogin);
 router.get('/dashboard/checkJobTitle', controllers.dashboard.checkJobTitle);
 router.get('/dashboard/checkProjectRequests', controllers.dashboard.checkProjectRequests);
@@ -216,6 +229,8 @@ router.get('/report/getSubordinateProjectRoster/:period', controllers.report.get
 // LOG CONTROLLER
 router.post('/log/writeToLog', controllers.log.writeToLog);
 
+// ORG CONTROLLER
+router.get('/org/getManagementOrgStructure/:emailAddress', controllers.org.getManagementOrgStructure);
 
 
 // middleware to protect permissions protected routes

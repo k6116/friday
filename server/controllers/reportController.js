@@ -166,6 +166,18 @@ function getMyFteSummary(req, res) {
 function getProjectFTEHistory(req, res) {
 
   const projectID = req.params.projectID;
+  const dateFrom = req.params.dateFrom;
+  const dateTo = req.params.dateTo;
+  let sqlWhereDateFrom = '';
+  let sqlWhereDateTo = '';
+
+  // to account for the advanced search filteroption convention, need to handle null strings
+  if (dateFrom !== 'NULL') {
+    sqlWhereDateFrom = `AND PE.FiscalDate >= '${dateFrom}'`
+  }
+  if (dateTo !== 'NULL') {
+    sqlWhereDateTo = `AND PE.FiscalDate <  '${dateTo}'`
+  }
 
   const sql = `
     SELECT
@@ -177,6 +189,8 @@ function getProjectFTEHistory(req, res) {
       LEFT JOIN projects.ProjectTypes PT ON P.ProjectTypeID = PT.ProjectTypeID
     WHERE
       P.ProjectID = '${projectID}'
+      ${sqlWhereDateFrom}
+      ${sqlWhereDateTo}
     GROUP BY
       P.ProjectName, PT.ProjectTypeName, PE.FiscalDate
     `

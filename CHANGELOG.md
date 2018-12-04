@@ -1,3 +1,89 @@
+<a name="1.24.0"></a>
+# [1.24.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.23.2...v1.24.0) (2018-11-30)
+
+
+### Features
+
+* **Advanced Dashboard:** Added error handling for different type of datasets ([e126c76](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/e126c76))
+* **Advanced Search:** Add permission protection in side nav ([9e4b634](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/9e4b634))
+* **advanced-dashboard:** added stacked bars in the Schedules chart ([a5b5e19](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a5b5e19))
+* **advanced-dashboard:** massive drilldown for priority > projects > jobtitles vs FTE ([4061edf](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/4061edf))
+* **Advanced-Dashboard:** added Top FTE Projects charts ([34c902b](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/34c902b))
+
+
+
+<a name="1.23.2"></a>
+## [1.23.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.23.1...v1.23.2) (2018-11-28)
+
+
+### Bug Fixes
+
+* **team-FTE:** projects-visible flag was not updating properly ([dda5b3f](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/dda5b3f))
+
+
+
+<a name="1.23.1"></a>
+## [1.23.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.23.0...v1.23.1) (2018-11-27)
+
+
+### Bug Fixes
+
+* **advanced-filter:** Hide FTE Go button for now ([1c6ce19](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/1c6ce19))
+* **advanced-filters:** fixed PLC inputs ([b0231dc](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/b0231dc))
+* **profile-modal:** Disable first option in dropdown ([7679169](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/7679169))
+
+
+
+<a name="1.23.0"></a>
+# [1.23.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.22.0...v1.23.0) (2018-11-21)
+
+
+### Features
+
+* add change team feature to dashboard for managers and admins ([36c9efe](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/36c9efe))
+
+
+
+<a name="1.22.0"></a>
+# [1.22.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.21.0...v1.22.0) (2018-11-20)
+
+
+### Bug Fixes
+
+* **advanced-filter:** css for microsoft edge ([6ddb908](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/6ddb908))
+
+
+### Features
+
+* **advanced filters:** Add click All for project owners ([e28b0f2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/e28b0f2))
+* **advanced-filter:** add plc schedules and fte allocation ([c79ede1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c79ede1))
+* **advanced-filter:** Add project count ([dfc0295](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/dfc0295))
+* **advanced-filters:** add filter badges ([c6689d3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/c6689d3))
+* **advanced-filters:** add fte date range toggles ([0aaa543](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/0aaa543))
+* **advanced-filters:** completed PLC schedules ([08adcf4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/08adcf4))
+* **complete filter badge functionality:** badge with applied filter appears on top and can be used ([7abf88d](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/7abf88d))
+
+
+
+<a name="1.21.0"></a>
+# [1.21.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.20.2...v1.21.0) (2018-11-15)
+
+
+### Bug Fixes
+
+* **tools-service:** updated the icon mapping for "individual" project types ([359a5d5](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/359a5d5))
+
+
+### Features
+
+* **projects > my-projects:** Project list is now based on LastUpdatedBy instead of CreatedBy ([aec4505](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/aec4505))
+* **projects-modal:** Added a "Help" button that gives more info around cards, types, owners ([71a04b3](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/71a04b3))
+* **projects-modal:** added project owner label to project cards ([a4b5bb4](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a4b5bb4))
+* **projects-modal:** Updated default project permissions by broadening permissions to user's  manag ([d1475ae](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/d1475ae))
+* **search and display projects:** added JarvisID to project search and display pages ([0acbe66](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/0acbe66))
+
+
+
 <a name="1.20.2"></a>
 ## [1.20.2](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.20.1...v1.20.2) (2018-11-14)
 

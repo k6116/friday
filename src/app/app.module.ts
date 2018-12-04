@@ -30,7 +30,7 @@ import { ProjectsFilterPipe } from './_shared/pipes/projects-filter.pipe';
 import { BomService, CacheService, ClickTrackingService, CookiesService, LoggingService,
   ToolsService, UserResolverService, WebsocketService, RoutingHistoryService, ExcelExportService } from './_shared/services/_index';
 import { AuthService } from './_shared/services/auth.service';
-import { ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
+import { ApiDataAdvancedFilterService, ApiDataAuthService, ApiDataClickTrackingService, ApiDataEmailService, ApiDataEmployeeService,
   ApiDataFteService, ApiDataJobTitleService, ApiDataLogService, ApiDataMetaDataService, ApiDataOrgService,
   ApiDataPermissionService, ApiDataProjectService, ApiDataReportService, ApiDataDashboardService, ApiDataSchedulesService,
   ApiDataPartService, ApiDataAnalyticsService, ApiDataBomService, ApiDataMatplanService} from './_shared/services/api-data/_index';
@@ -105,7 +105,11 @@ import { MatplanQuoteComponent } from './matplan/matplan-quote/matplan-quote.com
 import { MatplanOrderComponent } from './matplan/matplan-order/matplan-order.component';
 import { OrgViewerComponent } from './reports/org/org-viewer/org-viewer.component';
 import { OrgDrawD3Component } from './reports/org/org-draw-d3/org-draw-d3.component';
+import { AdvancedDashboardComponent } from './projects/advanced-dashboard/advanced-dashboard.component';
+import { AdvancedFiltersComponent } from './projects/advanced-filters/advanced-filters.component';
 import { SpinnerComponent } from './_shared/components/spinner/spinner.component';
+import { TeamSelectModalComponent } from './dashboard/modal/team-select-modal/team-select-modal.component';
+import { TeamSelectDropdownComponent } from './dashboard/modal/team-select-dropdown/team-select-dropdown.component';
 
 
 @NgModule({
@@ -174,6 +178,10 @@ import { SpinnerComponent } from './_shared/components/spinner/spinner.component
     OrgViewerComponent,
     OrgDrawD3Component,
     TransferProjectsComponent,
+    TeamSelectModalComponent,
+    TeamSelectDropdownComponent,
+    AdvancedFiltersComponent,
+    AdvancedDashboardComponent,
     SpinnerComponent
   ],
   imports: [
@@ -195,6 +203,7 @@ import { SpinnerComponent } from './_shared/components/spinner/spinner.component
     MultiselectDropdownModule
   ],
   providers: [
+    ApiDataAdvancedFilterService,
     ApiDataAuthService,
     ApiDataClickTrackingService,
     ApiDataEmailService,

@@ -239,11 +239,11 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log(this.FTEFormGroup);
     // console.log('this.FTEFormGroup.value.FTEFormArray', this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
-    // console.log('teamFTE', this.teamFTEs);
+    console.log('teamFTE', this.teamFTEs);
     // console.log('teamFTEFlat', this.teamFTEsFlat);
-    // console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
-    // console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
-    // console.log('this.allProjects', this.allProjects);
+    console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
+    console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
+    console.log('this.allProjects', this.allProjects);
     // console.log('this.projects', this.projects);
     // console.log('this.teamOrgStructure', this.teamOrgStructure);
     // console.log('this.filterEmployees', this.filterEmployees)
@@ -251,7 +251,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // console.log('this.fteMonthsChart', this.fteMonthsChart)
     // console.log('this.fteChartData', this.fteChartData)
     // console.log('this.employeeTotals', this.employeeTotals)
-    // console.log('this.projectVisible', this.projectVisible)
+    console.log('this.projectVisible', this.projectVisible)
     // console.log('this.filterProjects', this.filterProjects)
     // console.log('this.filterProjectsModel', this.filterProjectsModel)
     // console.log('this.filterProjectsOptions', this.filterProjectsOptions)
@@ -407,7 +407,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     } else {
       this.cacheService.raiseToast('error', `Failed to add Project ${selectedProject.ProjectName}.  It already exists in your FTE table`);
     }
-
   }
 
   onModalCancelClick() {
@@ -593,6 +592,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
       .subscribe(
         res => {
           this.cacheService.raiseToast('success', res.message);
+          this.projectVisible = [];
           Promise.all([
             // rebuild the FTE entry page
             this.getPlan(this.loginAsEmail, this.currentPlan),

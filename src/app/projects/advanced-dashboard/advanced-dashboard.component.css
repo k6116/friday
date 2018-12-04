@@ -1,0 +1,82 @@
+.row-dashboard {
+  flex-wrap: nowrap;
+}
+
+.col-2-dashboard {
+  min-width: 300px;
+  min-height: 400px;
+}
+
+.col-3-dashboard {
+  min-width: 450px;
+  min-height: 400px;
+}
+
+.col-4-dashboard {
+  min-width: 600px;
+  min-height: 400px;
+}
+
+.col-6-dashboard {
+  min-width: 900px;
+  min-height: 400px;
+}
+
+.col-10-dashboard {
+  min-width: 1500px;
+  min-height: 400px;
+}
+
+/* .col-4-square {
+  max-height: 350px;
+} */
+
+.title-header {
+  display: flex;
+  justify-content: center;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+  font-size: 18px;
+}
+
+.subtitle-header {
+  display: flex;
+  justify-content: center;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  margin-top: -20px;
+  padding-bottom: 25px;
+}
+
+.row-header {
+  padding-top: 10px;
+  padding-bottom: 25px;
+}
+
+.row-middle {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+}
+
+.table tbody {
+  overflow-y: auto;
+  height: 300px;
+}
+
+.table td, .table th {
+  border: none;
+}
+
+hr {
+  border-top: 1px solid rgb(72,91,101);
+}
+
+.left-third {
+  border-right: 1px solid rgb(72,91,101);
+}
+
+.mid-third {
+  border-right: 1px solid rgb(72,91,101);
+}
+
+

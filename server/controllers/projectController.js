@@ -25,6 +25,7 @@ function indexProjects(req, res) {
         p.MU,
         p.IBO,
         p.ProjectOwner,
+        e3.FullName as ProjectOwnerFullName,
         p.ProjectNumber,
         p.PlanOfRecordFlag,
         p.OracleItemNumber,
@@ -47,6 +48,7 @@ function indexProjects(req, res) {
         LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
         LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
         LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
+        LEFT JOIN accesscontrol.Employees e3 ON p.ProjectOwner = e3.EmailAddress
     ORDER BY 
         p.ProjectName`
     
@@ -109,6 +111,7 @@ function getProject(req, res) {
       eo.EntityOwnerName,
       p.NPIHWProjectManager,
       p.ProjectOwner,
+      e3.FullName as ProjectOwnerFullName,
       e.FullName as 'CreatedBy',
       p.CreationDate,
       e2.FullName as 'LastUpdatedBy',
@@ -123,6 +126,7 @@ function getProject(req, res) {
       LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
       LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
       LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
+      LEFT JOIN accesscontrol.Employees e3 ON p.ProjectOwner = e3.EmailAddress
     WHERE 
       p.ProjectID = ${projectID}`
   
@@ -234,7 +238,7 @@ function indexUserProjectList(req, res) {
         LEFT JOIN accesscontrol.Employees E1 ON P1.CreatedBy = E1.EmployeeID
         LEFT JOIN accesscontrol.Employees E2 ON P1.LastUpdatedBy = E2.EmployeeID
       WHERE
-        P1.CreatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
+        P1.LastUpdatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
   `
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
@@ -768,7 +772,7 @@ function indexPLCStatus(req, res) {
   FROM  
       projects.PLCStatus
   ORDER BY
-      PLCStatusName`
+      PLCSequence`
   
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
   .then(p => {    

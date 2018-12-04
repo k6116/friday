@@ -407,7 +407,8 @@ export class ToolsService {
       'nc-board-28': projectTypeName === 'Initiative',
       'nc-bulb-63': projectTypeName === 'TOF Engaged',
       'nc-sign-closed': projectTypeName === 'Completed',
-      'nc-gantt': projectTypeName === 'General'
+      'nc-gantt': projectTypeName === 'Individual'
+      // 'nc-personal-trainer': projectTypeName === 'Individual'
     };
     return classes;
   }

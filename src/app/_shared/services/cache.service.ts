@@ -84,6 +84,9 @@ export class CacheService {
   // used to trigger the downloading icon (animated svg)
   showDownloadingIcon = new EventEmitter<boolean>();
 
+  // advanced search filter option
+  advancedSearchFilterOption: any;
+
 
   setDrillUpFunctionAdded: boolean;
 

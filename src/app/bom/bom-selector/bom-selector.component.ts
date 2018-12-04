@@ -22,6 +22,7 @@ export class BomSelectorComponent implements OnInit {
   ngOnInit() {
     // get list of bills for typeahead.js
     this.apiDataBomService.index().subscribe( res => {
+      // console.log('res:', res);
 
       // console.log(res);
 
