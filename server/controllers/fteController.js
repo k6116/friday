@@ -343,12 +343,12 @@ function indexNewPlan(req, res) {
   // this function executes an SP that will copy all subordinates fte data into the 
   // ProjectEmployeesPlanning table for use as a "staging" table for managers
 
-  const emailAddress = req.params.emailAddress;
-  const userID = req.params.userID;
+  const employeeNumber = req.params.employeeNumber;
+  const creatorEmployeeNumber = req.params.creatorEmployeeNumber;
   const planName = req.params.planName;
   const firstMonth = req.params.firstMonth;
 
-  sequelize.query('EXECUTE resources.ProjectEmployeesNewPlan :emailAddress, :firstMonth, :userID, :planName', {replacements: {emailAddress: emailAddress, firstMonth: firstMonth, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query('EXECUTE resources.ProjectEmployeesNewPlan :employeeNumber, :firstMonth, :creatorEmployeeNumber, :planName', {replacements: {employeeNumber: employeeNumber, firstMonth: firstMonth, creatorEmployeeNumber: creatorEmployeeNumber, planName: planName}, type: sequelize.QueryTypes.SELECT})
   .then(results => {
       const fteTree = new Treeize();
       fteTree.grow(results);
@@ -482,12 +482,12 @@ function launchPlan(req, res) {
   // this function executes an SP that will copy all subordinates fte data into the 
   // ProjectEmployeesPlanning table for use as a "staging" table for managers
 
-  const emailAddress = req.params.emailAddress;
+  const employeeNumber = req.params.employeeNumber;
   const userID = req.params.userID;
   const planName = req.params.planName;
   const firstMonth = req.params.firstMonth;
 
-  sequelize.query('EXECUTE resources.ProjectEmployeesLaunchPlan :emailAddress, :firstMonth, :userID, :planName', {replacements: {emailAddress: emailAddress, firstMonth: firstMonth, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query('EXECUTE resources.ProjectEmployeesLaunchPlan :employeeNumber, :firstMonth, :userID, :planName', {replacements: {employeeNumber: employeeNumber, firstMonth: firstMonth, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
   .then(results => {
     res.json({
       message: `Successfully launched plan.`
@@ -505,9 +505,7 @@ function launchPlan(req, res) {
 function checkTeamJobTitle(req, res) {
 
   // emailAddress param should be in the format 'email1@email.com','email2@email.com'
-  const emailAddress = req.params.emailAddress;
-
-  console.log(emailAddress)
+  const employeeNumber = req.params.employeeNumber;
 
   const sql = `
     SELECT
@@ -515,7 +513,7 @@ function checkTeamJobTitle(req, res) {
     FROM
       accesscontrol.Employees
     WHERE
-      EmailAddress IN (${emailAddress})
+      EmployeeNumber IN (${employeeNumber})
       AND JobTitleID IS NOT NULL
   `
 
@@ -569,13 +567,13 @@ function compareFTEToPlan(req, res) {
 
   //This query will return any updates the user made to their FTEs compared to a plan in the TeamFTEs
   // This way a manager can tell if their plan is out of sync with the real time FTEs and can decide to sync or not
-  const emailAddress = req.params.emailAddress;
+  const employeeNumber = req.params.employeeNumber;
   const userID = req.params.userID;
   const planName = req.params.planName;
   const firstMonth = req.params.firstMonth;
 
-  sequelize.query('EXECUTE resources.ProjectEmployeesPlanSync :emailAddress, :firstMonth, :userID, :planName', 
-    {replacements: {emailAddress: emailAddress, firstMonth: firstMonth, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query('EXECUTE resources.ProjectEmployeesPlanSync :employeeNumber, :firstMonth, :userID, :planName', 
+    {replacements: {employeeNumber: employeeNumber, firstMonth: firstMonth, userID: userID, planName: planName}, type: sequelize.QueryTypes.SELECT})
     .then(planSync => {
       res.json(planSync);
     })

@@ -418,9 +418,9 @@ function deleteJobTitleMap(req, res) {
 
 function indexEmployeesJobTitles(req, res) {
 
-  const emailAddress = req.params.emailAddress;
+  const employeeNumber = req.params.employeeNumber;
 
-  sequelize.query('EXECUTE resources.EmployeeRoles :emailAddress', {replacements: {emailAddress: emailAddress}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query('EXECUTE resources.EmployeeRoles :employeeNumber', {replacements: {employeeNumber: employeeNumber}, type: sequelize.QueryTypes.SELECT})
   .then(results => {
     const jobTitleTree = new Treeize();
     jobTitleTree.grow(results);
@@ -460,6 +460,7 @@ function updateEmployeesJobTitlesBulk(req, res) {
         lastName: data.lastName,
         fullName: data.fullName,
         email: data.emailAddress,
+        employeeNumber: data.employeeNumber,
         jobTitleID: data.jobTitleID,
         jobSubTitleID: data.jobSubTitleID,
         roleID: data.roleID,
@@ -473,6 +474,7 @@ function updateEmployeesJobTitlesBulk(req, res) {
     if (!data.newUser) {
       updateData.push({
         email: data.emailAddress,
+        employeeNumber: data.employeeNumber,
         jobTitleID: data.jobTitleID,
         jobSubTitleID: data.jobSubTitleID,
         updatedBy: userID,

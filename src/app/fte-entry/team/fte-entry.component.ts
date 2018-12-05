@@ -955,22 +955,22 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     // build the string of employee email address to use as a parameter for the SP resources.DisplayTeamFTE
     this.teamEditableMembers = '';
     for (let i = 0; i < this.teamOrgStructure.length; i++) {
-      this.teamEditableMembers = this.teamOrgStructure[i].emailAddress + '\',\'' + this.teamEditableMembers;
+      this.teamEditableMembers = this.teamOrgStructure[i].employeeNumber + '\',\'' + this.teamEditableMembers;
     }
     this.teamEditableMembers = this.teamEditableMembers.substr(0, this.teamEditableMembers.lastIndexOf(','));
     this.teamEditableMembers = '\'\'' + this.teamEditableMembers + '\'';
   }
 
-  async onCreateNewPlanClick(emailAddress: any, creatorEmailAddress: any, planName: string) {
+  async onCreateNewPlanClick(employeeNumber: any, creatorEmployeeNumber: any, planName: string) {
 
-    if (emailAddress === null) {
-      emailAddress = this.teamEditableMembers;
+    if (employeeNumber === null) {
+      employeeNumber = this.teamEditableMembers;
     }
 
     const firstMonth = moment(this.currentMonth).format('YYYY-MM-01');
 
     // create new plan and get FTE data
-    const res = await this.apiDataFteService.indexNewPlan(emailAddress, firstMonth, creatorEmailAddress, planName).toPromise();
+    const res = await this.apiDataFteService.indexNewPlan(employeeNumber, firstMonth, creatorEmployeeNumber, planName).toPromise();
 
     this.teamFTEs = res.nested;
     this.teamFTEsFlat = res.flat;
