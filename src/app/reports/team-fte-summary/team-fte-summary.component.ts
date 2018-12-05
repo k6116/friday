@@ -34,7 +34,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   teamSummaryData: any; // for teamwide FTE summary data
   teamSummaryData10: any; // for teamwide FTE summary data
   teamSummaryData50: any; // for teamwide FTE summary data
-  teamSummaryDataAll: any; // for teamwide FTE summary data
+  teamSummaryDataFull: any; // for teamwide FTE summary data
 
   selectedProject: string;
   selectedProjectRoster: any;
@@ -71,9 +71,10 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.nestedManagerData.push(nestedManagerData);
 
     // get nested project pareto with list of team members and their FTEs underneath each project
-    this.teamSummaryData = await this.apiDataReportService
+    this.teamSummaryDataFull = await this.apiDataReportService
       .getSubordinateProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
-    this.teamSummaryDataAll = this.teamSummaryData;
+    this.updatedTeamSummaryDataProperties();
+    this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
 
     this.renderColumnChart(`My Team's Projects`);
   }
@@ -100,13 +101,14 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.selectedPeriod = period;
 
     if (typeof this.selectedManager !== 'undefined' && this.selectedManager.checkAllTeams === true) {
-      this.teamSummaryData = await this.apiDataReportService
+      this.teamSummaryDataFull = await this.apiDataReportService
         .getSubordinateDrillDownProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
     } else {
-      this.teamSummaryData = await this.apiDataReportService
+      this.teamSummaryDataFull = await this.apiDataReportService
         .getSubordinateProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
     }
-    this.teamSummaryDataAll = this.teamSummaryData;
+    this.updatedTeamSummaryDataProperties();
+    this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
 
     if (this.selectedManagerEmailAddress === this.authService.loggedInUser.managerEmailAddress) {
       title = `My Team's Projects`;
@@ -119,32 +121,35 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.renderColumnChart(title);
   }
 
-  // take in the fte data and return the chart options for the stacked column chart
-  // for the team ftes
-  buildChartOptions(period: string, title: string): any {
+  updatedTeamSummaryDataProperties() {
 
     let teamwideTotal = 0;
-    this.teamSummaryDataAll.forEach( project => {
+    this.teamSummaryDataFull.forEach( project => {
       project.teamMembers.forEach( employee => {
-        project.totalFtes = 0;
         project.totalFtes += employee.fte;
         teamwideTotal += employee.fte;
       });
     });
+
     // convert each project's total FTEs to a percentage of the teamwide FTEs
-    this.teamSummaryDataAll.forEach( project => {
+    this.teamSummaryDataFull.forEach( project => {
       project.teamwidePercents = 100 * project.totalFtes / teamwideTotal;
     });
 
+    // sort the projects by highest total team FTEs
+    this.teamSummaryDataFull.sort( (a, b) => {
+      return b.totalFtes - a.totalFtes;
+    });
+
+  }
+
+  // take in the fte data and return the chart options for the stacked column chart
+  // for the team ftes
+  buildChartOptions(period: string, title: string): any {
 
     // get the requested time period string's index
     const timePeriod = this.timePeriods.find( obj => {
       return obj.period === period;
-    });
-
-    // sort the projects by highest total team FTEs
-    this.teamSummaryDataAll.sort( (a, b) => {
-      return b.totalFtes - a.totalFtes;
     });
 
     // translate data from nested obj into flat arrays for highcharts pareto plotting
@@ -288,13 +293,14 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     }
 
     if (selectedManager.checkAllTeams === true) {
-      this.teamSummaryData = await this.apiDataReportService
+      this.teamSummaryDataFull = await this.apiDataReportService
         .getSubordinateDrillDownProjectRoster(selectedManager.emailAddress, this.selectedPeriod).toPromise();
     } else {
-      this.teamSummaryData = await this.apiDataReportService
+      this.teamSummaryDataFull = await this.apiDataReportService
         .getSubordinateProjectRoster(selectedManager.emailAddress, this.selectedPeriod).toPromise();
     }
-    this.teamSummaryDataAll = this.teamSummaryData;
+    this.updatedTeamSummaryDataProperties();
+    this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
 
     // console.log('selectedManager', selectedManager);
     // console.log('this.teamSummaryData', this.teamSummaryData);
@@ -317,22 +323,22 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   }
 
   onTopProjectsSelected(event: any) {
-    const top10count = this.teamSummaryDataAll.length * 0.10;
-    const top50count = this.teamSummaryDataAll.length * 0.50;
+    const top10count = this.teamSummaryDataFull.length * 0.10;
+    const top50count = this.teamSummaryDataFull.length * 0.50;
     let toggleText;
 
-    this.teamSummaryData10 = this.teamSummaryDataAll.slice(0, top10count);
-    this.teamSummaryData50 = this.teamSummaryDataAll.slice(0, top50count);
+    this.teamSummaryData10 = this.teamSummaryDataFull.slice(0, top10count);
+    this.teamSummaryData50 = this.teamSummaryDataFull.slice(0, top50count);
 
     const selected = event.target.id;
     if (selected === 'top10') {
-      this.teamSummaryData = this.teamSummaryData10;
+      this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryData10));
       toggleText = 'Top 10%';
     } else if (selected === 'top50') {
-      this.teamSummaryData = this.teamSummaryData50;
+      this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryData50));
       toggleText = 'Top 50%';
     } else if (selected === 'all') {
-      this.teamSummaryData = this.teamSummaryDataAll;
+      this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
       toggleText = '';
     }
 
