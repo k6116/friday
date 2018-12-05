@@ -107,10 +107,14 @@ function showMatplans(req, res) {
     FROM demand.Schedules T1
     LEFT JOIN demand.SchedulesDetail T2
         ON T1.ScheduleID = T2.ScheduleID
-    LEFT JOIN supply.MaterialPlan T3
+    LEFT JOIN (
+      SELECT *
+      FROM supply.MaterialPlan
+      WHERE ProjectID = :projectID
+    ) T3
         ON T2.BuildStatusID = T3.BuildStatusID
     LEFT JOIN projects.BuildStatus T4
-        ON T3.BuildStatusID = T4.BuildStatusID
+        ON T2.BuildStatusID = T4.BuildStatusID
     LEFT JOIN accesscontrol.Employees T5
       ON T3.LastUpdatedBy = T5.EmployeeID
     WHERE T1.ProjectID = :projectID
