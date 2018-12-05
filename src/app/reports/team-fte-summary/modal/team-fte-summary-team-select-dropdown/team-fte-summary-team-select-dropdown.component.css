@@ -1,0 +1,31 @@
+
+
+ul.emp-cont-inner {
+  list-style-type: none;
+  padding-left: 15px;
+  margin-bottom: 0;
+}
+
+.emp-name {
+  padding: 6px 10px;
+  width: 200px;
+  background-color: rgb(255, 255, 255);
+  display: inline-block;
+  border-left: 1px solid lightgrey;
+  white-space: nowrap;
+}
+
+i.fa.expand-collapse {
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 14px;
+}
+
+.expand-collapse-icon-cont, .emp-name-cont {
+  display: inline-block;
+  cursor: pointer;
+}
+
+div.emp-name-cont:hover {
+  color: rgb(72, 72, 196);
+}

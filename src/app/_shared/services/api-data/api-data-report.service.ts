@@ -29,16 +29,30 @@ export class ApiDataReportService {
   }
 
   // My Team Summary report
-  getSubordinateProjectRoster(period: string) {
+  getSubordinateProjectRoster(managerEmailAddress: string, period: string) {
     const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/report/getSubordinateProjectRoster/${period}`, options)
+    return this.http.get(`/api/report/getSubordinateProjectRoster/${managerEmailAddress}/${period}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  getSubordinateDrillDownProjectRoster(managerEmailAddress: string, period: string) {
+    const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/report/getSubordinateDrillDownProjectRoster/${managerEmailAddress}/${period}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
 
   getSubordinateFtes(managerEmailAddress: string, period: string) {
     return this.http.get(`/api/report/getSubordinateFtes/${managerEmailAddress}/${period}`)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
+  getSubordinateDrillDownFtes(managerEmailAddress: string, period: string) {
+    return this.http.get(`/api/report/getSubordinateDrillDownFtes/${managerEmailAddress}/${period}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

@@ -1,0 +1,82 @@
+
+div.modal-dialog.team-select-modal-dialog {
+  max-width: 400px;
+}
+
+div.modal-body.team-select-modal-body {
+  min-height: 450px;
+}
+
+i.fa.select-icon, i.fa.cancel-icon {
+  margin-right: 5px;
+}
+
+div.org-dropdown-control {
+  position: relative;
+  display: inline-block;
+  width: 250px;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: rgb(245, 245, 245);
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  cursor: pointer;
+}
+
+i.fa.org-dropdown-control-caret {
+  position: absolute;
+  right: 10px;
+  line-height: 1.5;
+}
+
+app-team-select-dropdown {
+  position: relative;
+  left: -15px;
+}
+
+div.org-dropdown-cont {
+  position: absolute;
+  z-index: 1;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 250px;
+  border: 1px solid lightgrey;
+  background-color: rgb(255, 255, 255);
+}
+
+div.org-dropdown-cont-inner {
+  position: relative;
+  left: -1px;
+  transition: left .35s;
+}
+
+div.row.employee-display-cont {
+  margin-top: 25px;
+  margin-left: 10px;
+  font-size: 18px;
+}
+
+div.org-dropdown-control.highlight {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+div.custom-control-label {
+  font-size: medium;
+}
+
+div.custom-checkbox {
+  position: absolute;
+  bottom: 0;
+  padding-bottom: 10px;
+  padding-left: 35px;
+}
