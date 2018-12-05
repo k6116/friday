@@ -27,18 +27,18 @@ router.post('/fte/destroyUserProject/:userID', controllers.fte.destroyUserProjec
 router.post('/fte/updateUserData/:userID', controllers.fte.updateUserData);
 router.post('/fte/updateTeamData/:userID/:planName', controllers.fte.updateTeamData);
 router.post('/fte/destroyTeamProject/', controllers.fte.destroyTeamProject);   // PROTECT
-router.get('/fte/indexNewPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.indexNewPlan);
+router.get('/fte/indexNewPlan/:employeeNumber/:firstMonth/:creatorEmployeeNumber/:planName', controllers.fte.indexNewPlan);
 router.get('/fte/indexPlanList/:emailAddress', controllers.fte.indexPlanList);
 router.get('/fte/indexPlan/:emailAddress/:planName', controllers.fte.indexPlan);
 router.post('/fte/destroyPlan/', controllers.fte.destroyPlan);
-router.get('/fte/checkTeamJobTitle/:emailAddress', controllers.fte.checkTeamJobTitle);
-router.get('/fte/launchPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.launchPlan);
+router.get('/fte/checkTeamJobTitle/:employeeNumber', controllers.fte.checkTeamJobTitle);
+router.get('/fte/launchPlan/:employeeNumber/:firstMonth/:userID/:planName', controllers.fte.launchPlan);
 router.get('/fte/checkTeamFTEAdminPermission/:userID/', controllers.fte.checkTeamFTEAdminPermission);
-router.get('/fte/compareFTEToPlan/:emailAddress/:firstMonth/:userID/:planName', controllers.fte.compareFTEToPlan);
+router.get('/fte/compareFTEToPlan/:employeeNumber/:firstMonth/:userID/:planName', controllers.fte.compareFTEToPlan);
 router.get('/fte/indexProjectJobTitleFTE/:projectIDs/:startDate/:endDate', controllers.fte.indexProjectJobTitleFTE);
 
 // TEMP JOB TITLE API FOR MANAGER EDIT
-router.get('/indexEmployeesJobTitles/:emailAddress', controllers.jobTitle.indexEmployeesJobTitles);
+router.get('/indexEmployeesJobTitles/:employeeNumber', controllers.jobTitle.indexEmployeesJobTitles);
 router.post('/updateEmployeesJobTitlesBulk/:userID/', controllers.jobTitle.updateEmployeesJobTitlesBulk);
 
 // PROJECT CONTROLLER
@@ -104,6 +104,7 @@ router.post('/updateProjectPermissionRequest/:userID', controllers.permission.up
 
 // REPORTS PROJECT CONTROLLER
 router.get('/report/getSubordinateFtes/:managerEmailAddress/:period', controllers.report.getSubordinateFtes);
+router.get('/report/getSubordinateDrillDownFtes/:managerEmailAddress/:period', controllers.report.getSubordinateDrillDownFtes);
 router.get('/report/getMyFteSummary/:employeeID/:period', controllers.report.getMyFteSummary);
 router.get('/report/getProjectFTEHistory/:projectID/:dateFrom/:dateTo', controllers.report.getProjectFTEHistory);
 router.get('/report/getProjectEmployeeFTEList/:projectID/:fiscalDate', controllers.report.getProjectEmployeeFTEList);
@@ -224,7 +225,8 @@ router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
 
 // REPORT CONTROLLER
 router.get('/report/reports-project-fte-rollup/show/getProjectFTERollupData/:projectID/:startDate/:endDate', controllers.report.getProjectFTERollupData);
-router.get('/report/getSubordinateProjectRoster/:period', controllers.report.getSubordinateProjectRoster);
+router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
+router.get('/report/getSubordinateDrillDownProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateDrillDownProjectRoster);
 
 // LOG CONTROLLER
 router.post('/log/writeToLog', controllers.log.writeToLog);
