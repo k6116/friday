@@ -67,8 +67,8 @@ export class ApiDataFteService {
   }
 
   // create a new FTE Plan and return it
-  indexNewPlan(emailAddress: string, firstMonth: string, userID: number, planName: string) {
-    return this.http.get(`/api/fte/indexNewPlan/${emailAddress}/${firstMonth}/${userID}/${planName}`)
+  indexNewPlan(employeeNumber: string, firstMonth: string, creatorEmployeeNumber: number, planName: string) {
+    return this.http.get(`/api/fte/indexNewPlan/${employeeNumber}/${firstMonth}/${creatorEmployeeNumber}/${planName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -97,8 +97,8 @@ export class ApiDataFteService {
   }
 
   // create a new FTE Plan and return it
-  launchPlan(emailAddress: string, firstMonth: string, userID: number, planName: string) {
-    return this.http.get(`/api/fte/launchPlan/${emailAddress}/${firstMonth}/${userID}/${planName}`)
+  launchPlan(employeeNumber: string, firstMonth: string, userID: number, planName: string) {
+    return this.http.get(`/api/fte/launchPlan/${employeeNumber}/${firstMonth}/${userID}/${planName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -122,8 +122,8 @@ export class ApiDataFteService {
   }
 
   // check it job title and subtitle has been set (synchronous version)
-  checkTeamJobTitleUpdatedSync(emailAddress: string) {
-    return this.http.get(`/api/fte/checkTeamJobTitle/${emailAddress}`)
+  checkTeamJobTitleUpdatedSync(employeeNumber: string) {
+    return this.http.get(`/api/fte/checkTeamJobTitle/${employeeNumber}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -138,8 +138,8 @@ export class ApiDataFteService {
   }
 
   // compare a plan to the real time FTEs and return the diffs
-  compareFTEToPlan(emailAddress: string, firstMonth: string, userID: number, planName: string) {
-    return this.http.get(`/api/fte/compareFTEToPlan/${emailAddress}/${firstMonth}/${userID}/${planName}`)
+  compareFTEToPlan(employeeNumber: string, firstMonth: string, userID: number, planName: string) {
+    return this.http.get(`/api/fte/compareFTEToPlan/${employeeNumber}/${firstMonth}/${userID}/${planName}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

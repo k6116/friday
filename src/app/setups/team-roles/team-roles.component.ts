@@ -99,7 +99,8 @@ export class TeamRolesComponent implements OnInit {
       for (let j = 0; j < this.employeesJobTitlesFlat.length; j++) {
         // First if employee has job title, then add jobtitle data to teamOrgStructure
         // Else if employee has no job title, but exists in employees table, then just flip the newUser flag but nothing will be updated
-        if (this.teamOrgStructure[i].emailAddress === this.employeesJobTitlesFlat[j]['Employees: EmailAddress']
+        // if (this.teamOrgStructure[i].emailAddress === this.employeesJobTitlesFlat[j]['Employees: EmailAddress']
+        if (this.teamOrgStructure[i].employeeNumber === this.employeesJobTitlesFlat[j]['Employees: EmployeeNumber']
             && this.employeesJobTitlesFlat[j].JobTitleID !== 0) {
           this.teamOrgStructure[i].jobTitleID = this.employeesJobTitlesFlat[j].JobTitleID;
           this.teamOrgStructure[i].jobSubTitleID = this.employeesJobTitlesFlat[j].JobSubTitleID;
@@ -119,15 +120,16 @@ export class TeamRolesComponent implements OnInit {
     return await this.apiDataOrgService.getEmployeeList(email).toPromise();
   }
 
-  async getEmployeesJobTitles(emailList: string): Promise<any> {
-    return await this.apiDataJobTitleService.indexEmployeesJobTitles(emailList).toPromise();
+  async getEmployeesJobTitles(employeeNumberList: string): Promise<any> {
+    return await this.apiDataJobTitleService.indexEmployeesJobTitles(employeeNumberList).toPromise();
   }
 
   async buildTeamEditableMembers(): Promise<any> {
     this.teamEditableMembers = '';
     // build the string of employee email address to use as a parameter for the SP resources.DisplayTeamFTE
     for (let i = 0; i < this.teamOrgStructure.length; i++) {
-      this.teamEditableMembers = this.teamOrgStructure[i].emailAddress + '\',\'' + this.teamEditableMembers;
+      // this.teamEditableMembers = this.teamOrgStructure[i].emailAddress + '\',\'' + this.teamEditableMembers;
+      this.teamEditableMembers = this.teamOrgStructure[i].employeeNumber + '\',\'' + this.teamEditableMembers;
     }
     this.teamEditableMembers = this.teamEditableMembers.substr(0, this.teamEditableMembers.lastIndexOf(','));
     this.teamEditableMembers = '\'\'' + this.teamEditableMembers + '\'';
@@ -266,9 +268,9 @@ export class TeamRolesComponent implements OnInit {
   }
 
   onTestFormClick() {
-    // console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
-    // console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
-    // console.log('this.teamOrgStructure', this.teamOrgStructure);
+    console.log('this.employeesJobTitlesNested', this.employeesJobTitlesNested);
+    console.log('this.employeesJobTitlesFlat', this.employeesJobTitlesFlat);
+    console.log('this.teamOrgStructure', this.teamOrgStructure);
   }
 
 }

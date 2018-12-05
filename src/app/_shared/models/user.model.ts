@@ -15,6 +15,7 @@ export class User implements Deserializable<User> {
   fullName: string;
   userName: string;
   email: string;
+  employeeNumber: string;
   roleID: number;
   roleName: string;
   jobTitleID: number;

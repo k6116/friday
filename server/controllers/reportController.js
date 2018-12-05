@@ -54,10 +54,33 @@ function translateTimePeriods(period) {
 }
 
 function getSubordinateProjectRoster(req, res) {
-  const decodedToken = token.decode(req.header('X-Token'), res);
-  const managerEmailAddress = decodedToken.userData.isManager ? decodedToken.userData.email : decodedToken.userData.managerEmailAddress;
+  // const decodedToken = token.decode(req.header('X-Token'), res);
+  // const managerEmailAddress = decodedToken.userData.isManager ? decodedToken.userData.email : decodedToken.userData.managerEmailAddress;
+  const managerEmailAddress = req.params.managerEmailAddress;
   const datePeriod = translateTimePeriods(req.params.period);
   const sql = `EXEC resources.getSubordinateProjectRoster '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      const subordinateProjectTeamTree = new Treeize();
+      subordinateProjectTeamTree.grow(org);
+      const subordinateProjectTeam = subordinateProjectTeamTree.getData();
+      console.log("returning user PLM data");
+      res.json(subordinateProjectTeam);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+function getSubordinateDrillDownProjectRoster(req, res) {
+  // const decodedToken = token.decode(req.header('X-Token'), res);
+  // const managerEmailAddress = decodedToken.userData.isManager ? decodedToken.userData.email : decodedToken.userData.managerEmailAddress;
+  const managerEmailAddress = req.params.managerEmailAddress;
+  const datePeriod = translateTimePeriods(req.params.period);
+  const sql = `EXEC resources.getSubordinateDrillDownProjectRoster '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
       const subordinateProjectTeamTree = new Treeize();
@@ -79,6 +102,23 @@ function getSubordinateFtes(req, res) {
   const period = req.params.period;
   const datePeriod = translateTimePeriods(period);
   const sql = `EXEC resources.getSubordinateFtes '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
+  sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(org => {
+      res.json(org);
+    })
+    .catch(error => {
+      res.status(400).json({
+        title: 'Error (in catch)',
+        error: {message: error}
+      })
+    });
+}
+
+function getSubordinateDrillDownFtes(req, res) {
+  const managerEmailAddress = req.params.managerEmailAddress;
+  const period = req.params.period;
+  const datePeriod = translateTimePeriods(period);
+  const sql = `EXEC resources.getSubordinateDrillDownFtes '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
       res.json(org);
@@ -358,7 +398,9 @@ function getProjectFTERollupData(req, res) {
 module.exports = {
   getAggregatedFteData: getAggregatedFteData,
   getSubordinateProjectRoster: getSubordinateProjectRoster,
+  getSubordinateDrillDownProjectRoster: getSubordinateDrillDownProjectRoster,
   getSubordinateFtes: getSubordinateFtes,
+  getSubordinateDrillDownFtes: getSubordinateDrillDownFtes,
   getMyFteSummary: getMyFteSummary,
   getProjectFTEHistory: getProjectFTEHistory,
   getTopFTEProjectList: getTopFTEProjectList,

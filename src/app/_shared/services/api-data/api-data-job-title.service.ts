@@ -104,8 +104,8 @@ export class ApiDataJobTitleService {
   }
 
   // get employees and their jobtitles data from db
-  indexEmployeesJobTitles(emailAddress: string) {
-    return this.http.get(`/api/indexEmployeesJobTitles/${emailAddress}`)
+  indexEmployeesJobTitles(employeeNumber: string) {
+    return this.http.get(`/api/indexEmployeesJobTitles/${employeeNumber}`)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

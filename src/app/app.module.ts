@@ -111,7 +111,10 @@ import { AdvancedSearchResultsComponent } from './projects/advanced-filters/adva
 import { SpinnerComponent } from './_shared/components/spinner/spinner.component';
 import { TeamSelectModalComponent } from './dashboard/modal/team-select-modal/team-select-modal.component';
 import { TeamSelectDropdownComponent } from './dashboard/modal/team-select-dropdown/team-select-dropdown.component';
-
+import { TeamFteSummaryTeamSelectModalComponent
+  } from './reports/team-fte-summary/modal/team-fte-summary-team-select-modal/team-fte-summary-team-select-modal.component';
+import { TeamFteSummaryTeamSelectDropdownComponent
+  } from './reports/team-fte-summary/modal/team-fte-summary-team-select-dropdown/team-fte-summary-team-select-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -182,6 +185,8 @@ import { TeamSelectDropdownComponent } from './dashboard/modal/team-select-dropd
     TransferProjectsComponent,
     TeamSelectModalComponent,
     TeamSelectDropdownComponent,
+    TeamFteSummaryTeamSelectModalComponent,
+    TeamFteSummaryTeamSelectDropdownComponent,
     AdvancedFiltersComponent,
     AdvancedSearchResultsComponent,
     AdvancedDashboardComponent,
@@ -242,7 +247,8 @@ import { TeamSelectDropdownComponent } from './dashboard/modal/team-select-dropd
     TitleCasePipe,
     RoutingHistoryService,
     ExcelExportService,
-    LoggingService
+    LoggingService,
+
   ],
   bootstrap: [AppComponent]
 })
