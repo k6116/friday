@@ -39,41 +39,34 @@ export class AdvancedFiltersTypeaheadService {
     })
     .bind('typeahead:selected', (event, selection) => {
       // once something in the typeahead is selected, trigger this function
-      that.onSelect(selection);
+      this.onSelect(that, selection);
     });
 
     $('div.tt-menu').css('border-color', '#e9ecef');
 
   }
 
-  // getProjectsTypeahead(that: any, projectList: any) {
-  //   console.log('In get projectTypeahead service; projects:', projectList);
+  onSelect(that: any, selection) {
 
-  //   // initialize bloodhound suggestion engine with data
-  //   const bh = new Bloodhound({
-  //     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('ProjectName'),
-  //     queryTokenizer: Bloodhound.tokenizers.whitespace,
-  //     local: projectList  // flat array of managers from api data service
-  //   });
+    // Note: "that" still refers to the main advanced-filters-component
 
-  //   // initialize typeahead using jquery
-  //   $('typeahead').typeahead({
-  //     hint: true,
-  //     highlight: true,
-  //     minLength: 1
-  //   },
-  //   {
-  //     name: 'project-name',
-  //     displayKey: 'ProjectName',
-  //     source: bh
-  //   })
-  //   .bind('typeahead:selected', (event, selection) => {
-  //     that.onSelect(selection);
-  //   });
-  // }
+    const email = selection.EMAIL_ADDRESS;
+
+    // Save email string to filterObject
+    that.filterObject.ProjectOwnerEmails = String(email);
+
+    // Add to checkbox array
+    that.arrOwnerEmail.splice(0, 0, email);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(that, that.filterObject);
+
+    // Show div with subordinates
+    that.getProjectOwnerSubordinates(email);
+
+  }
 
   // initialize the typeahead functionality:  jQuery.typeahead(options, [*datasets])
-
   initProjectTypeahead(that: any, projectsList: any): any {
 
     // set 'this' in order to access the methods within this service within the typeahead source or bind functions
@@ -88,7 +81,7 @@ export class AdvancedFiltersTypeaheadService {
 
     // initialize the typeahead input with the options and dataset
     return $('.projects-filter-input').typeahead({
-      hint: true,
+      hint: false,
       highlight: true,
       minLength: 1
     },
@@ -139,16 +132,14 @@ export class AdvancedFiltersTypeaheadService {
 
   async onProjectSelect(that: any, projectID: string) {
 
-    // console.log(this.selectedProjectID);
+    // When selecting a project, get their parent-child relationship
 
     that.children = await this.advancedFiltersDataService.getProjectChildren(projectID);
     that.parents = await this.advancedFiltersDataService.getProjectParents(projectID);
 
+    // Show them as checkboxes
     $('#childProjects').toggleClass('show');
     $('#parentProjects').toggleClass('show');
-
-    console.log('children', that.children);
-    console.log('parents', that.parents);
 
   }
 

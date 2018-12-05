@@ -9,6 +9,9 @@ import { Router, NavigationEnd } from '@angular/router';
 import { FilterPipe } from '../../_shared/pipes/filter.pipe';
 import { AdvancedFiltersTypeaheadService } from './services/advanced-filters-typeahead.service';
 import { AdvancedFiltersDataService } from './services/advanced-filters-data.service';
+import { AdvancedFiltersFTEService } from './services/advanced-filters-FTE.service';
+import { AdvancedFiltersProjectSearchService } from './services/advanced-filters-project-search.service';
+import { AdvancedFiltersPLCService } from './services/advanced-filters-plc.service';
 
 // import { start } from 'repl';
 const moment = require('moment');
@@ -30,7 +33,8 @@ export interface NewPLC {
   selector: 'app-advanced-filters',
   templateUrl: './advanced-filters.component.html',
   styleUrls: ['./advanced-filters.component.css', '../../_shared/styles/common.css'],
-  providers: [AdvancedFiltersDataService, AdvancedFiltersTypeaheadService, FilterPipe]
+  providers: [AdvancedFiltersDataService, AdvancedFiltersFTEService, AdvancedFiltersProjectSearchService, AdvancedFiltersTypeaheadService,
+    AdvancedFiltersPLCService, FilterPipe]
 })
 
 export class AdvancedFiltersComponent implements OnInit, OnDestroy {
@@ -71,6 +75,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   allManagers: any;
   managers: any;
   managerTeam: any[];
+  holdProjects: number[]; // array of projectIDs that user wants to hold in the results table
 
   // PLC information for filterObjects
   newPLC: NewPLC = {
@@ -105,7 +110,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   fteMax: any; // for fte checkbox logic
 
   // month
-  currentMonth: number;
+  // currentMonth: number;
   fteDateFrom: any; // for FTE date range input - format yyyy-MM-dd required
   fteDateTo: any; // for FTE date range input - format yyyy-MM-dd required
 
@@ -123,7 +128,10 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     private excelExportService: ExcelExportService,
     private toolsService: ToolsService,
     private advancedFiltersTypeaheadService: AdvancedFiltersTypeaheadService,
-    private advancedFiltersDataService: AdvancedFiltersDataService
+    private advancedFiltersDataService: AdvancedFiltersDataService,
+    private advancedFiltersFTEService: AdvancedFiltersFTEService,
+    private advancedFiltersProjectSearchService: AdvancedFiltersProjectSearchService,
+    private advancedFiltersPLCService: AdvancedFiltersPLCService
   ) {
 
     // TO-DO PAUL: REMOVE TEMP CODE
@@ -186,7 +194,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.showFilterCol = true;
 
     // get data for all checkboxes
-    await this.getCheckboxData();
+    await this.advancedFiltersDataService.getCheckboxData(this);
 
     await this.getAllProjects();
 
@@ -210,25 +218,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // for excel download
     this.subscription2.unsubscribe();
-
-  }
-
-  async getCheckboxData() {
-
-    // get ALL FILTERS for the page using forkjoin
-    this.advancedFilterData = await this.getAdvancedFilterData()
-    .catch(err => {
-      // console.log(err);
-    });
-    // seperate out for html
-    // TO-DO CHAI: Remove [0] since that's been called seperatly
-    this.projects = this.advancedFilterData[0];
-    this.projectTypes = this.advancedFilterData[1];
-    this.projectStatuses = this.advancedFilterData[2];
-    this.projectPriorities = this.advancedFilterData[3];
-    this.plcStatuses = this.advancedFilterData[4];
-
-    // this.advancedFiltersTypeaheadService.getProjectsTypeahead(this, this.projects);
 
   }
 
@@ -258,9 +247,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     };
 
     // send to db
-    await this.advancedFilter(this.filterObject);
-
-    // this.advancedFiltersTypeaheadService.getProjectsTypeahead(this, this.filterObject);
+    await this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
     // store the number of projects, to display in the page 'showing x of y projects'
     this.totalProjectsCount = this.advancedFilteredResults.length;
@@ -310,58 +297,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  async getAdvancedFilterData(): Promise<any> {
-    return await this.apiDataAdvancedFilterService.getAdvancedFilterData().toPromise();
-  }
-
-  // DATABASE CALL
-  async advancedFilter(filterOptions: any) {
-
-    this.showSpinner = true;
-
-    const advancedFilteredResultsObj = await this.apiDataAdvancedFilterService.getAdvancedFilteredResults(filterOptions).toPromise();
-
-    this.cacheService.advancedSearchFilterOption = filterOptions;
-
-    advancedFilteredResultsObj.nested.forEach( project => {
-      const schedules = [];
-      if ('Schedules' in project) {
-
-        Object.keys(project.Schedules).forEach(function(key) {
-          schedules.push({
-            PLCStatusName: key,
-            PLCDate: project.Schedules[key]
-          });
-        });
-        project.Schedules = schedules;
-      }
-    });
-
-    this.advancedFilteredResultsFlat = advancedFilteredResultsObj.flat;       // Flat file is needed for excel download
-    this.advancedFilteredResults = advancedFilteredResultsObj.nested;         // Nested files is the MAIN RESULTS files
-    // const typeahead = this.advancedFiltersTypeaheadService.getProjectsTypeahead(this, this.advancedFilteredResults);
-
-    // For PLC status headers:
-    if (this.advancedFilteredResults.length !== 0) {
-      // save only checked statuses to be displayed in results table header
-      this.plcSchedules = this.advancedFilteredResults[0].Schedules;
-    } else {
-      this.plcSchedules = [];
-    }
-
-
-
-    this.showSpinner = false;
-    // this.showResults = true;
-
-    // store the number of projects, to display in the page 'showing x of y projects'
-    this.filteredProjectsCount = this.advancedFilteredResults.length;
-
-    // set/update the record count string (Showing X of Y Projects) -> happening in advanced filter?
-    this.setNumProjectsDisplayString();
-
-  }
-
   // set/update the record count string (Showing X of Y Projects)
   setNumProjectsDisplayString() {
 
@@ -408,21 +343,21 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // If arrChildren has projectIDs combine parent and child with spread operator
     let arrFamily = [];
     if (this.arrChildren.length !== 0) {
-      console.log('this better not be empty', this.arrChildren);
+
       arrFamily = [...this.arrChildren, ...this.arrParents];
       // remove first position since that will be duplicate
       // arrFamily.splice(0, 1);
+
     } else {
       arrFamily = this.arrParents;
     }
 
-    console.log('family:', arrFamily);
 
     // convert array to string and save to filterObject
     this.filterObject.ProjectID = String(arrFamily);
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
     // clear the filter string
     this.filterString = undefined;
@@ -466,7 +401,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     console.log('family:', arrFamily);
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
     // clear the filter string
     this.filterString = undefined;
@@ -484,49 +419,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.managerTeam = await this.apiDataOrgService.getManagementOrgStructure(managerEmailAddress).toPromise();
   }
 
-  // TO-DO: Still using this???
-  // Selecting a name from the typeahead list
-  onProjectSelect(selection) {
-    console.log(selection);
-    // const email = selection.EMAIL_ADDRESS;
-    const name = selection.ProjectName;
-    const type = selection.ProjectType;
-    const owner = selection.ProjectOwner;
-
-    // Save email string to filterObject
-    // this.filterObject.ProjectOwnerEmails = String(email);
-    this.filterObject.ProjectName = String(name);
-
-    // Add to checkbox array
-    // this.arrOwnerEmail.splice(0, 0, email);
-
-    // Make the db call
-    this.advancedFilter(this.filterObject);
-
-    // Show div with subordinates
-    // this.getProjectOwnerSubordinates(email);
-    // this.getProjectParents(name, type, owner);
-    // this.getProjectChildren(name, type, owner);
-  }
-
-  onSelect(selection) {
-    console.log('selected project owner');
-    const email = selection.EMAIL_ADDRESS;
-
-    // Save email string to filterObject
-    this.filterObject.ProjectOwnerEmails = String(email);
-
-    // Add to checkbox array
-    this.arrOwnerEmail.splice(0, 0, email);
-
-    // Make the db call
-    this.advancedFilter(this.filterObject);
-
-    // Show div with subordinates
-    this.getProjectOwnerSubordinates(email);
-
-  }
-
   onClearOwnerClick() {
 
     // reset string, manager array and scheckbox array
@@ -538,7 +430,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterObject.ProjectOwnerEmails = '';
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
     // this.filterStringOwner.nativeElement.focus();
 
@@ -672,10 +564,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       }
 
     }
-    // console.log('filterObject:', this.filterObject);
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
   }
 
@@ -701,7 +592,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
   }
 
@@ -727,7 +618,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
   }
 
@@ -755,7 +646,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
   }
 
@@ -770,7 +661,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterObject.FTEMax = 'NULL';
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
     // Clear values of date ranges input
     this.fteDateFrom = '';
@@ -781,93 +672,14 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  onFTEToggleSelected(event: any) {
+  async onFTEToggleSelected(event: any) {
 
-    const id = event.target.id;
-    this.currentMonth = Number(moment().format('M'));
-
-    switch (id) {
-      case 'all':
-        // this.filterObject.FTEDateFrom = '01/01/1900';
-        this.filterObject.FTEDateFrom = 'NULL';
-        this.filterObject.FTEDateTo = 'NULL';
-        break;
-
-      case 'month':
-        const firstDayOfMonth0 = moment().format('MM/01/YYYY');   // First day of current month
-        const firstDayOfMonth1 = moment(firstDayOfMonth0).add(1, 'month').format('MM/01/YYYY');   // First day of following month
-
-        this.filterObject.FTEDateFrom = String(firstDayOfMonth0);
-        this.filterObject.FTEDateTo = String(firstDayOfMonth1);
-        break;
-
-      case 'qtr':
-        let qtr0; // Beginning of CURRENT quarter
-        let qtr1; // Begiining of FOLLOWING quarter
-
-        // Determining beginning of the quarter
-        if (this.currentMonth === 11 || this.currentMonth === 12 || this.currentMonth === 1) {
-          qtr0 = moment().format('11/01/YYYY');
-        } else if (this.currentMonth === 2 || this.currentMonth === 3 || this.currentMonth === 4) {
-          qtr0 = moment().format('01/01/YYYY');
-        } else if (this.currentMonth === 5 || this.currentMonth === 6 || this.currentMonth === 7) {
-          qtr0 = moment().format('05/01/YYYY');
-        } else if (this.currentMonth === 8 || this.currentMonth === 9 || this.currentMonth === 10) {
-          qtr0 = moment().format('08/01/YYYY');
-        }
-
-        qtr1 = moment(qtr0).add(3, 'month').format('MM/01/YYYY');
-
-        this.filterObject.FTEDateFrom = String(qtr0);
-        this.filterObject.FTEDateTo = String(qtr1);
-
-        break;
-
-      case 'year':
-        let fiscalYear0;         // Beginning of fiscal year; 11/01/YYYY
-        let fiscalYear1;         // End of fiscal Year; 11/01/YYYY + 1year
-
-        if (this.currentMonth === 11 || this.currentMonth === 12) {
-
-          fiscalYear0 = moment().format('11/01/YYYY'); // first day of CURRENT fiscal year
-          fiscalYear1 = moment(fiscalYear0).add(1, 'year').format('11/01/YYYY'); // first day of FOLLOWING fiscal year
-
-        } else {
-
-          fiscalYear1 = moment().format('11/01/YYYY');  // first day of FOLLOWING fiscal year
-          fiscalYear0 = moment(fiscalYear1).subtract(1, 'year').format('01/01/YYYY'); // first day of CURRENT fiscal year
-
-        }
-
-        this.filterObject.FTEDateFrom = String(fiscalYear0);
-        this.filterObject.FTEDateTo = String(fiscalYear1);
-
-        break;
-    }
-
-    this.fteDateFrom = moment(this.filterObject.FTEDateFrom).format('YYYY-MM-DD');
-    this.fteDateTo = moment(this.filterObject.FTEDateTo).format('YYYY-MM-DD');
+    // Toggle between ALL - Current Month - Current Qtr - Current Yr
+    await this.advancedFiltersFTEService.fteToggle(this, event.target.id);
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
-  }
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
-  onFTETotalGoClick(minValue: any, maxValue: any) {
-
-    if (minValue === '') {
-      this.filterObject.FTEMin = String('NULL');
-    } else {
-      this.filterObject.FTEMin = String(minValue);
-    }
-
-    if (maxValue === '') {
-    this.filterObject.FTEMax = String('NULL');
-    } else {
-      this.filterObject.FTEMax = String(maxValue);
-    }
-
-    // Make the db call
-    this.advancedFilter(this.filterObject);
   }
 
   onFTEMaxChange(value: string) {
@@ -879,7 +691,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     }
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
   }
 
   onFTEMinChange(value: string) {
@@ -891,38 +703,32 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     }
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
   }
 
-  onInputFTEChange(event: any) {
-    const date = event.target.value; // input date
-    const id = event.target.id; // either fteFrom or fteTo
+  async onInputFTEChange(event: any) {
+
     const valid = event.target.validity.valid;
-    // console.log(valid);
 
      // Only allow dates from 2000 to current date
      if (valid === true ) {
-       switch (id) {
-         case 'fteFrom':
-           this.filterObject.FTEDateFrom = String(date);
-           break;
-          case 'fteTo':
-           this.filterObject.FTEDateTo = String(date);
-           break;
-       }
-
-       this.filterObject.FTEMin = String(0);
-       this.filterObject.FTEMax = String(100);
-      // console.log(this.filterObject);
-
+      // save values to filterObject
+      await this.advancedFiltersFTEService.onInputFTEChange(this, event);
       // Make the db call
-      this.advancedFilter(this.filterObject);
+      this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
      }
+
   }
 
 // PLC SCHEDULES
 
-  onCheckboxPLCScheduleClick(index, event: any, plcStatus: any) {
+  onPLCGoClick() {
+
+  }
+
+  async onCheckboxPLCScheduleClick(index, event: any, plcStatus: any) {
+
     const checked = event.target.checked;
 
     // use interface to sort out all the attributes
@@ -934,90 +740,30 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       PLCDateTo: 'NULL'
     };
 
-    // add or remove to local array depending on the checkbox state
-    if (checked === true) {
-
-      // Add checked PLC Status
-      this.objPLC.push(this.newPLC);
-
-    } else {
-
-      // find the right object to delete by comparing their index
-      for (let i = 0; i < this.objPLC.length; i++) {
-        if (this.objPLC[i].index === index) {
-
-          // remove from array
-          this.objPLC.splice(i, 1);
-
-          break;
-        }
-      }
-
-    }
-
-    // Call function that takes care of the string manipulation for the db
-    this.filterPLCSchedule();
+    await this.advancedFiltersPLCService.onClick(this, checked);
 
   }
 
   onInputPLCChange(event: any, index) {
-    const date = event.target.value; // input date
-    const id = event.target.id; // either plcFrom or plcTo
+
     const valid = event.target.validity.valid;
 
     // Only allow dates from 1900 and complete dates
     if (valid === true ) {
-
-      // loop through objPLC to save input value
-      for (let i = 0; i < this.objPLC.length; i++) {
-
-        if (this.objPLC[i].index === index && id === 'plcFrom') {
-
-          if (date !== '') {
-            this.objPLC[i].PLCDateFrom = date;
-          } else { // on clear input click
-            this.objPLC[i].PLCDateFrom = 'NULL';
-          }
-
-        }
-
-        if (this.objPLC[i].index === index && id === 'plcTo') {
-
-          if (date !== '') {
-            this.objPLC[i].PLCDateTo = date;
-          } else { // on clear input click
-            this.objPLC[i].PLCDateTo = 'NULL';
-          }
-
-        }
-
-      }
-
-      // string manipulation
-      this.filterPLCSchedule();
-
+      this.advancedFiltersPLCService.onInputChange(this, event, index);
     }
 
   }
 
   // This is where the string manipulation happens
-  async filterPLCSchedule() {
-    const arrID = [];
-    const arrFromDate = [];
+  // async filterPLCSchedule() {
 
-    // organize the data in buckets in order to convert each array into strings
-    for (let i = 0; i < this.objPLC.length; i++) {
-      arrID.splice(0, 0, this.objPLC[i].PLCStatusID);
-      arrFromDate.splice(0, 0, this.objPLC[i].PLCDateFrom + '|' + this.objPLC[i].PLCDateTo);
-    }
+  //   await this.advancedFiltersPLCService.getScheduleString(this);
 
-    // save strings into the db object
-    this.filterObject.PLCStatusIDs = String(arrID);
-    this.filterObject.PLCDateRanges = String(arrFromDate);
+  //   // Make db call
+  //   this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
-    // Make db call
-    await this.advancedFilter(this.filterObject);
-  }
+  // }
 
   onCheckboxProjectOwnerClick(event: any, email: string) {
     const value = event.target.checked;
@@ -1043,42 +789,32 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // console.log('PROJECT OWNER STRING:', this.filterObject.ProjectOwnerEmails);
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
 
   }
 
 // SEARCH BAR
 
-  onSearchClick(filterString: string) {
+  async onSearchClick(filterString: string) {
 
-    // NOTE: use wildcard search to get any project containing the searchterm
-    // or type in projectNames seperated by commas to get all projects with those names
+    // send filterString through filterpipe and get fuzzy-search results
+    const fuzzyFilterList = this.advancedFiltersTypeaheadService.getFilteredProjects(filterString);
 
-    // save search term into filterObject
-    this.filterObject.ProjectName = String(filterString);
+    // get the string of ProjectIDs from the fuzzy search result
+    await this.advancedFiltersProjectSearchService.onSearch(this, fuzzyFilterList);
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
   }
 
   // on clicking the 'x' icon at the right of the search/filter input
   onClearSearchClick() {
 
-    // clear the filter string
-    this.filterString = undefined;
+    this.advancedFiltersProjectSearchService.onClear(this);
 
     $('.projects-filter-input').typeahead('val', '');
-
-    // reset the focus on the filter input
-    this.filterStringVC.nativeElement.focus();
-
-    // save search term into filterObject
-    this.filterObject.ProjectName = '';
-    this.filterObject.ProjectID = '';
-
-    // Make the db call
-    this.advancedFilter(this.filterObject);
 
   }
 
@@ -1124,7 +860,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     };
 
     // Make the db call
-    this.advancedFilter(this.filterObject);
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
   }
 
   // SHOW FILTER TOGGLE
@@ -1217,13 +954,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  onDashboardClick() {
-    // navigate to the display page
-    // this.router.navigate([`/main/projects/advanced-dashboard/`]);
-
-    // this.showDashboard = true;
-  }
-
   // TEST BUTTON
   onTestFormClick() {
     // const filterOptions = {
@@ -1254,7 +984,10 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       FTEDateFrom: '2017-01-01',
       FTEDateTo: '2019-01-01'
     };
-    this.advancedFilter(filterOptions);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
     // this.getProjectOwnerSubordinates('henri_komrij@keysight.com');
     // this.getProjectChildren('Loki', 'Program', 'ethan_hunt@keysight.com');
     // this.getProjectParents('Arges70', 'NCI', 'ethan_hunt@keysight.com');

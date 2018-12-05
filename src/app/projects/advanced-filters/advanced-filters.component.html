@@ -8,12 +8,6 @@
 
     <!-- Top Row -->
     <div class="projects-search-cont align-top">
-
-      <!-- <app-advanced-filters-typeahead></app-advanced-filters-typeahead> -->
-
-      <!-- <div class="projects-search-label">
-        Search
-      </div> -->
     
       <!-- Search Input -->
       <div class="projects-search-string">
@@ -82,7 +76,7 @@
           Clear
         </button> -->
         <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="onClearAllClick()">
-          <i class="fa fa-trash button-icon" aria-hidden="true" style="margin-right:5px"></i>Clear All
+          <i class="fa fa-trash button-icon" aria-hidden="true" style="margin-right:5px"></i>Reset
         </button>
 
         <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="onDashboardClick(); showDashboard=!showDashboard">
@@ -106,14 +100,8 @@
     </div>
     <!-- End Top Row -->
     
-
-
-    <!-- Advanced Search Content -->
-    <div class="adv-search-content">
-
-
-      <!-- Collapsible to the side -->
-      <div class="wrapper">
+    <!-- Advanced Search Content Collapsible to the side-->
+    <div class="adv-search-content wrapper">
 
         <!-- Filter Column -->
         <!-- <div class="filter-column" id="sidebar" [hidden]=!showFilterCol>       -->
@@ -372,11 +360,14 @@
                         placeholder="Max"
                         (change)="onFTEMaxChange($event.target.value)"> 
                   </div>
-                  <button #goButton type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)" hidden>Go</button>
+
+                  <!-- on click function in FTE service -->
+                  <!-- <button #goButton type="button" class="btn btn-outline-dark go-btn" (click)="onFTETotalGoClick(inputFTEMin.value, inputFTEMax.value)" hidden>Go</button> -->
 
                 </div>
 
               </div>
+              <!-- End FTE -->
 
               <div style="height:10px; background: #f5f5f5"></div>
               
@@ -386,8 +377,11 @@
                   <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
                   PLC Schedule
                 </div>
-                <div class="custom-control custom-checkbox" style="display: none;">
-                  <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllPLC">
+                <button type="button" class="btn btn-standard icon-text-only filter-go-btn" id="FTEMin" (click)="onPLCGoClick()">
+                  <i class="fa fa-thumbs-up icon-text-only" aria-hidden="true" style="margin-right:5px"></i>Go
+                </button>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" (click)="onPLCCheckAllClick($event)" [(ngModel)]="checkAllPLC">
                   <label class="custom-control-label" for="PLCStatusIDs">
                     <small *ngIf="checkAllPLC" style="margin: 0px 5px 0px -4px;">Clear</small>
                     <small *ngIf="!checkAllPLC" style="margin: 0px 5px 0px -4px;">All</small>
@@ -462,9 +456,6 @@
           <app-advanced-dashboard style="width:100%"></app-advanced-dashboard>
         </ng-container>
         <!-- End Results Dashboard -->
-
-      </div>
-      <!-- End Wrapper -->
 
     </div>
     <!-- End Advanced Search Content -->
