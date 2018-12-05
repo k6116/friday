@@ -132,14 +132,14 @@ export class FteTeamEntryGuard implements CanActivate {
     this.teamEditableMembers = '';
     // build the string of employee email address to use as a parameter for the SP resources.DisplayTeamFTE
     for (let i = 0; i < this.allEmployees.length; i++) {
-      this.teamEditableMembers = this.allEmployees[i].emailAddress + '\',\'' + this.teamEditableMembers;
+      this.teamEditableMembers = this.allEmployees[i].employeeNumber + '\',\'' + this.teamEditableMembers;
     }
     this.teamEditableMembers = this.teamEditableMembers.substr(0, this.teamEditableMembers.lastIndexOf(','));
     this.teamEditableMembers = '\'' + this.teamEditableMembers;
   }
 
-  async checkTeamJobTitleUpdatedSync(emailAdresses: string): Promise<any> {
-    return await this.apiDataFteService.checkTeamJobTitleUpdatedSync(emailAdresses).toPromise();
+  async checkTeamJobTitleUpdatedSync(employeeNumber: string): Promise<any> {
+    return await this.apiDataFteService.checkTeamJobTitleUpdatedSync(employeeNumber).toPromise();
   }
 
 }

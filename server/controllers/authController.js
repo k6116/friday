@@ -80,6 +80,7 @@ function authenticate(req, res) {
         // set variables using the ldap object
         let userName = ldapUser.cn;
         let emailAddress = ldapUser.mail;
+        let employeeNumber = ldapUser.employeeID;
         let firstName = ldapUser.givenName.charAt(0).toUpperCase() + ldapUser.givenName.substr(1).toLowerCase();
         let lastName = ldapUser.sn.replace(/\w\S*/g, text => {
           return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
@@ -95,8 +96,8 @@ function authenticate(req, res) {
 
         // execute the stored procedure to get the user data, role, and permissions
         // it will also insert a new record into the employees table if this is a new user
-        sequelize.query('EXECUTE resources.AuthData :emailAddress, :firstName, :lastName, :fullName, :userName', 
-          {replacements: {emailAddress: emailAddress, firstName: firstName, lastName: lastName, fullName: fullName, userName: userName}, type: sequelize.QueryTypes.SELECT})
+        sequelize.query('EXECUTE resources.AuthData :emailAddress, :firstName, :lastName, :fullName, :userName, :employeeNumber', 
+          {replacements: {emailAddress: emailAddress, firstName: firstName, lastName: lastName, fullName: fullName, userName: userName, employeeNumber: employeeNumber}, type: sequelize.QueryTypes.SELECT})
           .then(userData => {
 
             // treeize the data to get a nested object (for permissions)
@@ -208,8 +209,8 @@ function resetToken(req, res) {
 
   // execute the stored procedure to get the user data, role, and permissions
   // it will also insert a new record into the employees table if this is a new user
-  sequelize.query('EXECUTE resources.AuthData :emailAddress, :firstName, :lastName, :fullName, :userName', 
-    {replacements: {emailAddress: decodedToken.userData.email, firstName: decodedToken.userData.firstName, lastName: decodedToken.userData.lastName, fullName: decodedToken.userData.fullName, userName: decodedToken.userData.userName}
+  sequelize.query('EXECUTE resources.AuthData :emailAddress, :firstName, :lastName, :fullName, :userName, :employeeNumber', 
+    {replacements: {emailAddress: decodedToken.userData.email, firstName: decodedToken.userData.firstName, lastName: decodedToken.userData.lastName, fullName: decodedToken.userData.fullName, userName: decodedToken.userData.userName, employeeNumber: decodedToken.userData.employeeNumber}
       , type: sequelize.QueryTypes.SELECT})
     .then(userData => {
 
