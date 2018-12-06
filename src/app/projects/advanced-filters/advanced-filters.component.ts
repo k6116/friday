@@ -63,13 +63,14 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   filteredProjectsCount: number;  // number of project currently displayed, if there is a filter set
   totalProjectsCount: number;  // total number of projects
 
-  // Arrays for filterObject
+  // local arrays for filterObject
   arrTypeID: any;
   arrOwnerEmail: any;
   arrStatusID: any;
   arrPriorityID: any;
   arrChildren: any;
   arrParents: any;
+  arrFamily: any; // combines Children and Parents for filterObject
   objPLC: any; // object containing all PLC info (newPLC) that's needed for filterObject
   plcSchedules: any; // contains PLC status name headers
   allManagers: any;
@@ -99,7 +100,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   subscription2: Subscription; // for excel download
   showSpinner: boolean;
   showPage: boolean;
-  showParentChild: boolean; // only show parent child filter boxes if clicked on a project from results table
+  // showParentChild: boolean; // only show parent child filter boxes if clicked on a project from results table
   showDashboard: boolean;
   showFilterCol: boolean;
   showDownloadingIcon: boolean;
@@ -165,6 +166,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.arrOwnerEmail = [];
     this.arrChildren = [];
     this.arrParents = [];
+    this.arrFamily = [];
     this.objPLC = [];
     this.plcSchedules = []; // save clicked plc statuses
     this.fteMin = [];
@@ -206,8 +208,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // show page
     this.showPage = true;
 
-    // don't show parent-child filter boxes
-    this.showParentChild = false;
+    // don't show parent-child filter boxes - not used
+    // this.showParentChild = false;
 
     // show the footer
     this.toolsService.showFooter();
@@ -322,39 +324,30 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     const checked = event.target.checked;
 
-    // first position is the parent project
-    // this.arrParents[0] = this.selectedProjectID;
+    // first position in arrFamily is the clicked-on project
+    // goal is to update arrFamily with parents
 
     if (checked === true) {
       // ADD ID to array
-      this.arrParents.push(projectID);
+      // this.arrParents.push(projectID);
+      this.arrFamily.push(projectID);
+      console.log('New Family:', this.arrFamily);
 
     } else if (checked === false) {
       // find ID in array
-      for (let i = 0; i < this.arrParents.length; i++) {
+      for (let i = 0; i < this.arrFamily.length; i++) {
         // REMOVE from array
-        if (this.arrParents[i] === projectID) {
-          this.arrParents.splice(i, 1);
+        if (this.arrFamily[i] === projectID) {
+          this.arrFamily.splice(i, 1);
+          console.log('New Family:', this.arrFamily);
           break;
         }
       }
     }
 
-    // If arrChildren has projectIDs combine parent and child with spread operator
-    let arrFamily = [];
-    if (this.arrChildren.length !== 0) {
-
-      arrFamily = [...this.arrChildren, ...this.arrParents];
-      // remove first position since that will be duplicate
-      // arrFamily.splice(0, 1);
-
-    } else {
-      arrFamily = this.arrParents;
-    }
-
-
     // convert array to string and save to filterObject
-    this.filterObject.ProjectID = String(arrFamily);
+    this.filterObject.ProjectID = String(this.arrFamily);
+    console.log('filterObject:', this.filterObject.ProjectID)
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
@@ -367,38 +360,29 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     const checked = event.target.checked;
 
-    // first position is the parent project
-    // this.arrChildren[0] = this.selectedProjectID;
+    // first position in arrFamily is the clicked-on project
+    // goal is to update arrFamily with children
 
     if (checked === true) {
       // ADD ID to array
-      this.arrChildren.push(projectID);
+      // this.arrChildren.push(projectID);
+      this.arrFamily.push(projectID);
+      console.log('New Family:', this.arrFamily);
 
     } else if (checked === false) {
       // find ID in array
-      for (let i = 0; i < this.arrChildren.length; i++) {
+      for (let i = 0; i < this.arrFamily.length; i++) {
         // REMOVE from array
-        if (this.arrChildren[i] === projectID) {
-          this.arrChildren.splice(i, 1);
+        if (this.arrFamily[i] === projectID) {
+          this.arrFamily.splice(i, 1);
+          console.log('New Family:', this.arrFamily);
           break;
         }
       }
     }
 
-    // If arrParents has projectIDs combine parent and child with spread operator
-    let arrFamily = [];
-    if (this.arrParents.length !== 0) {
-      arrFamily = [...this.arrChildren, ...this.arrParents];
-      // remove first position since that will be duplicate
-      // arrFamily.splice(0, 1);
-    } else {
-      arrFamily = this.arrChildren;
-    }
-
     // convert array to string and save to filterObject
-    this.filterObject.ProjectID = String(arrFamily);
-
-    console.log('family:', arrFamily);
+    this.filterObject.ProjectID = String(this.arrFamily);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);

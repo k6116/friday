@@ -16,8 +16,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count" 
-            (click)="onProjectClick(project.ProjectName, project.ProjectTypeName, project.ProjectOwner); showParentChild = true">
+        <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count">
           <td>{{ project.ProjectID }}</td>
           <td>{{ project.ProjectName }}</td>
           <td>{{ project.ProjectTypeName }}</td>

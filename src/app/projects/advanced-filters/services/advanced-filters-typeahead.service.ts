@@ -109,8 +109,12 @@ export class AdvancedFiltersTypeaheadService {
       const id = selection.ProjectID;
       that.filterObject.ProjectID = String(id);
 
-      // save selected projectID for parent-child checkboxes
+      // save selected projectID for parent-child checkboxes - OR use family array
       that.selectedProjectID = id;
+      that.arrFamily = [];
+      that.arrFamily[0] = id;
+      console.log('Family', that.arrFamily);
+
 
       // Make db call
       this.advancedFiltersDataService.advancedFilter(that, that.filterObject);
@@ -124,9 +128,8 @@ export class AdvancedFiltersTypeaheadService {
 
   // return an array of filtered project objects using the filter pipe with fuzzy search
   getFilteredProjects(query): any {
-console.log(query);
     return this.filterPipe.transform(this.projectsList, query, 'ProjectName',
-      {matchFuzzy: {on: true, threshold: 0.4}, returnAll: false});
+    {matchFuzzy: {on: true, threshold: 0.4}, returnAll: false});
 
   }
 
