@@ -94,12 +94,12 @@ function authenticate(req, res) {
         // fullName = 'Ethan Hunt';
         // firstName = 'Ethan';
         // lastName = 'Hunt';
-        // userName = 'kathalbi';
-        // emailAddress = 'kathy_albin@keysight.com';
-        // employeeNumber = '00017498';
-        // fullName = 'Kathy Albin';
-        // firstName = 'Kathy';
-        // lastName = 'Albin';
+        // userName = 'albereis';
+        // emailAddress = 'alberto.reis@keysight.com';
+        // employeeNumber = '00334566';
+        // fullName = 'Al Reis';
+        // firstName = 'Al';
+        // lastName = 'Reis';
 
         // execute the stored procedure to get the user data, role, and permissions
         // it will also insert a new record into the employees table if this is a new user
