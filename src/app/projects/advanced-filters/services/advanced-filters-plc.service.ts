@@ -14,6 +14,7 @@ export class AdvancedFiltersPLCService {
 
 
   async onClick(that, checked: boolean) {
+    // console.log('3');
     // add or remove to local array depending on the checkbox state
     if (checked === true) {
 
@@ -37,8 +38,25 @@ export class AdvancedFiltersPLCService {
 
     await this.getScheduleString(that);
 
-    // Make db call
-    that.advancedFiltersDataService.advancedFilter(that, that.filterObject);
+    // Make db call -> move to db call on 'go' click
+    // that.advancedFiltersDataService.advancedFilter(that, that.filterObject);
+  }
+
+  onPLCStatusCheck() {
+
+  }
+
+  onPLCStatusUncheck(that: any) {
+          // find the right object to delete by comparing their index
+      for (let i = 0; i < that.objPLC.length; i++) {
+        if (that.objPLC[i].index === that.newPLC.index) {
+
+          // remove from array
+          that.objPLC.splice(i, 1);
+
+          break;
+        }
+      }
   }
 
   onInputChange(that: any, event: any, index: number) {
@@ -72,21 +90,24 @@ export class AdvancedFiltersPLCService {
 
     this.getScheduleString(that);
 
+    // Make db call
+    // that.advancedFiltersDataService.advancedFilter(that, that.filterObject);
+
   }
 
   getScheduleString(that: any) {
     const arrID = [];
-    const arrFromDate = [];
+    const arrDate = [];
 
     // organize the data in buckets in order to convert each array into strings
     for (let i = 0; i < that.objPLC.length; i++) {
       arrID.splice(0, 0, that.objPLC[i].PLCStatusID);
-      arrFromDate.splice(0, 0, that.objPLC[i].PLCDateFrom + '|' + that.objPLC[i].PLCDateTo);
+      arrDate.splice(0, 0, that.objPLC[i].PLCDateFrom + '|' + that.objPLC[i].PLCDateTo);
     }
 
     // save strings into the db object
     that.filterObject.PLCStatusIDs = String(arrID);
-    that.filterObject.PLCDateRanges = String(arrFromDate);
+    that.filterObject.PLCDateRanges = String(arrDate);
   }
 
 }

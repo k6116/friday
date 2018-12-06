@@ -723,24 +723,67 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
 // PLC SCHEDULES
 
-  onPLCGoClick() {
+  // Send plc filter data to db when clicking the'Go' button on the plc filter header
+  async onPLCGoClick() {
+    // translate local plc object to filterObject strings
+    await this.advancedFiltersPLCService.getScheduleString(this);
+
+    // Make db call -> move to db call on 'go' click
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+  }
+
+  // Checking or Unchecking 'ALL' plc status checkboxes
+  onPLCCheckAllClick(event: any, index) {
+    // note: Use ngModel plcStatus.checked on checkboxes
+    // - If 'All' checkbox is checked, loop through plcStatuses and set checked to true.
+    // - If 'All' checkbox is unchecked, set to false
+    // - Update local objPLC with new data. It will be used onPLCGoClick
+
+    const checked = event.target.checked;
+
+    if (checked === true) {
+
+      for (let i = 0; i < this.plcStatuses.length; i++) {
+        this.plcStatuses[i].checked = true;                           // to enable plc schedules input boxes
+        this.onPLCStatusCheckboxClick(i, event, this.plcStatuses[i]); // to save data locally in objPLC
+      }
+
+    } else if (checked === false) {
+
+      for (let i = 0; i < this.plcStatuses.length; i++) {
+        this.plcStatuses[i].checked = false;                          // to disable plc schedules input boxes
+        this.onPLCStatusCheckboxClick(i, event, this.plcStatuses[i]); // to save data locally in objPLC
+      }
+
+    }
 
   }
 
-  async onCheckboxPLCScheduleClick(index, event: any, plcStatus: any) {
-
+  // Checking or unchecking the plc status checkbox
+  onPLCStatusCheckboxClick(index, event: any, plcStatus: any) {
+    // console.log('2');
     const checked = event.target.checked;
 
     // use interface to sort out all the attributes
     this.newPLC = {
-      index: index,
+      index: index,                           // to macth up date-input box with status-scheckbox onInputPLCChange
       PLCStatusID: plcStatus.PLCStatusID,
-      PLCStatusName: plcStatus.PLCStatusName,
-      PLCDateFrom: 'NULL',
-      PLCDateTo: 'NULL'
+      PLCStatusName: plcStatus.PLCStatusName, // for filterObject
+      PLCDateFrom: 'NULL',                    // for filterObject
+      PLCDateTo: 'NULL'                       // for filterObject
     };
 
-    await this.advancedFiltersPLCService.onClick(this, checked);
+    if (checked === true) {
+      // Add checked PLC Status to local PLC object
+      this.objPLC.push(this.newPLC);
+
+    } else if (checked === false) {
+      // find and remove the appropriate status in the local plc object
+      this.advancedFiltersPLCService.onPLCStatusUncheck(this);
+
+    }
+
+    // this.advancedFiltersPLCService.onClick(this, checked);
 
   }
 
@@ -755,15 +798,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  // This is where the string manipulation happens
-  // async filterPLCSchedule() {
-
-  //   await this.advancedFiltersPLCService.getScheduleString(this);
-
-  //   // Make db call
-  //   this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
-  // }
+// PROJECT OWNER
 
   onCheckboxProjectOwnerClick(event: any, email: string) {
     const value = event.target.checked;

@@ -383,7 +383,6 @@
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" (click)="onPLCCheckAllClick($event)" [(ngModel)]="checkAllPLC">
                   <label class="custom-control-label" for="PLCStatusIDs">
-                    <small *ngIf="checkAllPLC" style="margin: 0px 5px 0px -4px;">Clear</small>
                     <small *ngIf="!checkAllPLC" style="margin: 0px 5px 0px -4px;">All</small>
                   </label>
                 </div>
@@ -402,8 +401,8 @@
                           [checked]="checkAllPLC"  
                           [attr.name]="plcStatus.PLCStatusName" 
                           [attr.id]="'plcStatus' + l" 
-                          [(ngModel)]="plcStatus.state"
-                          (click)="onCheckboxPLCScheduleClick(l, $event, plcStatus); inputPLCFrom.value=''; inputPLCTo.value=''">
+                          [(ngModel)]="plcStatus.checked"
+                          (click)="onPLCStatusCheckboxClick(l, $event, plcStatus); inputPLCFrom.value=''; inputPLCTo.value=''">
                       <label class="custom-control-label" [attr.for]="'plcStatus' + l" style="margin-left: 8px">{{ plcStatus.PLCStatusName }}</label>
                     </div>
 
@@ -417,7 +416,7 @@
                           [min]="minDate"  
                           [max]="maxDate" 
                           style="margin-top: 0px" 
-                          [disabled]="!plcStatus.state" 
+                          [disabled]="!plcStatus.checked" 
                           (change)="onInputPLCChange($event, l)">
                       <span style="margin: 0px 5px">-</span>
                       <input #inputPLCTo 
@@ -428,7 +427,7 @@
                           [min]="minDate" 
                           [max]="maxDate" 
                           style="margin-top: 0px" 
-                          [disabled]="!plcStatus.state" 
+                          [disabled]="!plcStatus.checked" 
                           (change)="onInputPLCChange($event, l)">
                     </div>
 
