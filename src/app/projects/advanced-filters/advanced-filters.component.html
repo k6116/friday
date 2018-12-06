@@ -279,9 +279,10 @@
                   FTE Allocation
                 </div>
 
-                <button type="button" class="btn btn-outline-dark clear-fte" id="FTEMin" 
+                <button type="button" class="btn btn-standard icon-text-only filter-go-btn" id="FTEMin" 
                         (click)="onFTEClearClick(); 
-                                inputFTEFrom.value=''; inputFTETo.value=''; inputFTEMin.value=''; inputFTEMax.value='';">Clear
+                                inputFTEFrom.value=''; inputFTETo.value=''; inputFTEMin.value=''; inputFTEMax.value='';">
+                  <i class="fa fa-trash icon-text-only hover-green" aria-hidden="true" style="margin-right:5px"></i>Clear
                 </button>
 
               </div>
@@ -373,21 +374,29 @@
               
               <!-- PLC SCHEDULE -->
               <div class="filter-headers d-flex justify-content-between">
+
                 <div data-toggle="collapse" data-target="#plc">                
                   <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
                   PLC Schedule
                 </div>
-                <button type="button" class="btn btn-standard icon-text-only filter-go-btn" id="FTEMin" (click)="onPLCGoClick()">
-                  <i class="fa fa-thumbs-up icon-text-only" aria-hidden="true" style="margin-right:5px"></i>Go
-                </button>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" (click)="onPLCCheckAllClick($event)" [(ngModel)]="checkAllPLC">
-                  <label class="custom-control-label" for="PLCStatusIDs">
-                    <small *ngIf="!checkAllPLC" style="margin: 0px 5px 0px -4px;">All</small>
-                  </label>
-                </div>
-              </div>
 
+                <div style="float:right; display:inherit">
+                  
+                  <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" (click)="onPLCCheckAllClick($event)" [(ngModel)]="checkAllPLC">
+                      <label class="custom-control-label" for="PLCStatusIDs">
+                        <small style="margin: 0px 5px 0px -4px;">All</small>
+                      </label>
+                    </div>
+
+                  <button type="button" class="btn btn-standard icon-text-only filter-go-btn" 
+                          (click)="onPLCGoClick()">
+                    <i class="fa fa-thumbs-up icon-text-only hover-green" aria-hidden="true" style="margin-right:5px"></i>Go
+                  </button>
+
+                </div>
+
+              </div>
               <div class="filter-collapse show" id="plc">
 
                 <ng-container *ngFor="let plcStatus of plcStatuses; let l = index">
