@@ -80,6 +80,9 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   displaySyncNoticeButton: boolean;
   showSpinner: boolean;
 
+  compareModalSubscription: Subscription;
+  launchModalSubscription: Subscription;
+
   // Highchart Declarations
   ftePlanningChart: any;
   ftePlanningSeriesOptions: any;
@@ -230,6 +233,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   ngOnDestroy() {
+    this.compareModalSubscription.unsubscribe();
+    this.launchModalSubscription.unsubscribe();
     clearInterval(this.timer);
     this.changeDetectorRef.detach();
   }
@@ -618,7 +623,6 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onLaunchClick() {
-
     if (!this.FTEFormGroup.untouched) {
       // emit confirmation modal to remind user to Save an edited form first
       this.cacheService.confirmModalData.emit(
@@ -668,8 +672,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
         }
       );
 
-      const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( modalRes => {
-        if (modalRes) {
+      this.launchModalSubscription = this.cacheService.confirmModalResponse.subscribe( launchModalRes => {
+        if (launchModalRes) {
           const firstMonth = moment(this.currentMonth).format('YYYY-MM-01');
           // call the api data service to send the put request
           this.apiDataFteService.launchPlan(this.teamEditableMembers, firstMonth, this.loginAsID, this.currentPlan)
@@ -688,7 +692,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
             }
           );
         }
-        updateModalSubscription.unsubscribe();
+        this.launchModalSubscription.unsubscribe();
       });
     }
   }
@@ -1103,8 +1107,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                 ]
               }
             );
-            const updateModalSubscription = this.cacheService.confirmModalResponse.subscribe( modalRes => {
-              if (modalRes) {
+            this.compareModalSubscription = this.cacheService.confirmModalResponse.subscribe( compareModalRes => {
+              if (compareModalRes && this.displaySyncNoticeButton) {
                 // create object with delete data
                 const planData = {
                   planName: this.currentPlan,
@@ -1115,6 +1119,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                   .subscribe(
                     deleteRes => {
                       // empty arrays so it won't have objects appended
+                      // console.log('DELETED PLAN')
                       this.filteredEmployees = [];
                       this.teamEditableMembers = '';
                       this.planLoadSequence();
@@ -1125,7 +1130,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                     }
                   );
               }
-              updateModalSubscription.unsubscribe();
+              // this.compareModalSubscription.unsubscribe();
             });
           } else {
             this.displaySyncNoticeButton = false;
