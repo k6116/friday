@@ -233,8 +233,8 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   ngOnDestroy() {
-    this.compareModalSubscription.unsubscribe();
-    this.launchModalSubscription.unsubscribe();
+    // this.compareModalSubscription.unsubscribe();
+    // this.launchModalSubscription.unsubscribe();
     clearInterval(this.timer);
     this.changeDetectorRef.detach();
   }
@@ -692,7 +692,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
             }
           );
         }
-        // this.launchModalSubscription.unsubscribe();
+        this.launchModalSubscription.unsubscribe();
       });
     }
   }
@@ -1130,7 +1130,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
                     }
                   );
               }
-              // this.compareModalSubscription.unsubscribe();
+              this.compareModalSubscription.unsubscribe();
             });
           } else {
             this.displaySyncNoticeButton = false;
