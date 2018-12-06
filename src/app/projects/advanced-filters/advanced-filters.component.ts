@@ -832,13 +832,13 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 // SEARCH BAR
 
   async onSearchClick(filterString: string) {
-
+console.log('in search');
     // send filterString through filterpipe and get fuzzy-search results
     const fuzzyFilterList = this.advancedFiltersTypeaheadService.getFilteredProjects(filterString);
 
     // get the string of ProjectIDs from the fuzzy search result
     await this.advancedFiltersProjectSearchService.onSearch(this, fuzzyFilterList);
-
+console.log('after service');
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 

@@ -113,7 +113,7 @@ export class AdvancedFiltersTypeaheadService {
       that.selectedProjectID = id;
 
       // Make db call
-      that.advancedFilter(that.filterObject);
+      this.advancedFiltersDataService.advancedFilter(that, that.filterObject);
       // console.log(selection);
 
       // that.advancedFiltersDataService.getProjectChildren(that, id);
@@ -124,7 +124,7 @@ export class AdvancedFiltersTypeaheadService {
 
   // return an array of filtered project objects using the filter pipe with fuzzy search
   getFilteredProjects(query): any {
-
+console.log(query);
     return this.filterPipe.transform(this.projectsList, query, 'ProjectName',
       {matchFuzzy: {on: true, threshold: 0.4}, returnAll: false});
 
