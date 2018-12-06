@@ -125,6 +125,7 @@ div.projects-display-count {
   display: flex;
   width: 100%;
   align-items: stretch;
+  height: 824px;
 }
 
 #sidebar {

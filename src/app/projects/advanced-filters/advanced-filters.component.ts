@@ -347,7 +347,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // convert array to string and save to filterObject
     this.filterObject.ProjectID = String(this.arrFamily);
-    console.log('filterObject:', this.filterObject.ProjectID)
+    console.log('filterObject:', this.filterObject.ProjectID);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
@@ -389,6 +389,102 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // clear the filter string
     this.filterString = undefined;
+  }
+
+  onAllChildrenCheck(event: any) {
+    const checked = event.target.checked;
+
+    if (checked === true) {
+
+            // looping through all children and check if they are already in arrFamily
+            // note: index = -1 indicates the childID was not found in arrFamily
+            let index = -1;
+            for (let i = 0; i < this.children.length; i++) {
+
+              for (let j = 0; j < this.arrFamily; j++) {
+                if (this.arrFamily[j] === this.children[i].ProjectID) {
+                  index = j;
+                  break;
+                }
+              }
+
+              if (index = -1) {
+                this.arrFamily.push(this.children[i].ProjectID);
+              }
+            }
+console.log('New family with all children:', this.arrFamily);
+    } else if (checked === false) {
+
+            // looping through all children and check if they are already in arrFamily
+            for (let i = 0; i < this.children.length; i++) {
+
+              for (let j = 0; j < this.arrFamily.length; j++) {
+
+                if (this.arrFamily[j] === this.children[i].ProjectID ) {
+                  // console.log('index', j)
+                  this.arrFamily.splice(j, 1);
+                }
+
+              }
+
+            }
+
+  console.log('New family with all children:', this.arrFamily);
+    }
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectID = String(this.arrFamily);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+  }
+
+  onAllParentsCheck(event: any) {
+    const checked = event.target.checked;
+
+    if (checked === true) {
+
+            // looping through all parents and check if they are already in arrFamily
+            // note: index = -1 indicates the childID was not found in arrFamily
+            let index = -1;
+            for (let i = 0; i < this.parents.length; i++) {
+
+              for (let j = 0; j < this.arrFamily; j++) {
+                if (this.arrFamily[j] === this.parents[i].ProjectID) {
+                  index = j;
+                  break;
+                }
+              }
+
+              if (index = -1) {
+                this.arrFamily.push(this.parents[i].ProjectID);
+              }
+            }
+console.log('New family with all parents:', this.arrFamily);
+    } else if (checked === false) {
+
+            // looping through all parents and check if they are already in arrFamily
+            for (let i = 0; i < this.parents.length; i++) {
+
+              for (let j = 0; j < this.arrFamily.length; j++) {
+
+                if (this.arrFamily[j] === this.parents[i].ProjectID ) {
+                  // console.log('index', j)
+                  this.arrFamily.splice(j, 1);
+                }
+
+              }
+
+            }
+
+  console.log('New family with all parents:', this.arrFamily);
+    }
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectID = String(this.arrFamily);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
   }
 
 // PROJECT OWNERS

@@ -2,7 +2,7 @@ div.adv-results-cont {
   padding-left: 10px;
   /* width: calc(100% - ( 402px + 4px)); */
   width: auto;
-  height: 784px;
+  height: inherit;
   overflow-x: auto;
   overflow-y: auto;
 }

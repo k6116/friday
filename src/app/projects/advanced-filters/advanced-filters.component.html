@@ -178,7 +178,7 @@
                   Parent Projects
                 </div>
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" checked class="custom-control-input" id="parentProjectIDs" [(ngModel)]="checkAllParentProjects">
+                  <input type="checkbox" checked class="custom-control-input" id="parentProjectIDs" [(ngModel)]="checkAllParentProjects" (click)="onAllParentsCheck($event)">
                   <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                 </div>
               </div>
@@ -248,7 +248,7 @@
                     Children Projects
                   </div>
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" [(ngModel)]="checkAllChildProjects">
+                    <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" [(ngModel)]="checkAllChildProjects" (click)="onAllChildrenCheck($event)">
                     <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                   </div>
                 </div>
@@ -455,7 +455,7 @@
 
         <!-- Results Table Column -->
         <ng-container *ngIf="!showSpinner && !showDashboard">
-            <app-advanced-search-results [advancedFilteredResults]="advancedFilteredResults" [filterObject]="filterObject" [plcSchedules]="plcSchedules" style="width:100%"></app-advanced-search-results>
+            <app-advanced-search-results [advancedFilteredResults]="advancedFilteredResults" [filterObject]="filterObject" [plcSchedules]="plcSchedules" style="width:100%; height: inherit;"></app-advanced-search-results>
         </ng-container>
         <!-- End Results Table Column -->
 
