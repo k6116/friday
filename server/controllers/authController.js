@@ -88,11 +88,18 @@ function authenticate(req, res) {
         let fullName = firstName + ' ' + lastName;
 
         // TEMP CODE: impersonate manager for testing
-        // userName = 'edmiston';
-        // emailAddress = 'kevin_edmiston@keysight.com';
-        // fullName = 'Kevin Edmiston';
-        // firstName = 'Kevin';
-        // lastName = 'Edmiston';
+        // userName = 'ethanh';
+        // emailAddress = 'ethan_hunt@keysight.com';
+        // employeeNumber = '00574380';
+        // fullName = 'Ethan Hunt';
+        // firstName = 'Ethan';
+        // lastName = 'Hunt';
+        // userName = 'kathalbi';
+        // emailAddress = 'kathy_albin@keysight.com';
+        // employeeNumber = '00017498';
+        // fullName = 'Kathy Albin';
+        // firstName = 'Kathy';
+        // lastName = 'Albin';
 
         // execute the stored procedure to get the user data, role, and permissions
         // it will also insert a new record into the employees table if this is a new user
