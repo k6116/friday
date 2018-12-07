@@ -54,6 +54,7 @@
       <table class="table table-bordered table-sm">
         <thead>
           <tr>
+            <td>Project Name</td>
             <td>Employee Name</td>
             <td>FTEs/mo</td>
             <td>Job Title</td>
@@ -62,6 +63,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let member of selectedProjectRoster">
+            <td>{{member.projectName}}</td>
             <td>{{member.name}}</td>
             <td>{{member.fte}}</td>
             <td>{{member.jobTitle}}</td>

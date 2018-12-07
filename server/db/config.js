@@ -40,6 +40,7 @@ if (env === 'prod') {
   config = {
     dbname: "Jarvis_Resources",
     // dbname: "Jarvis_DEV",
+    // dbname: "Jarvis",
     host: 'SPYGLASS.SRS.IS.KEYSIGHT.COM',
     username: 'JarvisRTUser',
     password: process.env.SPYGLASS_DB_PASSWORD,
