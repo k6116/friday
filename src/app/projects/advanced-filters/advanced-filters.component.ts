@@ -121,8 +121,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   // TO-DO PAUL: REMOVE TEMP CODE
   showDashboardButton: boolean;
 
-  // tmp
+  // 'All' checkboxes - used with [(ngModel)]
   allParentsCheckbox: boolean;
+  allChildrenCheckbox: boolean;
 
 
   constructor(
@@ -337,26 +338,44 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  // PARENT-CHILD-PROJECTS
+// PARENT-CHILD-PROJECTS
 
-  onParentCheckboxClick(event: any, projectID: number, index) {
+  // Section for 'All' checkbox //////////////////////////////////
+  selectAllParents() {
+    for (let i = 0; i < this.parents.length; i++) {
+      this.parents[i].selected = this.allParentsCheckbox;
+    }
+  }
+
+  checkIfAllParentsSelected() {
+    this.allParentsCheckbox = this.parents.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
+  selectAllChildren() {
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i].selected = this.allChildrenCheckbox;
+    }
+  }
+
+  checkIfAllChildrenSelected() {
+    this.allChildrenCheckbox = this.children.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
+  //////////////////////////////////////////////////////////////////////
+
+  onParentCheckboxClick(event: any, projectID: number) {
     const checked = event.target.checked;
 
-    console.log('Index from ngFor =', index);
-    console.log(this.parents[index].ProjectName + ' ckeckbox state is ' + this.parents[index].checkboxState);
-
-    this.parents[index].checkboxState = !this.parents[index].checkboxState;
-
-    console.log('Now it is:', this.parents[index].checkboxState);
-
-    // first position in arrFamily is the clicked-on project
-    // goal is to update arrFamily with parents
+    // first position in arrFamily is the clicked-on project -> saved in local typeahead.service
+    // goal is to update arrFamily with parents then convert to filterObject String
 
     if (checked === true) {
       // ADD ID to array
-      // this.arrParents.push(projectID);
       this.arrFamily.push(projectID);
-      console.log('Checkbox was checked. Family is now:', this.arrFamily);
 
     } else if (checked === false) {
       // find ID in array
@@ -364,8 +383,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         // REMOVE from array
         if (this.arrFamily[i] === projectID) {
           this.arrFamily.splice(i, 1);
-          console.log('Checkbox was unchecked. Family is now:', this.arrFamily);
-
           break;
         }
       }
@@ -379,7 +396,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
     // check if all checkboxes are unchecked
-    this.onParentChange();
+    // this.onParentChange();
 
     // clear the filter string
     this.filterString = undefined;
@@ -394,9 +411,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     if (checked === true) {
       // ADD ID to array
-      // this.arrChildren.push(projectID);
       this.arrFamily.push(projectID);
-      console.log('New Family:', this.arrFamily);
 
     } else if (checked === false) {
       // find ID in array
@@ -404,7 +419,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         // REMOVE from array
         if (this.arrFamily[i] === projectID) {
           this.arrFamily.splice(i, 1);
-          console.log('New Family:', this.arrFamily);
           break;
         }
       }
@@ -420,7 +434,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterString = undefined;
   }
 
-  // TO-DO CHAI: Merge parent and child 'ALL' button. There's too much overlap to keep seperate
+  // TO-DO CHAI: Merge parent and child 'ALL' button. There's too much overlap to keep seperate or move to service
   onAllChildrenCheck(event: any) {
     const checked = event.target.checked;
 
@@ -504,8 +518,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     }
 
-    this.onParentChange();
-
     // convert array to string and save to filterObject
     this.filterObject.ProjectID = String(this.arrFamily);
 
@@ -514,28 +526,28 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   }
 
   // called on parentCheckboxClick -> for some reason it doesn't detect change
-  onParentChange() {
-    console.log('Checkbox change detected. Parent length is 1:', this.parents.length);
-    // note: index = -1 means that no checkbox is checked
-    // 'All' checkbox should uncheck if it was checked
-    let index = -1;
-    for (let i = 0; i < this.parents.length; i++) {
-      if (this.parents[i].checkboxState === true) {
-        index = i;
-        console.log('index is', index)
-        break;
-      }
-    }
-    if (index === -1) {
-      this.allParentsCheckbox = false;
-      // this.allCheckbox.Parents = false;
-      console.log('G-Max is unchecked.');
-    } else if (index === this.parents.length - 1) {
-      this.allParentsCheckbox = true;
-      // this.allCheckbox.Parents = true;
-      console.log('G-Max is checked');
-    }
-  }
+  // onParentChange() {
+  //   console.log('Checkbox change detected. Parent length is 2:', this.parents);
+  //   // note: index = -1 means that no checkbox is checked
+  //   // 'All' checkbox should uncheck if it was checked
+  //   let index = -1;
+  //   for (let i = 0; i < this.parents.length; i++) {
+  //     if (this.parents[i].checkboxState === true) {
+  //       index = i;
+  //       console.log('index is', index)
+  //       break;
+  //     }
+  //   }
+  //   if (index === -1) {
+  //     this.allParentsCheckbox = false;
+  //     // this.allCheckbox.Parents = false;
+  //     console.log('G-Max is unchecked.');
+  //   } else if (index === this.parents.length - 1) {
+  //     this.allParentsCheckbox = true;
+  //     // this.allCheckbox.Parents = true;
+  //     console.log('G-Max is checked');
+  //   }
+  // }
 
 // PROJECT OWNERS
 
