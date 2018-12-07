@@ -82,7 +82,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       .getSubordinateProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
     this.updatedTeamSummaryDataProperties();
     this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
-
+    console.log('this.teamSummaryDataFull', this.teamSummaryDataFull);
     this.renderColumnChart(`My Team's Projects`);
   }
 
@@ -310,7 +310,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
 
     // console.log('selectedManager', selectedManager);
-    // console.log('this.teamSummaryData', this.teamSummaryData);
+    console.log('this.teamSummaryDataFull', this.teamSummaryDataFull);
 
     // set the chart title
     let title;
