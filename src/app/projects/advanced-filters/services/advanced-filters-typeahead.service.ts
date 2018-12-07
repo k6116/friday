@@ -113,7 +113,7 @@ export class AdvancedFiltersTypeaheadService {
       that.selectedProjectID = id;
       that.arrFamily = [];
       that.arrFamily[0] = id;
-      console.log('Family', that.arrFamily);
+      // console.log('Family', that.arrFamily);
 
 
       // Make db call
@@ -137,10 +137,22 @@ export class AdvancedFiltersTypeaheadService {
 
     // When selecting a project, get their parent-child relationship
 
+    // note: The default checkboxState for each parent-child is false.
+    // Need this to later determine if all checkboxes are unchecked so that the ALL button unchecks with them.
+    // Therefore add property 'checkboxState' to the parent-child objects
+
     that.children = await this.advancedFiltersDataService.getProjectChildren(projectID);
+
+    for (let i = 0; i < that.children.length; i++) {
+      that.children[i].checkboxState = false;
+    }
     that.parents = await this.advancedFiltersDataService.getProjectParents(projectID);
 
-    // Show them as checkboxes
+    for (let i = 0; i < that.parents.length; i++) {
+      that.parents[i].checkboxState = false;
+    }
+
+    // Expand the filter boxes
     $('#childProjects').toggleClass('show');
     $('#parentProjects').toggleClass('show');
 

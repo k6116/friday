@@ -110,6 +110,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   fteMin: any; // for fte checkbox logic
   fteMax: any; // for fte checkbox logic
 
+  // All-button flags
+  allCheckbox: any;
+
   // month
   // currentMonth: number;
   fteDateFrom: any; // for FTE date range input - format yyyy-MM-dd required
@@ -117,6 +120,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   // TO-DO PAUL: REMOVE TEMP CODE
   showDashboardButton: boolean;
+
+  // tmp
+  allParentsCheckbox: boolean;
 
 
   constructor(
@@ -173,6 +179,19 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.fteMax = [];
     this.minDate = '1900-01-01';
     this.maxDate = '2900-01-01';
+
+    // ALL-checkbox array
+    // This is to detect if all individual checkboxes of each filter category is checked/unchecked
+    // So that the 'All' checkbox can behave accordingly
+    this.allCheckbox = {
+      ProjectTypes: true,
+      ProjectOwner: false,
+      ProjectPriority: true,
+      ProjectStatus: true,
+      Parents: false,
+      Children: false,
+      PLCSchedules: false
+    };
 
     // For Excel Download
     this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
@@ -320,9 +339,15 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   // PARENT-CHILD-PROJECTS
 
-  onParentCheckboxClick(event: any, projectID: number) {
-
+  onParentCheckboxClick(event: any, projectID: number, index) {
     const checked = event.target.checked;
+
+    console.log('Index from ngFor =', index);
+    console.log(this.parents[index].ProjectName + ' ckeckbox state is ' + this.parents[index].checkboxState);
+
+    this.parents[index].checkboxState = !this.parents[index].checkboxState;
+
+    console.log('Now it is:', this.parents[index].checkboxState);
 
     // first position in arrFamily is the clicked-on project
     // goal is to update arrFamily with parents
@@ -331,7 +356,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       // ADD ID to array
       // this.arrParents.push(projectID);
       this.arrFamily.push(projectID);
-      console.log('New Family:', this.arrFamily);
+      console.log('Checkbox was checked. Family is now:', this.arrFamily);
 
     } else if (checked === false) {
       // find ID in array
@@ -339,7 +364,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         // REMOVE from array
         if (this.arrFamily[i] === projectID) {
           this.arrFamily.splice(i, 1);
-          console.log('New Family:', this.arrFamily);
+          console.log('Checkbox was unchecked. Family is now:', this.arrFamily);
+
           break;
         }
       }
@@ -347,10 +373,13 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // convert array to string and save to filterObject
     this.filterObject.ProjectID = String(this.arrFamily);
-    console.log('filterObject:', this.filterObject.ProjectID);
+    // console.log('filterObject:', this.filterObject.ProjectID);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+    // check if all checkboxes are unchecked
+    this.onParentChange();
 
     // clear the filter string
     this.filterString = undefined;
@@ -391,45 +420,43 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterString = undefined;
   }
 
+  // TO-DO CHAI: Merge parent and child 'ALL' button. There's too much overlap to keep seperate
   onAllChildrenCheck(event: any) {
     const checked = event.target.checked;
 
     if (checked === true) {
 
-            // looping through all children and check if they are already in arrFamily
-            // note: index = -1 indicates the childID was not found in arrFamily
-            let index = -1;
-            for (let i = 0; i < this.children.length; i++) {
+        // looping through all children and check if they are already in arrFamily
+        // note: index = -1 indicates the childID was not found in arrFamily
+        let index = -1;
+        for (let i = 0; i < this.children.length; i++) {
 
-              for (let j = 0; j < this.arrFamily; j++) {
-                if (this.arrFamily[j] === this.children[i].ProjectID) {
-                  index = j;
-                  break;
-                }
-              }
-
-              if (index = -1) {
-                this.arrFamily.push(this.children[i].ProjectID);
-              }
+          for (let j = 0; j < this.arrFamily; j++) {
+            if (this.arrFamily[j] === this.children[i].ProjectID) {
+              index = j;
+              break;
             }
-console.log('New family with all children:', this.arrFamily);
+          }
+
+          // Child ID was not found, therefore add to arrFamily
+          if (index = -1) {
+            this.arrFamily.push(this.children[i].ProjectID);
+          }
+        }
+
     } else if (checked === false) {
 
-            // looping through all children and check if they are already in arrFamily
-            for (let i = 0; i < this.children.length; i++) {
+        // looping through all children and check if they are already in arrFamily
+        for (let i = 0; i < this.children.length; i++) {
 
-              for (let j = 0; j < this.arrFamily.length; j++) {
-
-                if (this.arrFamily[j] === this.children[i].ProjectID ) {
-                  // console.log('index', j)
-                  this.arrFamily.splice(j, 1);
-                }
-
-              }
-
+          for (let j = 0; j < this.arrFamily.length; j++) {
+            if (this.arrFamily[j] === this.children[i].ProjectID ) {
+              // Child ID was found, therefore remove ID from arrFamily
+              this.arrFamily.splice(j, 1);
             }
+          }
 
-  console.log('New family with all children:', this.arrFamily);
+        }
     }
 
     // convert array to string and save to filterObject
@@ -444,47 +471,70 @@ console.log('New family with all children:', this.arrFamily);
 
     if (checked === true) {
 
-            // looping through all parents and check if they are already in arrFamily
-            // note: index = -1 indicates the childID was not found in arrFamily
-            let index = -1;
-            for (let i = 0; i < this.parents.length; i++) {
+        // looping through all parents and check if they are already in arrFamily
+        // note: index = -1 indicates the childID was not found in arrFamily
+        let index = -1;
+        for (let i = 0; i < this.parents.length; i++) {
 
-              for (let j = 0; j < this.arrFamily; j++) {
-                if (this.arrFamily[j] === this.parents[i].ProjectID) {
-                  index = j;
-                  break;
-                }
-              }
-
-              if (index = -1) {
-                this.arrFamily.push(this.parents[i].ProjectID);
-              }
+          for (let j = 0; j < this.arrFamily; j++) {
+            if (this.arrFamily[j] === this.parents[i].ProjectID) {
+              index = j;
+              break;
             }
-console.log('New family with all parents:', this.arrFamily);
+          }
+
+          if (index = -1) {
+            this.arrFamily.push(this.parents[i].ProjectID);
+          }
+        }
+
     } else if (checked === false) {
 
-            // looping through all parents and check if they are already in arrFamily
-            for (let i = 0; i < this.parents.length; i++) {
+        // looping through all parents and check if they are already in arrFamily
+        for (let i = 0; i < this.parents.length; i++) {
 
-              for (let j = 0; j < this.arrFamily.length; j++) {
-
-                if (this.arrFamily[j] === this.parents[i].ProjectID ) {
-                  // console.log('index', j)
-                  this.arrFamily.splice(j, 1);
-                }
-
-              }
-
+          for (let j = 0; j < this.arrFamily.length; j++) {
+            if (this.arrFamily[j] === this.parents[i].ProjectID ) {
+              // found parent ID, therefore remove from arrFamily
+              this.arrFamily.splice(j, 1);
             }
+          }
 
-  console.log('New family with all parents:', this.arrFamily);
+        }
+
     }
+
+    this.onParentChange();
 
     // convert array to string and save to filterObject
     this.filterObject.ProjectID = String(this.arrFamily);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+  }
+
+  // called on parentCheckboxClick -> for some reason it doesn't detect change
+  onParentChange() {
+    console.log('Checkbox change detected. Parent length is 1:', this.parents.length);
+    // note: index = -1 means that no checkbox is checked
+    // 'All' checkbox should uncheck if it was checked
+    let index = -1;
+    for (let i = 0; i < this.parents.length; i++) {
+      if (this.parents[i].checkboxState === true) {
+        index = i;
+        console.log('index is', index)
+        break;
+      }
+    }
+    if (index === -1) {
+      this.allParentsCheckbox = false;
+      // this.allCheckbox.Parents = false;
+      console.log('G-Max is unchecked.');
+    } else if (index === this.parents.length - 1) {
+      this.allParentsCheckbox = true;
+      // this.allCheckbox.Parents = true;
+      console.log('G-Max is checked');
+    }
   }
 
 // PROJECT OWNERS

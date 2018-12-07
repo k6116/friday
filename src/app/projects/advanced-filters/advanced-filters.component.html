@@ -178,13 +178,13 @@
                   Parent Projects
                 </div>
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" checked class="custom-control-input" id="parentProjectIDs" [(ngModel)]="checkAllParentProjects" (click)="onAllParentsCheck($event)">
+                  <input type="checkbox" class="custom-control-input" id="parentProjectIDs" [(ngModel)]="allParentsCheckbox" (click)="onAllParentsCheck($event)">
                   <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                 </div>
               </div>
               <div class="filter-collapse" id="parentProjects">
                 <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let parent of parents; let i = index">
-                  <input type="checkbox" class="custom-control-input" [checked]="checkAllParentProjects" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i" (click)="onParentCheckboxClick($event, parent.ProjectID)">
+                  <input type="checkbox" class="custom-control-input" [checked]="allParentsCheckbox" [attr.name]="parent.ProjectName" [attr.id]="'parentProject' + i" (click)="onParentCheckboxClick($event, parent.ProjectID, i)">
                   <label class="custom-control-label" [attr.for]="'parentProject' + i" style="padding: 1px 0px 0px 10px;">{{ parent.ProjectName }}</label>
                 </div>
               </div>
@@ -254,7 +254,7 @@
                 </div>
                 <div class="filter-collapse" id="childProjects">
                   <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let child of children; let i = index">
-                    <input type="checkbox" class="custom-control-input" [checked]="checkAllChildProjects" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i" (click)="onChildCheckboxClick($event, child.ProjectID)">
+                    <input type="checkbox" class="custom-control-input" [checked]="checkAllChildProjects" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i" (click)="onChildCheckboxClick($event, child.ProjectID); child.checked=!child.checked">
                     <label class="custom-control-label" [attr.for]="'childProject' + i" style="padding: 1px 0px 0px 10px;">{{ child.ProjectName }}</label>
                   </div>
                 </div>
