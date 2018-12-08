@@ -150,6 +150,8 @@ router.put('/matplan/matplan/destroy/destroyQuoteForPart', controllers.matplan.d
 router.put('/matplan/matplan/update/updateQuoteForPart', controllers.matplan.updateQuoteForPart);
 router.put('/matplan/matplan/update/updateMaterialOrder', controllers.matplan.updateMaterialOrder);
 router.get('/matplan/matplan/showMatplanOrders/:projectID/:matplanID', controllers.matplan.showMatplanOrders);
+router.get('/matplan/matplan/showBuildSchedule/:projectID', controllers.schedules.showBuildSchedule);
+router.get('/matplan/matplan/indexBuildStatus', controllers.schedules.indexBuildStatus);
 
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes

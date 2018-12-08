@@ -22,5 +22,6 @@ module.exports = {
   ProjectPermissionRequests: require('./project.js').ProjectPermissionRequests,
   NCISupplyDemandExclusionList: require('./analytics.js').NCISupplyDemandExclusionList,
   Schedules: require('./schedules.js').Schedules,
-  SchedulesDetail: require('./schedules.js').SchedulesDetail
+  SchedulesDetail: require('./schedules.js').SchedulesDetail,
+  BuildStatus: require('./schedules.js').BuildStatus
 }

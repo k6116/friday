@@ -36,6 +36,42 @@ function indexProjectSchedule(req, res) {
 		})
 }
 
+function showBuildSchedule(req, res) {
+
+	const projectID = req.params.projectID;
+	models.Schedules.findAll({
+		attributes: [
+			'id',
+			'projectID',
+			'currentRevision',
+			'notes',
+			'schedulesDetails.needByDate',
+			'schedulesDetails.neededQuantity',
+			'schedulesDetails.buildStatusID'
+			// sequelize added an 's' to the end of the schedulesDetail table name in its aliasing.  No clue why
+		],
+		include: [{
+			model: models.SchedulesDetail,
+			attributes: []
+			// empty attributes trick to prevent having a fully-qualified property name (ie, field = suppliers.supplierName instead of supplierName)
+      // see https://github.com/sequelize/sequelize/issues/7605
+		}],
+		where: { projectID: projectID },
+		raw: true
+	})
+	.then(schedule => {		
+		res.json(schedule);
+	})
+}
+
+function indexBuildStatus(req, res) {
+	// returns list of build schedule types (ie, Breadboard, Proto 1, etc) from db
+	models.BuildStatus.findAll()
+	.then(schedule => {
+		res.json(schedule);
+	})
+}
+
   function updateProjectScheduleXML(req,res) {
 
  	const decodedToken = token.decode(req.header('X-Token'), res);
@@ -651,6 +687,8 @@ function getPLCList(req, res) {
 
   
 module.exports = {
+	showBuildSchedule: showBuildSchedule,
+	indexBuildStatus: indexBuildStatus,
 	indexProjectSchedule: indexProjectSchedule,
 	indexPartSchedule: indexPartSchedule,
 	updateProjectScheduleXML: updateProjectScheduleXML,

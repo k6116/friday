@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiDataMatplanService } from '../../_shared/services/api-data/api-data-matplan.service';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { ApiDataMatplanService, ApiDataSchedulesService } from '../../_shared/services/api-data/_index';
 
 declare var $: any;
 declare const Bloodhound;
@@ -13,13 +14,19 @@ declare const Bloodhound;
 export class MatplanSelectorComponent implements OnInit {
 
   matplanList: any;
+  buildStatusList: any;
 
   constructor(
     private router: Router,
-    private apiDataMatplanService: ApiDataMatplanService
+    private fb: FormBuilder,
+    private apiDataMatplanService: ApiDataMatplanService,
+    private apiDataSchedulesService: ApiDataSchedulesService
   ) { }
 
   ngOnInit() {
+    // get list of build status types for displaying in view
+    this.apiDataSchedulesService.indexBuildStatus().subscribe( res => this.buildStatusList = res);
+
     // get list of projects, and filter using typeahead in input box
     this.apiDataMatplanService.indexProjects().subscribe( res => {
 

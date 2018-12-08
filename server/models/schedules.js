@@ -26,7 +26,7 @@ const Schedules = sequelize.define('schedules',
 
 const SchedulesDetail = sequelize.define('schedulesDetail',
   {
-    scheduleID: { type: Sequelize.INTEGER, field: 'ScheduleID' },
+    scheduleID: { type: Sequelize.INTEGER, field: 'ScheduleID', primaryKey: true},
     currentRevision: { type: Sequelize.INTEGER, field: 'CurrentRevision' },
     needByDate: { type: Sequelize.DATE, field: 'NeedByDate' },
     neededQuantity: { type: Sequelize.INTEGER, field: 'NeededQuantity' },
@@ -45,23 +45,31 @@ const SchedulesDetail = sequelize.define('schedulesDetail',
     schema: 'demand',
     tableName: 'SchedulesDetail',
     timestamps: false,
-    hasTrigger: true
+    hasTrigger: true,
+  }
+);
+
+const BuildStatus = sequelize.define('buildStatus',
+  {
+    buildStatusID: { type: Sequelize.INTEGER, field: 'BuildStatusID', primaryKey: true, autoIncrement: true },
+    buildStatusName: { type: Sequelize.STRING, field: 'BuildStatusName' },
+    description: { type: Sequelize.STRING, field: 'Description' }
+  },
+  {
+    schema: 'projects',
+    tableName: 'BuildStatus',
+    timestamps: false,
   }
 );
 
 
-// Projects.hasMany(Schedules, {foreignKey: 'id'});
-// Schedules.belongsTo(Projects, {foreignKey: 'projectID'});
+Schedules.hasMany(SchedulesDetail, {foreignKey: 'scheduleID', sourceKey: 'id'});
 
-// Part.hasMany(Schedules, {foreignKey: 'id'});
-// Schedules.belongsTo(Part, {foreignKey: 'partID'});
-
-// SchedulesDetail.hasMany(Schedules, {foreignKey: 'id'});
-// Schedules.belongsTo(SchedulesDetail, {foreignKey: 'scheduleID'});
 
 module.exports = {
     Schedules: Schedules, 
-    SchedulesDetail: SchedulesDetail
+    SchedulesDetail: SchedulesDetail,
+    BuildStatus: BuildStatus
   }
   
 

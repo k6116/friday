@@ -175,8 +175,7 @@ function showQuotesForPart(req, res) {
       attributes: []
       // empty attributes trick to prevent having a fully-qualified property name (ie, field = suppliers.supplierName instead of supplierName)
       // see https://github.com/sequelize/sequelize/issues/7605
-    }],
-    raw: true
+    }]
   })
   .then(quoteList => {
     console.log(quoteList);
