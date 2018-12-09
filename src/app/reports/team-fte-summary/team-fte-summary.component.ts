@@ -41,6 +41,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   selectedManager: any;
   selectedManagerEmailAddress: any;
   selectedPeriod: string;
+  excludeParentType: string; // if 'Program' is selected, will drill up all the way to program levels
 
   timePeriods = [
     {period: 'current-quarter', text: 'Current Quarter'},
@@ -57,6 +58,8 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   async ngOnInit() {
 
     this.selectedPeriod = 'current-quarter';
+
+    this.excludeParentType = 'NULL';
 
     // Need to initialize this object with just checkAllTeams key
     this.selectedManager = {checkAllTeams: false};
@@ -109,7 +112,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
     if (typeof this.selectedManager !== 'undefined' && this.selectedManager.checkAllTeams === true) {
       this.teamSummaryDataFull = await this.apiDataReportService
-        .getSubordinateDrillDownProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
+        .getSubordinateDrillDownProjectRoster(this.excludeParentType, this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
     } else {
       this.teamSummaryDataFull = await this.apiDataReportService
         .getSubordinateProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
@@ -243,7 +246,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     }
 
     showSubordinateTeamRoster(projectID: number) {
-      this.teamSummaryData.forEach( project => {
+      this.teamSummaryDataFull.forEach( project => {
         // find the project that was clicked and store into selectedProject vars for display
         if (project.projectID === projectID) {
           this.selectedProject = project.projectName;
@@ -301,7 +304,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
     if (selectedManager.checkAllTeams === true) {
       this.teamSummaryDataFull = await this.apiDataReportService
-        .getSubordinateDrillDownProjectRoster(selectedManager.emailAddress, this.selectedPeriod).toPromise();
+        .getSubordinateDrillDownProjectRoster(this.excludeParentType, selectedManager.emailAddress, this.selectedPeriod).toPromise();
     } else {
       this.teamSummaryDataFull = await this.apiDataReportService
         .getSubordinateProjectRoster(selectedManager.emailAddress, this.selectedPeriod).toPromise();

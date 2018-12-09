@@ -28,16 +28,26 @@
         </select>
         <span style="width: 20px"></span>
 
-        <!-- Toggle Buttons -->
-        <div class="btn-group btn-group-toggle" style="height: 32px" data-toggle="buttons">
+        <!-- Toggle Buttons Top10 -->
+        <div class="btn-group btn-group-toggle toggle-top" style="height: 32px" data-toggle="buttons">
           <label class="btn btn-outline-secondary highchart-toggle active" id="all" (click)="onTopProjectsSelected($event)">
-            <input type="radio" name="options" id="option3" autocomplete="off"> All Projects
+            <input type="radio" name="options" id="option1" autocomplete="off"> All Projects
           </label>
           <label class="btn btn-outline-secondary highchart-toggle" id="top10" (click)="onTopProjectsSelected($event)">
-            <input type="radio" name="options" id="option1" autocomplete="off"> Top 10%
+            <input type="radio" name="options" id="option2" autocomplete="off"> Top 10%
           </label>
           <label class="btn btn-outline-secondary highchart-toggle" id="top50" (click)="onTopProjectsSelected($event)">
-            <input type="radio" name="options" id="option2" autocomplete="off"> Top 50%
+            <input type="radio" name="options" id="option3" autocomplete="off"> Top 50%
+          </label>
+        </div>
+
+        <!-- Toggle Buttons Programs vs NPI-->
+        <div class="btn-group btn-group-toggle toggle-type" style="height: 32px" data-toggle="buttons">
+          <label class="btn btn-outline-secondary highchart-toggle active" id="all" (click)="onMaxParentSelected($event)">
+            <input type="radio" name="options" id="option1" autocomplete="off"> Program
+          </label>
+          <label class="btn btn-outline-secondary highchart-toggle" id="top10" (click)="onMaxParentSelected($event)">
+            <input type="radio" name="options" id="option2" autocomplete="off"> NPI
           </label>
         </div>
 
@@ -49,7 +59,7 @@
 
   <div class="row row-custom" *ngIf="displaySelectedProjectRoster">
     <!-- team-specific FTE roster if user clicks a project -->
-    <div class="col-7">
+    <div class="col-10">
       <h3>My Team Members on {{selectedProject}}:</h3>
       <table class="table table-bordered table-sm">
         <thead>

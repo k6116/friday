@@ -80,7 +80,9 @@ function getSubordinateDrillDownProjectRoster(req, res) {
   // const managerEmailAddress = decodedToken.userData.isManager ? decodedToken.userData.email : decodedToken.userData.managerEmailAddress;
   const managerEmailAddress = req.params.managerEmailAddress;
   const datePeriod = translateTimePeriods(req.params.period);
-  const sql = `EXEC resources.getSubordinateDrillDownProjectRoster '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
+  const excludeParentType = req.params.excludeParentType;
+
+  const sql = `EXEC resources.getSubordinateDrillDownProjectRoster '${excludeParentType}', '${managerEmailAddress}', '${datePeriod[0]}', '${datePeriod[1]}'`
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
     .then(org => {
       const subordinateProjectTeamTree = new Treeize();
