@@ -30,23 +30,23 @@
 
         <!-- Toggle Buttons Top10 -->
         <div class="btn-group btn-group-toggle toggle-show" style="height: 32px" data-toggle="buttons">
-          <label class="btn btn-outline-secondary highchart-toggle active" id="all" (click)="onTopProjectsSelected($event)">
+          <label class="btn btn-outline-secondary highchart-toggle active" id="projectsAll" (click)="onTopProjectsSelected($event)">
             <input type="radio" name="options" id="option1" autocomplete="off"> All Projects
           </label>
-          <label class="btn btn-outline-secondary highchart-toggle" id="top10" (click)="onTopProjectsSelected($event)">
+          <label class="btn btn-outline-secondary highchart-toggle" id="projectsTop10" (click)="onTopProjectsSelected($event)">
             <input type="radio" name="options" id="option2" autocomplete="off"> Top 10%
           </label>
-          <label class="btn btn-outline-secondary highchart-toggle" id="top50" (click)="onTopProjectsSelected($event)">
+          <label class="btn btn-outline-secondary highchart-toggle" id="projectsTop50" (click)="onTopProjectsSelected($event)">
             <input type="radio" name="options" id="option3" autocomplete="off"> Top 50%
           </label>
         </div>
 
         <!-- Toggle Buttons Programs vs NPI-->
         <div *ngIf="this.selectedManager.checkAllTeams" class="btn-group btn-group-toggle toggle-type" style="height: 32px" data-toggle="buttons">
-          <label class="btn btn-outline-secondary highchart-toggle tooltip-program active" id="program" (click)="onMaxParentSelected($event)" (mouseenter)="onToggleTypeMouseEnter($event)" (mouseleave)="onToggleTypeMouseLeave($event)" >
-            <input type="radio" name="options" id="option4" autocomplete="off"> Program
+          <label class="btn btn-outline-secondary highchart-toggle tooltip-typesAll active" id="typesAll" (click)="onMaxParentSelected($event)" (mouseenter)="onToggleTypeMouseEnter($event)" (mouseleave)="onToggleTypeMouseLeave($event)" >
+            <input type="radio" name="options" id="option4" autocomplete="off"> All Types
           </label>
-          <label class="btn btn-outline-secondary highchart-toggle tooltip-npi" id="npi" (click)="onMaxParentSelected($event)" (mouseenter)="onToggleTypeMouseEnter($event)" (mouseleave)="onToggleTypeMouseLeave($event)">
+          <label class="btn btn-outline-secondary highchart-toggle tooltip-typesNPI" id="typesNPI" (click)="onMaxParentSelected($event)" (mouseenter)="onToggleTypeMouseEnter($event)" (mouseleave)="onToggleTypeMouseLeave($event)">
             <input type="radio" name="options" id="option5" autocomplete="off"> NPI
           </label>
         </div>

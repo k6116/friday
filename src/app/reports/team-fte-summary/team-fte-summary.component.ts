@@ -5,7 +5,6 @@ import { TeamFteSummaryTeamSelectModalComponent
   } from './modal/team-fte-summary-team-select-modal/team-fte-summary-team-select-modal.component';
 import { AuthService } from '../../_shared/services/auth.service';
 import * as Highcharts from 'highcharts';
-import { blobToBinaryString } from 'blob-util';
 
 declare var require: any;
 declare const $: any;
@@ -316,11 +315,11 @@ export class TeamFteSummaryComponent implements OnInit {
     this.teamSummaryData50 = this.teamSummaryDataFull.slice(0, top50count);
 
     const selected = event.target.id;
-    if (selected === 'top10') {
+    if (selected === 'projectsTop10') {
       this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryData10));
-    } else if (selected === 'top50') {
+    } else if (selected === 'projectsTop50') {
       this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryData50));
-    } else if (selected === 'all') {
+    } else if (selected === 'projectsAll') {
       this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
     }
 
@@ -329,7 +328,7 @@ export class TeamFteSummaryComponent implements OnInit {
 
   async onMaxParentSelected(event: any) {
     const selected = event.target.id;
-    if (selected === 'program') {
+    if (selected === 'typesAll') {
       this.excludeParentType = 'NULL';
     } else {
       this.excludeParentType = 'Program';
