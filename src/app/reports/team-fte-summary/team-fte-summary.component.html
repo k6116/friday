@@ -29,7 +29,7 @@
         <span style="width: 20px"></span>
 
         <!-- Toggle Buttons Top10 -->
-        <div class="btn-group btn-group-toggle toggle-top" style="height: 32px" data-toggle="buttons">
+        <div class="btn-group btn-group-toggle toggle-show" style="height: 32px" data-toggle="buttons">
           <label class="btn btn-outline-secondary highchart-toggle active" id="all" (click)="onTopProjectsSelected($event)">
             <input type="radio" name="options" id="option1" autocomplete="off"> All Projects
           </label>
@@ -42,12 +42,12 @@
         </div>
 
         <!-- Toggle Buttons Programs vs NPI-->
-        <div class="btn-group btn-group-toggle toggle-type" style="height: 32px" data-toggle="buttons">
-          <label class="btn btn-outline-secondary highchart-toggle active" id="all" (click)="onMaxParentSelected($event)">
-            <input type="radio" name="options" id="option1" autocomplete="off"> Program
+        <div *ngIf="this.selectedManager.checkAllTeams" class="btn-group btn-group-toggle toggle-type" style="height: 32px" data-toggle="buttons">
+          <label class="btn btn-outline-secondary highchart-toggle tooltip-program active" id="program" (click)="onMaxParentSelected($event)" (mouseenter)="onToggleTypeMouseEnter($event)" (mouseleave)="onToggleTypeMouseLeave($event)" >
+            <input type="radio" name="options" id="option4" autocomplete="off"> Program
           </label>
-          <label class="btn btn-outline-secondary highchart-toggle" id="top10" (click)="onMaxParentSelected($event)">
-            <input type="radio" name="options" id="option2" autocomplete="off"> NPI
+          <label class="btn btn-outline-secondary highchart-toggle tooltip-npi" id="npi" (click)="onMaxParentSelected($event)" (mouseenter)="onToggleTypeMouseEnter($event)" (mouseleave)="onToggleTypeMouseLeave($event)">
+            <input type="radio" name="options" id="option5" autocomplete="off"> NPI
           </label>
         </div>
 
@@ -73,7 +73,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let member of selectedProjectRoster">
-            <td>{{member.projectName}}</td>
+            <td>{{member.projectName ? member.projectName + ' - ' + member.projectType : selectedProject}}</td>
             <td>{{member.name}}</td>
             <td>{{member.fte}}</td>
             <td>{{member.jobTitle}}</td>

@@ -65,8 +65,22 @@ div.edit-button-cont:hover {
 
 label.highchart-toggle {
   border-color: #ced4da;
+
+}
+
+div.chart-date-switcher {
+  width: 100%;
+}
+
+div.form-inline {
+  display: inline;
 }
 
 div.row-custom {
   min-width: 1400px;
+}
+
+div.toggle-type {
+  float: right;
+  right: 125px;
 }
