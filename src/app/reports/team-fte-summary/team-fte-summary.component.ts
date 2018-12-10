@@ -57,10 +57,17 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   async ngOnInit() {
 
     this.selectedPeriod = 'current-quarter';
-    this.selectedManagerEmailAddress = this.authService.loggedInUser.managerEmailAddress;
+
+    // Need to initialize this object with just checkAllTeams key
+    this.selectedManager = {checkAllTeams: false};
 
     if (this.authService.loggedInUser.isManager || this.authService.loggedInUser.roleName === 'Admin') {
       this.displayEditTeamButton = true;
+    }
+    if (this.authService.loggedInUser.isManager) {
+      this.selectedManagerEmailAddress = this.authService.loggedInUser.email;
+    } else {
+      this.selectedManagerEmailAddress = this.authService.loggedInUser.managerEmailAddress;
     }
 
     // get management org structure for the manager select dropdown
@@ -75,7 +82,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       .getSubordinateProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
     this.updatedTeamSummaryDataProperties();
     this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
-
+    console.log('this.teamSummaryDataFull', this.teamSummaryDataFull);
     this.renderColumnChart(`My Team's Projects`);
   }
 
@@ -303,7 +310,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
 
     // console.log('selectedManager', selectedManager);
-    // console.log('this.teamSummaryData', this.teamSummaryData);
+    console.log('this.teamSummaryDataFull', this.teamSummaryDataFull);
 
     // set the chart title
     let title;
@@ -317,7 +324,7 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
     this.renderColumnChart(title);
 
-    this.selectedManager = selectedManager;
+    this.selectedManager = JSON.parse(JSON.stringify(selectedManager));
     this.selectedManagerEmailAddress = selectedManager.emailAddress;
 
   }

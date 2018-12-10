@@ -20,7 +20,8 @@ const ProjectEmployee = sequelize.define('projectEmployee',
   {
     schema: 'resources',
     tableName: 'ProjectEmployees',
-    timestamps: false
+    timestamps: false,
+    hasTrigger: true
   }
 );
 
@@ -40,7 +41,8 @@ const ProjectEmployeePlanning = sequelize.define('projectEmployeePlanning',
   {
     schema: 'resources',
     tableName: 'ProjectEmployeesPlanning',
-    timestamps: false
+    timestamps: false,
+    hasTrigger: true
   }
 );
 

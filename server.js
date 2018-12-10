@@ -80,7 +80,7 @@ if (env === 'dev') {
     .listen(port1, () => {
       console.log(`node server listening on port: ${port1}`);
     });
-
+    
 // start test server
 } else if (env === 'test') {
 
