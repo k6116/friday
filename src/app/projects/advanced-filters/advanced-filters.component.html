@@ -75,8 +75,8 @@
           <i class="fa fa-times" aria-hidden="true"></i>
           Clear
         </button> -->
-        <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="onClearAllClick()" hidden>
-          <i class="fa fa-trash button-icon" aria-hidden="true" style="margin-right:5px"></i>Reset
+        <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green reset-button" (mouseenter)="onResetButtonMouseEnter()" (mouseleave)="onResetButtonMouseLeave()" (click)="onResetButtonClick()">
+          <i class="fa fa-undo button-icon" aria-hidden="true" style="margin-right:5px"></i>Reset
         </button>
 
         <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="onDashboardClick(); showDashboard=!showDashboard">
@@ -268,7 +268,7 @@
                 <div class="filter-headers d-flex justify-content-between">
                   <div data-toggle="collapse" data-target="#childProjects" style="cursor: pointer">
                     <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
-                    Children Projects
+                    Child Projects
                   </div>
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" 
@@ -481,7 +481,7 @@
 
         <!-- Results Table Column -->
         <ng-container *ngIf="!showSpinner && !showDashboard">
-            <app-advanced-search-results [advancedFilteredResults]="advancedFilteredResults" [filterObject]="filterObject" [plcSchedules]="plcSchedules" style="width:100%; height: inherit;"></app-advanced-search-results>
+            <app-advanced-search-results [advancedFilteredResults]="advancedFilteredResults" [filterObject]="filterObject" [plcSchedules]="plcSchedules" style="width:100%; height: inherit; overflow-x: auto"></app-advanced-search-results>
         </ng-container>
         <!-- End Results Table Column -->
 

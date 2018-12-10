@@ -59,7 +59,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   filterString: string;     // string for top search bar
   filterStringOwner: string; // string for owner search bar
-  filterCheckedArray: any; // array to clear out owners
+  // filterCheckedArray: any; // array to clear out owners
   numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
   filteredProjectsCount: number;  // number of project currently displayed, if there is a filter set
   totalProjectsCount: number;  // total number of projects
@@ -69,8 +69,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   arrOwnerEmail: any;
   arrStatusID: any;
   arrPriorityID: any;
-  arrChildren: any;
-  arrParents: any;
+  // arrChildren: any;
+  // arrParents: any;
   arrFamily: any; // combines Children and Parents for filterObject
   objPLC: any; // object containing all PLC info (newPLC) that's needed for filterObject
   plcSchedules: any; // contains PLC status name headers
@@ -166,13 +166,13 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       FTEDateTo: 'NULL'       // 2017-01-01
     };
 
-    this.filterCheckedArray = [];
+    // this.filterCheckedArray = [];
     this.arrTypeID = [];
     this.arrStatusID = [0];   // adding 0 to show blanks
     this.arrPriorityID = [0]; // adding 0 to show blanks
     this.arrOwnerEmail = [];
-    this.arrChildren = [];
-    this.arrParents = [];
+    // this.arrChildren = [];
+    // this.arrParents = [];
     this.arrFamily = [];
     this.objPLC = [];       // contains newPLC on plc status checked
     this.plcSchedules = []; // save clicked plc statuses
@@ -843,26 +843,27 @@ console.log('after service');
 
   }
 
-  async onClearAllClick() {
+  async onResetButtonClick() {
 
     // Clear inputs
     this.filterString = '';
     this.filterStringOwner = '';
 
-    // Clear out all local changes
-    this.filterCheckedArray = [];
+    // Clear out all local arrays
+    // this.filterCheckedArray = [];
     this.arrTypeID = [];
-    this.arrStatusID = [0];   // adding 0 as blank
     this.arrPriorityID = [0];
     this.arrOwnerEmail = [];
-    this.arrChildren = [];
-    this.arrParents = [];
-    this.objPLC = [];
-    this.plcSchedules = []; // save clicked plc statuses
+    this.arrStatusID = [0];   // adding 0 as blank
+    // this.arrParents = [];
+    // this.arrChildren = [];
+    this.arrFamily = [];
     this.fteMin = [];
     this.fteMax = [];
     this.minDate = '1900-01-01';
     this.maxDate = '2900-01-01';
+    this.objPLC = [];
+    this.plcSchedules = []; // save clicked plc statuses
 
     // Reset to default values
     await this.initCheckboxValues();
@@ -893,6 +894,26 @@ console.log('after service');
   onShowFilterToggleClick() {
 
     $('#sidebar').toggleClass('active');
+
+  }
+
+// RESET BUTTON
+
+  onResetButtonMouseEnter() {
+
+    const options = {
+      title: 'Reset to initial values',
+      placement: 'left'
+    };
+
+    $('button.reset-button').tooltip(options);
+    $('button.reset-button').tooltip('show');
+
+  }
+
+  onResetButtonMouseLeave() {
+
+    $('button.export-button').tooltip('dispose');
 
   }
 

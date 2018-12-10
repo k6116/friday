@@ -13,12 +13,12 @@ export class AdvancedFiltersCheckboxesService {
   ) { }
 
   onAllParentsCheck(that: any, checked: boolean) {
-      console.log('all parent ckeckbox service works');
 
     if (checked === true) {
 
         // looping through all parents and check if they are already in arrFamily
         // note: index = -1 indicates the childID was not found in arrFamily
+
         let index = -1;
         for (let i = 0; i < that.parents.length; i++) {
 
@@ -53,11 +53,12 @@ export class AdvancedFiltersCheckboxesService {
   }
 
   onAllChildrenCheck(that: any, checked: boolean) {
-console.log('service for children works');
+
     if (checked === true) {
 
         // looping through all children and check if they are already in arrFamily
         // note: index = -1 indicates the childID was not found in arrFamily
+
         let index = -1;
         for (let i = 0; i < that.children.length; i++) {
 
@@ -92,7 +93,7 @@ console.log('service for children works');
   }
 
   onAllProjectTypesCheck(that: any, checked: boolean) {
-    // console.log('service for project types works');
+
     if (checked === true) {
 
       that.arrTypeID = [0]; // adding zero as blank
@@ -103,7 +104,6 @@ console.log('service for children works');
     } else if (checked === false) {
 
       that.arrTypeID = [];
-      // that.filterObject.ProjectTypesIDs = String(that.arrTypeID);
 
     }
   }

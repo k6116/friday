@@ -3,6 +3,7 @@ import { ApiDataProjectService } from '../../../_shared/services/api-data/_index
 import { ApiDataAdvancedFilterService } from '../../../_shared/services/api-data/_index';
 import { CacheService } from '../../../_shared/services/cache.service';
 
+declare var $: any;
 @Injectable()
 export class AdvancedFiltersProjectSearchService {
 
@@ -29,6 +30,12 @@ export class AdvancedFiltersProjectSearchService {
 
     // clear the filter string
     that.filterString = undefined;
+
+    // clear parent-child
+    that.parents = [];
+    that.children = [];
+    $('#parentProjects').removeClass('show');
+    $('#childProjects').removeClass('show');
 
     // reset the focus on the filter input
     that.filterStringVC.nativeElement.focus();

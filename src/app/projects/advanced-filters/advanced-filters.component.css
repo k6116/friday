@@ -151,7 +151,7 @@ div.projects-display-count {
 /* FILTER CONTENT */
 div.adv-search-content {
   display: flex;
-  /* height: 113vh; */
+  height: auto;
   overflow-x: hidden;
   overflow-y: hidden;
 }
@@ -161,7 +161,7 @@ div.filter-column {
   width: 402px;
 }
 
-/* Go buttonf */
+/* Go button */
 button.filter-go-btn {
   font-size: small !important;
   border: 1px solid lightgray !important;
@@ -254,13 +254,6 @@ i.projects-search-icon-search.projects-owner {
   width: 11px;
   height: 11px;
 }
-
-/* .custom-checkbox .custom-control-input:checked~.custom-control-label::after {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
-  height: 14px !important;
-  width: 14px !important;
-  cursor: pointer;
-} */
 
 .custom-control-label::after {
   cursor: pointer;
@@ -365,20 +358,3 @@ input.form-control:focus.plc-input-invalid {
 .btn-inline-toolbar {
   display: inline-flex;
 }
-
-
-
-
-
-
-/* Parent - Child */
-/* div.filter-box {
-  width: 50%;
-  display: inline;
-} */
-/* 
-div.filter-box-left {
-  width: 48%;
-  float: left;
-  margin-right: 16px;
-} */
