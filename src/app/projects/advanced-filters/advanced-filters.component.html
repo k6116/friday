@@ -75,7 +75,7 @@
           <i class="fa fa-times" aria-hidden="true"></i>
           Clear
         </button> -->
-        <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="onClearAllClick()">
+        <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="onClearAllClick()" hidden>
           <i class="fa fa-trash button-icon" aria-hidden="true" style="margin-right:5px"></i>Reset
         </button>
 
@@ -413,7 +413,7 @@
                   <div class="custom-control custom-checkbox">
                       <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" 
                           [(ngModel)]="allPLCSchedulesCheckbox"
-                          (change)="selectAllPLCSchedules($event.target.checked)">
+                          (change)="selectAllPLCSchedules()">
                       <label class="custom-control-label" for="PLCStatusIDs">
                         <small style="margin: 0px 5px 0px -4px;">All</small>
                       </label>

@@ -1,20 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ApiDataProjectService } from '../../../_shared/services/api-data/_index';
-import { ApiDataAdvancedFilterService } from '../../../_shared/services/api-data/_index';
-import { CacheService } from '../../../_shared/services/cache.service';
 
 @Injectable()
 export class AdvancedFiltersPLCService {
 
-  constructor(
-    private apiDataProjectService: ApiDataProjectService,
-    private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
-    private cacheService: CacheService
-  ) { }
+  constructor() { }
 
 
   async onClick(that, checked: boolean) {
-    // console.log('3');
+
     // add or remove to local array depending on the checkbox state
     if (checked === true) {
 
@@ -37,12 +30,6 @@ export class AdvancedFiltersPLCService {
     }
 
     await this.getScheduleString(that);
-
-    // Make db call -> move to db call on 'go' click
-    // that.advancedFiltersDataService.advancedFilter(that, that.filterObject);
-  }
-
-  onPLCStatusCheck() {
 
   }
 
@@ -90,14 +77,15 @@ export class AdvancedFiltersPLCService {
 
     this.getScheduleString(that);
 
-    // Make db call
-    // that.advancedFiltersDataService.advancedFilter(that, that.filterObject);
-
   }
 
   getScheduleString(that: any) {
     const arrID = [];
     const arrDate = [];
+
+    // note: string needs to be in this format:
+    //       filterObject.PLCStatusIDs = 1,2
+    //       filterObject.PLCDateRanges = '2017/01/01|2017/01/01, 2017/01/01|2017/01/01'
 
     // organize the data in buckets in order to convert each array into strings
     for (let i = 0; i < that.objPLC.length; i++) {
@@ -108,6 +96,7 @@ export class AdvancedFiltersPLCService {
     // save strings into the db object
     that.filterObject.PLCStatusIDs = String(arrID);
     that.filterObject.PLCDateRanges = String(arrDate);
+
   }
 
 }

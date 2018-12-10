@@ -89,9 +89,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   };
 
   // For default Check All - To-DO: Still need this?
-  checkAllProjectTypes: boolean;
-  checkAllProjectPriorities: boolean;
-  checkAllProjectStatuses: boolean;
+  // checkAllProjectTypes: boolean;
+  // checkAllProjectPriorities: boolean;
+  // checkAllProjectStatuses: boolean;
 
   // Filter Results
   advancedFilteredResults: any;
@@ -101,7 +101,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   subscription2: Subscription; // for excel download
   showSpinner: boolean;
   showPage: boolean;
-  // showParentChild: boolean; // only show parent child filter boxes if clicked on a project from results table
   showDashboard: boolean;
   showFilterCol: boolean;
   showDownloadingIcon: boolean;
@@ -111,11 +110,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   fteMin: any; // for fte checkbox logic
   fteMax: any; // for fte checkbox logic
 
-  // All-button flags
-  allCheckbox: any;
-
   // month
-  // currentMonth: number;
   fteDateFrom: any; // for FTE date range input - format yyyy-MM-dd required
   fteDateTo: any; // for FTE date range input - format yyyy-MM-dd required
 
@@ -133,7 +128,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    // To-DO Chai: move all these call to the data service
     private apiDataAdvancedFilterService: ApiDataAdvancedFilterService,
     private apiDataOrgService: ApiDataOrgService,
     private authService: AuthService,
@@ -161,11 +155,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       PLCStatusIDs: '',       // num1,num2,num3,..
       PLCDateRanges: '',      // From1|To1, From2|To2, From3|To3,...
       ProjectName: '',        // name, name, name,..
-      ProjectID: '',          // num,num,num
+      ProjectID: '',          // num,num,num,..
       ProjectTypeIDs: '',     // num,num,num,..
       ProjectStatusIDs: '',   // num,num,num,..
       ProjectPriorityIDs: '', // num,num,num,..
-      ProjectOwnerEmails: '', // email1, email2, email3,...
+      ProjectOwnerEmails: '', // email, email, email,...
       FTEMin: 'NULL',         // 0
       FTEMax: 'NULL',         // 100
       FTEDateFrom: 'NULL',    // 2017-01-01
@@ -174,22 +168,20 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     this.filterCheckedArray = [];
     this.arrTypeID = [];
-    this.arrStatusID = [0];   // adding 0 as blank
-    this.arrPriorityID = [0];
+    this.arrStatusID = [0];   // adding 0 to show blanks
+    this.arrPriorityID = [0]; // adding 0 to show blanks
     this.arrOwnerEmail = [];
     this.arrChildren = [];
     this.arrParents = [];
     this.arrFamily = [];
-    this.objPLC = [];
+    this.objPLC = [];       // contains newPLC on plc status checked
     this.plcSchedules = []; // save clicked plc statuses
     this.fteMin = [];
     this.fteMax = [];
     this.minDate = '1900-01-01';
     this.maxDate = '2900-01-01';
 
-    // ALL-checkbox array
-    // This is to detect if all individual checkboxes of each filter category is checked/unchecked
-    // So that the 'All' checkbox can behave accordingly
+    // 'ALL'-checkboxes that default true
     this.allProjectTypesCheckbox = true;
     this.allProjectPrioritiesCheckbox = true;
     this.allProjectStatusesCheckbox = true;
@@ -221,11 +213,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     await this.getAllProjects();
 
     this.initTypeahead();
-
-    // Select All default true checkboxes
-    this.selectAllProjectTypes(this.allProjectTypesCheckbox);
-    this.selectAllProjectPriorities(this.allProjectPrioritiesCheckbox);
-    this.selectAllProjectStatuses(this.allProjectStatusesCheckbox);
 
     // hide the spinner
     this.showSpinner = false;
@@ -295,6 +282,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.projectPriorities.length; i++) {
       this.arrPriorityID.push(this.projectPriorities[i].id);
     }
+
+    // Select All default true checkboxes
+    this.selectAllProjectTypes(this.allProjectTypesCheckbox);
+    this.selectAllProjectPriorities(this.allProjectPrioritiesCheckbox);
+    this.selectAllProjectStatuses(this.allProjectStatusesCheckbox);
 
   }
 
@@ -372,6 +364,54 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
 // CHECKBOXES
 
+  // Project Types
+  async selectAllProjectTypes(checked: boolean) {
+
+    for (let i = 0; i < this.projectTypes.length; i++) {
+      this.projectTypes[i].selected = this.allProjectTypesCheckbox;
+    }
+
+    await this.advancedFiltersCheckboxesService.onAllProjectTypesCheck(this, checked);
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+  }
+
+  checkIfAllProjectTypesSelected() {
+    this.allProjectTypesCheckbox = this.projectTypes.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
+  onProjectTypeCheckboxClick(event: any, id: string) {
+    const checked = event.target.checked;
+
+    if (checked === true) {
+      // ADD ID to array
+      this.arrTypeID.push(id);
+    } else if (checked === false) {
+      // find ID in array
+      for (let i = 0; i < this.arrTypeID.length; i++) {
+        // REMOVE from array
+        if (this.arrTypeID[i] === id) {
+          this.arrTypeID.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    // Convert and save array to filterObject
+    this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+  }
+
   // Project Status
   async selectAllProjectStatuses(checked: boolean) {
     // const checked = event.target.checked;
@@ -421,54 +461,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  // Project Types
-  async selectAllProjectTypes(checked: boolean) {
-
-    for (let i = 0; i < this.projectTypes.length; i++) {
-      this.projectTypes[i].selected = this.allProjectTypesCheckbox;
-    }
-
-    await this.advancedFiltersCheckboxesService.onAllProjectTypesCheck(this, checked);
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
-  }
-
-  checkIfAllProjectTypesSelected() {
-    this.allProjectTypesCheckbox = this.projectTypes.every(function(item: any) {
-      return item.selected === true;
-    });
-  }
-
-  onProjectTypeCheckboxClick(event: any, id: string) {
-    const checked = event.target.checked;
-
-    if (checked === true) {
-      // ADD ID to array
-      this.arrTypeID.splice(0, 0, id);
-    } else if (checked === false) {
-      // find ID in array
-      for (let i = 0; i < this.arrTypeID.length; i++) {
-        // REMOVE from array
-        if (this.arrTypeID[i] === id) {
-          this.arrTypeID.splice(i, 1);
-          break;
-        }
-      }
-    }
-
-    // Convert and save array to filterObject
-    this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
-  }
-
   // Project Priority
   async selectAllProjectPriorities(checked: boolean) {
 
@@ -496,7 +488,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     if (checked === true) {
       // ADD ID to array
-      // this.arrPriorityID.splice(0, 0, id);
       this.arrPriorityID.push(id);
     } else if (checked === false) {
       // find ID in array
@@ -554,7 +545,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // Consolidate all filters in one array
     if (value === true) {
       // ADD ID to array
-      this.arrOwnerEmail.splice(0, 0, email);
+      this.arrOwnerEmail.push(email);
     } else {
       // find ID in array
       for (let i = 0; i < this.arrOwnerEmail.length; i++) {
@@ -688,11 +679,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   }
 
   // PLC Schedules
-  async selectAllPLCSchedules(event: any) {
-
-    for (let i = 0; i < this.plcStatuses.length; i++) {
-      this.plcStatuses[i].selcected = this.allPLCSchedulesCheckbox;
-    }
+  async selectAllPLCSchedules() {
 
     if (this.allPLCSchedulesCheckbox === true) {
       this.objPLC = [];
@@ -720,12 +707,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   // Send plc filter data to db when clicking the'Go' button on the plc filter header
   async onPLCGoClick() {
+
     // translate local plc object to filterObject strings
     await this.advancedFiltersPLCService.getScheduleString(this);
 
-    console.log(this.filterObject);
-
-    // Make db call -> move to db call on 'go' click
+    // Make db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
   }
 
