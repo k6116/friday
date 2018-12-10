@@ -411,7 +411,9 @@
                 <div style="float:right; display:inherit">
                   
                   <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" (click)="onPLCCheckAllClick($event)" [(ngModel)]="checkAllPLC">
+                      <input type="checkbox" class="custom-control-input" id="PLCStatusIDs" 
+                          [(ngModel)]="allPLCSchedulesCheckbox"
+                          (change)="selectAllPLCSchedules($event.target.checked)">
                       <label class="custom-control-label" for="PLCStatusIDs">
                         <small style="margin: 0px 5px 0px -4px;">All</small>
                       </label>
@@ -432,14 +434,10 @@
                     
                     <!-- plc status checkbox -->
                     <div class="custom-control custom-checkbox adv-filter-cb" style="margin: 2px 3px 0px 3px;">
-                      <input 
-                          class="custom-control-input"
-                          type="checkbox" 
-                          [checked]="checkAllPLC"  
-                          [attr.name]="plcStatus.PLCStatusName" 
-                          [attr.id]="'plcStatus' + l" 
-                          [(ngModel)]="plcStatus.checked"
-                          (click)="onPLCStatusCheckboxClick(l, $event, plcStatus); inputPLCFrom.value=''; inputPLCTo.value=''">
+                      <input class="custom-control-input" type="checkbox" [attr.name]="plcStatus.PLCStatusName" [attr.id]="'plcStatus' + l" 
+                          [(ngModel)]="plcStatus.selected"
+                          (change)="checkIfAllPLCSchedulesSelected()"
+                          (click)="onPLCStatusCheckboxClick(l, $event.target.checked, plcStatus); inputPLCFrom.value=''; inputPLCTo.value=''">
                       <label class="custom-control-label" [attr.for]="'plcStatus' + l" style="margin-left: 8px">{{ plcStatus.PLCStatusName }}</label>
                     </div>
 
@@ -453,7 +451,7 @@
                           [min]="minDate"  
                           [max]="maxDate" 
                           style="margin-top: 0px" 
-                          [disabled]="!plcStatus.checked" 
+                          [disabled]="!plcStatus.selected" 
                           (change)="onInputPLCChange($event, l)">
                       <span style="margin: 0px 5px">-</span>
                       <input #inputPLCTo 
@@ -464,7 +462,7 @@
                           [min]="minDate" 
                           [max]="maxDate" 
                           style="margin-top: 0px" 
-                          [disabled]="!plcStatus.checked" 
+                          [disabled]="!plcStatus.selected" 
                           (change)="onInputPLCChange($event, l)">
                     </div>
 

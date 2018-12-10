@@ -123,16 +123,13 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   showDashboardButton: boolean;
 
   // 'All' checkboxes - used with [(ngModel)]
-  allProjectTypesCheckbox: boolean;         // DONE
-  allProjectPrioritiesCheckbox: boolean;    // DONE
+  allProjectTypesCheckbox: boolean;
+  allProjectPrioritiesCheckbox: boolean;
   allProjectOwnersCheckbox: boolean;
-  allProjectStatusesCheckbox: boolean;      // DONE
-  allParentsCheckbox: boolean;              // DONE
-  allChildrenCheckbox: boolean;             // DONE
+  allProjectStatusesCheckbox: boolean;
+  allParentsCheckbox: boolean;
+  allChildrenCheckbox: boolean;
   allPLCSchedulesCheckbox: boolean;
-
-
-
 
   constructor(
     private router: Router,
@@ -196,16 +193,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.allProjectTypesCheckbox = true;
     this.allProjectPrioritiesCheckbox = true;
     this.allProjectStatusesCheckbox = true;
-    // Don't need this anymore!
-    // this.allCheckbox = {
-    //   ProjectTypes: true,
-    //   ProjectOwner: false,
-    //   ProjectPriority: true,
-    //   ProjectStatus: true,
-    //   Parents: false,
-    //   Children: false,
-    //   PLCSchedules: false
-    // };
 
     // For Excel Download
     this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
@@ -245,9 +232,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // show page
     this.showPage = true;
-
-    // don't show parent-child filter boxes - not used
-    // this.showParentChild = false;
 
     // show the footer
     this.toolsService.showFooter();
@@ -298,11 +282,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   }
 
   initCheckboxValues() {
-
-    // set "ALL" flags to true - TO-DO: Still need these?
-    // this.checkAllProjectTypes = true;
-    // this.checkAllProjectPriorities = true;
-    // this.checkAllProjectStatuses = true;
 
     // loop through filter groups and push them to array so they can be added to the filterObject
     for (let i = 0; i < this.projectStatuses.length; i++) {
@@ -356,157 +335,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  // Section for 'All' checkbox //////////////////////////////////
-
-  // Project Status
-  async selectAllProjectStatuses(checked: boolean) {
-    // const checked = event.target.checked;
-
-    for (let i = 0; i < this.projectStatuses.length; i++) {
-      this.projectStatuses[i].selected = this.allProjectStatusesCheckbox;
-    }
-
-    await this.advancedFiltersCheckboxesService.onAllProjectStatusesCheck(this, checked);
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
-  }
-
-  checkIfAllProjectStatusesSelected() {
-    this.allProjectStatusesCheckbox = this.projectStatuses.every(function(item: any) {
-      return item.selected === true;
-    });
-  }
-
-  // Project Types
-  async selectAllProjectTypes(checked: boolean) {
-
-    for (let i = 0; i < this.projectTypes.length; i++) {
-      this.projectTypes[i].selected = this.allProjectTypesCheckbox;
-    }
-
-    await this.advancedFiltersCheckboxesService.onAllProjectTypesCheck(this, checked);
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
-  }
-
-  checkIfAllProjectTypesSelected() {
-    this.allProjectTypesCheckbox = this.projectTypes.every(function(item: any) {
-      return item.selected === true;
-    });
-  }
-
-  // Project Priority
-  async selectAllProjectPriorities(checked: boolean) {
-
-    for (let i = 0; i < this.projectPriorities.length; i++) {
-      this.projectPriorities[i].selected = this.allProjectPrioritiesCheckbox;
-    }
-    await this.advancedFiltersCheckboxesService.onAllProjectPriorities(this, checked);
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
-  }
-
-  checkIfAllProjectPrioritiesSelected() {
-    this.allProjectPrioritiesCheckbox = this.projectPriorities.every(function(item: any) {
-      return item.selected === true;
-    });
-  }
-
-  // Project Owners
-  async selectAllProjectOwners(checked: boolean) {
-
-    // update all .selcected to value of 'ALL'-checkbox
-    for (let i = 0; i < this.managerTeam.length; i++) {
-      this.managerTeam[i].selected = this.allProjectOwnersCheckbox;
-    }
-
-    if (this.allProjectOwnersCheckbox === true) {
-      // update all .selcected to value of 'ALL'-checkbox
-      for (let i = 0; i < this.managerTeam.length; i++) {
-        this.arrOwnerEmail.push(this.managerTeam[i].EMAIL_ADDRESS);
-      }
-    } else if (this.allProjectOwnersCheckbox === false) {
-      this.arrOwnerEmail = [];
-    }
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
-  }
-
-  checkIfAllProjectOwnersSelected() {
-    this.allProjectOwnersCheckbox = this.managerTeam.every(function(item: any) {
-      return item.selected === true;
-    });
-  }
-
-  // Parent
-  async selectAllParents(event: any) {
-    const checked = event.target.checked;
-
-    for (let i = 0; i < this.parents.length; i++) {
-      this.parents[i].selected = this.allParentsCheckbox;
-    }
-
-    await this.advancedFiltersCheckboxesService.onAllParentsCheck(this, checked);
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectID = String(this.arrFamily);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-  }
-
-  checkIfAllParentsSelected() {
-    this.allParentsCheckbox = this.parents.every(function(item: any) {
-      return item.selected === true;
-    });
-  }
-
-  // Children
-  async selectAllChildren(event: any) {
-    const checked = event.target.checked;
-
-    for (let i = 0; i < this.children.length; i++) {
-      this.children[i].selected = this.allChildrenCheckbox;
-    }
-
-    await this.advancedFiltersCheckboxesService.onAllChildrenCheck(this, checked);
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectID = String(this.arrFamily);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-  }
-
-  checkIfAllChildrenSelected() {
-    this.allChildrenCheckbox = this.children.every(function(item: any) {
-      return item.selected === true;
-    });
-  }
-
-  //////////////////////////////////////////////////////////////////////
-
-
 // PROJECT OWNERS
 
   async getManagers(managerEmailAddress: string) {
@@ -544,164 +372,30 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
 // CHECKBOXES
 
-  // reset checkbox array to initial state
-  onCheckboxReset(chekboxID: any) {
+  // Project Status
+  async selectAllProjectStatuses(checked: boolean) {
+    // const checked = event.target.checked;
 
-    switch (chekboxID) {
-      case 'ProjectTypeIDs':
-        for (let i = 0; i < this.projectTypes.length; i++) {
-          this.arrTypeID.push(this.projectTypes[i].id);
-        }
-        break;
-      case 'ProjectStatusIDs':
-        this.arrStatusID = [0]; // adding zero as blank
-        for (let i = 0; i < this.projectStatuses.length; i++) {
-          this.arrStatusID.push(this.projectStatuses[i].id);
-        }
-        break;
-      case 'ProjectPriorityIDs':
-        this.arrPriorityID = [0];  // adding zero as blank
-        for (let i = 0; i < this.projectPriorities.length; i++) {
-          this.arrPriorityID.push(this.projectPriorities[i].id);
-        }
-        break;
-      case 'PLCStatusIDs':
-        for (let i = 0; i < this.plcStatuses.length; i++) {
-          this.newPLC = {
-            index: i,
-            PLCStatusID: this.plcStatuses[i].PLCStatusID,
-            PLCStatusName: this.plcStatuses[i].PLCStatusName,
-            PLCDateFrom: 'NULL',
-            PLCDateTo: 'NULL'
-          };
-          this.objPLC.push(this.newPLC);
-        }
-        break;
+    for (let i = 0; i < this.projectStatuses.length; i++) {
+      this.projectStatuses[i].selected = this.allProjectStatusesCheckbox;
     }
 
-  }
+    await this.advancedFiltersCheckboxesService.onAllProjectStatusesCheck(this, checked);
 
-  // Checkbox "All"
-  async onCheckAllClick(event: any) {
-    const checkboxID = event.target.id;
-    const checkState = event.target.checked;
-    const objKey = Object.keys(this.filterObject);
-
-    if (checkState === false) {
-      // loop through array of object keys and compare with the checkbox IDs
-      for (let i = 0; i < objKey.length; i++) {
-
-        if (objKey[i] === checkboxID) {
-
-          switch (objKey[i]) {
-            // case 'ProjectTypeIDs':
-            //   this.arrTypeID = [];
-            //   this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
-            //   break;
-            case 'ProjectOwnerEmails':
-              this.arrOwnerEmail = this.managerTeam[0].EMAIL_ADDRESS;
-              this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
-              break;
-            // case 'ProjectStatusIDs':
-            //   this.arrStatusID = [];
-            //   this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
-            //   break;
-            // case 'ProjectPriorityIDs':
-            //   this.arrPriorityID = [];
-            //   this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
-            //   break;
-            case 'FTEMin':
-              this.filterObject.FTEMin = 'NULL';
-              this.filterObject.FTEMax = 'NULL';
-              break;
-            // case 'PLCStatusIDs':
-            //   this.objPLC = [];
-            //   this.filterObject.PLCStatusIDs = String(this.objPLC);
-            //   break;
-          }
-          break;
-
-        }
-
-      }
-    } else if (checkState === true) {
-
-      // fill filterObjects with array from init or any other default values
-      for (let i = 0; i < objKey.length; i++) {
-
-        if (objKey[i] === checkboxID) {
-          switch (objKey[i]) {
-            // case 'ProjectTypeIDs':
-            //   await this.onCheckboxReset(checkboxID);
-            //   this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
-            //   break;
-            case 'ProjectOwnerEmails':
-              for (let j = 0; j < this.managerTeam.length; j++) {
-              this.arrOwnerEmail.push(this.managerTeam[j].EMAIL_ADDRESS);
-              }
-              this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
-              break;
-            // case 'ProjectStatusIDs':
-            //   await this.onCheckboxReset(checkboxID);
-            //   this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
-            //   break;
-            // case 'ProjectPriorityIDs':
-            //   await this.onCheckboxReset(checkboxID);
-            //   this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
-            //   break;
-            case 'FTEMin':
-              this.filterObject.FTEMin = '0';
-              this.filterObject.FTEMax = '100';
-              break;
-            // case 'PLCStatusIDs':
-            //   // objPLC contains newPLC array because it also needs to save dates
-            //   // selecting all means newPLC has to be created for each PLC status
-            //   await this.onCheckboxReset(checkboxID);
-            //   const arr = [];
-            //   for (let j = 0; i < this.objPLC.length; j++) {
-            //     arr.push(this.objPLC[j].PLCStatusID);
-            //   }
-            //   this.filterObject.PLCStatusIDs = String(arr);
-            //   break;
-          }
-          break;
-        }
-      }
-
-    }
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
   }
 
-  // ProjectTypes - DONE
-  onProjectTypeCheckboxClick(event: any, id: string) {
-    const checked = event.target.checked;
-
-    if (checked === true) {
-      // ADD ID to array
-      this.arrTypeID.splice(0, 0, id);
-    } else if (checked === false) {
-      // find ID in array
-      for (let i = 0; i < this.arrTypeID.length; i++) {
-        // REMOVE from array
-        if (this.arrTypeID[i] === id) {
-          this.arrTypeID.splice(i, 1);
-          break;
-        }
-      }
-    }
-
-    // Convert and save array to filterObject
-    this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
+  checkIfAllProjectStatusesSelected() {
+    this.allProjectStatusesCheckbox = this.projectStatuses.every(function(item: any) {
+      return item.selected === true;
+    });
   }
 
-  // Project Status - DONE
   onProjectStatusCheckboxClick(event: any, id: string) {
     const checked = event.target.checked;
 
@@ -727,7 +421,76 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  // Project Priority - DONE
+  // Project Types
+  async selectAllProjectTypes(checked: boolean) {
+
+    for (let i = 0; i < this.projectTypes.length; i++) {
+      this.projectTypes[i].selected = this.allProjectTypesCheckbox;
+    }
+
+    await this.advancedFiltersCheckboxesService.onAllProjectTypesCheck(this, checked);
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+  }
+
+  checkIfAllProjectTypesSelected() {
+    this.allProjectTypesCheckbox = this.projectTypes.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
+  onProjectTypeCheckboxClick(event: any, id: string) {
+    const checked = event.target.checked;
+
+    if (checked === true) {
+      // ADD ID to array
+      this.arrTypeID.splice(0, 0, id);
+    } else if (checked === false) {
+      // find ID in array
+      for (let i = 0; i < this.arrTypeID.length; i++) {
+        // REMOVE from array
+        if (this.arrTypeID[i] === id) {
+          this.arrTypeID.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    // Convert and save array to filterObject
+    this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+  }
+
+  // Project Priority
+  async selectAllProjectPriorities(checked: boolean) {
+
+    for (let i = 0; i < this.projectPriorities.length; i++) {
+      this.projectPriorities[i].selected = this.allProjectPrioritiesCheckbox;
+    }
+    await this.advancedFiltersCheckboxesService.onAllProjectPriorities(this, checked);
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+  }
+
+  checkIfAllProjectPrioritiesSelected() {
+    this.allProjectPrioritiesCheckbox = this.projectPriorities.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
   onProjectPriorityCheckboxClick(event: any, id: string) {
     const checked = event.target.checked;
 
@@ -754,7 +517,88 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  // PARENT-CHILD-PROJECTS - DONE
+  // Project Owners
+  async selectAllProjectOwners(checked: boolean) {
+
+    // update all .selcected to value of 'ALL'-checkbox
+    for (let i = 0; i < this.managerTeam.length; i++) {
+      this.managerTeam[i].selected = this.allProjectOwnersCheckbox;
+    }
+
+    if (this.allProjectOwnersCheckbox === true) {
+      // update all .selcected to value of 'ALL'-checkbox
+      for (let i = 0; i < this.managerTeam.length; i++) {
+        this.arrOwnerEmail.push(this.managerTeam[i].EMAIL_ADDRESS);
+      }
+    } else if (this.allProjectOwnersCheckbox === false) {
+      this.arrOwnerEmail = [];
+    }
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+  }
+
+  checkIfAllProjectOwnersSelected() {
+    this.allProjectOwnersCheckbox = this.managerTeam.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
+  onCheckboxProjectOwnerClick(event: any, email: string) {
+    const value = event.target.checked;
+
+    // Consolidate all filters in one array
+    if (value === true) {
+      // ADD ID to array
+      this.arrOwnerEmail.splice(0, 0, email);
+    } else {
+      // find ID in array
+      for (let i = 0; i < this.arrOwnerEmail.length; i++) {
+        // REMOVE from array
+        if (this.arrOwnerEmail[i] === email) {
+          this.arrOwnerEmail.splice(i, 1);
+          break;
+        }
+      }
+    }
+    // console.log('Project Owners Array', this.arrOwnerEmail);
+
+    // Convert the array to string and save to filterObject
+    this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
+    // console.log('PROJECT OWNER STRING:', this.filterObject.ProjectOwnerEmails);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+
+  }
+
+  // Parent
+  async selectAllParents(event: any) {
+    const checked = event.target.checked;
+
+    for (let i = 0; i < this.parents.length; i++) {
+      this.parents[i].selected = this.allParentsCheckbox;
+    }
+
+    await this.advancedFiltersCheckboxesService.onAllParentsCheck(this, checked);
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectID = String(this.arrFamily);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+  }
+
+  checkIfAllParentsSelected() {
+    this.allParentsCheckbox = this.parents.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
 
   onParentCheckboxClick(event: any, projectID: number) {
     const checked = event.target.checked;
@@ -788,6 +632,29 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterString = undefined;
   }
 
+  // Children
+  async selectAllChildren(event: any) {
+    const checked = event.target.checked;
+
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i].selected = this.allChildrenCheckbox;
+    }
+
+    await this.advancedFiltersCheckboxesService.onAllChildrenCheck(this, checked);
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectID = String(this.arrFamily);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+  }
+
+  checkIfAllChildrenSelected() {
+    this.allChildrenCheckbox = this.children.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
   onChildCheckboxClick(event: any, projectID: number) {
 
     const checked = event.target.checked;
@@ -818,6 +685,82 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // clear the filter string
     this.filterString = undefined;
+  }
+
+  // PLC Schedules
+  async selectAllPLCSchedules(event: any) {
+
+    for (let i = 0; i < this.plcStatuses.length; i++) {
+      this.plcStatuses[i].selcected = this.allPLCSchedulesCheckbox;
+    }
+
+    if (this.allPLCSchedulesCheckbox === true) {
+      this.objPLC = [];
+      for (let i = 0; i < this.plcStatuses.length; i++) {
+        this.plcStatuses[i].selected = true;                           // to enable plc schedules input boxes
+        this.onPLCStatusCheckboxClick(i, this.allPLCSchedulesCheckbox, this.plcStatuses[i]); // to save data locally in objPLC
+      }
+
+    } else if (this.allPLCSchedulesCheckbox === false) {
+
+      for (let i = 0; i < this.plcStatuses.length; i++) {
+        this.plcStatuses[i].selected = false;                          // to disable plc schedules input boxes
+        this.onPLCStatusCheckboxClick(i, this.allPLCSchedulesCheckbox, this.plcStatuses[i]); // to save data locally in objPLC
+      }
+
+    }
+
+  }
+
+  checkIfAllPLCSchedulesSelected() {
+    this.allPLCSchedulesCheckbox = this.plcStatuses.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
+  // Send plc filter data to db when clicking the'Go' button on the plc filter header
+  async onPLCGoClick() {
+    // translate local plc object to filterObject strings
+    await this.advancedFiltersPLCService.getScheduleString(this);
+
+    console.log(this.filterObject);
+
+    // Make db call -> move to db call on 'go' click
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+  }
+
+  onPLCStatusCheckboxClick(index, checked: boolean, plcStatus: any) {
+
+    // use interface to sort out all the attributes
+    this.newPLC = {
+      index: index,                           // to macth up date-input box with status-scheckbox onInputPLCChange
+      PLCStatusID: plcStatus.PLCStatusID,
+      PLCStatusName: plcStatus.PLCStatusName, // for filterObject
+      PLCDateFrom: 'NULL',                    // for filterObject
+      PLCDateTo: 'NULL'                       // for filterObject
+    };
+
+    if (checked === true) {
+      // Add checked PLC Status to local PLC object
+      this.objPLC.push(this.newPLC);
+
+    } else if (checked === false) {
+      // find and remove the appropriate status in the local plc object
+      this.advancedFiltersPLCService.onPLCStatusUncheck(this);
+
+    }
+
+  }
+
+  onInputPLCChange(event: any, index) {
+
+    const valid = event.target.validity.valid;
+
+    // Only allow dates from 1900 and complete dates
+    if (valid === true ) {
+      this.advancedFiltersPLCService.onInputChange(this, event, index);
+    }
+
   }
 
 // FTE
@@ -887,114 +830,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       // Make the db call
       this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
      }
-
-  }
-
-// PLC SCHEDULES
-
-  // Send plc filter data to db when clicking the'Go' button on the plc filter header
-  async onPLCGoClick() {
-    // translate local plc object to filterObject strings
-    await this.advancedFiltersPLCService.getScheduleString(this);
-
-    // Make db call -> move to db call on 'go' click
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-  }
-
-  // Checking or Unchecking 'ALL' plc status checkboxes
-  onPLCCheckAllClick(event: any, index) {
-    // note: Use ngModel plcStatus.checked on checkboxes
-    // - If 'All' checkbox is checked, loop through plcStatuses and set checked to true.
-    // - If 'All' checkbox is unchecked, set to false
-    // - Update local objPLC with new data. It will be used onPLCGoClick
-
-    const checked = event.target.checked;
-
-    if (checked === true) {
-
-      for (let i = 0; i < this.plcStatuses.length; i++) {
-        this.plcStatuses[i].checked = true;                           // to enable plc schedules input boxes
-        this.onPLCStatusCheckboxClick(i, event, this.plcStatuses[i]); // to save data locally in objPLC
-      }
-
-    } else if (checked === false) {
-
-      for (let i = 0; i < this.plcStatuses.length; i++) {
-        this.plcStatuses[i].checked = false;                          // to disable plc schedules input boxes
-        this.onPLCStatusCheckboxClick(i, event, this.plcStatuses[i]); // to save data locally in objPLC
-      }
-
-    }
-
-  }
-
-  // Checking or unchecking the plc status checkbox
-  onPLCStatusCheckboxClick(index, event: any, plcStatus: any) {
-    // console.log('2');
-    const checked = event.target.checked;
-
-    // use interface to sort out all the attributes
-    this.newPLC = {
-      index: index,                           // to macth up date-input box with status-scheckbox onInputPLCChange
-      PLCStatusID: plcStatus.PLCStatusID,
-      PLCStatusName: plcStatus.PLCStatusName, // for filterObject
-      PLCDateFrom: 'NULL',                    // for filterObject
-      PLCDateTo: 'NULL'                       // for filterObject
-    };
-
-    if (checked === true) {
-      // Add checked PLC Status to local PLC object
-      this.objPLC.push(this.newPLC);
-
-    } else if (checked === false) {
-      // find and remove the appropriate status in the local plc object
-      this.advancedFiltersPLCService.onPLCStatusUncheck(this);
-
-    }
-
-    // this.advancedFiltersPLCService.onClick(this, checked);
-
-  }
-
-  onInputPLCChange(event: any, index) {
-
-    const valid = event.target.validity.valid;
-
-    // Only allow dates from 1900 and complete dates
-    if (valid === true ) {
-      this.advancedFiltersPLCService.onInputChange(this, event, index);
-    }
-
-  }
-
-// PROJECT OWNER
-
-  onCheckboxProjectOwnerClick(event: any, email: string) {
-    const value = event.target.checked;
-
-    // Consolidate all filters in one array
-    if (value === true) {
-      // ADD ID to array
-      this.arrOwnerEmail.splice(0, 0, email);
-    } else {
-      // find ID in array
-      for (let i = 0; i < this.arrOwnerEmail.length; i++) {
-        // REMOVE from array
-        if (this.arrOwnerEmail[i] === email) {
-          this.arrOwnerEmail.splice(i, 1);
-          break;
-        }
-      }
-    }
-    // console.log('Project Owners Array', this.arrOwnerEmail);
-
-    // Convert the array to string and save to filterObject
-    this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
-    // console.log('PROJECT OWNER STRING:', this.filterObject.ProjectOwnerEmails);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
 
   }
 
