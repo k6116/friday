@@ -120,13 +120,19 @@
                   Project Types
                 </div>
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" checked class="custom-control-input" id="ProjectTypeIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectTypes">
+                  <input type="checkbox" class="custom-control-input" id="ProjectTypeIDs"
+                    [checked]="allProjectTypesCheckbox"
+                    [(ngModel)]="allProjectTypesCheckbox"
+                    (change)="selectAllProjectTypes($event.target.checked)">
                   <label class="custom-control-label" for="ProjectTypeIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                 </div>
               </div>
               <div class="filter-collapse show" id="projectTypeFilters">
                 <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let projectType of projectTypes; let i = index">
-                  <input type="checkbox" [checked]="checkAllProjectTypes" class="custom-control-input" [attr.name]="projectType.projectTypeName" [attr.id]="'projectType' + i" (click)="onCheckboxProjectTypeClick($event, projectType.id)">
+                  <input type="checkbox" class="custom-control-input" [attr.name]="projectType.projectTypeName" [attr.id]="'projectType' + i" 
+                    [(ngModel)]="projectType.selected"
+                    (change)="checkIfAllProjectTypesSelected()"
+                    (click)="onProjectTypeCheckboxClick($event, projectType.id)">
                   <label class="custom-control-label" [attr.for]="'projectType' + i" style="padding: 1px 0px 0px 10px;">{{ projectType.projectTypeName }}</label>
                 </div>
               </div>
@@ -141,16 +147,16 @@
                   Project Owner
                 </div>
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="ProjectOwnerEmails" (click)="onCheckAllClick($event)" disabled="filterStringOw.value==''" [(ngModel)]="checkAllProjectOwners">
+                  <input type="checkbox" class="custom-control-input" id="ProjectOwnerEmails"
+                      [(ngModel)]="allProjectOwnersCheckbox"
+                      (change)="selectAllProjectOwners($event.target.checked)">
                   <label class="custom-control-label" for="ProjectOwnerEmails"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                 </div>
               </div>
+
               <div class="filter-collapse show" id="managerTeamFilters" style="height:168px">
                 <div class="projects-search-string projects-owner my-1">
-                  <input #filterStringOw
-                      class="form-control projects-search-input projects-owner typeahead" 
-                      type="text"  
-                      name="filterStringOwner" 
+                  <input #filterStringOw class="form-control projects-search-input projects-owner typeahead" type="text"  name="filterStringOwner" 
                       [(ngModel)]="filterStringOwner" 
                       placeholder="Manager Name">      
                   <i class="projects-search-icon-search fa fa-search"></i>
@@ -159,7 +165,10 @@
                 <div *ngIf="filterStringOw.value!=''">
                   <ng-container *ngFor="let managerEmployee of managerTeam; let l = index">
                     <div class="custom-control custom-checkbox" style="margin-left: 8px" [class.manager]="l==0">
-                      <input type="checkbox" class="custom-control-input" [attr.name]="managerEmployee.fullName" [attr.id]="'owner' + l" [checked]="l===0 || checkAllProjectOwners" (click)="onCheckboxProjectOwnerClick($event, managerEmployee.EMAIL_ADDRESS)">
+                      <input type="checkbox" class="custom-control-input" [attr.name]="managerEmployee.fullName" [attr.id]="'owner' + l"
+                          [(ngModel)]="managerEmployee.selected"
+                          (change)="checkIfAllProjectOwnersSelected()"
+                          (click)="onCheckboxProjectOwnerClick($event, managerEmployee.EMAIL_ADDRESS)">
                       <label class="custom-control-label" [attr.for]="'owner' + l" style="padding: 1px 0px 0px 10px;">
                         <span>{{ managerEmployee.fullName }}</span>
                       </label>
@@ -180,8 +189,7 @@
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" id="parentProjectIDs" 
                     [(ngModel)]="allParentsCheckbox" 
-                    (change)="selectAllParents()"
-                    (click)="onAllParentsCheck($event)">
+                    (change)="selectAllParents($event)">
                   <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                 </div>
               </div>
@@ -205,21 +213,25 @@
 
               <!-- Priority -->
                 <div class="filter-headers d-flex justify-content-between">
-
                   <div data-toggle="collapse" data-target="#projectPrioritiesFilters">
                     <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
                     Project Priority
                   </div>
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" checked class="custom-control-input" id="ProjectPriorityIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectPriorities">
+                    <input type="checkbox" class="custom-control-input" id="ProjectPriorityIDs" 
+                    [checked]="allProjectPrioritiesCheckbox"
+                    [(ngModel)]="allProjectPrioritiesCheckbox"
+                    (change)="selectAllProjectPriorities($event.target.checked)">
                     <label class="custom-control-label" for="ProjectPriorityIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                   </div>
-
                 </div>
 
                 <div class="filter-collapse show" id="projectPrioritiesFilters">
                   <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let projectPriority of projectPriorities; let k = index">
-                    <input type="checkbox" [checked]="checkAllProjectPriorities" class="custom-control-input" [attr.name]="projectPriority.priorityName" [attr.id]="'priority' + k" (click)="onCheckboxProjectPriorityClick($event, projectPriority.id)">
+                    <input type="checkbox" class="custom-control-input" [attr.name]="projectPriority.priorityName" [attr.id]="'priority' + k"
+                      [(ngModel)]="projectPriority.selected"
+                      (change)="checkIfAllProjectPrioritiesSelected()"
+                      (click)="onProjectPriorityCheckboxClick($event, projectPriority.id)">
                     <label class="custom-control-label" [attr.for]="'priority' + k" style="padding: 1px 0px 0px 10px;">{{ projectPriority.priorityName }}</label>
                   </div>
                 </div>
@@ -233,14 +245,19 @@
                     Project Status
                   </div>
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" checked class="custom-control-input" id="ProjectStatusIDs" (click)="onCheckAllClick($event)" [(ngModel)]="checkAllProjectStatuses">
+                    <input type="checkbox" class="custom-control-input" id="ProjectStatusIDs"
+                      [checked]="allProjectStatusesCheckbox"
+                      [(ngModel)]="allProjectStatusesCheckbox"
+                      (change)="selectAllProjectStatuses($event.target.checked)"> 
                     <label class="custom-control-label" for="ProjectStatusIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                   </div>
                 </div>
-
                 <div class="filter-collapse show" id="projectStatusFilters">
                   <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let projectStatus of projectStatuses; let j = index">
-                    <input type="checkbox" [checked]="checkAllProjectStatuses" class="custom-control-input" [attr.name]="projectStatus.projectStatusName" [attr.id]="'projectStatus' + j" (click)="onCheckboxProjectStatusClick($event, projectStatus.id)">
+                    <input type="checkbox" [checked]="checkAllProjectStatuses" class="custom-control-input" [attr.name]="projectStatus.projectStatusName" [attr.id]="'projectStatus' + j" 
+                      [(ngModel)]="projectStatus.selected"
+                      (change)="checkIfAllProjectStatusesSelected()"
+                      (click)="onProjectStatusCheckboxClick($event, projectStatus.id)">
                     <label class="custom-control-label" [attr.for]="'projectStatus' + j" style="padding: 1px 0px 0px 10px;">{{ projectStatus.projectStatusName }}</label>
                   </div>
                 </div>
@@ -256,8 +273,7 @@
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" 
                       [(ngModel)]="allChildrenCheckbox" 
-                      (change)="selectAllChildren()"
-                      (click)="onAllChildrenCheck($event)">
+                      (change)="selectAllChildren($event)">
                     <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
                   </div>
                 </div>

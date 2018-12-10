@@ -46,7 +46,7 @@ export class AdvancedFiltersTypeaheadService {
 
   }
 
-  onSelect(that: any, selection) {
+  async onSelect(that: any, selection) {
 
     // Note: "that" still refers to the main advanced-filters-component
 
@@ -56,13 +56,13 @@ export class AdvancedFiltersTypeaheadService {
     that.filterObject.ProjectOwnerEmails = String(email);
 
     // Add to checkbox array
-    that.arrOwnerEmail.splice(0, 0, email);
+    // that.arrOwnerEmail.splice(0, 0, email);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(that, that.filterObject);
 
     // Show div with subordinates
-    that.getProjectOwnerSubordinates(email);
+    await that.getProjectOwnerSubordinates(email);
 
   }
 

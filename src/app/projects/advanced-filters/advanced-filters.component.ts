@@ -12,6 +12,7 @@ import { AdvancedFiltersDataService } from './services/advanced-filters-data.ser
 import { AdvancedFiltersFTEService } from './services/advanced-filters-FTE.service';
 import { AdvancedFiltersProjectSearchService } from './services/advanced-filters-project-search.service';
 import { AdvancedFiltersPLCService } from './services/advanced-filters-plc.service';
+import { AdvancedFiltersCheckboxesService } from './services/advanced-filters-checkboxes.service';
 
 // import { start } from 'repl';
 const moment = require('moment');
@@ -33,8 +34,8 @@ export interface NewPLC {
   selector: 'app-advanced-filters',
   templateUrl: './advanced-filters.component.html',
   styleUrls: ['./advanced-filters.component.css', '../../_shared/styles/common.css'],
-  providers: [AdvancedFiltersDataService, AdvancedFiltersFTEService, AdvancedFiltersProjectSearchService, AdvancedFiltersTypeaheadService,
-    AdvancedFiltersPLCService, FilterPipe]
+  providers: [AdvancedFiltersDataService, AdvancedFiltersCheckboxesService, AdvancedFiltersFTEService, AdvancedFiltersProjectSearchService,
+    AdvancedFiltersTypeaheadService, AdvancedFiltersPLCService, FilterPipe]
 })
 
 export class AdvancedFiltersComponent implements OnInit, OnDestroy {
@@ -87,7 +88,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     PLCDateTo: ''
   };
 
-  // For default Check All
+  // For default Check All - To-DO: Still need this?
   checkAllProjectTypes: boolean;
   checkAllProjectPriorities: boolean;
   checkAllProjectStatuses: boolean;
@@ -122,8 +123,15 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   showDashboardButton: boolean;
 
   // 'All' checkboxes - used with [(ngModel)]
-  allParentsCheckbox: boolean;
-  allChildrenCheckbox: boolean;
+  allProjectTypesCheckbox: boolean;         // DONE
+  allProjectPrioritiesCheckbox: boolean;    // DONE
+  allProjectOwnersCheckbox: boolean;
+  allProjectStatusesCheckbox: boolean;      // DONE
+  allParentsCheckbox: boolean;              // DONE
+  allChildrenCheckbox: boolean;             // DONE
+  allPLCSchedulesCheckbox: boolean;
+
+
 
 
   constructor(
@@ -136,6 +144,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     private excelExportService: ExcelExportService,
     private toolsService: ToolsService,
     private advancedFiltersTypeaheadService: AdvancedFiltersTypeaheadService,
+    private advancedFiltersCheckboxesService: AdvancedFiltersCheckboxesService,
     private advancedFiltersDataService: AdvancedFiltersDataService,
     private advancedFiltersFTEService: AdvancedFiltersFTEService,
     private advancedFiltersProjectSearchService: AdvancedFiltersProjectSearchService,
@@ -184,15 +193,19 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // ALL-checkbox array
     // This is to detect if all individual checkboxes of each filter category is checked/unchecked
     // So that the 'All' checkbox can behave accordingly
-    this.allCheckbox = {
-      ProjectTypes: true,
-      ProjectOwner: false,
-      ProjectPriority: true,
-      ProjectStatus: true,
-      Parents: false,
-      Children: false,
-      PLCSchedules: false
-    };
+    this.allProjectTypesCheckbox = true;
+    this.allProjectPrioritiesCheckbox = true;
+    this.allProjectStatusesCheckbox = true;
+    // Don't need this anymore!
+    // this.allCheckbox = {
+    //   ProjectTypes: true,
+    //   ProjectOwner: false,
+    //   ProjectPriority: true,
+    //   ProjectStatus: true,
+    //   Parents: false,
+    //   Children: false,
+    //   PLCSchedules: false
+    // };
 
     // For Excel Download
     this.subscription2 = this.cacheService.showDownloadingIcon.subscribe(show => {
@@ -221,6 +234,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     await this.getAllProjects();
 
     this.initTypeahead();
+
+    // Select All default true checkboxes
+    this.selectAllProjectTypes(this.allProjectTypesCheckbox);
+    this.selectAllProjectPriorities(this.allProjectPrioritiesCheckbox);
+    this.selectAllProjectStatuses(this.allProjectStatusesCheckbox);
 
     // hide the spinner
     this.showSpinner = false;
@@ -281,10 +299,10 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   initCheckboxValues() {
 
-    // set "ALL" flags to true
-    this.checkAllProjectTypes = true;
-    this.checkAllProjectPriorities = true;
-    this.checkAllProjectStatuses = true;
+    // set "ALL" flags to true - TO-DO: Still need these?
+    // this.checkAllProjectTypes = true;
+    // this.checkAllProjectPriorities = true;
+    // this.checkAllProjectStatuses = true;
 
     // loop through filter groups and push them to array so they can be added to the filterObject
     for (let i = 0; i < this.projectStatuses.length; i++) {
@@ -338,13 +356,123 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-// PARENT-CHILD-PROJECTS
-
   // Section for 'All' checkbox //////////////////////////////////
-  selectAllParents() {
+
+  // Project Status
+  async selectAllProjectStatuses(checked: boolean) {
+    // const checked = event.target.checked;
+
+    for (let i = 0; i < this.projectStatuses.length; i++) {
+      this.projectStatuses[i].selected = this.allProjectStatusesCheckbox;
+    }
+
+    await this.advancedFiltersCheckboxesService.onAllProjectStatusesCheck(this, checked);
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+  }
+
+  checkIfAllProjectStatusesSelected() {
+    this.allProjectStatusesCheckbox = this.projectStatuses.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
+  // Project Types
+  async selectAllProjectTypes(checked: boolean) {
+
+    for (let i = 0; i < this.projectTypes.length; i++) {
+      this.projectTypes[i].selected = this.allProjectTypesCheckbox;
+    }
+
+    await this.advancedFiltersCheckboxesService.onAllProjectTypesCheck(this, checked);
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+  }
+
+  checkIfAllProjectTypesSelected() {
+    this.allProjectTypesCheckbox = this.projectTypes.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
+  // Project Priority
+  async selectAllProjectPriorities(checked: boolean) {
+
+    for (let i = 0; i < this.projectPriorities.length; i++) {
+      this.projectPriorities[i].selected = this.allProjectPrioritiesCheckbox;
+    }
+    await this.advancedFiltersCheckboxesService.onAllProjectPriorities(this, checked);
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+  }
+
+  checkIfAllProjectPrioritiesSelected() {
+    this.allProjectPrioritiesCheckbox = this.projectPriorities.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
+  // Project Owners
+  async selectAllProjectOwners(checked: boolean) {
+
+    // update all .selcected to value of 'ALL'-checkbox
+    for (let i = 0; i < this.managerTeam.length; i++) {
+      this.managerTeam[i].selected = this.allProjectOwnersCheckbox;
+    }
+
+    if (this.allProjectOwnersCheckbox === true) {
+      // update all .selcected to value of 'ALL'-checkbox
+      for (let i = 0; i < this.managerTeam.length; i++) {
+        this.arrOwnerEmail.push(this.managerTeam[i].EMAIL_ADDRESS);
+      }
+    } else if (this.allProjectOwnersCheckbox === false) {
+      this.arrOwnerEmail = [];
+    }
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+  }
+
+  checkIfAllProjectOwnersSelected() {
+    this.allProjectOwnersCheckbox = this.managerTeam.every(function(item: any) {
+      return item.selected === true;
+    });
+  }
+
+  // Parent
+  async selectAllParents(event: any) {
+    const checked = event.target.checked;
+
     for (let i = 0; i < this.parents.length; i++) {
       this.parents[i].selected = this.allParentsCheckbox;
     }
+
+    await this.advancedFiltersCheckboxesService.onAllParentsCheck(this, checked);
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectID = String(this.arrFamily);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
   }
 
   checkIfAllParentsSelected() {
@@ -353,10 +481,21 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectAllChildren() {
+  // Children
+  async selectAllChildren(event: any) {
+    const checked = event.target.checked;
+
     for (let i = 0; i < this.children.length; i++) {
       this.children[i].selected = this.allChildrenCheckbox;
     }
+
+    await this.advancedFiltersCheckboxesService.onAllChildrenCheck(this, checked);
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectID = String(this.arrFamily);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
   }
 
   checkIfAllChildrenSelected() {
@@ -367,187 +506,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   //////////////////////////////////////////////////////////////////////
 
-  onParentCheckboxClick(event: any, projectID: number) {
-    const checked = event.target.checked;
-
-    // first position in arrFamily is the clicked-on project -> saved in local typeahead.service
-    // goal is to update arrFamily with parents then convert to filterObject String
-
-    if (checked === true) {
-      // ADD ID to array
-      this.arrFamily.push(projectID);
-
-    } else if (checked === false) {
-      // find ID in array
-      for (let i = 0; i < this.arrFamily.length; i++) {
-        // REMOVE from array
-        if (this.arrFamily[i] === projectID) {
-          this.arrFamily.splice(i, 1);
-          break;
-        }
-      }
-    }
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectID = String(this.arrFamily);
-    // console.log('filterObject:', this.filterObject.ProjectID);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
-    // check if all checkboxes are unchecked
-    // this.onParentChange();
-
-    // clear the filter string
-    this.filterString = undefined;
-  }
-
-  onChildCheckboxClick(event: any, projectID: number) {
-
-    const checked = event.target.checked;
-
-    // first position in arrFamily is the clicked-on project
-    // goal is to update arrFamily with children
-
-    if (checked === true) {
-      // ADD ID to array
-      this.arrFamily.push(projectID);
-
-    } else if (checked === false) {
-      // find ID in array
-      for (let i = 0; i < this.arrFamily.length; i++) {
-        // REMOVE from array
-        if (this.arrFamily[i] === projectID) {
-          this.arrFamily.splice(i, 1);
-          break;
-        }
-      }
-    }
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectID = String(this.arrFamily);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-
-    // clear the filter string
-    this.filterString = undefined;
-  }
-
-  // TO-DO CHAI: Merge parent and child 'ALL' button. There's too much overlap to keep seperate or move to service
-  onAllChildrenCheck(event: any) {
-    const checked = event.target.checked;
-
-    if (checked === true) {
-
-        // looping through all children and check if they are already in arrFamily
-        // note: index = -1 indicates the childID was not found in arrFamily
-        let index = -1;
-        for (let i = 0; i < this.children.length; i++) {
-
-          for (let j = 0; j < this.arrFamily; j++) {
-            if (this.arrFamily[j] === this.children[i].ProjectID) {
-              index = j;
-              break;
-            }
-          }
-
-          // Child ID was not found, therefore add to arrFamily
-          if (index = -1) {
-            this.arrFamily.push(this.children[i].ProjectID);
-          }
-        }
-
-    } else if (checked === false) {
-
-        // looping through all children and check if they are already in arrFamily
-        for (let i = 0; i < this.children.length; i++) {
-
-          for (let j = 0; j < this.arrFamily.length; j++) {
-            if (this.arrFamily[j] === this.children[i].ProjectID ) {
-              // Child ID was found, therefore remove ID from arrFamily
-              this.arrFamily.splice(j, 1);
-            }
-          }
-
-        }
-    }
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectID = String(this.arrFamily);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-  }
-
-  onAllParentsCheck(event: any) {
-    const checked = event.target.checked;
-
-    if (checked === true) {
-
-        // looping through all parents and check if they are already in arrFamily
-        // note: index = -1 indicates the childID was not found in arrFamily
-        let index = -1;
-        for (let i = 0; i < this.parents.length; i++) {
-
-          for (let j = 0; j < this.arrFamily; j++) {
-            if (this.arrFamily[j] === this.parents[i].ProjectID) {
-              index = j;
-              break;
-            }
-          }
-
-          if (index = -1) {
-            this.arrFamily.push(this.parents[i].ProjectID);
-          }
-        }
-
-    } else if (checked === false) {
-
-        // looping through all parents and check if they are already in arrFamily
-        for (let i = 0; i < this.parents.length; i++) {
-
-          for (let j = 0; j < this.arrFamily.length; j++) {
-            if (this.arrFamily[j] === this.parents[i].ProjectID ) {
-              // found parent ID, therefore remove from arrFamily
-              this.arrFamily.splice(j, 1);
-            }
-          }
-
-        }
-
-    }
-
-    // convert array to string and save to filterObject
-    this.filterObject.ProjectID = String(this.arrFamily);
-
-    // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
-  }
-
-  // called on parentCheckboxClick -> for some reason it doesn't detect change
-  // onParentChange() {
-  //   console.log('Checkbox change detected. Parent length is 2:', this.parents);
-  //   // note: index = -1 means that no checkbox is checked
-  //   // 'All' checkbox should uncheck if it was checked
-  //   let index = -1;
-  //   for (let i = 0; i < this.parents.length; i++) {
-  //     if (this.parents[i].checkboxState === true) {
-  //       index = i;
-  //       console.log('index is', index)
-  //       break;
-  //     }
-  //   }
-  //   if (index === -1) {
-  //     this.allParentsCheckbox = false;
-  //     // this.allCheckbox.Parents = false;
-  //     console.log('G-Max is unchecked.');
-  //   } else if (index === this.parents.length - 1) {
-  //     this.allParentsCheckbox = true;
-  //     // this.allCheckbox.Parents = true;
-  //     console.log('G-Max is checked');
-  //   }
-  // }
 
 // PROJECT OWNERS
 
@@ -559,6 +517,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   async getProjectOwnerSubordinates(managerEmailAddress: string) {
     this.managerTeam = await this.apiDataOrgService.getManagementOrgStructure(managerEmailAddress).toPromise();
+    this.managerTeam[0].selected = true;
+    this.checkIfAllProjectOwnersSelected();
   }
 
   onClearOwnerClick() {
@@ -567,6 +527,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.filterStringOwner = undefined;
     this.managerTeam = [];
     this.arrOwnerEmail = [];
+
+    // uncheck the 'All' button
+    this.allProjectOwnersCheckbox = false;
 
     // reset db object
     this.filterObject.ProjectOwnerEmails = '';
@@ -631,30 +594,30 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         if (objKey[i] === checkboxID) {
 
           switch (objKey[i]) {
-            case 'ProjectTypeIDs':
-              this.arrTypeID = [];
-              this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
-              break;
+            // case 'ProjectTypeIDs':
+            //   this.arrTypeID = [];
+            //   this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
+            //   break;
             case 'ProjectOwnerEmails':
               this.arrOwnerEmail = this.managerTeam[0].EMAIL_ADDRESS;
               this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
               break;
-            case 'ProjectStatusIDs':
-              this.arrStatusID = [];
-              this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
-              break;
-            case 'ProjectPriorityIDs':
-              this.arrPriorityID = [];
-              this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
-              break;
+            // case 'ProjectStatusIDs':
+            //   this.arrStatusID = [];
+            //   this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
+            //   break;
+            // case 'ProjectPriorityIDs':
+            //   this.arrPriorityID = [];
+            //   this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
+            //   break;
             case 'FTEMin':
               this.filterObject.FTEMin = 'NULL';
               this.filterObject.FTEMax = 'NULL';
               break;
-            case 'PLCStatusIDs':
-              this.objPLC = [];
-              this.filterObject.PLCStatusIDs = String(this.objPLC);
-              break;
+            // case 'PLCStatusIDs':
+            //   this.objPLC = [];
+            //   this.filterObject.PLCStatusIDs = String(this.objPLC);
+            //   break;
           }
           break;
 
@@ -668,38 +631,38 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
         if (objKey[i] === checkboxID) {
           switch (objKey[i]) {
-            case 'ProjectTypeIDs':
-              await this.onCheckboxReset(checkboxID);
-              this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
-              break;
+            // case 'ProjectTypeIDs':
+            //   await this.onCheckboxReset(checkboxID);
+            //   this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
+            //   break;
             case 'ProjectOwnerEmails':
-              for (let j = 0; i < this.managerTeam.length; j++) {
+              for (let j = 0; j < this.managerTeam.length; j++) {
               this.arrOwnerEmail.push(this.managerTeam[j].EMAIL_ADDRESS);
               }
               this.filterObject.ProjectOwnerEmails = String(this.arrOwnerEmail);
               break;
-            case 'ProjectStatusIDs':
-              await this.onCheckboxReset(checkboxID);
-              this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
-              break;
-            case 'ProjectPriorityIDs':
-              await this.onCheckboxReset(checkboxID);
-              this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
-              break;
+            // case 'ProjectStatusIDs':
+            //   await this.onCheckboxReset(checkboxID);
+            //   this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
+            //   break;
+            // case 'ProjectPriorityIDs':
+            //   await this.onCheckboxReset(checkboxID);
+            //   this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
+            //   break;
             case 'FTEMin':
               this.filterObject.FTEMin = '0';
               this.filterObject.FTEMax = '100';
               break;
-            case 'PLCStatusIDs':
-              // objPLC contains newPLC array because it also needs to save dates
-              // selecting all means newPLC has to be created for each PLC status
-              await this.onCheckboxReset(checkboxID);
-              const arr = [];
-              for (let j = 0; i < this.objPLC.length; j++) {
-                arr.push(this.objPLC[j].PLCStatusID);
-              }
-              this.filterObject.PLCStatusIDs = String(arr);
-              break;
+            // case 'PLCStatusIDs':
+            //   // objPLC contains newPLC array because it also needs to save dates
+            //   // selecting all means newPLC has to be created for each PLC status
+            //   await this.onCheckboxReset(checkboxID);
+            //   const arr = [];
+            //   for (let j = 0; i < this.objPLC.length; j++) {
+            //     arr.push(this.objPLC[j].PLCStatusID);
+            //   }
+            //   this.filterObject.PLCStatusIDs = String(arr);
+            //   break;
           }
           break;
         }
@@ -712,8 +675,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  // ProjectTypes
-  onCheckboxProjectTypeClick(event: any, id: string) {
+  // ProjectTypes - DONE
+  onProjectTypeCheckboxClick(event: any, id: string) {
     const checked = event.target.checked;
 
     if (checked === true) {
@@ -738,8 +701,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  // Project Status
-  onCheckboxProjectStatusClick(event: any, id: string) {
+  // Project Status - DONE
+  onProjectStatusCheckboxClick(event: any, id: string) {
     const checked = event.target.checked;
 
     if (checked === true) {
@@ -764,8 +727,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  // Project Priority
-  onCheckboxProjectPriorityClick(event: any, id: string) {
+  // Project Priority - DONE
+  onProjectPriorityCheckboxClick(event: any, id: string) {
     const checked = event.target.checked;
 
     if (checked === true) {
@@ -773,7 +736,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       // this.arrPriorityID.splice(0, 0, id);
       this.arrPriorityID.push(id);
     } else if (checked === false) {
-      // console.log('checked is false.')
       // find ID in array
       for (let i = 0; i < this.arrPriorityID.length; i++) {
         // REMOVE from array
@@ -792,6 +754,71 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
+  // PARENT-CHILD-PROJECTS - DONE
+
+  onParentCheckboxClick(event: any, projectID: number) {
+    const checked = event.target.checked;
+
+    // first position in arrFamily is the clicked-on project -> saved in local typeahead.service
+    // goal is to update arrFamily with parents then convert to filterObject String
+
+    if (checked === true) {
+      // ADD ID to array
+      this.arrFamily.push(projectID);
+
+    } else if (checked === false) {
+      // find ID in array
+      for (let i = 0; i < this.arrFamily.length; i++) {
+        // REMOVE from array
+        if (this.arrFamily[i] === projectID) {
+          this.arrFamily.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectID = String(this.arrFamily);
+    // console.log('filterObject:', this.filterObject.ProjectID);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+    // clear the filter string
+    this.filterString = undefined;
+  }
+
+  onChildCheckboxClick(event: any, projectID: number) {
+
+    const checked = event.target.checked;
+
+    // first position in arrFamily is the clicked-on project
+    // goal is to update arrFamily with children
+
+    if (checked === true) {
+      // ADD ID to array
+      this.arrFamily.push(projectID);
+
+    } else if (checked === false) {
+      // find ID in array
+      for (let i = 0; i < this.arrFamily.length; i++) {
+        // REMOVE from array
+        if (this.arrFamily[i] === projectID) {
+          this.arrFamily.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    // convert array to string and save to filterObject
+    this.filterObject.ProjectID = String(this.arrFamily);
+
+    // Make the db call
+    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+    // clear the filter string
+    this.filterString = undefined;
+  }
 
 // FTE
 
