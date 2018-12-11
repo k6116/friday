@@ -1,0 +1,17 @@
+div.chart-toolbar {
+  position: absolute;
+  top: 14px;
+  left: 30px;
+  z-index: 1;
+}
+
+label.chart-toolbar-label {
+  margin-right: 10px;
+}
+
+select.form-control.toolbar-selector{
+  max-height: 30px;
+  font-size: 13px;
+  padding-left: 4px;
+  padding-top: 4px;
+}

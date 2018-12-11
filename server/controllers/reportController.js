@@ -12,6 +12,22 @@ function translateTimePeriods(period) {
   let startMonth;
   let endMonth;
   switch (period) {
+    case 'previous-quarter': {
+      startMonth = moment.utc().subtract(3, 'months').startOf('month');
+      const secondMonthInQuarter = [2, 5, 8, 11];
+      const thirdMonthInQuarter = [0, 3, 6, 9];
+
+      // we want current fiscal quarter to be editable as long as we are in that FQ,
+      // so adjust the current month to allow all months in the current quarter to be editable
+      if (thirdMonthInQuarter.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).subtract(2, 'months');
+      } else if (secondMonthInQuarter.includes(moment(startMonth).month())) {
+        startMonth = moment(startMonth).subtract(1, 'month');
+      }
+      // subtracting 1 day, because SQL BETWEEN is inclusive
+      endMonth = moment(startMonth).add(3, 'months').subtract(1, 'day');
+      break;
+    }
     case 'current-quarter': {
       startMonth = moment.utc().startOf('month');
       const secondMonthInQuarter = [2, 5, 8, 11];
