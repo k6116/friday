@@ -13,8 +13,9 @@ declare const Bloodhound;
 })
 export class MatplanSelectorComponent implements OnInit {
 
-  matplanList: any;
-  buildStatusList: any;
+  selectedProject: any; // for displaying project name in the view
+  buildStatusList: any; // for offering list of build status options in the form
+  buildScheduleForm: FormGroup;
 
   constructor(
     private router: Router,
@@ -24,6 +25,12 @@ export class MatplanSelectorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    // initialize the build schedule formgroup
+    this.buildScheduleForm = this.fb.group({
+      buildScheduleArray: this.fb.array([])
+    });
+
     // get list of build status types for displaying in view
     this.apiDataSchedulesService.indexBuildStatus().subscribe( res => this.buildStatusList = res);
 
@@ -56,16 +63,87 @@ export class MatplanSelectorComponent implements OnInit {
     });
   }
 
-  onProjectSelect(selectedProject: any) {
+  testForm() {
+    console.log('form');
+    console.log(this.buildScheduleForm);
+    console.log('values');
+    console.log(this.buildScheduleForm.value);
+  }
+
+  async onProjectSelect(selectedProject: any) {
     // when a project has been selected, show all available matplans for it
-    this.apiDataMatplanService.showMatplans(selectedProject.ProjectID).subscribe( res => {
-      this.matplanList = res;
+    console.log(selectedProject);
+    this.selectedProject = selectedProject;
+    const matplanList = await this.apiDataMatplanService.showMatplans(selectedProject.ProjectID).toPromise();
+    this.initMatplanForm(matplanList);
+  }
+
+  initMatplanForm(matplanList: any) {
+    console.log(this.buildStatusList);
+    // aliasing the newly created formArray
+    const buildScheduleArray = <FormArray>this.buildScheduleForm.get('buildScheduleArray');
+    matplanList.forEach( matplan => {
+      const newForm = this.fb.group({
+        scheduleID: matplan.ScheduleID,
+        projectID: matplan.ProjectID,
+        currentRevision: matplan.CurrentRevision,
+        notes: matplan.Notes,
+        materialPlanID: matplan.MaterialPlanID,
+        buildStatusID: matplan.BuildStatusID,
+        buildStatusName: matplan.BuildStatusName,
+        needByDate: matplan.NeedByDate,
+        neededQuantity: matplan.NeededQuantity,
+        hasMatplan: true,
+        scheduleUpdateDate: matplan.ScheduleUpdateDate,
+        scheduleUpdatedBy: matplan.ScheduleUpdatedBy,
+        schedulesDetailUpdateDate: matplan.SchedulesDetailUpdateDate,
+        schedulesDetailUpdatedBy: matplan.SchedulesDetailUpdatedBy,
+        matplanUpdateDate: matplan.MatplanUpdateDate,
+        matplanUpdatedBy: matplan.MatplanUpdatedBy,
+        matplanUpdatedByName: matplan.MatplanUpdatedByName
+      });
+      buildScheduleArray.push(newForm);
     });
+  }
+
+  addBuildToSchedule() {
+    // aliasing the primary formArray
+    const buildScheduleArray = <FormArray>this.buildScheduleForm.get('buildScheduleArray');
+
+    // push an empty build schedule row
+    buildScheduleArray.push(
+      this.fb.group({
+        scheduleID: null,
+        projectID: this.selectedProject.ProjectID,
+        currentRevision: 1,
+        notes: null,
+        materialPlanID: null,
+        buildStatusID: null,
+        buildStatusName: null,
+        needByDate: null,
+        neededQuantity: null,
+        hasMatplan: false,
+        matplanUpdateDate: null,
+        matplanUpdatedBy: null,
+        matplanUpdatedByName: null
+      })
+    );
+  }
+
+  createMatplan(matplan: any) {
+    console.log(matplan);
   }
 
   editMatplan(matplan: any) {
     // send user to matplan-editor component
-    this.router.navigate([`/main/matplan/edit/${matplan.MaterialPlanID}`]);
+    this.router.navigate([`/main/matplan/edit/${matplan.get('materialPlanID').value}`]);
+  }
+
+  onBuildScheduleSave() {
+    console.log(this.buildScheduleForm.value);
+    this.apiDataSchedulesService.updateBuildScheduleNew(this.buildScheduleForm.value).subscribe( res => {
+      console.log('yay');
+    });
   }
 
 }

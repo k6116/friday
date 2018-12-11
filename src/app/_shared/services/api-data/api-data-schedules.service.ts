@@ -27,6 +27,15 @@ export class ApiDataSchedulesService {
       .map((response: Response) => response.json());
   }
 
+  // this is the new sequelize controller function for updating build schedule
+  updateBuildScheduleNew(buildScheduleForm: any) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.put(`/api/matplan/matplan/update/updateBuildScheduleNew`, JSON.stringify(buildScheduleForm), options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   getProjectSchedule(projectID: number): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({ headers: headers });

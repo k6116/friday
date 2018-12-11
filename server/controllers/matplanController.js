@@ -95,12 +95,19 @@ function showMatplans(req, res) {
   const projectID = req.params.projectID;
   sequelize.query(`
     SELECT 
+      T1.ScheduleID,
       T1.ProjectID,
-      T2.NeedByDate,
+      T1.CurrentRevision,
+      T1.Notes,
+      FORMAT(T2.NeedByDate, 'yyyy-MM-dd') AS 'NeedByDate',
       T2.NeededQuantity,
       T2.BuildStatusID,
       T4.BuildStatusName,
       T3.MaterialPlanID,
+      T1.LastUpdateDate AS ScheduleUpdateDate,
+      T1.LastUpdatedBy AS ScheduleUpdatedBy,
+      T2.LastUpdateDate AS SchedulesDetailUpdateDate,
+      T2.LastUpdatedBy AS SchedulesDetailUpdatedBy,
       T3.LastUpdateDate AS MatplanUpdateDate,
       T3.LastUpdatedBy AS MatplanUpdatedBy,
       T5.FullName AS MatplanUpdatedByName
