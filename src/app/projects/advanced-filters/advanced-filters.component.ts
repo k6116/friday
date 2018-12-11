@@ -679,7 +679,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         }
       }
     }
-
+console.log('arrFamily: on select', this.arrFamily);
     // convert array to string and save to filterObject
     this.filterObject.ProjectID = String(this.arrFamily);
 
