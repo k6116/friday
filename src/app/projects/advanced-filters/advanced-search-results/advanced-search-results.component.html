@@ -16,7 +16,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let project of advancedFilteredResults | filter : filterString : 'ProjectName': {matchFuzzy: {on: true}}; let c = count">
+        <tr *ngFor="let project of advancedFilteredResults">
           <td>{{ project.ProjectID }}</td>
           <td>{{ project.ProjectName }}</td>
           <td>{{ project.ProjectTypeName }}</td>

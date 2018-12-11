@@ -120,6 +120,10 @@ export class AdvancedFiltersTypeaheadService {
       this.advancedFiltersDataService.advancedFilter(that, that.filterObject);
       // console.log(selection);
 
+      // Clear out any possible old parent/child data
+      that.children = [];
+      that.parents = [];
+
       // that.advancedFiltersDataService.getProjectChildren(that, id);
       this.onProjectSelect(that, id);
     });
@@ -134,7 +138,6 @@ export class AdvancedFiltersTypeaheadService {
   }
 
   async onProjectSelect(that: any, projectID: string) {
-
     // When selecting a project, get their parent-child relationship
 
     // note: The default checkboxState for each parent-child is false.

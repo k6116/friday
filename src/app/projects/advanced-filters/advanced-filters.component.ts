@@ -429,8 +429,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // convert array to string and save to filterObject
     this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
 
-    console.log('All selected', this.filterObject.ProjectStatusIDs);
-
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
@@ -462,9 +460,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // Convert and save array to filterObject
     this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
 
-    console.log('Individual selected', this.filterObject.ProjectStatusIDs);
-
-
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
@@ -480,8 +475,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // convert array to string and save to filterObject
     this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
-
-    console.log('All selected', this.filterObject.ProjectPriorityIDs);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
@@ -513,7 +506,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // Convert and save array to filterObject
     this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
-    console.log('Individual selected', this.filterObject.ProjectPriorityIDs);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
@@ -588,6 +580,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.parents[i].selected = this.allParentsCheckbox;
     }
 
+    console.log('parents', this.parents);
+
     await this.advancedFiltersCheckboxesService.onAllParentsCheck(this, checked);
 
     // convert array to string and save to filterObject
@@ -642,6 +636,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.children.length; i++) {
       this.children[i].selected = this.allChildrenCheckbox;
     }
+    console.log('children', this.children);
 
     await this.advancedFiltersCheckboxesService.onAllChildrenCheck(this, checked);
 
@@ -679,7 +674,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
         }
       }
     }
-console.log('arrFamily: on select', this.arrFamily);
     // convert array to string and save to filterObject
     this.filterObject.ProjectID = String(this.arrFamily);
 
@@ -834,13 +828,13 @@ console.log('arrFamily: on select', this.arrFamily);
 // SEARCH BAR
 
   async onSearchClick(filterString: string) {
-console.log('in search');
+
     // send filterString through filterpipe and get fuzzy-search results
     const fuzzyFilterList = this.advancedFiltersTypeaheadService.getFilteredProjects(filterString);
 
     // get the string of ProjectIDs from the fuzzy search result
     await this.advancedFiltersProjectSearchService.onSearch(this, fuzzyFilterList);
-console.log('after service');
+
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
@@ -854,6 +848,8 @@ console.log('after service');
     $('.projects-filter-input').typeahead('val', '');
 
   }
+
+  // RESET BUTTON
 
   async onResetButtonClick() {
 
@@ -877,6 +873,16 @@ console.log('after service');
     this.objPLC = [];
     this.plcSchedules = []; // save clicked plc statuses
 
+    // 'ALL'-checkboxes that default true
+    this.allProjectTypesCheckbox = true;
+    this.allProjectPrioritiesCheckbox = true;
+    this.allProjectStatusesCheckbox = true;
+
+    // show spinner
+    this.showSpinner = true;
+
+    // clear results
+    this.advancedFilteredResults = [];
     // Reset to default values
     await this.initCheckboxValues();
 
@@ -898,7 +904,11 @@ console.log('after service');
     };
 
     // Make the db call
-    this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+    await this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
+
+    // Hide Spinner
+    this.showSpinner = false;
+
 
   }
 
@@ -908,8 +918,6 @@ console.log('after service');
     $('#sidebar').toggleClass('active');
 
   }
-
-// RESET BUTTON
 
   onResetButtonMouseEnter() {
 
