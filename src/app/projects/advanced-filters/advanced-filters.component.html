@@ -444,9 +444,10 @@
                     <!-- plc status dates -->
                     <div class="d-flex justify-content-between">
                       <input #inputPLCFrom 
-                          class="form-control fte" 
+                          class="form-control fte plcInput" 
                           [class.plc-input-invalid]="inputPLCFrom.validity.valid===false" 
-                          id="plcFrom" 
+                          id="'plcFrom' + l"
+                          name="'plcFrom' + l" 
                           type="date" 
                           [min]="minDate"  
                           [max]="maxDate" 

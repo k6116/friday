@@ -687,6 +687,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   // PLC Schedules
   async selectAllPLCSchedules() {
 
+    // clear all plc inputs
+    $('input.plcInput').val('');
+
     if (this.allPLCSchedulesCheckbox === true) {
       this.objPLC = [];
       for (let i = 0; i < this.plcStatuses.length; i++) {
