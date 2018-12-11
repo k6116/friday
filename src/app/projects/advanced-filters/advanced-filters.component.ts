@@ -48,7 +48,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   filterObject: any;      // main Object containing strings that's being send to the db
   advancedFilterData: any; // All projects on init using forkjoin
-  projects: any;
+  // projects: any;
   projectTypes: any;
   projectStatuses: any;
   projectPriorities: any;
@@ -168,8 +168,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // this.filterCheckedArray = [];
     this.arrTypeID = [];
-    this.arrStatusID = [0];   // adding 0 to show blanks
-    this.arrPriorityID = [0]; // adding 0 to show blanks
+    this.arrStatusID = [];   // adding 0 to show blanks
+    this.arrPriorityID = []; // adding 0 to show blanks
     this.arrOwnerEmail = [];
     // this.arrChildren = [];
     // this.arrParents = [];
@@ -376,6 +376,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // convert array to string and save to filterObject
     this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
 
+    // console.log('on ALL checkbox clicked', this.filterObject.ProjectTypeIDs);
+
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
@@ -407,6 +409,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // Convert and save array to filterObject
     this.filterObject.ProjectTypeIDs = String(this.arrTypeID);
 
+    // console.log('on individual checkbox click', this.filterObject.ProjectTypeIDs);
+
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
@@ -424,6 +428,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // convert array to string and save to filterObject
     this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
+
+    console.log('All selected', this.filterObject.ProjectStatusIDs);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
@@ -456,6 +462,9 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     // Convert and save array to filterObject
     this.filterObject.ProjectStatusIDs = String(this.arrStatusID);
 
+    console.log('Individual selected', this.filterObject.ProjectStatusIDs);
+
+
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
 
@@ -471,6 +480,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // convert array to string and save to filterObject
     this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
+
+    console.log('All selected', this.filterObject.ProjectPriorityIDs);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
@@ -502,6 +513,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     // Convert and save array to filterObject
     this.filterObject.ProjectPriorityIDs = String(this.arrPriorityID);
+    console.log('Individual selected', this.filterObject.ProjectPriorityIDs);
 
     // Make the db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);

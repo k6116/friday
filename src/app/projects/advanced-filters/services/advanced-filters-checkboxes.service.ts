@@ -96,7 +96,7 @@ export class AdvancedFiltersCheckboxesService {
 
     if (checked === true) {
 
-      that.arrTypeID = [0]; // adding zero as blank
+      that.arrTypeID = [];
       for (let i = 0; i < that.projectTypes.length; i++) {
         that.arrTypeID.push(that.projectTypes[i].id);
       }
@@ -112,7 +112,7 @@ export class AdvancedFiltersCheckboxesService {
 
     if (checked === true) {
 
-      that.arrPriorityID = [0]; // adding zero as blank
+      that.arrPriorityID = [];
       for (let i = 0; i < that.projectPriorities.length; i++) {
         that.arrPriorityID.push(that.projectPriorities[i].id);
       }
@@ -120,7 +120,6 @@ export class AdvancedFiltersCheckboxesService {
     } else if (checked === false) {
 
       that.arrPriorityID = [];
-      // that.filterObject.ProjectTypesIDs = String(that.arrPriorityID);
 
     }
   }
@@ -129,7 +128,7 @@ export class AdvancedFiltersCheckboxesService {
 
     if (checked === true) {
 
-      that.arrStatusID = [0]; // adding zero as blank
+      that.arrStatusID = [];
       for (let i = 0; i < that.projectStatuses.length; i++) {
         that.arrStatusID.push(that.projectStatuses[i].id);
       }

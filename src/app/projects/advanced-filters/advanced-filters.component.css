@@ -121,11 +121,12 @@ div.projects-display-count {
 }
 
 /* Collapsible Filter Bar */
+/* TO-DO CHAI: make dynamic height */
 .wrapper {
   display: flex;
   width: 100%;
   align-items: stretch;
-  height: 824px;
+  height: 1000px;
 }
 
 #sidebar {
@@ -151,7 +152,7 @@ div.projects-display-count {
 /* FILTER CONTENT */
 div.adv-search-content {
   display: flex;
-  height: auto;
+  /* height: auto; */
   overflow-x: hidden;
   overflow-y: hidden;
 }

@@ -12,7 +12,7 @@ export class AdvancedFiltersDataService {
     private cacheService: CacheService
   ) { }
 
-  // MAIN DATABASE CALL
+  // MAIN DATABASE CALL to get filter results
   async advancedFilter(that, filterOptions: any) {
 
     // Show spinner until all data is ready
@@ -78,13 +78,32 @@ export class AdvancedFiltersDataService {
     });
     // seperate out for html
     // TO-DO CHAI: Remove [0] since that's been called seperatly
-    // this.projects = advancedFilterData[0];
     that.projectTypes = advancedFilterData[1];
     that.projectStatuses = advancedFilterData[2];
     that.projectPriorities = advancedFilterData[3];
     that.plcStatuses = advancedFilterData[4];
 
-    // this.advancedFiltersTypeaheadService.getProjectsTypeahead(this, this.projects);
+    // add blanks
+    const blankArrayTypes = {
+      id: 0,
+      projectTypeName: '(Blanks)',
+    };
+
+    that.projectTypes.push(blankArrayTypes);
+
+    const blankArrayPriorities = {
+      id: 0,
+      priorityName: '(Blanks)',
+    };
+
+    that.projectPriorities.push(blankArrayPriorities);
+
+    const blankArrayStatuses = {
+      id: 0,
+      projectStatusName: '(Blanks)',
+    };
+
+    that.projectStatuses.push(blankArrayStatuses);
 
   }
 
