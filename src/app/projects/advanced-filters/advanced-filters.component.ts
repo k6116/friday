@@ -856,6 +856,18 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   }
 
+// DASHBOARD
+
+onDashboardClick() {
+
+  // hide sidebar
+  $('#sidebar').toggleClass('active');
+
+  // disable toggle butten
+  $('#sidebarCollapse').prop('disabled', (_, val) => !val);
+
+}
+
   // RESET BUTTON
 
   async onResetButt
