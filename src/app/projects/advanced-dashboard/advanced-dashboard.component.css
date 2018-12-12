@@ -84,6 +84,28 @@ hr {
 
 
 /* Chais CSS */
+
+h5.dashboard-custom-title {
+  background-color: white;
+  color: rgb(100, 100, 100);
+  padding: 10px;
+}
+
+div.custom-card-cont {
+  background-color: white;
+  border: 1px solid lightgrey;
+  margin-bottom: 20px;
+}
+
+
+
+
+
+
+
+
+
+/* old */
 .tabel .inline-tables {
   display: inline;
 }

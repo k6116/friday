@@ -22,14 +22,6 @@ declare const require: any;
 declare var $: any;
 declare const Bloodhound;
 
-// export interface NewPLC {
-//   index: number;
-//   PLCStatusID: string;
-//   PLCStatusName: string;
-//   PLCDateFrom: string;
-//   PLCDateTo: string;
-// }
-
 @Component({
   selector: 'app-advanced-filters',
   templateUrl: './advanced-filters.component.html',
@@ -59,7 +51,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   filterString: string;     // string for top search bar
   filterStringOwner: string; // string for owner search bar
-  // filterCheckedArray: any; // array to clear out owners
   numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
   filteredProjectsCount: number;  // number of project currently displayed, if there is a filter set
   totalProjectsCount: number;  // total number of projects
@@ -69,8 +60,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   arrOwnerEmail: any;
   arrStatusID: any;
   arrPriorityID: any;
-  // arrChildren: any;
-  // arrParents: any;
   arrFamily: any; // combines Children and Parents for filterObject
   objPLC: any; // object containing all PLC info (newPLC) that's needed for filterObject
   plcSchedules: any; // contains PLC status name headers
@@ -78,20 +67,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   managers: any;
   managerTeam: any[];
   holdProjects: number[]; // array of projectIDs that user wants to hold in the results table
-
-  // // PLC information for filterObjects
-  // newPLC: NewPLC = {
-  //   index: null,
-  //   PLCStatusID: '',
-  //   PLCStatusName: '',
-  //   PLCDateFrom: '',
-  //   PLCDateTo: ''
-  // };
-
-  // For default Check All - To-DO: Still need this?
-  // checkAllProjectTypes: boolean;
-  // checkAllProjectPriorities: boolean;
-  // checkAllProjectStatuses: boolean;
 
   // Filter Results
   advancedFilteredResults: any;
@@ -860,18 +835,25 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
 onDashboardClick() {
 
-  // hide sidebar
+  // hide filterbar
   $('#sidebar').toggleClass('active');
+  $('.wrapper').toggleClass('dashboard-wrapper');
 
-  // disable toggle butten
-  $('#sidebarCollapse').prop('disabled', (_, val) => !val);
+  // hide 'hide filterbar' button
+  if ($('button.filter-toggle').attr('hidden')) {
+
+    $('button.filter-toggle').attr('hidden', false);
+
+  } else {
+
+    $('button.filter-toggle').attr('hidden', true);
+  }
 
 }
 
   // RESET BUTTON
 
-  async onResetButt
-  () {
+  async onResetButt() {
 
     // Clear inputs
     this.filterString = '';

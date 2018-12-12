@@ -25,7 +25,7 @@
       </div>
 
       <!-- Toggle Filterbar -->
-      <button #sidebarCollapse class="btn-standard icon-text-only hover-green filter-toggle active" id="sidebarCollapse" (click)="onShowFilterToggleClick(); showFilterCol=!showFilterCol">
+      <button #sidebarCollapse class="btn-standard icon-text-only hover-green filter-toggle" id="sidebarCollapse" (click)="onShowFilterToggleClick(); showFilterCol=!showFilterCol">
         <ng-container *ngIf="showFilterCol">
           <i class="fa fa-angle-double-left" style="margin-right:5px" aria-hidden="true"></i>Hide Filterbar
         </ng-container>
@@ -79,7 +79,7 @@
           <i class="fa fa-undo button-icon" aria-hidden="true" style="margin-right:5px"></i>Reset
         </button>
 
-        <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="showDashboard=!showDashboard">
+        <button *ngIf="showDashboardButton" class="btn-standard icon-text-only hover-green" (click)="onDashboardClick(); showDashboard=!showDashboard">
           <i class="fa fa-bar-chart button-icon" aria-hidden="true" style="margin-right:5px"></i>Dashboard
         </button>
 

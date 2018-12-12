@@ -1,25 +1,20 @@
 <!-- <div class="container-fluid"> -->
 
   <!-- outer container; don't show until data is ready -->
-  <div class="dashboard-cont" style="margin-left:10px" [hidden]="!showDashboard">
+  <div class="dashboard-cont" [hidden]="!showDashboard">
 
-    <!-- Projects General -->
-    <div class="card-deck" style="margin-left:10px;">
+    <!-- 2 inline divs -->
+    <div class="d-flex justify-content-between">
+      
+      <!-- Projects Stats-->
+      <div class="custom-card-cont">
+        <h5 class="dashboard-custom-title">Project Stats</h5>
+        <div class="d-flex justify-content-between">
 
-        <!-- Projects Stats-->
-        <div class="card border-light" style="margin:0px 5px 10px 0px">
-          <div class="card-header bg-light">
-            <h5 class="card-title">Project Stats</h5>
-          </div>
-          <div class="card-body" *ngIf="displayProjectStats">
-
-            <!-- Owners Table -->
-            <!-- <div class="col-4 col-4-square"> -->
-                <table class="table table-sm inline-tables" style="display: inline">
-                  <thead style="background-color: darkseagreen;">
+                <table class="table table-sm mx-3">
+                  <thead>
                     <tr>
-                      <th>Owner</th>
-                      <th>Projects</th>
+                      <th colspan="2">Project Owners #</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -29,15 +24,11 @@
                     </tr>
                   </tbody>
                 </table>
-            <!-- </div> -->
 
-              <!-- Priorities Table -->
-              <!-- <div class="col-4 col-4-square mid-third"> -->
-                <table class="table table-sm inline-tables" style="display: inline">
-                  <thead style="background-color:darksalmon">
+                <table class="table table-sm mx-3">
+                  <thead>
                     <tr>
-                      <th>Priority</th>
-                      <th>Projects</th>
+                      <th colspan="2">Project Priorities #</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -47,15 +38,11 @@
                     </tr>
                   </tbody>
                 </table>
-              <!-- </div> -->
 
-              <!-- Statuses Table -->
-              <!-- <div class="col-4 col-4-square"> -->
-                <table class="table table-sm inline-tables" style="display: inline">
-                  <thead style="background-color:gold">
+                <table class="table table-sm mx-3">
+                  <thead>
                     <tr>
-                      <th>Status</th>
-                      <th>Projects</th>
+                      <th colspan="2">Project Statuses #</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -65,89 +52,77 @@
                     </tr>
                   </tbody>
                 </table>
-              <!-- </div> -->
 
-          </div>
-
-          <div class="card-body" *ngIf="!displayProjectStats">
-            <h6>Project Stats not available for this data set</h6>
-          </div>
-        </div>
-        <!-- End Projects Stats-->
-
-        <!-- Project Charts -->
-        <div class="card border-light" style="margin:0px 0px 10px 5px">
-          <div class="card-header bg-light">
-            <h5 class="card-title">Project Highcharts</h5>
-          </div>
-          <div class="card-body" *ngIf="displayPriorityFTEChart">
-            <div class="highchart my-fte-pie-chart1" id="priorityFTEChart"></div>
-            <!-- <div class="col-sm-4 col-4-dashboard right-third"></div> -->
-          </div>
-          <div class="card-body" *ngIf="!displayPriorityFTEChart">
-            <h6>Priority/JobTitle/FTE chart not available for this data set</h6>
-            <h6>Please select a date range in the FTE filter to enable this chart</h6>
-          </div>
-        </div>
-        <!-- End Project Charts -->
-
-    </div>
-    <!-- End Projects General -->
-
-    <!-- Schedules -->
-    <div class="card border-light" style="margin:0px 0px 10px 10px">
-     
-        <!-- <div class="card-header-light">
-          <h5 class="card-title">PLC Schedules</h5>
-        </div> -->
-        <div class="card-body" >
-          <div class="highchart my-fte-pie-chart1" id="schedulesChart"></div>
         </div>
 
-        <!-- <div class="card-body" *ngIf="!displaySchedulesChart">
-          <h6>PLC Schedules chart not available</h6>
-          <h6>Projects in this data set do not have PLC Schedules defined</h6>
-        </div> -->
-
-    </div>
-    <!-- End Schedules -->
-
-    <!-- Schedule Stats NOT USED RIGHT NOW-->
-    <div class="card border-light" style="margin:0px 0px 10px 9px" hidden>
-
-      <div class="card-header bg-light">
-        <h5 class="card-title">PLC Schedules Stats</h5>
       </div>
 
-      <div class="card-body" *ngIf="displayScheduleStats">
-        <table class="table table-borderless table-sm">
-          <tbody>
-            <tr>
-              <td style="font-weight: bold">Avg FTE post-SHP</td>
-              <td>{{ ssAvgFTEAfterSHP }}</td>
-            </tr>
-            <tr>
-              <td style="font-weight: bold">Total FTE post-SHP</td>
-              <td>{{ ssTotalFTEAfterSHP }}</td>
-            </tr>
-            <tr>
-              <td style="font-weight: bold">Avg FTE no PLC</td>
-              <td>{{ ssAvgFTENoPLC }}</td>
-            </tr>
-            <tr>
-              <td style="font-weight: bold">Total FTE no PLC</td>
-              <td>{{ ssTotalFTENoPLC }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="card-body" *ngIf="!displayScheduleStats">
-        <h6>Schedule Stats not available for this data set</h6>
+      <!-- Poject Highcharts -->
+      <div class="custom-card-cont" style="min-width: 66%">
+        <h5 class="dashboard-custom-title">Project Highcharts</h5>
+        <div class="highchart my-fte-pie-chart1" id="priorityFTEChart"></div>
       </div>
 
     </div>
-    <!-- End Schedule Stats -->
+
+    <!-- Schedule line -->
+    <div class="custom-card-cont">
+      <h5 class="dashboard-custom-title">PLC Schedules</h5>
+      <div class="highchart my-fte-pie-chart1" id="schedulesChart"></div>
+    </div>
+
+    <!-- 3 inline divs -->
+    <div class="d-flex justify-content-between">
+
+      <!-- Top FTE -->
+      <div class="custom-card-cont">
+        <h5 class="dashboard-custom-title">Top FTE Projects</h5>
+        <h6 class="dashboard-custom-title">Select a project to display the FTE trend chart</h6>
+        
+            <table *ngIf="displayTopFTEProjects" class="table table-borderless table-sm table-hover">
+              <thead>
+                <tr>
+                  <th width="30%" scope="col">Project Name</th>
+                  <th width="15%" scope="col">Project Type</th>
+                  <th width="10%" scope="col">Priority</th>
+                  <th width="10%" scope="col">Total FTE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let project of topFTEProjects; let i = index" (click)="onTopFTEProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
+                  <td>{{ project.ProjectName }}</td>
+                  <td>{{ project.ProjectTypeName }}</td>
+                  <td>{{ project.PriorityName }}</td>
+                  <td>{{ project.TotalProjectFTE }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+      </div>
+
+      <!-- Project FTE Trend -->
+      <div class="custom-card-cont">
+        <h5 class="dashboard-custom-title">Project FTE Trends</h5>
+        <ng-container *ngIf="displayTopFTEProjects && displayProjectFTETrendChart">
+          <div class="highchart my-fte-pie-chart1" id="FTEHistory"></div>
+        </ng-container>
+
+      </div>
+
+      <!-- Roster -->
+      <div class="custom-card-cont">
+        <h5 class="dashboard-custom-title">Rosters</h5>
+
+      </div>
+
+    </div>
+
+
+
+
+
+
+
     
     <!-- Top FTEs Paul's 3rd row-->
 

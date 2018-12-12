@@ -239,9 +239,6 @@ export class AdvancedDashboardComponent implements OnInit {
         marginBottom: 100,
         height: 400 * this.schedulesChartHeight
       },
-      title: {
-        text: 'PLC Schedules'
-      },
       subtitle: {
         text: `- Projects only display PLC schedules selected in the filter<br>
               - PLC duration starts from the end of the previous PLC checkpoint<br>
