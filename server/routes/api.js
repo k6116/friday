@@ -220,7 +220,7 @@ router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
 // REPORT CONTROLLER
 router.get('/report/reports-project-fte-rollup/show/getProjectFTERollupData/:projectID/:startDate/:endDate', controllers.report.getProjectFTERollupData);
 router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
-router.get('/report/getSubordinateDrillDownProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateDrillDownProjectRoster);
+router.get('/report/getSubordinateDrillDownProjectRoster/:excludeParentType/:managerEmailAddress/:period', controllers.report.getSubordinateDrillDownProjectRoster);
 
 // LOG CONTROLLER
 router.post('/log/writeToLog', controllers.log.writeToLog);
