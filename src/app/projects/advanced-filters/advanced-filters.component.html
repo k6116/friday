@@ -420,7 +420,7 @@
                     </div>
 
                   <button type="button" class="btn btn-standard icon-text-only filter-go-btn" 
-                          (click)="onPLCGoClick()">
+                          (click)="onPLCGoButtonClick()">
                     <i class="fa fa-thumbs-up icon-text-only hover-green" aria-hidden="true" style="margin-right:5px"></i>Go
                   </button>
 
@@ -437,7 +437,7 @@
                       <input class="custom-control-input" type="checkbox" [attr.name]="plcStatus.PLCStatusName" [attr.id]="'plcStatus' + l" 
                           [(ngModel)]="plcStatus.selected"
                           (change)="checkIfAllPLCSchedulesSelected()"
-                          (click)="onPLCStatusCheckboxClick(l, $event.target.checked, plcStatus); inputPLCFrom.value=''; inputPLCTo.value=''">
+                          (click)="onPLCStatusCheck(l, $event.target.checked, plcStatus); inputPLCFrom.value=''; inputPLCTo.value=''">
                       <label class="custom-control-label" [attr.for]="'plcStatus' + l" style="margin-left: 8px">{{ plcStatus.PLCStatusName }}</label>
                     </div>
 
@@ -453,10 +453,10 @@
                           [max]="maxDate" 
                           style="margin-top: 0px" 
                           [disabled]="!plcStatus.selected" 
-                          (change)="onInputPLCChange($event, l)">
+                          (change)="onInputPLCChangeFrom($event, l)">
                       <span style="margin: 0px 5px">-</span>
                       <input #inputPLCTo 
-                          class="form-control fte" 
+                          class="form-control fte plcInput" 
                           [class.plc-input-invalid]="inputPLCTo.validity.valid===false" 
                           id="plcTo" 
                           type="date" 
@@ -464,7 +464,7 @@
                           [max]="maxDate" 
                           style="margin-top: 0px" 
                           [disabled]="!plcStatus.selected" 
-                          (change)="onInputPLCChange($event, l)">
+                          (change)="onInputPLCChangeTo($event, l)">
                     </div>
 
                   </div>

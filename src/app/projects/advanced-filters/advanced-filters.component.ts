@@ -22,13 +22,13 @@ declare const require: any;
 declare var $: any;
 declare const Bloodhound;
 
-export interface NewPLC {
-  index: number;
-  PLCStatusID: string;
-  PLCStatusName: string;
-  PLCDateFrom: string;
-  PLCDateTo: string;
-}
+// export interface NewPLC {
+//   index: number;
+//   PLCStatusID: string;
+//   PLCStatusName: string;
+//   PLCDateFrom: string;
+//   PLCDateTo: string;
+// }
 
 @Component({
   selector: 'app-advanced-filters',
@@ -79,14 +79,14 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   managerTeam: any[];
   holdProjects: number[]; // array of projectIDs that user wants to hold in the results table
 
-  // PLC information for filterObjects
-  newPLC: NewPLC = {
-    index: null,
-    PLCStatusID: '',
-    PLCStatusName: '',
-    PLCDateFrom: '',
-    PLCDateTo: ''
-  };
+  // // PLC information for filterObjects
+  // newPLC: NewPLC = {
+  //   index: null,
+  //   PLCStatusID: '',
+  //   PLCStatusName: '',
+  //   PLCDateFrom: '',
+  //   PLCDateTo: ''
+  // };
 
   // For default Check All - To-DO: Still need this?
   // checkAllProjectTypes: boolean;
@@ -636,7 +636,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.children.length; i++) {
       this.children[i].selected = this.allChildrenCheckbox;
     }
-    console.log('children', this.children);
 
     await this.advancedFiltersCheckboxesService.onAllChildrenCheck(this, checked);
 
@@ -693,15 +692,15 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     if (this.allPLCSchedulesCheckbox === true) {
       this.objPLC = [];
       for (let i = 0; i < this.plcStatuses.length; i++) {
-        this.plcStatuses[i].selected = true;                           // to enable plc schedules input boxes
-        this.onPLCStatusCheckboxClick(i, this.allPLCSchedulesCheckbox, this.plcStatuses[i]); // to save data locally in objPLC
+        this.plcStatuses[i].selected = true;                                          // to enable plc schedules input boxes
+        this.onPLCStatusCheck(i, this.allPLCSchedulesCheckbox, this.plcStatuses[i]); // to save data locally in objPLC
       }
 
     } else if (this.allPLCSchedulesCheckbox === false) {
 
       for (let i = 0; i < this.plcStatuses.length; i++) {
-        this.plcStatuses[i].selected = false;                          // to disable plc schedules input boxes
-        this.onPLCStatusCheckboxClick(i, this.allPLCSchedulesCheckbox, this.plcStatuses[i]); // to save data locally in objPLC
+        this.plcStatuses[i].selected = false;                                         // to disable plc schedules input boxes
+        this.onPLCStatusCheck(i, this.allPLCSchedulesCheckbox, this.plcStatuses[i]); // to save data locally in objPLC
       }
 
     }
@@ -714,48 +713,53 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Send plc filter data to db when clicking the'Go' button on the plc filter header
-  async onPLCGoClick() {
+  async onPLCGoButtonClick() {
 
-    // translate local plc object to filterObject strings
-    await this.advancedFiltersPLCService.getScheduleString(this);
+    // translate local plc object (objPLC) to filterObject strings
+    this.filterObject = await this.advancedFiltersPLCService.getPLCFilterObject(this.objPLC, this.filterObject);
 
     // Make db call
     this.advancedFiltersDataService.advancedFilter(this, this.filterObject);
   }
 
-  onPLCStatusCheckboxClick(index, checked: boolean, plcStatus: any) {
-
-    // use interface to sort out all the attributes
-    this.newPLC = {
-      index: index,                           // to macth up date-input box with status-scheckbox onInputPLCChange
-      PLCStatusID: plcStatus.PLCStatusID,
-      PLCStatusName: plcStatus.PLCStatusName, // for filterObject
-      PLCDateFrom: 'NULL',                    // for filterObject
-      PLCDateTo: 'NULL'                       // for filterObject
-    };
+  onPLCStatusCheck(index, checked: boolean, plcStatus: any) {
+    const obj = this.objPLC;
 
     if (checked === true) {
-      // Add checked PLC Status to local PLC object
-      this.objPLC.push(this.newPLC);
+
+      this.objPLC = this.advancedFiltersPLCService.onPLCStatusCheck(obj, plcStatus, index);
 
     } else if (checked === false) {
-      // find and remove the appropriate status in the local plc object
-      this.advancedFiltersPLCService.onPLCStatusUncheck(this);
+
+      this.objPLC = this.advancedFiltersPLCService.onPLCStatusUncheck(obj, index);
 
     }
 
   }
 
-  onInputPLCChange(event: any, index) {
+  onInputPLCChangeFrom(event: any, index) {
 
-    const valid = event.target.validity.valid;
+    const valid = event.target.validity.valid;  // Only allow dates from 1900 and complete dates
+    const date = event.target.value;
+    const obj = this.objPLC;
 
-    // Only allow dates from 1900 and complete dates
     if (valid === true ) {
-      this.advancedFiltersPLCService.onInputChange(this, event, index);
-    }
 
+      this.objPLC = this.advancedFiltersPLCService.onInputPLCChangeFrom(obj, date, index);
+
+    }
+  }
+
+  onInputPLCChangeTo(event: any, index) {
+    const valid = event.target.validity.valid;  // Only allow dates from 1900 and complete dates
+    const date = event.target.value;
+    const obj = this.objPLC;
+
+    if (valid === true ) {
+
+      this.objPLC = this.advancedFiltersPLCService.onInputPLCChangeTo(obj, date, index);
+
+    }
   }
 
 // FTE
@@ -854,7 +858,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
   // RESET BUTTON
 
-  async onResetButtonClick() {
+  async onResetButt
+  () {
 
     // Clear inputs
     this.filterString = '';
