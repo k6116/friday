@@ -26,7 +26,8 @@ const Schedules = sequelize.define('schedules',
 
 const SchedulesDetail = sequelize.define('schedulesDetail',
   {
-    scheduleID: { type: Sequelize.INTEGER, field: 'ScheduleID', primaryKey: true},
+    schedulesDetailID: { type: Sequelize.INTEGER, field: 'SchedulesDetailID', primaryKey: true, autoIncrement: true},
+    scheduleID: { type: Sequelize.INTEGER, field: 'ScheduleID'},
     currentRevision: { type: Sequelize.INTEGER, field: 'CurrentRevision' },
     needByDate: { type: Sequelize.DATE, field: 'NeedByDate' },
     neededQuantity: { type: Sequelize.INTEGER, field: 'NeededQuantity' },

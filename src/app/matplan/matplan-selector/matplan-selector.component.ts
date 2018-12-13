@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { CacheService, ToolsService } from '../../_shared/services/_index';
 import { ApiDataMatplanService, ApiDataSchedulesService } from '../../_shared/services/api-data/_index';
 
 declare var $: any;
@@ -16,10 +17,17 @@ export class MatplanSelectorComponent implements OnInit {
   selectedProject: any; // for displaying project name in the view
   buildStatusList: any; // for offering list of build status options in the form
   buildScheduleForm: FormGroup;
+  scheduleID: number = null;  // store the scheduleID from the database (if we have it) so we can initialize new records with it
+
+  // title text for form validation
+  dateTitle = 'Build Date is required';
+  qtyTitle = 'Quantity must be a whole positive integer';
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
+    private cacheService: CacheService,
+    private toolsService: ToolsService,
     private apiDataMatplanService: ApiDataMatplanService,
     private apiDataSchedulesService: ApiDataSchedulesService
   ) { }
@@ -70,62 +78,93 @@ export class MatplanSelectorComponent implements OnInit {
     console.log(this.buildScheduleForm.value);
   }
 
-  async onProjectSelect(selectedProject: any) {
-    // when a project has been selected, show all available matplans for it
-    console.log(selectedProject);
-    this.selectedProject = selectedProject;
-    const matplanList = await this.apiDataMatplanService.showMatplans(selectedProject.ProjectID).toPromise();
-    this.initMatplanForm(matplanList);
+  resetForm() {
+    // remove all controls in the formArray
+    const formArray = <FormArray>this.buildScheduleForm.get('buildScheduleArray');
+    while (formArray.length !== 0) {
+      formArray.removeAt(0);
+    }
+    // reset the pristine/dirty flags in the form
+    this.buildScheduleForm.reset();
   }
 
-  initMatplanForm(matplanList: any) {
+  async onProjectSelect(selectedProject: any) {
+    this.resetForm(); // reset the form
+    // when a project has been selected, show all available matplans for it
+    this.selectedProject = selectedProject;
+    const scheduleList = await this.apiDataMatplanService.showMatplans(selectedProject.ProjectID).toPromise();
+    console.log('response from server');
+    console.log(scheduleList);
+    if (!Array.isArray(scheduleList) || !scheduleList.length) {
+      // if response is null, undefined, or empty, don't try to initialize the form with values from the response
+    } else {
+      this.scheduleID = scheduleList[0].ScheduleID;
+      this.initMatplanForm(scheduleList);
+    }
+  }
+
+  initMatplanForm(scheduleList: any) {
     console.log(this.buildStatusList);
+    // get validator patterns
+    const wholePositiveNumbers = this.toolsService.regexWholePositiveNumbers;
+
     // aliasing the newly created formArray
     const buildScheduleArray = <FormArray>this.buildScheduleForm.get('buildScheduleArray');
-    matplanList.forEach( matplan => {
-      const newForm = this.fb.group({
-        scheduleID: matplan.ScheduleID,
-        projectID: matplan.ProjectID,
-        currentRevision: matplan.CurrentRevision,
-        notes: matplan.Notes,
-        materialPlanID: matplan.MaterialPlanID,
-        buildStatusID: matplan.BuildStatusID,
-        buildStatusName: matplan.BuildStatusName,
-        needByDate: matplan.NeedByDate,
-        neededQuantity: matplan.NeededQuantity,
-        hasMatplan: true,
-        scheduleUpdateDate: matplan.ScheduleUpdateDate,
-        scheduleUpdatedBy: matplan.ScheduleUpdatedBy,
-        schedulesDetailUpdateDate: matplan.SchedulesDetailUpdateDate,
-        schedulesDetailUpdatedBy: matplan.SchedulesDetailUpdatedBy,
-        matplanUpdateDate: matplan.MatplanUpdateDate,
-        matplanUpdatedBy: matplan.MatplanUpdatedBy,
-        matplanUpdatedByName: matplan.MatplanUpdatedByName
-      });
-      buildScheduleArray.push(newForm);
+    scheduleList.forEach( schedule => {
+      // because Schedules is mixing Build Schedule and PLC data in the same table, we need to parse the returned
+      // records that are actually build schedules, and not PLC schedules
+      if (schedule.BuildStatusID !== null) {
+        const newForm = this.fb.group({
+          scheduleID: schedule.ScheduleID,
+          schedulesDetailID: schedule.SchedulesDetailID,
+          projectID: schedule.ProjectID,
+          currentRevision: schedule.CurrentRevision,
+          notes: schedule.Notes,
+          materialPlanID: schedule.MaterialPlanID,
+          buildStatusID: [schedule.BuildStatusID, [Validators.required]],
+          buildStatusName: schedule.BuildStatusName,
+          needByDate: [schedule.NeedByDate, [Validators.required]],
+          neededQuantity: [schedule.NeededQuantity, [Validators.required, Validators.pattern(wholePositiveNumbers)]],
+          hasMatplan: schedule.MaterialPlanID ? true : false,
+          scheduleUpdateDate: schedule.ScheduleUpdateDate,
+          scheduleUpdatedBy: schedule.ScheduleUpdatedBy,
+          schedulesDetailUpdateDate: schedule.SchedulesDetailUpdateDate,
+          schedulesDetailUpdatedBy: schedule.SchedulesDetailUpdatedBy,
+          matplanUpdateDate: schedule.MatplanUpdateDate,
+          matplanUpdatedBy: schedule.MatplanUpdatedBy,
+          matplanUpdatedByName: schedule.MatplanUpdatedByName,
+          toBeDeleted: false
+        });
+        buildScheduleArray.push(newForm);
+      }
     });
   }
 
   addBuildToSchedule() {
+    // get validator patterns
+    const wholePositiveNumbers = this.toolsService.regexWholePositiveNumbers;
+
     // aliasing the primary formArray
     const buildScheduleArray = <FormArray>this.buildScheduleForm.get('buildScheduleArray');
 
     // push an empty build schedule row
     buildScheduleArray.push(
       this.fb.group({
-        scheduleID: null,
+        scheduleID: this.scheduleID ? this.scheduleID : null,
+        schedulesDetailID: null,
         projectID: this.selectedProject.ProjectID,
         currentRevision: 1,
         notes: null,
         materialPlanID: null,
-        buildStatusID: null,
+        buildStatusID: [null, [Validators.required]],
         buildStatusName: null,
-        needByDate: null,
-        neededQuantity: null,
+        needByDate: [null, [Validators.required]],
+        neededQuantity: [null, [Validators.required, Validators.pattern(wholePositiveNumbers)]],
         hasMatplan: false,
         matplanUpdateDate: null,
         matplanUpdatedBy: null,
-        matplanUpdatedByName: null
+        matplanUpdatedByName: null,
+        toBeDeleted: false
       })
     );
   }
@@ -139,11 +178,54 @@ export class MatplanSelectorComponent implements OnInit {
     this.router.navigate([`/main/matplan/edit/${matplan.get('materialPlanID').value}`]);
   }
 
+  deleteBuildSchedule({schedule, index}) {
+    console.log(schedule);
+    const isDatabaseValue = schedule.get('schedulesDetailID').value;
+    if (isDatabaseValue) {
+      // if the record to be deleted does have a ID in the database, then we need to mark it for deletion
+      schedule.get('toBeDeleted').patchValue(true);
+    } else {
+      // if it's not a database value, then just kill it in the frontend
+      const formArray = <FormArray> this.buildScheduleForm.get('buildScheduleArray');
+      formArray.removeAt(index);
+    }
+  }
+
   onBuildScheduleSave() {
     console.log(this.buildScheduleForm.value);
-    this.apiDataSchedulesService.updateBuildScheduleNew(this.buildScheduleForm.value).subscribe( res => {
-      console.log('yay');
-    });
+    const form = this.buildScheduleForm.value;
+    const formArray = this.buildScheduleForm.get('buildScheduleArray').value;
+
+    const formIsValid = this.validateBuildScheduleForm(formArray);
+
+    if (formIsValid) {
+      // send the data to the database
+      this.apiDataSchedulesService.updateBuildScheduleNew(form).subscribe( res => {
+        console.log('yay');
+        this.cacheService.raiseToast('success', `${res.message}`);
+        this.onProjectSelect(this.selectedProject);
+      },
+      err => {
+        this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
+      });
+    } else {
+      this.cacheService.raiseToast('error', 'Cannot have 2 builds with the same name');
+    }
+  }
+
+  validateBuildScheduleForm(formArray: any) {
+    // validate to ensure we don't have 2 of the same build
+    const buildTypes = [];
+    for (let i = 0; i < formArray.length; i++) {
+      if (buildTypes.includes(formArray[i].buildStatusID)) {
+        // multiple builds of the same type, so the form is invalid
+        return false;
+      } else {
+        buildTypes.push(formArray[i].buildStatusID);
+      }
+    }
+
+    return true;
   }
 
 }

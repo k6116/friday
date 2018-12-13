@@ -41,7 +41,7 @@ function showBuildSchedule(req, res) {
 	const projectID = req.params.projectID;
 	models.Schedules.findAll({
 		attributes: [
-			'id',
+			'schedules.ScheduleID',
 			'projectID',
 			'currentRevision',
 			'notes',
@@ -80,9 +80,10 @@ function updateBuildScheduleNew(req, res) {
 	const updateSchedules = [];
 	const insertSchedulesDetails = [];
 	const updateSchedulesDetails = [];
+	const deleteSchedulesDetails = [];
 
-  // if order is missing matOrderID, then it is new.  Otherwise, it is an update (because the frontend has already parsed out the no-changes records)
   buildScheduleForm.forEach( schedule => {
+		// if order is missing scheduleID, then it is new to both Schedules and SchedulesDetail tables
     if (schedule.scheduleID === null) {
       insertSchedules.push({
         projectID: schedule.projectID,
@@ -93,7 +94,7 @@ function updateBuildScheduleNew(req, res) {
         updatedBy: userID,
         updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
 			});
-			
+
 			insertSchedulesDetails.push({
 				currentRevision: schedule.currentRevision,
 				needByDate: schedule.needByDate,
@@ -104,8 +105,33 @@ function updateBuildScheduleNew(req, res) {
         updatedBy: userID,
         updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
 			});
-    } else {
+    } else if (schedule.schedulesDetailID === null) {
+			// if scheduleID is NOT null, but schedulesDetail IS null, then we only need to insert records into the SchedulesDetail table, but update the Updated times in the Schedules table
       updateSchedules.push({
+				scheduleID: schedule.scheduleID,
+        projectID: schedule.projectID,
+				currentRevision: schedule.currentRevision,
+				notes: schedule.notes,
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+			});
+			
+			insertSchedulesDetails.push({
+				scheduleID: schedule.scheduleID,
+				currentRevision: schedule.currentRevision,
+				needByDate: schedule.needByDate,
+				neededQuantity: schedule.neededQuantity,
+				buildStatusID: schedule.buildStatusID,
+				createdBy: userID,
+        createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+			});
+		} else if (schedule.toBeDeleted === true) {
+			deleteSchedulesDetails.push(schedule.schedulesDetailID);
+		} else {
+			// if neither ID is null, then it is an update to both tables
+			updateSchedules.push({
 				scheduleID: schedule.scheduleID,
         projectID: schedule.projectID,
 				currentRevision: schedule.currentRevision,
@@ -116,6 +142,7 @@ function updateBuildScheduleNew(req, res) {
 			
 			updateSchedulesDetails.push({
 				scheduleID: schedule.scheduleID,
+				schedulesDetailID: schedule.schedulesDetailID,
 				currentRevision: schedule.currentRevision,
 				needByDate: schedule.needByDate,
 				neededQuantity: schedule.neededQuantity,
@@ -123,7 +150,7 @@ function updateBuildScheduleNew(req, res) {
         updatedBy: userID,
         updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
 			});
-    }
+		}
   });
 
   console.log('done parsing insertSchedules');
@@ -133,78 +160,91 @@ function updateBuildScheduleNew(req, res) {
 	console.log('done parsing updateSchedules');
   console.log(updateSchedules);
   console.log('done parsing updateSchedulesDetails');
-  console.log(updateSchedulesDetails);
+	console.log(updateSchedulesDetails);
+	console.log('done parsing deleteSchedulesDetails');
+	console.log(deleteSchedulesDetails);
 
   return sequelize.transaction( (t) => {
-    // first, insert records into Schedules
-    return models.Schedules.bulkCreate(
-      insertSchedules,
-      {transaction: t}
-    )
-    .then( insertedRecords => {
-      console.log(`${insertedRecords.length} buildSchedule records inserted`);
+		// first, delete the requested records from schedulesDetails
+		return models.SchedulesDetail.destroy({
+			where: {schedulesDetailID: deleteSchedulesDetails},
+			transaction: t
+		})
+		.then ( deletedRecords => {
+			console.log(`${deletedRecords.length} buildScheduleDetails records deleted`)
 
-			// also insert into SchedulesDetail
-			return models.SchedulesDetail.bulkCreate(
-				insertSchedulesDetails,
+			// then, insert records into Schedules
+			return models.Schedules.bulkCreate(
+				insertSchedules,
 				{transaction: t}
 			)
-			.then (insertedRecords => {
-				console.log(`${insertedRecords.length} buildScheduleDetails records inserted`);
+			.then( insertedRecords => {
+				console.log(insertedRecords);
+				console.log(`${insertedRecords.length} buildSchedule records inserted`);
 
-				// then build an array of promises for updates to make to
-				let promises = [];
-				for (let i = 0; i < updateSchedules.length; i++) {
-					let newPromise = models.Schedules.update(
-					{
-						scheduleID: updateSchedules[i].scheduleID,
-						projectID: updateSchedules[i].projectID,
-						currentRevision: updateSchedules[i].currentRevision,
-						notes: updateSchedules[i].notes,
-						updatedBy: updateSchedules[i].updatedBy,
-						updatedAt: updateSchedules[i].updatedAt
-					},
-					{
-						where: { scheduleID: updateSchedules[i].scheduleID },
-						transaction: t
-					});
-					promises.push(newPromise);
-				};
-				// then execute all the promises to update the quote records
-				return Promise.all(promises)
-				.then( updatedRecords => {
-					console.log(`${updatedRecords.length} buildSchedule records updated`);
+				// also insert into SchedulesDetail
+				return models.SchedulesDetail.bulkCreate(
+					insertSchedulesDetails,
+					{transaction: t}
+				)
+				.then (insertedRecords => {
+					console.log(`${insertedRecords.length} buildScheduleDetails records inserted`);
 
-					// then build an array of promises for updates to make to
+					// then build an array of promises for updates to make to Schedules table
 					let promises = [];
-					for (let i = 0; i < updateSchedulesDetails.length; i++) {
-						let newPromise = models.SchedulesDetail.update(
+					for (let i = 0; i < updateSchedules.length; i++) {
+						let newPromise = models.Schedules.update(
 						{
-							scheduleID: updateSchedulesDetails[i].scheduleID,
-							currentRevision: updateSchedulesDetails[i].currentRevision,
-							needByDate: updateSchedulesDetails[i].needByDate,
-							neededQuantity: updateSchedulesDetails[i].neededQuantity,
-							updatedBy: updateSchedulesDetails[i].updatedBy,
-							updatedAt: updateSchedulesDetails[i].updatedAt
+							scheduleID: updateSchedules[i].scheduleID,
+							projectID: updateSchedules[i].projectID,
+							currentRevision: updateSchedules[i].currentRevision,
+							notes: updateSchedules[i].notes,
+							updatedBy: updateSchedules[i].updatedBy,
+							updatedAt: updateSchedules[i].updatedAt
 						},
 						{
-							where: {
-								scheduleID: updateSchedulesDetails[i].scheduleID,
-								buildStatusID: updateSchedulesDetails[i].buildStatusID
-							},
+							where: { scheduleID: updateSchedules[i].scheduleID },
 							transaction: t
 						});
 						promises.push(newPromise);
 					};
 					// then execute all the promises to update the quote records
-					return Promise.all(promises);
+					return Promise.all(promises)
+					.then( updatedRecords => {
+						console.log(`${updatedRecords.length} buildSchedule records updated`);
+
+						// then build an array of promises for updates to make to SchedulesDetail table
+						let promises = [];
+						for (let i = 0; i < updateSchedulesDetails.length; i++) {
+							let newPromise = models.SchedulesDetail.update(
+							{
+								schedulesDetailID: updateSchedulesDetails[i].schedulesDetailID,
+								scheduleID: updateSchedulesDetails[i].scheduleID,
+								currentRevision: updateSchedulesDetails[i].currentRevision,
+								buildStatusID: updateSchedulesDetails[i].buildStatusID,
+								needByDate: updateSchedulesDetails[i].needByDate,
+								neededQuantity: updateSchedulesDetails[i].neededQuantity,
+								updatedBy: updateSchedulesDetails[i].updatedBy,
+								updatedAt: updateSchedulesDetails[i].updatedAt
+							},
+							{
+								where: {
+									schedulesDetailID: updateSchedulesDetails[i].schedulesDetailID
+								},
+								transaction: t
+							});
+							promises.push(newPromise);
+						};
+						// then execute all the promises to update the quote records
+						return Promise.all(promises);
+					});
 				});
+				
+			})
+			.then( updatedRecords => {
+				console.log(`${updatedRecords.length} buildScheduleDetails records updated`)
 			});
-      
-    })
-    .then( updatedRecords => {
-      console.log(`${updatedRecords.length} buildScheduleDetails records updated`)
-    });
+		});
   }) // end transaction
   .then(() => {
     res.json({

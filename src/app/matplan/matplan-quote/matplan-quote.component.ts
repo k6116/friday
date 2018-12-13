@@ -217,9 +217,16 @@ export class MatplanQuoteComponent implements OnInit {
     $('#quoteModal').modal('hide');
   }
 
-  onRowDelete(row: any) {
-    // when user clicks the trash can, mark a row as to be deleted
-    row.controls.toBeDeleted.patchValue(true);
+  onRowDelete({priceBreak, index}) {
+    const quoteID = priceBreak.get('quoteID').value;
+    if (quoteID === null) {
+      // if no quoteID, the the row isn't a database value and we can just cut it out
+      const priceBreakArray = <FormArray>this.quoteForm.get('breaks');
+      priceBreakArray.removeAt(index);
+    } else {
+      // if quoteID, then it's a DB value and we need to mark it for deletion
+      priceBreak.controls.toBeDeleted.patchValue(true);
+    }
   }
 
   deleteQuote(quote: any) {

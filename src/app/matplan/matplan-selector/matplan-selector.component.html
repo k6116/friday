@@ -13,7 +13,7 @@
 
   <div class="row row-custom" *ngIf="selectedProject">
     <button class="btn btn-secondary" (click)="addBuildToSchedule()">Add Build</button>
-    <button class="btn btn-success" (click)="onBuildScheduleSave()">Save</button>
+    <button class="btn btn-success" (click)="onBuildScheduleSave()" [disabled]="!buildScheduleForm.valid">Save</button>
     <button class="btn btn-secondary" (click)="testForm()">test</button>
   </div>
 
@@ -36,15 +36,15 @@
           </thead>
           <tbody formArrayName="buildScheduleArray">
             <tr *ngFor="let schedule of buildScheduleForm.get('buildScheduleArray').controls; let i = index">
-              <ng-container [formGroupName]="i">
-                <td class="table-text"><i class="fa fa-trash-o"></i></td>
+              <ng-container *ngIf="!schedule.get('toBeDeleted').value" [formGroupName]="i">
+                <td class="table-text"><i class="fa fa-trash-o" *ngIf="!schedule.get('hasMatplan').value" (click)="deleteBuildSchedule({schedule: schedule, index: i})"></i></td>
                 <td>
-                  <select class="form-control" formControlName="buildStatusID">
+                  <select class="form-control" formControlName="buildStatusID" [attr.disabled]="schedule.get('hasMatplan').value === true ? 'disabled' : null" [ngClass]="schedule.controls.buildStatusID.valid ? '' : 'highlight-invalid'">
                     <option *ngFor="let bs of buildStatusList" [ngValue]="bs.buildStatusID">{{bs.buildStatusName}}</option>
                   </select>
                 </td>
-                <td><input class="form-control" type="date" formControlName="needByDate"></td>
-                <td><input class="form-control" type="text" formControlName="neededQuantity"></td>
+                <td><input class="form-control" type="date" formControlName="needByDate" [ngClass]="schedule.controls.needByDate.valid ? '' : 'highlight-invalid'" [attr.title]="schedule.controls.needByDate.valid ? null : dateTitle"></td>
+                <td><input class="form-control" type="text" formControlName="neededQuantity" [ngClass]="schedule.controls.neededQuantity.valid ? '' : 'highlight-invalid'" [attr.title]="schedule.controls.neededQuantity.valid ? null : qtyTitle"></td>
                 <td class="table-text">{{schedule.get('hasMatplan').value}}</td>
                 <td class="table-text">{{schedule.get('matplanUpdateDate').value | date}}</td>
                 <td class="table-text">{{schedule.get('matplanUpdatedByName').value}}</td>

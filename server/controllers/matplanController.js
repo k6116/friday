@@ -96,6 +96,7 @@ function showMatplans(req, res) {
   sequelize.query(`
     SELECT 
       T1.ScheduleID,
+      T2.SchedulesDetailID,
       T1.ProjectID,
       T1.CurrentRevision,
       T1.Notes,
@@ -124,8 +125,7 @@ function showMatplans(req, res) {
         ON T2.BuildStatusID = T4.BuildStatusID
     LEFT JOIN accesscontrol.Employees T5
       ON T3.LastUpdatedBy = T5.EmployeeID
-    WHERE T1.ProjectID = :projectID
-      AND T2.BuildStatusID IS NOT NULL`, {replacements: {projectID: projectID}, type: sequelize.QueryTypes.SELECT}
+    WHERE T1.ProjectID = :projectID`, {replacements: {projectID: projectID}, type: sequelize.QueryTypes.SELECT}
   )
   .then(buildList => {
     res.json(buildList);
@@ -182,7 +182,8 @@ function showQuotesForPart(req, res) {
       attributes: []
       // empty attributes trick to prevent having a fully-qualified property name (ie, field = suppliers.supplierName instead of supplierName)
       // see https://github.com/sequelize/sequelize/issues/7605
-    }]
+    }],
+    raw: true
   })
   .then(quoteList => {
     console.log(quoteList);

@@ -97,7 +97,7 @@
             <tbody formArrayName="breaks">
               <tr *ngFor="let priceBreak of quoteForm.controls.breaks.controls; let i = index">
                 <ng-container *ngIf="!priceBreak.controls.toBeDeleted.value" formGroupName="{{i}}">
-                  <td class="delete-row"><i class="fa fa-trash-o" (click)="onRowDelete(priceBreak)"></i></td>
+                  <td class="delete-row"><i class="fa fa-trash-o" (click)="onRowDelete({priceBreak: priceBreak, index: i})"></i></td>
                   <td><input class="form-control" formControlName="minOrderQty" [ngClass]="priceBreak.controls.minOrderQty.valid ? '' : 'highlight-invalid'" [attr.title]="priceBreak.controls.minOrderQty.valid ? null : moqTitle"></td>
                   <td><input class="form-control" formControlName="price" [ngClass]="priceBreak.controls.price.valid ? '' : 'highlight-invalid'" [attr.title]="priceBreak.controls.price.valid ? null : priceTitle"></td>
                   <td><input class="form-control" formControlName="nreCharge" [ngClass]="priceBreak.controls.nreCharge.valid ? '' : 'highlight-invalid'" [attr.title]="priceBreak.controls.nreCharge.valid ? null : nreTitle"></td>
@@ -110,7 +110,7 @@
         </form>
       </div>
       <div class="modal-footer" *ngIf="quoteForm">
-        <!-- <button type="button" class="btn btn-primary" (click)="testForm()">test</button> -->
+        <button type="button" class="btn btn-primary" (click)="testForm()">test</button>
         <button type="button" class="btn btn-primary" (click)="onSaveQuote()" [disabled]="!quoteForm.valid">Save changes</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
