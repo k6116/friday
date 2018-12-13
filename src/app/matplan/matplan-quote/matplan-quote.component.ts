@@ -266,7 +266,9 @@ export class MatplanQuoteComponent implements OnInit {
           this.getMatplanBom(this.projectID); // refresh the BOM list
         },
         err => {
-          this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
+          // read the error from the JSON response
+          const obj = JSON.parse(err._body);
+          this.cacheService.raiseToast('error', `${obj.message}`);
         });
       }
 

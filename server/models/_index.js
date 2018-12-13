@@ -3,7 +3,7 @@ module.exports = {
   User: require('./user.js'),
   Part: require('./part.js').Part,
   Quote: require('./part.js').Quote,
-  MaterialOrder: require('./part.js').MaterialOrder,
+  MaterialOrder: require('./matplan.js').MaterialOrder,
   MaterialPlan: require('./matplan.js').MaterialPlan,
   Supplier: require('./part.js').Supplier,
   PurchaseMethod: require('./part.js').PurchaseMethod,

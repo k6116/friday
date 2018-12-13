@@ -271,6 +271,8 @@ function createMatplan(req, res) {
 function destroyQuoteForPart(req, res) {
   const quoteForm = req.body;
   const quoteName = quoteForm.supplierName;
+  const quotePart = quoteForm.partID;
+  const quoteSupplier = quoteForm.supplierID;
   const deleteIDs = [];
 
   quoteForm.breaks.forEach( priceBreak => {
@@ -279,16 +281,39 @@ function destroyQuoteForPart(req, res) {
 
   console.log('finished parsing IDs to delete');
 
-  return models.Quote.destroy({where: {quoteID: deleteIDs}})
-  .then(() => {
-    res.json({
-      message: `${quoteName} quote deleted!`
+  return sequelize.transaction( t => {
+    return models.MaterialOrder.findAll({
+      where: {
+        supplierID: quoteSupplier,
+        partID: quotePart
+      },
+      transaction: t
     })
-  })
+    .then( foundRecords => {
+      console.log(`found ${foundRecords.length} records`)
+
+      if (foundRecords.length > 0) {
+        // found records in MatOrder table, so we can't delete the quote because it will affect our order
+        return res.status(500).json({
+          message: 'Supplier is used in MaterialOrder, so it cannot be deleted'
+        });
+      } else {
+        return models.Quote.destroy({
+          where: {quoteID: deleteIDs},
+          transaction: t
+        })
+        .then(() => {
+          res.json({
+            message: `${quoteName} quote deleted!`
+          });
+        });
+      }
+    });
+  })  // end transaction
   .catch(error => {
     console.log(error);
     res.status(500).json({
-      message: 'quote delete failed',
+      message: 'Quote delete failed',
       error: error
     });
   });
