@@ -80,3 +80,18 @@ hr {
 }
 
 
+
+
+
+/* Chais CSS */
+.tabel .inline-tables {
+  display: inline;
+}
+
+.card-title {
+  text-align: center;
+}
+
+.card-header {
+  padding-bottom: 0px;
+}

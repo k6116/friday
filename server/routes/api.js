@@ -133,8 +133,8 @@ router.get('/getPLCList', controllers.schedules.getPLCList);
 // ADVANCED FILTER CONTROLLER
 router.get('/indexProjectsAdvancedFilter', controllers.advancedFilter.indexProjectsAdvancedFilter);
 router.post('/indexAdvancedFilteredResults/', controllers.advancedFilter.indexAdvancedFilteredResults);
-router.get('/indexProjectChildren/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectChildren);
-router.get('/indexProjectParents/:projectName/:projectType/:projectOwner', controllers.advancedFilter.indexProjectParents);
+router.get('/indexProjectChildren/:projectID', controllers.advancedFilter.indexProjectChildren);
+router.get('/indexProjectParents/:projectID', controllers.advancedFilter.indexProjectParents);
 router.get('/indexProjectJobTitleAdvancedFilter/:projectIDs/:fromDate/:toDate', controllers.advancedFilter.indexProjectJobTitleAdvancedFilter);
 
 // MATPLAN CONTROLLER
@@ -230,7 +230,7 @@ router.post('/export/generateExcelFile', controllers.export.generateExcelFile);
 // REPORT CONTROLLER
 router.get('/report/reports-project-fte-rollup/show/getProjectFTERollupData/:projectID/:startDate/:endDate', controllers.report.getProjectFTERollupData);
 router.get('/report/getSubordinateProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateProjectRoster);
-router.get('/report/getSubordinateDrillDownProjectRoster/:managerEmailAddress/:period', controllers.report.getSubordinateDrillDownProjectRoster);
+router.get('/report/getSubordinateDrillDownProjectRoster/:excludeParentType/:managerEmailAddress/:period', controllers.report.getSubordinateDrillDownProjectRoster);
 
 // LOG CONTROLLER
 router.post('/log/writeToLog', controllers.log.writeToLog);

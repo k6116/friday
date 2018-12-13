@@ -19,10 +19,29 @@ div.page-cont {
 /* SEARCH BAR */
 
 div.projects-search-cont {
-  margin-bottom: 40px;
+  margin-bottom: 15px;
   min-width: 900px;
   width: 100%;
   white-space: nowrap;
+}
+
+input.projects-filter-input {
+  width: 300px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.tt-menu {
+  width: 223px !important;
+}
+
+/* force typeahead to lose focus by focusing on hidden input */
+input.hidden-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  z-index: -1;
 }
 
 div.projects-search-label {
@@ -59,6 +78,14 @@ i.projects-search-icon-close {
   cursor: pointer;
 }
 
+/* Filterbar toggle */
+button.filter-toggle {
+  font-size: small !important;
+  border: 1px solid lightgray !important;
+  border-radius: 0px !important;
+  margin-bottom: 5px;
+}
+
 /* Filter Badge */
 i.filters-badge-icon {
   cursor: pointer;
@@ -93,12 +120,54 @@ div.projects-display-count {
   text-align: right;
 }
 
-/* FILTER CONTENT */
-div.filter-content {
+/* Collapsible Filter Bar */
+/* TO-DO CHAI: make dynamic height */
+.wrapper {
   display: flex;
-  /* height: 113vh; */
+  width: 100%;
+  align-items: stretch;
+  height: 1000px;
+}
+
+#sidebar {
+  min-width: 402px;
+  max-width: 402px;
+  min-height: 100vh;
+  transition: all 0.3s;
+}
+
+#sidebar.active {
+  margin-left: -402px;
+}
+
+@media (max-width: 768px) {
+  #sidebar {
+      margin-left: -402px;
+  }
+  #sidebar.active {
+      margin-left: 0;
+  }
+}
+
+/* FILTER CONTENT */
+div.adv-search-content {
+  display: flex;
+  /* height: auto; */
   overflow-x: hidden;
   overflow-y: hidden;
+}
+
+div.filter-column {
+  float: left;
+  width: 402px;
+}
+
+/* Go button */
+button.filter-go-btn {
+  font-size: small !important;
+  border: 1px solid lightgray !important;
+  border-radius: 0px !important;
+  padding: 0px !important;
 }
 
 /* Checkboxes */
@@ -113,6 +182,7 @@ div.adv-filters-cont {
   /* display: inline-block; */
   width: 50%;
   padding-right: 0px;
+  height: fit-content;
   /* float: left; */
   /* background: #fff; */
   /* padding: 10px; */
@@ -121,7 +191,7 @@ div.adv-filters-cont {
 div.filter-headers {
   padding: 4px 0.25rem;
   background-color: #e9ecef;
-  border-bottom: 1px solid rgba(0,0,0,.125);
+  /* border-bottom: 1px solid rgba(0,0,0,.125); */
   /* cursor: pointer; */
 }
 
@@ -132,8 +202,10 @@ div.filter-headers {
 div.filter-collapse.show {
   min-height: 63px;
   max-height: 168px;
+  /* height: 168px; */
   overflow-x: hidden;
   overflow-y: auto;
+  /* height: 201px; */
 }
 
 /* div.filter-collapse { CAUSES BAD COLLAPSE
@@ -173,36 +245,40 @@ i.projects-search-icon-search.projects-owner {
 }
 
 /* "ALL" CHECKBOX */
+
 .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
   background-color: #485b65;
 }
 .custom-control-label::before {
   top: 6px;
-  left: 2px;
+  left: 3px;
   width: 11px;
   height: 11px;
-}
-
-.custom-checkbox .custom-control-input:checked~.custom-control-label::after {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
-  height: 14px !important;
-  width: 14px !important;
-  cursor: pointer;
 }
 
 .custom-control-label::after {
   cursor: pointer;
 }
 
+.custom-checkbox .custom-control-label::before {
+  border-radius: 0rem;
+}
+
+/* when checkbox is disabled  */
+.custom-control-input:disabled~.custom-control-label::before {
+  background-color: #c1c1c1;
+}
+
 /* FILTERS 2 */
 
-/* div.adv-filters2-cont { */
+div.adv-filters2-cont {
+  height: fit-content;
   /* display: inline-block; */
   /* margin-left: 15px; */
   /* width: 50%; */
   /* background: #fff; */
   /* padding: 10px; */
-/* } */
+}
 
 /* FILTERS 3 */
 div.adv-filters3-cont {
@@ -277,29 +353,6 @@ input.plc-input-invalid {
 
 input.form-control:focus.plc-input-invalid {
   border-color: red !important;
-}
-
-/* RESULT TABLE */
-
-div.adv-results-cont {
-  /* display: inline-grid; */
-  padding-left: 10px;
-  width: calc(100% - ( 402px + 4px));
-  height: 784px;
-  overflow-x: auto;
-  overflow-y: auto;
-}
-
-table.filter-results th {
-  position: sticky;
-  top: -1px;
-  line-height: 6px !important;
-  white-space: nowrap;
-  /* background: white; */
-}
-
-table.table {
-  border: 1px solid #dee2e6;
 }
 
 /* SAVED SEARCH */

@@ -72,15 +72,16 @@ function indexAdvancedFilteredResults(req, res) {
   */
 
   const filterOptions = req.body;
-console.log('filterOptions:', filterOptions);
+// console.log('filterOptions:', filterOptions);
   const sql = `
-      EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectTypeIDs,
+      EXECUTE filters.AdvancedFilter :PLCStatusIDs, :PLCDateRanges, :ProjectName, :ProjectID, :ProjectTypeIDs,
      :ProjectStatusIDs, :ProjectPriorityIDs, :ProjectOwnerEmails, :FTEMin, :FTEMax, :FTEDateFrom, :FTEDateTo`
 
   sequelize.query(sql, {replacements: {
     PLCStatusIDs: filterOptions.PLCStatusIDs,
     PLCDateRanges: filterOptions.PLCDateRanges,
     ProjectName: filterOptions.ProjectName,
+    ProjectID: filterOptions.ProjectID,
     ProjectTypeIDs: filterOptions.ProjectTypeIDs,
     ProjectStatusIDs: filterOptions.ProjectStatusIDs,
     ProjectPriorityIDs: filterOptions.ProjectPriorityIDs,
@@ -106,11 +107,9 @@ console.log('filterOptions:', filterOptions);
 }
 
 function indexProjectChildren(req, res) {
-  const projectName = req.params.projectName;
-  const projectType = req.params.projectType;
-  const projectOwner = req.params.projectOwner;
-  const sql = `EXECUTE dbo.BillsDrillDownProjects :projectName, :projectType, :projectOwner`
-  sequelize.query(sql, {replacements: {projectName: projectName, projectType: projectType, projectOwner: projectOwner}, type: sequelize.QueryTypes.SELECT})
+  const projectID = req.params.projectID;
+  const sql = `EXECUTE dbo.BillsDrillDownProjects :projectID`
+  sequelize.query(sql, {replacements: {projectID: projectID}, type: sequelize.QueryTypes.SELECT})
   .then(children => {    
     res.json(children);
   }).catch(error => {
@@ -122,11 +121,9 @@ function indexProjectChildren(req, res) {
 }
 
 function indexProjectParents(req, res) {
-  const projectName = req.params.projectName;
-  const projectType = req.params.projectType;
-  const projectOwner = req.params.projectOwner;
-  const sql = `EXECUTE dbo.BillsDrillUpProjects :projectName, :projectType, :projectOwner`
-  sequelize.query(sql, {replacements: {projectName: projectName, projectType: projectType, projectOwner: projectOwner}, type: sequelize.QueryTypes.SELECT})
+  const projectID = req.params.projectID;
+  const sql = `EXECUTE dbo.BillsDrillUpProjects :projectID`
+  sequelize.query(sql, {replacements: {projectID: projectID}, type: sequelize.QueryTypes.SELECT})
   .then(parents => {    
     res.json(parents);
   }).catch(error => {

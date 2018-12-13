@@ -42,9 +42,9 @@ thead {
   
 div.edit-button-cont {
   display: inline-block;
-  /* position: absolute; */
-  top: 8px;
-  left: 25px;
+  position: absolute;
+  top: 40px;
+  left: 5px;
   z-index: 1;
   cursor: pointer;
   background-color: white;
@@ -63,10 +63,54 @@ div.edit-button-cont:hover {
   color: rgb(72, 72, 196);
 }
 
+/* css for toolbar */
+div.chart-toolbar {
+  position: absolute;
+  top: 14px;
+  left: 30px;
+  z-index: 1;
+  width: 95%;
+}
+
+label.chart-toolbar-label {
+  margin-right: 10px;
+}
+
+select.form-control.toolbar-selector{
+  max-height: 30px;
+  font-size: 13px;
+  padding-left: 4px;
+  padding-top: 4px;
+}
+
+/* css for toggles */
 label.highchart-toggle {
   border-color: #ced4da;
+  font-size: small;
+}
+
+div.toggle-project {
+  float: right;
+  right: 20px;
+}
+
+div.toggle-type {
+  float: right;
+  right: 20px;
+  position: absolute;
+  top: 40px;
+}
+
+div.form-inline {
+  display: inline;
 }
 
 div.row-custom {
   min-width: 1400px;
+}
+
+button.btn-aggregate {
+  border-color: #ced4da !important;
+  line-height: 18px;
+  margin-right: 20px;
 }

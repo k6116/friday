@@ -1,3 +1,29 @@
+<a name="1.25.0"></a>
+# [1.25.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.24.0...v1.25.0) (2018-12-12)
+
+
+### Bug Fixes
+
+* **reports > team fte summary:** hot fix for fte math error ([2635616](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/2635616))
+
+
+### Features
+
+* **advanced filters:** Clickable parents and children ([75a74dc](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/75a74dc))
+* **advanced-filter:** add parent-child filter box ([e3b2082](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/e3b2082))
+* **advanced-filter:** add reset to default button ([015c6f0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/015c6f0))
+* **advanced-filter:** reset button ([1511d9a](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/1511d9a))
+* **advanced-filters:** fixed typeahead for project names ([6006f7b](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/6006f7b))
+* **advanced-filters:** parent-child feature ([5a58075](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/5a58075))
+* **advanced-filters:** parent-child filters ([15674db](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/15674db))
+* **advanced-filters:** Parent-Child on project-typeahead click functioning ([d689521](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/d689521))
+* **advanced-filters:** remove search filter and use wildcard search instead ([4090324](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/4090324))
+* **advanced-filters and advanced-dashboard:** Merged advanced dashboard into advanced search ([670560f](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/670560f))
+* **advanced-filters-typeahead.service:** on project typeahead click ([06fc76e](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/06fc76e))
+* **reports > team fte summary:** added "Change Team" and aggregated team summary functions ([3af27a1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/3af27a1))
+
+
+
 <a name="1.24.0"></a>
 # [1.24.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.23.2...v1.24.0) (2018-11-30)
 
