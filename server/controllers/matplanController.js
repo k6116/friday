@@ -241,6 +241,33 @@ function showSpecificQuote(req, res) {
   });
 }
 
+function createMatplan(req, res) {
+  const decodedToken = token.decode(req.header('X-Token'), res);
+  const userID = decodedToken.userData.id;
+  const projectID = req.params.projectID;
+  const buildStatusID = req.params.buildStatusID
+  models.MaterialPlan.create({
+    projectID: projectID,
+    buildStatusID: buildStatusID,
+    createdBy: userID,
+    createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+    updatedBy: userID,
+    updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+  })
+  .then(matplan => {
+    res.json({
+      message: `Matplan created!`,
+      materialPlanID: matplan.materialPlanID
+    })
+  })
+  .catch(error => {
+    res.status(400).json({
+      title: 'Error (in catch)',
+      error: {message: error}
+    })
+  });
+}
+
 function destroyQuoteForPart(req, res) {
   const quoteForm = req.body;
   const quoteName = quoteForm.supplierName;
@@ -301,7 +328,7 @@ function updateQuoteForPart(req, res) {
         demandForecastMethodID: 1,
         demandForecastMethodNumber: 'dunno',
         updatedBy: userID,
-        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
       });
     } else {
       insertQuotes.push({
@@ -317,7 +344,7 @@ function updateQuoteForPart(req, res) {
         createdBy: userID,
         createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
         updatedBy: userID,
-        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
       });
     }
   });
@@ -565,6 +592,7 @@ module.exports = {
   showMatplanBom: showMatplanBom,
   showQuotesForPart: showQuotesForPart,
   showSpecificQuote: showSpecificQuote,
+  createMatplan: createMatplan,
   destroyQuoteForPart: destroyQuoteForPart,
   updateQuoteForPart: updateQuoteForPart,
   updateMaterialOrder: updateMaterialOrder,

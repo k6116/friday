@@ -146,6 +146,7 @@ router.get('/matplan/matplan/showMatplans/:projectID', controllers.matplan.showM
 router.get('/matplan/matplan/showMatplanBom/:projectID', controllers.matplan.showMatplanBom);
 router.get('/matplan/matplan/showQuotesForPart/:partID', controllers.matplan.showQuotesForPart);
 router.get('/matplan/matplan/showSpecificQuote/:partID/:supplierID', controllers.matplan.showSpecificQuote);
+router.get('/matplan/matplan/create/createMatplan/:projectID/:buildStatusID', controllers.matplan.createMatplan);
 router.put('/matplan/matplan/destroy/destroyQuoteForPart', controllers.matplan.destroyQuoteForPart);
 router.put('/matplan/matplan/update/updateQuoteForPart', controllers.matplan.updateQuoteForPart);
 router.put('/matplan/matplan/update/updateMaterialOrder', controllers.matplan.updateMaterialOrder);

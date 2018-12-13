@@ -22,6 +22,7 @@ export class MatplanSelectorComponent implements OnInit {
   // title text for form validation
   dateTitle = 'Build Date is required';
   qtyTitle = 'Quantity must be a whole positive integer';
+  createMatplanTitle = 'Build Schedule must be saved before matplan can be created';
 
   constructor(
     private router: Router,
@@ -93,8 +94,6 @@ export class MatplanSelectorComponent implements OnInit {
     // when a project has been selected, show all available matplans for it
     this.selectedProject = selectedProject;
     const scheduleList = await this.apiDataMatplanService.showMatplans(selectedProject.ProjectID).toPromise();
-    console.log('response from server');
-    console.log(scheduleList);
     if (!Array.isArray(scheduleList) || !scheduleList.length) {
       // if response is null, undefined, or empty, don't try to initialize the form with values from the response
     } else {
@@ -104,7 +103,6 @@ export class MatplanSelectorComponent implements OnInit {
   }
 
   initMatplanForm(scheduleList: any) {
-    console.log(this.buildStatusList);
     // get validator patterns
     const wholePositiveNumbers = this.toolsService.regexWholePositiveNumbers;
 
@@ -170,7 +168,19 @@ export class MatplanSelectorComponent implements OnInit {
   }
 
   createMatplan(matplan: any) {
-    console.log(matplan);
+    const projectID = matplan.get('projectID').value;
+    const buildStatusID = matplan.get('buildStatusID').value;
+
+    // create the matplan
+    this.apiDataMatplanService.createMatplan(projectID, buildStatusID).subscribe( res => {
+      // return the new ID value and patch the form with this value
+      matplan.get('materialPlanID').patchValue(res.materialPlanID);
+      matplan.get('hasMatplan').patchValue(true);
+      this.cacheService.raiseToast('success', `${res.message}`);
+    },
+    err => {
+      this.cacheService.raiseToast('error', `${err.status}: ${err.statusText}`);
+    });
   }
 
   editMatplan(matplan: any) {
@@ -179,7 +189,6 @@ export class MatplanSelectorComponent implements OnInit {
   }
 
   deleteBuildSchedule({schedule, index}) {
-    console.log(schedule);
     const isDatabaseValue = schedule.get('schedulesDetailID').value;
     if (isDatabaseValue) {
       // if the record to be deleted does have a ID in the database, then we need to mark it for deletion
@@ -192,7 +201,6 @@ export class MatplanSelectorComponent implements OnInit {
   }
 
   onBuildScheduleSave() {
-    console.log(this.buildScheduleForm.value);
     const form = this.buildScheduleForm.value;
     const formArray = this.buildScheduleForm.get('buildScheduleArray').value;
 
@@ -201,7 +209,6 @@ export class MatplanSelectorComponent implements OnInit {
     if (formIsValid) {
       // send the data to the database
       this.apiDataSchedulesService.updateBuildScheduleNew(form).subscribe( res => {
-        console.log('yay');
         this.cacheService.raiseToast('success', `${res.message}`);
         this.onProjectSelect(this.selectedProject);
       },

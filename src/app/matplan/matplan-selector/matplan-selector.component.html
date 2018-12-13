@@ -29,8 +29,8 @@
               <th>Build Date</th>
               <th>Build Qty</th>
               <th>Has Matplan</th>
-              <th>Matplan Last Updated</th>
-              <th>Matplan Updated By</th>
+              <!-- <th>Matplan Last Updated</th>
+              <th>Matplan Updated By</th> -->
               <th>Modify Matplan</th>
             </tr>
           </thead>
@@ -46,10 +46,10 @@
                 <td><input class="form-control" type="date" formControlName="needByDate" [ngClass]="schedule.controls.needByDate.valid ? '' : 'highlight-invalid'" [attr.title]="schedule.controls.needByDate.valid ? null : dateTitle"></td>
                 <td><input class="form-control" type="text" formControlName="neededQuantity" [ngClass]="schedule.controls.neededQuantity.valid ? '' : 'highlight-invalid'" [attr.title]="schedule.controls.neededQuantity.valid ? null : qtyTitle"></td>
                 <td class="table-text">{{schedule.get('hasMatplan').value}}</td>
-                <td class="table-text">{{schedule.get('matplanUpdateDate').value | date}}</td>
-                <td class="table-text">{{schedule.get('matplanUpdatedByName').value}}</td>
+                <!-- <td class="table-text">{{schedule.get('matplanUpdateDate').value | date}}</td>
+                <td class="table-text">{{schedule.get('matplanUpdatedByName').value}}</td> -->
                 <td class="table-text">
-                  <button class="btn btn-success btn-table" *ngIf="schedule.get('materialPlanID').value === null" (click)="createMatplan(schedule)"><i class="fa fa-plus"></i>&nbsp;&nbsp;Create</button>
+                  <button class="btn btn-success btn-table" *ngIf="schedule.get('materialPlanID').value === null" [disabled]="schedule.get('schedulesDetailID').value === null" [attr.title]="schedule.get('schedulesDetailID').value === null ? createMatplanTitle : null" (click)="createMatplan(schedule)"><i class="fa fa-plus"></i>&nbsp;&nbsp;Create</button>
                   <button class="btn btn-info btn-table" *ngIf="schedule.get('materialPlanID').value !== null" (click)="editMatplan(schedule)"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button>
                 </td>
               </ng-container>

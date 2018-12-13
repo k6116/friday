@@ -74,6 +74,14 @@ export class ApiDataMatplanService {
       .map((response: Response) => response.json());
   }
 
+  createMatplan(projectID: number, buildStatusID: number) {
+    const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(`/api/matplan/matplan/create/createMatplan/${projectID}/${buildStatusID}`, options)
+      .timeout(this.cacheService.apiDataTimeout)
+      .map((response: Response) => response.json());
+  }
+
   destroyQuoteForPart(quoteData: any) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});

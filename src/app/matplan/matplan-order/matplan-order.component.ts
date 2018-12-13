@@ -38,7 +38,6 @@ export class MatplanOrderComponent implements OnInit {
 
     // get the MatOrder data to populate into the form
     const orderList = await this.apiDataMatplanService.showMatplanOrders(this.projectID, this.matplanID).toPromise();
-    console.log(orderList);
 
     // populate the form with data
     const bla = await this.initMatOrderForm(orderList);
