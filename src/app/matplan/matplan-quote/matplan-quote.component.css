@@ -1,13 +1,42 @@
-.card {
-  width: 350px;
-  height: 200px;
-  display: inline-flex;
+div.card-cont {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
 }
 
-.card-header {
-  font-size: 20px;
+div.card {
+  display: inline-block;
+  width: 360px;
+  min-height: 210px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
-.edit-button {
+div.card-header {
+  font-size: 19px;
+  padding: 15px;
+}
+
+td.delete-row {
+  vertical-align: middle;
+}
+
+input.form-control.highlight-invalid {
+  border-color: rgb(236, 154, 154);
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
+}
+
+.fa-trash-o {
+  font-size: 15px;
+}
+
+.fa-trash-o:hover {
+  color: red;
+  cursor: pointer;
+}
+
+.card-header-buttons {
   float: right;
 }

@@ -49,7 +49,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     const width = height * aspect;
     const zoomSpeed = 1700; // some number between 400 and 2000
     // set start position/scale of drawing, and size of nodes (to set default node spacing)
-    let initialTransform = d3.zoomIdentity.translate(width / 2, 50).scale(.9);
+    let initialTransform = d3.zoomIdentity.translate(width / 2, 50).scale(1);
 
     // HELPER FUNCTIONS //
     function collapseNode(d) {
@@ -85,7 +85,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
     function findManagerXY(d) {
       if (d.data.isUsersManager) {
         // found it
-        return [d.y, d.x];
+        return [d.x, d.y];
       } else if (d.children) {
         // if we didn't find it, but the node has children, recursively look for XY coords of the children
         let xy;
@@ -155,7 +155,7 @@ export class OrgDrawD3Component implements OnInit, OnChanges {
 
     // find user's manager's xy coords so we can translate the initial view there
     const managerXY = await findManagerXY(root);
-    initialTransform = d3.zoomIdentity.translate(managerXY[0] + width / 2, managerXY[1] + height).scale(.9);
+    initialTransform = d3.zoomIdentity.translate(-managerXY[0] + width / 2, -managerXY[1] + height / 2).scale(1);
 
     // define a zoom function for the SVG, and an initial transform for the zoom
     // if you don't set the initial transform using the defined zoom function, it will 'snap' back to the origin on first move

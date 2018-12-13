@@ -2,6 +2,27 @@
   width: 380px;
 }
 
+.row-matplan {
+  margin-bottom: 5px;
+}
+
+.table-text {
+  vertical-align: middle;
+}
+
+.fa-trash-o {
+  font-size: 18px;
+}
+
+.fa-trash-o:hover {
+  color: red;
+  cursor: pointer;
+}
+
+.h3 {
+  margin-bottom: unset;
+}
+
 .btn-table {
   width: 75px;
   height: 28px;
@@ -10,4 +31,11 @@
 
 tbody td {
   padding: 6px 10px;
+}
+
+.form-control.highlight-invalid {
+  border-color: rgb(236, 154, 154);
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), inset 0 0 8px rgba(236, 154, 154, .6);
 }

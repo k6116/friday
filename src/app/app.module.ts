@@ -128,7 +128,6 @@ import { TeamFteSummaryTeamSelectDropdownComponent
     ProjectsFilterPipe,
     FteInputRestrictDirective,
     FteEntryEmployeeComponent,
-    FteInputRestrictDirective,
     TopNavComponent,
     SideNavComponent,
     TopProjectsReportsComponent,

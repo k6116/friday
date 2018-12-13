@@ -1,0 +1,37 @@
+.button-toolbar {
+  margin-left: 5px;
+  margin-bottom: 30px;
+}
+
+.table-sm td, .table-sm th {
+  vertical-align: middle;
+}
+
+th.qty {
+  width: 40px;
+}
+
+th.money {
+  width: 90px;
+}
+
+th.short-text {
+  width: 70px;
+}
+
+th.med-text {
+  width: 130px;
+}
+
+th.date {
+  width: 120px;
+}
+
+div.card-header {
+  font-size: 19px;
+  padding: 15px;
+}
+
+.choose-supplier-button {
+  float: right;
+}
