@@ -19,6 +19,7 @@ export class MatplanOrderComponent implements OnInit {
   orderForm: FormGroup;
   purchaseMethods: any; // for temporarily storing the array of purchase methods for frontend
   selectedOrder: FormGroup; // to temporarily store a selected row for patching values
+  totalCost: number;
 
   constructor(
     private fb: FormBuilder,
@@ -147,11 +148,13 @@ export class MatplanOrderComponent implements OnInit {
 
   async calculatePrice(order: FormGroup) {
     const selectedSupplierID = order.get('supplierID').value;
+    const orderQty = Number(order.get('orderQty').value);
 
-    if (selectedSupplierID) {
+    if (orderQty === 0) {
+      order.get('totalCost').patchValue(0);
+    } else if (selectedSupplierID) {
       // if a supplier has been selected, query the DB for the quote details and patch form values
       const selectedPartID = order.get('partID').value;
-      const orderQty = order.get('orderQty').value;
       const quotes = await this.apiDataMatplanService.showSpecificQuote(selectedPartID, selectedSupplierID).toPromise();
 
       quotes.forEach( quote => {
@@ -166,6 +169,12 @@ export class MatplanOrderComponent implements OnInit {
         }
       });
     }
+
+    // then compute the total cost
+    this.totalCost = 0;
+    this.orderForm.get('orderFormArray').value.forEach( item => {
+      this.totalCost += item.totalCost;
+    });
   }
 
 }
