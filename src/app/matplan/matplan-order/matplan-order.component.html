@@ -37,7 +37,7 @@
           </tr>
         </thead>
         <tbody formArrayName="orderFormArray">
-          <tr *ngFor="let order of orderForm.get('orderFormArray').controls; let i = index;">
+          <tr *ngFor="let order of orderForm.get('orderFormArray')['controls']; let i = index;">
             <ng-container [formGroupName]="i">
               <td>{{order.get('level').value}}</td>
               <td>{{order.get('partName').value}}</td>
