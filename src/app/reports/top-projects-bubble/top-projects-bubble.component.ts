@@ -91,10 +91,19 @@ export class TopProjectsBubbleComponent implements OnInit, OnDestroy {
   }
 
   plotBubbleFteData() {
+    // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
+    const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
     this.bubbleChartOptions = {
       credits: {
         text: 'jarvis.is.keysight.com',
         href: 'https://jarvis.is.keysight.com'
+      },
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: highchartsButtons
+          }
+        }
       },
       chart: {
         type: 'bubble',
