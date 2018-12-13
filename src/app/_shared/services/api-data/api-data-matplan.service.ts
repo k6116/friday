@@ -21,7 +21,7 @@ export class ApiDataMatplanService {
   indexSuppliers() {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/indexSuppliers`, options)
+    return this.http.get(`/api/matplan/matplan/index/indexSuppliers`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -29,7 +29,7 @@ export class ApiDataMatplanService {
   indexPurchaseMethod() {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/indexPurchaseMethod`, options)
+    return this.http.get(`/api/matplan/matplan/index/indexPurchaseMethod`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -37,7 +37,7 @@ export class ApiDataMatplanService {
   indexProjects() {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/indexProjects`, options)
+    return this.http.get(`/api/matplan/matplan/index/indexProjects`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -45,7 +45,7 @@ export class ApiDataMatplanService {
   showMatplans(projectID: number) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/showMatplans/${projectID}`, options)
+    return this.http.get(`/api/matplan/matplan/show/showMatplans/${projectID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -53,7 +53,7 @@ export class ApiDataMatplanService {
   showMatplanBom(projectID: number) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/showMatplanBom/${projectID}`, options)
+    return this.http.get(`/api/matplan/matplan/show/showMatplanBom/${projectID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -61,7 +61,7 @@ export class ApiDataMatplanService {
   showQuotesForPart(partID: number) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/showQuotesForPart/${partID}`, options)
+    return this.http.get(`/api/matplan/matplan/show/showQuotesForPart/${partID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -69,7 +69,7 @@ export class ApiDataMatplanService {
   showSpecificQuote(partID: number, supplierID: number) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/showSpecificQuote/${partID}/${supplierID}`, options)
+    return this.http.get(`/api/matplan/matplan/show/showSpecificQuote/${partID}/${supplierID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -77,7 +77,7 @@ export class ApiDataMatplanService {
   createMatplan(projectID: number, buildStatusID: number) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/create/createMatplan/${projectID}/${buildStatusID}`, options)
+    return this.http.get(`/api/matplan/matplan/insert/createMatplan/${projectID}/${buildStatusID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -110,7 +110,7 @@ export class ApiDataMatplanService {
   showMatplanOrders(projectID: number, matplanID: number) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/showMatplanOrders/${projectID}/${matplanID}`, options)
+    return this.http.get(`/api/matplan/matplan/show/showMatplanOrders/${projectID}/${matplanID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

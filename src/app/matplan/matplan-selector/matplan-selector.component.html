@@ -14,7 +14,7 @@
   <div class="row row-custom" *ngIf="selectedProject">
     <button class="btn btn-secondary" (click)="addBuildToSchedule()">Add Build</button>
     <button class="btn btn-success" (click)="onBuildScheduleSave()" [disabled]="!buildScheduleForm.valid">Save</button>
-    <button class="btn btn-secondary" (click)="testForm()">test</button>
+    <!-- <button class="btn btn-secondary" (click)="testForm()">test</button> -->
   </div>
 
   <!-- row for list of matplans -->
@@ -24,7 +24,7 @@
         <table class="table table-bordered table-hover">
           <thead>
             <tr>
-              <th>&nbsp;</th>
+              <th title="Buidls cannot be deleted if a Matplan has been created">Delete?</th>
               <th>Build Name</th>
               <th>Build Date</th>
               <th>Build Qty</th>

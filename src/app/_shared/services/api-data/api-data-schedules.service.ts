@@ -14,7 +14,7 @@ export class ApiDataSchedulesService {
   showBuildSchedule(projectID: number) {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/showBuildSchedule/${projectID}`, options)
+    return this.http.get(`/api/matplan/matplan/show/showBuildSchedule/${projectID}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
@@ -22,7 +22,7 @@ export class ApiDataSchedulesService {
   indexBuildStatus() {
     const headers = new Headers({'Content-Type': 'application/json', 'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/matplan/matplan/indexBuildStatus`, options)
+    return this.http.get(`/api/matplan/matplan/index/indexBuildStatus`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }
