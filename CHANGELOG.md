@@ -1,3 +1,14 @@
+<a name="1.25.1"></a>
+## [1.25.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.25.0...v1.25.1) (2018-12-13)
+
+
+### Bug Fixes
+
+* **Display Project:** added Project Hierarchy to BOM viewer header ([766ff83](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/766ff83))
+* **Jarvis Adoption Chart:** formula now correctly calculates where to pan/zoom to for automatic cent ([30ed844](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/30ed844))
+
+
+
 <a name="1.25.0"></a>
 # [1.25.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.24.0...v1.25.0) (2018-12-12)
 
