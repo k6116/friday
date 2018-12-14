@@ -240,13 +240,14 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
   }
 
   onTestFormClick() {
+    console.log('========================================');
     // console.log('form object (this.form):');
     // console.log(this.FTEFormGroup);
-    // console.log('this.FTEFormGroup.value.FTEFormArray', this.FTEFormGroup.value.FTEFormArray);
+    console.log('this.FTEFormGroup.value.FTEFormArray', this.FTEFormGroup.value.FTEFormArray);
     // console.log('fte-project-visible array');
-    console.log('teamFTE', this.teamFTEs);
+    // console.log('teamFTE', this.teamFTEs);
     // console.log('teamFTEFlat', this.teamFTEsFlat);
-    console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
+    // console.log('teamFTEFlatLive', this.teamFTEsFlatLive);
     console.log('FTE Form Group LIVE', this.FTEFormGroupLive);
     console.log('this.allProjects', this.allProjects);
     // console.log('this.projects', this.projects);
@@ -488,6 +489,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     } else {
       this.FTEFormGroupLive.push({
         emailAddress: FTEFormGroup.value.emailAddress,
+        employeeNumber: FTEFormGroup.value.employeeNumber,
         employeeID: FTEFormGroup.value.employeeID,
         fte: FTEFormGroup.value.fte,
         fullName: FTEFormGroup.value.fullName,
@@ -816,70 +818,107 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.displayFTETable = true;
   }
 
+  // onTrashClick(index: number) {
+  //   // console.log('user clicked to delete project index ' + index);
+  //   const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
+  //   const deletedProject: any = FTEFormArray.controls[index];
+  //   // emit confirmation modal after they click delete button
+  //   this.cacheService.confirmModalData.emit(
+  //     {
+  //       title: 'Confirm Deletion',
+  //       message: `Are you sure you want to delete project "${deletedProject.projectName}" from this plan?
+  //                 The plan will save automatically.<br><br>
+  //                 If launched, this project will be completely removed from your team
+  //                 and no employee will be associated with this project.<br><br>
+  //                 **If you meant to remove the project from the screen, please use the project filter instead**`,
+  //       iconClass: 'fa-exclamation-triangle',
+  //       iconColor: 'rgb(193, 193, 27)',
+  //       closeButton: true,
+  //       allowOutsideClickDismiss: false,
+  //       allowEscKeyDismiss: false,
+  //       buttons: [
+  //         {
+  //           text: 'Yes',
+  //           bsClass: 'btn-success',
+  //           emit: true
+  //         },
+  //         {
+  //           text: 'Cancel',
+  //           bsClass: 'btn-secondary',
+  //           emit: false
+  //         }
+  //       ]
+  //     }
+  //   );
+
+  //   const deleteModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
+  //     if (res) {
+  //       // if they click ok, grab the deleted project info and exec db call to delete
+  //       const toBeDeleted = {
+  //         projectID: deletedProject.projectID,
+  //         projectName: deletedProject.projectName,
+  //         newlyAdded: deletedProject.newlyAdded
+  //       };
+
+  //       const deleteActionSubscription = this.apiDataFteService.destroyTeamProject(toBeDeleted).subscribe(
+  //         deleteResponse => {
+  //           // only delete from the projectemployeerole table if user is deleting a non-newlyAdded project
+  //           FTEFormArray.controls.splice(index, 1);
+  //           this.updateEmployeeTotals();
+  //           this.setEmployeeTotalsBorder();
+  //           this.cacheService.raiseToast('success', deleteResponse.message);
+  //           deleteActionSubscription.unsubscribe();
+
+  //           this.getPlan(this.loginAsEmail, this.currentPlan);
+  //           this.checkDisableDeletePlan();
+  //         },
+  //         deleteErr => {
+  //           this.cacheService.raiseToast('warning', `${deleteErr.status}: ${deleteErr.statusText}`);
+  //           deleteActionSubscription.unsubscribe();
+  //         }
+  //       );
+  //     } else {
+  //       // console.log('delete aborted');
+  //     }
+  //     deleteModalSubscription.unsubscribe();
+  //   });
+  // }
+
   onTrashClick(index: number) {
     // console.log('user clicked to delete project index ' + index);
     const FTEFormArray = <FormArray>this.FTEFormGroup.controls.FTEFormArray;
     const deletedProject: any = FTEFormArray.controls[index];
-    // emit confirmation modal after they click delete button
-    this.cacheService.confirmModalData.emit(
-      {
-        title: 'Confirm Deletion',
-        message: `Are you sure you want to delete project "${deletedProject.projectName}" from this plan?
-                  The plan will save automatically.<br><br>
-                  If launched, this project will be completely removed from your team
-                  and no employee will be associated with this project.<br><br>
-                  **If you meant to remove the project from the screen, please use the project filter instead**`,
-        iconClass: 'fa-exclamation-triangle',
-        iconColor: 'rgb(193, 193, 27)',
-        closeButton: true,
-        allowOutsideClickDismiss: false,
-        allowEscKeyDismiss: false,
-        buttons: [
-          {
-            text: 'Yes',
-            bsClass: 'btn-success',
-            emit: true
-          },
-          {
-            text: 'Cancel',
-            bsClass: 'btn-secondary',
-            emit: false
-          }
-        ]
+
+    // if they click ok, grab the deleted project info and exec db call to delete
+    const toBeDeleted = {
+      projectID: deletedProject.projectID,
+      projectName: deletedProject.projectName,
+      newlyAdded: deletedProject.newlyAdded
+    };
+
+    this.teamFTEsFlatLive.forEach(emp => {
+      if (emp.projectID === toBeDeleted.projectID) {
+        emp['allocations:fte'] = null;
       }
-    );
-
-    const deleteModalSubscription = this.cacheService.confirmModalResponse.subscribe( res => {
-      if (res) {
-        // if they click ok, grab the deleted project info and exec db call to delete
-        const toBeDeleted = {
-          projectID: deletedProject.projectID,
-          projectName: deletedProject.projectName,
-          newlyAdded: deletedProject.newlyAdded
-        };
-
-        const deleteActionSubscription = this.apiDataFteService.destroyTeamProject(toBeDeleted).subscribe(
-          deleteResponse => {
-            // only delete from the projectemployeerole table if user is deleting a non-newlyAdded project
-            FTEFormArray.controls.splice(index, 1);
-            this.updateEmployeeTotals();
-            this.setEmployeeTotalsBorder();
-            this.cacheService.raiseToast('success', deleteResponse.message);
-            deleteActionSubscription.unsubscribe();
-
-            this.getPlan(this.loginAsEmail, this.currentPlan);
-            this.checkDisableDeletePlan();
-          },
-          deleteErr => {
-            this.cacheService.raiseToast('warning', `${deleteErr.status}: ${deleteErr.statusText}`);
-            deleteActionSubscription.unsubscribe();
-          }
-        );
-      } else {
-        // console.log('delete aborted');
-      }
-      deleteModalSubscription.unsubscribe();
     });
+
+    this.FTEFormGroupLive.forEach(emp => {
+      if (emp.projectID === toBeDeleted.projectID) {
+        emp.fte = null;
+      }
+    });
+
+    const projIndex = this.allProjects.findIndex(proj => proj.projectID === toBeDeleted.projectID);
+    this.allProjects.splice(projIndex, 1);
+    this.projectVisible.splice(projIndex, 1);
+
+    // rebuild the FTE entry page to show selected month
+    this.buildFteEntryForm();
+    this.updateEmployeeTotals();
+    this.setEmployeeTotalsBorder();
+    this.displayFTETable = true;
+    this.createFtePlanningChartData(this.projects);
+    this.updateProjectFilters(false);
   }
 
   resetProjectFlags() {
@@ -1041,6 +1080,7 @@ export class FteEntryTeamComponent implements OnInit, OnDestroy, ComponentCanDea
     this.teamFTEsFlatLive.forEach(teamFTE => {
       this.FTEFormGroupLive.push({
         emailAddress: teamFTE['allocations:emailAddress'],
+        employeeNumber: teamFTE['allocations:employeeNumber'],
         employeeID: teamFTE['allocations:employeeID'],
         fte: String(teamFTE['allocations:fte'] * 100),
         fullName: teamFTE['allocations:fullName'],
