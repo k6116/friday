@@ -138,10 +138,20 @@ export class TopProjectsReportsComponent implements OnInit, OnDestroy {
     if (this.lineChart) {
       this.lineChart.destroy();
     }
+    // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
+    const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
+
     this.lineChartOptions = {
       credits: {
         text: 'jarvis.is.keysight.com',
         href: 'https://jarvis.is.keysight.com'
+      },
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: highchartsButtons
+          }
+        }
       },
       title: {text: `Top Projects FTE History`},
       subtitle: { text: 'Time Period: All historic data'},

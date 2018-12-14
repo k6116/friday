@@ -22,7 +22,7 @@ const Part = sequelize.define('part',
     oracleDescription: { type: Sequelize.STRING, field: 'OracleDescription' },
     oracleDWSFDeptWSF: { type: Sequelize.STRING, field: 'OracleDWSFDeptWSF' },
     oracleICATItemCategories: { type: Sequelize.STRING, field: 'OracleICATItemCategories' },
-    notes: { type: Sequelize.STRING, field: 'Notes' },
+    notes: { type: Sequelize.TEXT, field: 'Notes' },
     tags: { type: Sequelize.STRING, field: 'Tags' },   
     createdBy: { type: Sequelize.INTEGER, field: 'CreatedBy' },
     createdAt: { type: Sequelize.DATE, field: 'CreationDate' },
@@ -39,6 +39,67 @@ const Part = sequelize.define('part',
   }
 );
 
+
+const Quote = sequelize.define('quote',
+  {
+    quoteID: { type: Sequelize.INTEGER, field: 'QuoteID', primaryKey: true, autoIncrement: true },
+    partID: { type: Sequelize.INTEGER, field: 'PartID' },
+    supplierID: { type: Sequelize.INTEGER, field: 'SupplierID' },
+    mfgPartNumber: { type: Sequelize.STRING, field: 'MFGPartNumber' },
+    leadTime: { type: Sequelize.INTEGER, field: 'LeadTime' },
+    minOrderQty: { type: Sequelize.INTEGER, field: 'MinOrderQty' },
+    price: { type: Sequelize.DECIMAL, field: 'Price' },
+    nreCharge: { type: Sequelize.DECIMAL, field: 'NRECharge' },
+    demandForecastMethodID: { type: Sequelize.INTEGER, field: 'DemandForecastMethodID' },
+    demandForecastMethodNumber: { type: Sequelize.STRING, field: 'DemandForecastMethodNumber' },
+    notes: { type: Sequelize.TEXT, field: 'Notes' }, 
+    createdBy: { type: Sequelize.INTEGER, field: 'CreatedBy' },
+    createdAt: { type: Sequelize.DATE, field: 'CreationDate' },
+    updatedBy: { type: Sequelize.INTEGER, field: 'LastUpdatedBy' },
+    updatedAt: { type: Sequelize.DATE, field: 'LastUpdateDate' }
+  },
+  {
+    schema: 'parts',
+    tableName: 'Quotes',
+    timestamps: false,
+    hasTrigger: true
+  }
+);
+
+const Supplier = sequelize.define('supplier',
+  {
+    supplierID: { type: Sequelize.INTEGER, field: 'SupplierID', primaryKey: true, autoIncrement: true },
+    supplierName: { type: Sequelize.STRING, field: 'SupplierName' }
+  },
+  {
+    schema: 'parts',
+    tableName: 'Suppliers',
+    timestamps: false,
+    hasTrigger: true
+  }
+);
+
+const PurchaseMethod = sequelize.define('purchaseMethod',
+  {
+    purchaseMethodID: { type: Sequelize.INTEGER, field: 'PurchaseMethodID', primaryKey: true, autoIncrement: true },
+    purchaseMethodName: { type: Sequelize.STRING, field: 'PurchaseMethodName' }
+  },
+  {
+    schema: 'supply',
+    tableName: 'PurchaseMethod',
+    timestamps: false,
+    hasTrigger: true
+  }
+);
+
+// Part.hasMany(Quote, {foreignKey: 'ID'});
+// Quote.belongsTo(Part, {foreignKey: 'PartID'});
+
+Quote.belongsTo(Supplier, {foreignKey: 'supplierID', targetKey: 'supplierID'});
+
 module.exports = {
-  Part: Part
+  Part: Part,
+  Quote: Quote,
+  Supplier: Supplier,
+  PurchaseMethod: PurchaseMethod
 } 

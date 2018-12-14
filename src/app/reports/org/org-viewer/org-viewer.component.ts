@@ -31,9 +31,8 @@ export class OrgViewerComponent implements OnInit {
 
   async ngOnInit() {
     // on init, fetch org chart data from org service using today's date as date range
-    const currentQuarter = this.toolsService.fiscalQuarterRange(new Date, 'YYYY-MM-DD');
-    const bla = await this.orgViewerService.getOrg(this.authService.loggedInUser.managerEmailAddress, currentQuarter[0], currentQuarter[1]);
-    this.orgJson = bla;
+    const currQuarter = this.toolsService.fiscalQuarterRange(new Date, 'YYYY-MM-DD');
+    this.orgJson = await this.orgViewerService.getOrg(this.authService.loggedInUser.managerEmailAddress, currQuarter[0], currQuarter[1]);
   }
 
   expandChartFullscreen() {

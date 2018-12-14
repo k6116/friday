@@ -16,21 +16,19 @@ require('highcharts/modules/pareto.js')(Highcharts);
   styleUrls: ['./team-fte-summary.component.css', '../../_shared/styles/common.css'],
   providers: [TeamFteSummaryTeamSelectService]
 })
-export class TeamFteSummaryComponent implements OnInit, OnDestroy {
+export class TeamFteSummaryComponent implements OnInit {
 
   @ViewChild(TeamFteSummaryTeamSelectModalComponent)
   private teamFteSummaryTeamSelectModalComponent: TeamFteSummaryTeamSelectModalComponent;
 
   chartIsLoading = true;  // display boolean for "Loading" spinner
-  paretoChart: any; // chart obj
-  paretoChartOptions: any;  // chart options
-
   displayEditTeamButton: boolean;
-  showTeamFteSummaryTeamSelectModal: boolean;
-  chartColumn: any;
-  nestedManagerData: any = [];
-
   displaySelectedProjectRoster = false;
+  showTeamFteSummaryTeamSelectModal: boolean;
+  nestedManagerData: any = [];
+  chartColumn: any;
+  chartTitle: string;
+
   teamSummaryData: any; // for teamwide FTE summary data
   teamSummaryData10: any; // for teamwide FTE summary data
   teamSummaryData50: any; // for teamwide FTE summary data
@@ -41,8 +39,13 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
   selectedManager: any;
   selectedManagerEmailAddress: any;
   selectedPeriod: string;
+  excludeParentType: string; // if 'Program' is selected, will drill up all the way to program levels
+  displayAggregateBtn: boolean;
+
+  disableAll: boolean;
 
   timePeriods = [
+    {period: 'previous-quarter', text: 'Previous Quarter'},
     {period: 'current-quarter', text: 'Current Quarter'},
     {period: 'current-fy', text: 'Current Fiscal Year'},
     {period: 'all-time', text: 'All Time'}
@@ -56,10 +59,16 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
 
+    // initialize default vars
     this.selectedPeriod = 'current-quarter';
+    this.excludeParentType = 'NULL';
+    this.chartTitle = `My Team's Projects`;
+    this.displayAggregateBtn = true;
 
     // Need to initialize this object with just checkAllTeams key
-    this.selectedManager = {checkAllTeams: false};
+    this.selectedManager = {
+      checkAllTeams: false
+    };
 
     if (this.authService.loggedInUser.isManager || this.authService.loggedInUser.roleName === 'Admin') {
       this.displayEditTeamButton = true;
@@ -77,59 +86,47 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     });
     this.nestedManagerData.push(nestedManagerData);
 
-    // get nested project pareto with list of team members and their FTEs underneath each project
-    this.teamSummaryDataFull = await this.apiDataReportService
-      .getSubordinateProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
-    this.updatedTeamSummaryDataProperties();
-    this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
-    console.log('this.teamSummaryDataFull', this.teamSummaryDataFull);
-    this.renderColumnChart(`My Team's Projects`);
+    await this.getData(false);
+
+    this.renderColumnChart();
+
+    // Set selector to current quarter
+    $('#time-period-selector').val('current-quarter');
+
   }
 
-  ngOnDestroy() {
-    // destroy the highchart if it exists
-    if (this.paretoChart) {
-      this.paretoChart.destroy();
-    }
-  }
+  async getData(renderOnly: boolean) {
+    if (!renderOnly) {
+      // get nested project pareto with list of team members and their FTEs underneath each project
+      if (typeof this.selectedManager !== 'undefined' && this.selectedManager.checkAllTeams === true) {
+        this.chartColumn.showLoading();
+        this.disableAll = true;
+        this.teamSummaryDataFull = await this.apiDataReportService
+          .getSubordinateDrillDownProjectRoster(this.excludeParentType, this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
+        this.chartColumn.hideLoading();
+        this.disableAll = false;
+      } else {
+        this.teamSummaryDataFull = await this.apiDataReportService
+          .getSubordinateProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
+      }
+      this.updatedTeamSummaryDataProperties();
+      this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
 
-  renderColumnChart(title: string, selectedManager?: any) {
-    this.displaySelectedProjectRoster = false;
-    const chartOptions = this.buildChartOptions(this.selectedPeriod, title);
-    this.chartColumn = Highcharts.chart('columnChart', chartOptions);
-    setTimeout(() => {
-      this.chartColumn.reflow();
-    }, 0);
-    this.chartIsLoading = false;
-  }
-
-  async onDateRangeChange(period: string) {
-    let title;
-    this.selectedPeriod = period;
-
-    if (typeof this.selectedManager !== 'undefined' && this.selectedManager.checkAllTeams === true) {
-      this.teamSummaryDataFull = await this.apiDataReportService
-        .getSubordinateDrillDownProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
-    } else {
-      this.teamSummaryDataFull = await this.apiDataReportService
-        .getSubordinateProjectRoster(this.selectedManagerEmailAddress, this.selectedPeriod).toPromise();
-    }
-    this.updatedTeamSummaryDataProperties();
-    this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
-
-    if (this.selectedManagerEmailAddress === this.authService.loggedInUser.managerEmailAddress) {
-      title = `My Team's Projects`;
-    } else if (typeof this.selectedManager !== 'undefined' && this.selectedManager.checkAllTeams === true) {
-      title = `${this.selectedManager.fullName}'s Projects (Aggregated)`;
-    } else if (this.selectedManager.checkAllTeams === false) {
-      title = `${this.selectedManager.fullName}'s Team's Projects`;
+      // set the title of the chart
+      if (this.selectedManagerEmailAddress === this.authService.loggedInUser.managerEmailAddress) {
+        this.chartTitle = `My Team's Projects`;
+      } else if (typeof this.selectedManager.fullName !== 'undefined' && this.selectedManager.checkAllTeams === true) {
+        this.chartTitle = `${this.selectedManager.fullName}'s Team's Projects (Aggregated)`;
+      } else if (typeof this.selectedManager.fullName !== 'undefined' && this.selectedManager.checkAllTeams === false) {
+        this.chartTitle = `${this.selectedManager.fullName}'s Team's Projects`;
+      }
     }
 
-    this.renderColumnChart(title);
+    this.renderColumnChart();
+
   }
 
   updatedTeamSummaryDataProperties() {
-
     let teamwideTotal = 0;
     this.teamSummaryDataFull.forEach( project => {
       project.teamMembers.forEach( employee => {
@@ -148,6 +145,24 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       return b.totalFtes - a.totalFtes;
     });
 
+  }
+
+  renderColumnChart(selectedManager?: any) {
+    this.displaySelectedProjectRoster = false;
+    const chartOptions = this.buildChartOptions(this.selectedPeriod, this.chartTitle);
+    this.chartColumn = Highcharts.chart('columnChart', chartOptions);
+    setTimeout(() => {
+      this.chartColumn.reflow();
+    }, 0);
+    this.chartIsLoading = false;
+  }
+
+  async onDateRangeChange(period: string) {
+    this.selectedPeriod = period;
+    await this.getData(false);
+
+    // Reset toggle to Show All
+    $('#option1').click();
   }
 
   // take in the fte data and return the chart options for the stacked column chart
@@ -173,6 +188,9 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       teamwidePercents.push(project.teamwidePercents);
     });
 
+    // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
+    const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
+
     // set the chart options
     const chartOptions = {
       credits: {
@@ -180,7 +198,8 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
         href: 'https://jarvis.is.keysight.com'
       },
       chart: {
-        height: 500
+        height: 600,
+        marginTop: 100
       },
       title: {
         text: title
@@ -205,6 +224,13 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       ],
       tooltip: {
         shared: true
+      },
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: highchartsButtons,
+          }
+        }
       },
       series: [
         {
@@ -242,16 +268,19 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
 
     }
 
-    showSubordinateTeamRoster(projectID: number) {
-      this.teamSummaryData.forEach( project => {
-        // find the project that was clicked and store into selectedProject vars for display
-        if (project.projectID === projectID) {
-          this.selectedProject = project.projectName;
-          this.selectedProjectRoster = project.teamMembers;
-        }
-      });
-      this.displaySelectedProjectRoster = true;
-    }
+  showSubordinateTeamRoster(projectID: number) {
+    this.teamSummaryDataFull.forEach( project => {
+      // find the project that was clicked and store into selectedProject vars for display
+      if (project.projectID === projectID) {
+        // project.teamMembers.forEach( emp => {
+        //   emp.fte = emp.fte * 100 + '%';
+        // });
+        this.selectedProject = project.projectName;
+        this.selectedProjectRoster = project.teamMembers;
+      }
+    });
+    this.displaySelectedProjectRoster = true;
+  }
 
   onEditTeamClick() {
 
@@ -285,8 +314,26 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
     // console.log('selected manager:', selectedManager);
 
     if (selectedManager) {
+      if (selectedManager.checkAllTeams) {
+        this.displayAggregateBtn = false;
+      } else if (!selectedManager.checkAllTeams) {
+        this.displayAggregateBtn = true;
+      }
       this.updateColumnChart(selectedManager);
     }
+
+  }
+
+  async onAggregateClick() {
+    if (this.selectedManager.checkAllTeams) {
+      this.displayAggregateBtn = true;
+      this.selectedManager.checkAllTeams = false;
+    } else if (!this.selectedManager.checkAllTeams) {
+      this.displayAggregateBtn = false;
+      this.selectedManager.checkAllTeams = true;
+    }
+
+    await this.getData(false);
 
   }
 
@@ -299,67 +346,72 @@ export class TeamFteSummaryComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (selectedManager.checkAllTeams === true) {
-      this.teamSummaryDataFull = await this.apiDataReportService
-        .getSubordinateDrillDownProjectRoster(selectedManager.emailAddress, this.selectedPeriod).toPromise();
-    } else {
-      this.teamSummaryDataFull = await this.apiDataReportService
-        .getSubordinateProjectRoster(selectedManager.emailAddress, this.selectedPeriod).toPromise();
-    }
-    this.updatedTeamSummaryDataProperties();
-    this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
-
-    // console.log('selectedManager', selectedManager);
-    console.log('this.teamSummaryDataFull', this.teamSummaryDataFull);
-
-    // set the chart title
-    let title;
-    if (selectedManager.emailAddress === this.authService.loggedInUser.managerEmailAddress) {
-      title = `My Team's Projects`;
-    } else if (selectedManager.checkAllTeams === true) {
-      title = `${selectedManager.fullName}'s Projects (Aggregated)`;
-    } else if (selectedManager.checkAllTeams === false) {
-      title = `${selectedManager.fullName}'s Team's Projects`;
-    }
-
-    this.renderColumnChart(title);
-
     this.selectedManager = JSON.parse(JSON.stringify(selectedManager));
     this.selectedManagerEmailAddress = selectedManager.emailAddress;
 
+    await this.getData(false);
   }
 
   onTopProjectsSelected(event: any) {
     const top10count = this.teamSummaryDataFull.length * 0.10;
     const top50count = this.teamSummaryDataFull.length * 0.50;
-    let toggleText;
 
-    this.teamSummaryData10 = this.teamSummaryDataFull.slice(0, top10count);
-    this.teamSummaryData50 = this.teamSummaryDataFull.slice(0, top50count);
+    this.teamSummaryData10 = this.teamSummaryDataFull.slice(0, Math.ceil(top10count));
+    this.teamSummaryData50 = this.teamSummaryDataFull.slice(0, Math.ceil(top50count));
 
     const selected = event.target.id;
-    if (selected === 'top10') {
+    if (selected === 'togProjectsTop10') {
       this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryData10));
-      toggleText = 'Top 10%';
-    } else if (selected === 'top50') {
+    } else if (selected === 'togProjectsTop50') {
       this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryData50));
-      toggleText = 'Top 50%';
-    } else if (selected === 'all') {
+    } else if (selected === 'togProjectsAll') {
       this.teamSummaryData = JSON.parse(JSON.stringify(this.teamSummaryDataFull));
-      toggleText = '';
     }
 
-    let title;
-    if (this.selectedManagerEmailAddress === this.authService.loggedInUser.managerEmailAddress) {
-      title = `My Team's Projects ` + toggleText;
-    } else if (typeof this.selectedManager !== 'undefined' && this.selectedManager.checkAllTeams === true) {
-      title = `${this.selectedManager.fullName}'s Projects (Aggregated) ` + toggleText;
-    } else if (this.selectedManager.checkAllTeams === false) {
-      title = `${this.selectedManager.fullName}'s Team's Projects ` + toggleText;
+    this.getData(true);
+  }
+
+  async onMaxParentSelected(event: any) {
+    const selected = event.target.id;
+
+    $('label.tooltip-' + selected).tooltip('hide');
+
+    if (selected === 'togTypesAll') {
+      this.excludeParentType = 'NULL';
+    } else {
+      this.excludeParentType = 'Program';
     }
 
-    // console.log('this.teamSummaryData', this.teamSummaryData)
-    this.renderColumnChart(title);
+    await this.getData(false);
+
+    // Reset toggle to Show All
+    $('#togProjectsAll').click();
+  }
+
+  onToggleTypeMouseEnter(event: any) {
+
+    const selected = event.target.id;
+    let titleText;
+
+    if (selected === 'togTypesAll') {
+      titleText = 'all levels';
+    } else if (selected === 'togTypesNPI') {
+      titleText = 'the NPI level';
+    }
+
+    const options = {
+      title: 'Aggregate data to ' + titleText,
+      placement: 'top'
+    };
+
+    $('label.tooltip-' + selected).tooltip(options);
+    $('label.tooltip-' + selected).tooltip('show');
+
+  }
+
+  onToggleTypeMouseLeave(event: any) {
+    const selected = event.target.id;
+    $('label.tooltip-' + selected).tooltip('dispose');
   }
 
 }

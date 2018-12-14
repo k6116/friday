@@ -37,10 +37,10 @@ export class ApiDataReportService {
       .map((response: Response) => response.json());
   }
 
-  getSubordinateDrillDownProjectRoster(managerEmailAddress: string, period: string) {
+  getSubordinateDrillDownProjectRoster(excludeParentType: string, managerEmailAddress: string, period: string) {
     const headers = new Headers({'X-Token': this.cacheService.token.signedToken});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(`/api/report/getSubordinateDrillDownProjectRoster/${managerEmailAddress}/${period}`, options)
+    return this.http.get(`/api/report/getSubordinateDrillDownProjectRoster/${excludeParentType}/${managerEmailAddress}/${period}`, options)
       .timeout(this.cacheService.apiDataTimeout)
       .map((response: Response) => response.json());
   }

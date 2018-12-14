@@ -86,6 +86,8 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
   }
 
   plotTimeSeries(period: string) {
+    // slice off the 'View data table' and 'Open in Highcharts Cloud' menu options
+    const highchartsButtons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems.slice(0, 9);
     const timePeriod = this.timePeriods.find( obj => {
       return obj.period === period;
     });
@@ -94,6 +96,13 @@ export class MyFteSummaryComponent implements OnInit, OnDestroy {
       credits: {
         text: 'jarvis.is.keysight.com',
         href: 'https://jarvis.is.keysight.com'
+      },
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: highchartsButtons
+          }
+        }
       },
       chart: {
         type: 'spline',

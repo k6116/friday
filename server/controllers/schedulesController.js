@@ -36,6 +36,230 @@ function indexProjectSchedule(req, res) {
 		})
 }
 
+function showBuildSchedule(req, res) {
+
+	const projectID = req.params.projectID;
+	models.Schedules.findAll({
+		attributes: [
+			'schedules.ScheduleID',
+			'projectID',
+			'currentRevision',
+			'notes',
+			'schedulesDetails.needByDate',
+			'schedulesDetails.neededQuantity',
+			'schedulesDetails.buildStatusID'
+			// sequelize added an 's' to the end of the schedulesDetail table name in its aliasing.  No clue why
+		],
+		include: [{
+			model: models.SchedulesDetail,
+			attributes: []
+			// empty attributes trick to prevent having a fully-qualified property name (ie, field = suppliers.supplierName instead of supplierName)
+      // see https://github.com/sequelize/sequelize/issues/7605
+		}],
+		where: { projectID: projectID },
+		raw: true
+	})
+	.then(schedule => {		
+		res.json(schedule);
+	})
+}
+
+function indexBuildStatus(req, res) {
+	// returns list of build schedule types (ie, Breadboard, Proto 1, etc) from db
+	models.BuildStatus.findAll()
+	.then(schedule => {
+		res.json(schedule);
+	})
+}
+
+function updateBuildScheduleNew(req, res) {
+	const decodedToken = token.decode(req.header('X-Token'), res);
+	const userID = decodedToken.userData.id;
+  const buildScheduleForm = req.body.buildScheduleArray;
+  const insertSchedules = [];
+	const updateSchedules = [];
+	const insertSchedulesDetails = [];
+	const updateSchedulesDetails = [];
+	const deleteSchedulesDetails = [];
+
+  buildScheduleForm.forEach( schedule => {
+		// if order is missing scheduleID, then it is new to both Schedules and SchedulesDetail tables
+    if (schedule.scheduleID === null) {
+      insertSchedules.push({
+        projectID: schedule.projectID,
+				currentRevision: schedule.currentRevision,
+				notes: schedule.notes,
+        createdBy: userID,
+        createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+			});
+
+			insertSchedulesDetails.push({
+				currentRevision: schedule.currentRevision,
+				needByDate: schedule.needByDate,
+				neededQuantity: schedule.neededQuantity,
+				buildStatusID: schedule.buildStatusID,
+				createdBy: userID,
+        createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+			});
+    } else if (schedule.schedulesDetailID === null) {
+			// if scheduleID is NOT null, but schedulesDetail IS null, then we only need to insert records into the SchedulesDetail table, but update the Updated times in the Schedules table
+      updateSchedules.push({
+				scheduleID: schedule.scheduleID,
+        projectID: schedule.projectID,
+				currentRevision: schedule.currentRevision,
+				notes: schedule.notes,
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+			});
+			
+			insertSchedulesDetails.push({
+				scheduleID: schedule.scheduleID,
+				currentRevision: schedule.currentRevision,
+				needByDate: schedule.needByDate,
+				neededQuantity: schedule.neededQuantity,
+				buildStatusID: schedule.buildStatusID,
+				createdBy: userID,
+        createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+			});
+		} else if (schedule.toBeDeleted === true) {
+			deleteSchedulesDetails.push(schedule.schedulesDetailID);
+		} else {
+			// if neither ID is null, then it is an update to both tables
+			updateSchedules.push({
+				scheduleID: schedule.scheduleID,
+        projectID: schedule.projectID,
+				currentRevision: schedule.currentRevision,
+				notes: schedule.notes,
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+			});
+			
+			updateSchedulesDetails.push({
+				scheduleID: schedule.scheduleID,
+				schedulesDetailID: schedule.schedulesDetailID,
+				currentRevision: schedule.currentRevision,
+				needByDate: schedule.needByDate,
+				neededQuantity: schedule.neededQuantity,
+				buildStatusID: schedule.buildStatusID,
+        updatedBy: userID,
+        updatedAt: moment().format("YYYY-MM-DD HH:mm:ss")
+			});
+		}
+  });
+
+  console.log('done parsing insertSchedules');
+  console.log(insertSchedules);
+  console.log('done parsing insertSchedulesDetails');
+	console.log(insertSchedulesDetails);
+	console.log('done parsing updateSchedules');
+  console.log(updateSchedules);
+  console.log('done parsing updateSchedulesDetails');
+	console.log(updateSchedulesDetails);
+	console.log('done parsing deleteSchedulesDetails');
+	console.log(deleteSchedulesDetails);
+
+  return sequelize.transaction( (t) => {
+		// first, delete the requested records from schedulesDetails
+		return models.SchedulesDetail.destroy({
+			where: {schedulesDetailID: deleteSchedulesDetails},
+			transaction: t
+		})
+		.then ( deletedRecords => {
+			console.log(`${deletedRecords.length} buildScheduleDetails records deleted`)
+
+			// then, insert records into Schedules
+			return models.Schedules.bulkCreate(
+				insertSchedules,
+				{transaction: t}
+			)
+			.then( insertedRecords => {
+				console.log(insertedRecords);
+				console.log(`${insertedRecords.length} buildSchedule records inserted`);
+
+				// also insert into SchedulesDetail
+				return models.SchedulesDetail.bulkCreate(
+					insertSchedulesDetails,
+					{transaction: t}
+				)
+				.then (insertedRecords => {
+					console.log(`${insertedRecords.length} buildScheduleDetails records inserted`);
+
+					// then build an array of promises for updates to make to Schedules table
+					let promises = [];
+					for (let i = 0; i < updateSchedules.length; i++) {
+						let newPromise = models.Schedules.update(
+						{
+							scheduleID: updateSchedules[i].scheduleID,
+							projectID: updateSchedules[i].projectID,
+							currentRevision: updateSchedules[i].currentRevision,
+							notes: updateSchedules[i].notes,
+							updatedBy: updateSchedules[i].updatedBy,
+							updatedAt: updateSchedules[i].updatedAt
+						},
+						{
+							where: { scheduleID: updateSchedules[i].scheduleID },
+							transaction: t
+						});
+						promises.push(newPromise);
+					};
+					// then execute all the promises to update the quote records
+					return Promise.all(promises)
+					.then( updatedRecords => {
+						console.log(`${updatedRecords.length} buildSchedule records updated`);
+
+						// then build an array of promises for updates to make to SchedulesDetail table
+						let promises = [];
+						for (let i = 0; i < updateSchedulesDetails.length; i++) {
+							let newPromise = models.SchedulesDetail.update(
+							{
+								schedulesDetailID: updateSchedulesDetails[i].schedulesDetailID,
+								scheduleID: updateSchedulesDetails[i].scheduleID,
+								currentRevision: updateSchedulesDetails[i].currentRevision,
+								buildStatusID: updateSchedulesDetails[i].buildStatusID,
+								needByDate: updateSchedulesDetails[i].needByDate,
+								neededQuantity: updateSchedulesDetails[i].neededQuantity,
+								updatedBy: updateSchedulesDetails[i].updatedBy,
+								updatedAt: updateSchedulesDetails[i].updatedAt
+							},
+							{
+								where: {
+									schedulesDetailID: updateSchedulesDetails[i].schedulesDetailID
+								},
+								transaction: t
+							});
+							promises.push(newPromise);
+						};
+						// then execute all the promises to update the quote records
+						return Promise.all(promises);
+					});
+				});
+				
+			})
+			.then( updatedRecords => {
+				console.log(`${updatedRecords.length} buildScheduleDetails records updated`)
+			});
+		});
+  }) // end transaction
+  .then(() => {
+    res.json({
+      message: `Build Schedule saved!`
+    })
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({
+      message: 'build schedule save failed',
+      error: error
+    });
+  });
+}
+
   function updateProjectScheduleXML(req,res) {
 
  	const decodedToken = token.decode(req.header('X-Token'), res);
@@ -651,6 +875,9 @@ function getPLCList(req, res) {
 
   
 module.exports = {
+	showBuildSchedule: showBuildSchedule,
+	indexBuildStatus: indexBuildStatus,
+	updateBuildScheduleNew: updateBuildScheduleNew,
 	indexProjectSchedule: indexProjectSchedule,
 	indexPartSchedule: indexPartSchedule,
 	updateProjectScheduleXML: updateProjectScheduleXML,

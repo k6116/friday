@@ -10,9 +10,9 @@
   <div class="row row-custom" [hidden]="chartIsLoading">
     <div class="col-sm">
       <!-- date-switcher div -->
-      <div class="chart-date-switcher form-inline">
-        <label class="chart-date-switcher-label">Range:</label>
-        <select name="time-period-selector" class="form-control date-switcher-selector" (change)="getFteSummaryData($event.target.value)">
+      <div class="chart-toolbar form-inline">
+        <label class="chart-toolbar-label">Range:</label>
+        <select name="time-period-selector" class="form-control toolbar-selector" (change)="getFteSummaryData($event.target.value)">
           <option *ngFor="let times of timePeriods" [value]="times.period">{{times.text}}</option>
         </select>
       </div>
