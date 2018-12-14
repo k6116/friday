@@ -758,7 +758,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.fteDateTo = '';
 
     // unselect all toggle buttons -> removes PLC from reults table
-    $('.fte-toggle').removeClass('active');
+    $('#option1').click();
 
   }
 
