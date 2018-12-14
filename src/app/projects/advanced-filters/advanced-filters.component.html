@@ -147,7 +147,7 @@
                   Project Owner
                 </div>
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="ProjectOwnerEmails"
+                  <input type="checkbox" class="custom-control-input" id="ProjectOwnerEmails" [disabled]="filterStringOw.value==''"
                       [(ngModel)]="allProjectOwnersCheckbox"
                       (change)="selectAllProjectOwners($event.target.checked)">
                   <label class="custom-control-label" for="ProjectOwnerEmails"><small style="margin: 0px 5px 0px -4px;">All</small></label>
@@ -187,7 +187,7 @@
                   Parent Projects
                 </div>
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="parentProjectIDs" 
+                  <input type="checkbox" class="custom-control-input" id="parentProjectIDs" [disabled]="parents==[]"
                     [(ngModel)]="allParentsCheckbox" 
                     (change)="selectAllParents($event)">
                   <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>

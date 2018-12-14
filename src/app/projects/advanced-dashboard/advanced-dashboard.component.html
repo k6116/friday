@@ -1,95 +1,131 @@
-<!-- <div class="container-fluid"> -->
-
   <!-- outer container; don't show until data is ready -->
   <div class="dashboard-cont" [hidden]="!showDashboard">
 
-    <!-- 2 inline divs -->
-    <div class="d-flex justify-content-between">
-      
+    <!-- <div style="height:500px"> -->
+
       <!-- Projects Stats-->
-      <div class="custom-card-cont">
-        <h5 class="dashboard-custom-title">Project Stats</h5>
-        <div class="d-flex justify-content-between">
-
-                <table class="table table-sm mx-3">
-                  <thead>
-                    <tr>
-                      <th colspan="2">Project Owners #</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let owner of ownersCount">
-                      <td>{{ owner.name }}</td>
-                      <td>{{ owner.y }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <table class="table table-sm mx-3">
-                  <thead>
-                    <tr>
-                      <th colspan="2">Project Priorities #</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let priority of prioritiesCount">
-                      <td>{{ priority.name }}</td>
-                      <td>{{ priority.y }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <table class="table table-sm mx-3">
-                  <thead>
-                    <tr>
-                      <th colspan="2">Project Statuses #</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let status of statusesCount">
-                      <td>{{ status.name }}</td>
-                      <td>{{ status.y }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-
+      <div class="custom-card-cont float-elem1">
+        <div data-toggle="collapse" data-target="#projectStats" style="cursor: pointer">
+          <h5 class="dashboard-custom-title">
+            <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>          
+            Project Stats
+          </h5>
         </div>
+        <div class="collapse show" id="projectStats" style="height: 410px">
+          <div class="d-flex justify-content-between">
 
+                  <table class="table table-sm mx-3">
+                    <thead>
+                      <tr>
+                        <th colspan="2">Project Owners #</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let owner of ownersCount">
+                        <td>{{ owner.name }}</td>
+                        <td>{{ owner.y }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <table class="table table-sm mx-3">
+                    <thead>
+                      <tr>
+                        <th colspan="2">Project Priorities #</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let priority of prioritiesCount">
+                        <td>{{ priority.name }}</td>
+                        <td>{{ priority.y }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <table class="table table-sm mx-3">
+                    <thead>
+                      <tr>
+                        <th colspan="2">Project Statuses #</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let status of statusesCount">
+                        <td>{{ status.name }}</td>
+                        <td>{{ status.y }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+          </div>
+        </div>
       </div>
 
       <!-- Poject Highcharts -->
-      <div class="custom-card-cont" style="min-width: 66%">
-        <h5 class="dashboard-custom-title">Project Highcharts</h5>
-        <div class="highchart my-fte-pie-chart1" id="priorityFTEChart"></div>
+      <div class="custom-card-cont float-elem2">
+        <div data-toggle="collapse" data-target="#projectHighcharts" style="cursor: pointer">
+          <h5 class="dashboard-custom-title">
+            <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>          
+            Project FTE Highcharts
+            <button class="btn-standard icon-text-only hover-green info-icon projectFTEinfo-popover" (mouseenter)="onProjectInfoButtonMouseEnter()" (mouseleave)="onProjectInfoButtonMouseLeave()">
+              <i class="fa fa-info button-icon" aria-hidden="true"></i>
+            </button>
+          </h5>
+        </div>
+        <div class="collapse show" id="projectHighcharts" style="height: 400px">
+          <div class="highchart my-fte-pie-chart1" id="priorityFTEChart"></div>
+        </div>
       </div>
 
-    </div>
+    <!-- </div> -->
 
-    <!-- Schedule line -->
-    <div class="custom-card-cont">
-      <h5 class="dashboard-custom-title">PLC Schedules</h5>
-      <div class="highchart my-fte-pie-chart1" id="schedulesChart"></div>
+    <!-- Schedules -->
+    <div class="custom-card-cont float-elem3">
+      <div data-toggle="collapse" data-target="#schedulesCollapse" style="cursor: pointer">      
+        <h5 class="dashboard-custom-title">
+          <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>          
+          PLC Schedules
+          <button class="btn-standard icon-text-only hover-green info-icon info-popover" (mouseenter)="onInfoButtonMouseEnter()" (mouseleave)="onInfoButtonMouseLeave()">
+            <i class="fa fa-info button-icon" aria-hidden="true"></i>
+          </button>
+        </h5>
+      </div>
+        <div class="collapse show" id="schedulesCollapse">
+          <div *ngIf="!displaySchedulesChart">
+            <h6 class="dashboard-custom-title">Projects in this data set do not have PLC Schedules defined</h6>
+          </div>
+          <div class="highchart my-fte-pie-chart1" id="schedulesChart"></div>
+        </div>
     </div>
 
     <!-- 3 inline divs -->
-    <div class="d-flex justify-content-between">
+    <!-- <div class="d-flex justify-content-between"> -->
 
       <!-- Top FTE -->
-      <div class="custom-card-cont">
-        <h5 class="dashboard-custom-title">Top FTE Projects</h5>
-        <h6 class="dashboard-custom-title">Select a project to display the FTE trend chart</h6>
-        
-            <table *ngIf="displayTopFTEProjects" class="table table-borderless table-sm table-hover">
+      <div class="custom-card-cont float-elem4">
+        <div data-toggle="collapse" data-target="#topFTECollapse" style="cursor: pointer">      
+          <h5 class="dashboard-custom-title">
+            <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>          
+            Top FTE Projects
+          </h5>
+        </div>
+
+        <div class="collapse show" id="topFTECollapse" style="height: 410px">
+          <div *ngIf="!displayTopFTEProjects">
+            <h6 class="dashboard-custom-title">Top FTE Project list is not available for this dataset</h6>
+          </div>
+          <ng-container *ngIf="displayTopFTEProjects">
+            <h6 class="dashboard-custom-title">Select a project to display the FTE trend chart</h6>
+            <table class="table table-borderless table-sm table-hover mx-3" style="width: auto">
               <thead>
                 <tr>
                   <th width="30%" scope="col">Project Name</th>
-                  <th width="15%" scope="col">Project Type</th>
+                  <th width="10%" scope="col">Type</th>
                   <th width="10%" scope="col">Priority</th>
-                  <th width="10%" scope="col">Total FTE</th>
+                  <th width="15%" scope="col">Total FTE</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let project of topFTEProjects; let i = index" (click)="onTopFTEProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
+                <tr *ngFor="let project of topFTEProjects; let i = index" (click)="onTopFTEProjectClick(project, i)" [class.table-active]="isProjectSelected[i]" style="cursor:pointer; width: initial">
                   <td>{{ project.ProjectName }}</td>
                   <td>{{ project.ProjectTypeName }}</td>
                   <td>{{ project.PriorityName }}</td>
@@ -97,134 +133,57 @@
                 </tr>
               </tbody>
             </table>
+          </ng-container>
+        </div>
 
       </div>
 
       <!-- Project FTE Trend -->
-      <div class="custom-card-cont">
-        <h5 class="dashboard-custom-title">Project FTE Trends</h5>
-        <ng-container *ngIf="displayTopFTEProjects && displayProjectFTETrendChart">
-          <div class="highchart my-fte-pie-chart1" id="FTEHistory"></div>
-        </ng-container>
+      <div class="custom-card-cont float-elem5">
+        <div data-toggle="collapse" data-target="#fteTrendCollapse" style="cursor: pointer">
+          <h5 class="dashboard-custom-title">
+            <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>          
+            Project FTE Trends
+          </h5>
+        </div>
+
+        <div class="collapse show" id="fteTrendCollapse" style="height: 410px">
+          <!-- <ng-container *ngIf="displayTopFTEProjects && displayProjectFTETrendChart"> -->
+            <div class="highchart my-fte-pie-chart1" id="FTEHistory"></div>
+          <!-- </ng-container> -->
+          </div>
 
       </div>
 
-      <!-- Roster -->
-      <div class="custom-card-cont">
-        <h5 class="dashboard-custom-title">Rosters</h5>
+    <!-- </div> -->
 
+    <!-- Roster -->
+    <div class="custom-card-cont float-elem6">
+      <div data-toggle="collapse" data-target="#RosterCollapse" style="cursor: pointer">
+        <h5 class="dashboard-custom-title">
+          <i class="fa fa-angle-down" aria-hidden="true" style="padding: 0px 10px 0px 3px"></i>
+          {{ selectedProject ? selectedProject.ProjectName : '--'}} Roster | {{ selectedFiscalDateMonth ? selectedFiscalDateMonth : '--' }}-{{ selectedFiscalDateYear ? selectedFiscalDateYear : '--' }}      
+        </h5>
       </div>
 
+      <div class="collapse show" id="RosterCollapse" style="height: 410px">
+        <table class="table table-borderless table-sm mx-3" style="width:auto">
+            <thead>
+              <tr>
+                <th width="20%" scope="col">Employee Name</th>
+                <th width="40%" scope="col">JobTitle</th>
+                <th width="10%" scope="col">FTE</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let employee of projectEmployeeData">
+              <tr>
+                <td>{{ employee.fullName }}</td>
+                <td>{{ employee.jobTitleName }} - {{ employee.jobSubTitleName }}</td>
+                <td>{{ employee.fte }}%</td>
+              </tr>
+            </tbody>
+        </table>
+      </div>
     </div>
 
-
-
-
-
-
-
-    
-    <!-- Top FTEs Paul's 3rd row-->
-
-    <!-- <div class="card-column"> -->
-      <!-- Projects Table -->
-      <div class="card">
-
-        <div class="card-header bg-light">
-          <h5 class="card-title">Top FTE Projects</h5>
-          <h6 class="card-title">Select a project to display the FTE trend chart</h6>
-        </div>
-        
-        <div class="card-body" *ngIf="displayTopFTEProjects">
-
-            <table class="table table-borderless table-sm table-hover">
-              <thead>
-                <tr>
-                  <th width="30%" scope="col">Project Name</th>
-                  <th width="15%" scope="col">Project Type</th>
-                  <th width="10%" scope="col">Priority</th>
-                  <th width="10%" scope="col">Total FTE</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let project of topFTEProjects; let i = index" (click)="onTopFTEProjectClick(project, i)" [class.table-active]="isProjectSelected[i]">
-                  <td>{{ project.ProjectName }}</td>
-                  <td>{{ project.ProjectTypeName }}</td>
-                  <td>{{ project.PriorityName }}</td>
-                  <td>{{ project.TotalProjectFTE }}</td>
-                </tr>
-              </tbody>
-            </table>
-
-        </div>
-
-        <div class="card-body" *ngIf="!displayTopFTEProjects">
-          <h6>Top FTE Project list is not available for this dataset</h6>
-        </div>
-
-      </div>
-      <!-- End Project Table -->
-
-      <div class="card-deck">
-        <!-- Project Chart -->
-        <div class="card">
-
-          <div class="card-header bg-light">
-            <h5 class="card-title">Project FTE Trends</h5>
-          </div>
-          
-          <div class="card-body" *ngIf="displayTopFTEProjects && displayProjectFTETrendChart">
-            <div class="highchart my-fte-pie-chart1" id="FTEHistory"></div>
-          </div>
-
-          <!-- <div class="card-body" *ngIf="!displayTopFTEProjects">
-            <h6>The FTE Trend chart will display only if projects exists in the Top FTE Projects</h6>
-          </div>
-
-          <div class="card-body" *ngIf="(displayTopFTEProjects || displayProjectFTETrendChart) && (!displayTopFTEProjects || !displayProjectFTETrendChart)">
-            <h6>Select a project from the list on the left to display the FTE trend chart</h6>
-          </div> -->
-
-        </div>
-        <!-- End Project Chart -->
-      <!-- </div> -->
-
-        <!-- FTE Roster Table -->
-        <div class="card">
-
-          <div class="card-header-light">
-            <h5 class="card-title">
-              {{ selectedProject ? selectedProject.ProjectName : '--'}} Roster | {{ selectedFiscalDateMonth ? selectedFiscalDateMonth : '--' }}-{{ selectedFiscalDateYear ? selectedFiscalDateYear : '--' }}
-            </h5>
-          </div> 
-          
-          <div class="card-body" *ngIf="displayProjectEmployeeList">
-              <table class="table table-borderless table-sm">
-                  <thead>
-                    <tr>
-                      <th width="20%" scope="col">Employee Name</th>
-                      <th width="40%" scope="col">JobTitle</th>
-                      <th width="10%" scope="col">FTE</th>
-                    </tr>
-                  </thead>
-                  <tbody *ngFor="let employee of projectEmployeeData">
-                    <tr>
-                      <td>{{ employee.fullName }}</td>
-                      <td>{{ employee.jobTitleName }} - {{ employee.jobSubTitleName }}</td>
-                      <td>{{ employee.fte }}%</td>
-                    </tr>
-                  </tbody>
-              </table>
-          </div>
-          
-          <div class="card-body" *ngIf="displayProjectFTETrendChart && displayProjectEmployeeList">
-            <h6>Click a point in FTE trend chart</h6>
-          </div>
-
-        </div>
-        <!-- End FTE Roster Table -->
-      </div>
-
   </div>
-
-<!-- </div> -->

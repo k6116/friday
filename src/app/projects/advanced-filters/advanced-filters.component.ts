@@ -835,6 +835,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
 onDashboardClick() {
 
+  // hide search input
   // hide filterbar
   $('#sidebar').toggleClass('active');
   $('.wrapper').toggleClass('dashboard-wrapper');
@@ -843,10 +844,14 @@ onDashboardClick() {
   if ($('button.filter-toggle').attr('hidden')) {
 
     $('button.filter-toggle').attr('hidden', false);
+    $('div.projects-search-string').attr('hidden', false);
+
 
   } else {
 
     $('button.filter-toggle').attr('hidden', true);
+    $('div.projects-search-string').attr('hidden', true);
+
   }
 
 }

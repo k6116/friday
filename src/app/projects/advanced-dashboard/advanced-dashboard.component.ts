@@ -180,7 +180,7 @@ export class AdvancedDashboardComponent implements OnInit {
         marginBottom: 100
       },
       title: {
-        text: 'Priorities > Projects > JobTitles > JobSubTitles vs FTEs'
+        text: 'FTE Charts'
       },
       subtitle: {
         text: 'Click bar to drilldown'
@@ -228,6 +228,41 @@ export class AdvancedDashboardComponent implements OnInit {
     return chartOptions;
   }
 
+  onProjectInfoButtonMouseEnter() {
+
+    const css = `
+    <style>
+      .popover {
+        max-width: 100%;
+        white-space: nowrap;
+      }
+    </style>
+    `;
+
+    const html = `
+    <p style='margin-bottom:0px'>Drilldown options:</p>
+    <p>Priorities > Projects > JobTitles > JobSubTitles</p>
+    `;
+
+    // set the popover options
+    const options = {
+      animation: true,
+      placement: 'right',
+      html: true,
+      trigger: 'focus',
+      title: `Info`,
+      content: css + html
+    };
+
+    $('button.projectFTEinfo-popover').popover(options);
+    $('button.projectFTEinfo-popover').popover('show');
+
+  }
+
+  onProjectInfoButtonMouseLeave() {
+    $('button.projectFTEinfo-popover').popover('dispose');
+  }
+
   buildSchedulesChartOptions() {
 
     // set the chart options
@@ -239,11 +274,8 @@ export class AdvancedDashboardComponent implements OnInit {
         marginBottom: 100,
         height: 400 * this.schedulesChartHeight
       },
-      subtitle: {
-        text: `- Projects only display PLC schedules selected in the filter<br>
-              - PLC duration starts from the end of the previous PLC checkpoint<br>
-              - CONs do not have a "CON Start" at the moment, so schedules start at the completion of CON<br>
-              - If PLCs have the same checkpoint date (e.g. CON and INV), they are "padded" just for display purposes in the chart.`
+      title: {
+        text: ''
       },
       xAxis: {
         categories: this.schedulesProjectsList
@@ -287,6 +319,47 @@ export class AdvancedDashboardComponent implements OnInit {
 
     // return the chart options object
     return chartOptions;
+  }
+
+  onInfoButtonMouseEnter() {
+
+    const css = `
+    <style>
+      .popover {
+        max-width: 100%;
+        white-space: nowrap;
+      }
+    </style>
+    `;
+
+    const html = `
+    <ul>
+      <li>Projects only display PLC schedules selected in the filter</li>
+      <li>PLC duration starts from the end of the previous PLC checkpoint</li>
+      <li>CONs do not have a "CON Start" at the moment, so schedules start at the completion of CON</li>
+      <li>If PLCs have the same checkpoint date (e.g. CON and INV), they are "padded" just for display purposes in the chart.</li>
+    </ul>
+    `;
+
+    // set the popover options
+    const options = {
+      animation: true,
+      placement: 'right',
+      html: true,
+      trigger: 'focus',
+      title: `Info`,
+      content: css + html
+    };
+
+    $('button.info-popover').popover(options);
+    $('button.info-popover').popover('show');
+
+  }
+
+  onInfoButtonMouseLeave() {
+
+    $('button.info-popover').popover('dispose');
+
   }
 
   getProjectStats() {
@@ -364,9 +437,10 @@ export class AdvancedDashboardComponent implements OnInit {
 
   async getPriorityFTE() {
 
-    if (this.filterOptions.FTEDateFrom === 'NULL' && this.filterOptions.FTEDateTo === 'NULL') {
-      return;
-    }
+    // Is this neccessary ?
+    // if (this.filterOptions.FTEDateFrom === 'NULL' && this.filterOptions.FTEDateTo === 'NULL') {
+    //   return;
+    // }
 
     const dataSeries = [];
     const drillDownObj = [];
@@ -641,9 +715,10 @@ export class AdvancedDashboardComponent implements OnInit {
   }
 
   getTopFTEProjects() {
-    if (this.filterOptions.FTEDateFrom === 'NULL') {
-      return;
-    }
+    // Is this neccessary ?
+    // if (this.filterOptions.FTEDateFrom === 'NULL') {
+    //   return;
+    // }
     const topFTEProjectsArray = _.sortBy(this.advancedFilteredResults, function(project) { return project['TotalProjectFTE']; });
     this.topFTEProjects = topFTEProjectsArray.reverse().slice(0, 5);
     this.isProjectSelected = new Array(this.topFTEProjects.length).fill(false);
@@ -705,7 +780,7 @@ export class AdvancedDashboardComponent implements OnInit {
         backgroundColor: null,
         marginBottom: 100,
       },
-      title: {text: `Project FTE Trends`},
+      title: {text: ''},
       xAxis: {
         type: 'datetime'
       },
