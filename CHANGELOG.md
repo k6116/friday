@@ -1,3 +1,14 @@
+<a name="1.26.0"></a>
+# [1.26.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.25.1...v1.26.0) (2018-12-14)
+
+
+### Features
+
+* **advanced-dashboard:** re-style dashboard ([f479ce9](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/f479ce9))
+* **advanced-filters:** diable checkboxes that are not used ([a2d78e9](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a2d78e9))
+
+
+
 <a name="1.25.1"></a>
 ## [1.25.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.25.0...v1.25.1) (2018-12-13)
 
