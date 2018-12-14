@@ -137,13 +137,6 @@ router.get('/indexProjectChildren/:projectID', controllers.advancedFilter.indexP
 router.get('/indexProjectParents/:projectID', controllers.advancedFilter.indexProjectParents);
 router.get('/indexProjectJobTitleAdvancedFilter/:projectIDs/:fromDate/:toDate', controllers.advancedFilter.indexProjectJobTitleAdvancedFilter);
 
-// MATPLAN CONTROLLER
-router.get('/matplan/matplan/show/:matplanID', controllers.matplan.show)
-router.get('/matplan/matplan/indexProjects', controllers.matplan.indexProjects)
-router.get('/matplan/matplan/showMatplans/:projectID', controllers.matplan.showMatplans)
-router.get('/matplan/matplan/showMatplanBom/:projectID', controllers.matplan.showMatplanBom)
-router.get('/matplan/matplan/showQuotesForPart/:partID', controllers.matplan.showQuotesForPart)
-router.get('/matplan/matplan/showOrdersForPart/:matplanID/:partID', controllers.matplan.showOrdersForPart)
 
 // middleware to return an error if the token cannot be verified
 // if it is verified, it will continue (next) and allow the routes
@@ -324,6 +317,24 @@ router.get('/org/reports-jarvisAdoption/show/getTeamFteList/:emailAddress/:start
 // REPORT CONTROLLER
 router.get('/report/reports-topProjects/show/getTopFTEProjectList', controllers.report.getTopFTEProjectList);
 router.get('/report/reports-topProjectsBubble/show/getAggregatedFteData', controllers.report.getAggregatedFteData);
+
+// MATPLAN CONTROLLER
+router.get('/matplan/matplan/show/:matplanID', controllers.matplan.show);
+router.get('/matplan/matplan/index/indexSuppliers', controllers.matplan.indexSuppliers);
+router.get('/matplan/matplan/index/indexPurchaseMethod', controllers.matplan.indexPurchaseMethod);
+router.get('/matplan/matplan/index/indexProjects', controllers.matplan.indexProjects);
+router.get('/matplan/matplan/show/showMatplans/:projectID', controllers.matplan.showMatplans);
+router.get('/matplan/matplan/show/showMatplanBom/:projectID', controllers.matplan.showMatplanBom);
+router.get('/matplan/matplan/show/showQuotesForPart/:partID', controllers.matplan.showQuotesForPart);
+router.get('/matplan/matplan/show/showSpecificQuote/:partID/:supplierID', controllers.matplan.showSpecificQuote);
+router.get('/matplan/matplan/insert/createMatplan/:projectID/:buildStatusID', controllers.matplan.createMatplan);
+router.put('/matplan/matplan/destroy/destroyQuoteForPart', controllers.matplan.destroyQuoteForPart);
+router.put('/matplan/matplan/update/updateQuoteForPart', controllers.matplan.updateQuoteForPart);
+router.put('/matplan/matplan/update/updateMaterialOrder', controllers.matplan.updateMaterialOrder);
+router.get('/matplan/matplan/show/showMatplanOrders/:projectID/:matplanID', controllers.matplan.showMatplanOrders);
+router.get('/matplan/matplan/show/showBuildSchedule/:projectID', controllers.schedules.showBuildSchedule);
+router.get('/matplan/matplan/index/indexBuildStatus', controllers.schedules.indexBuildStatus);
+router.put('/matplan/matplan/update/updateBuildScheduleNew', controllers.schedules.updateBuildScheduleNew);
 
 
 module.exports = router;

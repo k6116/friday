@@ -1,35 +1,68 @@
-.row-dashboard {
-  flex-wrap: nowrap;
+.float-elem1 {
+  float: left;
+  width: 32%;
+  min-width: 400px;
+  overflow-x: auto;
+  margin-right: 20px;
 }
 
-.col-2-dashboard {
-  min-width: 300px;
-  min-height: 400px;
+.float-elem2 {
+  float: left;
+  width: calc(100% - ( 32% + 20px));
+  min-width: 400px;
 }
 
-.col-3-dashboard {
-  min-width: 450px;
-  min-height: 400px;
+.float-elem3 {
+  float: left;
+  width: 100%;
 }
 
-.col-4-dashboard {
-  min-width: 600px;
-  min-height: 400px;
+.float-elem4 {
+  float: left;
+  width: 32%;
+  min-width: 400px;
+  overflow-x: auto;
+  margin-right: 20px;
 }
 
-.col-6-dashboard {
-  min-width: 900px;
-  min-height: 400px;
+.float-elem5 {
+  float: left;
+  width: calc(100% - ( 64% + 40px));
+  min-width: 400px;
+  margin-right: 20px;
 }
 
-.col-10-dashboard {
-  min-width: 1500px;
-  min-height: 400px;
+.float-elem6 {
+  float: left;
+  width: 32%;
+  min-width: 400px;
+  overflow-y: auto;
 }
 
-/* .col-4-square {
-  max-height: 350px;
-} */
+.dashboard-custom-title {
+  background-color: white;
+  color: rgb(100, 100, 100);
+  padding: 10px;
+}
+
+div.custom-card-cont {
+  background-color: white;
+  border: 1px solid lightgrey;
+  margin-bottom: 20px;
+}
+
+button.info-icon {
+  min-width: 15px !important;
+  vertical-align: inherit !important;
+  font-size: 20px !important;
+  padding-top: 0px;
+  padding-bottom: 0px; 
+}
+
+.popover {
+  max-width: fit-content !important;
+  white-space: nowrap !important;
+}
 
 .title-header {
   display: flex;
@@ -47,17 +80,6 @@
   padding-bottom: 25px;
 }
 
-.row-header {
-  padding-top: 10px;
-  padding-bottom: 25px;
-}
-
-.row-middle {
-  position: absolute;
-  width: 100%;
-  top: 50%;
-}
-
 .table tbody {
   overflow-y: auto;
   height: 300px;
@@ -65,33 +87,4 @@
 
 .table td, .table th {
   border: none;
-}
-
-hr {
-  border-top: 1px solid rgb(72,91,101);
-}
-
-.left-third {
-  border-right: 1px solid rgb(72,91,101);
-}
-
-.mid-third {
-  border-right: 1px solid rgb(72,91,101);
-}
-
-
-
-
-
-/* Chais CSS */
-.tabel .inline-tables {
-  display: inline;
-}
-
-.card-title {
-  text-align: center;
-}
-
-.card-header {
-  padding-bottom: 0px;
 }

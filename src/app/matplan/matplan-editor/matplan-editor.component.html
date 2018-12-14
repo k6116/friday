@@ -17,7 +17,7 @@
         </tr>
         <tr>
           <th scope="row">Build Date:</th>
-          <td>{{matplan.NeedByDate | date}}</td>
+          <td>{{matplan.NeedByDate | date:'mediumDate':'+0'}}</td>
         </tr>
       </table>
     </div>
@@ -51,7 +51,7 @@
     <app-matplan-info *ngIf="stepsOpen[0]" [projectID]="projectID"></app-matplan-info>
     <app-matplan-bom *ngIf="stepsOpen[1]" [projectID]="projectID"></app-matplan-bom>
     <app-matplan-quote *ngIf="stepsOpen[2]" [projectID]="projectID"></app-matplan-quote>
-    <app-matplan-order *ngIf="stepsOpen[3]" [projectID]="projectID" [matplanID]="matplanID"></app-matplan-order>
+    <app-matplan-order *ngIf="stepsOpen[3]" [projectID]="projectID" [matplanID]="matplanID" [buildQty]="matplan.NeededQuantity"></app-matplan-order>
   </div>
 
 </div>
