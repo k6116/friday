@@ -1,3 +1,13 @@
+<a name="1.26.1"></a>
+## [1.26.1](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.26.0...v1.26.1) (2018-12-14)
+
+
+### Bug Fixes
+
+* FTE Entry > Team FTEs: hot fixed the trash/delete functionality ([a9c3b4e](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/commits/a9c3b4e))
+
+
+
 <a name="1.26.0"></a>
 # [1.26.0](http://bitbucket.it.keysight.com:7999/jrvs/jarvis-resources/compare/v1.25.1...v1.26.0) (2018-12-14)
 
