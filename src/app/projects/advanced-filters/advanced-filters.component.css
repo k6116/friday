@@ -16,6 +16,10 @@ div.page-cont {
   z-index: 9999999;
 }
 
+.dashboard-wrapper {
+  height: auto !important;
+}
+
 /* SEARCH BAR */
 
 div.projects-search-cont {

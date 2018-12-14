@@ -22,14 +22,6 @@ declare const require: any;
 declare var $: any;
 declare const Bloodhound;
 
-// export interface NewPLC {
-//   index: number;
-//   PLCStatusID: string;
-//   PLCStatusName: string;
-//   PLCDateFrom: string;
-//   PLCDateTo: string;
-// }
-
 @Component({
   selector: 'app-advanced-filters',
   templateUrl: './advanced-filters.component.html',
@@ -56,10 +48,11 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   selectedProjectID: number;
   parents: any;
   children: any;
+  noParents: boolean;
+  noChildren: boolean;
 
   filterString: string;     // string for top search bar
   filterStringOwner: string; // string for owner search bar
-  // filterCheckedArray: any; // array to clear out owners
   numProjectsDisplayString: string;  // string to show on the page (showing x of y projects)
   filteredProjectsCount: number;  // number of project currently displayed, if there is a filter set
   totalProjectsCount: number;  // total number of projects
@@ -69,8 +62,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   arrOwnerEmail: any;
   arrStatusID: any;
   arrPriorityID: any;
-  // arrChildren: any;
-  // arrParents: any;
   arrFamily: any; // combines Children and Parents for filterObject
   objPLC: any; // object containing all PLC info (newPLC) that's needed for filterObject
   plcSchedules: any; // contains PLC status name headers
@@ -78,20 +69,6 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   managers: any;
   managerTeam: any[];
   holdProjects: number[]; // array of projectIDs that user wants to hold in the results table
-
-  // // PLC information for filterObjects
-  // newPLC: NewPLC = {
-  //   index: null,
-  //   PLCStatusID: '',
-  //   PLCStatusName: '',
-  //   PLCDateFrom: '',
-  //   PLCDateTo: ''
-  // };
-
-  // For default Check All - To-DO: Still need this?
-  // checkAllProjectTypes: boolean;
-  // checkAllProjectPriorities: boolean;
-  // checkAllProjectStatuses: boolean;
 
   // Filter Results
   advancedFilteredResults: any;
@@ -180,6 +157,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.fteMax = [];
     this.minDate = '1900-01-01';
     this.maxDate = '2900-01-01';
+    this.noParents = true;
+    this.noChildren = true;
 
     // 'ALL'-checkboxes that default true
     this.allProjectTypesCheckbox = true;
@@ -580,7 +559,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.parents[i].selected = this.allParentsCheckbox;
     }
 
-    console.log('parents', this.parents);
+    // console.log('parents', this.parents);
 
     await this.advancedFiltersCheckboxesService.onAllParentsCheck(this, checked);
 
@@ -779,7 +758,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.fteDateTo = '';
 
     // unselect all toggle buttons -> removes PLC from reults table
-    $('.fte-toggle').removeClass('active');
+    $('#option1').click();
 
   }
 
@@ -854,12 +833,40 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
 
     $('.projects-filter-input').typeahead('val', '');
 
+    // clear parents and children
+    this.noParents = true;
+    this.noChildren = true;
+
   }
+
+// DASHBOARD
+
+onDashboardClick() {
+
+  // hide search input
+  // hide filterbar
+  $('#sidebar').toggleClass('active');
+  $('.wrapper').toggleClass('dashboard-wrapper');
+
+  // hide 'hide filterbar' button
+  if ($('button.filter-toggle').attr('hidden')) {
+
+    $('button.filter-toggle').attr('hidden', false);
+    $('div.projects-search-string').attr('hidden', false);
+
+
+  } else {
+
+    $('button.filter-toggle').attr('hidden', true);
+    $('div.projects-search-string').attr('hidden', true);
+
+  }
+
+}
 
   // RESET BUTTON
 
-  async onResetButt
-  () {
+  async onResetButt() {
 
     // Clear inputs
     this.filterString = '';
