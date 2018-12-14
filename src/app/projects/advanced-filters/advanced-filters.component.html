@@ -187,7 +187,7 @@
                   Parent Projects
                 </div>
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="parentProjectIDs" [disabled]="parents==[]"
+                  <input type="checkbox" class="custom-control-input" id="parentProjectIDs" [disabled]="noParents"
                     [(ngModel)]="allParentsCheckbox" 
                     (change)="selectAllParents($event)">
                   <label class="custom-control-label" for="parentProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
@@ -271,7 +271,7 @@
                     Child Projects
                   </div>
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" 
+                    <input type="checkbox" checked class="custom-control-input" id="childProjectIDs" [disabled]="noChildren"
                       [(ngModel)]="allChildrenCheckbox" 
                       (change)="selectAllChildren($event)">
                     <label class="custom-control-label" for="childProjectIDs"><small style="margin: 0px 5px 0px -4px;">All</small></label>
@@ -279,7 +279,7 @@
                 </div>
                 <div class="filter-collapse" id="childProjects">
                   <div class="custom-control custom-checkbox adv-filter-cb" *ngFor="let child of children; let i = index">
-                    <input type="checkbox" class="custom-control-input" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i" 
+                    <input type="checkbox" class="custom-control-input" [attr.name]="child.ProjectName" [attr.id]="'childProject' + i"
                       [(ngModel)]="child.selected" 
                       (change)="checkIfAllChildrenSelected()" 
                       (click)="onChildCheckboxClick($event, child.ProjectID)">

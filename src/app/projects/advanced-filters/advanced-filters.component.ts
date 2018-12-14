@@ -48,6 +48,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
   selectedProjectID: number;
   parents: any;
   children: any;
+  noParents: boolean;
+  noChildren: boolean;
 
   filterString: string;     // string for top search bar
   filterStringOwner: string; // string for owner search bar
@@ -155,6 +157,8 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.fteMax = [];
     this.minDate = '1900-01-01';
     this.maxDate = '2900-01-01';
+    this.noParents = true;
+    this.noChildren = true;
 
     // 'ALL'-checkboxes that default true
     this.allProjectTypesCheckbox = true;
@@ -555,7 +559,7 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
       this.parents[i].selected = this.allParentsCheckbox;
     }
 
-    console.log('parents', this.parents);
+    // console.log('parents', this.parents);
 
     await this.advancedFiltersCheckboxesService.onAllParentsCheck(this, checked);
 
@@ -828,6 +832,10 @@ export class AdvancedFiltersComponent implements OnInit, OnDestroy {
     this.advancedFiltersProjectSearchService.onClear(this);
 
     $('.projects-filter-input').typeahead('val', '');
+
+    // clear parents and children
+    this.noParents = true;
+    this.noChildren = true;
 
   }
 

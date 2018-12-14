@@ -155,6 +155,20 @@ export class AdvancedFiltersTypeaheadService {
       that.parents[i].checkboxState = false;
     }
 
+    // disable 'All' if no children
+    if (that.children.length === 0) {
+      that.noChildren = true;
+    } else {
+      that.noChildren = false;
+    }
+
+    // disable 'All' if no parents
+    if (that.parents.length === 0) {
+      that.noParents = true;
+    } else {
+      that.noParents = false;
+    }
+
     // Expand the filter boxes
     $('#childProjects').toggleClass('show');
     $('#parentProjects').toggleClass('show');
