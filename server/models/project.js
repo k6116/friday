@@ -1,135 +1,76 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize').sequelize;
 
-const User = require('./user');
-
-const Projects = sequelize.define('projects',
+const Project = sequelize.define('project',
   {
-    id: { type: Sequelize.INTEGER, field: 'ProjectID', primaryKey: true, autoIncrement: true },
-    projectName: { type: Sequelize.STRING, field: 'ProjectName' },
-    description: { type: Sequelize.STRING, field: 'Description' },
-    projectNumber: { type: Sequelize.STRING, field: 'ProjectNumber' },
-    tcNumber: { type: Sequelize.STRING, field: 'TCNumber' },
-    projectStatusID: { type: Sequelize.INTEGER, field: 'ProjectStatusID' },
-    projectTypeID: { type: Sequelize.INTEGER, field: 'ProjectTypeID' },
-    priorityID: { type: Sequelize.INTEGER, field: 'PriorityID' },
-    projectNumber: { type: Sequelize.INTEGER, field: 'ProjectNumber' },
-    oracleItemNumber: { type: Sequelize.STRING, field: 'OracleItemNumber' },
-    ibo: { type: Sequelize.STRING, field: 'IBO' },
-    mu: { type: Sequelize.STRING, field: 'MU' },
-    active: { type: Sequelize.INTEGER, field: 'Active' },
-    notes: { type: Sequelize.STRING, field: 'Notes' },
-    projectOwner: { type: Sequelize.STRING, field: 'ProjectOwner'},
-    departmentID: { type: Sequelize.INTEGER, field: 'DepartmentID'},
-    planOfRecord: { type: Sequelize.INTEGER, field: 'PlanOfRecordFlag'},
-    groupID: { type: Sequelize.INTEGER, field: 'GroupID'},
-    priorityID: { type: Sequelize.INTEGER, field: 'PriorityID'},
-    createdBy: { type: Sequelize.INTEGER, field: 'CreatedBy' },
-    createdAt: { type: Sequelize.DATE, field: 'CreationDate' },
-    updatedBy: { type: Sequelize.INTEGER, field: 'LastUpdatedBy' },
-    updatedAt: { type: Sequelize.DATE, field: 'LastUpdateDate' }
+    id: { type: Sequelize.INTEGER, field: 'id', primaryKey: true, autoIncrement: true },
+    name: { type: Sequelize.STRING, field: 'name' },
+    description: { type: Sequelize.STRING, field: 'description' },
+    projectStatusID: { type: Sequelize.INTEGER, field: 'project_status_id' },
+    projectTypeID: { type: Sequelize.INTEGER, field: 'project_type_id' },
+    priorityID: { type: Sequelize.INTEGER, field: 'priority_id' },
+    note: { type: Sequelize.STRING, field: 'note' },
+    owner: { type: Sequelize.STRING, field: 'owner'},
+    createdBy: { type: Sequelize.INTEGER, field: 'created_by' },
+    createdAt: { type: Sequelize.DATE, field: 'creation_date' },
+    updatedBy: { type: Sequelize.INTEGER, field: 'last_updated_by' },
+    updatedAt: { type: Sequelize.DATE, field: 'last_update_date' }
   },
   {
-    schema: 'projects',
-    tableName: 'Projects',
-    timestamps: false,
-    hasTrigger: true
-  }
-);
-
-const ProjectTypes = sequelize.define('projectTypes',
-  {
-    id: { type: Sequelize.INTEGER, field: 'ProjectTypeID', primaryKey: true, autoIncrement: true },
-    projectTypeName: { type: Sequelize.STRING, field: 'ProjectTypeName' },
-    description: { type: Sequelize.STRING, field: 'Description' }
-  },
-  {
-    schema: 'projects',
-    tableName: 'ProjectTypes',
+    schema: 'project',
+    tableName: 'project',
     timestamps: false
   }
 );
 
-const ProjectStatuses = sequelize.define('projectStatuses',
+const ProjectType = sequelize.define('projectType',
   {
-    id: { type: Sequelize.INTEGER, field: 'ProjectStatusID', primaryKey: true, autoIncrement: true },
-    projectStatusName: { type: Sequelize.STRING, field: 'ProjectStatusName' },
-    description: { type: Sequelize.STRING, field: 'Description' }
+    id: { type: Sequelize.INTEGER, field: 'id', primaryKey: true, autoIncrement: true },
+    projectTypeName: { type: Sequelize.STRING, field: 'name' },
+    description: { type: Sequelize.STRING, field: 'description' }
   },
   {
-    schema: 'projects',
-    tableName: 'ProjectStatus',
+    schema: 'project',
+    tableName: 'project_type',
+    timestamps: false
+  }
+);
+
+const ProjectStatus = sequelize.define('projectStatus',
+  {
+    id: { type: Sequelize.INTEGER, field: 'id', primaryKey: true, autoIncrement: true },
+    projectStatusName: { type: Sequelize.STRING, field: 'name' },
+    description: { type: Sequelize.STRING, field: 'description' }
+  },
+  {
+    schema: 'project',
+    tableName: 'project_status',
     timestamps: false
   }
 );
 
 
-const ProjectPriorities = sequelize.define('projectPriorities',
+const ProjectPriority = sequelize.define('projectPriority',
   {
-    id: { type: Sequelize.INTEGER, field: 'PriorityID', primaryKey: true, autoIncrement: true },
-    priorityName: { type: Sequelize.STRING, field: 'PriorityName' },
-    description: { type: Sequelize.STRING, field: 'Description' }
+    id: { type: Sequelize.INTEGER, field: 'id', primaryKey: true, autoIncrement: true },
+    priorityName: { type: Sequelize.STRING, field: 'name' },
+    description: { type: Sequelize.STRING, field: 'description' }
   },
   {
-    schema: 'projects',
-    tableName: 'Priority',
+    schema: 'project',
+    tableName: 'priority',
     timestamps: false
   }
 );
 
-const ProjectPermissionRequests = sequelize.define('projectPermissionRequests',
-  {
-    id: { type: Sequelize.INTEGER, field: 'RequestID', primaryKey: true, autoIncrement: true },
-    requestStatus: { type: Sequelize.STRING, field: 'RequestStatus' },
-    projectID: { type: Sequelize.INTEGER, field: 'ProjectID' },
-    requestedBy: { type: Sequelize.INTEGER, field: 'RequestedBy' },
-    requestedAt: { type: Sequelize.DATE, field: 'RequestDate' },
-    requestNotes: { type: Sequelize.STRING, field: 'RequestNotes' },
-    respondedBy: { type: Sequelize.INTEGER, field: 'RespondedBy' },
-    respondedAt: { type: Sequelize.DATE, field: 'ResponseDate' },
-    responseNotes: { type: Sequelize.STRING, field: 'ResponseNotes' },
-  },
-  {
-    schema: 'resources',
-    tableName: 'ProjectPermissionRequests',
-    timestamps: false,
-  }
-);
 
-const ProjectTypeDisplayFields = sequelize.define('projectTypeDisplayFields',
-  {
-    id: { type: Sequelize.INTEGER, field: 'ProjectTypeDisplayFieldsID', primaryKey: true, autoIncrement: true },
-    projectTypeID: { type: Sequelize.STRING, field: 'ProjectTypeID' },
-    projectField: { type: Sequelize.STRING, field: 'ProjectField' }
-  },
-  {
-    schema: 'attr',
-    tableName: 'ProjectTypeDisplayFields',
-    timestamps: false
-  }
-);
-
-ProjectTypes.hasMany(Projects, {foreignKey: 'id'});
-Projects.belongsTo(ProjectTypes, {foreignKey: 'projectTypeID'});
-
-Projects.hasMany(ProjectPermissionRequests, {foreignKey: 'id'});
-ProjectPermissionRequests.belongsTo(Projects, {foreignKey: 'projectID'});
-
-ProjectTypes.hasMany(ProjectTypeDisplayFields, {foreignKey: 'id'});
-ProjectTypeDisplayFields.belongsTo(ProjectTypes, {foreignKey: 'projectTypeID'});
-
-// User.hasMany(Projects, {as: 'createdByUser', foreignKey: 'id'});
-// Projects.belongsTo(User, {as: 'createdByUser', foreignKey: 'createdBy'});
-
-// User.hasMany(Projects, {as: 'updatedByUser', foreignKey: 'id'});
-// Projects.belongsTo(User, {as: 'updatedByUser', foreignKey: 'updatedBy'});
+ProjectType.hasMany(Project, {foreignKey: 'id'});
+Project.belongsTo(ProjectType, {foreignKey: 'projectTypeID'});
 
 module.exports = {
-  Projects: Projects, 
-  ProjectTypes: ProjectTypes,
-  ProjectStatuses: ProjectStatuses,
-  ProjectPriorities: ProjectPriorities,
-  ProjectPermissionRequests: ProjectPermissionRequests,
-  ProjectTypeDisplayFields: ProjectTypeDisplayFields,
+  Project: Project, 
+  ProjectType: ProjectType,
+  ProjectStatus: ProjectStatus,
+  ProjectPriority: ProjectPriority
 }
 

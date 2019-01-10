@@ -1,7 +1,6 @@
 
 const models = require('../models/_index')
 const sequelize = require('../db/sequelize').sequelize;
-const ldapAuth = require('ldapAuth-fork');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
@@ -12,6 +11,7 @@ const path = require('path');
 const Treeize = require('treeize');
 const token = require('../token/token');
 const logger = require('../logs/logs');
+const bcryptjs = require('bcryptjs');
 
 const tokenSecret = process.env.JWT_SECRET;  // get the secret code word for enconding and decoding the token with jwt
 const expirationTime = 60 * 30  // set the token expiration time to 30 minutes - units are seconds: 60 (secs) * 60 (mins) * 24 (hrs) * 1 (days)
@@ -24,174 +24,65 @@ function authenticate(req, res) {
 
   // get the user object from the request payload/body (user name and password)
   const user = req.body;
-
-  // set the ldap options object
-  const options = {
-    // url: 'ldap://adldap.cos.is.keysight.com',
-    url: 'ldap://us-srs-dc1.ad.keysight.com us-srs-dc2.ad.keysight.com us-srs-dc3.ad.keysight.com us-cos-dc1.ad.keysight.com us-cos-dc2.ad.keysight.com',
-    bindDN: `cn=${user.userName},cn=users,dc=ad,dc=keysight,dc=com`,
-    bindCredentials: user.password,
-    searchBase: 'cn=users,dc=ad,dc=keysight,dc=com',
-    searchFilter: '(cn={{username}})'
-    // reconnect: true
-    // queueDisable: false,
-    // tlsOptions: {
-    //   ca: [
-    //     fs.readFileSync(path.join(__dirname, '../../etc/ssl/Keysight_Root.crt'))
-    //   ]
-    // }
-  };
-
   
-  // create an instance of the ldap auth fork 
-  const auth = new ldapAuth(options);
-
-  console.log('reached after auth instance created');
-
-  // TO-DO: figure out what this is for
-  auth.on('error', (err) => {
-    console.log('error on authentication:');
-    console.error(err);
-  });
-
-  console.log('reached after auth on error');
-
-  // start a timer to check the performance of the ldap server
-  const startTime = process.hrtime();
-  
-  // call the authenticate method (ldapAuth-fork) on the auth object, passing in the user name and password
-  auth.authenticate(user.userName, user.password, (err, ldapUser) => {
+  models.User.findOne({
+    where: {userName: user.userName}
+  }).then(resUser => {
     // if a user object is returned, this indicates authentication success
-    if (ldapUser) {
+    if (resUser) {
 
-      // console.log('ldap user:');
-      // console.log(ldapUser);
+      // check if password is correct
+      // if (bcryptjs.compare(user.password, resUser.password)) {
 
-      // double check by making sure the user name matches
-      if (ldapUser.cn.toLowerCase() === user.userName) {
+      employeeID = 1
 
-        console.log('ldapUser.cn:');
-        console.log(ldapUser.cn);
+      sequelize.query('SELECT * FROM auth_data(:employeeID)', {replacements: {employeeID: employeeID}, type: sequelize.QueryTypes.SELECT})
+      .then(userData => {
 
-        // log the ldap response time
-	      const timeDiff = process.hrtime(startTime);
-        console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.");
-        
-        // set variables using the ldap object
-        let userName = ldapUser.cn;
-        let emailAddress = ldapUser.mail;
-        let employeeNumber = ldapUser.employeeID;
-        let firstName = ldapUser.givenName.charAt(0).toUpperCase() + ldapUser.givenName.substr(1).toLowerCase();
-        let lastName = ldapUser.sn.replace(/\w\S*/g, text => {
-          return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+        // treeize the data to get a nested object (for permissions)
+        const userDataTree = new Treeize();
+        userDataTree.grow(userData);
+        const userDataTreeized = userDataTree.getData();
+
+        // build a token using jwt
+        const newToken = jwt.sign(
+          {
+            // userName: resUser.userName
+            userData: userDataTreeized[0]
+          }, 
+          tokenSecret, 
+          {expiresIn: expirationTime}
+        );
+
+        // decode the token to get the issued at and expiring at timestamps
+        const decodedToken = token.decode(newToken, res);
+
+        res.json({
+          user: userDataTreeized[0],
+          token: {
+            signedToken: newToken,
+            issuedAt: decodedToken.iat,
+            expiringAt: decodedToken.exp
+          },
+          status: 200
         });
-        let fullName = firstName + ' ' + lastName;
-
-        // TEMP CODE: impersonate manager for testing
-        // userName = 'ethanh';
-        // emailAddress = 'ethan_hunt@keysight.com';
-        // employeeNumber = '00574380';
-        // fullName = 'Ethan Hunt';
-        // firstName = 'Ethan';
-        // lastName = 'Hunt';
-        // userName = 'albereis';
-        // emailAddress = 'alberto.reis@keysight.com';
-        // employeeNumber = '00334566';
-        // fullName = 'Al Reis';
-        // firstName = 'Al';
-        // lastName = 'Reis';
-        // userName = 'henrik';
-        // emailAddress = 'henri_komrij@keysight.com';
-        // employeeNumber = '00364136';
-        // fullName = 'Henri Komrij';
-        // firstName = 'Henri';
-        // lastName = 'Komrij';
-
-        // execute the stored procedure to get the user data, role, and permissions
-        // it will also insert a new record into the employees table if this is a new user
-        sequelize.query('EXECUTE resources.AuthData :emailAddress, :firstName, :lastName, :fullName, :userName, :employeeNumber', 
-          {replacements: {emailAddress: emailAddress, firstName: firstName, lastName: lastName, fullName: fullName, userName: userName, employeeNumber: employeeNumber}, type: sequelize.QueryTypes.SELECT})
-          .then(userData => {
-
-            // treeize the data to get a nested object (for permissions)
-            const userDataTree = new Treeize();
-            userDataTree.grow(userData);
-            const userDataTreeized = userDataTree.getData();
-
-            // build a token using jwt
-            const newToken = jwt.sign(
-              {
-                userData: userDataTreeized[0]
-              }, 
-              tokenSecret, 
-              {expiresIn: expirationTime}
-            );
-
-            // decode the token to get the issued at and expiring at timestamps
-            const decodedToken = token.decode(newToken, res);
-
-            // write entry to log file: user has signed in successfully
-            logger.writeLog('info', `user ${fullName} has logged in`, {color: 'blue'});
-
-            // send back a response with the ldap user object, saved jarvis user object, new user (yes), and jwt token
-            res.status(200).json({
-              ldapUser: ldapUser,
-              jarvisUser: userDataTreeized[0],
-              token: {
-                signedToken: newToken,
-                issuedAt: decodedToken.iat,
-                expiringAt: decodedToken.exp
-              },
-              status: 200
-            });
-
-            // TEMP CODE: testing websockets
-            loggedInUsers.push(userDataTreeized[0]);
-          
-
-        })
-        .catch(error => {
-          res.status(400).json({
-            title: 'Error (in catch)',
-            error: {message: error}
-          })
-        });
-
-        
-      // the ldap.cn (username) does not match the username entered in the login page
-      } else {
-
+      })
+    } else if (err) {
         // send a an error response (status code 500) indicating the credentials are invalid
         res.status(401).json({
           title: 'invalid user credentials',
           error: err
         });
-
-      }
+    }
     
-    // if an ldap error object is returned, this indicates authentication failure
-    } else if (err) {
-
-      // log the ldap response time
-      const timeDiff = process.hrtime(startTime);
-      console.log("ldap response took: " + (timeDiff[1] / 1e6) + " milliseconds.")
-      
-      // send a an error response (status code 500) indicating the credentials are invalid
-      res.status(401).json({
-        title: 'invalid user credentials',
-        error: err
-      });
-
-    }
-  });
-  
-  // TO-DO: figure out what this is for
-  auth.close((err) => {
-    if (err) {
-      console.log('error on close:');
-      console.log(err);
-    }
   })
+  .catch(error => {
+    res.status(401).json({
+      title: 'invalid user credentials',
+      error: {message: error}
+    })
+
+  });
 
 }
 
@@ -203,7 +94,7 @@ function getInfoFromToken(req, res) {
 
   // NOTE: the token is not updated here; only user data is returned from the decoded token
   res.json({
-    jarvisUser: decodedToken.userData,
+    user: decodedToken.userData,
     token: {
       signedToken: req.header('X-Token'),
       issuedAt: decodedToken.iat,
@@ -220,40 +111,39 @@ function resetToken(req, res) {
 
   const decodedToken = token.decode(req.header('X-Token'), res);
 
-  // execute the stored procedure to get the user data, role, and permissions
-  // it will also insert a new record into the employees table if this is a new user
-  sequelize.query('EXECUTE resources.AuthData :emailAddress, :firstName, :lastName, :fullName, :userName, :employeeNumber', 
-    {replacements: {emailAddress: decodedToken.userData.email, firstName: decodedToken.userData.firstName, lastName: decodedToken.userData.lastName, fullName: decodedToken.userData.fullName, userName: decodedToken.userData.userName, employeeNumber: decodedToken.userData.employeeNumber}
-      , type: sequelize.QueryTypes.SELECT})
-    .then(userData => {
+  employeeID = 1
 
-      // treeize the data to get a nested object (for permissions)
-      const userDataTree = new Treeize();
-      userDataTree.grow(userData);
-      const userDataTreeized = userDataTree.getData();
+  sequelize.query('SELECT * FROM auth_data(:employeeID)', {replacements: {employeeID: employeeID}, type: sequelize.QueryTypes.SELECT})
+  .then(userData => {
 
-      // build a token using jwt
-      const newToken = jwt.sign(
-        {
-          userData: userDataTreeized[0]
-        }, 
-        tokenSecret, 
-        {expiresIn: expirationTime}
-      );
+    // treeize the data to get a nested object (for permissions)
+    const userDataTree = new Treeize();
+    userDataTree.grow(userData);
+    const userDataTreeized = userDataTree.getData();
 
-      // decode the token to get the issued at and expiring at timestamps
-      const decodedToken = token.decode(newToken);
+    // build a token using jwt
+    const newToken = jwt.sign(
+      {
+        // userName: resUser.userName
+        userData: userDataTreeized[0]
+      }, 
+      tokenSecret, 
+      {expiresIn: expirationTime}
+    );
 
-      // send back a response with the jarvis user object and jwt token
-      res.json({
-        jarvisUser: userDataTreeized[0],
-        token: {
-          signedToken: newToken,
-          issuedAt: decodedToken.iat,
-          expiringAt: decodedToken.exp
-        }
-      });
-    
+    // decode the token to get the issued at and expiring at timestamps
+    const decodedToken = token.decode(newToken, res);
+
+    res.json({
+      user: userDataTreeized[0],
+      token: {
+        signedToken: newToken,
+        issuedAt: decodedToken.iat,
+        expiringAt: decodedToken.exp
+      },
+      status: 200
+    });
+  
   })
   .catch(error => {
     res.status(400).json({

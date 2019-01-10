@@ -6,51 +6,32 @@ const Treeize = require('treeize');
 function indexProjects(req, res) {
 
     const sql = `
-     SELECT 
-        p.ProjectID,
-        p.ProjectName,
-        p.ProjectTypeID,
-        t.ProjectTypeName,
-        p.Description,
-        p.Notes,
-        p.Active,
-        p.PriorityID,
-        py.PriorityName,
-        ps.ProjectStatusName,
-        p.GroupID,
-        g.GroupName,
-        ey.EntityName,
-        eo.EntityOwnerName,
-        p.DepartmentID,
-        p.MU,
-        p.IBO,
-        p.ProjectOwner,
-        e3.FullName as ProjectOwnerFullName,
-        p.ProjectNumber,
-        p.PlanOfRecordFlag,
-        p.OracleItemNumber,
-        p.NPIHWProjectManager,
-        e.FirstName,
-        e.LastName,
-        e2.EmailAddress,
-        p.CreatedBy,
-        e.FullName,
-        p.CreationDate,
-        e2.FullName as 'LastUpdatedBy',
-        p.LastUpdateDate
-    FROM  
-        projects.Projects p
-        INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
-        INNER JOIN accesscontrol.Employees e2 ON p.LastUpdatedBy = e2.EmployeeID
-        LEFT JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
-        LEFT JOIN projects.Priority py ON p.PriorityID = py.PriorityID
-        LEFT JOIN projects."Group" g ON p.GroupID = g.GroupID
-        LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
-        LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
-        LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
-        LEFT JOIN accesscontrol.Employees e3 ON p.ProjectOwner = e3.EmailAddress
-    ORDER BY 
-        p.ProjectName`
+      SELECT 
+        p.id as "projectID",
+        p.name as "projectName",
+        p.project_type_id as "projectTypeID",
+        pt.name as "projectTypeName",
+        p.description as "projectDescription",
+        p.note as "projectnote",
+        p.priority_id as "priorityID",
+        pr.name as "priorityName",
+        p.project_status_id as "projectStatusID",
+        ps.name as "projectStatusName",
+        p.owner as "projectOwner",
+        e1.full_name as "createdBy",
+        p.creation_date as "createdAt",
+        e2.full_name as "updatedBy",
+        p.last_update_date as "updatedAt"
+      FROM  
+        project.project p
+        INNER JOIN account.Employee e1 on p.created_by = e1.id
+        INNER JOIN account.Employee e2 ON p.last_updated_by = e2.id
+        LEFT JOIN project.project_type pt ON p.project_type_id = pt.id
+        LEFT JOIN project.priority pr ON p.priority_id = pr.id
+        LEFT JOIN project.project_status ps ON p.project_status_id = ps.id
+      ORDER BY 
+        p.name
+    `
     
     sequelize.query(sql, { type: sequelize.QueryTypes.SELECT})
     .then(p => {    
@@ -69,8 +50,8 @@ function getProjectsList(req, res) {
       T2.ProjectTypeName,
       T1.ProjectName + ' (' + T2.ProjectTypeName + ')' as 'ProjectNameAndType'
     FROM  
-      projects.Projects T1
-      LEFT JOIN projects.ProjectTypes T2 ON T1.ProjectTypeID = T2.ProjectTypeID
+      project.Project T1
+      LEFT JOIN project.ProjectType T2 ON T1.ProjectTypeID = T2.ProjectTypeID
     ORDER BY 
       T1.ProjectName`
   
@@ -94,41 +75,27 @@ function getProject(req, res) {
 
   const sql = `
     SELECT 
-      p.ProjectID, 
-      p.ProjectName, 
-      p.Description, 
-      p.Notes,
-      p.Active,
-      p.MU,
-      p.IBO,
-      p.ProjectNumber,
-      p.OracleItemNumber,
-      t.ProjectTypeName,
-      ps.ProjectStatusName,
-      py.PriorityName,
-      g.GroupName,
-      ey.EntityName,
-      eo.EntityOwnerName,
-      p.NPIHWProjectManager,
-      p.ProjectOwner,
-      e3.FullName as ProjectOwnerFullName,
-      e.FullName as 'CreatedBy',
-      p.CreationDate,
-      e2.FullName as 'LastUpdatedBy',
-      p.LastUpdateDate
+      p.id as "projectID", 
+      p.name as "ProjectName", 
+      p.description as "Description", 
+      p.note as "note",
+      pt.name as "ProjectTypeName",
+      ps.name as "ProjectStatusName",
+      pr.name as "PriorityName",
+      p.owner as "Owner",
+      e1.full_name as "CreatedBy",
+      p.creation_date,
+      e2.full_name as "LastUpdatedBy",
+      p.last_update_date
     FROM  
-      projects.Projects p 
-      INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
-      INNER JOIN accesscontrol.Employees e2 ON p.LastUpdatedBy = e2.EmployeeID
-      LEFT JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
-      LEFT JOIN projects.Priority py ON p.PriorityID = py.PriorityID
-      LEFT JOIN projects."Group" g ON p.GroupID = g.GroupID
-      LEFT JOIN projects.Entity ey ON p.EntityID = ey.EntityID
-      LEFT JOIN projects.EntityOwner eo ON p.EntityOwnerID = eo.EntityOwnerID
-      LEFT JOIN projects.ProjectStatus ps ON p.ProjectStatusID = ps.ProjectStatusID
-      LEFT JOIN accesscontrol.Employees e3 ON p.ProjectOwner = e3.EmailAddress
+      project.project p 
+      INNER JOIN account.employee e1 on p.created_by = e1.id
+      INNER JOIN account.employee e2 ON p.last_updated_by = e2.id
+      LEFT JOIN project.project_type pt ON p.project_type_id = pt.id
+      LEFT JOIN project.priority pr ON p.priority_id = pr.id
+      LEFT JOIN project.project_status ps ON p.project_status_id = ps.id
     WHERE 
-      p.ProjectID = ${projectID}`
+      p.id = ${projectID}`
   
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
   .then(project => {    
@@ -159,8 +126,8 @@ function indexProjectsFilterProjectType(req, res) {
     p.CreatedBy,
     p.ProjectName + ' - ' + t.ProjectTypeName as 'ProjectProjectType'
   FROM  
-    projects.Projects p INNER JOIN projects.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
-    INNER JOIN accesscontrol.Employees e on p.CreatedBy = e.EmployeeID
+    project.Projects p INNER JOIN project.ProjectTypes t ON p.ProjectTypeID = t.ProjectTypeID
+    INNER JOIN account.Employees e on p.CreatedBy = e.EmployeeID
   WHERE
     t.ProjectTypeName IN ('NCI', 'NPPI')
   ORDER BY 
@@ -180,29 +147,25 @@ function indexProjectRoster(req, res) {
 
   const sql = `
     SELECT
-      T1.ProjectID as 'projectID',
-      T1.ProjectName as 'projectName',
-      T3.EmployeeID as 'teamMembers:employeeID',
-      T3.FullName as 'teamMembers:name',
-      SUM(T2.FTE) as 'teamMembers:fte',
-      T4.JobTitleName + ' - ' + T5.JobSubTitleName as 'teamMembers:jobTitle'
+      P.id as "projectID",
+      P.name as "projectName",
+      E.id as "teamMembers:employeeID",
+      E.full_name as "teamMembers:name",
+      SUM(PE.allocation_amount) as "teamMembers:fte",
+      'JobTitle + JobSubTitle' as "teamMembers:jobTitle"
     FROM 
-      projects.Projects T1
-      LEFT JOIN resources.ProjectEmployees T2 ON T1.ProjectID = T2.ProjectID
-      LEFT JOIN accesscontrol.Employees T3 ON T2.EmployeeID = T3.EmployeeID
-      LEFT JOIN resources.JobTitle T4 ON T3.JobTitleID = T4.JobTitleID
-      LEFT JOIN resources.JobSubTitle T5 ON T3.JobSubTitleID = T5.JobSubTitleID
+      project.project P
+      LEFT JOIN resource.project_employee PE ON P.id = PE.project_id
+      LEFT JOIN account.employee E ON PE.employee_id = E.id
     WHERE 
-      T1.ProjectID = ${projectID}
+      P.id = ${projectID}
     GROUP BY
-      T1.ProjectID,
-      T1.ProjectName,
-      T1.[Description],
-      T3.EmployeeID, 
-      T3.FullName,
-      (T4.JobTitleName + ' - ' + T5.JobSubTitleName)
+      P.id,
+      P.name,
+      E.id, 
+      E.full_name
     ORDER BY
-      T3.FullName
+      E.full_name
   `
 
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
@@ -227,16 +190,16 @@ function indexUserProjectList(req, res) {
 
   const sql = `
     SELECT DISTINCT
-        P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes, 
+        P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.note as note, 
         P1.CreatedBy as createdBy, E1.FullName as createdByFullName, P1.CreationDate as createdAt,
         P1.LastUpdatedBy as updatedBy, E2.FullName as updatedByFullName, P1.LastUpdateDate as updatedAt,
         P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
       FROM
-        projects.Projects P1
-        LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
+        project.Projects P1
+        LEFT JOIN project.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
         LEFT JOIN resources.ProjectEmployees P3 ON P1.ProjectID = P3.ProjectID
-        LEFT JOIN accesscontrol.Employees E1 ON P1.CreatedBy = E1.EmployeeID
-        LEFT JOIN accesscontrol.Employees E2 ON P1.LastUpdatedBy = E2.EmployeeID
+        LEFT JOIN account.Employees E1 ON P1.CreatedBy = E1.EmployeeID
+        LEFT JOIN account.Employees E2 ON P1.LastUpdatedBy = E2.EmployeeID
       WHERE
         P1.LastUpdatedBy = '${userID}' OR P3.EmployeeID = '${userID}'
   `
@@ -259,15 +222,15 @@ function indexTeamProjectList(req, res) {
 
   const sql = `
     SELECT
-      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.Notes as notes, P1.ProjectOwner as projectOwner,
+      P1.ProjectID as id, P1.ProjectName as projectName, P1.Description as description, P1.note as note, P1.ProjectOwner as projectOwner,
       P1.CreatedBy as createdBy, E1.FullName as createdByFullName, P1.CreationDate as createdAt,
       P1.LastUpdatedBy as updatedBy, E2.FullName as updatedByFullName, P1.LastUpdateDate as updatedAt,
       P2.ProjectTypeID as [projectType.id], P2.ProjectTypeName as [projectType.projectTypeName], P2.description as [projectType.description]
     FROM
-      projects.Projects P1
-      LEFT JOIN projects.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
-      LEFT JOIN accesscontrol.Employees E1 ON P1.CreatedBy = E1.EmployeeID
-      LEFT JOIN accesscontrol.Employees E2 ON P1.LastUpdatedBy = E2.EmployeeID
+      project.Projects P1
+      LEFT JOIN project.ProjectTypes P2 ON P1.ProjectTypeID = P2.ProjectTypeID
+      LEFT JOIN account.Employees E1 ON P1.CreatedBy = E1.EmployeeID
+      LEFT JOIN account.Employees E2 ON P1.LastUpdatedBy = E2.EmployeeID
     WHERE
       P1.ProjectOwner = '${emailAddress}'
   `
@@ -293,13 +256,13 @@ function insertProject(req, res) {
 
   return sequelize.transaction((t) => {
 
-    return models.Projects
+    return models.Project
       .create(
         {
           projectName: project.projectName,
           description: project.projectDescription,
           projectTypeID: project.projectTypeID,
-          notes: project.projectNotes,
+          note: project.projectnote,
           projectOwner: project.projectOwner,
           createdBy: userID,
           createdAt: today,
@@ -347,13 +310,13 @@ function updateProject(req, res) {
 
   return sequelize.transaction((t) => {
 
-    return models.Projects
+    return models.Project
       .update(
         {
           projectName: project.projectName,
           projectTypeID: project.projectTypeID,
           description: project.projectDescription,
-          notes: project.notes,
+          note: project.note,
           createdBy: userID,
           createdAt: today,
           updatedBy: userID,
@@ -400,7 +363,7 @@ function destroyProject(req, res) {
 
   return sequelize.transaction((t) => {
 
-    return models.Projects
+    return models.Project
       .destroy(
         {
           where: {id: project.projectID},
@@ -438,18 +401,18 @@ function indexProjectTypesList(req, res) {
 
   const sql = `
     SELECT
-      T2.ProjectTypeID as [id],
-      T2.ProjectTypeName as [projectTypeName],
-      T2.Description as [description]
+      pt.id as "projectTypeID",
+      pt.name as "projectTypeName",
+      pt.description as "projectTypeDescription"
     FROM 
-      projects.projects T1
-      INNER JOIN projects.ProjectTypes T2 ON T1.ProjectTypeID = T2.ProjectTypeID
+      project.project p
+      INNER JOIN project.project_type pt ON p.id = pt.id
     GROUP BY
-      T2.ProjectTypeID,
-      T2.ProjectTypeName,
-      T2.Description
+      pt.id,
+      pt.name,
+      pt.description
     ORDER BY
-      T2.ProjectTypeName
+      pt.name
   `
 
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
@@ -469,12 +432,12 @@ function indexProjectTypesList(req, res) {
 
 function indexProjectStatusesList(req, res) {
 
-  models.ProjectStatuses.findAll({
+  models.ProjectStatus.findAll({
     attributes: ['id', 'projectStatusName', 'description'],
   })
-  .then(projectStatuses => {
+  .then(projectStatus => {
     console.log('Returning Project Statuses List')
-    res.json(projectStatuses);
+    res.json(projectStatus);
   })
   .catch(error => {
     res.status(400).json({
@@ -490,24 +453,24 @@ function indexProjectPrioritiesList(req, res) {
 
   const sql = `
     SELECT
-      T2.PriorityID as [id],
-      T2.PriorityName as [priorityName],
-      T2.Description as [description]
+      pr.id as "priorityID",
+      pr.name as "priorityName",
+      pr.description as "priorityDescription"
     FROM 
-      projects.projects T1
-      INNER JOIN projects.Priority T2 ON T1.PriorityID = T2.PriorityID
+      project.project p
+      INNER JOIN project.priority pr ON p.id = pr.id
     GROUP BY
-      T2.PriorityID,
-      T2.PriorityName,
-      T2.Description
+      pr.id,
+      pr.name,
+      pr.description
     ORDER BY
-      T2.PriorityName
+      pr.name
   `
 
   sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
-    .then(projectPriorities => {
+    .then(projectPriority => {
       console.log('Returning Project Priorities List')
-      res.json(projectPriorities);
+      res.json(projectPriority);
     })
     .catch(error => {
       res.status(400).json({
@@ -536,30 +499,6 @@ function indexProjectSchedule(req, res) {
     });
 }
 
-function indexProjectTypeDisplayFields(req, res) {
-
-  models.ProjectTypeDisplayFields.findAll({
-    attributes: ['projectField'],
-    raw: true,
-    include: [
-      {
-        model: models.ProjectTypes,
-        attributes: ['projectTypeName'],
-      }
-    ]
-  })
-  .then(ProjectTypeDisplayFields => {
-    console.log('WORKED')
-    res.json(ProjectTypeDisplayFields);
-  })
-  .catch(error => {
-    res.status(400).json({
-      title: 'Error (in catch)',
-      error: {message: error}
-    })
-
-  });
-}
 
 function insertProjectEmployeeRole(req, res) {
 
@@ -754,7 +693,7 @@ function indexBuildStatus(req, res) {
       BuildStatusID, 
       BuildStatusName                
   FROM  
-      projects.BuildStatus
+      project.BuildStatus
   ORDER BY
       BuildStatusName`
   
@@ -770,7 +709,7 @@ function indexPLCStatus(req, res) {
       PLCStatusID, 
       PLCStatusName                
   FROM  
-      projects.PLCStatus
+      project.PLCStatus
   ORDER BY
       PLCSequence`
   
@@ -786,7 +725,7 @@ function indexSetupProjects(req, res) {
    SELECT 
      *
   FROM  
-      projects.Projects
+      project.Projects
   ORDER BY 
       ProjectName`
   
@@ -803,7 +742,7 @@ function indexProjectDepartments(req, res) {
    SELECT 
      *
   FROM  
-      projects.Department
+      project.Department
   ORDER BY 
       Department`
   
@@ -820,7 +759,7 @@ function indexProjectGroups(req, res) {
    SELECT 
      *
   FROM  
-      projects.[Group]
+      project.[Group]
   ORDER BY 
       GroupName`
   
@@ -837,7 +776,7 @@ function indexProjectPriorities(req, res) {
    SELECT 
      *
   FROM  
-      projects.Priority
+      project.Priority
   ORDER BY 
       PriorityName`
   
@@ -856,7 +795,7 @@ function updateProjectSetup(req, res) {
 
   return sequelize.transaction((t) => {
 
-    return models.Projects
+    return models.Project
       .update(
         {
           projectName: project.projectName, 
@@ -864,7 +803,7 @@ function updateProjectSetup(req, res) {
           active: project.active == true ? 1 : 0,  
           planOfRecord: project.planOfRecord == true ? 1 : 0,        
           description: project.description,
-          notes: project.notes,
+          note: project.note,
           departmentID: project.departmentID,
           groupID: project.groupID,
           priorityID: project.priorityID,
@@ -903,7 +842,7 @@ function insertProjectSetup(req, res) {
 
   return sequelize.transaction((t) => {
 
-    return models.Projects
+    return models.Project
       .create(
         {
           projectName: project.projectName, 
@@ -911,7 +850,7 @@ function insertProjectSetup(req, res) {
           active: project.active == true ? 1 : 0,  
           planOfRecord: project.planOfRecord == true ? 1 : 0,        
           description: project.description,
-          notes: project.notes,
+          note: project.note,
           departmentID: project.departmentID,
           groupID: project.groupID,
           priorityID: project.priorityID,
@@ -964,7 +903,7 @@ function destroyProjectSetup(req, res) {
     :scheduleID,
     :projectID,  
     :partID,
-    :notes,
+    :note,
     :employeeID,
     :schedule,
     :rowCount,
@@ -974,7 +913,7 @@ function destroyProjectSetup(req, res) {
         scheduleID: scheduleID,
         projectID: projectID,
         partID: null,
-        notes: null,
+        note: null,
         employeeID: userID,
         schedule: null,
         rowCount: null,
@@ -1021,7 +960,6 @@ module.exports = {
   indexProjectStatusesList: indexProjectStatusesList,
   indexProjectPrioritiesList: indexProjectPrioritiesList,
   indexProjectSchedule: indexProjectSchedule,
-  indexProjectTypeDisplayFields: indexProjectTypeDisplayFields,
   insertProjectEmployeeRole: insertProjectEmployeeRole,
   updateProjectEmployeeRole: updateProjectEmployeeRole,
   destroyProjectEmployeeRole: destroyProjectEmployeeRole,

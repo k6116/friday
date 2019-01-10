@@ -91,7 +91,7 @@ export class AuthService {
             res => {
               const t1 = performance.now();
               // console.log(`get info from token took ${t1 - t0} milliseconds`);
-              this.loggedInUser = new User().deserialize(res.jarvisUser);
+              this.loggedInUser = new User().deserialize(res.user);
               callback(this.loggedInUser);
             },
             err => {
@@ -128,7 +128,7 @@ export class AuthService {
               // store the data in this service
               // console.log('within getInfoFromToken; token is valid');
               // this jarvis user will be the have the same data as in the token that was sent
-              this.loggedInUser = new User().deserialize(res.jarvisUser);
+              this.loggedInUser = new User().deserialize(res.user);
               // console.log('get info from token; same logged in user');
               // console.log(this.loggedInUser);
               this.setLoggedIn(true);
@@ -223,7 +223,7 @@ export class AuthService {
           // reset the timer so that it will be synched with the token expiration, at least within a second or two
           this.cacheService.resetTimer.emit(true);
           // this jarvis user will be the have the same data as in the token that was sent
-          this.loggedInUser = new User().deserialize(res.jarvisUser);
+          this.loggedInUser = new User().deserialize(res.user);
           // console.log('get info from token; new logged in user');
           // console.log(this.loggedInUser);
           // TEMP CODE to log the token status

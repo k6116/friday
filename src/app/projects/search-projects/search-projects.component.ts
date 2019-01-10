@@ -724,9 +724,9 @@ export class SearchProjectsComponent implements OnInit, OnDestroy {
 
     // set flag for back button
     this.cacheService.fromMyProjectsFlag = false;
-
+    
     // navigate to the display page
-    this.router.navigate([`/main/projects/display/${project.ProjectID}`]);
+    this.router.navigate([`/main/projects/display/${project.projectID}`]);
   }
 
 

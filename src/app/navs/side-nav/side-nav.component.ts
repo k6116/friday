@@ -182,37 +182,6 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
             }
           ]
         },
-        // temporarily hiding BOM from sidenav until we can complete BOM editor
-        // {
-        //   title: 'BOM',
-        //   iconClass: 'nc-hierarchy-53',
-        //   alias: 'bom',
-        //   expanded: false,
-        //   active: false,
-        //   highlighted: false,
-        //   permissionProtected: true,
-        //   hidden: false,
-        //   subItems: [
-        //     {
-        //       title: 'BOM Viewer',
-        //       alias: 'bom-viewer',
-        //       path: 'main/bom/bom-viewer',
-        //       parentAlias: 'bom',
-        //       active: false,
-        //       permissionProtected: false,
-        //       hidden: false
-        //     },
-        //     {
-        //       title: 'BOM Editor',
-        //       alias: 'bom-editor',
-        //       path: 'main/bom/bom-editor',
-        //       parentAlias: 'bom',
-        //       active: false,
-        //       permissionProtected: true,
-        //       hidden: false
-        //     }
-        //   ]
-        // },
         {
           title: 'Matplan',
           iconClass: 'nc-privacy-policy-2',
@@ -392,8 +361,6 @@ export class SideNavComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // get the permissions out of the token payload
     const permissions = tokenPayload.userData.permissions;
-    // console.log('user permissions:');
-    // console.log(permissions);
 
     // go through each menu item and set the hidden property by checking the permissions
     // only if the permissionProtected property is set to true

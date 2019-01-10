@@ -1,4 +1,3 @@
-
 const models = require('../models/_index');
 const sequelize = require('../db/sequelize').sequelize;
 
@@ -17,9 +16,9 @@ function index(req, res) {
 }
 
 function showSingleBom(req, res) {
+  console.log('laiweufhlaiweufhlawieuhfawe')
   const parentID = req.params.parentID;
-  const parentEntity = req.params.parentEntity;
-  sequelize.query('EXECUTE dbo.BillsDrillDownNew :parentID, :parentEntity', {replacements: {parentID: parentID, parentEntity: parentEntity}, type: sequelize.QueryTypes.SELECT})
+  sequelize.query('SELECT * FROM relationship_drilldown(:parentID)', {replacements: {parentID: parentID}, type: sequelize.QueryTypes.SELECT})
     .then(bom => {
       res.json(bom);
     })

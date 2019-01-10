@@ -70,7 +70,7 @@ export class TopNavComponent implements OnInit, OnDestroy {
 
     // get the logged in user from the auth service
     this.loggedInUser = this.authService.loggedInUser;
-
+console.log('this.loggedInUser', this.loggedInUser)
     // get the user's first name initial to display in the circle
     this.firstInitial = this.loggedInUser.fullName.substring(0, 1).toUpperCase();
 

@@ -21,7 +21,7 @@ export class MainComponent implements OnInit {
     // console.log('testing user resolver within main component (this.route.snapshot.data)');
     // console.log(this.route.snapshot.data);
     // console.log('setting logged in user in auth service; assumption is that main will always init before child components');
-    this.authService.loggedInUser = this.route.snapshot.data.loggedInUser.jarvisUser;
+    this.authService.loggedInUser = this.route.snapshot.data.loggedInUser.user;
     this.authService.setLoggedIn(true);
 
   }

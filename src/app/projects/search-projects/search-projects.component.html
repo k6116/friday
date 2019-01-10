@@ -74,16 +74,16 @@ considering topnav, sidenav, and footer -->
           <div class="project-card" (click)="onProjectClick(project)">
   
             <!-- container for project type (left side element) -->
-            <div class="project-type-cont" [ngStyle]="{ 'color': toolsService.setProjctTypeColor(project.ProjectTypeName) }">
+            <div class="project-type-cont" [ngStyle]="{ 'color': toolsService.setProjctTypeColor(project.projectTypeName) }">
   
               <!-- project type name text -->
               <div class="project-type-name"> 
-                {{ project.ProjectTypeName }}
+                {{ project.projectTypeName }}
               </div>
   
               <!-- project type icon -->
               <div class="project-type-icon"> 
-                <i [ngClass]="toolsService.setProjctTypeIconClass(project.ProjectTypeName)"></i>
+                <i [ngClass]="toolsService.setProjctTypeIconClass(project.projectTypeName)"></i>
               </div>
               
             </div>
@@ -92,23 +92,23 @@ considering topnav, sidenav, and footer -->
             <!-- container for project name and description -->
             <div class="project-details-cont">
   
-              <div class="project-name" [attr.data-id]="project.ProjectID" (mouseenter)="onNameMouseEnter(project)" (mouseleave)="onNameMouseLeave(project.ProjectID)">
-                {{ project.ProjectName }}
+              <div class="project-name" [attr.data-id]="project.projectID" (mouseenter)="onNameMouseEnter(project)" (mouseleave)="onNameMouseLeave(project.projectID)">
+                {{ project.projectName }}
               </div>
   
-              <div class="project-description" [attr.data-id]="project.ProjectID" (mouseenter)="onDescriptionMouseEnter(project)" (mouseleave)="onDescriptionMouseLeave(project.ProjectID)">
-                {{ project.Description }}
+              <div class="project-description" [attr.data-id]="project.projectID" (mouseenter)="onDescriptionMouseEnter(project)" (mouseleave)="onDescriptionMouseLeave(project.projectID)">
+                {{ project.projectDescription }}
               </div>
 
-              <div class="project-id" [attr.data-id]="project.ProjectID">
-                JarvisID {{ project.ProjectID }}
+              <div class="project-id" [attr.data-id]="project.projectID">
+                JarvisID {{ project.projectID }}
               </div>
               
             </div>
   
   
             <!-- container for attributes - status, priority, and department -->
-            <div class="project-attributes-cont" [attr.data-id]="project.ProjectID">
+            <div class="project-attributes-cont" [attr.data-id]="project.projectID">
   
               <div class="project-attributes-table">
                 <div class="project-attributes-row">
@@ -119,7 +119,7 @@ considering topnav, sidenav, and footer -->
                     Status
                   </div>
                   <div class="project-attributes-cell attributes value-cell">
-                    {{ project.ProjectStatusName ? project.ProjectStatusName : '--' }}
+                    {{ project.projectStatusName ? project.projectStatusName : '--' }}
                   </div>
                 </div>
                 <div class="project-attributes-row test-hover">
@@ -130,7 +130,7 @@ considering topnav, sidenav, and footer -->
                     Priority
                   </div>
                   <div class="project-attributes-cell attributes value-cell">
-                    {{ project.PriorityName ? project.PriorityName : '--' }}
+                    {{ project.priorityName ? project.priorityName : '--' }}
                   </div>
                 </div>
                 <div class="project-attributes-row">
@@ -150,7 +150,7 @@ considering topnav, sidenav, and footer -->
   
   
             <!-- container for record history/info - updated by and update date-->
-            <div class="project-creation-cont" [attr.data-id]="project.ProjectID">
+            <div class="project-creation-cont" [attr.data-id]="project.projectID">
   
               <div class="project-attributes-table">
                 <div class="project-attributes-row">
@@ -161,7 +161,7 @@ considering topnav, sidenav, and footer -->
                     Project Owner
                   </div>
                   <div class="project-attributes-cell creation value-cell">
-                    {{ project.ProjectOwnerFullName ? project.ProjectOwnerFullName : '--' }}
+                    {{ project.projectOwner ? project.projectOwner : '--' }}
                   </div>
                 </div>
                 <div class="project-attributes-row">
@@ -172,7 +172,7 @@ considering topnav, sidenav, and footer -->
                     Updated By
                   </div>
                   <div class="project-attributes-cell creation value-cell">
-                      {{ project.LastUpdatedBy ? project.LastUpdatedBy : '--' }}
+                      {{ project.updatedBy ? project.updatedBy : '--' }}
                   </div>
                 </div>
                 <div class="project-attributes-row">
@@ -183,7 +183,7 @@ considering topnav, sidenav, and footer -->
                     Update Date
                   </div>
                   <div class="project-attributes-cell creation value-cell">
-                    {{ project.LastUpdateDate ? (project.LastUpdateDate | date:'mediumDate') : '--' }}
+                    {{ project.updatedAt ? (project.updatedAt | date:'mediumDate') : '--' }}
                   </div>
                 </div>
               </div>
@@ -192,14 +192,14 @@ considering topnav, sidenav, and footer -->
   
   
             <!-- container for hoverable text - attributes and record history (will be displayed on narrower width using media query) -->
-            <div class="project-hidden-hover-cont" [attr.data-id]="project.ProjectID">
+            <div class="project-hidden-hover-cont" [attr.data-id]="project.projectID">
   
               <div class="project-attributes-table">
                 <div class="project-attributes-row">
                   <div class="project-attributes-cell attributes-hover icon-cell">
                     <i class="nc-icon nc-a-edit"></i>
                   </div>
-                  <div class="project-attributes-cell attributes-hover label-cell" [attr.data-id]="project.ProjectID" (mouseenter)="onAttributesMouseEnter(project)" (mouseleave)="onAttributesMouseLeave(project.ProjectID)">
+                  <div class="project-attributes-cell attributes-hover label-cell" [attr.data-id]="project.projectID" (mouseenter)="onAttributesMouseEnter(project)" (mouseleave)="onAttributesMouseLeave(project.projectID)">
                     Attributes
                   </div>
                 </div>
@@ -207,7 +207,7 @@ considering topnav, sidenav, and footer -->
                   <div class="project-attributes-cell record-history icon-cell">
                     <i class="nc-icon nc-time-clock"></i>
                   </div>
-                  <div class="project-attributes-cell record-history label-cell" [attr.data-id]="project.ProjectID" (mouseenter)="onRecordHistoryMouseEnter(project)" (mouseleave)="onRecordHistoryMouseLeave(project.ProjectID)">
+                  <div class="project-attributes-cell record-history label-cell" [attr.data-id]="project.projectID" (mouseenter)="onRecordHistoryMouseEnter(project)" (mouseleave)="onRecordHistoryMouseLeave(project.projectID)">
                     Record History
                   </div>
                 </div>

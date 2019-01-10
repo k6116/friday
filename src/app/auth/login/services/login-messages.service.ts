@@ -86,7 +86,7 @@ export class LoginMessagesService {
 
     if (error.status === 401) {
       if (JSON.parse(error.text()).title === 'invalid user credentials') {
-        message.text = 'Invalid user name or password.  Note: Use your Windows credentials to login.';
+        message.text = 'Invalid user name or password.';
       }
     } else if (error.hasOwnProperty('name')) {
       if (error.name === 'TimeoutError') {
@@ -94,7 +94,7 @@ export class LoginMessagesService {
         this.toolsService.displayTimeoutError();
       }
     } else if (error.status === 0) {
-        message.text = 'Error: connection refused. Please check your connection to the Keysight network.';
+        message.text = 'Error: connection refused. Please check your network connection.';
     } else {
       message.text = 'Sorry, an unexpected error occured.  Please contact support.';
     }

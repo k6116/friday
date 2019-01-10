@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CacheService } from '../../_shared/services/cache.service';
-import { ClickTrackingService } from '../../_shared/services/click-tracking.service';
 import { LoginImageService } from './services/login-image.service';
 import { LoginAuthService } from './services/login-auth.service';
 import { LoginMessagesService } from './services/login-messages.service';
@@ -39,7 +38,6 @@ export class LoginComponent implements OnInit {
 
   constructor(
     public cacheService: CacheService,
-    private clickTrackingService: ClickTrackingService,
     private loginImageService: LoginImageService,
     private loginAuthService: LoginAuthService,
     private loginMessagesService: LoginMessagesService,
@@ -174,9 +172,6 @@ export class LoginComponent implements OnInit {
   // handle enter key events when focused on the user name or password inputs
   onLoginKeyEnter() {
 
-    // log a record in the click tracking table
-    this.clickTrackingService.logClickWithEvent(`page: Login, clickedOn: Login Button, text: ${this.userName}`);
-
     // call login click
     this.onLoginClick();
 
@@ -212,7 +207,7 @@ export class LoginComponent implements OnInit {
     if (authResponse.error) {
       this.message = this.loginMessagesService.getLoginErrorMessage(authResponse.error);
     }
-
+    
     // stop showing the animated svg in the login button
     this.showPendingLoginAnimation = false;
 

@@ -28,7 +28,7 @@ export class UserResolverService implements Resolve<Observable<string>> {
     if (this.authService.loggedInUser) {
       // console.log('returning logged in user data from memory');
       // console.log(this.authService.loggedInUser);
-      return Observable.of({jarvisUser: this.authService.loggedInUser});
+      return Observable.of({user: this.authService.loggedInUser});
     } else {
       const token = localStorage.getItem('jarvisToken');
       if (token) {

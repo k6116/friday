@@ -834,22 +834,16 @@ function getProjectSchedule(req, res) {
 
 	const sql =
 		`SELECT
-			T1.CreationDate,
-			T3.PLCDateEstimate,
-			T3.PLCDateCommit,
-			T3.PLCDate,
-			T4.PLCStatusName,
-			T4.[Description],
-			T4.PLCSequence
-		FROM
-			projects.Projects T1
-			INNER JOIN demand.Schedules T2 ON T1.ProjectID = T2.ProjectID
-			INNER JOIN demand.SchedulesDetail T3 ON T2.ScheduleID = T3.ScheduleID
-			INNER JOIN projects.PLCStatus T4 ON T3.PLCStatusID = T4.PLCStatusID
-		WHERE
-			T1.ProjectID = ${projectID}
-		ORDER BY
-			PLCSequence`
+      P.creation_date as "creationDate",
+      SD.schedule_status as "scheduleStatus",
+      SD.schedule_date as "scheduleDate"
+    FROM
+      project.project P
+      INNER JOIN demand.schedule S ON P.id = S.project_id
+      INNER JOIN demand.schedule_detail SD ON S.id = SD.schedule_id
+    WHERE
+      P.id = ${projectID}
+    `
 
 	sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
 		.then(schedule => {		

@@ -64,7 +64,7 @@ export class LoginAuthService {
     this.loginCookiesService.setRememberMeCookie(user.rememberMe, user.userName);
 
     // store the logged in user in the auth service
-    this.authService.loggedInUser = new User().deserialize(authResponse.jarvisUser);
+    this.authService.loggedInUser = new User().deserialize(authResponse.user);
 
     // store the jwt token in local storage
     localStorage.setItem('jarvisToken', authResponse.token.signedToken);
@@ -75,10 +75,6 @@ export class LoginAuthService {
 
     // store the auth response in the cache
     this.updateCache(authResponse);
-
-    // get and store nested org data for this user, in anticipation of use in other components (performance reasons)
-    // this.getNestedOrgData(authResponse.jarvisUser.email);
-    // this.getNestedOrgData('ethan_hunt@keysight.com');
 
     // send the logged in user object to all other clients via websocket
     this.websocketService.sendLoggedInUser(this.authService.loggedInUser);
@@ -116,26 +112,9 @@ export class LoginAuthService {
     if (this.cacheService.appLoadPath) {
       this.router.navigateByUrl(this.cacheService.appLoadPath);
     } else {
-      this.router.navigateByUrl('/main/dashboard');
+      this.router.navigateByUrl('/main/projects/search');
     }
 
   }
-
-  // get and store the nested org data upon successfull login
-  getNestedOrgData(email: string) {
-    this.cacheService.nestedOrgDataRequested = true;
-    this.apiDataOrgService.getOrgData(email)
-    .subscribe(
-      res => {
-        const nestedOrgData = JSON.parse('[' + res[0].json + ']');
-        this.cacheService.$nestedOrgData = nestedOrgData;
-        this.cacheService.nestedOrgData.emit(nestedOrgData);
-      },
-      err => {
-        console.error('error getting nested org data');
-      }
-    );
-  }
-
 
 }

@@ -56,9 +56,6 @@ export class AppComponent implements OnInit, OnDestroy {
     // connect to the websocket
     this.websocketService.connect();
 
-    // insert a record into the click tracking table as a page load; to capture the browser
-    this.clickTrackingService.logClickWithEvent(`page: App Load, clickedOn: null`);
-
     // start a timer to fire every x minutes to check the login status
     // console.log('starting timer for auth service');
     this.startTimer();
