@@ -66,52 +66,62 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-// get environment/instance (dev, test, or prod)
-const env = process.env.ENVIRONMENT;
+// // get environment/instance (dev, test, or prod)
+// const env = process.env.ENVIRONMENT;
 
-// declare variable for socket.io use
-var server;
+// // declare variable for socket.io use
+// var server;
 
-// start development server
-if (env === 'dev') {
+// // start development server
+// if (env === 'dev') {
 
-  const port1 = 3000;
-  server = http.createServer(app)
-    .listen(port1, () => {
-      console.log(`node server listening on port: ${port1}`);
-    });
+//   const port1 = 3000;
+//   server = http.createServer(app)
+//     .listen(port1, () => {
+//       console.log(`node server listening on port: ${port1}`);
+//     });
     
-// start test server
-} else if (env === 'test') {
+// // start test server
+// } else if (env === 'test') {
 
-  // create a node server for https on port 440 for testing on the webserver
-  const port1 = 440;
-  server = https.createServer(sslOptions, app)
-    .listen(port1, () => {
-      console.log(`node server listening on port: ${port1}`);
-    });
+//   // create a node server for https on port 440 for testing on the webserver
+//   const port1 = 440;
+//   server = https.createServer(sslOptions, app)
+//     .listen(port1, () => {
+//       console.log(`node server listening on port: ${port1}`);
+//     });
 
-// start production server
-} else if (env === 'prod') {
+// // start production server
+// } else if (env === 'prod') {
 
-  // create a node server for https on port 443
-  const port1 = 443;
-  server = https.createServer(sslOptions, app)
-    .listen(port1, () => {
-      console.log(`node server listening on port: ${port1}`);
-    });
+//   // create a node server for https on port 443
+//   const port1 = 443;
+//   server = https.createServer(sslOptions, app)
+//     .listen(port1, () => {
+//       console.log(`node server listening on port: ${port1}`);
+//     });
 
-  // create a second node server to forward http (port 80) requests to https (port 443)
-  const port2 = 80;
-  http.createServer((req, res) => {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-  })
-  .listen(80, () => {
-    console.log(`node server listening on port: ${port2}`);
-  });
+//   // create a second node server to forward http (port 80) requests to https (port 443)
+//   const port2 = 80;
+//   http.createServer((req, res) => {
+//     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+//     res.end();
+//   })
+//   .listen(80, () => {
+//     console.log(`node server listening on port: ${port2}`);
+//   });
 
-}
+// }
+
+/////// HEROKU START /////////
+// set the port
+const port = process.env.PORT || '4200';
+app.set('port', port);
+
+// start the server
+const server = http.createServer(app);
+server.listen(port, () => console.log(`Running on localhost:${port}`));
+/////// HEROKU END /////////
 
 // send and receive real-time websockets messages
 websockets.listen(server);
