@@ -4,8 +4,6 @@ const models = require('../models/_index')
 const Treeize = require('treeize');
 const token = require('../token/token');
 const moment = require('moment');
-var dateFormat = require('dateformat');
-
 
 function indexProjectSchedule(req, res) {
 
