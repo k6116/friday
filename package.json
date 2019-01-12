@@ -97,7 +97,6 @@
     "@types/node": "~6.0.60",
     "codelyzer": "^4.0.1",
     "corp-semantic-release": "^6.4.0",
-    "cypress": "^3.1.0",
     "cz-conventional-changelog": "^2.1.0",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
