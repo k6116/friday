@@ -13,8 +13,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ng build --prod -aot",
-    "int-test": "npx cypress open"
+    "postinstall": "ng build --prod -aot"
   },
   "private": true,
   "dependencies": {
@@ -39,8 +38,6 @@
     "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0",
     "bowser": "^1.9.3",
-    "chart.js": "^2.7.2",
-    "chartjs-plugin-zoom": "^0.6.3",
     "commitizen": "^2.10.1",
     "connect-datadog": "0.0.6",
     "core-js": "^2.4.1",
