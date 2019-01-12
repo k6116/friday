@@ -4,7 +4,7 @@ import { DecimalPipe } from '@angular/common';
 import { HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { forkJoin } from 'rxjs/Observable/forkJoin';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { AuthService } from '../../_shared/services/auth.service';
 import { ApiDataProjectService, ApiDataFteService, ApiDataJobTitleService,

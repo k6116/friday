@@ -45,7 +45,6 @@ import { FteTeamEntryGuard } from './fte-entry/team/fte-entry.guard';
 
 // CHARTS
 import 'hammerjs';
-import 'chartjs-plugin-zoom';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
