@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
-import { Observable } from 'rxjs/observable';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { Observable } from 'rxjs/Observable';
+import { forkJoin } from 'rxjs/Observable/forkJoin';
 import { CacheService } from '../cache.service';
 import 'rxjs/add/operator/map';
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions, ResponseContentType } from '@angular/http';
-import { Observable } from 'rxjs/observable';
+import { Observable } from 'rxjs/Observable';
 import { CacheService } from '../cache.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
