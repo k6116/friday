@@ -29,16 +29,16 @@ const connect_datadog = require('connect-datadog')(dd_options);
 const app = express();
 
 // set the ssl options object, reading keys and certs from the filesystem
-var sslOptions = {
-  key: fs.readFileSync('./etc/ssl/jarvis.key'),
-  cert: fs.readFileSync('./etc/ssl/jarvis.crt'),
-  requestCert: true,
-  ca: [
-    fs.readFileSync('./etc/ssl/Keysight_Intermediate.crt'),
-    fs.readFileSync('./etc/ssl/Keysight_Root.crt')
-  ],
-  rejectUnauthorized: false 
-};
+// var sslOptions = {
+//   key: fs.readFileSync('./etc/ssl/jarvis.key'),
+//   cert: fs.readFileSync('./etc/ssl/jarvis.crt'),
+//   requestCert: true,
+//   ca: [
+//     fs.readFileSync('./etc/ssl/Keysight_Intermediate.crt'),
+//     fs.readFileSync('./etc/ssl/Keysight_Root.crt')
+//   ],
+//   rejectUnauthorized: false 
+// };
 
 // connect to the database(s)
 sequelize.connect();
